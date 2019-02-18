@@ -1,0 +1,23 @@
+{
+  "name": "afp-poc-2",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "jo-es <escherich.johannes+github@gmail.com>",
+  "homepage": "https://github.com/jo-es/afp-monorepo#readme",
+  "license": "UNLICENSED",
+  "main": "index.js",
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jo-es/afp-monorepo.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/jo-es/afp-monorepo/issues"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.1.2"
+  }
+}
