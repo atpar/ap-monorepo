@@ -1,0 +1,34 @@
+{
+  "name": "afp-contracts",
+  "version": "0.0.0",
+  "description": "AFP smart contracts",
+  "author": "jo-es <escherich.johannes+github@gmail.com>",
+  "homepage": "https://github.com/jo-es/afp-monorepo#readme",
+  "license": "UNLICENSED",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jo-es/afp-monorepo.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/jo-es/afp-monorepo/issues"
+  },
+  "dependencies": {
+    "bignumber.js": "^7.2.1",
+    "csv-parse": "^3.1.2",
+    "eth-sig-util": "^2.1.0",
+    "truffle-hdwallet-provider": "^1.0.0-web3one.0",
+    "web3": "^1.0.0-beta.40",
+    "web3-eth-abi": "^1.0.0-beta.40",
+    "web3-utils": "^1.0.0-beta.40"
+  }
+}

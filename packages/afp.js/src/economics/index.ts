@@ -1,0 +1,1 @@
+export { PAM } from './PAM';
