@@ -52,12 +52,11 @@ contract PaymentRouter is Ownable {
 				payee = recordCreatorBeneficiary;
 			}	
 		} else {
-			
 			require(msg.sender == recordCreatorObligor);
 			if (payee == address(0)) {
 				payee = counterpartyBeneficiary;
 			}
-		}	
+		}
 		
 		if (_token == address(0)) {
 			amount = msg.value;
@@ -69,6 +68,7 @@ contract PaymentRouter is Ownable {
 
 		paymentRegistry.registerPayment(
 			_contractId,
+			_cashflowId,
 			_eventId,
 			_token,
 			amount

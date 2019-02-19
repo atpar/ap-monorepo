@@ -4,9 +4,10 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract PaymentRegistry is Ownable {
-	
+  
 	struct Payment {
 		bytes32 contractId;
+		int8 cashflowId;
 		bytes32 eventId;
 		address token;
 		uint256 amount;
@@ -31,8 +32,9 @@ contract PaymentRegistry is Ownable {
 	}
 	
 	function registerPayment (
-		bytes32 _contractId, 
-		bytes32 _eventId,  
+		bytes32 _contractId,
+		int8 _cashflowId,
+		bytes32 _eventId,
 		address _token,
 		uint256 _amount
 	) 
@@ -40,7 +42,8 @@ contract PaymentRegistry is Ownable {
 		payable
 	{		
 		bytes32 paymentId = keccak256(abi.encodePacked(
-			_contractId, 
+			_contractId,
+			_cashflowId,
 			_eventId,
 			_token,
 			_amount,
@@ -51,6 +54,7 @@ contract PaymentRegistry is Ownable {
 		
 		Payment memory payment = Payment(
 			_contractId,
+			_cashflowId,
 			_eventId,
 			_token,
 			_amount, 
