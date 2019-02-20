@@ -38,15 +38,13 @@ contract PaymentRegistry is Ownable {
 		address _token,
 		uint256 _amount
 	) 
-		public 
+		external 
 		payable
 	{		
 		bytes32 paymentId = keccak256(abi.encodePacked(
 			_contractId,
 			_cashflowId,
 			_eventId,
-			_token,
-			_amount,
 			block.timestamp
 		));
 
@@ -73,7 +71,7 @@ contract PaymentRegistry is Ownable {
 	// }
 	
 	function getPayment (bytes32 _paymentId)
-		public
+		external
 		view
 		returns (Payment memory)
 	{
