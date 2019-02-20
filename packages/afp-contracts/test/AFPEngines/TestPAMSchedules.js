@@ -2,10 +2,10 @@ const Web3 = require('web3')
 const fs = require('fs')
 
 const PAMStatelessContractArtifact = artifacts.require('PAMStatelessContract.sol')
-const PAMStatelessContract = require('../build/contracts/PAMStatelessContract.json')
+const PAMStatelessContract = require('../../build/contracts/PAMStatelessContract.json')
 
-const parseTestResults = require('./parser.js').parseTestResults
-const parseContractTerms = require('./parser.js').parseContractTerms
+const parseTestResults = require('../parser.js').parseTestResults
+const parseContractTerms = require('../parser.js').parseContractTerms
 
 const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
 const PAMTestResultDirectory = './test/contract-templates-results/'

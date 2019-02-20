@@ -2,7 +2,7 @@ const Web3 = require('web3')
 const sigUtil = require('eth-sig-util')
 
 const AFPVerifyArtifact = artifacts.require('AFPVerify.sol')
-const AFPVerify = require('../build/contracts/AFPVerify.json')
+const AFPVerify = require('../../build/contracts/AFPVerify.json')
 
 const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId) => {
   const typedData = {

@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "./AFPCore/AFPDefinitions.sol";
+import "../AFPCore/AFPDefinitions.sol";
 
 contract IPAMStatelessContract is AFPDefinitions {
 

@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 
 import "truffle/Assert.sol";
 
-import "../contracts/AFPCore/AFPCore.sol";
+import "../../contracts/AFPCore/AFPCore.sol";
 
 contract TestAFPCore is AFPCore {
 
