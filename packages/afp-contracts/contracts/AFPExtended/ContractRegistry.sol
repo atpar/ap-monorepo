@@ -16,7 +16,7 @@ contract ContractRegistry is AFPDefinitions {
   mapping (bytes32 => Contract) public contracts;
 
   modifier onlyActor (bytes32 _contractId) {
-    require(contracts[_contractId].actor == msg.sender);
+    require(contracts[_contractId].actor == msg.sender, "UNAUTHORIZED_SENDER");
     _;
   }
 
@@ -28,7 +28,7 @@ contract ContractRegistry is AFPDefinitions {
   ) 
     public 
   {
-    require(contracts[_contractId].contractId != bytes32(0));
+    require(contracts[_contractId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
     
     contracts[_contractId] = Contract(
       _contractId,
@@ -49,14 +49,6 @@ contract ContractRegistry is AFPDefinitions {
 
   function setEventId (bytes32 _contractId, uint256 _eventId) onlyActor (_contractId) external {
     contracts[_contractId].eventId = _eventId;
-  }  
-
-  function getState (bytes32 _contractId) 
-    external 
-    view
-    returns (ContractState memory)
-  {
-    return contracts[_contractId].state;
   }
 
   function getTerms (bytes32 _contractId) 
@@ -65,5 +57,13 @@ contract ContractRegistry is AFPDefinitions {
     returns (PAMContractTerms memory)
   {
     return contracts[_contractId].terms;
+  }  
+
+  function getState (bytes32 _contractId) 
+    external 
+    view
+    returns (ContractState memory)
+  {
+    return contracts[_contractId].state;
   }
 }
