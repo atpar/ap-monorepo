@@ -25,7 +25,7 @@ contract OwnershipRegistry is Ownable {
 	) 
 		external 
 	{
-		require(contractOwnerships[_contractId].recordCreatorObligor == address(0));
+		require(contractOwnerships[_contractId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
 		
 		contractOwnerships[_contractId] = ContractOwnership(
 			_recordCreatorObligor,
@@ -42,14 +42,15 @@ contract OwnershipRegistry is Ownable {
 	) 
 		external 
 	{
-		require(_cashflowId != 0);
-		require(cashflowBeneficiaries[_contractId][_cashflowId] == address(0));
+		require(_cashflowId != 0, "INVALID_CASHFLOWID");
 		
 		if (_cashflowId > 0) {
-			require(msg.sender == contractOwnerships[_contractId].recordCreatorBeneficiary);
+			require(msg.sender == contractOwnerships[_contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
 		} else {
-			require(msg.sender == contractOwnerships[_contractId].counterpartyBeneficiary);
+			require(msg.sender == contractOwnerships[_contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
 		}
+
+		require(cashflowBeneficiaries[_contractId][_cashflowId] == address(0), "ENTRY_ALREADY_EXISTS");
 
 		cashflowBeneficiaries[_contractId][_cashflowId] = _beneficiary;
 	}

@@ -33,4 +33,6 @@ contract('TestAssetIssuance', (accounts) => {
     assert.equal(result[2], counterpartyObligor)
     assert.equal(result[3], counterpartyBeneficiary)
   })
+
+  
 })
