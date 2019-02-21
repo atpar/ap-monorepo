@@ -5,16 +5,18 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract PaymentRegistry is Ownable {
   
+	event Paid(bytes32, bytes32);
+
 	struct Payment {
 		bytes32 contractId;
 		int8 cashflowId;
-		bytes32 eventId;
+		uint256 eventId;
 		address token;
 		uint256 amount;
 		uint256 timestamp;
 	}
 
-	address paymentRouter;
+	address public paymentRouter;
 
 	// paymentId => Payment    
 	mapping (bytes32 => Payment) paymentRegistry;
@@ -23,7 +25,7 @@ contract PaymentRegistry is Ownable {
 	// mapping (bytes32 => mapping (address => bytes32[])) public paymentIdRegistry;
 
 	modifier onlyPaymentRouter {
-		require(msg.sender == paymentRouter);
+		require(msg.sender == paymentRouter, "UNAUTHORIZED_SENDER");
 		_;
 	}
 
@@ -34,12 +36,13 @@ contract PaymentRegistry is Ownable {
 	function registerPayment (
 		bytes32 _contractId,
 		int8 _cashflowId,
-		bytes32 _eventId,
+		uint256 _eventId,
 		address _token,
 		uint256 _amount
 	) 
 		external 
 		payable
+		onlyPaymentRouter ()
 	{		
 		bytes32 paymentId = keccak256(abi.encodePacked(
 			_contractId,
@@ -48,7 +51,7 @@ contract PaymentRegistry is Ownable {
 			block.timestamp
 		));
 
-		require(paymentRegistry[paymentId].contractId == bytes32(0));
+		require(paymentRegistry[paymentId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
 		
 		Payment memory payment = Payment(
 			_contractId,
@@ -60,6 +63,8 @@ contract PaymentRegistry is Ownable {
 		);
 	
 		paymentRegistry[paymentId] = payment;
+
+		emit Paid(paymentId, _contractId);
 	}
 	
 	// function getPaymentIdsForEvent (address _contract, bytes32 _eventId)

@@ -27,14 +27,14 @@ contract PaymentRouter is Ownable {
 	function settlePayment (
 		bytes32 _contractId,
 		int8 _cashflowId,
-		bytes32 _eventId,
+		uint256 _eventId,
 		address _token,
 		uint256 _amount
 	) 
 		external 
 		payable
 	{
-		require(_contractId != bytes32(0) && _cashflowId != int8(0));
+		require(_contractId != bytes32(0) && _cashflowId != int8(0), "INVALID_CONTRACTID_OR_CASHFLOWID");
 		
 		uint256 amount;
 		address payable payee = ownershipRegistry.getCashflowBeneficiary(_contractId, _cashflowId);
@@ -47,12 +47,12 @@ contract PaymentRouter is Ownable {
 		(recordCreatorObligor, recordCreatorBeneficiary, counterpartyObligor, counterpartyBeneficiary) = ownershipRegistry.getContractOwnership(_contractId);
 		
 		if (_cashflowId > 0) {
-			require(msg.sender == counterpartyObligor);
+			require(msg.sender == counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
 			if (payee == address(0)) {
 				payee = recordCreatorBeneficiary;
 			}	
 		} else {
-			require(msg.sender == recordCreatorObligor);
+			require(msg.sender == recordCreatorObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
 			if (payee == address(0)) {
 				payee = counterpartyBeneficiary;
 			}
@@ -60,9 +60,9 @@ contract PaymentRouter is Ownable {
 		
 		if (_token == address(0)) {
 			amount = msg.value;
-			require(payee.send(msg.value));
+			require(payee.send(msg.value), "TRANSFER_FAILED");
 		} else {
-			require(IERC20(_token).transferFrom(msg.sender, payee, _amount));
+			require(IERC20(_token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");
 			amount = _amount;
 		}
 
