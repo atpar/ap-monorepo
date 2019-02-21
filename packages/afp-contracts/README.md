@@ -16,15 +16,15 @@ This package contains the AFP smart contracts.
 - NPM (6.2.0)
 - install truffle-cli and ganache-cli or run commands with 
 ```sh
-npm install -g truffle@v5.0.0-beta.1
+npm install -g truffle # truffle@v5.0.2
 npm install -g ganache-cli
 ```
 
 ### Run
 1. install dependencies
 ```sh
-# contracts/
-npm install
+# afp-contracts/
+yarn install
 ```
 
 2. start ganache
@@ -34,7 +34,7 @@ ganache-cli --defaultBalanceEther 1000000
 
 3. deploy contracts and run tests
 ```sh
-# contracts/
+# afp-contracts/
 truffle compile
 truffle migrate --network development
 truffle test
