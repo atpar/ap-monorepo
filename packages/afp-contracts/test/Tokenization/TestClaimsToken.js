@@ -17,9 +17,9 @@ contract('TestClaimsToken', (accounts) => {
 
     this.totalSupply = await this.ClaimsTokenInstance.SUPPLY()
 
-    this.ClaimsTokenInstance.transfer(ownerB, this.totalSupply.divn(4))
-    this.ClaimsTokenInstance.transfer(ownerC, this.totalSupply.divn(4))
-    this.ClaimsTokenInstance.transfer(ownerD, this.totalSupply.divn(4))
+    await this.ClaimsTokenInstance.transfer(ownerB, this.totalSupply.divn(4))
+    await this.ClaimsTokenInstance.transfer(ownerC, this.totalSupply.divn(4))
+    await this.ClaimsTokenInstance.transfer(ownerD, this.totalSupply.divn(4))
 
     await this.ClaimsTokenInstance.depositFunds({ from: payer, value: depositAmount })
   })
