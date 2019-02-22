@@ -59,8 +59,9 @@ contract PaymentRouter is Ownable {
 		}
 		
 		if (_token == address(0)) {
+			(bool result, ) = payee.call.value(msg.value)("");
+      require(result, "TRANSFER_FAILED");
 			amount = msg.value;
-			require(payee.send(msg.value), "TRANSFER_FAILED");
 		} else {
 			require(IERC20(_token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");
 			amount = _amount;
