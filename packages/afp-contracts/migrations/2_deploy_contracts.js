@@ -6,7 +6,7 @@ const ContractRegistry = artifacts.require('ContractRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const FractionalOwnershipToken = artifacts.require('FractionalOwnershipToken')
+const ClaimsToken = artifacts.require('ClaimsToken')
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -24,5 +24,5 @@ module.exports = async (deployer, network, accounts) => {
   )
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
 
-  await deployer.deploy(FractionalOwnershipToken, accounts[0])
+  await deployer.deploy(ClaimsToken, accounts[0])
 }
