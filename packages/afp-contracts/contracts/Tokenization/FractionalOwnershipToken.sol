@@ -75,16 +75,14 @@ contract FractionalOwnershipToken is ERC20, ERC20Detailed {
     view
     returns (uint256) 
   {
-    uint256 share = balanceOf(_forAddress) / totalSupply();
-    uint256 newFunds = cummulativeFundsReceived - processedCummulativeFundsReceivedFor[_forAddress];
-
-    return share * newFunds;
+    uint256 newFundsReceived = cummulativeFundsReceived - processedCummulativeFundsReceivedFor[_forAddress];
+    return balanceOf(_forAddress) * newFundsReceived / totalSupply();
   }
 
   /**
    * Withdraws payout for user.
    */
-  function withdraw() external {
+  function withdraw() external payable {
     uint256 totalPayout = calcPayout(msg.sender) + notWithdrawnPayout[msg.sender];
 
     processedCummulativeFundsReceivedFor[msg.sender] = cummulativeFundsReceived;
