@@ -6,8 +6,10 @@ const ContractRegistry = artifacts.require('ContractRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
+const FractionalOwnershipToken = artifacts.require('FractionalOwnershipToken')
 
-module.exports = async (deployer) => {
+
+module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(AFPFloatMath)
   await deployer.link(AFPFloatMath, PAMStatelessContract)
   await deployer.deploy(PAMStatelessContract)
@@ -21,4 +23,6 @@ module.exports = async (deployer) => {
     PaymentRegistry.address
   )
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
+
+  await deployer.deploy(FractionalOwnershipToken, accounts[0])
 }
