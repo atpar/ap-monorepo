@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "../AFPCore/AFPDefinitions.sol";
 
+
 contract ContractRegistry is AFPDefinitions {
 
   struct Contract {

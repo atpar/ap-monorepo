@@ -2,14 +2,11 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "./IOwnershipRegistry.sol";
 import "./IPaymentRegistry.sol";
 
-interface IERC20 {
-	function transfer(address to, uint256 value) external returns (bool);
-	function transferFrom(address from, address to, uint256 value) external returns (bool);
-}
 
 contract PaymentRouter is Ownable {
 

@@ -1,7 +1,8 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "../external/open-zeppelin-solidity/ECDSA.sol";
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+
 
 contract AFPVerify {
 

@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "../AFPCore/AFPCore.sol";
 import "../AFPCore/AFPFloatMath.sol";
 
+
 /**
  * todo: implement safemaths add and sub methods for STFs and POFs
  */

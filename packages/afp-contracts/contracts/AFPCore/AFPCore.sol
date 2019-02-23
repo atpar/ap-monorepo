@@ -1,9 +1,11 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
+import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
+
 import "./AFPDefinitions.sol";
 import "./AFPDayCountConventions.sol";
-import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
+
 
 contract AFPCore is AFPDefinitions, AFPDayCountConventions {
 
