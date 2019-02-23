@@ -1,7 +1,7 @@
 const ClaimsToken = artifacts.require('ClaimsToken')
 
 
-contract('TestClaimsToken', (accounts) => {
+contract('ClaimsToken', (accounts) => {
 
   const ownerA = accounts[0]
   const ownerB = accounts[1]

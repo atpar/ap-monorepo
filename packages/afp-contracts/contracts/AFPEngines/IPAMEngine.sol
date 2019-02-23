@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "../AFPCore/AFPDefinitions.sol";
 
-contract IPAMStatelessContract is AFPDefinitions {
+contract IPAMEngine is AFPDefinitions {
 
  	function initializeContract(PAMContractTerms memory _contractTerms) 
 		public 

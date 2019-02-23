@@ -4,24 +4,24 @@ import BigNumber from 'bignumber.js';
 import { ContractTerms, ContractState, ContractEvent } from '../types';
 import { Contract } from 'web3-eth-contract/types';
 
-const PAMStatelessContractArtifact: any = require('../../../afp-contracts/build/contracts/PAMStatelessContract.json');
+const PAMEngineArtifact: any = require('../../../afp-contracts/build/contracts/PAMEngine.json');
 
 
-export class PAMStatelessContract {
-  private statelessContract: Contract;
+export class PAMEngine {
+  private pamEngine: Contract;
 
-  constructor (statelessContractInstance: Contract) {    
-    this.statelessContract = statelessContractInstance;
+  constructor (pamEngineInstance: Contract) {    
+    this.pamEngine = pamEngineInstance;
   }
 
   public async getPrecision () {
-    const precision: number = await this.statelessContract.methods.precision().call();
+    const precision: number = await this.pamEngine.methods.precision().call();
     return precision;
   }
 
   public async computeFirstState (contractTerms: ContractTerms) {
     const { 0: contractState }: { 0: ContractState, 1: any } = 
-      await this.statelessContract.methods.initializeContract(contractTerms).call();
+      await this.pamEngine.methods.initializeContract(contractTerms).call();
     return contractState;
   }
 
@@ -30,7 +30,7 @@ export class PAMStatelessContract {
     contractState: ContractState, 
     timestamp: number
   ) {
-    const response = await this.statelessContract.methods.getNextState(
+    const response = await this.pamEngine.methods.getNextState(
       contractTerms,
       contractState,
       timestamp
@@ -48,7 +48,7 @@ export class PAMStatelessContract {
     contractEvent: ContractEvent, 
     timestamp: number
   ) {
-    const response = await this.statelessContract.methods.getNextState(
+    const response = await this.pamEngine.methods.getNextState(
       contractTerms,
       contractState,
       contractEvent,
@@ -62,7 +62,7 @@ export class PAMStatelessContract {
   }
 
   public async computeSchedule (contractTerms: ContractTerms) {
-    const contractEventSchedule = await this.statelessContract.methods.computeContractEventSchedule(
+    const contractEventSchedule = await this.pamEngine.methods.computeContractEventSchedule(
       contractTerms
     ).call();
 
@@ -70,7 +70,7 @@ export class PAMStatelessContract {
   }
 
   public async computeScheduleSegment (contractTerms: ContractTerms, startTimestamp: number, endTimestamp: number) {
-    const pendingContractEventSchedule = await this.statelessContract.methods.computeContractEventScheduleSegment(
+    const pendingContractEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
       contractTerms,
       startTimestamp,
       endTimestamp
@@ -109,11 +109,11 @@ export class PAMStatelessContract {
 
   public static async instantiate (web3: Web3) {
     const chainId = await web3.eth.net.getId();
-    const statelessContractInstance = new web3.eth.Contract(
-      PAMStatelessContractArtifact.abi,
-      PAMStatelessContractArtifact.networks[chainId].address
+    const pamEngineInstance = new web3.eth.Contract(
+      PAMEngineArtifact.abi,
+      PAMEngineArtifact.networks[chainId].address
     );
 
-    return new PAMStatelessContract(statelessContractInstance);
+    return new PAMEngine(pamEngineInstance);
   }
 }

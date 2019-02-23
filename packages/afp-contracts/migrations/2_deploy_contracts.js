@@ -1,4 +1,4 @@
-const PAMStatelessContract = artifacts.require('PAMStatelessContract')
+const PAMEngine = artifacts.require('PAMEngine')
 const AFPFloatMath = artifacts.require('AFPFloatMath')
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
@@ -11,8 +11,8 @@ const ClaimsToken = artifacts.require('ClaimsToken')
 
 module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(AFPFloatMath)
-  await deployer.link(AFPFloatMath, PAMStatelessContract)
-  await deployer.deploy(PAMStatelessContract)
+  await deployer.link(AFPFloatMath, PAMEngine)
+  await deployer.deploy(PAMEngine)
 
   await deployer.deploy(OwnershipRegistry)  
   await deployer.deploy(ContractRegistry)

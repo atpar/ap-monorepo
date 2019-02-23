@@ -1,7 +1,7 @@
 const Web3 = require('web3')
 
-const PAMStatelessContractArtifact = artifacts.require('PAMStatelessContract.sol')
-const PAMStatelessContract = require('../../build/contracts/PAMStatelessContract.json')
+const PAMEngineArtifact = artifacts.require('PAMEngine.sol')
+const PAMEngine = require('../../build/contracts/PAMEngine.json')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
 const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
@@ -10,24 +10,24 @@ const getContractTerms = (precision) => {
   return parseContractTerms(PAMTestTerms, precision)
 }
 
-contract('PAMStatelessContract', (accounts) => {
+contract('PAMEngine', (accounts) => {
 
-  let PAMStatelessContractDeployed
+  let PAMEngineDeployed
   let contractTerms, contractState, eventSchedule
 
   before(async () => {    
     const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
     
-    await PAMStatelessContractArtifact.new()
-    PAMStatelessContractDeployed = new web3.eth.Contract(PAMStatelessContract.abi, PAMStatelessContractArtifact.address);
+    await PAMEngineArtifact.new()
+    PAMEngineDeployed = new web3.eth.Contract(PAMEngine.abi, PAMEngineArtifact.address);
 
-    let precision = Number(await PAMStatelessContractDeployed.methods.precision().call())
+    let precision = Number(await PAMEngineDeployed.methods.precision().call())
     let testTerms = await getContractTerms(precision)
     contractTerms = testTerms['10001']
   })
 
   it('should yield the first contract state and the event schedule', async () => {
-    let response = await PAMStatelessContractDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
     contractState = response[0]
     eventSchedule = response[1]
     assert.isTrue(contractState != null && eventSchedule != null)
@@ -39,7 +39,7 @@ contract('PAMStatelessContract', (accounts) => {
     let timestamp = 1388534400 // 30.12.2012
     let lastEventTime = 1356825600 // 01.01.2014
 
-    let response = await PAMStatelessContractDeployed.methods.computeContractEventScheduleSegment(
+    let response = await PAMEngineDeployed.methods.computeContractEventScheduleSegment(
       contractTerms, 
       lastEventTime,
       timestamp
@@ -66,7 +66,7 @@ contract('PAMStatelessContract', (accounts) => {
   it('should yield correct segment of events', async () => {
     let lastEventTime = 1356825600 // 30.12.2012
     let timestamp = 1388534400 // 01.01.2014
-    let response = await PAMStatelessContractDeployed.methods.computeContractEventScheduleSegment(
+    let response = await PAMEngineDeployed.methods.computeContractEventScheduleSegment(
       contractTerms, 
       lastEventTime,
       timestamp
@@ -90,7 +90,7 @@ contract('PAMStatelessContract', (accounts) => {
 
     lastEventTime = 0 
     timestamp = 1362096000 // 01.03.2013
-    response = await PAMStatelessContractDeployed.methods.computeContractEventScheduleSegment(
+    response = await PAMEngineDeployed.methods.computeContractEventScheduleSegment(
       contractTerms, 
       lastEventTime,
       timestamp
@@ -99,7 +99,7 @@ contract('PAMStatelessContract', (accounts) => {
 
     lastEventTime = 1362096000 // 01.03.2013
     timestamp = 1372636800 // 01.07.2013
-    response = await PAMStatelessContractDeployed.methods.computeContractEventScheduleSegment(
+    response = await PAMEngineDeployed.methods.computeContractEventScheduleSegment(
       contractTerms, 
       lastEventTime,
       timestamp
@@ -108,7 +108,7 @@ contract('PAMStatelessContract', (accounts) => {
     
     lastEventTime = 1372636800 // 01.07.2013
     timestamp = 1388534400 // 01.01.2014
-    response = await PAMStatelessContractDeployed.methods.computeContractEventScheduleSegment(
+    response = await PAMEngineDeployed.methods.computeContractEventScheduleSegment(
       contractTerms, 
       lastEventTime,
       timestamp
@@ -131,12 +131,12 @@ contract('PAMStatelessContract', (accounts) => {
   })
 
   it('should yield the next next contract state and the contract events', async() => {
-    let response = await PAMStatelessContractDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
     contractState = response[0]
     
     let timestamp = 1362096000 // 01.03.2013
     // let timestamp = 1388534400 // 01.01.2014
 
-    response = await PAMStatelessContractDeployed.methods.getNextState(contractTerms, contractState, timestamp).call()
+    response = await PAMEngineDeployed.methods.getNextState(contractTerms, contractState, timestamp).call()
   })
 })

@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const ContractRegistry = artifacts.require('ContractRegistry')
-const PAMStatelessContract = artifacts.require('PAMStatelessContract.sol')
+const PAMEngine = artifacts.require('PAMEngine.sol')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
 const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
@@ -18,8 +18,8 @@ contract('ContractRegistry', (accounts) => {
   const actor = accounts[1]
 
   before(async () => {
-    PAMStatelessContract.numberFormat = 'String'
-    const PAMEngineInstance = await PAMStatelessContract.new()
+    PAMEngine.numberFormat = 'String'
+    const PAMEngineInstance = await PAMEngine.new()
     const precision = Number(await PAMEngineInstance.precision())
     ;({ '10001': this.terms } = await getContractTerms(precision))
     ;({ '0': this.state } = await PAMEngineInstance.initializeContract(this.terms, {}))

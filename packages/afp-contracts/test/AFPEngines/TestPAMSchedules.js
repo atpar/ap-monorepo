@@ -1,8 +1,8 @@
 const Web3 = require('web3')
 const fs = require('fs')
 
-const PAMStatelessContractArtifact = artifacts.require('PAMStatelessContract.sol')
-const PAMStatelessContract = require('../../build/contracts/PAMStatelessContract.json')
+const PAMEngineArtifact = artifacts.require('PAMEngine.sol')
+const PAMEngine = require('../../build/contracts/PAMEngine.json')
 
 const parseTestResults = require('../parser.js').parseTestResults
 const parseContractTerms = require('../parser.js').parseContractTerms
@@ -33,15 +33,15 @@ const getContractTerms = (precision) => {
   return parseContractTerms(PAMTestTerms, precision)
 }
 
-contract('PAMStatelessContract', () => {
+contract('PAMEngine', () => {
 
-  let PAMStatelessContractDeployed
+  let PAMEngineDeployed
   let precision
   let testTerms
   let refTestResults
 
   const calculateContractEventSchedule = async (contractTerms) => {
-    let response = await PAMStatelessContractDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
     let contractState = response[0]
     let eventSchedule = response[1]
 
@@ -71,7 +71,7 @@ contract('PAMStatelessContract', () => {
         actualEventTime: 0
       }
 
-      let response = await PAMStatelessContractDeployed.methods.getNextState(
+      let response = await PAMEngineDeployed.methods.getNextState(
         contractTerms, 
         contractState, 
         contractEvent, 
@@ -97,10 +97,10 @@ contract('PAMStatelessContract', () => {
   before(async () => {
     const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
     
-    await PAMStatelessContractArtifact.new()
-    PAMStatelessContractDeployed = new web3.eth.Contract(PAMStatelessContract.abi, PAMStatelessContractArtifact.address);
+    await PAMEngineArtifact.new()
+    PAMEngineDeployed = new web3.eth.Contract(PAMEngine.abi, PAMEngineArtifact.address);
     
-    precision = Number(await PAMStatelessContractDeployed.methods.precision().call())
+    precision = Number(await PAMEngineDeployed.methods.precision().call())
     
     testTerms = await getContractTerms(precision)
     refTestResults = await getTestResults()

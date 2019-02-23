@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
 import { EconomicsKernel } from '../kernels/EconomicsKernel';
-import { PAMStatelessContract } from '../wrappers/PAMStatelessContract';
+import { PAMEngine } from '../wrappers/PAMEngine';
 import { ContractTerms, ContractState, ContractEvent } from '../types';
 
 
@@ -11,17 +11,17 @@ import { ContractTerms, ContractState, ContractEvent } from '../types';
  */
 export class PAM implements EconomicsKernel {
 
-  protected statelessContract: PAMStatelessContract;
+  protected pamEngine: PAMEngine;
 
   public readonly contractTerms: ContractTerms;
   public contractState: ContractState;
 
   private constructor (
-    statelessContract: PAMStatelessContract,
+    pamEngine: PAMEngine,
     contractTerms: ContractTerms, 
     contractState: ContractState
   ) {
-    this.statelessContract = statelessContract;
+    this.pamEngine = pamEngine;
     this.contractTerms = contractTerms;
     this.contractState = contractState;
   }
@@ -31,7 +31,7 @@ export class PAM implements EconomicsKernel {
    * @param timestamp current timestamp
    */
   public async computeNextState (timestamp: number) {
-    const { nextContractState } = await this.statelessContract.computeNextState(
+    const { nextContractState } = await this.pamEngine.computeNextState(
       this.contractTerms, 
       this.contractState, 
       timestamp
@@ -47,7 +47,7 @@ export class PAM implements EconomicsKernel {
   public async validateFirstState (
     expectedContractState: ContractState,
   ) {
-    const contractState = await this.statelessContract.computeFirstState(this.contractTerms);
+    const contractState = await this.pamEngine.computeFirstState(this.contractTerms);
 
     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
     //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})
@@ -65,7 +65,7 @@ export class PAM implements EconomicsKernel {
   public async validateNextState (
     expectedContractState: ContractState,
   ) {
-    const { nextContractState: contractState } = await this.statelessContract.computeNextState(
+    const { nextContractState: contractState } = await this.pamEngine.computeNextState(
       this.contractTerms, 
       this.contractState,
       expectedContractState.lastEventTime
@@ -84,7 +84,7 @@ export class PAM implements EconomicsKernel {
    * @returns expected event schedule
    */
   public async computeExpectedSchedule () {
-    return this.statelessContract.computeSchedule(this.contractTerms);
+    return this.pamEngine.computeSchedule(this.contractTerms);
   }
 
   /**
@@ -93,7 +93,7 @@ export class PAM implements EconomicsKernel {
    * @returns pending event schedule
    */
   public async computePendingSchedule (timestamp: number) {
-    return this.statelessContract.computeScheduleSegment(
+    return this.pamEngine.computeScheduleSegment(
       this.contractTerms, 
       this.contractState.lastEventTime, 
       timestamp
@@ -106,7 +106,7 @@ export class PAM implements EconomicsKernel {
    * @returns evaluated event schedule
    */
   public async evaluateSchedule (schedule: any) {
-    return this.statelessContract.evaluateSchedule(this.contractTerms, this.contractState, schedule);
+    return this.pamEngine.evaluateSchedule(this.contractTerms, this.contractState, schedule);
   }
 
   /**
@@ -142,7 +142,7 @@ export class PAM implements EconomicsKernel {
    * @param timestamp current timestamp
    */
   public async computeAndCommitNextState (timestamp: number) {
-    const { nextContractState, evaluatedEvents } = await this.statelessContract.computeNextState(
+    const { nextContractState, evaluatedEvents } = await this.pamEngine.computeNextState(
       this.contractTerms, 
       this.contractState, 
       timestamp
@@ -168,11 +168,11 @@ export class PAM implements EconomicsKernel {
     contractTerms: ContractTerms
     
   ) {
-    const statelessContract = await PAMStatelessContract.instantiate(web3);
-    const contractState = await statelessContract.computeFirstState(contractTerms);
+    const pamEngine = await PAMEngine.instantiate(web3);
+    const contractState = await pamEngine.computeFirstState(contractTerms);
 
     return new PAM(
-      statelessContract,
+      pamEngine,
       contractTerms, 
       contractState
     );
@@ -191,10 +191,10 @@ export class PAM implements EconomicsKernel {
     contractTerms: ContractTerms,
     contractState: ContractState
   ) {
-    const statelessContract = await PAMStatelessContract.instantiate(web3);
+    const pamEngine = await PAMEngine.instantiate(web3);
 
     return new PAM(
-      statelessContract,
+      pamEngine,
       contractTerms, 
       contractState
     );

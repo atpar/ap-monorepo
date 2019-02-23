@@ -15,7 +15,7 @@ import "../AFPCore/AFPFloatMath.sol";
  * @dev all numbers except unix timestamp are represented of multiples of 10 ** 18
 	inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
-contract PAMStatelessContract is AFPCore {
+contract PAMEngine is AFPCore {
 
 	using AFPFloatMath for int;
 
