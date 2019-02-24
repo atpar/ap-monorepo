@@ -24,7 +24,7 @@ library AFPFloatMath {
 		int256 c = self * _b;
 		require(c / self == _b, "OVERFLOW_DETECTED");
 
-		// normalize (devide by MULTIPLICATOR)
+		// normalize (divide by MULTIPLICATOR)
 		int256 d = c / int256(MULTIPLICATOR);
 		require(d != 0, "CANNOT_REPRESENT_GRANULARITY");
 		
