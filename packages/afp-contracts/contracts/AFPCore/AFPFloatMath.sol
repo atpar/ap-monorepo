@@ -1,55 +1,52 @@
 pragma solidity ^0.5.2;
 
-/**
- * TODO: implement addition and subtraction, check for overflows and underflows
- */
-library AFPFloatMath {
 
-	uint256 constant precision = 18;
-	uint256 constant multiplicator = 10 ** precision;
+library AFPFloatMath {
 	
-	function getPrecision() 
-		public
-		pure
-		returns(uint256)
-	{
-		return precision;
-	}
-	
-	function getMultiplicator()
-		public
-		pure
-		returns(uint256)
-	{
-		return multiplicator;
-	}
+	int256 constant private INT256_MIN = -2 ** 255;
     
+  uint256 constant public PRECISION = 18;
+	uint256 constant public MULTIPLICATOR = 10 ** PRECISION;
+
+	/**
+	 * @dev The product of self and _b has to be less than INT256_MAX (~10 ** 76), 
+	 * as devision (normalization) is performed after multiplication
+	 * Upper boundary would be (10 ** 58) * (MULTIPLICATOR) == ~10 ** 76
+	 */
+  function floatMult(int256 self, int256 _b)
+		public
+		pure
+		returns(int256)
+	{
+		if (self == 0 || _b == 0) { return 0; }
+		
+		require(!(self == -1 && _b == INT256_MIN), "OVERFLOW_DETECTED");
+    int256 c = self * _b;
+    require(c / self == _b, "OVERFLOW_DETECTED");
+
+		// normalize (devide by MULTIPLICATOR)
+		int256 d = c / int256(MULTIPLICATOR);
+		require(d != 0, "CANNOT_REPRESENT_GRANULARITY");
+		
+		return d;
+	}
+	    
 	function floatDiv(int256 self, int256 _b) 
 		public
 		pure 
 		returns(int256)
 	{
-		require(_b > 0, "floatDiv: divided by 0");
+		require(_b != 0, "DIVIDED_BY_ZERO");
 
-		int256 a = self * int256(multiplicator);
+		// normalize (multiply by MULTIPLICATOR)
+		if (self == 0) { return 0; } 
+		int256 c = self * int256(MULTIPLICATOR);
+		require(c / self == int256(MULTIPLICATOR), "OVERFLOW_DETECTED");
 
-		if (self > 0) {
-			require(a >= self, "floatDiv: integer overflow");
-		} else {
-			require(a <= self, "floatDiv: integer underflow");
-		}
+    require(!(_b == -1 && self == INT256_MIN), "OVERFLOW_DETECTED");
+    int256 d = c / _b;
+    require(d != 0, "CANNOT_REPRESENT_GRANULARITY");
 
-		return(a / _b);
-	}
-
-	function floatMult(int256 self, int256 _b)
-		public
-		pure
-		returns(int256)
-	{
-		if (self == 0) { return 0; }
-
-		int256 c = (self * _b) / int256(multiplicator);
-		return c;
+    return d;
 	}
 }
