@@ -100,7 +100,7 @@ contract('PAMEngine', () => {
     await PAMEngineArtifact.new()
     PAMEngineDeployed = new web3.eth.Contract(PAMEngine.abi, PAMEngineArtifact.address);
     
-    precision = Number(await PAMEngineDeployed.methods.precision().call())
+    precision = Number(await PAMEngineDeployed.methods.PRECISION().call())
     
     testTerms = await getContractTerms(precision)
     refTestResults = await getTestResults()

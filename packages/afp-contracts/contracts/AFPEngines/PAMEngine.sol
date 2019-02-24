@@ -615,8 +615,8 @@ contract PAMEngine is AFPCore {
 		ContractState memory contractState;
 
 		contractState.contractStatus = ContractStatus.PF;
-		contractState.nominalScalingMultiplier = int256(1 * 10 ** precision);
-		contractState.interestScalingMultiplier = int256(1 * 10 ** precision);
+		contractState.nominalScalingMultiplier = int256(1 * 10 ** PRECISION);
+		contractState.interestScalingMultiplier = int256(1 * 10 ** PRECISION);
 		contractState.contractRoleSign = _contractTerms.contractRole;
 		contractState.lastEventTime = _contractTerms.statusDate;
 		contractState.nominalValue = _contractTerms.notionalPrincipal;

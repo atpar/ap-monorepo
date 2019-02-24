@@ -8,7 +8,7 @@ contract AFPDefinitions {
 	uint256 constant UINT256_MAX = ~uint256(0);
 	int256 constant DOUBLE_NULL = INT256_MIN;
 
-	uint256 constant public precision = 18;
+	uint256 constant public PRECISION = 18;
  
 	uint256 constant MAX_CYCLE_SCHEDULE_SIZE = 16;
 	uint256 constant MAX_EVENT_SCHEDULE_SIZE = 64; // 4x MAX_CYCLE_SCHEDULE_SIZE for IP, RR, FP and SC

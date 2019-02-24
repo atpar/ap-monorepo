@@ -20,7 +20,7 @@ contract('ContractRegistry', (accounts) => {
   before(async () => {
     PAMEngine.numberFormat = 'String'
     const PAMEngineInstance = await PAMEngine.new()
-    const precision = Number(await PAMEngineInstance.precision())
+    const precision = Number(await PAMEngineInstance.PRECISION())
     ;({ '10001': this.terms } = await getContractTerms(precision))
     ;({ '0': this.state } = await PAMEngineInstance.initializeContract(this.terms, {}))
 

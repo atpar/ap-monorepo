@@ -21,7 +21,7 @@ contract('PAMEngine', (accounts) => {
     await PAMEngineArtifact.new()
     PAMEngineDeployed = new web3.eth.Contract(PAMEngine.abi, PAMEngineArtifact.address);
 
-    let precision = Number(await PAMEngineDeployed.methods.precision().call())
+    let precision = Number(await PAMEngineDeployed.methods.PRECISION().call())
     let testTerms = await getContractTerms(precision)
     contractTerms = testTerms['10001']
   })
