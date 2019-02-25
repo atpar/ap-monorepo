@@ -29,4 +29,9 @@ contract IContractRegistry is AFPDefinitions {
     external 
     view
     returns (ContractState memory);
+
+  function getEventId (bytes32 _contractId)
+    external
+    view
+    returns (uint256);
 }

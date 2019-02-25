@@ -56,12 +56,15 @@ contract('PaymentKernel', (accounts) => {
       { value: this.value }
     )
     
-    const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
+    // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
+    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.contractId), eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary)
 
-    assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    // assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
 
@@ -77,12 +80,15 @@ contract('PaymentKernel', (accounts) => {
       { from: counterpartyObligor, value: this.value }
     )
     
-    const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
+    // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
+    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.contractId), eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary)
 
-    assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    // assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
 

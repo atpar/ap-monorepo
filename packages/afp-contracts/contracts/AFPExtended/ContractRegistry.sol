@@ -67,4 +67,12 @@ contract ContractRegistry is AFPDefinitions {
   {
     return contracts[_contractId].state;
   }
+
+  function getEventId (bytes32 _contractId)
+    external
+    view
+    returns (uint256)
+  {
+    return contracts[_contractId].eventId;
+  }
 }

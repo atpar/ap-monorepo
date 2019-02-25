@@ -6,24 +6,19 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract PaymentRegistry is Ownable {
   
-	event Paid(bytes32, bytes32);
+	event Paid(bytes32, uint256, uint256);
 
-	struct Payment {
-		bytes32 contractId;
+	struct Payoff {
 		int8 cashflowId;
-		uint256 eventId;
 		address token;
-		uint256 amount;
-		uint256 timestamp;
+		uint256 balance;
 	}
 
 	address public paymentRouter;
 
-	// paymentId => Payment    
-	mapping (bytes32 => Payment) paymentRegistry;
-	
-	// // payoutId (keccak256(abi.encoded(contract, eventId)) => payee => paymentId[]
-	// mapping (bytes32 => mapping (address => bytes32[])) public paymentIdRegistry;
+	// contractId => eventId => Payoff    
+	mapping (bytes32 => mapping (uint256 => Payoff)) payoffRegistry;
+
 
 	modifier onlyPaymentRouter {
 		require(msg.sender == paymentRouter, "UNAUTHORIZED_SENDER");
@@ -45,42 +40,36 @@ contract PaymentRegistry is Ownable {
 		payable
 		onlyPaymentRouter ()
 	{		
-		bytes32 paymentId = keccak256(abi.encodePacked(
-			_contractId,
-			_cashflowId,
-			_eventId,
-			block.timestamp
-		));
+		if (payoffRegistry[_contractId][_eventId].cashflowId == int8(0)) {
+			payoffRegistry[_contractId][_eventId] = Payoff(
+				_cashflowId,
+				_token,
+				_amount
+			);
+		} else {
+			payoffRegistry[_contractId][_eventId].balance += _amount;
+		}
 
-		require(paymentRegistry[paymentId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
-		
-		Payment memory payment = Payment(
-			_contractId,
-			_cashflowId,
-			_eventId,
-			_token,
-			_amount, 
-			block.timestamp
-		);
-	
-		paymentRegistry[paymentId] = payment;
-
-		emit Paid(paymentId, _contractId);
+		emit Paid(_contractId, _eventId, _amount);
 	}
-	
-	// function getPaymentIdsForEvent (address _contract, bytes32 _eventId)
-	// 	public
-	// 	view
-	// 	returns (bytes32[] memory)
-	// {
-	// 	return (paymentIdRegistry[_contract][_eventId]);
-	// }
-	
-	function getPayment (bytes32 _paymentId)
+
+	function getPayoffBalance (bytes32 _contractId, uint256 _eventId)
 		external
 		view
-		returns (Payment memory)
+		returns (uint256)
 	{
-		return (paymentRegistry[_paymentId]);
+		return payoffRegistry[_contractId][_eventId].balance;
+	}
+	
+	function getPayoff (bytes32 _contractId, uint256 _eventId)
+		external
+		view
+		returns (int8, address, uint256)
+	{
+		return (
+			payoffRegistry[_contractId][_eventId].cashflowId, 
+			payoffRegistry[_contractId][_eventId].token,
+			payoffRegistry[_contractId][_eventId].balance
+		);
 	}
 }
