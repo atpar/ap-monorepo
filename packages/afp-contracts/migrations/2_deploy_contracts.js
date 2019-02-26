@@ -6,6 +6,7 @@ const ContractRegistry = artifacts.require('ContractRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
+const PAMContractActor = artifacts.require('PAMContractActor')
 const ClaimsToken = artifacts.require('ClaimsToken')
 
 
@@ -25,4 +26,12 @@ module.exports = async (deployer, network, accounts) => {
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
 
   await deployer.deploy(ClaimsToken, accounts[0])
+  await deployer.deploy(
+    PAMContractActor,
+    OwnershipRegistry.address,
+    ContractRegistry.address,
+    PaymentRegistry.address,
+    PaymentRouter.address,
+    PAMEngine.address
+  )
 }
