@@ -27,7 +27,7 @@ contract('PAMEngine', (accounts) => {
   })
 
   it('should yield the first contract state and the event schedule', async () => {
-    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.getInitialState(contractTerms).call()
     contractState = response[0]
     eventSchedule = response[1]
     assert.isTrue(contractState != null && eventSchedule != null)
@@ -131,7 +131,7 @@ contract('PAMEngine', (accounts) => {
   })
 
   it('should yield the next next contract state and the contract events', async() => {
-    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.getInitialState(contractTerms).call()
     contractState = response[0]
     
     let timestamp = 1362096000 // 01.03.2013

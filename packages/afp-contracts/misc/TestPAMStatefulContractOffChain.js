@@ -101,7 +101,7 @@
 //   })
 
 //   it('should register the first contractUpdate with the contract terms and the initial contract state', async () => {
-//     ({ 0: contractState } = await PAMStatelessContractDeployed.methods.initializeContract(contractTerms).call())
+//     ({ 0: contractState } = await PAMStatelessContractDeployed.methods.getInitialState(contractTerms).call())
     
 //     const contractId = 'PAM' + Math.floor(new Date().getTime() / 1000)
 //     const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))  

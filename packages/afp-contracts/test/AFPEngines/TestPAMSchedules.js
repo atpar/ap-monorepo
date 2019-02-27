@@ -41,7 +41,7 @@ contract('PAMEngine', () => {
   let refTestResults
 
   const calculateContractEventSchedule = async (contractTerms) => {
-    let response = await PAMEngineDeployed.methods.initializeContract(contractTerms).call()
+    let response = await PAMEngineDeployed.methods.getInitialState(contractTerms).call()
     let contractState = response[0]
     let eventSchedule = response[1]
 

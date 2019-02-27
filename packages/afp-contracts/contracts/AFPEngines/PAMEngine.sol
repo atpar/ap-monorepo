@@ -628,11 +628,11 @@ contract PAMEngine is AFPCore {
 	}
 		
 	/**
-	 * @notice get the first contract state and schedule of events
+	 * @notice get the initial contract state and schedule of events
 	 * @param _contractTerms terms of the contract
 	 * @return initial contract state and the event schedule
 	 */
-	function initializeContract(PAMContractTerms memory _contractTerms) 
+	function getInitialState(PAMContractTerms memory _contractTerms) 
 		public 
 		pure 
 		returns (ContractState memory, uint256[2][MAX_EVENT_SCHEDULE_SIZE] memory)

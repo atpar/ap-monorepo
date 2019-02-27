@@ -32,7 +32,7 @@ contract('PAMContractActor', (accounts) => {
     this.PAMEngineInstance = await PAMEngine.new()
     const precision = Number(await this.PAMEngineInstance.PRECISION())
     ;({ '10001': this.terms } = await getContractTerms(precision))
-    ;({ '0': this.state } = await this.PAMEngineInstance.initializeContract(this.terms, {}))
+    ;({ '0': this.state } = await this.PAMEngineInstance.getInitialState(this.terms, {}))
     
     // deploy AFPExtended
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
@@ -53,7 +53,7 @@ contract('PAMContractActor', (accounts) => {
     await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
 
     // register Ownership for contractId
-    await this.OwnershipRegistryInstance.registerOwnership(
+    const tx1 = await this.OwnershipRegistryInstance.registerOwnership(
       web3.utils.toHex(contractId), 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -62,12 +62,15 @@ contract('PAMContractActor', (accounts) => {
     )
 
     // register Contract with contractId
-    await this.ContractRegistryInstance.registerContract(
+    const tx2 = await this.ContractRegistryInstance.registerContract(
       web3.utils.toHex(contractId),
       this.terms,
       this.state,
       this.PAMContractActorInstance.address
     )
+
+    // console.log(tx1.receipt.cumulativeGasUsed)
+    // console.log(tx2.receipt.cumulativeGasUsed)
   })
 
   it('should process next state', async () => {
@@ -80,7 +83,7 @@ contract('PAMContractActor', (accounts) => {
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
     const eventId = await this.ContractRegistryInstance.getEventId(web3.utils.toHex(contractId))
 
-    await this.PaymentRouterInstance.settlePayment(
+    const tx3 = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(contractId),
       cashflowId,
       eventId,
@@ -91,12 +94,15 @@ contract('PAMContractActor', (accounts) => {
 
     // const { 2: balance } = await this.PaymentRegistryInstance.getPayoff(web3.utils.toHex(contractId), eventId)
 
-    await this.PAMContractActorInstance.progress(web3.utils.toHex(contractId), currentTimestamp);
+    const tx4 = await this.PAMContractActorInstance.progress(web3.utils.toHex(contractId), currentTimestamp);
 
     const nextState = await this.ContractRegistryInstance.getState(web3.utils.toHex(contractId))
     const nextEventId = new BigNumber(await this.ContractRegistryInstance.getEventId(web3.utils.toHex(contractId)))
    
     assert.equal(nextState.lastEventTime, currentTimestamp)
     assert.isTrue(nextEventId.isEqualTo(Number(eventId.toString()) + 1))
+
+    // console.log(tx3.receipt.cumulativeGasUsed)
+    // console.log(tx4.receipt.cumulativeGasUsed)
   })
 })

@@ -181,7 +181,7 @@ contract PAMStatefulContractOnChain_Explicit_Encoded is Ownable, AFPDefinitions 
 	{
 		ContractState memory contractState;
 
-		(contractState, contractEventSchedule) = pamStatelessContract.initializeContract(_contractTerms);
+		(contractState, contractEventSchedule) = pamStatelessContract.getInitialState(_contractTerms);
 
 		setContractTerms(_contractTerms, _delinquencyPeriod, _gracePeriod);
 		setContractState(contractState);

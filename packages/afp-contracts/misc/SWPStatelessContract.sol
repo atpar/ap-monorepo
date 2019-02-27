@@ -93,7 +93,7 @@ contract SWPStatelessContract is AFPCore {
 	 * @param _contractTerms terms of the contract
 	 * @return initial contract state and the event schedule
 	 */
-	function initializeContract(SWPContractTerms _contractTerms) 
+	function getInitialState(SWPContractTerms _contractTerms) 
 		public 
 		pure 
 		returns (ContractState, uint256[2][MAX_EVENT_SCHEDULE_SIZE])

@@ -39,7 +39,7 @@
 //   })
 
 //   it('should yield the first contract state and the event schedule', async () => {
-//     await PAMStatefulContractDeployed.methods.initializeContract(contractTerms)
+//     await PAMStatefulContractDeployed.methods.getInitialState(contractTerms)
 //     .send({from: accounts[0], gas: 2000000})
 //     // .on('receipt', (receipt) => { console.log(receipt) })
 

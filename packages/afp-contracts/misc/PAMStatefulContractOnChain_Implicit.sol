@@ -149,7 +149,7 @@ contract PAMStatefulContractOnChain_Implicit is Ownable, AFPDefinitions {
 		public
 	{
 		setContractTerms(_contractTerms, _delinquencyPeriod, _gracePeriod);
-		(contractState, contractEventSchedule) = pamStatelessContract.initializeContract(_contractTerms);
+		(contractState, contractEventSchedule) = pamStatelessContract.getInitialState(_contractTerms);
 	}
 
 	function proceed(uint256 _timestamp) 

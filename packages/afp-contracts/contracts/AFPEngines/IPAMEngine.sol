@@ -5,7 +5,7 @@ import "../AFPCore/AFPDefinitions.sol";
 
 contract IPAMEngine is AFPDefinitions {
 
- 	function initializeContract(PAMContractTerms memory _contractTerms) 
+ 	function getInitialState(PAMContractTerms memory _contractTerms) 
 		public 
 		pure 
 		returns (ContractState memory, uint256[2][MAX_EVENT_SCHEDULE_SIZE] memory);

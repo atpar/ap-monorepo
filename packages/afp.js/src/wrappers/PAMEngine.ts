@@ -21,7 +21,7 @@ export class PAMEngine {
 
   public async computeFirstState (contractTerms: ContractTerms) {
     const { 0: contractState }: { 0: ContractState, 1: any } = 
-      await this.pamEngine.methods.initializeContract(contractTerms).call();
+      await this.pamEngine.methods.getInitialState(contractTerms).call();
     return contractState;
   }
 
