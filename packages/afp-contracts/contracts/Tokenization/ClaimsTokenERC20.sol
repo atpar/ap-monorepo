@@ -5,14 +5,13 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "./IClaimsToken.sol";
 
 
-contract ClaimsToken is IClaimsToken, ERC20 {
+contract ClaimsTokenERC20 is IClaimsToken, ERC20 {
 
   uint8 public constant DECIMALS = 18;
   uint256 public constant SUPPLY = 10000 * (10 ** uint256(DECIMALS));
 
   event Deposit(uint256 fundsReceived);
 
-  // token that ClaimsToken takes in custodianship 
   IERC20 public fundsToken;
 
   // cumulative funds received by this contract
@@ -23,22 +22,14 @@ contract ClaimsToken is IClaimsToken, ERC20 {
   mapping (address => uint256) public claimedFunds;
 
 
-  modifier onlyETHInstantiated () {
-    require(address(fundsToken) == address(0), "INSTANTIATED_WITH_ETH");
-    _;
-  }
-
-  modifier onlyERC20Instantiated () {
-    require(address(fundsToken) != address(0), "INSTANTIATED_WITH_ERC20");
-    _;
-  }
-
   modifier onlyFundsToken () {
     require(msg.sender == address(fundsToken), "UNAUTHORIZED_SENDER");
     _;
   }
 
   constructor (address _owner, IERC20 _fundsToken) public {
+    require(address(_fundsToken) != address(0));
+
     _mint(_owner, SUPPLY);
 
     fundsToken = _fundsToken;
@@ -100,7 +91,7 @@ contract ClaimsToken is IClaimsToken, ERC20 {
     private
   {
     receivedFunds += _value;
-    
+
     emit Deposit(_value);
   }
 
@@ -142,11 +133,7 @@ contract ClaimsToken is IClaimsToken, ERC20 {
     processedFunds[msg.sender] = receivedFunds;
     claimedFunds[msg.sender] = 0;
     
-    if (address(fundsToken) == address(0)) {
-      msg.sender.transfer(withdrawableFunds);
-    } else {
-      fundsToken.transfer(msg.sender, withdrawableFunds);
-    }
+    fundsToken.transfer(msg.sender, withdrawableFunds);
   }
 
   /**
@@ -166,24 +153,10 @@ contract ClaimsToken is IClaimsToken, ERC20 {
    */
   function tokenFallback (address _sender, uint256 _value, bytes memory _data) 
     public 
-    onlyERC20Instantiated()
     onlyFundsToken()
   {
     if (_value > 0) {
       _registerFunds(_value);
-    }
-  }
-
-  /**
-   * Calls _registerFunds(), whereby total received funds (cumulative) gets updated.
-   */
-  function () 
-    external 
-    payable 
-    onlyETHInstantiated()
-  {
-    if (msg.value > 0) {
-      _registerFunds(msg.value);
     }
   }
 }

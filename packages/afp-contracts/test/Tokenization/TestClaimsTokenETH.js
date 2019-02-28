@@ -1,7 +1,7 @@
-const ClaimsToken = artifacts.require('ClaimsToken')
+const ClaimsToken = artifacts.require('ClaimsTokenETH')
 
 
-contract('ClaimsToken', (accounts) => {
+contract('ClaimsTokenETH', (accounts) => {
 
   const ownerA = accounts[0]
   const ownerB = accounts[1]
@@ -13,7 +13,7 @@ contract('ClaimsToken', (accounts) => {
   const depositAmount = 100 * 10 ** 18
 
   beforeEach(async () => {
-    this.ClaimsTokenInstance = await ClaimsToken.new(ownerA, '0x0000000000000000000000000000000000000000')
+    this.ClaimsTokenInstance = await ClaimsToken.new(ownerA)
     this.totalSupply = await this.ClaimsTokenInstance.SUPPLY()
 
     await this.ClaimsTokenInstance.transfer(ownerB, this.totalSupply.divn(4))
@@ -27,14 +27,14 @@ contract('ClaimsToken', (accounts) => {
     })
   })
 
-  it('ETH: should increment <totalReceivedFunds> after deposit', async () => {
+  it('should increment <totalReceivedFunds> after deposit', async () => {
     const claimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
     const totalReceivedFunds = await this.ClaimsTokenInstance.totalReceivedFunds()
 
     assert.equal(claimsTokenBalance, totalReceivedFunds)
   })
 
-  it('ETH: should withdraw <newFundsReceived> amount for user', async () => {
+  it('should withdraw <newFundsReceived> amount for user', async () => {
     const totalReceivedFunds = await this.ClaimsTokenInstance.totalReceivedFunds()
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
@@ -45,7 +45,7 @@ contract('ClaimsToken', (accounts) => {
     assert.equal(preClaimsTokenBalance - (totalReceivedFunds / 4), postClaimsTokenBalance)    
   })
 
-  it('ETH: should withdraw <claimedToken> amount for new owner after token transfer', async () => {
+  it('should withdraw <claimedToken> amount for new owner after token transfer', async () => {
     const totalReceivedFunds = await this.ClaimsTokenInstance.totalReceivedFunds()
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
 
@@ -63,7 +63,7 @@ contract('ClaimsToken', (accounts) => {
     assert.equal(preClaimsTokenBalance - (totalReceivedFunds / 4), postClaimsTokenBalance)    
   })
 
-  it('ETH: should withdraw <claimedFunds> amount for previous owner after token transfer', async () => {
+  it('should withdraw <claimedFunds> amount for previous owner after token transfer', async () => {
     const totalReceivedFunds = await this.ClaimsTokenInstance.totalReceivedFunds()
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
 
@@ -77,7 +77,7 @@ contract('ClaimsToken', (accounts) => {
     assert.equal(preClaimsTokenBalance - (totalReceivedFunds / 4), postClaimsTokenBalance)    
   })
 
-  it('ETH: should withdraw <claimedFunds> + <newFundsReceived> amount for user after token transfer and second deposit', async () => {
+  it('should withdraw <claimedFunds> + <newFundsReceived> amount for user after token transfer and second deposit', async () => {
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
     const preTotalReceivedFunds = await this.ClaimsTokenInstance.totalReceivedFunds()

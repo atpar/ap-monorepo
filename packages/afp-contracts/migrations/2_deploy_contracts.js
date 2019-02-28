@@ -7,7 +7,8 @@ const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
 const PAMContractActor = artifacts.require('PAMContractActor')
-const ClaimsToken = artifacts.require('ClaimsToken')
+const ClaimsToken = artifacts.require('ClaimsTokenETH')
+const SampleToken = artifacts.require('SampleToken')
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -34,4 +35,6 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRouter.address,
     PAMEngine.address
   )
+
+  await deployer.deploy(SampleToken)
 }

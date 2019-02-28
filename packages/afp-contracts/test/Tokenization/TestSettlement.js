@@ -2,7 +2,7 @@ const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const ClaimsToken = artifacts.require('ClaimsToken')
+const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
 
 
 contract('Settlement', (accounts) => {
@@ -36,25 +36,25 @@ contract('Settlement', (accounts) => {
       counterpartyBeneficiary
     )
 
-    // deploy ClaimsToken
-    this.ClaimsTokenInstance = await ClaimsToken.new(ownerA)
-    this.totalSupply = await this.ClaimsTokenInstance.SUPPLY()
+    // deploy ClaimsTokenETH
+    this.ClaimsTokenETHInstance = await ClaimsTokenETH.new(ownerA)
+    this.totalSupply = await this.ClaimsTokenETHInstance.SUPPLY()
 
-    await this.ClaimsTokenInstance.transfer(ownerB, this.totalSupply.divn(4), { from: ownerA })
-    await this.ClaimsTokenInstance.transfer(ownerC, this.totalSupply.divn(4), { from: ownerA })
-    await this.ClaimsTokenInstance.transfer(ownerD, this.totalSupply.divn(4), { from: ownerA })
+    await this.ClaimsTokenETHInstance.transfer(ownerB, this.totalSupply.divn(4), { from: ownerA })
+    await this.ClaimsTokenETHInstance.transfer(ownerC, this.totalSupply.divn(4), { from: ownerA })
+    await this.ClaimsTokenETHInstance.transfer(ownerD, this.totalSupply.divn(4), { from: ownerA })
 
-    // set ClaimsToken as beneficiary for CashflowId
+    // set ClaimsTokenETH as beneficiary for CashflowId
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
       web3.utils.toHex(contractId), 
       cashflowId, 
-      this.ClaimsTokenInstance.address,
+      this.ClaimsTokenETHInstance.address,
       { from: recordCreatorBeneficiary }
     )
   })
 
-  it('should increment cumulativeFundsReceived after settling payoff in ether', async () => {
-    const preBalanceOfClaimsToken = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
+  it('should increment <totalReceivedFunds> after settling payoff in ether', async () => {
+    const preBalanceOfClaimsTokenETH = await web3.eth.getBalance(this.ClaimsTokenETHInstance.address)
 
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(contractId), 
@@ -65,10 +65,10 @@ contract('Settlement', (accounts) => {
       { from: counterpartyObligor, value: payoffAmount }
     )
 
-    const postBalanceOfClaimsToken = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
-    const cumulativeFundsReceived = (await this.ClaimsTokenInstance.cumulativeFundsReceived()).toString()
+    const postBalanceOfClaimsTokenETH = await web3.eth.getBalance(this.ClaimsTokenETHInstance.address)
+    const totalReceivedFunds = (await this.ClaimsTokenETHInstance.totalReceivedFunds()).toString()
 
-    assert.equal(postBalanceOfClaimsToken, cumulativeFundsReceived)
-    assert.equal(Number(preBalanceOfClaimsToken) + payoffAmount, postBalanceOfClaimsToken)
+    assert.equal(postBalanceOfClaimsTokenETH, totalReceivedFunds)
+    assert.equal(Number(preBalanceOfClaimsTokenETH) + payoffAmount, postBalanceOfClaimsTokenETH)
   })
 })
