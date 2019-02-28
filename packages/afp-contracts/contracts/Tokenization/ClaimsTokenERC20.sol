@@ -1,17 +1,14 @@
 pragma solidity ^0.5.2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 
 import "./IClaimsToken.sol";
 
 
-contract ClaimsTokenERC20 is IClaimsToken, ERC20 {
+contract ClaimsTokenERC20 is IClaimsToken, ERC20, ERC20Detailed {
 
-  uint8 public constant DECIMALS = 18;
-  uint256 public constant SUPPLY = 10000 * (10 ** uint256(DECIMALS));
-
-  event Deposit(uint256 fundsReceived);
-
+  // token that ClaimsToken takes in custodianship 
   IERC20 public fundsToken;
 
   // cumulative funds received by this contract
@@ -21,16 +18,21 @@ contract ClaimsTokenERC20 is IClaimsToken, ERC20 {
   // claimed but not yet withdrawn funds for a user
   mapping (address => uint256) public claimedFunds;
 
+  event Deposit(uint256 fundsDeposited);
+
 
   modifier onlyFundsToken () {
     require(msg.sender == address(fundsToken), "UNAUTHORIZED_SENDER");
     _;
   }
 
-  constructor (address _owner, IERC20 _fundsToken) public {
+  constructor (address _owner, IERC20 _fundsToken) 
+    public 
+    ERC20Detailed("ClaimsToken", "CST", 18)
+  {
     require(address(_fundsToken) != address(0));
 
-    _mint(_owner, SUPPLY);
+    _mint(_owner, 10000 * (10 ** uint256(18)));
 
     fundsToken = _fundsToken;
     receivedFunds = 0;
@@ -151,7 +153,7 @@ contract ClaimsTokenERC20 is IClaimsToken, ERC20 {
    * For ERC223
    * Calls _registerFunds(), whereby total received funds (cumulative) gets updated.
    */
-  function tokenFallback (address _sender, uint256 _value, bytes memory _data) 
+  function tokenFallback (address, uint256 _value, bytes memory) 
     public 
     onlyFundsToken()
   {

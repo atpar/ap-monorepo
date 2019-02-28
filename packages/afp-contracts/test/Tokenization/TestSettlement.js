@@ -38,7 +38,7 @@ contract('Settlement', (accounts) => {
 
     // deploy ClaimsTokenETH
     this.ClaimsTokenETHInstance = await ClaimsTokenETH.new(ownerA)
-    this.totalSupply = await this.ClaimsTokenETHInstance.SUPPLY()
+    this.totalSupply = await this.ClaimsTokenETHInstance.totalSupply()
 
     await this.ClaimsTokenETHInstance.transfer(ownerB, this.totalSupply.divn(4), { from: ownerA })
     await this.ClaimsTokenETHInstance.transfer(ownerC, this.totalSupply.divn(4), { from: ownerA })

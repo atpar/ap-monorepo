@@ -14,7 +14,7 @@ contract('ClaimsToken', (accounts) => {
 
   beforeEach(async () => {
     this.ClaimsTokenInstance = await ClaimsToken.new(ownerA, '0x0000000000000000000000000000000000000000')
-    this.totalSupply = await this.ClaimsTokenInstance.SUPPLY()
+    this.totalSupply = await this.ClaimsTokenInstance.totalSupply()
 
     await this.ClaimsTokenInstance.transfer(ownerB, this.totalSupply.divn(4))
     await this.ClaimsTokenInstance.transfer(ownerC, this.totalSupply.divn(4))

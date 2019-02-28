@@ -8,7 +8,7 @@ const PaymentRouter = artifacts.require('PaymentRouter')
 
 const PAMContractActor = artifacts.require('PAMContractActor')
 const ClaimsToken = artifacts.require('ClaimsTokenETH')
-const SampleToken = artifacts.require('SampleToken')
+const ERC223SampleToken = artifacts.require('ERC223SampleToken')
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -36,5 +36,5 @@ module.exports = async (deployer, network, accounts) => {
     PAMEngine.address
   )
 
-  await deployer.deploy(SampleToken)
+  await deployer.deploy(ERC223SampleToken)
 }
