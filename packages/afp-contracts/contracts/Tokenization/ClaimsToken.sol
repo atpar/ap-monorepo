@@ -9,21 +9,21 @@ contract ClaimsToken is ERC20, ERC20Detailed {
   uint8 public constant DECIMALS = 18;
   uint256 public constant SUPPLY = 10000 * (10 ** uint256(DECIMALS));
 
-  // cummulative funds received by this contract
-  uint256 public cummulativeFundsReceived;
-  // cummulative funds received which were already processed for distribution by user
-  mapping (address => uint256) public processedCummulativeFundsReceivedFor;
+  // cumulative funds received by this contract
+  uint256 public cumulativeFundsReceived;
+  // cumulative funds received which were already processed for distribution by user
+  mapping (address => uint256) public processedCumulativeFundsReceivedFor;
   // claimed but not yet withdrawn payout for a user
   mapping (address => uint256) public notWithdrawnPayout;
 
 
   constructor (address _owner) 
     public 
-    ERC20Detailed("OwnershipToken", "OST", DECIMALS) 
+    ERC20Detailed("ClaimsToken", "CST", DECIMALS) 
   {
     _mint(_owner, SUPPLY);
 
-    cummulativeFundsReceived = 0;
+    cumulativeFundsReceived = 0;
   }
 
   /** 
@@ -59,13 +59,13 @@ contract ClaimsToken is ERC20, ERC20Detailed {
   }
 
   /**
-   * Increment cummulativeFundsReceived by msg.value.
+   * Increment cumulativeFundsReceived by msg.value.
    */
   function depositFunds() 
     public
     payable
   {
-    cummulativeFundsReceived += msg.value;
+    cumulativeFundsReceived += msg.value;
   }
 
   /**
@@ -76,7 +76,7 @@ contract ClaimsToken is ERC20, ERC20Detailed {
     view
     returns (uint256) 
   {
-    uint256 newFundsReceived = cummulativeFundsReceived - processedCummulativeFundsReceivedFor[_forAddress];
+    uint256 newFundsReceived = cumulativeFundsReceived - processedCumulativeFundsReceivedFor[_forAddress];
     return balanceOf(_forAddress) * newFundsReceived / totalSupply();
   }
 
@@ -86,7 +86,7 @@ contract ClaimsToken is ERC20, ERC20Detailed {
   function withdraw() external payable {
     uint256 totalPayout = calcPayout(msg.sender) + notWithdrawnPayout[msg.sender];
 
-    processedCummulativeFundsReceivedFor[msg.sender] = cummulativeFundsReceived;
+    processedCumulativeFundsReceivedFor[msg.sender] = cumulativeFundsReceived;
     notWithdrawnPayout[msg.sender] = 0;
     
     msg.sender.transfer(totalPayout);
@@ -98,12 +98,12 @@ contract ClaimsToken is ERC20, ERC20Detailed {
   function claimPayoutFor(address _forAddress) public {
     uint256 payout = calcPayout(_forAddress);
 
-    processedCummulativeFundsReceivedFor[_forAddress] = cummulativeFundsReceived;
+    processedCumulativeFundsReceivedFor[_forAddress] = cumulativeFundsReceived;
     notWithdrawnPayout[_forAddress] += payout;
   }
 
   /**
-   * Calls depositFunds(), whereby cummulativeFundsReceived gets updated.
+   * Calls depositFunds(), whereby cumulativeFundsReceived gets updated.
    */
   function () 
     external 

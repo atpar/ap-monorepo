@@ -24,26 +24,26 @@ contract('ClaimsToken', (accounts) => {
     await this.ClaimsTokenInstance.depositFunds({ from: payer, value: depositAmount })
   })
 
-  it('should increment cummulativeFundsReceived after deposit', async () => {
+  it('should increment cumulativeFundsReceived after deposit', async () => {
     const claimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
-    const cummulativeFundsReceived = await this.ClaimsTokenInstance.cummulativeFundsReceived()
+    const cumulativeFundsReceived = await this.ClaimsTokenInstance.cumulativeFundsReceived()
 
-    assert.equal(claimsTokenBalance, cummulativeFundsReceived)
+    assert.equal(claimsTokenBalance, cumulativeFundsReceived)
   })
 
   it('should withdraw <newFundsReceived> amount for user', async () => {
-    const cummulativeFundsReceived = await this.ClaimsTokenInstance.cummulativeFundsReceived()
+    const cumulativeFundsReceived = await this.ClaimsTokenInstance.cumulativeFundsReceived()
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
     await this.ClaimsTokenInstance.withdraw({ from: ownerD })
 
     const postClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
-    assert.equal(preClaimsTokenBalance - (cummulativeFundsReceived / 4), postClaimsTokenBalance)    
+    assert.equal(preClaimsTokenBalance - (cumulativeFundsReceived / 4), postClaimsTokenBalance)    
   })
 
   it('should withdraw <notWithdrawnPayout> amount for new owner after token transfer', async () => {
-    const cummulativeFundsReceived = await this.ClaimsTokenInstance.cummulativeFundsReceived()
+    const cumulativeFundsReceived = await this.ClaimsTokenInstance.cumulativeFundsReceived()
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
 
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
@@ -51,17 +51,17 @@ contract('ClaimsToken', (accounts) => {
     await this.ClaimsTokenInstance.transfer(ownerD, tokenBalanceOfOwnerA.divn(2))
 
     // console.log((await this.ClaimsTokenInstance.notWithdrawnPayout(ownerD)).toString())
-    // console.log((await this.ClaimsTokenInstance.processedCummulativeFundsReceivedFor(ownerD)).toString())
+    // console.log((await this.ClaimsTokenInstance.processedCumulativeFundsReceivedFor(ownerD)).toString())
 
     await this.ClaimsTokenInstance.withdraw({ from: ownerD })
 
     const postClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
-    assert.equal(preClaimsTokenBalance - (cummulativeFundsReceived / 4), postClaimsTokenBalance)    
+    assert.equal(preClaimsTokenBalance - (cumulativeFundsReceived / 4), postClaimsTokenBalance)    
   })
 
   it('should withdraw <notWithdrawnPayout> amount for previous owner after token transfer', async () => {
-    const cummulativeFundsReceived = await this.ClaimsTokenInstance.cummulativeFundsReceived()
+    const cumulativeFundsReceived = await this.ClaimsTokenInstance.cumulativeFundsReceived()
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
 
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
@@ -71,11 +71,11 @@ contract('ClaimsToken', (accounts) => {
 
     const postClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
-    assert.equal(preClaimsTokenBalance - (cummulativeFundsReceived / 4), postClaimsTokenBalance)    
+    assert.equal(preClaimsTokenBalance - (cumulativeFundsReceived / 4), postClaimsTokenBalance)    
   })
 
   it('should withdraw <notWithdrawnPayout> + <newFundsReceived> amount for user after token transfer and second deposit', async () => {
-    const cummulativeFundsReceived = await this.ClaimsTokenInstance.cummulativeFundsReceived()
+    const cumulativeFundsReceived = await this.ClaimsTokenInstance.cumulativeFundsReceived()
     const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
 
     const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
@@ -86,6 +86,6 @@ contract('ClaimsToken', (accounts) => {
 
     const postClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
-    assert.equal(preClaimsTokenBalance - (cummulativeFundsReceived / 2) + (cummulativeFundsReceived / 4), postClaimsTokenBalance)    
+    assert.equal(preClaimsTokenBalance - (cumulativeFundsReceived / 2) + (cumulativeFundsReceived / 4), postClaimsTokenBalance)    
   })
 })

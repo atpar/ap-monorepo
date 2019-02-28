@@ -53,7 +53,7 @@ contract('Settlement', (accounts) => {
     )
   })
 
-  it('should increment cummulativeFundsReceived after settling payoff in ether', async () => {
+  it('should increment cumulativeFundsReceived after settling payoff in ether', async () => {
     const preBalanceOfClaimsToken = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
 
     await this.PaymentRouterInstance.settlePayment(
@@ -66,9 +66,9 @@ contract('Settlement', (accounts) => {
     )
 
     const postBalanceOfClaimsToken = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
-    const cummulativeFundsReceived = (await this.ClaimsTokenInstance.cummulativeFundsReceived()).toString()
+    const cumulativeFundsReceived = (await this.ClaimsTokenInstance.cumulativeFundsReceived()).toString()
 
-    assert.equal(postBalanceOfClaimsToken, cummulativeFundsReceived)
+    assert.equal(postBalanceOfClaimsToken, cumulativeFundsReceived)
     assert.equal(Number(preBalanceOfClaimsToken) + payoffAmount, postBalanceOfClaimsToken)
   })
 })
