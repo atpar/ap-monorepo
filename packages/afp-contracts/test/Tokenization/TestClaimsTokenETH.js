@@ -1,3 +1,5 @@
+const BigNumber = require('bignumber.js')
+
 const ClaimsToken = artifacts.require('ClaimsTokenETHExtension')
 
 
@@ -97,6 +99,38 @@ contract('ClaimsTokenETH', (accounts) => {
     const claimedFunds = preTotalReceivedFunds / 4
     const newReceivedFundsFraction = depositAmount / 4 + (depositAmount / 4) / 2
   
-    assert.equal((Number(preClaimsTokenBalance) + depositAmount) - (claimedFunds + newReceivedFundsFraction), postClaimsTokenBalance)    
+    assert.equal((Number(preClaimsTokenBalance) + depositAmount) - (claimedFunds + newReceivedFundsFraction), postClaimsTokenBalance)
+  })
+
+  it('should withdraw <claimedFunds> + <newFundsReceived> for user after token transfers from multiple parties and second deposit', async () => {
+    const preClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
+
+    const tokenBalanceOfOwnerA = await this.ClaimsTokenInstance.balanceOf(ownerA)
+    const tokenBalanceOfOwnerB = await this.ClaimsTokenInstance.balanceOf(ownerB)
+    const tokenBalanceOfOwnerC = await this.ClaimsTokenInstance.balanceOf(ownerC)
+    const tokenBalanceOfOwnerD = await this.ClaimsTokenInstance.balanceOf(ownerD)
+
+    await this.ClaimsTokenInstance.transfer(ownerA, tokenBalanceOfOwnerB.divn(2), { from: ownerB }) // 12.5
+    await this.ClaimsTokenInstance.transfer(ownerA, tokenBalanceOfOwnerC.divn(3), { from: ownerC }) // 8.33333333333333
+    
+    const expectedPreTokenBalanceOfOwnerA = tokenBalanceOfOwnerA.add(tokenBalanceOfOwnerB.divn(2).add(tokenBalanceOfOwnerC.divn(3)))
+
+    await web3.eth.sendTransaction({
+      from: payer,
+      to: this.ClaimsTokenInstance.address,
+      value: depositAmount
+    })
+
+    await this.ClaimsTokenInstance.transfer(ownerA, tokenBalanceOfOwnerD.divn(4), { from: ownerD }) // 6.25
+
+    await this.ClaimsTokenInstance.withdrawFunds({ from: ownerA })
+
+    const expectedFractionOfTotalSupplyOfOwnerA = new BigNumber(expectedPreTokenBalanceOfOwnerA).div(this.totalSupply)
+    const expectedAmountWithdrawnByOwnerA = new BigNumber(depositAmount).dividedBy(4).plus(expectedFractionOfTotalSupplyOfOwnerA.multipliedBy(depositAmount))
+    const expectedPostClaimsTokenBalance = new BigNumber(depositAmount).plus(preClaimsTokenBalance).minus(expectedAmountWithdrawnByOwnerA)
+
+    const postClaimsTokenBalance = await web3.eth.getBalance(this.ClaimsTokenInstance.address)
+    
+    assert.equal(expectedPostClaimsTokenBalance.toString(), postClaimsTokenBalance)
   })
 })

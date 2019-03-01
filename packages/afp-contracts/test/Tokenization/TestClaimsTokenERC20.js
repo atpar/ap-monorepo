@@ -1,3 +1,5 @@
+const BigNumber = require('bignumber.js')
+
 const ERC223SampleToken = artifacts.require('ERC223SampleToken')
 const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20Extension')
 
@@ -95,5 +97,35 @@ contract('ClaimsTokenERC20', (accounts) => {
     const newReceivedFundsFraction = depositAmount / 4 + (depositAmount / 4) / 2
   
     assert.equal((Number(preClaimsTokenERC20Balance) + depositAmount) - (claimedFunds + newReceivedFundsFraction), postClaimsTokenERC20Balance)    
+  })
+
+  it('should withdraw <claimedFunds> + <newFundsReceived> for user after token transfers from multiple parties and second deposit', async () => {
+    const preClaimsTokenERC20Balance = await this.ERC223SampleTokenInstance.balanceOf(this.ClaimsTokenERC20Instance.address)
+    
+    const tokenBalanceOfOwnerA = await this.ClaimsTokenERC20Instance.balanceOf(ownerA)
+    const tokenBalanceOfOwnerB = await this.ClaimsTokenERC20Instance.balanceOf(ownerB)
+    const tokenBalanceOfOwnerC = await this.ClaimsTokenERC20Instance.balanceOf(ownerC)
+    const tokenBalanceOfOwnerD = await this.ClaimsTokenERC20Instance.balanceOf(ownerD)
+
+    await this.ClaimsTokenERC20Instance.transfer(ownerA, tokenBalanceOfOwnerB.divn(2), { from: ownerB }) // 12.5
+    await this.ClaimsTokenERC20Instance.transfer(ownerA, tokenBalanceOfOwnerC.divn(3), { from: ownerC }) // 8.33333333333333
+    
+    const expectedPreTokenBalanceOfOwnerA = tokenBalanceOfOwnerA.add(tokenBalanceOfOwnerB.divn(2).add(tokenBalanceOfOwnerC.divn(3)))
+
+    // second deposit
+    await this.ERC223SampleTokenInstance.transfer(this.ClaimsTokenERC20Instance.address, web3.utils.toHex(depositAmount))
+
+
+    await this.ClaimsTokenERC20Instance.transfer(ownerA, tokenBalanceOfOwnerD.divn(4), { from: ownerD }) // 6.25
+
+    await this.ClaimsTokenERC20Instance.withdrawFunds({ from: ownerA })
+
+    const expectedFractionOfTotalSupplyOfOwnerA = new BigNumber(expectedPreTokenBalanceOfOwnerA).div(this.totalSupply)
+    const expectedAmountWithdrawnByOwnerA = new BigNumber(depositAmount).dividedBy(4).plus(expectedFractionOfTotalSupplyOfOwnerA.multipliedBy(depositAmount))
+    const expectedPostClaimsERC20Balance = new BigNumber(depositAmount).plus(preClaimsTokenERC20Balance).minus(expectedAmountWithdrawnByOwnerA)
+
+    const postClaimsTokenERC20Balance = await this.ERC223SampleTokenInstance.balanceOf(this.ClaimsTokenERC20Instance.address)
+
+    assert.equal(expectedPostClaimsERC20Balance.toString(), postClaimsTokenERC20Balance)
   })
 })

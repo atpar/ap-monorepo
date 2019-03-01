@@ -30,6 +30,8 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
     external 
     payable 
   {
+    require(msg.value == 0, "");
+
     uint256 withdrawableFunds = _withdrawFunds();
     
     fundsToken.transfer(msg.sender, withdrawableFunds);
