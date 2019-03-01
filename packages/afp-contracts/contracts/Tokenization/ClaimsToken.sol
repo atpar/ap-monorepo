@@ -132,7 +132,7 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
    * @dev Withdraws available funds for user and returns the withdrawable amount.
    * @return A uint256 representing the withdrawable funds
    */
-  function _withdrawFunds() 
+  function _prepareWithdraw() 
     internal 
     returns (uint256)
   {

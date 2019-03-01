@@ -41,7 +41,7 @@ contract ClaimsTokenMultiExtension is IClaimsToken, ClaimsToken {
     external 
     payable 
   {
-    uint256 withdrawableFunds = _withdrawFunds();
+    uint256 withdrawableFunds = _prepareWithdraw();
 
     if (address(fundsToken) == address(0)) {
       msg.sender.transfer(withdrawableFunds);
