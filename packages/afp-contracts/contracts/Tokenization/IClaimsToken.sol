@@ -14,10 +14,10 @@ interface IClaimsToken {
 
 	/**
 	 * @dev Returns the amount of funds a given address is able to withdraw currently.
-	 * @param _address Address of ClaimsToken holder
+	 * @param _forAddress Address of ClaimsToken holder
 	 * @return A uint256 representing the available funds for a given account
 	 */
-	function availableFunds(address _address) external view returns (uint256);
+	function availableFunds(address _forAddress) external view returns (uint256);
 
 	/**
 	 * @dev Get cumulative funds received by ClaimsToken.

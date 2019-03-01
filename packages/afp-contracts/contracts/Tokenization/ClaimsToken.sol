@@ -80,19 +80,19 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 
 	/**
 	 * @dev Returns the amount of funds a given address is able to withdraw currently.
-	 * @param _address Address of ClaimsToken holder
+	 * @param _forAddress Address of ClaimsToken holder
 	 * @return A uint256 representing the available funds for a given account
 	 */
-	function availableFunds(address _address)
+	function availableFunds(address _forAddress)
 		public
 		view
 		returns (uint256) 
 	{
-		return _calcUnprocessedFunds(_address).add(claimedFunds[_address]);
+		return _calcUnprocessedFunds(_forAddress).add(claimedFunds[_forAddress]);
 	}
 
 	/**
-	 * @dev Increment cumulative received funds by new received funds. 
+	 * @dev Increments cumulative received funds by new received funds. 
 	 * Called when ClaimsToken receives funds.
 	 * @param _value Amount of tokens / Ether received
 	 */
@@ -106,30 +106,32 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 
 	/**
 	 * @dev Returns payout for a user which can be withdrawn or claimed.
-	 * @param _address Address of ClaimsToken holder
+	 * @param _forAddress Address of ClaimsToken holder
 	 */
-	function _calcUnprocessedFunds(address _address) 
+	function _calcUnprocessedFunds(address _forAddress) 
 		internal 
 		view
 		returns (uint256) 
 	{
-		uint256 newReceivedFunds = receivedFunds.sub(processedFunds[_address]);
-		return balanceOf(_address).mul(newReceivedFunds).div(totalSupply());
+		uint256 newReceivedFunds = receivedFunds.sub(processedFunds[_forAddress]);
+		return balanceOf(_forAddress).mul(newReceivedFunds).div(totalSupply());
 	}
 
 	/**
 	 * @dev Claims funds for a user.
-	 * @param _address Address of ClaimsToken holder
+	 * @param _forAddress Address of ClaimsToken holder
 	 */
-	function _claimFunds(address _address) internal {
-		uint256 unprocessedFunds = _calcUnprocessedFunds(_address);
+	function _claimFunds(address _forAddress) internal {
+		uint256 unprocessedFunds = _calcUnprocessedFunds(_forAddress);
 
-		processedFunds[_address] = receivedFunds;
-		claimedFunds[_address] = claimedFunds[_address].add(unprocessedFunds);
+		processedFunds[_forAddress] = receivedFunds;
+		claimedFunds[_forAddress] = claimedFunds[_forAddress].add(unprocessedFunds);
 	}
 
-		/**
-	 * @dev Withdraws available funds for user and returns the withdrawable amount.
+	/**
+	 * @dev Sets claimed but not yet withdrawn funds to 0,
+	 * marks total received funds as processed and 
+	 * returns the withdrawable amount for a user.
 	 * @return A uint256 representing the withdrawable funds
 	 */
 	function _prepareWithdraw() 
