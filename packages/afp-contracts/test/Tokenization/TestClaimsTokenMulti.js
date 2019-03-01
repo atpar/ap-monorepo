@@ -1,4 +1,4 @@
-const ClaimsToken = artifacts.require('ClaimsToken')
+const ClaimsToken = artifacts.require('ClaimsTokenMultiExtension')
 
 
 contract('ClaimsToken', (accounts) => {

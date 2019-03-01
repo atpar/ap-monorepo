@@ -7,15 +7,25 @@ const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
 const PAMContractActor = artifacts.require('PAMContractActor')
-const ClaimsToken = artifacts.require('ClaimsTokenETH')
-const ERC223SampleToken = artifacts.require('ERC223SampleToken')
+
+// const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
+// const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20')
+// const ClaimsTokenMulti = artifacts.require('ClaimsTokenMulti')
+// const ClaimsTokenETHExtension = artifacts.require('ClaimsTokenETHExtension')
+// const ClaimsTokenERC20Extension = artifacts.require('ClaimsTokenERC20Extension')
+// const ClaimsTokenMultiExtension = artifacts.require('ClaimsTokenMultiExtension')
+
+// const ERC223SampleToken = artifacts.require('ERC223SampleToken')
 
 
 module.exports = async (deployer, network, accounts) => {
+
+  // AFPCore
   await deployer.deploy(AFPFloatMath)
   await deployer.link(AFPFloatMath, PAMEngine)
   await deployer.deploy(PAMEngine)
 
+  // AFPExtended
   await deployer.deploy(OwnershipRegistry)  
   await deployer.deploy(ContractRegistry)
   const PaymentRegistryInstance = await deployer.deploy(PaymentRegistry)
@@ -26,7 +36,7 @@ module.exports = async (deployer, network, accounts) => {
   )
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
 
-  await deployer.deploy(ClaimsToken, accounts[0])
+  // Contract Actor
   await deployer.deploy(
     PAMContractActor,
     OwnershipRegistry.address,
@@ -36,5 +46,12 @@ module.exports = async (deployer, network, accounts) => {
     PAMEngine.address
   )
 
-  await deployer.deploy(ERC223SampleToken)
+  // Tokenization / Claims Token
+  // await deployer.deploy(ERC223SampleToken)
+  // await deployer.deploy(ClaimsTokenETH, accounts[0])
+  // await deployer.deploy(ClaimsTokenERC20, accounts[0], ERC223SampleToken.address)
+  // await deployer.deploy(ClaimsTokenMulti, accounts[0], ERC223SampleToken.address)
+  // await deployer.deploy(ClaimsTokenETHExtension, accounts[0])
+  // await deployer.deploy(ClaimsTokenERC20Extension, accounts[0], ERC223SampleToken.address)
+  // await deployer.deploy(ClaimsTokenMultiExtension, accounts[0], ERC223SampleToken.address)
 }

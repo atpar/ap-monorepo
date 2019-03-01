@@ -6,7 +6,10 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 import "./IClaimsToken.sol";
 
 
-contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
+contract ClaimsTokenERC20 is IClaimsToken, ERC20, ERC20Detailed {
+
+  // token that ClaimsToken takes in custodianship 
+  IERC20 public fundsToken;
 
   // cumulative funds received by this contract
   uint256 public receivedFunds;
@@ -18,52 +21,62 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   event Deposit(uint256 fundsDeposited);
 
 
-  constructor (address _owner) 
+  modifier onlyFundsToken () {
+    require(msg.sender == address(fundsToken), "UNAUTHORIZED_SENDER");
+    _;
+  }
+
+  constructor (address _owner, IERC20 _fundsToken) 
     public 
     ERC20Detailed("ClaimsToken", "CST", 18)
   {
+    require(address(_fundsToken) != address(0));
+
     _mint(_owner, 10000 * (10 ** uint256(18)));
 
+    fundsToken = _fundsToken;
     receivedFunds = 0;
   }
 
   /** 
-   * @dev Transfers sender's tokens to a given address. Returns success.
-   * @param to Address of token receiver.
-   * @param value Number of tokens to transfer.
+   * @dev Transfer token to a specified address.
+   * Claims funds for both parties, whereby the amount of tokens withdrawn 
+   * is inherited by the new token owner.
+   * @param _to The address to transfer to
+   * @param _value The amount to be transferred
    */
-  function transfer(address to, uint256 value)
+  function transfer(address _to, uint256 _value)
     public
     returns (bool)
   {
-    // claim funds for both parties first
     _claimFunds(msg.sender);
-    _claimFunds(to);
+    _claimFunds(_to);
 
-    return super.transfer(to, value);
+    return super.transfer(_to, _value);
   }
 
 
   /**
-   * @dev Allows allowed third party to transfer tokens from one address to another. Returns success.
-   * @param from Address from where tokens are withdrawn.
-   * @param to Address to where tokens are sent.
-   * @param value Number of tokens to transfer.
+   * @dev Transfer tokens from one address to another.
+   * Claims funds for both parties, whereby the amount of tokens withdrawn
+   * is inherited by the new token owner.
+   * @param _from address The address which you want to send tokens from
+   * @param _to address The address which you want to transfer to
+   * @param _value uint256 the amount of tokens to be transferred
    */
-  function transferFrom(address from, address to, uint256 value)
+  function transferFrom(address _from, address _to, uint256 _value)
     public
     returns (bool)
   {
-    // claim payouts for both parties first
-    _claimFunds(from);
-    _claimFunds(to);
+    _claimFunds(_from);
+    _claimFunds(_to);
 
-    return super.transferFrom(from, to, value);
+    return super.transferFrom(_from, _to, _value);
   }
 
-    /**
-   * Get cumulative funds received by ClaimsToken
-   * @return a uint256 representing the total funds received by ClaimsToken
+  /**
+   * @dev Get cumulative funds received by ClaimsToken.
+   * @return A uint256 representing the total funds received by ClaimsToken
    */
   function totalReceivedFunds () 
     external 
@@ -74,9 +87,9 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
-   * Increment cumulative received funds by new received funds.
-   * @param _value value of tokens / Ether received
-   * @dev called when ClaimsToken receives funds
+   * @dev Increment cumulative received funds by new received funds. 
+   * Called when ClaimsToken receives funds.
+   * @param _value Amount of tokens received
    */
   function _registerFunds(uint256 _value) 
     private
@@ -87,7 +100,7 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
-   * Returns payout for a user which can be withdrawn or claimed.
+   * @dev Returns payout for a user which can be withdrawn or claimed.
    * @param _address Address of ClaimsToken holder
    */
   function _calcUnprocessedFunds(address _address) 
@@ -100,9 +113,9 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
-   * Returns the amount of funds a given address is able to withdraw currently
+   * @dev Returns the amount of funds a given address is able to withdraw currently.
    * @param _address Address of ClaimsToken holder
-   * @return a uint256 representing the available funds for a given account
+   * @return A uint256 representing the available funds for a given account
    */
   function availableFunds(address _address)
     public
@@ -113,7 +126,7 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
-   * Withdraws payout for user.
+   * @dev Withdraws available funds for user.
    */
   function withdrawFunds() 
     external 
@@ -124,11 +137,11 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
     processedFunds[msg.sender] = receivedFunds;
     claimedFunds[msg.sender] = 0;
     
-    msg.sender.transfer(withdrawableFunds);
+    fundsToken.transfer(msg.sender, withdrawableFunds);
   }
 
   /**
-   * Claims funds for a user.
+   * @dev Claims funds for a user.
    * @param _address Address of ClaimsToken holder
    */
   function _claimFunds(address _address) private {
@@ -139,14 +152,16 @@ contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
+   * @dev For ERC223.
    * Calls _registerFunds(), whereby total received funds (cumulative) gets updated.
+   * @param _value Amount of tokens
    */
-  function () 
-    external 
-    payable 
+  function tokenFallback (address, uint256 _value, bytes memory) 
+    public 
+    onlyFundsToken()
   {
-    if (msg.value > 0) {
-      _registerFunds(msg.value);
+    if (_value > 0) {
+      _registerFunds(_value);
     }
   }
 }

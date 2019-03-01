@@ -1,5 +1,5 @@
 const ERC223SampleToken = artifacts.require('ERC223SampleToken')
-const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20')
+const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20Extension')
 
 
 contract('ClaimsTokenERC20', (accounts) => {

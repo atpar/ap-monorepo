@@ -2,7 +2,7 @@ const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
+const ClaimsTokenETH = artifacts.require('ClaimsTokenETHExtension')
 
 
 contract('Settlement', (accounts) => {

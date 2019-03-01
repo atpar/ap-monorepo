@@ -2,15 +2,12 @@ pragma solidity ^0.5.2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 import "./IClaimsToken.sol";
 
 
-contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
+contract ClaimsTokenETH is IClaimsToken, ERC20, ERC20Detailed {
 
-  using SafeMath for uint256;
-  
   // cumulative funds received by this contract
   uint256 public receivedFunds;
   // cumulative funds received which were already processed for distribution - by user
@@ -79,6 +76,32 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
   }
 
   /**
+   * @dev Increment cumulative received funds by new received funds. 
+   * Called when ClaimsToken receives funds.
+   * @param _value Amount of tokens / Ether received
+   */
+  function _registerFunds(uint256 _value) 
+    private
+  {
+    receivedFunds += _value;
+
+    emit Deposit(_value);
+  }
+
+  /**
+   * @dev Returns payout for a user which can be withdrawn or claimed.
+   * @param _address Address of ClaimsToken holder
+   */
+  function _calcUnprocessedFunds(address _address) 
+    private 
+    view
+    returns (uint256) 
+  {
+    uint256 newReceivedFunds = receivedFunds - processedFunds[_address];
+    return balanceOf(_address) * newReceivedFunds / totalSupply();
+  }
+
+  /**
    * @dev Returns the amount of funds a given address is able to withdraw currently.
    * @param _address Address of ClaimsToken holder
    * @return A uint256 representing the available funds for a given account
@@ -88,59 +111,45 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
     view
     returns (uint256) 
   {
-    return _calcUnprocessedFunds(_address).add(claimedFunds[_address]);
+    return _calcUnprocessedFunds(_address) + claimedFunds[_address];
   }
 
   /**
-   * @dev Increment cumulative received funds by new received funds. 
-   * Called when ClaimsToken receives funds.
-   * @param _value Amount of tokens / Ether received
+   * @dev Withdraws available funds for user.
    */
-  function _registerFunds(uint256 _value) 
-    internal
+  function withdrawFunds() 
+    external 
+    payable 
   {
-    receivedFunds = receivedFunds.add(_value);
+    uint256 withdrawableFunds = availableFunds(msg.sender);
+
+    processedFunds[msg.sender] = receivedFunds;
+    claimedFunds[msg.sender] = 0;
     
-    emit Deposit(_value);
-  }
-
-  /**
-   * @dev Returns payout for a user which can be withdrawn or claimed.
-   * @param _address Address of ClaimsToken holder
-   */
-  function _calcUnprocessedFunds(address _address) 
-    internal 
-    view
-    returns (uint256) 
-  {
-    uint256 newReceivedFunds = receivedFunds.sub(processedFunds[_address]);
-    return balanceOf(_address).mul(newReceivedFunds).div(totalSupply());
+    msg.sender.transfer(withdrawableFunds);
   }
 
   /**
    * @dev Claims funds for a user.
    * @param _address Address of ClaimsToken holder
    */
-  function _claimFunds(address _address) internal {
+  function _claimFunds(address _address) private {
     uint256 unprocessedFunds = _calcUnprocessedFunds(_address);
 
     processedFunds[_address] = receivedFunds;
-    claimedFunds[_address] = claimedFunds[_address].add(unprocessedFunds);
+    claimedFunds[_address] += unprocessedFunds;
   }
 
-    /**
-   * @dev Withdraws available funds for user and returns the withdrawable amount.
-   * @return A uint256 representing the withdrawable funds
+  /**
+   * @dev Calls _registerFunds(), 
+   * whereby total received funds (cumulative) gets updated.
    */
-  function _withdrawFunds() 
-    internal 
-    returns (uint256)
+  function () 
+    external 
+    payable 
   {
-    uint256 withdrawableFunds = availableFunds(msg.sender);
-
-    processedFunds[msg.sender] = receivedFunds;
-    claimedFunds[msg.sender] = 0;
-
-    return withdrawableFunds;
+    if (msg.value > 0) {
+      _registerFunds(msg.value);
+    }
   }
 }

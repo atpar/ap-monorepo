@@ -1,4 +1,4 @@
-const ClaimsToken = artifacts.require('ClaimsTokenETH')
+const ClaimsToken = artifacts.require('ClaimsTokenETHExtension')
 
 
 contract('ClaimsTokenETH', (accounts) => {
