@@ -59,10 +59,10 @@
 //    * @param expectedContractState expected contract state to compare to
 //    * @returns true if the given state is equal to the computed state
 //    */
-//   public async validateFirstState (
+//   public async validateInitialState (
 //     expectedContractState: ContractState,
 //   ) {
-//     const contractState = await this.statelessContract.computeFirstState(this.contractTerms);
+//     const contractState = await this.statelessContract.computeInitialState(this.contractTerms);
 
 //     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
 //     //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})

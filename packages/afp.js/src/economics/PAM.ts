@@ -44,10 +44,10 @@ export class PAM implements EconomicsKernel {
    * @param expectedContractState expected contract state to compare to
    * @returns true if the given state is equal to the computed state
    */
-  public async validateFirstState (
+  public async validateInitialState (
     expectedContractState: ContractState,
   ) {
-    const contractState = await this.pamEngine.computeFirstState(this.contractTerms);
+    const contractState = await this.pamEngine.computeInitialState(this.contractTerms);
 
     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
     //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})
@@ -169,7 +169,7 @@ export class PAM implements EconomicsKernel {
     
   ) {
     const pamEngine = await PAMEngine.instantiate(web3);
-    const contractState = await pamEngine.computeFirstState(contractTerms);
+    const contractState = await pamEngine.computeInitialState(contractTerms);
 
     return new PAM(
       pamEngine,

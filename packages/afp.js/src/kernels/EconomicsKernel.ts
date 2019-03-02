@@ -10,7 +10,7 @@ export interface EconomicsKernel {
 
   computeNextState (timestamp: number) : Promise<ContractState>;
 
-  validateFirstState (expectedContractState: ContractState) : Promise<boolean>;
+  validateInitialState (expectedContractState: ContractState) : Promise<boolean>;
   
   validateNextState (expectedContractState: ContractState) : Promise<boolean>;
   

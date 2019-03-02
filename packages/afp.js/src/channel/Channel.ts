@@ -182,7 +182,7 @@ export class Channel {
       if (previousSignedContractUpdate) { 
         return false; 
       }
-      if (!this.economicsKernel.validateFirstState(signedContractUpdate.contractUpdate.contractState)) { 
+      if (!this.economicsKernel.validateInitialState(signedContractUpdate.contractUpdate.contractState)) { 
         return false; 
       }
     } else {
@@ -226,7 +226,7 @@ export class Channel {
       return false;
     }
     if (this._isInitialSignedContractUpdate(signedContractUpdate)) {
-      if(!this.economicsKernel.validateFirstState(signedContractUpdate.contractUpdate.contractState)) { 
+      if(!this.economicsKernel.validateInitialState(signedContractUpdate.contractUpdate.contractState)) { 
         return false; 
       }
     } else {

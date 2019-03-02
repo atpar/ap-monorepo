@@ -104,7 +104,7 @@
 //       counterpartyAddress, 
 //       txOptions
 //     );
-//     const contractState = await statelessContract.computeFirstState(contractTerms);
+//     const contractState = await statelessContract.computeInitialState(contractTerms);
 
 //     return new PAMOffChain(
 //       statelessContract, 

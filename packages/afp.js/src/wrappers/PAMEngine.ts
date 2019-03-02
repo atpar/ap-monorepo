@@ -19,7 +19,7 @@ export class PAMEngine {
     return precision;
   }
 
-  public async computeFirstState (contractTerms: ContractTerms) {
+  public async computeInitialState (contractTerms: ContractTerms) {
     const { 0: contractState }: { 0: ContractState, 1: any } = 
       await this.pamEngine.methods.getInitialState(contractTerms).call();
     return contractState;
