@@ -1,18 +1,13 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
 import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "./AFPFloatMath.sol";
 
 
-contract AFPDayCountConventions {
+contract AFPDayCountConventions_ {
 
-	using SafeMath for uint;
-	using SignedSafeMath for int;
 	using AFPFloatMath for int;
 	
 
@@ -21,7 +16,7 @@ contract AFPDayCountConventions {
 		pure
 		returns(int256)
 	{
-		return(int256((_endTime.sub(_startTime)).div(86400)).floatDiv(360));
+		return(int256((_endTime - _startTime) / 86400).floatDiv(360));
 	}
 
 	function actualThreeSixtyFive(uint256 _startTime, uint256 _endTime) 
@@ -29,7 +24,7 @@ contract AFPDayCountConventions {
 		pure
 		returns(int256)
 	{
-		return(int256((_endTime.sub(_startTime)).div(86400)).floatDiv(365));
+		return(int256((_endTime - _startTime) / 86400).floatDiv(365));
 	}
 
 	function thirtyEThreeSixty(uint256 _startTime, uint256 _endTime) 
@@ -56,10 +51,10 @@ contract AFPDayCountConventions {
 			d2Day = 30; 
 		}
 
-		int256 delD = int256(d2Day).sub(int256(d1Day));
-		int256 delM = int256(d2Month).sub(int256(d1Month));
-		int256 delY = int256(d2Year).sub(int256(d1Year));
+		uint256 delD = d2Day - d1Day;
+		uint256 delM = d2Month - d1Month;
+		uint256 delY = d2Year - d1Year;
 
-		return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+		return (int256(360 * delY + 30 * delM + delD).floatDiv(360));
 	}
 }

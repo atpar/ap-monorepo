@@ -1,11 +1,15 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 import "../AFPCore/AFPCore.sol";
 import "../AFPCore/AFPFloatMath.sol";
 
+
+/**
+ * todo: implement safemaths add and sub methods for STFs and POFs
+ */
 
 /**
  * @title the stateless component for a PAM contract
@@ -13,9 +17,8 @@ import "../AFPCore/AFPFloatMath.sol";
  * @dev all numbers except unix timestamp are represented of multiples of 10 ** 18
 	inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
-contract PAMEngine is AFPCore {
+contract PAMEngine_ is AFPCore {
 
-	using SignedSafeMath for int;
 	using AFPFloatMath for int;
 
 	/**
@@ -38,22 +41,22 @@ contract PAMEngine is AFPCore {
 	{
 		if (_eventType == EventType.AD) { 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.CD) { 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.contractStatus = ContractStatus.DF;
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.FP) { 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.feeAccrued = 0;
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
@@ -75,31 +78,31 @@ contract PAMEngine is AFPCore {
 		}
 		if (_eventType == EventType.IPCI) { 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent)));
+			_contractState.nominalAccrued += _contractState.nominalAccrued + (_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
 			_contractState.nominalAccrued = 0;
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.IP) { 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
 			_contractState.nominalAccrued = 0;
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.PP) {
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.nominalValue -= 0; // riskFactor(_contractTerms.objectCodeOfPrepaymentModel, _currentTimestamp, _contractState, _contractTerms) * _contractState.nominalValue;
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.PRD) {
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
@@ -114,15 +117,15 @@ contract PAMEngine is AFPCore {
 		}
 		if (_eventType == EventType.PY) {
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.RRY) {
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.nominalRate = _contractTerms.nextResetRate;
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
@@ -131,7 +134,7 @@ contract PAMEngine is AFPCore {
 			// int256 rate = //riskFactor(_contractTerms.marketObjectCodeOfRateReset, _currentTimestamp, _contractState, _contractTerms)
 			// 	* _contractTerms.rateMultiplier + _contractTerms.rateSpread;
 			int256 rate = _contractTerms.rateSpread;
-			int256 deltaRate = rate.sub(_contractState.nominalRate);
+			int256 deltaRate = rate - _contractState.nominalRate;
 			
 			 // apply period cap/floor
 			if ((_contractTerms.lifeCap < deltaRate) && (_contractTerms.lifeCap < ((-1) * _contractTerms.periodFloor))) {
@@ -139,7 +142,7 @@ contract PAMEngine is AFPCore {
 			} else if (deltaRate < ((-1) * _contractTerms.periodFloor)) {
 				deltaRate = ((-1) * _contractTerms.periodFloor);
 			}
-			rate = _contractState.nominalRate.add(deltaRate);
+			rate = _contractState.nominalRate + deltaRate;
 
 			// apply life cap/floor
 			if (_contractTerms.lifeCap < rate && _contractTerms.lifeCap < _contractTerms.lifeFloor) {
@@ -149,15 +152,15 @@ contract PAMEngine is AFPCore {
 			}
 
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			_contractState.nominalRate = rate;
 			_contractState.lastEventTime = _currentTimestamp;
 			return _contractState;
 		}
 		if (_eventType == EventType.SC) {
 			_contractState.timeFromLastEvent = yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention);
-			_contractState.nominalAccrued = _contractState.nominalAccrued.add(_contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
-			_contractState.feeAccrued = _contractState.feeAccrued.add(_contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent));
+			_contractState.nominalAccrued += _contractState.nominalRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
+			_contractState.feeAccrued += _contractTerms.feeRate.floatMult(_contractState.nominalValue).floatMult(_contractState.timeFromLastEvent);
 			
 			if ((_contractTerms.scalingEffect == ScalingEffect.I00) 
 				|| (_contractTerms.scalingEffect == ScalingEffect.IN0)
@@ -222,36 +225,24 @@ contract PAMEngine is AFPCore {
 			} else {
 				return (
 					performanceIndicator(_contractState.contractStatus) 
-					* _contractState.feeAccrued
-						.add(
-							yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention) 
-							.floatMult(_contractTerms.feeRate)
-							.floatMult(_contractState.nominalValue)
-						)
+					* (_contractState.feeAccrued 
+					+ yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention) 
+					.floatMult(_contractTerms.feeRate).floatMult(_contractState.nominalValue))
 				); 
 			}
 		}
 		if (_eventType == EventType.IED) { 
 			return (
 				performanceIndicator(_contractState.contractStatus) 
-				* roleSign(_contractTerms.contractRole) 
-				* (-1) 
-				* _contractTerms.notionalPrincipal
-					.add(_contractTerms.premiumDiscountAtIED)
+				* roleSign(_contractTerms.contractRole) * (-1) 
+				* (_contractTerms.notionalPrincipal + _contractTerms.premiumDiscountAtIED)
 			);
 		}
 		if (_eventType == EventType.IP) { 
 			return (
-				performanceIndicator(_contractState.contractStatus) 
-				* _contractState.interestScalingMultiplier
-					.floatMult(
-						_contractState.nominalAccrued 
-						.add(
-							yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
-							.floatMult(_contractState.nominalRate)
-							.floatMult(_contractState.nominalValue)
-						)
-					)
+				performanceIndicator(_contractState.contractStatus) * _contractState.interestScalingMultiplier
+				.floatMult(_contractState.nominalAccrued + yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
+				.floatMult(_contractState.nominalRate).floatMult(_contractState.nominalValue))
 			);
 		}
 		if (_eventType == EventType.PP) { 
@@ -265,22 +256,17 @@ contract PAMEngine is AFPCore {
 		if (_eventType == EventType.PRD) { 
 			return (
 				performanceIndicator(_contractState.contractStatus) 
-				* roleSign(_contractTerms.contractRole) 
-				* (-1) 
-				* _contractTerms.priceAtPurchaseDate
-					.add(_contractState.nominalAccrued)
-					.add(
-						yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
-						.floatMult(_contractState.nominalRate)
-						.floatMult(_contractState.nominalValue)
-					)
+				* roleSign(_contractTerms.contractRole) * (-1) 
+				* (_contractTerms.priceAtPurchaseDate
+				+ _contractState.nominalAccrued
+				+ yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
+				.floatMult(_contractState.nominalRate).floatMult(_contractState.nominalValue))
 			);
 		}
 		if (_eventType == EventType.PR) { 
 			return (
 				performanceIndicator(_contractState.contractStatus) 
-				* _contractState.nominalScalingMultiplier
-					.floatMult(_contractState.nominalValue)
+				* _contractState.nominalScalingMultiplier.floatMult(_contractState.nominalValue)
 			);
 		}
 		if (_eventType == EventType.PY) { 
@@ -295,8 +281,7 @@ contract PAMEngine is AFPCore {
 					performanceIndicator(_contractState.contractStatus)
 					* roleSign(_contractTerms.contractRole)
 					* yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
-						.floatMult(_contractTerms.penaltyRate)
-						.floatMult(_contractState.nominalValue)
+					.floatMult(_contractTerms.penaltyRate).floatMult(_contractState.nominalValue)
 				);
 			} else {
 				// riskFactor(currentTimestamp, _contractState, _contractTerms, _contractTerms.marketObjectCodeOfRateReset);
@@ -307,8 +292,7 @@ contract PAMEngine is AFPCore {
 					performanceIndicator(_contractState.contractStatus)
 					* roleSign(_contractTerms.contractRole)
 					* yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
-						.floatMult(_contractState.nominalValue)
-						.floatMult(param)
+					.floatMult(_contractState.nominalValue).floatMult(param)
 				);
 			}
 		}
@@ -316,13 +300,10 @@ contract PAMEngine is AFPCore {
 			return (
 				performanceIndicator(_contractState.contractStatus)
 				* roleSign(_contractTerms.contractRole)
-				* _contractTerms.priceAtPurchaseDate
-					.add(_contractState.nominalAccrued)
-					.add(
-						yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
-						.floatMult(_contractState.nominalRate)
-						.floatMult(_contractState.nominalValue)
-					)
+				* (_contractTerms.priceAtPurchaseDate 
+				+ _contractState.nominalAccrued
+				+ yearFraction(_contractState.lastEventTime, _currentTimestamp, _contractTerms.dayCountConvention)
+				.floatMult(_contractState.nominalRate).floatMult(_contractState.nominalValue))
 			);
 		}
 	}
