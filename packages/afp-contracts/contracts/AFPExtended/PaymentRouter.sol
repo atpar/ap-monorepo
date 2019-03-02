@@ -3,8 +3,8 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-import "./OwnershipRegistryInterface.sol";
-import "./PaymentRegistryInterface.sol";
+import "./IOwnershipRegistry.sol";
+import "./IPaymentRegistry.sol";
 
 interface IERC20 {
 	function transfer(address to, uint256 value) external returns (bool);
@@ -13,15 +13,15 @@ interface IERC20 {
 
 contract PaymentRouter is Ownable {
 
-	OwnershipRegistryInterface public ownershipRegistry;
-	PaymentRegistryInterface public paymentRegistry;
+	IOwnershipRegistry public ownershipRegistry;
+	IPaymentRegistry public paymentRegistry;
 
 	constructor (
-		OwnershipRegistryInterface _ownershipRegistry,
-		PaymentRegistryInterface _paymentRegistry
+		IOwnershipRegistry _ownershipRegistry,
+		IPaymentRegistry _paymentRegistry
 	) public {
-		ownershipRegistry = OwnershipRegistryInterface(_ownershipRegistry);
-		paymentRegistry = PaymentRegistryInterface(_paymentRegistry);
+		ownershipRegistry = IOwnershipRegistry(_ownershipRegistry);
+		paymentRegistry = IPaymentRegistry(_paymentRegistry);
 	}
 
 	function settlePayment (

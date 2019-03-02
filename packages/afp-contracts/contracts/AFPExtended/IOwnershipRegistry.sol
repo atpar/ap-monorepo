@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-interface OwnershipRegistryInterface {
+interface IOwnershipRegistry {
 	
 	function getContractOwnership (bytes32 _contractId) 
 		external 

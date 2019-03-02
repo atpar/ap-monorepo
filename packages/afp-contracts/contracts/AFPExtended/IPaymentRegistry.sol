@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-interface PaymentRegistryInterface {
+interface IPaymentRegistry {
 	
 	function registerPayment (
 		bytes32 _contractId,
