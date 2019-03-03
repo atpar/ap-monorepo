@@ -10,7 +10,7 @@ const PAMEngineArtifact: any = require('../../../afp-contracts/build/contracts/P
 export class PAMEngine {
   private pamEngine: Contract;
 
-  constructor (pamEngineInstance: Contract) {    
+  private constructor (pamEngineInstance: Contract) {    
     this.pamEngine = pamEngineInstance;
   }
 
