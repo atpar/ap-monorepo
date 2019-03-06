@@ -1,16 +1,24 @@
 import { ContractState, ContractTerms } from './Actus';
 
 export enum ChannelState {
+  Initializable,
   Idle,
   Updatable,
   Confirmable,
   Receivable
 }
 
+export interface ContractOwnership {
+  recordCreatorObligorAddress: string,
+  recordCreatorBeneficiaryAddress: string,
+  counterpartyObligorAddress: string,
+  counterpartyBeneficiaryAddress: string
+}
+
 export interface ContractUpdate {
   contractId: string,
-  recordCreatorAddress: string,
-  counterpartyAddress: string,
+  recordCreatorObligorAddress: string,
+  counterpartyObligorAddress: string,
   contractAddress: string,
   contractTerms: ContractTerms,
   contractState: ContractState,
@@ -19,8 +27,8 @@ export interface ContractUpdate {
 
 export interface SignedContractUpdate {
   contractUpdate: ContractUpdate,
-  recordCreatorSignature: string,
-  counterpartySignature: string
+  recordCreatorObligorSignature: string,
+  counterpartyObligorSignature: string
 }
 
 export interface ContractUpdateAsTypedData {
@@ -37,8 +45,8 @@ export interface ContractUpdateAsTypedData {
   primaryType: string,
   message: {
     contractId: string,
-    recordCreatorAddress: string,
-    counterpartyAddress: string,
+    recordCreatorObligorAddress: string,
+    counterpartyObligorAddress: string,
     contractAddress: string,
     contractTermsHash: string,
     contractStateHash: string,

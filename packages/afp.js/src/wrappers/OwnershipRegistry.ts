@@ -12,7 +12,7 @@ export class OwnershipRegistry {
     this.ownershipRegistry = ownershipRegistryInstance
   }
 
-  public async registerContract (
+  public async registerOwnership (
     contractId: string,
     recordCreatorObligorAddress: string,
     recordCreatorBeneficiaryAddress: string,

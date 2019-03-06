@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import sigUtil from 'eth-sig-util';
 
-import { ContractUpdate, SignedContractUpdate } from 'src/types';
-import { ContractUpdateAsTypedData } from 'src/types/AFP';
+import { ContractUpdate, SignedContractUpdate } from '../types';
+import { ContractUpdateAsTypedData } from '../types/AFP';
 
 
 export class Signer {
@@ -51,17 +51,17 @@ export class Signer {
    */
   public async validateContractUpdateSignatures (signedContractUpdate: SignedContractUpdate) {
     const typedData = await this._getContractUpdateAsTypedData(signedContractUpdate.contractUpdate);
-    const recordCreatorAddress = signedContractUpdate.contractUpdate.recordCreatorAddress;
-    const counterpartyAddress = signedContractUpdate.contractUpdate.counterpartyAddress;
+    const recordCreatorObligorAddress = signedContractUpdate.contractUpdate.recordCreatorObligorAddress;
+    const counterpartyObligorAddress = signedContractUpdate.contractUpdate.counterpartyObligorAddress;
 
-    if (!signedContractUpdate.recordCreatorSignature && !signedContractUpdate.counterpartySignature) { return false }
-    if (signedContractUpdate.recordCreatorSignature) {
-      if (!this._validateSignature(typedData, recordCreatorAddress, signedContractUpdate.recordCreatorSignature)) {
+    if (!signedContractUpdate.recordCreatorObligorSignature && !signedContractUpdate.counterpartyObligorSignature) { return false }
+    if (signedContractUpdate.recordCreatorObligorSignature) {
+      if (!this._validateSignature(typedData, recordCreatorObligorAddress, signedContractUpdate.recordCreatorObligorSignature)) {
         return false;
       }
     }
-    if (signedContractUpdate.counterpartySignature) {
-      if (!this._validateSignature(typedData, counterpartyAddress, signedContractUpdate.counterpartySignature)) {
+    if (signedContractUpdate.counterpartyObligorSignature) {
+      if (!this._validateSignature(typedData, counterpartyObligorAddress, signedContractUpdate.counterpartyObligorSignature)) {
         return false;
       }
     }
@@ -97,8 +97,8 @@ export class Signer {
         ],
         ContractUpdate: [
           { name: 'contractId', type: 'string' },
-          { name: 'recordCreatorAddress', type: 'address' },
-          { name: 'counterpartyAddress', type: 'address' },
+          { name: 'recordCreatorObligorAddress', type: 'address' },
+          { name: 'counterpartyObligorAddress', type: 'address' },
           { name: 'contractAddress', type: 'address' },
           { name: 'contractTermsHash', type: 'string' },
           { name: 'contractStateHash', type: 'string' },
@@ -108,8 +108,8 @@ export class Signer {
       primaryType: 'ContractUpdate',
       message: {
         contractId: contractUpdate.contractId,
-        recordCreatorAddress: contractUpdate.recordCreatorAddress,
-        counterpartyAddress: contractUpdate.counterpartyAddress,
+        recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
+        counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
         contractAddress: contractUpdate.contractAddress,
         contractTermsHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractTerms)),
         contractStateHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractState)),

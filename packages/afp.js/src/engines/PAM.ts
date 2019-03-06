@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
-import { EconomicsKernel } from '../kernels/EconomicsKernel';
+import { ContractEngine } from './ContractEngine';
 import { PAMEngine } from '../wrappers/PAMEngine';
 import { ContractTerms, ContractState, ContractEvent } from '../types';
 
@@ -9,12 +9,12 @@ import { ContractTerms, ContractState, ContractEvent } from '../types';
 /**
  * contains economic logic for a PAM contract
  */
-export class PAM implements EconomicsKernel {
+export class PAM implements ContractEngine {
 
   protected pamEngine: PAMEngine;
 
-  public readonly contractTerms: ContractTerms;
-  public contractState: ContractState;
+  private contractTerms: ContractTerms;
+  private contractState: ContractState;
 
   private constructor (
     pamEngine: PAMEngine,
@@ -24,6 +24,32 @@ export class PAM implements EconomicsKernel {
     this.pamEngine = pamEngine;
     this.contractTerms = contractTerms;
     this.contractState = contractState;
+  }
+
+  public getContractTerms () {
+    return this.contractTerms;
+  }
+
+  public getContractState () {
+    return this.contractState;
+  }
+
+  public setContractTerms (contractTerms: ContractTerms) {
+    this.contractTerms = contractTerms; 
+  }
+
+  public setContractState (contractState: ContractState) {
+    this.contractState = contractState; 
+  }
+
+  /**
+   * computes the next state based on the contract terms and the current state
+   */
+  public async computeInitialState () {
+    const initialContractState = await this.pamEngine.computeInitialState(
+      this.contractTerms
+    );
+    return initialContractState;
   }
 
   /**
@@ -137,24 +163,24 @@ export class PAM implements EconomicsKernel {
     return payOff;
   }
 
-  /**
-   * computes and stores the next contract state for a given timestamp
-   * @param timestamp current timestamp
-   */
-  public async computeAndCommitNextState (timestamp: number) {
-    const { nextContractState, evaluatedEvents } = await this.pamEngine.computeNextState(
-      this.contractTerms, 
-      this.contractState, 
-      timestamp
-    );
+  // /**
+  //  * computes and stores the next contract state for a given timestamp
+  //  * @param timestamp current timestamp
+  //  */
+  // public async computeAndCommitNextState (timestamp: number) {
+  //   const { nextContractState, evaluatedEvents } = await this.pamEngine.computeNextState(
+  //     this.contractTerms, 
+  //     this.contractState, 
+  //     timestamp
+  //   );
 
-    // @ts-ignore
-    const payOff = this._getPayOffFromContractEvents(evaluatedEvents);
+  //   // @ts-ignore
+  //   const payOff = this._getPayOffFromContractEvents(evaluatedEvents);
 
-    // check if all payments were made
+  //   // check if all payments were made
       
-    this.contractState = nextContractState; 
-  }
+  //   this.contractState = nextContractState; 
+  // }
 
   /**
    * returns a new PAMOffChain instance
@@ -166,15 +192,14 @@ export class PAM implements EconomicsKernel {
   public static async create (
     web3: Web3,
     contractTerms: ContractTerms
-    
   ) {
     const pamEngine = await PAMEngine.instantiate(web3);
-    const contractState = await pamEngine.computeInitialState(contractTerms);
+    const initialContractState = await pamEngine.computeInitialState(contractTerms);
 
     return new PAM(
       pamEngine,
       contractTerms, 
-      contractState
+      initialContractState
     );
   }
 

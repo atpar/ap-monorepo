@@ -2,11 +2,9 @@ import Web3 from 'web3';
 
 import { AFP } from '../../src';
 import { ContractTerms, ContractType } from '../../src/types';
-import { Channel } from '../../src/channel/Channel';
-import { OwnershipKernel, EconomicsKernel } from '../../src/kernels';
-import { PAM } from '../../src/economics';
+import { ContractChannel } from '../../src/channel/ContractChannel';
 
-describe('testContractClass', () => {
+describe('testContractChannelClass', () => {
 
   let web3: Web3;
   let recordCreator: string;
@@ -19,9 +17,7 @@ describe('testContractClass', () => {
   let afpRC: AFP;
   let afpCP: AFP;
 
-  let economicsKernel: EconomicsKernel;
-  let ownershipKernel: OwnershipKernel;
-  let channel: Channel;
+  let contractChannel: ContractChannel;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -44,42 +40,40 @@ describe('testContractClass', () => {
 
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
     const contractTerms = (<any>contractTemplatesTyped)['10001'];
+    const contractOwnership = {
+      recordCreatorObligorAddress: recordCreator, 
+      recordCreatorBeneficiaryAddress: recordCreator, 
+      counterpartyObligorAddress: counterparty,
+      counterpartyBeneficiaryAddress: counterparty
+    };
 
-    economicsKernel = await PAM.create(
-      afpRC.web3, 
-      contractTerms
-    );
+    contractChannel = await ContractChannel.create(afpRC, contractTerms);
 
-    ownershipKernel = new OwnershipKernel(
+    await contractChannel.signAndSendInitialContractUpdate(
       contractId,
-      recordCreator, 
-      counterparty
+      contractOwnership
     );
-    
-    channel = await Channel.create(afpRC, economicsKernel, ownershipKernel);
-
-    await channel.signAndSendNextContractUpdate(contractTerms.statusDate);
   });
 
   it('should instantiate channel from valid signed contract update', async () => {
-    const initialSignedContractUpdate = channel.getLastSignedContractUpdate();
-    const channel2 = await Channel.init(afpRC, economicsKernel, ownershipKernel, initialSignedContractUpdate);
-    expect(channel2 instanceof Channel).toBe(true);
+    const initialSignedContractUpdate = contractChannel.getLastSignedContractUpdate();
+    const contractChannel2 = await ContractChannel.fromSignedContractUpdate(afpRC, initialSignedContractUpdate);
+    expect(contractChannel2 instanceof ContractChannel).toBe(true);
   });
 
   it('should not instantiate channel from invalid signed contract update', async () => {
-    const lastSignedContractUpdate = channel.getLastSignedContractUpdate();
+    const lastSignedContractUpdate = contractChannel.getLastSignedContractUpdate();
     lastSignedContractUpdate.contractUpdate.contractId = '03';
 
     await expect(
-      Channel.init(afpRC, economicsKernel, ownershipKernel, lastSignedContractUpdate)
+      ContractChannel.fromSignedContractUpdate(afpRC, lastSignedContractUpdate)
     ).rejects.toThrow('EXECUTION_ERROR: invalid signed contract update provided.');
   });
 
   it('should receive at least one new contract on behalf of the counterparty', async () => {
     const mockCallback = jest.fn(() => {});
 
-    afpCP.onNewContract(mockCallback);
+    afpCP.onNewContractChannel(mockCallback);
 
     await new Promise(resolve => setTimeout(resolve, 3000));
 

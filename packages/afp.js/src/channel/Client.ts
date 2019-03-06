@@ -49,7 +49,6 @@ export class Client {
     contractId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
   ) {
-    // console.log('register contract listener: ' + contractId);
     this.contractListenerRegistry.set(contractId, cb);
   }
 

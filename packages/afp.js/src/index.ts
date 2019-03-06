@@ -2,23 +2,43 @@ import Web3 from 'web3';
 
 import { Client } from './channel/Client';
 import { Signer } from './utils/Signer';
-import { Contract } from './Contract';
+import { ContractChannel } from './channel/ContractChannel';
 import { SignedContractUpdate } from './types';
 import { Common } from './utils/Common';
+import { OwnershipAPI, EconomicsAPI, PaymentAPI } from './apis';
 
 
 export class AFP {
 
   public web3: Web3;
-  public client: Client;
+
+  public ownership: OwnershipAPI;
+  public economics: EconomicsAPI;
+  public payment: PaymentAPI;
+
   public signer: Signer;
   public common: Common;
+  public client: Client | null;
 
-  constructor (web3: Web3, client: Client, signer: Signer, common: Common) {
+  constructor (
+    web3: Web3, 
+    ownership: OwnershipAPI, 
+    economics: EconomicsAPI,
+    payment: PaymentAPI,
+    signer: Signer, 
+    common: Common, 
+    client?: Client
+  ) {
     this.web3 = web3;
-    this.client = client;
+    
+    this.ownership = ownership;
+    this.economics = economics;
+    this.payment = payment;
+
     this.signer = signer;
     this.common = common;
+
+    this.client = client ? client : null;
   }
 
   /**
@@ -26,11 +46,12 @@ export class AFP {
    * @param cb callback function to be called upon receiving a new contract
    * @returns Promise to Contract
    */
-  public async onNewContract (cb: (contract: Contract) => void) {
+  public async onNewContractChannel (cb: (contractChannel: ContractChannel) => void) {
+    if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
     this.client.onNewContractUpdate(async (signedContractUpdate: SignedContractUpdate) => {
       try {
-        const contract = await Contract.fromSignedContractUpdate(this, signedContractUpdate);
-        cb(contract);
+        const contractChannel = await ContractChannel.fromSignedContractUpdate(this, signedContractUpdate);
+        cb(contractChannel);
       } catch (error) { return; }
     });
   }
@@ -47,10 +68,14 @@ export class AFP {
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
     } 
 
+    const ownership = await OwnershipAPI.init(web3);
+    const economics = await EconomicsAPI.init(web3);
+    const payment = await PaymentAPI.init(web3);
+
     const signer = new Signer(web3, defaultAccount);
     const common = new Common(web3);
   
-    let client: Client;
+    let client: Client | undefined = undefined;
 
     if (host != null) {
       if (host.startsWith('http')) {
@@ -60,9 +85,11 @@ export class AFP {
       } else {
         throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
       }
-    } else { throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); }
+    } else { 
+      // throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); 
+    }
 
-    return new AFP(web3, client, signer, common);
+    return new AFP(web3, ownership, economics, payment, signer, common, client);
   }
 }
 

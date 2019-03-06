@@ -1,9 +1,7 @@
 import { SendOptions } from 'web3-eth-contract/types';
 
-import { ContractTerms, ContractType, SignedContractUpdate } from './types';
-import { Channel } from './channel/Channel';
-import { EconomicsKernel, OwnershipKernel } from './kernels';
-import { PAM } from './economics';
+import { ContractTerms, ContractType, ContractOwnership } from './types';
+import { ContractEngine, PAM } from './engines';
 import { AFP } from './index';
 
 
@@ -13,19 +11,24 @@ import { AFP } from './index';
  */
 export class Contract {
   
-  public economicsKernel: EconomicsKernel;
-  public ownershipKernel: OwnershipKernel;
-  public channel: Channel;
+  private afp: AFP;
+  public contractEngine: ContractEngine;
+  
+  public contractId: string;
 
   private constructor (
-    channel: Channel,
-    economicsKernel: EconomicsKernel,
-    ownershipKernel: OwnershipKernel
+    afp: AFP,
+    contractEngine: ContractEngine,
+    contractId: string
   ) {
-    this.economicsKernel = economicsKernel;
-    this.ownershipKernel = ownershipKernel;
-    this.channel = channel;
+    this.afp = afp;
+    this.contractEngine = contractEngine;
+    this.contractId = contractId;
   }
+
+  public async getContractTerms () { return this.afp.economics.getContractTerms(this.contractId); }
+
+  public async getContractState () { return this.afp.economics.getContractState(this.contractId); }
 
   /**
    * returns a new Contract instance
@@ -41,61 +44,55 @@ export class Contract {
   public static async create (
     afp: AFP,
     contractTerms: ContractTerms,
-    recordCreatorAddress: string,
-    counterpartyAddress: string,
+    contractOwnership: ContractOwnership,
     // @ts-ignore
     txOptions?: SendOptions
   ) {
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
-    let economicsKernel;
+    let contractEngine;
     switch (contractTerms.contractType) {
       case ContractType.PAM:
-        economicsKernel = await PAM.create(afp.web3, contractTerms);        
+        contractEngine = await PAM.create(afp.web3, contractTerms);
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const ownershipKernel = new OwnershipKernel(contractId, recordCreatorAddress, counterpartyAddress);
-    const channel = Channel.create(afp, economicsKernel, ownershipKernel);
+    await afp.ownership.registerContractOwnership(contractId, contractOwnership);
+    await afp.economics.registerContract(
+      contractId, 
+      contractEngine.getContractTerms(), 
+      contractEngine.getContractState()
+    );
 
-    await channel.signAndSendNextContractUpdate(contractTerms.statusDate); // move out
-
-    return new Contract(channel, economicsKernel, ownershipKernel);
+    return new Contract(afp, contractEngine, contractId);
   }
-
-  // public static async load () {
-  //   return new Error('NOT_IMPLEMENTED_ERROR: deserializing is not supported yet!');
-  // }
 
   /**
    * returns a new Contract instance from a signed contract update
    * @param afp AFP instance
-   * @param signedContractUpdate signed contract update
+   * @param contractId contractId of 
    * @returns Contract
    */
-  public static async fromSignedContractUpdate (
+  public static async loadContract (
     afp: AFP,
-    signedContractUpdate: SignedContractUpdate
+    contractId: string
   ) {
-    const contractId = signedContractUpdate.contractUpdate.contractId;
-    const contractTerms = signedContractUpdate.contractUpdate.contractTerms;
-    const contractState = signedContractUpdate.contractUpdate.contractState;
+    const contractTerms = await afp.economics.getContractTerms(contractId);
+    const contractState = await afp.economics.getContractState(contractId);
 
-    let economicsKernel;
+    if (contractState.lastEventTime == 0) { throw('NOT_FOUND_ERROR: no contract found for given ContractId!'); }
+
+    let contractEngine;
     switch (contractTerms.contractType) {
       case ContractType.PAM:
-        economicsKernel = await PAM.init(afp.web3, contractTerms, contractState);
+        contractEngine = await PAM.init(afp.web3, contractTerms, contractState);
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
-
-    // get address of parties from smart contracts
-    const ownershipKernel = new OwnershipKernel(contractId, '', '');
-    const channel = await Channel.init(afp, economicsKernel, ownershipKernel, signedContractUpdate);
-
-    return new Contract(channel, economicsKernel, ownershipKernel);
+    
+    return new Contract(afp, contractEngine, contractId);
   }
 }

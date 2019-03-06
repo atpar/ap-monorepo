@@ -31,14 +31,20 @@ describe('testContractClass', () => {
   });
 
   it('should create a new contract instance', async () => {
-    const recordCreatorAddress = (await web3.eth.getAccounts())[0];
-    const counterpartyAddress = '0xb1495069F8d780B0C4123E96b0B6bb0217048C09';
+
+    const account = (await web3.eth.getAccounts())[0];
+
+    const contractOwnership = { 
+      recordCreatorObligorAddress: account,
+      recordCreatorBeneficiaryAddress: account,
+      counterpartyObligorAddress: '0xb1495069F8d780B0C4123E96b0B6bb0217048C09', 
+      counterpartyBeneficiaryAddress: '0xb1495069F8d780B0C4123E96b0B6bb0217048C09'
+    }
 
     const contract = await Contract.create(
       afp, 
       (<any>contractTemplatesTyped)['10001'], 
-      recordCreatorAddress, 
-      counterpartyAddress,
+      contractOwnership,
       { from: recordCreator, gas: 6000000 }
     );
 

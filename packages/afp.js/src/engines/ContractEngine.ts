@@ -1,12 +1,19 @@
 import BigNumber from 'bignumber.js';
 
-import { ContractTerms, ContractState } from '../types';
+import { ContractState, ContractTerms } from '../types';
 
 
-export interface EconomicsKernel {
-  
-  readonly contractTerms: ContractTerms;
-  readonly contractState: ContractState;
+export interface ContractEngine {
+
+  getContractTerms() : ContractTerms;
+
+  getContractState() : ContractState;
+
+  setContractTerms (contractTerms: ContractTerms) : void;
+
+  setContractState (contractState: ContractState) : void;
+
+  computeInitialState (timestamp: number) : Promise<ContractState>;
 
   computeNextState (timestamp: number) : Promise<ContractState>;
 
@@ -21,6 +28,4 @@ export interface EconomicsKernel {
   evaluateSchedule (schedule: any) : Promise<any>;
 
   computeDuePayoff (timestamp: number) : Promise<BigNumber>;
-
-  computeAndCommitNextState (timestamp: number) : Promise<void>;
 }
