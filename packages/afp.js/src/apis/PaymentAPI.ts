@@ -16,7 +16,7 @@ export class PaymentAPI {
     this.router = router;
   }
 
-  public static async init (web3: Web3) {
+  public static async init (web3: Web3): Promise<PaymentAPI> {
     const registry = await PaymentRegistry.instantiate(web3);
     const router = await PaymentRouter.instantiate(web3);
 

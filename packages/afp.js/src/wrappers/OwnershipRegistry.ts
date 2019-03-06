@@ -2,6 +2,7 @@ import Web3 from 'web3';
 
 import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
+import { ContractOwnership } from '../types';
 
 const OwnershipRegistryArtifact: any = require('../../../afp-contracts/build/contracts/OwnershipRegistry.json');
 
@@ -19,7 +20,7 @@ export class OwnershipRegistry {
     counterpartyObligorAddress: string,
     counterpartyBeneficiaryAddress: string
     
-  ) {
+  ): Promise<void> {
     await this.ownershipRegistry.methods.registerOwnership(
       toHex(contractId), 
       recordCreatorObligorAddress,
@@ -33,7 +34,7 @@ export class OwnershipRegistry {
     contractId: string, 
     cashflowId: number, 
     beneficiaryAddress: string
-  ) {
+  ): Promise<void> {
     await this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
       toHex(contractId),
       cashflowId,
@@ -41,7 +42,7 @@ export class OwnershipRegistry {
     );
   }
 
-  public async getContractOwnership (contractId: string) {
+  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
     const { 
       0: recordCreatorObligorAddress, 
       1: recordCreatorBeneficiaryAddress, 
@@ -62,12 +63,12 @@ export class OwnershipRegistry {
     };
   }
 
-  public async getCashflowBeneficiary (contractId: string, cashflowId: number) {
+  public async getCashflowBeneficiary (contractId: string, cashflowId: number): Promise<string> {
     const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(contractId), cashflowId);
     return beneficiary;
   }
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<OwnershipRegistry> {
     const chainId = await web3.eth.net.getId();
     const ownershipRegistryInstance = new web3.eth.Contract(
       OwnershipRegistryArtifact.abi,

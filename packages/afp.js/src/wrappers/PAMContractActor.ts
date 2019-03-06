@@ -12,11 +12,11 @@ export class PAMContractActor {
     this.pamContractActor = pamContractActorInstance
   }
 
-  public async progress (contractId: string, timestamp: number) {
+  public async progress (contractId: string, timestamp: number): Promise<void> {
     await this.pamContractActor.methods.progress(toHex(contractId), timestamp);
   }
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<PAMContractActor> {
     const chainId = await web3.eth.net.getId();
     const pamContractActorInstance = new web3.eth.Contract(
       PAMContractActorArtifact.abi,

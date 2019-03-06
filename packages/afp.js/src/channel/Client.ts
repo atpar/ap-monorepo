@@ -21,12 +21,12 @@ export class Client {
    * @param signedContractUpdate signed contract update to send
    * @returns true if messages was successfully broadcasted
    */
-  public async sendContractUpdate (signedContractUpdate: object) {
+  public async sendContractUpdate (signedContractUpdate: object): Promise<boolean> {
     const message = JSON.stringify({ signedContractUpdate: signedContractUpdate });
     return this.provider.sendMessage(message);
   } 
 
-  private async _receiveContractUpdates (receiver: string) {
+  private async _receiveContractUpdates (receiver: string): Promise<void> {
     this.provider.listenForMessages(receiver, (data: object) => {
       // try  { signedContractUpdate = JSON.parse(obj); } catch (error) { return; }
       Object.values(data).forEach((obj) => {
@@ -48,7 +48,7 @@ export class Client {
   public registerContractListener (
     contractId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
-  ) {
+  ): void {
     this.contractListenerRegistry.set(contractId, cb);
   }
 
@@ -56,7 +56,7 @@ export class Client {
    * removes a contract listener from the contract listener registry
    * @param contractId contract id
    */
-  public removeContractListener (contractId: string) {
+  public removeContractListener (contractId: string): void {
     this.contractListenerRegistry.delete(contractId);
   }
 
@@ -65,7 +65,7 @@ export class Client {
    * when a signed contract update of a unregistered contract is fetched
    * @param cb 
    */
-  public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void) {
+  public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void): void {
     this.fallbackListener = cb;
   }
 
@@ -76,7 +76,7 @@ export class Client {
    * @param url websocket url
    * @returns Client
    */
-  public static websocket (receiver: string, url: string) {
+  public static websocket (receiver: string, url: string): Client {
     return new Client(receiver, new SocketProvider(url));
   }
 
@@ -87,7 +87,7 @@ export class Client {
    * @param url http url
    * @returns Client
    */
-  public static http (receiver: string, url: string) {
+  public static http (receiver: string, url: string): Client {
     return new Client(receiver,  new HTTPProvider(url));
   }
 }

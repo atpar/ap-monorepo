@@ -45,7 +45,7 @@ export class ContractChannel {
    * @param timestamp current timestamp
    * @returns ChannelState
    */
-  public async getChannelState (timestamp: number) {
+  public async getChannelState (timestamp: number): Promise<ChannelState> {
     const account = this.afp.signer.account;
     const signedContractUpdate = this.getLastSignedContractUpdate();
 
@@ -82,7 +82,7 @@ export class ContractChannel {
   public async signAndSendInitialContractUpdate (
     contractId: string,
     contractOwnership: ContractOwnership,
-  ) {
+  ): Promise<void> {
     if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
     if (this.signedContractUpdates.length !== 0) { throw(''); }
 
@@ -113,7 +113,7 @@ export class ContractChannel {
    * @param timestamp current timestamp
    * @returns promise when signed contractupdate was sent
    */
-  public async signAndSendNextContractUpdate (timestamp: number) {
+  public async signAndSendNextContractUpdate (timestamp: number): Promise<void> {
     if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
 
     const previousSignedContractUpdate = this.getLastSignedContractUpdate();
@@ -146,11 +146,11 @@ export class ContractChannel {
    * returns the current (last) signed contract update
    * @returns SignedContractUpdate
    */
-  public getLastSignedContractUpdate () : SignedContractUpdate {
+  public getLastSignedContractUpdate (): SignedContractUpdate {
     return this.signedContractUpdates[this.signedContractUpdates.length - 1]; 
   }
 
-  private _startContractUpdateListener () {
+  private _startContractUpdateListener (): void  {
     if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
     if (this.signedContractUpdates.length == 0) { throw(''); }
     
@@ -170,7 +170,7 @@ export class ContractChannel {
     contractOwnership: ContractOwnership,
     initialContractTerms: ContractTerms,
     initialContractState: ContractState
-  ) : ContractUpdate {
+  ): ContractUpdate {
     return {
       contractId: contractId,
       recordCreatorObligorAddress: contractOwnership.recordCreatorObligorAddress,
@@ -186,7 +186,7 @@ export class ContractChannel {
     nextContractTerms: ContractTerms,
     nextContractState: ContractState,
     nextContractUpdateNonce: number
-  ) : ContractUpdate {
+  ): ContractUpdate {
     const { contractUpdate } = this.getLastSignedContractUpdate();
 
     return {
@@ -200,7 +200,7 @@ export class ContractChannel {
     };
   }
 
-  private async _signContractUpdate (contractUpdate: ContractUpdate) {
+  private async _signContractUpdate (contractUpdate: ContractUpdate): Promise<SignedContractUpdate> {
     const signedContractUpdate: SignedContractUpdate = { 
       contractUpdate: contractUpdate, 
       recordCreatorObligorSignature: '', 
@@ -222,11 +222,11 @@ export class ContractChannel {
     return signedContractUpdate;
   }
 
-  private _storeSignedContractUpdate (signedContractUpdate: SignedContractUpdate) {
+  private _storeSignedContractUpdate (signedContractUpdate: SignedContractUpdate): void {
     this.signedContractUpdates.push(signedContractUpdate);
   }
 
-  private async _validateSignedContractUpdate (signedContractUpdate: SignedContractUpdate) {
+  private async _validateSignedContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<boolean> {
     if (!(await this.afp.signer.validateContractUpdateSignatures(signedContractUpdate))) { return false }
 
     const previousSignedContractUpdate = this.getLastSignedContractUpdate();
@@ -245,7 +245,7 @@ export class ContractChannel {
   private async _validateProposal (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate?: SignedContractUpdate
-  ) {
+  ): Promise<boolean> {
     if (this._isInitialSignedContractUpdate(signedContractUpdate)) {
       if (previousSignedContractUpdate) { 
         return false; 
@@ -277,7 +277,7 @@ export class ContractChannel {
   private async _validateAcknowledgement (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate?: SignedContractUpdate
-  ) {
+  ): Promise<boolean> {
     if (!previousSignedContractUpdate) {
       return false;
     }
@@ -309,7 +309,7 @@ export class ContractChannel {
   private _areContractUpdateAddressesUnaltered (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate: SignedContractUpdate
-  ) {
+  ): boolean {
     return (
       !(
         previousSignedContractUpdate.contractUpdate.recordCreatorObligorAddress === 
@@ -323,14 +323,14 @@ export class ContractChannel {
   private _isNewSignedContractUpdate (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate: SignedContractUpdate
-  ) {
+  ): boolean {
     return (JSON.stringify(previousSignedContractUpdate) === JSON.stringify(signedContractUpdate));
   }
 
   private _areContractUpdateSignaturesUnaltered (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate: SignedContractUpdate
-  ) {
+  ): boolean {
     if (previousSignedContractUpdate.recordCreatorObligorSignature) {
       if (previousSignedContractUpdate.recordCreatorObligorSignature !== signedContractUpdate.recordCreatorObligorSignature) {
         return false;
@@ -347,7 +347,7 @@ export class ContractChannel {
   private _isContractUpdateNonceHigher (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate: SignedContractUpdate
-  ) {
+  ): boolean {
     return (
       previousSignedContractUpdate.contractUpdate.contractUpdateNonce >= 
       signedContractUpdate.contractUpdate.contractUpdateNonce
@@ -357,14 +357,14 @@ export class ContractChannel {
   private _isContractUpdateNonceUnaltered (
     signedContractUpdate: SignedContractUpdate, 
     previousSignedContractUpdate: SignedContractUpdate
-  ) {
+  ): boolean {
     return (
       previousSignedContractUpdate.contractUpdate.contractUpdateNonce !== 
       signedContractUpdate.contractUpdate.contractUpdateNonce
     );
   }
 
-  private _isInitialSignedContractUpdate (signedContractUpdate: SignedContractUpdate) {
+  private _isInitialSignedContractUpdate (signedContractUpdate: SignedContractUpdate): boolean {
     return (signedContractUpdate.contractUpdate.contractUpdateNonce === 0);
   }
 
@@ -377,7 +377,7 @@ export class ContractChannel {
   public static  async create (
     afp: AFP, 
     contractTerms: ContractTerms,
-  ) {    
+  ): Promise<ContractChannel> {    
     let contractEngine;
     switch (contractTerms.contractType) {
       case ContractType.PAM:
@@ -400,7 +400,7 @@ export class ContractChannel {
   public static async fromSignedContractUpdate (
     afp: AFP,
     signedContractUpdate: SignedContractUpdate
-  ) {
+  ): Promise<ContractChannel> {
     const { contractTerms, contractState } = signedContractUpdate.contractUpdate;
     
     let ContractEngine;
@@ -431,7 +431,7 @@ export class ContractChannel {
   public static async fromSignedContractUpdate_Unsafe (
     afp: AFP, 
     signedContractUpdate: SignedContractUpdate
-  ) {
+  ): Promise<ContractChannel> {
     const { contractTerms, contractState } = signedContractUpdate.contractUpdate;
     
     let ContractEngine;

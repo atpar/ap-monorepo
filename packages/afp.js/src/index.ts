@@ -46,7 +46,7 @@ export class AFP {
    * @param cb callback function to be called upon receiving a new contract
    * @returns Promise to Contract
    */
-  public async onNewContractChannel (cb: (contractChannel: ContractChannel) => void) {
+  public onNewContractChannel (cb: (contractChannel: ContractChannel) => void): void {
     if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
     this.client.onNewContractUpdate(async (signedContractUpdate: SignedContractUpdate) => {
       try {
@@ -63,7 +63,7 @@ export class AFP {
    * @param host the url for the contract update relayer (support for http and websocket)
    * @returns AFP
    */
-  public static async init (web3: Web3, defaultAccount: string, host: string) {        
+  public static async init (web3: Web3, defaultAccount: string, host: string): Promise<AFP> {        
     if (!(await web3.eth.net.isListening())) { 
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
     } 

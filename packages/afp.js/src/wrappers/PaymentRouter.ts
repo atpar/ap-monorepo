@@ -19,7 +19,7 @@ export class PaymentRouter {
     eventId: number,
     tokenAddress: string,
     amount: BigNumber
-  ) {
+  ): Promise<void> {
     await this.paymentRouter.methods.settlePayment(
       toHex(contractId),
       cashflowId,
@@ -29,7 +29,7 @@ export class PaymentRouter {
     );
   }
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<PaymentRouter> {
     const chainId = await web3.eth.net.getId();
     const PaymentRouterInstance = new web3.eth.Contract(
       PaymentRouterArtifact.abi,

@@ -26,26 +26,26 @@ export class PAM implements ContractEngine {
     this.contractState = contractState;
   }
 
-  public getContractTerms () {
+  public getContractTerms (): ContractTerms {
     return this.contractTerms;
   }
 
-  public getContractState () {
+  public getContractState (): ContractState {
     return this.contractState;
   }
 
-  public setContractTerms (contractTerms: ContractTerms) {
+  public setContractTerms (contractTerms: ContractTerms): void {
     this.contractTerms = contractTerms; 
   }
 
-  public setContractState (contractState: ContractState) {
+  public setContractState (contractState: ContractState): void {
     this.contractState = contractState; 
   }
 
   /**
    * computes the next state based on the contract terms and the current state
    */
-  public async computeInitialState () {
+  public async computeInitialState (): Promise<ContractState> {
     const initialContractState = await this.pamEngine.computeInitialState(
       this.contractTerms
     );
@@ -56,7 +56,7 @@ export class PAM implements ContractEngine {
    * computes the next state based on the contract terms and the current state
    * @param timestamp current timestamp
    */
-  public async computeNextState (timestamp: number) {
+  public async computeNextState (timestamp: number): Promise<ContractState> {
     const { nextContractState } = await this.pamEngine.computeNextState(
       this.contractTerms, 
       this.contractState, 
@@ -72,7 +72,7 @@ export class PAM implements ContractEngine {
    */
   public async validateInitialState (
     expectedContractState: ContractState,
-  ) {
+  ): Promise<boolean> {
     const contractState = await this.pamEngine.computeInitialState(this.contractTerms);
 
     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
@@ -90,7 +90,7 @@ export class PAM implements ContractEngine {
    */
   public async validateNextState (
     expectedContractState: ContractState,
-  ) {
+  ): Promise<boolean> {
     const { nextContractState: contractState } = await this.pamEngine.computeNextState(
       this.contractTerms, 
       this.contractState,
@@ -109,7 +109,7 @@ export class PAM implements ContractEngine {
    * computes the entire event schedule based on the contract terms
    * @returns expected event schedule
    */
-  public async computeExpectedSchedule () {
+  public async computeExpectedSchedule (): Promise<any> {
     return this.pamEngine.computeSchedule(this.contractTerms);
   }
 
@@ -118,7 +118,7 @@ export class PAM implements ContractEngine {
    * @param timestamp current timestamp
    * @returns pending event schedule
    */
-  public async computePendingSchedule (timestamp: number) {
+  public async computePendingSchedule (timestamp: number): Promise<any> {
     return this.pamEngine.computeScheduleSegment(
       this.contractTerms, 
       this.contractState.lastEventTime, 
@@ -131,7 +131,9 @@ export class PAM implements ContractEngine {
    * @param expectedSchedule expected event schedule
    * @returns evaluated event schedule
    */
-  public async evaluateSchedule (schedule: any) {
+  public async evaluateSchedule (
+    schedule: any
+  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]> {
     return this.pamEngine.evaluateSchedule(this.contractTerms, this.contractState, schedule);
   }
 
@@ -140,7 +142,7 @@ export class PAM implements ContractEngine {
    * @param timestamp current timestamp
    * @returns summed up payoff
    */
-  public async computeDuePayoff (timestamp: number) {
+  public async computeDuePayoff (timestamp: number): Promise<BigNumber> {
     const pendingEventSchedule = await this.computePendingSchedule(timestamp);
     const evaluatedSchedule = await this.evaluateSchedule(pendingEventSchedule);
     const contractEvents = evaluatedSchedule.map((entry: any) => {
@@ -155,7 +157,7 @@ export class PAM implements ContractEngine {
    * @param contractEvents array of contract events
    * @returns summed up payoff 
    */
-  protected _getPayOffFromContractEvents (contractEvents: ContractEvent[]) {
+  protected _getPayOffFromContractEvents (contractEvents: ContractEvent[]): BigNumber {
     const payOff = contractEvents.reduce(
       (payOffSum: BigNumber, contractEvent: ContractEvent) => payOffSum.plus(new BigNumber(contractEvent.payOff))
       , new BigNumber(0));
@@ -192,7 +194,7 @@ export class PAM implements ContractEngine {
   public static async create (
     web3: Web3,
     contractTerms: ContractTerms
-  ) {
+  ): Promise<PAM> {
     const pamEngine = await PAMEngine.instantiate(web3);
     const initialContractState = await pamEngine.computeInitialState(contractTerms);
 
@@ -215,7 +217,7 @@ export class PAM implements ContractEngine {
     web3: Web3,
     contractTerms: ContractTerms,
     contractState: ContractState
-  ) {
+  ): Promise<PAM> {
     const pamEngine = await PAMEngine.instantiate(web3);
 
     return new PAM(

@@ -93,7 +93,13 @@ export class PAMEngine {
         actualEventTime: 0
       };
 
-      const { postContractState, evaluatedContractEvent } = await this.computeNextStateForEvent(
+      const { 
+        postContractState, 
+        evaluatedContractEvent 
+      } : { 
+        postContractState: ContractState, 
+        evaluatedContractEvent: any 
+      } = await this.computeNextStateForEvent(
         contractTerms,
         contractState,
         contractEvent,

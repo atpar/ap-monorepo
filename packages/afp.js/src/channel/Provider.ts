@@ -20,7 +20,7 @@ export class SocketProvider implements Provider {
    * @param payload payload to send
    * @returns Promise to boolean
    */
-  public async sendMessage (msg: string) {
+  public async sendMessage (msg: string): Promise<boolean> {
     this.socket.emit('message', msg);
     return true;
   }
@@ -31,7 +31,7 @@ export class SocketProvider implements Provider {
    * @param identifier identifier to listen for
    * @param cb callback function
    */
-  public listenForMessages (identifier: string, cb: { (data: string[]): any }) {
+  public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
     this.socket.on(identifier, (data: string[]) => {
       cb(data);
     });
@@ -51,7 +51,7 @@ export class HTTPProvider implements Provider {
    * @param payload payload to send
    * @returns Promise to boolean
    */
-  public async sendMessage (payload: string) {
+  public async sendMessage (payload: string): Promise<boolean> {
     const response = await fetch(this.host + '/api/contracts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -67,13 +67,13 @@ export class HTTPProvider implements Provider {
    * @param identifier identifier to listen for
    * @param cb callback function
    */
-  public listenForMessages (identifier: string, cb: { (data: string[]): any }) {
+  public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
     setInterval(async () => {
       try {
-        const response = await fetch(this.host + '/api/contracts?address=' + identifier, {})
+        const response = await fetch(this.host + '/api/contracts?address=' + identifier, {});
         const json = await response.json();
         cb(json);
       } catch (error) { return; }
-    }, 2000)
+    }, 2000);
   }
 }

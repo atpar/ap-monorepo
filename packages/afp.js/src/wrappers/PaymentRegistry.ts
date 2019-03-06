@@ -12,7 +12,7 @@ export class PaymentRegistry {
     this.paymentRegistry = PaymentRegistryInstance
   }
 
-  public async getPayoffBalance (contractId: string, eventId: number) {
+  public async getPayoffBalance (contractId: string, eventId: number): Promise<number> {
     const payoffBalance: number = await this.paymentRegistry.methods.getPayoffBalance(
       toHex(contractId),
       eventId
@@ -21,7 +21,10 @@ export class PaymentRegistry {
     return payoffBalance;
   }
 
-  public async getPayoff (contractId: string, eventId: number) {
+  public async getPayoff (
+    contractId: string, 
+    eventId: number
+  ): Promise<{cashflowId: string, tokenAddress: string, payoffBalance: number}> {
     const { 
       0: cashflowId, 
       1: tokenAddress, 
@@ -36,7 +39,7 @@ export class PaymentRegistry {
   }
 
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<PaymentRegistry> {
     const chainId = await web3.eth.net.getId();
     const PaymentRegistryInstance = new web3.eth.Contract(
       PaymentRegistryArtifact.abi,

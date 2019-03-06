@@ -8,7 +8,7 @@ export class Common {
     this.web3 = web3;
   }
 
-  public async isConnected () {
+  public async isConnected (): Promise<boolean> {
     return this.web3.eth.net.isListening();
   }
 }

@@ -19,7 +19,7 @@ export class ContractRegistry {
     contractTerms: ContractTerms,
     contractState: ContractState,
     actorAddress: string
-  ) {
+  ): Promise<void> {
     await this.contractRegistry.methods.registerContract(
       toHex(contractId), 
       contractTerms,
@@ -28,17 +28,17 @@ export class ContractRegistry {
     );
   }
 
-  public async getContractTerms (contractId: string) {
+  public async getContractTerms (contractId: string): Promise<ContractTerms> {
     const contractTerms: ContractTerms = await this.contractRegistry.methods.getTerms(toHex(contractId));
     return contractTerms;
   }
 
-  public async getContractState (contractId: string) {
+  public async getContractState (contractId: string): Promise<ContractState> {
     const contractState: ContractState = await this.contractRegistry.methods.getState(toHex(contractId));
     return contractState;
   }
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<ContractRegistry> {
     const chainId = await web3.eth.net.getId();
     const contractRegistryInstance = new web3.eth.Contract(
       ContractRegistryArtifact.abi,

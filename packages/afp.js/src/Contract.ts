@@ -1,6 +1,6 @@
 import { SendOptions } from 'web3-eth-contract/types';
 
-import { ContractTerms, ContractType, ContractOwnership } from './types';
+import { ContractTerms, ContractType, ContractOwnership, ContractState } from './types';
 import { ContractEngine, PAM } from './engines';
 import { AFP } from './index';
 
@@ -26,9 +26,13 @@ export class Contract {
     this.contractId = contractId;
   }
 
-  public async getContractTerms () { return this.afp.economics.getContractTerms(this.contractId); }
+  public async getContractTerms (): Promise<ContractTerms> { 
+    return this.afp.economics.getContractTerms(this.contractId); 
+  }
 
-  public async getContractState () { return this.afp.economics.getContractState(this.contractId); }
+  public async getContractState (): Promise<ContractState> { 
+    return this.afp.economics.getContractState(this.contractId); 
+  }
 
   /**
    * returns a new Contract instance
@@ -47,7 +51,7 @@ export class Contract {
     contractOwnership: ContractOwnership,
     // @ts-ignore
     txOptions?: SendOptions
-  ) {
+  ): Promise<Contract> {
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
@@ -78,7 +82,7 @@ export class Contract {
   public static async loadContract (
     afp: AFP,
     contractId: string
-  ) {
+  ): Promise<Contract> {
     const contractTerms = await afp.economics.getContractTerms(contractId);
     const contractState = await afp.economics.getContractState(contractId);
 

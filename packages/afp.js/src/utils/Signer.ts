@@ -21,7 +21,7 @@ export class Signer {
    * @param contractUpdate contract update to sign
    * @returns SignedContractUpdate
    */
-  public async signContractUpdate (contractUpdate: ContractUpdate) {
+  public async signContractUpdate (contractUpdate: ContractUpdate): Promise<string> {
     const typedData = await this._getContractUpdateAsTypedData(contractUpdate);
     const typedDataString = JSON.stringify(typedData);
     
@@ -49,7 +49,9 @@ export class Signer {
    * @param signedContractUpdate signed contract update to validate
    * @returns true if signatures are valid
    */
-  public async validateContractUpdateSignatures (signedContractUpdate: SignedContractUpdate) {
+  public async validateContractUpdateSignatures (
+    signedContractUpdate: SignedContractUpdate
+  ): Promise<boolean> {
     const typedData = await this._getContractUpdateAsTypedData(signedContractUpdate.contractUpdate);
     const recordCreatorObligorAddress = signedContractUpdate.contractUpdate.recordCreatorObligorAddress;
     const counterpartyObligorAddress = signedContractUpdate.contractUpdate.counterpartyObligorAddress;
@@ -68,7 +70,11 @@ export class Signer {
     return true;
   }
 
-  private _validateSignature (typedData: ContractUpdateAsTypedData, address: string, signature: string) {
+  private _validateSignature (
+    typedData: ContractUpdateAsTypedData, 
+    address: string, 
+    signature: string
+  ): boolean {
     try {
       const recoveredAddress = sigUtil.recoverTypedSignature({
         data: typedData,
@@ -79,7 +85,9 @@ export class Signer {
     return true;
   }
 
-  private async _getContractUpdateAsTypedData (contractUpdate: ContractUpdate) {
+  private async _getContractUpdateAsTypedData (
+    contractUpdate: ContractUpdate
+  ): Promise<ContractUpdateAsTypedData> {
     const chainId = await this.web3.eth.net.getId();
     const typedData: ContractUpdateAsTypedData = {
       domain: {
@@ -119,7 +127,7 @@ export class Signer {
     return typedData;
   }
 
-  private async _sendJsonRpcRequest (method: string, params: any[]) {
+  private async _sendJsonRpcRequest (method: string, params: any[]): Promise<string> {
     // @ts-ignore
     return this.web3.currentProvider.send(method, params);
   }
