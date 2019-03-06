@@ -26,24 +26,33 @@ export class Contract {
     this.contractId = contractId;
   }
 
+  /**
+   * return the terms of the contract
+   * @returns {Promise<ContractTerms>}
+   */
   public async getContractTerms (): Promise<ContractTerms> { 
     return this.afp.economics.getContractTerms(this.contractId); 
   }
 
+  /**
+   * returns the current state of the contract
+   * @returns {Promise<ContractState>}
+   */
   public async getContractState (): Promise<ContractState> { 
     return this.afp.economics.getContractState(this.contractId); 
   }
 
   /**
-   * returns a new Contract instance
-   * computes the first contract state and deploys the stateful contract,
-   * prompts for signing the first contract update eand sends it
-   * @param afp AFP instance
-   * @param contractTerms contract terms
-   * @param recordCreatorAddress address of the record creator
-   * @param counterpartyAddress address of the counterparty
-   * @param txOptions transaction options, see web3 send opions (optional)
-   * @returns Contract
+   * registers the terms, the initial state and the ownership of a contract 
+   * and returns a new Contract instance.
+   * computes the initial contract state,
+   * stores it together with the terms of the ContractRegistry,
+   * stores the ownership of the contract in the OwnershipRegistry and sends it
+   * @param {AFP} afp AFP instance
+   * @param {ContractTerms} contractTerms contract terms
+   * @param {ContractOwnership} contractOwnership ownership of the contract
+   * @param {SendOptions} txOptions transaction options, see web3 send opions (optional)
+   * @returns {Promise<Contract>}
    */
   public static async create (
     afp: AFP,
@@ -74,10 +83,10 @@ export class Contract {
   }
 
   /**
-   * returns a new Contract instance from a signed contract update
-   * @param afp AFP instance
-   * @param contractId contractId of 
-   * @returns Contract
+   * loads a already registered Contract and returns a new Contract instance from a provided ContactId
+   * @param {AFP} afp AFP instance
+   * @param {string} contractId 
+   * @returns {Promise<Contract>}
    */
   public static async loadContract (
     afp: AFP,

@@ -26,24 +26,41 @@ export class PAM implements ContractEngine {
     this.contractState = contractState;
   }
 
+  /**
+   * return the terms of the contract
+   * @returns {ContractTerms}
+   */
   public getContractTerms (): ContractTerms {
     return this.contractTerms;
   }
 
+  /**
+   * returns the current state of the contract
+   * @returns {ContractState}
+   */
   public getContractState (): ContractState {
     return this.contractState;
   }
 
+  /**
+   * updates the terms of the contract
+   * @param {ContractTerms} 
+   */
   public setContractTerms (contractTerms: ContractTerms): void {
     this.contractTerms = contractTerms; 
   }
 
+  /**
+   * updates the state of the contract
+   * @param {ContractState}
+   */
   public setContractState (contractState: ContractState): void {
     this.contractState = contractState; 
   }
 
   /**
    * computes the next state based on the contract terms and the current state
+   * @returns {Promise<ContractState>}
    */
   public async computeInitialState (): Promise<ContractState> {
     const initialContractState = await this.pamEngine.computeInitialState(
@@ -54,7 +71,8 @@ export class PAM implements ContractEngine {
 
   /**
    * computes the next state based on the contract terms and the current state
-   * @param timestamp current timestamp
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<ContractState>}
    */
   public async computeNextState (timestamp: number): Promise<ContractState> {
     const { nextContractState } = await this.pamEngine.computeNextState(
@@ -67,8 +85,8 @@ export class PAM implements ContractEngine {
 
   /**
    * recalculates the first state based on the terms of the contract
-   * @param expectedContractState expected contract state to compare to
-   * @returns true if the given state is equal to the computed state
+   * @param {ContractState} expectedContractState expected contract state to compare to
+   * @returns {Promise<boolean>} true if the given state is equal to the computed state
    */
   public async validateInitialState (
     expectedContractState: ContractState,
@@ -85,8 +103,8 @@ export class PAM implements ContractEngine {
 
   /**
    * recalculates a state based on the terms and the current state of the contract
-   * @param expectedContractState expected contract state to compare to
-   * @returns true if the given state is equal to the computed state
+   * @param {ContractState} expectedContractState expected contract state to compare to
+   * @returns {Promise<boolean>} true if the given state is equal to the computed state
    */
   public async validateNextState (
     expectedContractState: ContractState,
@@ -107,7 +125,7 @@ export class PAM implements ContractEngine {
 
   /**
    * computes the entire event schedule based on the contract terms
-   * @returns expected event schedule
+   * @returns {Promise<any>} expected event schedule
    */
   public async computeExpectedSchedule (): Promise<any> {
     return this.pamEngine.computeSchedule(this.contractTerms);
@@ -115,8 +133,8 @@ export class PAM implements ContractEngine {
 
   /**
    * computes schedule for all pending events
-   * @param timestamp current timestamp
-   * @returns pending event schedule
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<any>} pending event schedule
    */
   public async computePendingSchedule (timestamp: number): Promise<any> {
     return this.pamEngine.computeScheduleSegment(
@@ -128,8 +146,8 @@ export class PAM implements ContractEngine {
 
   /**
    * evaluates a given event schedule
-   * @param expectedSchedule expected event schedule
-   * @returns evaluated event schedule
+   * @param {any} expectedSchedule expected event schedule
+   * @returns {Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]>} evaluated event schedule
    */
   public async evaluateSchedule (
     schedule: any
@@ -139,8 +157,8 @@ export class PAM implements ContractEngine {
 
   /**
    * calculates the outstanding payoff based on all pending events for a given date
-   * @param timestamp current timestamp
-   * @returns summed up payoff
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<BigNumber>} summed up payoff
    */
   public async computeDuePayoff (timestamp: number): Promise<BigNumber> {
     const pendingEventSchedule = await this.computePendingSchedule(timestamp);
@@ -154,8 +172,8 @@ export class PAM implements ContractEngine {
   
   /**
    * sums up payoff for a set of evaluated events
-   * @param contractEvents array of contract events
-   * @returns summed up payoff 
+   * @param {ContractEvent[]} contractEvents array of contract events
+   * @returns {BigNumber} summed up payoff 
    */
   protected _getPayOffFromContractEvents (contractEvents: ContractEvent[]): BigNumber {
     const payOff = contractEvents.reduce(
@@ -185,11 +203,11 @@ export class PAM implements ContractEngine {
   // }
 
   /**
-   * returns a new PAMOffChain instance
-   * computes and stores the first contract state and deploys a new stateful contract
-   * @param web3 Web3 instance
-   * @param contractTerms contact terms
-   * @returns PAMOffChain
+   * returns a new PAM instance
+   * computes and sets the initial contract state
+   * @param {Web3} web3 Web3 instance
+   * @param {ContractTerms} contractTerms
+   * @returns {Promise<PAM>}
    */
   public static async create (
     web3: Web3,
@@ -206,12 +224,12 @@ export class PAM implements ContractEngine {
   }
 
   /**
-   * returns a new PAMOffChain instance
-   * stores the provided contract state
-   * @param web3 Web3 instance
-   * @param contractTerms contract terms
-   * @param contractState contract state
-   * @returns PAMOffChain
+   * returns a new PAM instance
+   * sets the provided contract state
+   * @param {Web3} web3 Web3 instance
+   * @param {ContractTerms} contractTerms
+   * @param {ContractState} contractState
+   * @returns {Promise<PAM>}
    */
   public static async init (
     web3: Web3,

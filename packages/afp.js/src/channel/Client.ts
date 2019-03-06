@@ -1,4 +1,5 @@
 import { Provider, SocketProvider, HTTPProvider } from './Provider';
+
 import { SignedContractUpdate } from '../types';
 
 
@@ -18,10 +19,10 @@ export class Client {
 
   /**
    * sends a signed contract update utilizing the provided method (http or websocket)
-   * @param signedContractUpdate signed contract update to send
-   * @returns true if messages was successfully broadcasted
+   * @param {SignedContractUpdate} signedContractUpdate signed contract update to send
+   * @returns {Promise<boolean>} returns true if messages was successfully broadcasted
    */
-  public async sendContractUpdate (signedContractUpdate: object): Promise<boolean> {
+  public async sendContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<boolean> {
     const message = JSON.stringify({ signedContractUpdate: signedContractUpdate });
     return this.provider.sendMessage(message);
   } 
@@ -41,9 +42,9 @@ export class Client {
 
   /**
    * registers a contract listener which calls the provided callback function
-   * upon receiving a new signed contract update
-   * @param contractId contract id
-   * @param cb callback
+   * upon receiving a new signed contract update for ContractChannel
+   * @param contractId
+   * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public registerContractListener (
     contractId: string, 
@@ -54,7 +55,7 @@ export class Client {
 
   /**
    * removes a contract listener from the contract listener registry
-   * @param contractId contract id
+   * @param {string} contractId
    */
   public removeContractListener (contractId: string): void {
     this.contractListenerRegistry.delete(contractId);
@@ -62,30 +63,30 @@ export class Client {
 
   /**
    * registers a listener which calls the provided callback 
-   * when a signed contract update of a unregistered contract is fetched
-   * @param cb 
+   * when a signed contract update of an unregistered ContractChannel is fetched
+   * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void): void {
     this.fallbackListener = cb;
   }
 
   /**
-   * create a new Client instance that utilizes a websocket 
+   * returns a new Client instance that utilizes a websocket 
    * for communicating with a provided relayer endpoint
-   * @param receiver address of the receiver
-   * @param url websocket url
-   * @returns Client
+   * @param {string} receiver address of the receiver
+   * @param {string} url websocket url
+   * @returns {Client}
    */
   public static websocket (receiver: string, url: string): Client {
     return new Client(receiver, new SocketProvider(url));
   }
 
   /**
-   * create a new Client instance that utilizes http 
+   * returns a new Client instance that utilizes http 
    * for communicating with a provided relayer endpoint
-   * @param receiver address of the receiver 
-   * @param url http url
-   * @returns Client
+   * @param {string} receiver address of the receiver 
+   * @param {string} url http url
+   * @returns {Client}
    */
   public static http (receiver: string, url: string): Client {
     return new Client(receiver,  new HTTPProvider(url));

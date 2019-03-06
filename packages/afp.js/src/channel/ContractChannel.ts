@@ -41,9 +41,10 @@ export class ContractChannel {
 
   // or getTurnTakerStatus, getObligation
   /**
-   * returns the state of channel based on the current state of the contract and the provided timestamp
-   * @param timestamp current timestamp
-   * @returns ChannelState
+   * returns the state of the ContractChannel based on the 
+   * current state of the contract and the provided timestamp
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<ChannelState>}
    */
   public async getChannelState (timestamp: number): Promise<ChannelState> {
     const account = this.afp.signer.account;
@@ -79,6 +80,14 @@ export class ContractChannel {
     return ChannelState.Receivable;
   }
 
+  /**
+   * creates a new contract update for the initial state of the contract
+   * and sends it after receiving a signature
+   * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
+   * @param contractId 
+   * @param contractOwnership 
+   * @returns {Promise<void>}
+   */
   public async signAndSendInitialContractUpdate (
     contractId: string,
     contractOwnership: ContractOwnership,
@@ -110,8 +119,8 @@ export class ContractChannel {
    * creates a new contract update based on the next state 
    * for a given timestamp and sends it after receiving a signature
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
-   * @param timestamp current timestamp
-   * @returns promise when signed contractupdate was sent
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<void>} promise when signed contractupdate was sent
    */
   public async signAndSendNextContractUpdate (timestamp: number): Promise<void> {
     if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
@@ -144,7 +153,7 @@ export class ContractChannel {
 
   /**
    * returns the current (last) signed contract update
-   * @returns SignedContractUpdate
+   * @returns {SignedContractUpdate}
    */
   public getLastSignedContractUpdate (): SignedContractUpdate {
     return this.signedContractUpdates[this.signedContractUpdates.length - 1]; 
@@ -369,10 +378,11 @@ export class ContractChannel {
   }
 
   /**
-   * creates a new ContractChannel instance
-   * @param afp AFP instance
-   * @param contractEngine ContractEngine instance
-   * @returns Channel
+   * returns a new ContractChannel instance
+   * @notice to initialize the ContractChannel call signAndSendInitialContractUpdate
+   * @param {AFP} afp AFP instance
+   * @param {ContractTerms} contractTerms
+   * @returns {Promise<ContractChannel>}
    */
   public static  async create (
     afp: AFP, 
@@ -391,11 +401,12 @@ export class ContractChannel {
   }
 
   /**
-   * initializes a new Channel instance based on a valid initial signed contract update
-   * @notice validates the provided first signed contract uodate
-   * @param afp AFP instance
-   * @param signedContractUpdate signed contract update
-   * @returns Channel
+   * returns a new ContractChannel instance based on a valid initial signed contract update
+   * @notice validates the provided signed contract upodate 
+   * (has to be the initial signed contract update)
+   * @param {AFP} afp AFP instance
+   * @param {SignedContractUpdate} signedContractUpdate
+   * @returns {Promise<ContractChannel>}
    */
   public static async fromSignedContractUpdate (
     afp: AFP,
@@ -422,11 +433,11 @@ export class ContractChannel {
   }
 
   /**
-   * initializes a new Channel instance based on an arbitrary signed contract update
+   * initializes a new ContractChannel instance based on an arbitrary signed contract update
    * @notice does not validate the provided signed contract update
-   * @param afp AFP instance
-   * @param signedContractUpdate signed contract update
-   * @returns Channel
+   * @param {AFP} afp AFP instance
+   * @param {SignedContractUpdate} signedContractUpdate
+   * @returns {Promise<ContractChannel>}
    */
   public static async fromSignedContractUpdate_Unsafe (
     afp: AFP, 

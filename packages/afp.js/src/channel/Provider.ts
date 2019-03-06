@@ -17,19 +17,19 @@ export class SocketProvider implements Provider {
   
   /**
    * sends a message
-   * @param payload payload to send
-   * @returns Promise to boolean
+   * @param {string} payload payload to send
+   * @returns {Promise<boolean>}
    */
-  public async sendMessage (msg: string): Promise<boolean> {
-    this.socket.emit('message', msg);
+  public async sendMessage (payload: string): Promise<boolean> {
+    this.socket.emit('message', payload);
     return true;
   }
 
   /**
    * listens for new messages for a given identifier
-   * executes the provided callback function upon receiving a new messages
-   * @param identifier identifier to listen for
-   * @param cb callback function
+   * executes the provided callback function upon receiving new messages
+   * @param {string} identifier identifier to listen for
+   * @param {(data: string[]) => any} cb callback function which returns an array of messages
    */
   public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
     this.socket.on(identifier, (data: string[]) => {
@@ -48,8 +48,8 @@ export class HTTPProvider implements Provider {
   
   /**
    * sends a message
-   * @param payload payload to send
-   * @returns Promise to boolean
+   * @param {string} payload payload to send
+   * @returns {Promise<boolean>}
    */
   public async sendMessage (payload: string): Promise<boolean> {
     const response = await fetch(this.host + '/api/contracts', {
@@ -64,8 +64,8 @@ export class HTTPProvider implements Provider {
   /**
    * polls for new messages for a given identifier
    * executes the provided callback function upon receiving a new messages
-   * @param identifier identifier to listen for
-   * @param cb callback function
+   * @param {string} identifier identifier to listen for
+   * @param {(data: string[]) => any} cb callback function which returns an array of messages
    */
   public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
     setInterval(async () => {

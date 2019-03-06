@@ -43,8 +43,8 @@ export class AFP {
 
   /**
    * polls for / subscribes to new uninstantiated contracts
-   * @param cb callback function to be called upon receiving a new contract
-   * @returns Promise to Contract
+   * @param {(contractChannel: ContractChannel) => void} cb callback function to be called 
+   * upon receiving a signed contract update of an uninstantiated ContractChannel
    */
   public onNewContractChannel (cb: (contractChannel: ContractChannel) => void): void {
     if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
@@ -58,10 +58,10 @@ export class AFP {
 
   /**
    * returns a new AFP instance
-   * @param web3 Web3 instance
-   * @param defaultAccount default account for signing contract updates and transactions
-   * @param host the url for the contract update relayer (support for http and websocket)
-   * @returns AFP
+   * @param {Web3} web3 Web3 instance
+   * @param {string} defaultAccount default account for signing contract updates and transactions
+   * @param {string} host the url for the contract update relayer (support for http and websocket)
+   * @returns {Promise<AFP>} 
    */
   public static async init (web3: Web3, defaultAccount: string, host: string): Promise<AFP> {        
     if (!(await web3.eth.net.isListening())) { 

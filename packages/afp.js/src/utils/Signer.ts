@@ -18,8 +18,8 @@ export class Signer {
   /**
    * signs a given contract update with the provided account
    * EIP712 compliant (tries both eth_signTypedData_v3 and eth_signTypedData)
-   * @param contractUpdate contract update to sign
-   * @returns SignedContractUpdate
+   * @param {ContractUpdate} contractUpdate contract update to sign
+   * @returns {SignedContractUpdate}
    */
   public async signContractUpdate (contractUpdate: ContractUpdate): Promise<string> {
     const typedData = await this._getContractUpdateAsTypedData(contractUpdate);
@@ -46,8 +46,8 @@ export class Signer {
 
   /**
    * validates the signatures for a given signed contract update
-   * @param signedContractUpdate signed contract update to validate
-   * @returns true if signatures are valid
+   * @param {SignedContractUpdate} signedContractUpdate signed contract update to validate
+   * @returns {Promise<boolean>} true if signatures are valid
    */
   public async validateContractUpdateSignatures (
     signedContractUpdate: SignedContractUpdate
