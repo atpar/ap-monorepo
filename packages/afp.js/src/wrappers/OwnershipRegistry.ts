@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 import { ContractOwnership } from '../types';
 
@@ -18,8 +18,8 @@ export class OwnershipRegistry {
     recordCreatorObligorAddress: string,
     recordCreatorBeneficiaryAddress: string,
     counterpartyObligorAddress: string,
-    counterpartyBeneficiaryAddress: string
-    
+    counterpartyBeneficiaryAddress: string,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.registerOwnership(
       toHex(contractId), 
@@ -27,19 +27,20 @@ export class OwnershipRegistry {
       recordCreatorBeneficiaryAddress,
       counterpartyObligorAddress,
       counterpartyBeneficiaryAddress
-    );
+    ).send({ ...txOptions });
   }
 
   public async setBeneficiaryForCashflowId (
     contractId: string, 
     cashflowId: number, 
-    beneficiaryAddress: string
+    beneficiaryAddress: string,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
       toHex(contractId),
       cashflowId,
       beneficiaryAddress
-    );
+    ).send({ ...txOptions });
   }
 
   public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
@@ -53,7 +54,7 @@ export class OwnershipRegistry {
       1: string, 
       2: string, 
       3: string 
-    } = await this.ownershipRegistry.methods.getContractOwnership(toHex(contractId));
+    } = await this.ownershipRegistry.methods.getContractOwnership(toHex(contractId)).call();
 
     return { 
       recordCreatorObligorAddress, 
@@ -64,7 +65,7 @@ export class OwnershipRegistry {
   }
 
   public async getCashflowBeneficiary (contractId: string, cashflowId: number): Promise<string> {
-    const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(contractId), cashflowId);
+    const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(contractId), cashflowId).call();
     return beneficiary;
   }
 

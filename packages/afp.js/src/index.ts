@@ -66,14 +66,14 @@ export class AFP {
   public static async init (web3: Web3, defaultAccount: string, host: string): Promise<AFP> {        
     if (!(await web3.eth.net.isListening())) { 
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
-    } 
-
-    const ownership = await OwnershipAPI.init(web3);
-    const economics = await EconomicsAPI.init(web3);
-    const payment = await PaymentAPI.init(web3);
+    }
 
     const signer = new Signer(web3, defaultAccount);
     const common = new Common(web3);
+
+    const ownership = await OwnershipAPI.init(web3, signer);
+    const economics = await EconomicsAPI.init(web3, signer);
+    const payment = await PaymentAPI.init(web3, signer);
   
     let client: Client | undefined = undefined;
 
@@ -94,3 +94,4 @@ export class AFP {
 }
 
 export { Contract } from './Contract';
+export { ContractChannel } from './channel/ContractChannel';

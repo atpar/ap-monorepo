@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
 const PaymentRouterArtifact: any = require('../../../afp-contracts/build/contracts/PaymentRouter.json');
@@ -18,7 +18,8 @@ export class PaymentRouter {
     cashflowId: number,
     eventId: number,
     tokenAddress: string,
-    amount: BigNumber
+    amount: BigNumber,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.paymentRouter.methods.settlePayment(
       toHex(contractId),
@@ -26,7 +27,7 @@ export class PaymentRouter {
       eventId,
       tokenAddress,
       amount
-    );
+    ).send({ ...txOptions });
   }
 
   public static async instantiate (web3: Web3): Promise<PaymentRouter> {

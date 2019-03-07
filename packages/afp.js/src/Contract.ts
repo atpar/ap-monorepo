@@ -1,13 +1,12 @@
-import { SendOptions } from 'web3-eth-contract/types';
-
 import { ContractTerms, ContractType, ContractOwnership, ContractState } from './types';
 import { ContractEngine, PAM } from './engines';
 import { AFP } from './index';
 
 
 /**
- * manages financial channel for a contract
- * proxy for initializing and processing contract
+ * class which provides methods for managing an ACTUS contract 
+ * exposes methods for ownership management, settlement of payoffs and 
+ * economic lifecycle management for an ACTUS contract
  */
 export class Contract {
   
@@ -23,6 +22,7 @@ export class Contract {
   ) {
     this.afp = afp;
     this.contractEngine = contractEngine;
+
     this.contractId = contractId;
   }
 
@@ -43,6 +43,16 @@ export class Contract {
   }
 
   /**
+   * returns the current ownership of the contract
+   * @param {string} contractId 
+   * @returns {Promise<ContractOwnership>}
+   */
+  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
+    return this.afp.ownership.getContractOwnership(contractId);
+  }
+ 
+
+  /**
    * registers the terms, the initial state and the ownership of a contract 
    * and returns a new Contract instance.
    * computes the initial contract state,
@@ -51,15 +61,12 @@ export class Contract {
    * @param {AFP} afp AFP instance
    * @param {ContractTerms} contractTerms contract terms
    * @param {ContractOwnership} contractOwnership ownership of the contract
-   * @param {SendOptions} txOptions transaction options, see web3 send opions (optional)
    * @returns {Promise<Contract>}
    */
   public static async create (
     afp: AFP,
     contractTerms: ContractTerms,
-    contractOwnership: ContractOwnership,
-    // @ts-ignore
-    txOptions?: SendOptions
+    contractOwnership: ContractOwnership
   ): Promise<Contract> {
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
 

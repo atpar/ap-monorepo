@@ -1,8 +1,7 @@
 import Web3 from 'web3';
 
-import { AFP } from '../../src';
+import { AFP, ContractChannel } from '../../src';
 import { ContractTerms, ContractType } from '../../src/types';
-import { ContractChannel } from '../../src/channel/ContractChannel';
 
 describe('testContractChannelClass', () => {
 

@@ -29,8 +29,8 @@
     "eth-sig-util": "^2.1.0",
     "isomorphic-fetch": "^2.2.1",
     "socket.io": "^2.2.0",
-    "web3": "^1.0.0-beta.41",
-    "web3-utils": "^1.0.0-beta.41"
+    "web3": "1.0.0-beta.46",
+    "web3-utils": "1.0.0-beta.46"
   },
   "devDependencies": {
     "@types/bignumber.js": "^5.0.0",

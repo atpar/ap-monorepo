@@ -2,13 +2,16 @@ import Web3 from 'web3';
 
 import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
 import { ContractOwnership } from '../types';
+import { Signer } from '../utils/Signer';
 
 export class OwnershipAPI {
 
   private registry: OwnershipRegistry;
+  private signer: Signer;
 
-  private constructor (registry: OwnershipRegistry) {
+  private constructor (registry: OwnershipRegistry, signer: Signer) {
     this.registry = registry;
+    this.signer = signer;
   }
 
   /**
@@ -26,7 +29,8 @@ export class OwnershipAPI {
       contractOwnership.recordCreatorObligorAddress,
       contractOwnership.recordCreatorBeneficiaryAddress,
       contractOwnership.counterpartyObligorAddress,
-      contractOwnership.counterpartyBeneficiaryAddress
+      contractOwnership.counterpartyBeneficiaryAddress,
+      { from: this.signer.account, gas: 300000 }
     );
   }
 
@@ -44,8 +48,8 @@ export class OwnershipAPI {
    * @param {Web3} web3 web3 instance
    * @returns {Promise<OwnershipAPI>}
    */
-  public static async init (web3: Web3): Promise<OwnershipAPI> {
+  public static async init (web3: Web3, signer: Signer): Promise<OwnershipAPI> {
     const registry = await OwnershipRegistry.instantiate(web3);
-    return new OwnershipAPI(registry);
+    return new OwnershipAPI(registry, signer);
   }
 }

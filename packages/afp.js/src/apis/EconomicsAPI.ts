@@ -2,13 +2,16 @@ import Web3 from 'web3';
 
 import { ContractRegistry } from '../wrappers/ContractRegistry';
 import { ContractTerms, ContractState } from  '../types';
+import { Signer } from '../utils/Signer';
 
 export class EconomicsAPI {
 
   private registry: ContractRegistry;
+  private signer: Signer;
 
-  private constructor (registry: ContractRegistry) {
+  private constructor (registry: ContractRegistry, signer: Signer) {
     this.registry = registry;
+    this.signer = signer;
   }
 
   /**
@@ -24,10 +27,11 @@ export class EconomicsAPI {
     contractState: ContractState
   ): Promise<void> {
     await this.registry.registerContract(
-      contractId, 
+      contractId,
       contractTerms, 
       contractState, 
-      '0x0000000000000000000000000000000000000000'
+      '0x0000000000000000000000000000000000000001',
+      { from: this.signer.account, gas: 700000 }
     );
   }
 
@@ -37,7 +41,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractTerms>} ContractTerms
    */
   public async getContractTerms (contractId: string): Promise<ContractTerms> {
-    return await this.registry.getContractTerms(contractId);
+    return this.registry.getContractTerms(contractId);
   }
 
   /**
@@ -46,7 +50,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractState>}
    */
   public async getContractState (contractId: string): Promise<ContractState> {
-    return await this.registry.getContractState(contractId);
+    return this.registry.getContractState(contractId);
   }
 
   /**
@@ -54,8 +58,8 @@ export class EconomicsAPI {
    * @param {Web3} web3 web3 instance
    * @returns {Promise<EconomicsAPI>}
    */
-  public static async init (web3: Web3): Promise<EconomicsAPI> {
+  public static async init (web3: Web3, signer: Signer): Promise<EconomicsAPI> {
     const registry = await ContractRegistry.instantiate(web3);
-    return new EconomicsAPI(registry);
+    return new EconomicsAPI(registry, signer);
   }
 }

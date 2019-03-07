@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractState } from '../types';
 import { toHex } from '../utils/Utils';
@@ -18,23 +18,25 @@ export class ContractRegistry {
     contractId: string, 
     contractTerms: ContractTerms,
     contractState: ContractState,
-    actorAddress: string
+    actorAddress: string,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.contractRegistry.methods.registerContract(
       toHex(contractId), 
       contractTerms,
       contractState,
       actorAddress
-    );
+    ).send({ ...txOptions });
   }
 
   public async getContractTerms (contractId: string): Promise<ContractTerms> {
-    const contractTerms: ContractTerms = await this.contractRegistry.methods.getTerms(toHex(contractId));
+    const contractTerms: ContractTerms = await this.contractRegistry.methods.getTerms(toHex(contractId)).call();
     return contractTerms;
   }
 
   public async getContractState (contractId: string): Promise<ContractState> {
-    const contractState: ContractState = await this.contractRegistry.methods.getState(toHex(contractId));
+    const contractState: ContractState = await this.contractRegistry.methods.getState(toHex(contractId)).call();
+
     return contractState;
   }
 

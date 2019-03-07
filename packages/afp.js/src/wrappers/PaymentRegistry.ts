@@ -16,7 +16,7 @@ export class PaymentRegistry {
     const payoffBalance: number = await this.paymentRegistry.methods.getPayoffBalance(
       toHex(contractId),
       eventId
-    );
+    ).call();
 
     return payoffBalance;
   }
@@ -33,7 +33,7 @@ export class PaymentRegistry {
       0: string, 
       1: string, 
       2: number 
-    } = await this.paymentRegistry.methods.getPayoff(toHex(contractId), eventId);
+    } = await this.paymentRegistry.methods.getPayoff(toHex(contractId), eventId).call();
 
     return { cashflowId, tokenAddress, payoffBalance }
   }

@@ -2,6 +2,7 @@ import Web3 from 'web3';
 
 import { PaymentRegistry } from "../wrappers/PaymentRegistry";
 import { PaymentRouter } from "../wrappers/PaymentRouter";
+import { Signer } from '../utils/Signer';
 
 
 export class PaymentAPI {
@@ -10,10 +11,13 @@ export class PaymentAPI {
   private registry: PaymentRegistry;
   // @ts-ignore
   private router: PaymentRouter;
+  // @ts-ignore
+  private signer: Signer;
   
-  private constructor (registry: PaymentRegistry, router: PaymentRouter) {
+  private constructor (registry: PaymentRegistry, router: PaymentRouter, signer: Signer) {
     this.registry = registry;
     this.router = router;
+    this.signer = signer;
   }
 
   /**
@@ -21,10 +25,10 @@ export class PaymentAPI {
    * @param {Web3} web3 web3 instance
    * @returns {Promise<PaymentAPI>}
    */
-  public static async init (web3: Web3): Promise<PaymentAPI> {
+  public static async init (web3: Web3, signer: Signer): Promise<PaymentAPI> {
     const registry = await PaymentRegistry.instantiate(web3);
     const router = await PaymentRouter.instantiate(web3);
 
-    return new PaymentAPI(registry, router);
+    return new PaymentAPI(registry, router, signer);
   }
 }
