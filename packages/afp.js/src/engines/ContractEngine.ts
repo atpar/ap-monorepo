@@ -5,27 +5,27 @@ import { ContractState, ContractTerms } from '../types';
 
 export interface ContractEngine {
 
-  getContractTerms() : ContractTerms;
+  getContractTerms(): ContractTerms;
 
-  getContractState() : ContractState;
+  getContractState(): ContractState;
 
-  setContractTerms (contractTerms: ContractTerms) : void;
+  setContractTerms (contractTerms: ContractTerms): void;
 
-  setContractState (contractState: ContractState) : void;
+  setContractState (contractState: ContractState): void;
 
-  computeInitialState (timestamp: number) : Promise<ContractState>;
+  computeInitialState (timestamp: number): Promise<ContractState>;
 
-  computeNextState (timestamp: number) : Promise<ContractState>;
+  computeNextState (timestamp: number): Promise<ContractState>;
 
-  validateInitialState (expectedContractState: ContractState) : Promise<boolean>;
+  validateInitialState (expectedContractState: ContractState): Promise<boolean>;
   
-  validateNextState (expectedContractState: ContractState) : Promise<boolean>;
+  validateNextState (expectedContractState: ContractState): Promise<boolean>;
   
-  computeExpectedSchedule () : Promise<any>;
+  computeExpectedSchedule (): Promise<any>;
 
-  computePendingSchedule (timestamp: number) : Promise<any>;
+  computePendingSchedule (timestamp: number): Promise<any>;
 
-  evaluateSchedule (schedule: any) : Promise<any>;
+  evaluateSchedule (schedule: any): Promise<any>;
 
-  computeDuePayoff (timestamp: number) : Promise<BigNumber>;
+  computeDuePayoff (timestamp: number): Promise<BigNumber>;
 }
