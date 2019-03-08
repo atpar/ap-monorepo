@@ -14,12 +14,12 @@ export class PAMEngine {
     this.pamEngine = pamEngineInstance;
   }
 
-  public async getPrecision () {
+  public async getPrecision (): Promise<number> {
     const precision: number = await this.pamEngine.methods.precision().call();
     return precision;
   }
 
-  public async computeInitialState (contractTerms: ContractTerms) {
+  public async computeInitialState (contractTerms: ContractTerms): Promise<ContractState> {
     const { 0: contractState }: { 0: ContractState, 1: any } = 
       await this.pamEngine.methods.getInitialState(contractTerms).call();
     return contractState;
@@ -29,7 +29,7 @@ export class PAMEngine {
     contractTerms: ContractTerms, 
     contractState: ContractState, 
     timestamp: number
-  ) {
+  ): Promise<{nextContractState: ContractState, evaluatedEvents: any}> {
     const response = await this.pamEngine.methods.getNextState(
       contractTerms,
       contractState,
@@ -47,7 +47,7 @@ export class PAMEngine {
     contractState: ContractState, 
     contractEvent: ContractEvent, 
     timestamp: number
-  ) {
+  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}> {
     const response = await this.pamEngine.methods.getNextState(
       contractTerms,
       contractState,
@@ -61,7 +61,7 @@ export class PAMEngine {
     return { postContractState, evaluatedContractEvent };
   }
 
-  public async computeSchedule (contractTerms: ContractTerms) {
+  public async computeSchedule (contractTerms: ContractTerms): Promise<any> {
     const contractEventSchedule = await this.pamEngine.methods.computeContractEventSchedule(
       contractTerms
     ).call();
@@ -69,7 +69,11 @@ export class PAMEngine {
     return contractEventSchedule;
   }
 
-  public async computeScheduleSegment (contractTerms: ContractTerms, startTimestamp: number, endTimestamp: number) {
+  public async computeScheduleSegment (
+    contractTerms: ContractTerms, 
+    startTimestamp: number, 
+    endTimestamp: number
+  ): Promise<any> {
     const pendingContractEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
       contractTerms,
       startTimestamp,
@@ -79,7 +83,11 @@ export class PAMEngine {
     return pendingContractEventSchedule;
   }
 
-  public async evaluateSchedule (contractTerms: ContractTerms, contractState: ContractState, contractEventSchedule: any) {
+  public async evaluateSchedule (
+    contractTerms: ContractTerms, 
+    contractState: ContractState, 
+    contractEventSchedule: any
+  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]> {
     const evaluatedContractEventSchedule = [];
 
     for (let i = 0; i < 20; i++) {
@@ -113,7 +121,7 @@ export class PAMEngine {
     return evaluatedContractEventSchedule;
   }
 
-  public static async instantiate (web3: Web3) {
+  public static async instantiate (web3: Web3): Promise<PAMEngine> {
     const chainId = await web3.eth.net.getId();
     const pamEngineInstance = new web3.eth.Contract(
       PAMEngineArtifact.abi,
