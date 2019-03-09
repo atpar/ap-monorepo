@@ -20,7 +20,7 @@
   "scripts": {
     "build": "rm -rf lib/ && tsc",
     "build:umd": "rm -rf dist/ && webpack",
-    "test": "jest"
+    "test": "scripts/prune-relayer-database.sh && jest"
   },
   "bugs": {
     "url": "https://github.com/jo-es/afp-monorepo/issues"
