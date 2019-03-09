@@ -1,6 +1,6 @@
 # Simple-Relayer
 
-A simple message relayer for `afp.js`.
+A simple message relayer for `ap.js`.
 
 ## Development
 

@@ -1,0 +1,52 @@
+{
+  "name": "ap.js",
+  "version": "0.0.0",
+  "description": "Typescript Library implementing the ACTUS protocol",
+  "author": "jo-es <escherich.johannes+github@gmail.com>",
+  "homepage": "https://github.com/jo-es/ap-monorepo#readme",
+  "license": "UNLICENSED",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jo-es/ap-monorepo.git"
+  },
+  "scripts": {
+    "build": "rm -rf lib/ && tsc",
+    "build:umd": "rm -rf dist/ && webpack",
+    "test": "scripts/prune-relayer-database.sh && jest"
+  },
+  "bugs": {
+    "url": "https://github.com/jo-es/ap-monorepo/issues"
+  },
+  "dependencies": {
+    "eth-sig-util": "^2.1.0",
+    "isomorphic-fetch": "^2.2.1",
+    "socket.io": "^2.2.0",
+    "web3": "1.0.0-beta.46",
+    "web3-utils": "1.0.0-beta.46"
+  },
+  "devDependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/bn.js": "^4.11.4",
+    "@types/isomorphic-fetch": "^0.0.34",
+    "@types/jest": "^23.3.12",
+    "@types/socket.io": "^2.1.2",
+    "@types/socket.io-client": "^1.4.32",
+    "compression-webpack-plugin": "^2.0.0",
+    "jest": "^23.6.0",
+    "terser-webpack-plugin": "^1.2.1",
+    "ts-jest": "^23.10.5",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.2",
+    "webpack": "^4.28.4",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.2.1"
+  }
+}

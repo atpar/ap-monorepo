@@ -4,8 +4,8 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const Web3 = require('web3')
 
-const PAMTestTerms = '../afp-contracts/test/contract-templates/pam-test-terms.csv'
-const parseContractTerms = require('../afp-contracts/test/parser.js').parseContractTerms
+const PAMTestTerms = '../ap-contracts/test/contract-templates/pam-test-terms.csv'
+const parseContractTerms = require('../ap-contracts/test/parser.js').parseContractTerms
 const PATH_TO_DATABASE = './Database.json'
 
 const state = { web3: null }

@@ -10,11 +10,11 @@ echo "running ganache-cli ..."
 
 sleep 1
 
-if [ ! -d "packages/afp-contracts/build" ]
+if [ ! -d "packages/ap-contracts/build" ]
 then
 	echo "compiling contracts ..."
 	(
-		cd packages/afp-contracts
+		cd packages/ap-contracts
 		truffle compile | 1>/dev/null
 	)
 fi
@@ -22,7 +22,7 @@ fi
 echo "migrating contracts ..."
 
 (
-	cd packages/afp-contracts
+	cd packages/ap-contracts
 	truffle migrate --network development | 1>/dev/null
 )
 
