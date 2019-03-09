@@ -11,7 +11,8 @@ import { AFP } from './index';
 export class Contract {
   
   private afp: AFP;
-  public contractEngine: ContractEngine;
+  // @ts-ignore
+  private contractEngine: ContractEngine;
   
   public contractId: string;
 
@@ -73,17 +74,19 @@ export class Contract {
     let contractEngine;
     switch (contractTerms.contractType) {
       case ContractType.PAM:
-        contractEngine = await PAM.create(afp.web3, contractTerms);
+        contractEngine = await PAM.init(afp.web3);
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
+    const initialContractState = await contractEngine.computeInitialState(contractTerms);
+
     await afp.ownership.registerContractOwnership(contractId, contractOwnership);
     await afp.economics.registerContract(
       contractId, 
-      contractEngine.getContractTerms(), 
-      contractEngine.getContractState()
+      contractTerms, 
+      initialContractState
     );
 
     return new Contract(afp, contractEngine, contractId);
@@ -99,15 +102,14 @@ export class Contract {
     afp: AFP,
     contractId: string
   ): Promise<Contract> {
-    const contractTerms = await afp.economics.getContractTerms(contractId);
-    const contractState = await afp.economics.getContractState(contractId);
+    const { contractType, statusDate } = await afp.economics.getContractTerms(contractId);
 
-    if (contractState.lastEventTime == 0) { throw('NOT_FOUND_ERROR: no contract found for given ContractId!'); }
+    if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given ContractId!'); }
 
     let contractEngine;
-    switch (contractTerms.contractType) {
+    switch (contractType) {
       case ContractType.PAM:
-        contractEngine = await PAM.init(afp.web3, contractTerms, contractState);
+        contractEngine = await PAM.init(afp.web3);
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));

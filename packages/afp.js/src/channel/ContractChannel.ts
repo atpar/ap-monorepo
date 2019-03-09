@@ -1,5 +1,6 @@
 import { AFP } from '../index'; 
 import { ContractEngine, PAM } from '../engines';
+import * as Assert from './ContractUpdateAssertions';
 import { 
   ContractType,
   ContractUpdate, 
@@ -27,7 +28,9 @@ export class ContractChannel {
     contractEngine: ContractEngine,
     signedContractUpdate?: SignedContractUpdate
   ) {
-    if (!afp.client) { throw('FEATURE_UNAVAILABLE_ERROR: Client is not enabled!'); }
+    if (!afp.client) { 
+      throw(new Error('FEATURE_UNAVAILABLE_ERROR: Client is not enabled!')); 
+    }
 
     this.afp = afp;
     this.contractEngine = contractEngine;
@@ -37,6 +40,23 @@ export class ContractChannel {
       this._storeSignedContractUpdate(signedContractUpdate); 
       this._startContractUpdateListener();
     }
+  }
+
+  /**
+   * returns the contract terms
+   * @returns {ContractTerms}
+   */
+  public getContractTerms (): ContractTerms {
+    return this.getLastSignedContractUpdate().contractUpdate.contractTerms;
+  }
+
+  /**
+   * returns the last accepted contract state of the channel
+   * (not the last co-signed contract state)
+   * @returns {ContractState}
+   */
+  public getContractState (): ContractState {
+    return this.getLastSignedContractUpdate().contractUpdate.contractState;
   }
 
   // or getTurnTakerStatus, getObligation
@@ -49,10 +69,16 @@ export class ContractChannel {
   public async getChannelState (timestamp: number): Promise<ChannelState> {
     const account = this.afp.signer.account;
     const signedContractUpdate = this.getLastSignedContractUpdate();
+    const contractTerms = this.getContractTerms();
+    const contractState = this.getContractState();
 
     if (signedContractUpdate.recordCreatorObligorSignature && signedContractUpdate.counterpartyObligorSignature) {
-      const pendingEventSchedule = await this.contractEngine.computePendingSchedule(timestamp);
-      const duePayOff = await this.contractEngine.computeDuePayoff(timestamp);
+      const pendingEventSchedule = await this.contractEngine.computePendingSchedule(
+        contractTerms, 
+        contractState, 
+        timestamp
+      );
+      const duePayOff = await this.contractEngine.computeDuePayoff(contractTerms, contractState, timestamp);
 
       if (pendingEventSchedule.length === 0) { return ChannelState.Idle; }
 
@@ -81,29 +107,34 @@ export class ContractChannel {
   }
 
   /**
-   * creates a new contract update for the initial state of the contract
+   * computes the initial state of the contact, creates a new contract update from it
    * and sends it after receiving a signature
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
-   * @param contractId 
-   * @param contractOwnership 
+   * @param {string} contractId 
+   * @param {ContractTerms} contractTerms
+   * @param {ContractOwnership} contractOwnership 
    * @returns {Promise<void>}
    */
-  public async signAndSendInitialContractUpdate (
+  private async _signAndSendInitialContractUpdate (
     contractId: string,
+    contractTerms: ContractTerms,
     contractOwnership: ContractOwnership,
   ): Promise<void> {
-    if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
-    if (this.signedContractUpdates.length !== 0) { throw(''); }
+    if (!this.afp.client) { 
+      throw(new Error('FEATURE_NOT_AVAILABLE: Client is not enabled!')); 
+    }
+    if (this.signedContractUpdates.length !== 0) { 
+      throw(new Error(
+        'EXECUTION_ERROR: ContractChannel is already initialized! Use signAndSendNextContractUpdate method instead.'
+      )); 
+    }
 
-    const initialContractTerms = this.contractEngine.getContractTerms();
-    const initialContractState = this.contractEngine.getContractState();
-
-    this.contractEngine.setContractState(initialContractState);
+    const initialContractState = await this.contractEngine.computeInitialState(contractTerms);
 
     const contractUpdate = this._constructInitialContractUpdate(
       contractId,
       contractOwnership,
-      initialContractTerms,
+      contractTerms,
       initialContractState
     );
 
@@ -123,24 +154,33 @@ export class ContractChannel {
    * @returns {Promise<void>} promise when signed contractupdate was sent
    */
   public async signAndSendNextContractUpdate (timestamp: number): Promise<void> {
-    if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
+    if (!this.afp.client) { 
+      throw(new Error('FEATURE_NOT_AVAILABLE: Client is not enabled!')); 
+    }
 
     const previousSignedContractUpdate = this.getLastSignedContractUpdate();
     
-    if (!previousSignedContractUpdate) { throw(''); }
+    if (!previousSignedContractUpdate) { 
+      throw(new Error(
+        'EXECUTION_ERROR: ContractChannel is not initialized! Use signAndSendInitialContractUpdate method instead.'
+      )); 
+    }
   
     let contractUpdateNonce = previousSignedContractUpdate.contractUpdate.contractUpdateNonce;
-    if (previousSignedContractUpdate.recordCreatorObligorSignature && previousSignedContractUpdate.counterpartyObligorSignature) {
+    if (
+      previousSignedContractUpdate.recordCreatorObligorSignature && 
+      previousSignedContractUpdate.counterpartyObligorSignature
+    ) {
       contractUpdateNonce += 1;
     }
-    
-    const nextContractTerms = this.contractEngine.getContractTerms();
-    const nextContractState = await this.contractEngine.computeNextState(timestamp);
-    
-    this.contractEngine.setContractState(nextContractState);
+
+    const contractTerms = this.getContractTerms();
+    const contractState = this.getContractState();
+
+    const nextContractState = await this.contractEngine.computeNextState(contractTerms, contractState, timestamp);
 
     const contractUpdate = this._constructNextContractUpdate(
-      nextContractTerms,
+      contractTerms,
       nextContractState, 
       contractUpdateNonce
     );
@@ -160,8 +200,14 @@ export class ContractChannel {
   }
 
   private _startContractUpdateListener (): void  {
-    if (!this.afp.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
-    if (this.signedContractUpdates.length == 0) { throw(''); }
+    if (!this.afp.client) { 
+      throw(new Error('FEATURE_NOT_AVAILABLE: Client is not enabled!')); 
+    }
+    if (this.signedContractUpdates.length == 0) { 
+      throw(new Error(
+        'EXECUTION_ERROR: ContractChannel is not initialized! There has to be at least one previous valid signed contract update in order to start the listener.'
+      )); 
+    }
     
     const { contractUpdate: { contractId } } = this.getLastSignedContractUpdate();
 
@@ -224,7 +270,7 @@ export class ContractChannel {
       signedContractUpdate.counterpartyObligorSignature = signature;
     } else {
       throw(new Error(
-        'Addresses do not match. Address of sender has to be equal to recordCreatorObligorAddress or counterpartyObligorAddress.'
+        'EXECUTION_ERROR: Addresses do not match. Address of sender has to be equal to recordCreatorObligorAddress or counterpartyObligorAddress.'
       ));
     }
 
@@ -238,12 +284,10 @@ export class ContractChannel {
   private async _validateSignedContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<boolean> {
     if (!(await this.afp.signer.validateContractUpdateSignatures(signedContractUpdate))) { return false }
 
-    const previousSignedContractUpdate = this.getLastSignedContractUpdate();
-
     if (!signedContractUpdate.recordCreatorObligorSignature !== !signedContractUpdate.counterpartyObligorSignature) {
-      if (!this._validateProposal(signedContractUpdate, previousSignedContractUpdate)) { return false; }
+      if (!this._validateProposal(signedContractUpdate)) { return false; }
     } else if (signedContractUpdate.recordCreatorObligorSignature && signedContractUpdate.counterpartyObligorSignature) {
-      if (!this._validateAcknowledgement(signedContractUpdate, previousSignedContractUpdate)) { return false; }
+      if (!this._validateAcknowledgement(signedContractUpdate)) { return false; }
     } else { 
       return false;
     }
@@ -253,29 +297,32 @@ export class ContractChannel {
 
   private async _validateProposal (
     signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate?: SignedContractUpdate
   ): Promise<boolean> {
-    if (this._isInitialSignedContractUpdate(signedContractUpdate)) {
-      if (previousSignedContractUpdate) { 
-        return false; 
-      }
-      if (!this.contractEngine.validateInitialState(signedContractUpdate.contractUpdate.contractState)) { 
+    const previousSignedContractUpdate = this.getLastSignedContractUpdate();
+    const proposedContractState = signedContractUpdate.contractUpdate.contractState;
+    
+    if (Assert.isInitialSignedContractUpdate(signedContractUpdate)) {
+      if (previousSignedContractUpdate) { return false; }
+      const contractTerms = signedContractUpdate.contractUpdate.contractTerms;
+
+      if (!(await this.contractEngine.validateInitialState(contractTerms, proposedContractState))) { 
         return false; 
       }
     } else {
-      if (!previousSignedContractUpdate) { 
+      if (!previousSignedContractUpdate) { return false; }
+      const contractTerms = previousSignedContractUpdate.contractUpdate.contractTerms;
+      const contractState = previousSignedContractUpdate.contractUpdate.contractState;
+      
+      if (!(Assert.isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) { 
         return false; 
       }
-      if (!(this._isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) { 
-        return false; 
-      }
-      if (!(this._areContractUpdateAddressesUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
+      if (!(Assert.areContractUpdateAddressesUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
         return false;
       }
-      if (!(this._isContractUpdateNonceHigher(signedContractUpdate, previousSignedContractUpdate))) {
+      if (!(Assert.isContractUpdateNonceHigher(signedContractUpdate, previousSignedContractUpdate))) {
         return false;
       }
-      if (!this.contractEngine.validateNextState(signedContractUpdate.contractUpdate.contractState)) { 
+      if (!(await this.contractEngine.validateNextState(contractTerms, contractState, proposedContractState))) { 
         return false;
       }
     }
@@ -285,119 +332,73 @@ export class ContractChannel {
 
   private async _validateAcknowledgement (
     signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate?: SignedContractUpdate
   ): Promise<boolean> {
-    if (!previousSignedContractUpdate) {
+    const previousSignedContractUpdate = this.getLastSignedContractUpdate();
+
+    if (!previousSignedContractUpdate) { return false; }
+
+    const proposedContractState = signedContractUpdate.contractUpdate.contractState;
+    const contractTerms = this.getContractTerms();
+    const contractState = this.getContractState();
+
+    if (!(Assert.isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) {
       return false;
     }
-    if (!(this._isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) {
+    if (!(Assert.areContractUpdateAddressesUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
       return false;
     }
-    if (!(this._areContractUpdateAddressesUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
+    if (!(Assert.areContractUpdateSignaturesUnaltered(signedContractUpdate, previousSignedContractUpdate))) { 
       return false;
     }
-    if (!(this._areContractUpdateSignaturesUnaltered(signedContractUpdate, previousSignedContractUpdate))) { 
+    if (!(Assert.isContractUpdateNonceUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
       return false;
     }
-    if (!(this._isContractUpdateNonceUnaltered(signedContractUpdate, previousSignedContractUpdate))) {
-      return false;
-    }
-    if (this._isInitialSignedContractUpdate(signedContractUpdate)) {
-      if(!this.contractEngine.validateInitialState(signedContractUpdate.contractUpdate.contractState)) { 
+    if (Assert.isInitialSignedContractUpdate(signedContractUpdate)) {
+      if(!this.contractEngine.validateInitialState(contractTerms, proposedContractState)) { 
         return false; 
       }
     } else {
-      if (!this.contractEngine.validateNextState(signedContractUpdate.contractUpdate.contractState)) { 
+      if (!this.contractEngine.validateNextState(contractTerms, contractState, proposedContractState)) { 
         return false; 
       }
     }
 
     return true;
-  }
-
-  private _areContractUpdateAddressesUnaltered (
-    signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate: SignedContractUpdate
-  ): boolean {
-    return (
-      !(
-        previousSignedContractUpdate.contractUpdate.recordCreatorObligorAddress === 
-        signedContractUpdate.contractUpdate.recordCreatorObligorAddress &&
-        previousSignedContractUpdate.contractUpdate.counterpartyObligorAddress === 
-        signedContractUpdate.contractUpdate.counterpartyObligorAddress
-      )
-    );
-  }
-
-  private _isNewSignedContractUpdate (
-    signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate: SignedContractUpdate
-  ): boolean {
-    return (JSON.stringify(previousSignedContractUpdate) === JSON.stringify(signedContractUpdate));
-  }
-
-  private _areContractUpdateSignaturesUnaltered (
-    signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate: SignedContractUpdate
-  ): boolean {
-    if (previousSignedContractUpdate.recordCreatorObligorSignature) {
-      if (previousSignedContractUpdate.recordCreatorObligorSignature !== signedContractUpdate.recordCreatorObligorSignature) {
-        return false;
-      }
-    } else if (previousSignedContractUpdate.counterpartyObligorSignature) {
-      if (previousSignedContractUpdate.counterpartyObligorSignature !== signedContractUpdate.counterpartyObligorSignature) {
-        return false;
-      }
-    } else { return false; }
-
-    return true;
-  }
-
-  private _isContractUpdateNonceHigher (
-    signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate: SignedContractUpdate
-  ): boolean {
-    return (
-      previousSignedContractUpdate.contractUpdate.contractUpdateNonce >= 
-      signedContractUpdate.contractUpdate.contractUpdateNonce
-    );
-  }
-
-  private _isContractUpdateNonceUnaltered (
-    signedContractUpdate: SignedContractUpdate, 
-    previousSignedContractUpdate: SignedContractUpdate
-  ): boolean {
-    return (
-      previousSignedContractUpdate.contractUpdate.contractUpdateNonce !== 
-      signedContractUpdate.contractUpdate.contractUpdateNonce
-    );
-  }
-
-  private _isInitialSignedContractUpdate (signedContractUpdate: SignedContractUpdate): boolean {
-    return (signedContractUpdate.contractUpdate.contractUpdateNonce === 0);
   }
 
   /**
    * returns a new ContractChannel instance
-   * @notice to initialize the ContractChannel call signAndSendInitialContractUpdate
+   * @notice calls signAndSendInitialContractUpdate method, whereby eth_signedTypedData or 
+   * eth_signedTypedData_v3 is called, prompting the user to sign a contract update
    * @param {AFP} afp AFP instance
    * @param {ContractTerms} contractTerms
+   * @param {ContractOwnership} contractOwnership
    * @returns {Promise<ContractChannel>}
    */
-  public static  async create (
+  public static async create (
     afp: AFP, 
     contractTerms: ContractTerms,
+    contractOwnership: ContractOwnership
   ): Promise<ContractChannel> {    
+    const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
+
     let contractEngine;
     switch (contractTerms.contractType) {
       case ContractType.PAM:
-      contractEngine = await PAM.create(afp.web3, contractTerms);        
+      contractEngine = await PAM.init(afp.web3);        
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    return new ContractChannel(afp, contractEngine);
+    const contractChannel = new ContractChannel(afp, contractEngine);
+    await contractChannel._signAndSendInitialContractUpdate(
+      contractId, 
+      contractTerms,
+      contractOwnership
+    );
+
+    return contractChannel;
   }
 
   /**
@@ -412,20 +413,20 @@ export class ContractChannel {
     afp: AFP,
     signedContractUpdate: SignedContractUpdate
   ): Promise<ContractChannel> {
-    const { contractTerms, contractState } = signedContractUpdate.contractUpdate;
+    const { contractTerms: { contractType }} = signedContractUpdate.contractUpdate;
     
     let ContractEngine;
-    switch (contractTerms.contractType) {
+    switch (contractType) {
       case ContractType.PAM:
-        ContractEngine = await PAM.init(afp.web3, contractTerms, contractState);        
+        ContractEngine = await PAM.init(afp.web3);        
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const channel = new ContractChannel(afp, ContractEngine);
+    const contractChannel = new ContractChannel(afp, ContractEngine);
 
-    if (!(await channel._validateSignedContractUpdate(signedContractUpdate))) {
+    if (!(await contractChannel._validateSignedContractUpdate(signedContractUpdate))) {
       throw(new Error('EXECUTION_ERROR: invalid signed contract update provided.'));
     }
 
@@ -443,12 +444,12 @@ export class ContractChannel {
     afp: AFP, 
     signedContractUpdate: SignedContractUpdate
   ): Promise<ContractChannel> {
-    const { contractTerms, contractState } = signedContractUpdate.contractUpdate;
+    const { contractTerms: { contractType } } = signedContractUpdate.contractUpdate;
     
     let ContractEngine;
-    switch (contractTerms.contractType) {
+    switch (contractType) {
       case ContractType.PAM:
-        ContractEngine = await PAM.init(afp.web3, contractTerms, contractState);        
+        ContractEngine = await PAM.init(afp.web3);        
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));

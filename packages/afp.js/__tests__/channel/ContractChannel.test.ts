@@ -37,7 +37,6 @@ describe('testContractChannelClass', () => {
     afpRC = await AFP.init(web3, recordCreator, 'http://localhost:9000');
     afpCP = await AFP.init(web3, counterparty, 'http://localhost:9000');
 
-    const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
     const contractTerms = (<any>contractTemplatesTyped)['10001'];
     const contractOwnership = {
       recordCreatorObligorAddress: recordCreator, 
@@ -46,12 +45,7 @@ describe('testContractChannelClass', () => {
       counterpartyBeneficiaryAddress: counterparty
     };
 
-    contractChannel = await ContractChannel.create(afpRC, contractTerms);
-
-    await contractChannel.signAndSendInitialContractUpdate(
-      contractId,
-      contractOwnership
-    );
+    contractChannel = await ContractChannel.create(afpRC, contractTerms, contractOwnership);
   });
 
   it('should instantiate channel from valid signed contract update', async () => {
