@@ -22,28 +22,28 @@ contract PaymentRouter is Ownable {
 	}
 
 	function settlePayment (
-		bytes32 _contractId,
-		int8 _cashflowId,
-		uint256 _eventId,
-		address _token,
+		bytes32 contractId,
+		int8 cashflowId,
+		uint256 eventId,
+		address token,
 		uint256 _amount
 	) 
 		external 
 		payable
 	{
-		require(_contractId != bytes32(0) && _cashflowId != int8(0), "INVALID_CONTRACTID_OR_CASHFLOWID");
+		require(contractId != bytes32(0) && cashflowId != int8(0), "INVALID_CONTRACTID_OR_CASHFLOWID");
 		
 		uint256 amount;
-		address payable payee = ownershipRegistry.getCashflowBeneficiary(_contractId, _cashflowId);
+		address payable payee = ownershipRegistry.getCashflowBeneficiary(contractId, cashflowId);
 		
 		address recordCreatorObligor;
 		address payable recordCreatorBeneficiary;
 		address counterpartyObligor;
 		address payable counterpartyBeneficiary;
 
-		(recordCreatorObligor, recordCreatorBeneficiary, counterpartyObligor, counterpartyBeneficiary) = ownershipRegistry.getContractOwnership(_contractId);
+		(recordCreatorObligor, recordCreatorBeneficiary, counterpartyObligor, counterpartyBeneficiary) = ownershipRegistry.getContractOwnership(contractId);
 		
-		if (_cashflowId > 0) {
+		if (cashflowId > 0) {
 			require(msg.sender == counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
 			if (payee == address(0)) {
 				payee = recordCreatorBeneficiary;
@@ -55,20 +55,20 @@ contract PaymentRouter is Ownable {
 			}
 		}
 		
-		if (_token == address(0)) {
+		if (token == address(0)) {
 			(bool result, ) = payee.call.value(msg.value)("");
       require(result, "TRANSFER_FAILED");
 			amount = msg.value;
 		} else {
-			require(IERC20(_token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");
+			require(IERC20(token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");
 			amount = _amount;
 		}
 
 		paymentRegistry.registerPayment(
-			_contractId,
-			_cashflowId,
-			_eventId,
-			_token,
+			contractId,
+			cashflowId,
+			eventId,
+			token,
 			amount
 		);
 	}

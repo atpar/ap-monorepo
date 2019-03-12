@@ -18,62 +18,62 @@ contract OwnershipRegistry is Ownable {
 	mapping (bytes32 => mapping (int8 => address payable)) cashflowBeneficiaries;
 
 	function registerOwnership (
-		bytes32 _contractId, 
-		address _recordCreatorObligor, 
-		address payable _recordCreatorBeneficiary,
-		address _counterpartyObligor, 
-		address payable _counterpartyBeneficiary
+		bytes32 contractId, 
+		address recordCreatorObligor, 
+		address payable recordCreatorBeneficiary,
+		address counterpartyObligor, 
+		address payable counterpartyBeneficiary
 	) 
 		external 
 	{
-		require(contractOwnerships[_contractId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
+		require(contractOwnerships[contractId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
 		
-		contractOwnerships[_contractId] = ContractOwnership(
-			_recordCreatorObligor,
-			_recordCreatorBeneficiary,
-			_counterpartyObligor,
-			_counterpartyBeneficiary
+		contractOwnerships[contractId] = ContractOwnership(
+			recordCreatorObligor,
+			recordCreatorBeneficiary,
+			counterpartyObligor,
+			counterpartyBeneficiary
 		);
 	}
 
 	function setBeneficiaryForCashflowId (
-		bytes32 _contractId, 
-		int8 _cashflowId, 
-		address payable _beneficiary
+		bytes32 contractId, 
+		int8 cashflowId, 
+		address payable beneficiary
 	) 
 		external 
 	{
-		require(_cashflowId != 0, "INVALID_CASHFLOWID");
+		require(cashflowId != 0, "INVALID_CASHFLOWID");
 		
-		if (_cashflowId > 0) {
-			require(msg.sender == contractOwnerships[_contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
+		if (cashflowId > 0) {
+			require(msg.sender == contractOwnerships[contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
 		} else {
-			require(msg.sender == contractOwnerships[_contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
+			require(msg.sender == contractOwnerships[contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
 		}
 
-		require(cashflowBeneficiaries[_contractId][_cashflowId] == address(0), "ENTRY_ALREADY_EXISTS");
+		require(cashflowBeneficiaries[contractId][cashflowId] == address(0), "ENTRY_ALREADY_EXISTS");
 
-		cashflowBeneficiaries[_contractId][_cashflowId] = _beneficiary;
+		cashflowBeneficiaries[contractId][cashflowId] = beneficiary;
 	}
 	
-	function getContractOwnership (bytes32 _contractId) 
+	function getContractOwnership (bytes32 contractId) 
 		external 
 		view 
 		returns (address, address payable, address, address payable) 
 	{
 		return (
-			contractOwnerships[_contractId].recordCreatorObligor,
-			contractOwnerships[_contractId].recordCreatorBeneficiary,
-			contractOwnerships[_contractId].counterpartyObligor,
-			contractOwnerships[_contractId].counterpartyBeneficiary
+			contractOwnerships[contractId].recordCreatorObligor,
+			contractOwnerships[contractId].recordCreatorBeneficiary,
+			contractOwnerships[contractId].counterpartyObligor,
+			contractOwnerships[contractId].counterpartyBeneficiary
 		);
 	}
 	
-	function getCashflowBeneficiary (bytes32 _contractId, int8 _cashflowId) 
+	function getCashflowBeneficiary (bytes32 contractId, int8 cashflowId) 
 		external 
 		view 
 		returns (address payable) 
 	{
-		return cashflowBeneficiaries[_contractId][_cashflowId];
+		return cashflowBeneficiaries[contractId][cashflowId];
 	}
 }

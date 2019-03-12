@@ -7,30 +7,30 @@ import "../APCore/APDefinitions.sol";
 contract IContractRegistry is APDefinitions {
 
 	function registerContract (
-		bytes32 _contractId,
-		PAMContractTerms memory _terms,
-		ContractState memory _state,
+		bytes32 contractId,
+		ContractTerms memory terms,
+		ContractState memory state,
 		address _actor
 	) 
 		public;
 
-	function setState (bytes32 _contractId, ContractState memory _state) public;
+	function setState (bytes32 contractId, ContractState memory state) public;
 
-	function setTerms (bytes32 _contractId, PAMContractTerms memory _terms) public;
+	function setTerms (bytes32 contractId, ContractTerms memory terms) public;
 
-	function setEventId (bytes32 _contractId, uint256 _eventId) public;
+	function setEventId (bytes32 contractId, uint256 eventId) public;
 
-	function getTerms (bytes32 _contractId) 
+	function getTerms (bytes32 contractId) 
 		external 
 		view
-		returns (PAMContractTerms memory); 
+		returns (ContractTerms memory); 
 
-	function getState (bytes32 _contractId) 
+	function getState (bytes32 contractId) 
 		external 
 		view
 		returns (ContractState memory);
 
-	function getEventId (bytes32 _contractId)
+	function getEventId (bytes32 contractId)
 		external
 		view
 		returns (uint256);

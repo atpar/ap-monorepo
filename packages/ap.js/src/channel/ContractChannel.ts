@@ -8,7 +8,8 @@ import {
   SignedContractUpdate, 
   ChannelState, 
   ContractTerms, 
-  ContractOwnership 
+  ContractOwnership, 
+  EvaluatedEventSchedule
 } from '../types';
 
 
@@ -59,6 +60,28 @@ export class ContractChannel {
     return this.getLastSignedContractUpdate().contractUpdate.contractState;
   }
 
+  /**
+   * returns the initial schedule derived from the terms of the contract
+   * @returns {Promise<EvaluatedEventSchedule>}
+   */
+  public async getInitialSchedule (): Promise<EvaluatedEventSchedule> {
+    return await this.contractEngine.computeEvaluatedInitialSchedule(this.getContractTerms());
+  }
+
+  /**
+   * returns the pending schedule derived from the terms and the current state of the contract
+   * (contains all events between the last executed state transition and the specified timestamp)
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<EvaluatedEventSchedule>}
+   */
+  public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
+    return await this.contractEngine.computeEvaluatedPendingSchedule(
+      this.getContractTerms(),
+      this.getContractState(),
+      timestamp
+    );
+  }
+
   // or getTurnTakerStatus, getObligation
   /**
    * returns the state of the ContractChannel based on the 
@@ -69,26 +92,26 @@ export class ContractChannel {
   public async getChannelState (timestamp: number): Promise<ChannelState> {
     const account = this.ap.signer.account;
     const signedContractUpdate = this.getLastSignedContractUpdate();
-    const contractTerms = this.getContractTerms();
-    const contractState = this.getContractState();
+    const terms = this.getContractTerms();
+    const state = this.getContractState();
 
     if (signedContractUpdate.recordCreatorObligorSignature && signedContractUpdate.counterpartyObligorSignature) {
-      const pendingEventSchedule = await this.contractEngine.computePendingSchedule(
-        contractTerms, 
-        contractState, 
+      const pendingEventSchedule = await this.contractEngine.computeEvaluatedPendingSchedule(
+        terms, 
+        state, 
         timestamp
       );
-      const duePayOff = await this.contractEngine.computeDuePayoff(contractTerms, contractState, timestamp);
+      const duePayoff = await this.contractEngine.computeDuePayoff(terms, state, timestamp);
 
       if (pendingEventSchedule.length === 0) { return ChannelState.Idle; }
 
       if (
-        duePayOff.isLessThanOrEqualTo(0) &&
+        duePayoff.isLessThanOrEqualTo(0) &&
         account === signedContractUpdate.contractUpdate.recordCreatorObligorAddress
       ) { return ChannelState.Updatable; }
 
       if (
-        duePayOff.isGreaterThanOrEqualTo(0) &&
+        duePayoff.isGreaterThanOrEqualTo(0) &&
         account === signedContractUpdate.contractUpdate.counterpartyObligorAddress
       ) { return ChannelState.Updatable; }
     }
@@ -108,17 +131,17 @@ export class ContractChannel {
 
   /**
    * computes the initial state of the contact, creates a new contract update from it
-   * and sends it after receiving a signature
+   * and sends it after receiving a signature from the user
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
    * @param {string} contractId 
-   * @param {ContractTerms} contractTerms
-   * @param {ContractOwnership} contractOwnership 
+   * @param {ContractTerms} terms
+   * @param {ContractOwnership} ownership 
    * @returns {Promise<void>}
    */
   private async _signAndSendInitialContractUpdate (
     contractId: string,
-    contractTerms: ContractTerms,
-    contractOwnership: ContractOwnership,
+    terns: ContractTerms,
+    ownership: ContractOwnership,
   ): Promise<void> {
     if (!this.ap.client) { 
       throw(new Error('FEATURE_NOT_AVAILABLE: Client is not enabled!')); 
@@ -129,12 +152,12 @@ export class ContractChannel {
       )); 
     }
 
-    const initialContractState = await this.contractEngine.computeInitialState(contractTerms);
+    const initialContractState = await this.contractEngine.computeInitialState(terns);
 
     const contractUpdate = this._constructInitialContractUpdate(
       contractId,
-      contractOwnership,
-      contractTerms,
+      ownership,
+      terns,
       initialContractState
     );
 
@@ -147,8 +170,8 @@ export class ContractChannel {
   }
 
   /**
-   * creates a new contract update based on the next state 
-   * for a given timestamp and sends it after receiving a signature
+   * computes the next state of the contract for a given timestamp, 
+   * creates a new contract update from it and sends it after receiving a signature from the user
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
    * @param {number} timestamp current timestamp
    * @returns {Promise<void>} promise when signed contractupdate was sent
@@ -174,19 +197,15 @@ export class ContractChannel {
       contractUpdateNonce += 1;
     }
 
-    const contractTerms = this.getContractTerms();
-    const contractState = this.getContractState();
+    const terms = this.getContractTerms();
+    const state = this.getContractState();
 
-    const nextContractState = await this.contractEngine.computeNextState(contractTerms, contractState, timestamp);
+    const nextState = await this.contractEngine.computeNextState(terms, state, timestamp);
 
-    const contractUpdate = this._constructNextContractUpdate(
-      contractTerms,
-      nextContractState, 
-      contractUpdateNonce
-    );
+    const contractUpdate = this._constructNextContractUpdate(terms, nextState, contractUpdateNonce);
     // const contractUpdateHash = JSON.stringify(contractUpdate);
-
     const signedContractUpdate = await this._signContractUpdate(contractUpdate);
+
     this._storeSignedContractUpdate(signedContractUpdate);
     await this.ap.client.sendContractUpdate(signedContractUpdate);
   }
@@ -222,24 +241,24 @@ export class ContractChannel {
 
   private _constructInitialContractUpdate (
     contractId: string,
-    contractOwnership: ContractOwnership,
-    initialContractTerms: ContractTerms,
-    initialContractState: ContractState
+    ownership: ContractOwnership,
+    terms: ContractTerms,
+    initialState: ContractState
   ): ContractUpdate {
     return {
       contractId: contractId,
-      recordCreatorObligorAddress: contractOwnership.recordCreatorObligorAddress,
-      counterpartyObligorAddress: contractOwnership.counterpartyObligorAddress,
+      recordCreatorObligorAddress: ownership.recordCreatorObligorAddress,
+      counterpartyObligorAddress: ownership.counterpartyObligorAddress,
       contractAddress: '',
-      contractTerms: initialContractTerms,
-      contractState: initialContractState,
+      contractTerms: terms,
+      contractState: initialState,
       contractUpdateNonce: 0
     }
   }
 
   private _constructNextContractUpdate (
-    nextContractTerms: ContractTerms,
-    nextContractState: ContractState,
+    terms: ContractTerms,
+    nextState: ContractState,
     nextContractUpdateNonce: number
   ): ContractUpdate {
     const { contractUpdate } = this.getLastSignedContractUpdate();
@@ -249,8 +268,8 @@ export class ContractChannel {
       recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
       counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
       contractAddress: '',
-      contractTerms: nextContractTerms,
-      contractState: nextContractState,
+      contractTerms: terms,
+      contractState: nextState,
       contractUpdateNonce: nextContractUpdateNonce
     };
   }
@@ -299,19 +318,19 @@ export class ContractChannel {
     signedContractUpdate: SignedContractUpdate, 
   ): Promise<boolean> {
     const previousSignedContractUpdate = this.getLastSignedContractUpdate();
-    const proposedContractState = signedContractUpdate.contractUpdate.contractState;
+    const proposedState = signedContractUpdate.contractUpdate.contractState;
     
     if (Assert.isInitialSignedContractUpdate(signedContractUpdate)) {
       if (previousSignedContractUpdate) { return false; }
-      const contractTerms = signedContractUpdate.contractUpdate.contractTerms;
+      const terms = signedContractUpdate.contractUpdate.contractTerms;
 
-      if (!(await this.contractEngine.validateInitialState(contractTerms, proposedContractState))) { 
+      if (!(await this.contractEngine.validateInitialState(terms, proposedState))) { 
         return false; 
       }
     } else {
       if (!previousSignedContractUpdate) { return false; }
-      const contractTerms = previousSignedContractUpdate.contractUpdate.contractTerms;
-      const contractState = previousSignedContractUpdate.contractUpdate.contractState;
+      const terms = previousSignedContractUpdate.contractUpdate.contractTerms;
+      const state = previousSignedContractUpdate.contractUpdate.contractState;
       
       if (!(Assert.isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) { 
         return false; 
@@ -322,7 +341,7 @@ export class ContractChannel {
       if (!(Assert.isContractUpdateNonceHigher(signedContractUpdate, previousSignedContractUpdate))) {
         return false;
       }
-      if (!(await this.contractEngine.validateNextState(contractTerms, contractState, proposedContractState))) { 
+      if (!(await this.contractEngine.validateNextState(terms, state, proposedState))) { 
         return false;
       }
     }
@@ -337,9 +356,9 @@ export class ContractChannel {
 
     if (!previousSignedContractUpdate) { return false; }
 
-    const proposedContractState = signedContractUpdate.contractUpdate.contractState;
-    const contractTerms = this.getContractTerms();
-    const contractState = this.getContractState();
+    const proposedState = signedContractUpdate.contractUpdate.contractState;
+    const terms = this.getContractTerms();
+    const state = this.getContractState();
 
     if (!(Assert.isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) {
       return false;
@@ -354,11 +373,11 @@ export class ContractChannel {
       return false;
     }
     if (Assert.isInitialSignedContractUpdate(signedContractUpdate)) {
-      if(!this.contractEngine.validateInitialState(contractTerms, proposedContractState)) { 
+      if(!this.contractEngine.validateInitialState(terms, proposedState)) { 
         return false; 
       }
     } else {
-      if (!this.contractEngine.validateNextState(contractTerms, contractState, proposedContractState)) { 
+      if (!this.contractEngine.validateNextState(terms, state, proposedState)) { 
         return false; 
       }
     }
@@ -371,19 +390,19 @@ export class ContractChannel {
    * @notice calls signAndSendInitialContractUpdate method, whereby eth_signedTypedData or 
    * eth_signedTypedData_v3 is called, prompting the user to sign a contract update
    * @param {AP} ap AP instance
-   * @param {ContractTerms} contractTerms
-   * @param {ContractOwnership} contractOwnership
+   * @param {ContractTerms} terms
+   * @param {ContractOwnership} ownership
    * @returns {Promise<ContractChannel>}
    */
   public static async create (
     ap: AP, 
-    contractTerms: ContractTerms,
-    contractOwnership: ContractOwnership
+    terms: ContractTerms,
+    ownership: ContractOwnership
   ): Promise<ContractChannel> {    
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
-    switch (contractTerms.contractType) {
+    switch (terms.contractType) {
       case ContractType.PAM:
       contractEngine = await PAM.init(ap.web3);        
         break;
@@ -392,11 +411,7 @@ export class ContractChannel {
     }
 
     const contractChannel = new ContractChannel(ap, contractEngine);
-    await contractChannel._signAndSendInitialContractUpdate(
-      contractId, 
-      contractTerms,
-      contractOwnership
-    );
+    await contractChannel._signAndSendInitialContractUpdate(contractId, terms, ownership);
 
     return contractChannel;
   }

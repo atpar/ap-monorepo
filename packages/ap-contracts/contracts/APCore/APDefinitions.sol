@@ -10,8 +10,8 @@ contract APDefinitions {
 
 	uint256 constant public PRECISION = 18;
  
-	uint256 constant MAX_CYCLE_SCHEDULE_SIZE = 16;
-	uint256 constant MAX_EVENT_SCHEDULE_SIZE = 64; // 4x MAX_CYCLE_SCHEDULE_SIZE for IP, RR, FP and SC
+	uint256 constant MAX_CYCLE_SIZE = 16;
+	uint256 constant MAX_EVENT_SCHEDULE_SIZE = 64; // 4x MAX_CYCLE_SIZE for IP, RR, FP and SC
 
 	// IPS
 	enum P {D, W, M, Q, H, Y} // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
@@ -77,11 +77,19 @@ contract APDefinitions {
 		uint256 scheduledTime;
 		EventType eventType;
 		Currency currency;
-		int256 payOff;
+		int256 payoff;
 		uint256 actualEventTime;
 	}
 
-	struct PAMContractTerms {
+	struct ProtoEvent {
+		uint256 scheduledTime;
+		EventType eventType;
+		Currency currency;
+		EventType pofType;
+		EventType stfType;
+	}
+
+	struct ContractTerms {
 		Calendar calendar;
 		ContractRole contractRole;
 		string legalEntityIdRecordCreator;

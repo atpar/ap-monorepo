@@ -32,7 +32,7 @@ contract('PAMContractActor', (accounts) => {
     this.PAMEngineInstance = await PAMEngine.new()
     const precision = Number(await this.PAMEngineInstance.PRECISION())
     ;({ '10001': this.terms } = await getContractTerms(precision))
-    ;({ '0': this.state } = await this.PAMEngineInstance.getInitialState(this.terms, {}))
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
     
     // deploy APExtended
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
@@ -76,8 +76,12 @@ contract('PAMContractActor', (accounts) => {
   it('should process next state', async () => {
     const currentTimestamp = 1356998400
 
-    const { 1: { 0: iedEvent } } = await this.PAMEngineInstance.getNextState(this.terms, this.state, currentTimestamp)
-    const payoff = new BigNumber(iedEvent.payOff)
+    const { 1: { 0: iedEvent } } = await this.PAMEngineInstance.computeNextState(
+      this.terms, 
+      this.state, 
+      currentTimestamp
+    )
+    const payoff = new BigNumber(iedEvent.payoff)
 
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())

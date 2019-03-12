@@ -37,15 +37,15 @@ describe('testContractChannelClass', () => {
     apRC = await AP.init(web3, recordCreator, 'http://localhost:9000');
     apCP = await AP.init(web3, counterparty, 'http://localhost:9000');
 
-    const contractTerms = (<any>contractTemplatesTyped)['10001'];
-    const contractOwnership = {
+    const terms = (<any>contractTemplatesTyped)['10001'];
+    const ownership = {
       recordCreatorObligorAddress: recordCreator, 
       recordCreatorBeneficiaryAddress: recordCreator, 
       counterpartyObligorAddress: counterparty,
       counterpartyBeneficiaryAddress: counterparty
     };
 
-    contractChannel = await ContractChannel.create(apRC, contractTerms, contractOwnership);
+    contractChannel = await ContractChannel.create(apRC, terms, ownership);
   });
 
   it('should instantiate channel from valid signed contract update', async () => {

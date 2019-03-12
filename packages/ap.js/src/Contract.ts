@@ -1,4 +1,4 @@
-import { ContractTerms, ContractType, ContractOwnership, ContractState } from './types';
+import { ContractTerms, ContractType, ContractOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { ContractEngine, PAM } from './engines';
 import { AP } from './index';
 
@@ -52,6 +52,27 @@ export class Contract {
     return this.ap.ownership.getContractOwnership(contractId);
   }
  
+  /**
+   * returns the schedule derived from the terms of the contract
+   * @returns {Promise<any>}
+   */
+  public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
+    return await this.contractEngine.computeEvaluatedInitialSchedule(await this.getContractTerms());
+  }
+
+  /**
+   * returns the pending schedule derived from the terms and the current state of the contract
+   * (contains all events between the last state and the specified timestamp)
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<any>}
+   */
+  public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
+    return await this.contractEngine.computeEvaluatedPendingSchedule(
+      await this.getContractTerms(),
+      await this.getContractState(),
+      timestamp
+    );
+  }
 
   /**
    * registers the terms, the initial state and the ownership of a contract 
@@ -60,19 +81,19 @@ export class Contract {
    * stores it together with the terms of the ContractRegistry,
    * stores the ownership of the contract in the OwnershipRegistry and sends it
    * @param {AP} ap AP instance
-   * @param {ContractTerms} contractTerms contract terms
-   * @param {ContractOwnership} contractOwnership ownership of the contract
+   * @param {ContractTerms} terms terms of the contract
+   * @param {ContractOwnership} ownership ownership of the contract
    * @returns {Promise<Contract>}
    */
   public static async create (
     ap: AP,
-    contractTerms: ContractTerms,
-    contractOwnership: ContractOwnership
+    terms: ContractTerms,
+    ownership: ContractOwnership
   ): Promise<Contract> {
     const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
-    switch (contractTerms.contractType) {
+    switch (terms.contractType) {
       case ContractType.PAM:
         contractEngine = await PAM.init(ap.web3);
         break;
@@ -80,12 +101,12 @@ export class Contract {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const initialContractState = await contractEngine.computeInitialState(contractTerms);
+    const initialContractState = await contractEngine.computeInitialState(terms);
 
-    await ap.ownership.registerContractOwnership(contractId, contractOwnership);
+    await ap.ownership.registerContractOwnership(contractId, ownership);
     await ap.economics.registerContract(
       contractId, 
-      contractTerms, 
+      terms, 
       initialContractState
     );
 

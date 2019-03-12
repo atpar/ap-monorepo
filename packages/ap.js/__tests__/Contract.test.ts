@@ -30,9 +30,9 @@ describe('testContractClass', () => {
   });
 
   it('should create a new contract instance', async () => {
-    const contractTerms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
+    const terms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
 
-    const contractOwnership: ContractOwnership = { 
+    const ownership: ContractOwnership = { 
       recordCreatorObligorAddress: recordCreator,
       recordCreatorBeneficiaryAddress: recordCreator,
       counterpartyObligorAddress: '0xb1495069F8d780B0C4123E96b0B6bb0217048C09', 
@@ -41,16 +41,16 @@ describe('testContractClass', () => {
 
     contract = await Contract.create(
       ap, 
-      contractTerms, 
-      contractOwnership
+      terms, 
+      ownership
     );
 
-    const storedContractOwnership: ContractOwnership = await ap.ownership.getContractOwnership(contract.contractId);
-    const storedContractTerms: ContractTerms = await contract.getContractTerms();
+    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(contract.contractId);
+    const storedTerms: ContractTerms = await contract.getContractTerms();
     
     expect(contract instanceof Contract).toBe(true);
-    expect(contractOwnership.toString() === storedContractOwnership.toString()).toBe(true);
-    expect(contractTerms.statusDate === storedContractTerms.statusDate);
+    expect(ownership.toString() === storedOwnership.toString()).toBe(true);
+    expect(terms.statusDate === storedTerms.statusDate);
   });
 
   // it('should', async () => {

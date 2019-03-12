@@ -7,7 +7,7 @@ const APVerify = require('../../build/contracts/APVerify.json')
 const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId) => {
   const typedData = {
     domain: {
-      name: 'Actus Protocol',
+      name: 'ACTUS Protocol',
       version: '1',
       chainId: 0,
       verifyingContract: verifyingContract

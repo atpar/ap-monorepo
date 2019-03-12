@@ -59,10 +59,19 @@ export enum Seniority { S, J }
 export enum Unit { BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO }
 
 export interface ContractEvent {
-  eventType: EventType,
   scheduledTime: number,
-  payOff: BigNumber,
+  eventType: EventType,
   currency: Currency
+  payoff: BigNumber,
+  actualEventTime: number
+}
+
+export interface ProtoEvent { 
+  scheduledTime: number, 
+  eventType: EventType,
+  currency: Currency,
+  pofType: EventType
+  stfType: EventType,
 }
 
 export interface ContractState {
@@ -75,6 +84,9 @@ export interface ContractState {
   nominalScalingMultiplier: BigNumber,
   contractRoleSign: ContractRole
 }
+
+export type ProtoEventSchedule = Array<ProtoEvent>;
+export type EvaluatedEventSchedule = { event: ContractEvent, state: ContractState }[];
 
 export interface ContractTerms {
   contractType: ContractType,

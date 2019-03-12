@@ -8,7 +8,7 @@ contract ContractRegistry is APDefinitions {
 
 	struct Contract {
 		bytes32 contractId;
-		PAMContractTerms terms;
+		ContractTerms terms;
 		ContractState state;
 		uint256 eventId;
 		address actor;
@@ -16,63 +16,63 @@ contract ContractRegistry is APDefinitions {
 
 	mapping (bytes32 => Contract) public contracts;
 
-	modifier onlyActor (bytes32 _contractId) {
-		require(contracts[_contractId].actor == msg.sender, "UNAUTHORIZED_SENDER");
+	modifier onlyActor (bytes32 contractId) {
+		require(contracts[contractId].actor == msg.sender, "UNAUTHORIZED_SENDER");
 		_;
 	}
 
 	function registerContract (
-		bytes32 _contractId,
-		PAMContractTerms memory _terms,
-		ContractState memory _state,
-		address _actor
+		bytes32 contractId,
+		ContractTerms memory terms,
+		ContractState memory state,
+		address actor
 	) 
 		public 
 	{
-		require(contracts[_contractId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
+		require(contracts[contractId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
 		
-		contracts[_contractId] = Contract(
-			_contractId,
-			_terms,
-			_state,
+		contracts[contractId] = Contract(
+			contractId,
+			terms,
+			state,
 			0,
-			_actor
+			actor
 		);
 	}
 
-	function setState (bytes32 _contractId, ContractState memory _state) onlyActor (_contractId) public {
-		contracts[_contractId].state = _state;
+	function setState (bytes32 contractId, ContractState memory state) onlyActor (contractId) public {
+		contracts[contractId].state = state;
 	}
 
-	function setTerms (bytes32 _contractId, PAMContractTerms memory _terms) onlyActor (_contractId) public {
-		contracts[_contractId].terms = _terms;
+	function setTerms (bytes32 contractId, ContractTerms memory terms) onlyActor (contractId) public {
+		contracts[contractId].terms = terms;
 	}
 
-	function setEventId (bytes32 _contractId, uint256 _eventId) onlyActor (_contractId) external {
-		contracts[_contractId].eventId = _eventId;
+	function setEventId (bytes32 contractId, uint256 eventId) onlyActor (contractId) external {
+		contracts[contractId].eventId = eventId;
 	}
 
-	function getTerms (bytes32 _contractId) 
+	function getTerms (bytes32 contractId) 
 		external 
 		view
-		returns (PAMContractTerms memory)
+		returns (ContractTerms memory)
 	{
-		return contracts[_contractId].terms;
+		return contracts[contractId].terms;
 	}  
 
-	function getState (bytes32 _contractId) 
+	function getState (bytes32 contractId) 
 		external 
 		view
 		returns (ContractState memory)
 	{
-		return contracts[_contractId].state;
+		return contracts[contractId].state;
 	}
 
-	function getEventId (bytes32 _contractId)
+	function getEventId (bytes32 contractId)
 		external
 		view
 		returns (uint256)
 	{
-		return contracts[_contractId].eventId;
+		return contracts[contractId].eventId;
 	}
 }

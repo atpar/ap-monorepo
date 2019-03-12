@@ -1,31 +1,44 @@
 import BigNumber from 'bignumber.js';
 
-import { ContractState, ContractTerms } from '../types';
+import { ContractState, ContractTerms, EvaluatedEventSchedule } from '../types';
 
 
 export interface ContractEngine {
 
-  computeInitialState (contractTerms: ContractTerms): Promise<ContractState>;
+  computeInitialState (
+    terms: ContractTerms
+  ): Promise<ContractState>;
 
   computeNextState (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
+    terms: ContractTerms, 
+    state: ContractState, 
     timestamp: number
   ): Promise<ContractState>;
 
-  validateInitialState (contractTerms: ContractTerms, expectedContractState: ContractState): Promise<boolean>;
-  
-  validateNextState (
-    contractTerms: ContractTerms, 
-    contractState: ContractState, 
-    expectedContractState: ContractState
+  validateInitialState (
+    terms: ContractTerms, 
+    expectedState: ContractState
   ): Promise<boolean>;
   
-  computeExpectedSchedule (contractTerms: ContractTerms): Promise<any>;
+  validateNextState (
+    terms: ContractTerms, 
+    state: ContractState, 
+    expectedState: ContractState
+  ): Promise<boolean>;
+  
+  computeEvaluatedInitialSchedule (
+    terms: ContractTerms
+  ): Promise<EvaluatedEventSchedule>;
 
-  computePendingSchedule (contractTerms: ContractTerms, contractState: ContractState, timestamp: number): Promise<any>;
+  computeEvaluatedPendingSchedule (
+    terms: ContractTerms, 
+    currentState: ContractState, 
+    currentTimestamp: number
+  ): Promise<EvaluatedEventSchedule>;
 
-  evaluateSchedule (contractTerms: ContractTerms, contractState: ContractState, schedule: any): Promise<any>;
-
-  computeDuePayoff (contractTerms: ContractTerms, contractState: ContractState, timestamp: number): Promise<BigNumber>;
+  computeDuePayoff (
+    terms: ContractTerms, 
+    currentState: ContractState, 
+    currentTimestamp: number
+  ): Promise<BigNumber>;
 }

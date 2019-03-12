@@ -16,23 +16,23 @@ contract APDayCountConventions {
 	using APFloatMath for int;
 	
 
-	function actualThreeSixty(uint256 _startTime, uint256 _endTime) 
+	function actualThreeSixty(uint256 startTime, uint256 endTime) 
 		internal
 		pure
 		returns(int256)
 	{
-		return(int256((_endTime.sub(_startTime)).div(86400)).floatDiv(360));
+		return(int256((endTime.sub(startTime)).div(86400)).floatDiv(360));
 	}
 
-	function actualThreeSixtyFive(uint256 _startTime, uint256 _endTime) 
+	function actualThreeSixtyFive(uint256 startTime, uint256 endTime) 
 		internal
 		pure
 		returns(int256)
 	{
-		return(int256((_endTime.sub(_startTime)).div(86400)).floatDiv(365));
+		return(int256((endTime.sub(startTime)).div(86400)).floatDiv(365));
 	}
 
-	function thirtyEThreeSixty(uint256 _startTime, uint256 _endTime) 
+	function thirtyEThreeSixty(uint256 startTime, uint256 endTime) 
 		internal
 		pure
 		returns(int256) 
@@ -45,8 +45,8 @@ contract APDayCountConventions {
 		uint256 d2Month;
 		uint256 d2Year;
 
-		(d1Year, d1Month, d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(_startTime);
-		(d2Year, d2Month, d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(_endTime);
+		(d1Year, d1Month, d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(startTime);
+		(d2Year, d2Month, d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(endTime);
 
 		if (d1Day == 31) { 
 			d1Day = 30; 

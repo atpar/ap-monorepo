@@ -35,48 +35,48 @@ contract APVerify {
 
 	constructor () public {
 		DOMAIN_SEPARATOR = hashStruct(EIP712Domain({
-			name: "Actus Financial Protocol",
+			name: "ACTUS Protocol",
 			version: "1",
 			chainId: 0,
 			verifyingContract: address(this)
 		}));
 	}
 
-	function hashStruct(EIP712Domain memory _eip712Domain) 
+	function hashStruct(EIP712Domain memory eip712Domain) 
 		internal 
 		pure 
 		returns (bytes32) 
 	{
 		return keccak256(abi.encode(
 			EIP712DOMAIN_TYPEHASH,
-			keccak256(bytes(_eip712Domain.name)),
-			keccak256(bytes(_eip712Domain.version)),
-			_eip712Domain.chainId,
-			_eip712Domain.verifyingContract
+			keccak256(bytes(eip712Domain.name)),
+			keccak256(bytes(eip712Domain.version)),
+			eip712Domain.chainId,
+			eip712Domain.verifyingContract
 		));
 	}
 
-	function hashStruct(ContractUpdate memory _contractUpdate)
+	function hashStruct(ContractUpdate memory contractUpdate)
 		internal
 		pure
 		returns(bytes32)
 	{
 		return keccak256(abi.encode(
 			CONTRACTUPDATE_TYPEHASH,
-			_contractUpdate.contractId,
-			_contractUpdate.recordCreatorAddress,
-			_contractUpdate.counterpartyAddress,
-			_contractUpdate.contractAddress,
-			_contractUpdate.contractTermsHash,
-			_contractUpdate.contractStateHash,
-			_contractUpdate.contractUpdateNonce
+			contractUpdate.contractId,
+			contractUpdate.recordCreatorAddress,
+			contractUpdate.counterpartyAddress,
+			contractUpdate.contractAddress,
+			contractUpdate.contractTermsHash,
+			contractUpdate.contractStateHash,
+			contractUpdate.contractUpdateNonce
 		));
 	}
 
 	function verifyContractUpdate(
-		ContractUpdate memory _contractUpdate, 
-		bytes memory _recordCreatorSignature, 
-		bytes memory _counterpartySignature
+		ContractUpdate memory contractUpdate, 
+		bytes memory recordCreatorSignature, 
+		bytes memory counterpartySignature
 	)
 		internal 
 		view
@@ -84,10 +84,10 @@ contract APVerify {
 		bytes32 digest = keccak256(abi.encodePacked(
 			"\x19\x01",
 			DOMAIN_SEPARATOR,
-			hashStruct(_contractUpdate)
+			hashStruct(contractUpdate)
 		));
 
-		require(ECDSA.recover(digest, _recordCreatorSignature) == _contractUpdate.recordCreatorAddress, "recovered address is not the record creator");
-		require(ECDSA.recover(digest, _counterpartySignature) == _contractUpdate.counterpartyAddress, "recovered address is not the counterparty");
+		require(ECDSA.recover(digest, recordCreatorSignature) == contractUpdate.recordCreatorAddress, "recovered address is not the record creator");
+		require(ECDSA.recover(digest, counterpartySignature) == contractUpdate.counterpartyAddress, "recovered address is not the counterparty");
 	}
 }

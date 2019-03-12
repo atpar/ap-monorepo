@@ -1,7 +1,6 @@
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
 
-import { ContractTerms, ContractState, ContractEvent } from '../types';
+import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
 import { Contract } from 'web3-eth-contract/types';
 
 const PAMEngineArtifact: any = require('../../../ap-contracts/build/contracts/PAMEngine.json');
@@ -15,110 +14,62 @@ export class PAMEngine {
   }
 
   public async getPrecision (): Promise<number> {
-    const precision: number = await this.pamEngine.methods.precision().call();
-    return precision;
+    return await this.pamEngine.methods.precision().call();
   }
 
-  public async computeInitialState (contractTerms: ContractTerms): Promise<ContractState> {
-    const { 0: contractState }: { 0: ContractState, 1: any } = 
-      await this.pamEngine.methods.getInitialState(contractTerms).call();
-    return contractState;
+  public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
+    const initialState: ContractState = await this.pamEngine.methods.computeInitialState(terms).call();
+    return initialState;
   }
 
   public async computeNextState (
-    contractTerms: ContractTerms, 
-    contractState: ContractState, 
+    terms: ContractTerms, 
+    state: ContractState, 
     timestamp: number
-  ): Promise<{nextContractState: ContractState, evaluatedEvents: any}> {
+  ): Promise<{nextState: ContractState, events: ContractEvent[]}> {
+    const response = await this.pamEngine.methods.computeNextState(terms, state, timestamp).call();
+    const { 0: nextState, 1: events } : { 0: ContractState, 1: ContractEvent[] } = response;
+
+    return { nextState, events };
+  }
+
+  public async computeNextStateForProtoEvent (
+    terms: ContractTerms, 
+    state: ContractState, 
+    protoEvent: ProtoEvent, 
+    timestamp: number
+  ): Promise<{nextState: ContractState, event: ContractEvent}> {
     const response = await this.pamEngine.methods.getNextState(
-      contractTerms,
-      contractState,
+      terms,
+      state,
+      protoEvent,
       timestamp
     ).call();
+    const { 0: nextState, 1: event } : { 0: ContractState, 1: ContractEvent } = response;
 
-    const nextContractState: ContractState = response[0];
-    const evaluatedEvents: any = response[1];
-
-    return { nextContractState, evaluatedEvents };
+    return { nextState, event };
   }
 
-  public async computeNextStateForEvent (
-    contractTerms: ContractTerms, 
-    contractState: ContractState, 
-    contractEvent: ContractEvent, 
-    timestamp: number
-  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}> {
-    const response = await this.pamEngine.methods.getNextState(
-      contractTerms,
-      contractState,
-      contractEvent,
-      timestamp
+  public async computeInitialProtoEventSchedule (terms: ContractTerms): Promise<ProtoEventSchedule> {
+    const protoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
+      terms,
+      terms.statusDate,
+      terms.maturityDate
     ).call();
-
-    const postContractState = response[0];
-    const evaluatedContractEvent = response[1];
-
-    return { postContractState, evaluatedContractEvent };
+    return protoEventSchedule;
   }
 
-  public async computeSchedule (contractTerms: ContractTerms): Promise<any> {
-    const contractEventSchedule = await this.pamEngine.methods.computeContractEventSchedule(
-      contractTerms
-    ).call();
-
-    return contractEventSchedule;
-  }
-
-  public async computeScheduleSegment (
-    contractTerms: ContractTerms, 
+  public async computePendingProtoEventSchedule (
+    terms: ContractTerms, 
     startTimestamp: number, 
     endTimestamp: number
-  ): Promise<any> {
-    const pendingContractEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
-      contractTerms,
+  ): Promise<ProtoEventSchedule> {
+    const pendingProtoEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
+      terms,
       startTimestamp,
       endTimestamp
     ).call();
-
-    return pendingContractEventSchedule;
-  }
-
-  public async evaluateSchedule (
-    contractTerms: ContractTerms, 
-    contractState: ContractState, 
-    contractEventSchedule: any
-  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]> {
-    const evaluatedContractEventSchedule = [];
-
-    for (let i = 0; i < 20; i++) {
-      if (contractEventSchedule[i][1] === '0') { break; }
-
-      const contractEvent = {
-        scheduledTime: contractEventSchedule[i][1],
-        eventType: contractEventSchedule[i][0],
-        currency: 0,
-        payOff: new BigNumber(0),
-        actualEventTime: 0
-      };
-
-      const { 
-        postContractState, 
-        evaluatedContractEvent 
-      } : { 
-        postContractState: ContractState, 
-        evaluatedContractEvent: any 
-      } = await this.computeNextStateForEvent(
-        contractTerms,
-        contractState,
-        contractEvent,
-        contractEventSchedule[i][1]
-      );
-
-      evaluatedContractEventSchedule.push({ postContractState, evaluatedContractEvent });
-      contractState = postContractState;
-    }
-
-    return evaluatedContractEventSchedule;
+    return pendingProtoEventSchedule;
   }
 
   public static async instantiate (web3: Web3): Promise<PAMEngine> {

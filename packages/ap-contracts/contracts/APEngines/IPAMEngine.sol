@@ -5,25 +5,25 @@ import "../APCore/APDefinitions.sol";
 
 contract IPAMEngine is APDefinitions {
 
- 	function getInitialState(PAMContractTerms memory _contractTerms) 
+ 	function computeInitialState(ContractTerms memory contractTerms) 
 		public 
 		pure 
 		returns (ContractState memory, uint256[2][MAX_EVENT_SCHEDULE_SIZE] memory);
 
-	function getNextState(
-		PAMContractTerms memory _contractTerms, 
-		ContractState memory _contractState, 
-		ContractEvent memory _contractEvent, 
-		uint256 _timestamp
+	function computeNextState(
+		ContractTerms memory contractTerms, 
+		ContractState memory contractState, 
+		ContractEvent memory contractEvent, 
+		uint256 timestamp
 	) 
 		public 
 		pure 
 		returns (ContractState memory, ContractEvent memory);
 
-	function getNextState(
-		PAMContractTerms memory _contractTerms, 
-		ContractState memory _contractState, 
-		uint256 _timestamp
+	function computeNextState(
+		ContractTerms memory contractTerms, 
+		ContractState memory contractState, 
+		uint256 timestamp
 	) 
 		public 
 		pure 

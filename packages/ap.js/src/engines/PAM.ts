@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 import { ContractEngine } from './ContractEngine';
 import { PAMEngine } from '../wrappers/PAMEngine';
-import { ContractTerms, ContractState, ContractEvent } from '../types';
+import { ContractTerms, ContractState, ContractEvent, EvaluatedEventSchedule, ProtoEventSchedule } from '../types';
 
 
 /**
@@ -19,178 +19,188 @@ export class PAM implements ContractEngine {
 
   /**
    * computes the inital state based on the contract terms and the current state
-   * @param {contractTerms} contractTerms
+   * @param {ContractTerms} terms
    * @returns {Promise<ContractState>}
    */
-  public async computeInitialState (contractTerms: ContractTerms): Promise<ContractState> {
-    const initialContractState = await this.pamEngine.computeInitialState(
-      contractTerms
+  public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
+    const initialState = await this.pamEngine.computeInitialState(
+      terms
     );
-    return initialContractState;
+    return initialState;
   }
 
   /**
    * computes the next state based on the contract terms and the current state
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} contractState
+   * @param {ContractTerms} terms
+   * @param {ContractState} state
    * @param {number} timestamp current timestamp
    * @returns {Promise<ContractState>}
    */
   public async computeNextState (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
+    terms: ContractTerms,
+    state: ContractState,
     timestamp: number
   ): Promise<ContractState> {
-    const { nextContractState } = await this.pamEngine.computeNextState(
-      contractTerms, 
-      contractState, 
+    const { nextState } = await this.pamEngine.computeNextState(
+      terms, 
+      state, 
       timestamp
     );
-    return nextContractState;
+    return nextState;
   }
 
   /**
    * recalculates the first state based on the terms of the contract
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} expectedContractState expected contract state to compare to
+   * @param {ContractTerms} terms
+   * @param {ContractState} expectedState expected contract state to compare to
    * @returns {Promise<boolean>} true if the given state is equal to the computed state
    */
   public async validateInitialState (
-    contractTerms: ContractTerms,
-    expectedContractState: ContractState,
+    terms: ContractTerms,
+    expectedState: ContractState,
   ): Promise<boolean> {
-    const contractState = await this.pamEngine.computeInitialState(contractTerms);
+    const initialState = await this.pamEngine.computeInitialState(terms);
 
-    // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
-    //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})
+    // const extractedStateObject = Object.keys(initialState).filter((key) => (!(/^\d+/).test(key)))
+    //   .reduce((obj: any, key: any) => { obj[key] = initialState[key]; return obj }, {})
 
-    if (contractState.toString() !== expectedContractState.toString()) { return false; }
+    if (initialState.toString() !== expectedState.toString()) { return false; }
 
     return true;
   }
 
   /**
    * recalculates a state based on the terms and the current state of the contract
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} contractState
+   * @param {ContractTerms} terms
+   * @param {ContractState} state
    * @param {ContractState} expectedContractState expected contract state to compare to
    * @returns {Promise<boolean>} true if the given state is equal to the computed state
    */
   public async validateNextState (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
-    expectedContractState: ContractState,
+    terms: ContractTerms,
+    state: ContractState,
+    expectedState: ContractState,
   ): Promise<boolean> {
-    const { nextContractState: actualContractState } = await this.pamEngine.computeNextState(
-      contractTerms, 
-      contractState,
-      expectedContractState.lastEventTime
+    const { nextState: actualState } = await this.pamEngine.computeNextState(
+      terms, 
+      state,
+      expectedState.lastEventTime
     );
 
     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
     //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})
 
-    if (actualContractState.toString() !== expectedContractState.toString()) { return false; }
+    if (actualState.toString() !== expectedState.toString()) { return false; }
 
     return true;
   }
 
   /**
-   * computes the entire event schedule based on the contract terms
-   * @param {ContractTerms} contractTerms
-   * @returns {Promise<any>} expected event schedule
+   * computes the entire evaluated schedule based on the contract terms
+   * @param {ContractTerms} terms
+   * @returns {Promise<EvaluatedEventSchedule>} 
    */
-  public async computeExpectedSchedule (contractTerms: ContractTerms): Promise<any> {
-    return this.pamEngine.computeSchedule(contractTerms);
+  public async computeEvaluatedInitialSchedule (terms: ContractTerms): Promise<EvaluatedEventSchedule> {
+    const initialContractState: ContractState = await this.pamEngine.computeInitialState(terms);
+    const protoEventSchedule: ProtoEventSchedule = await this.pamEngine.computeInitialProtoEventSchedule(terms);
+    const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
+    
+    let state = initialContractState;
+
+    await protoEventSchedule.forEach(async (protoEvent) => {
+      const response = await this.pamEngine.computeNextStateForProtoEvent(
+        terms,
+        state,
+        protoEvent,
+        protoEvent.scheduledTime
+      );
+
+      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+
+      evaluatedInitialSchedule.push({ event, state: nextState });
+      state = nextState;
+    })
+
+    return evaluatedInitialSchedule;
   }
 
   /**
-   * computes schedule for all pending events
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} contractState
-   * @param {number} timestamp current timestamp
-   * @returns {Promise<any>} pending event schedule
+   * computes the evaluated schedule for all pending events (between lastEventTime and now)
+   * from the terms and the provided current state of the contract 
+   * @param {ContractTerms} terms
+   * @param {ContractState} currentState current state of the contract
+   * @param {number} currentTimestamp current timestamp
+   * @returns {Promise<EvaluatedEventSchedule>} pending evaluated event schedule
    */
-  public async computePendingSchedule (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
-    timestamp: number
-  ): Promise<any> {
-    return this.pamEngine.computeScheduleSegment(
-      contractTerms, 
-      contractState.lastEventTime, 
-      timestamp
+  public async computeEvaluatedPendingSchedule (
+    terms: ContractTerms,
+    currentState: ContractState,
+    currentTimestamp: number
+  ): Promise<EvaluatedEventSchedule> {
+    const protoEventSchedule = await this.pamEngine.computePendingProtoEventSchedule(
+      terms, 
+      currentState.lastEventTime, 
+      currentTimestamp
     );
+    const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
+
+    let state = currentState;
+
+    await protoEventSchedule.forEach(async (protoEvent) => {
+      const response = await this.pamEngine.computeNextStateForProtoEvent(
+        terms,
+        state,
+        protoEvent,
+        protoEvent.scheduledTime
+      );
+
+      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+
+      evaluatedInitialSchedule.push({ event, state: nextState });
+      state = nextState;
+    })
+
+    return evaluatedInitialSchedule;
   }
 
   /**
-   * evaluates a given event schedule
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} contractState
-   * @param {any} expectedSchedule expected event schedule
-   * @returns {Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]>} evaluated event schedule
-   */
-  public async evaluateSchedule (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
-    schedule: any
-  ): Promise<{postContractState: ContractState, evaluatedContractEvent: any}[]> {
-    return this.pamEngine.evaluateSchedule(contractTerms, contractState, schedule);
-  }
-
-  /**
-   * calculates the outstanding payoff based on all pending events for a given date
-   * @param {ContractTerms} contractTerms
-   * @param {ContractState} contractState
-   * @param {number} timestamp current timestamp
+   * calculates the outstanding payoff based on all pending events for a given timestamp
+   * @param {ContractTerms} terms
+   * @param {ContractState} currentState
+   * @param {number} currentTimestamp current timestamp
    * @returns {Promise<BigNumber>} summed up payoff
    */
   public async computeDuePayoff (
-    contractTerms: ContractTerms,
-    contractState: ContractState,
-    timestamp: number
+    terms: ContractTerms,
+    currentState: ContractState,
+    currentTimestamp: number
   ): Promise<BigNumber> {
-    const pendingEventSchedule = await this.computePendingSchedule(contractTerms, contractState, timestamp);
-    const evaluatedSchedule = await this.evaluateSchedule(contractTerms, contractState, pendingEventSchedule);
-    const contractEvents = evaluatedSchedule.map((entry: any) => {
-      return entry.evaluatedContractEvent
-    })
+    const evaluatedPendingEventSchedule = await this.computeEvaluatedPendingSchedule(
+      terms, 
+      currentState, 
+      currentTimestamp
+    );
 
-    return this._getPayOffFromContractEvents(contractEvents);
+    const events = evaluatedPendingEventSchedule.map(
+      (evaluatedEvent: {event: ContractEvent, state: ContractState}) => { return evaluatedEvent.event; }
+    );
+
+    return this._getPayOffFromContractEvents(events);
   }
   
   /**
    * sums up payoff for a set of evaluated events
-   * @param {ContractEvent[]} contractEvents array of contract events
+   * @param {ContractEvent[]} events array of contract events
    * @returns {BigNumber} summed up payoff 
    */
-  protected _getPayOffFromContractEvents (contractEvents: ContractEvent[]): BigNumber {
-    const payOff = contractEvents.reduce(
-      (payOffSum: BigNumber, contractEvent: ContractEvent) => payOffSum.plus(new BigNumber(contractEvent.payOff)), 
+  private _getPayOffFromContractEvents (events: ContractEvent[]): BigNumber {
+    const payOff = events.reduce(
+      (payoffSum: BigNumber, event: ContractEvent) => payoffSum.plus(new BigNumber(event.payoff)), 
       new BigNumber(0)
     );
   
     return payOff;
   }
-
-  // /**
-  //  * computes and stores the next contract state for a given timestamp
-  //  * @param timestamp current timestamp
-  //  */
-  // public async computeAndCommitNextState (timestamp: number) {
-  //   const { nextContractState, evaluatedEvents } = await this.pamEngine.computeNextState(
-  //     this.contractTerms, 
-  //     this.contractState, 
-  //     timestamp
-  //   );
-
-  //   // @ts-ignore
-  //   const payOff = this._getPayOffFromContractEvents(evaluatedEvents);
-
-  //   // check if all payments were made
-      
-  //   this.contractState = nextContractState; 
-  // }
 
   /**
    * returns a new PAM instance

@@ -30,46 +30,46 @@ contract PaymentRegistry is Ownable {
 	}
 	
 	function registerPayment (
-		bytes32 _contractId,
-		int8 _cashflowId,
-		uint256 _eventId,
-		address _token,
-		uint256 _amount
+		bytes32 contractId,
+		int8 cashflowId,
+		uint256 eventId,
+		address token,
+		uint256 amount
 	) 
 		external 
 		payable
 		onlyPaymentRouter ()
 	{		
-		if (payoffRegistry[_contractId][_eventId].cashflowId == int8(0)) {
-			payoffRegistry[_contractId][_eventId] = Payoff(
-				_cashflowId,
-				_token,
-				_amount
+		if (payoffRegistry[contractId][eventId].cashflowId == int8(0)) {
+			payoffRegistry[contractId][eventId] = Payoff(
+				cashflowId,
+				token,
+				amount
 			);
 		} else {
-			payoffRegistry[_contractId][_eventId].balance += _amount;
+			payoffRegistry[contractId][eventId].balance += amount;
 		}
 
-		emit Paid(_contractId, _eventId, _amount);
+		emit Paid(contractId, eventId, amount);
 	}
 
-	function getPayoffBalance (bytes32 _contractId, uint256 _eventId)
+	function getPayoffBalance (bytes32 contractId, uint256 eventId)
 		external
 		view
 		returns (uint256)
 	{
-		return payoffRegistry[_contractId][_eventId].balance;
+		return payoffRegistry[contractId][eventId].balance;
 	}
 	
-	function getPayoff (bytes32 _contractId, uint256 _eventId)
+	function getPayoff (bytes32 contractId, uint256 eventId)
 		external
 		view
 		returns (int8, address, uint256)
 	{
 		return (
-			payoffRegistry[_contractId][_eventId].cashflowId, 
-			payoffRegistry[_contractId][_eventId].token,
-			payoffRegistry[_contractId][_eventId].balance
+			payoffRegistry[contractId][eventId].cashflowId, 
+			payoffRegistry[contractId][eventId].token,
+			payoffRegistry[contractId][eventId].balance
 		);
 	}
 }
