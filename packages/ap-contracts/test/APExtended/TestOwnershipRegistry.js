@@ -15,6 +15,7 @@ contract('OwnershipRegistry', (accounts) => {
   const counterpartyBeneficiary = accounts[3]
   
   const cashflowIdBeneficiary = accounts[4]
+  const newCashflowBeneficiary = accounts[5]
 
   before(async () => {
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
@@ -61,7 +62,10 @@ contract('OwnershipRegistry', (accounts) => {
       { from: recordCreatorBeneficiary }
     )
     
-    const resultA = await this.OwnershipRegistryInstance.getCashflowBeneficiary(web3.utils.toHex(this.contractId), cashflowIdA)
+    const resultA = await this.OwnershipRegistryInstance.getCashflowBeneficiary(
+      web3.utils.toHex(this.contractId), 
+      cashflowIdA
+    )
     assert.equal(resultA, cashflowIdBeneficiary)
 
 
@@ -74,8 +78,25 @@ contract('OwnershipRegistry', (accounts) => {
       { from: counterpartyBeneficiary }
     )
     
-    const resultB = await this.OwnershipRegistryInstance.getCashflowBeneficiary(web3.utils.toHex(this.contractId), cashflowIdB)
+    const resultB = await this.OwnershipRegistryInstance.getCashflowBeneficiary(web3
+      .utils.toHex(this.contractId), 
+      cashflowIdB
+    )
     assert.equal(resultB, cashflowIdBeneficiary)
+
+
+    await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
+      web3.utils.toHex(this.contractId), 
+      cashflowIdA, 
+      newCashflowBeneficiary,
+      { from: cashflowIdBeneficiary }
+    )
+    
+    const resultC = await this.OwnershipRegistryInstance.getCashflowBeneficiary(
+      web3.utils.toHex(this.contractId), 
+      cashflowIdA
+    )
+    assert.equal(resultC, newCashflowBeneficiary)
   })
 
   it('should not register beneficiary (of payments corresponding to a CashflowId) for an authorized sender', async () => {
@@ -144,21 +165,7 @@ contract('OwnershipRegistry', (accounts) => {
     )
   })
 
-  it('should not overwrite beneficiary (of payments corresponding to a CashflowId)', async () => {
-    const cashflowId = 5
-    
-    await shouldFail.reverting.withMessage(
-      this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
-        cashflowId, 
-        cashflowIdBeneficiary,
-        { from: recordCreatorBeneficiary }
-      ),
-      ENTRY_ALREADY_EXISTS
-    )
-  })
-
-  it('should not register beneficiary (of payments corresponding to a CashflowId) with an invalid CashflowId', async () => {
+  it('should not register beneficiary with an invalid CashflowId', async () => {
     const cashflowId = 0
     
     await shouldFail.reverting.withMessage(

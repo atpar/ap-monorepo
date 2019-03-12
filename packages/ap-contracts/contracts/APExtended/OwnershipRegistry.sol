@@ -44,14 +44,16 @@ contract OwnershipRegistry is Ownable {
 		external 
 	{
 		require(cashflowId != 0, "INVALID_CASHFLOWID");
-		
-		if (cashflowId > 0) {
-			require(msg.sender == contractOwnerships[contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
-		} else {
-			require(msg.sender == contractOwnerships[contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
-		}
 
-		require(cashflowBeneficiaries[contractId][cashflowId] == address(0), "ENTRY_ALREADY_EXISTS");
+		if (cashflowBeneficiaries[contractId][cashflowId] == address(0)) {
+			if (cashflowId > 0) {
+				require(msg.sender == contractOwnerships[contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
+			} else {
+				require(msg.sender == contractOwnerships[contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
+			}
+		} else {
+			require(msg.sender == cashflowBeneficiaries[contractId][cashflowId], "UNAUTHORIZED_SENDER");
+		}
 
 		cashflowBeneficiaries[contractId][cashflowId] = beneficiary;
 	}
