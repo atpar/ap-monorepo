@@ -4,8 +4,8 @@ const bodyParser = require('body-parser')
 const fs = require('fs')
 const Web3 = require('web3')
 
-const PAMTestTerms = '../afp-contracts/test/contract-templates/pam-test-terms.csv'
-const parseContractTerms = require('../afp-contracts/test/parser.js').parseContractTerms
+const PAMTestTerms = '../ap-contracts/test/contract-templates/pam-test-terms.csv'
+const parseContractTerms = require('../ap-contracts/test/parser.js').parseContractTerms
 const PATH_TO_DATABASE = './Database.json'
 
 const state = { web3: null }
@@ -101,16 +101,16 @@ const saveContractUpdate = async (signedContractUpdate) => {
   let entries = {}
   try { entries = await getAllContractUpdates() } catch (error) { console.error(error) }
 
-  if (entries[signedContractUpdate.contractUpdate.recordCreatorAddress]) {
-    entries[signedContractUpdate.contractUpdate.recordCreatorAddress] = { ...entries[signedContractUpdate.contractUpdate.recordCreatorAddress], ...data }
+  if (entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress]) {
+    entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress] = { ...entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress], ...data }
   } else {
-    entries[signedContractUpdate.contractUpdate.recordCreatorAddress] = { ...data }
+    entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress] = { ...data }
   }
 
-  if (entries[signedContractUpdate.contractUpdate.counterpartyAddress]) {
-    entries[signedContractUpdate.contractUpdate.counterpartyAddress] = { ...entries[signedContractUpdate.contractUpdate.counterpartyAddress], ...data }
+  if (entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress]) {
+    entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress] = { ...entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress], ...data }
   } else {
-    entries[signedContractUpdate.contractUpdate.counterpartyAddress] = { ...data }
+    entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress] = { ...data }
   }
 
   return new Promise((resolve, reject) => {
