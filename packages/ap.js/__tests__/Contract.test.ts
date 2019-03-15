@@ -40,7 +40,7 @@ describe('testContractClass', () => {
     }
 
     contract = await Contract.create(
-      ap, 
+      ap,
       terms, 
       ownership
     );
@@ -53,7 +53,8 @@ describe('testContractClass', () => {
     expect(terms.statusDate === storedTerms.statusDate);
   });
 
-  // it('should', async () => {
-  //   console.log(await contract.contractEngine.computeNextState(1362096000));
-  // });
+  it('should', async () => {
+    const eventSchedule = await contract.getExpectedSchedule();
+    console.log(eventSchedule);
+  });
 });

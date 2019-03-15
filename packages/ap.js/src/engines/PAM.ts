@@ -102,24 +102,29 @@ export class PAM implements ContractEngine {
    */
   public async computeEvaluatedInitialSchedule (terms: ContractTerms): Promise<EvaluatedEventSchedule> {
     const initialContractState: ContractState = await this.pamEngine.computeInitialState(terms);
-    const protoEventSchedule: ProtoEventSchedule = await this.pamEngine.computeInitialProtoEventSchedule(terms);
-    const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
+    const protoEventSchedule: ProtoEventSchedule = await this.pamEngine.computeProtoEventScheduleSegment(
+      terms,
+      terms.statusDate,
+      terms.maturityDate
+    );
     
     let state = initialContractState;
 
-    await protoEventSchedule.forEach(async (protoEvent) => {
-      const response = await this.pamEngine.computeNextStateForProtoEvent(
-        terms,
-        state,
-        protoEvent,
-        protoEvent.scheduledTime
-      );
+    const evaluatedInitialSchedule: EvaluatedEventSchedule = await Promise.all(
+      protoEventSchedule.map(async (protoEvent) => {
+        const response = await this.pamEngine.computeNextStateForProtoEvent(
+          terms,
+          state,
+          protoEvent,
+          protoEvent.scheduledTime
+        );
 
-      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+        const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+        state = nextState;
 
-      evaluatedInitialSchedule.push({ event, state: nextState });
-      state = nextState;
-    })
+        return { event, state: nextState };
+      })
+    );
 
     return evaluatedInitialSchedule;
   }
@@ -137,30 +142,31 @@ export class PAM implements ContractEngine {
     currentState: ContractState,
     currentTimestamp: number
   ): Promise<EvaluatedEventSchedule> {
-    const protoEventSchedule = await this.pamEngine.computePendingProtoEventSchedule(
+    const protoEventSchedule = await this.pamEngine.computeProtoEventScheduleSegment(
       terms, 
       currentState.lastEventTime, 
       currentTimestamp
     );
-    const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
 
     let state = currentState;
 
-    await protoEventSchedule.forEach(async (protoEvent) => {
-      const response = await this.pamEngine.computeNextStateForProtoEvent(
-        terms,
-        state,
-        protoEvent,
-        protoEvent.scheduledTime
-      );
+    const evaluatedPendingSchedule: EvaluatedEventSchedule = await Promise.all(
+      protoEventSchedule.map(async (protoEvent) => {
+        const response = await this.pamEngine.computeNextStateForProtoEvent(
+          terms,
+          state,
+          protoEvent,
+          protoEvent.scheduledTime
+        );
 
-      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+        const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+        state = nextState;
 
-      evaluatedInitialSchedule.push({ event, state: nextState });
-      state = nextState;
-    })
+        return { event, state: nextState };
+      })
+    );
 
-    return evaluatedInitialSchedule;
+    return evaluatedPendingSchedule;
   }
 
   /**

@@ -54,7 +54,7 @@ export class Contract {
  
   /**
    * returns the schedule derived from the terms of the contract
-   * @returns {Promise<any>}
+   * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
     return await this.contractEngine.computeEvaluatedInitialSchedule(await this.getContractTerms());
@@ -64,7 +64,7 @@ export class Contract {
    * returns the pending schedule derived from the terms and the current state of the contract
    * (contains all events between the last state and the specified timestamp)
    * @param {number} timestamp current timestamp
-   * @returns {Promise<any>}
+   * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
     return await this.contractEngine.computeEvaluatedPendingSchedule(
@@ -72,6 +72,16 @@ export class Contract {
       await this.getContractState(),
       timestamp
     );
+  }
+
+  /**
+   * derives obligations by computing the next state of the contract and 
+   * stores the new state if all obligation where fulfilled
+   * @param {number} timestamp 
+   * @return {Promise<void>}
+   */
+  public async progress (timestamp: number): Promise<void> {
+    await this.ap.lifecycle.progress(this.contractId, timestamp);
   }
 
   /**

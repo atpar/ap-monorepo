@@ -35,11 +35,11 @@ export class PAMEngine {
 
   public async computeNextStateForProtoEvent (
     terms: ContractTerms, 
-    state: ContractState, 
+    state: ContractState,
     protoEvent: ProtoEvent, 
     timestamp: number
   ): Promise<{nextState: ContractState, event: ContractEvent}> {
-    const response = await this.pamEngine.methods.getNextState(
+    const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
       terms,
       state,
       protoEvent,
@@ -50,25 +50,24 @@ export class PAMEngine {
     return { nextState, event };
   }
 
-  public async computeInitialProtoEventSchedule (terms: ContractTerms): Promise<ProtoEventSchedule> {
-    const protoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
-      terms,
-      terms.statusDate,
-      terms.maturityDate
-    ).call();
-    return protoEventSchedule;
-  }
-
-  public async computePendingProtoEventSchedule (
+  public async computeProtoEventScheduleSegment (
     terms: ContractTerms, 
     startTimestamp: number, 
     endTimestamp: number
   ): Promise<ProtoEventSchedule> {
-    const pendingProtoEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
+    const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
       terms,
       startTimestamp,
       endTimestamp
     ).call();
+
+    const pendingProtoEventSchedule: ProtoEventSchedule = [];
+
+    for (const protoEvent of response) {
+      if (Number(protoEvent.scheduledTime) === 0) { break; }
+      pendingProtoEventSchedule.push(protoEvent);
+    }
+
     return pendingProtoEventSchedule;
   }
 
