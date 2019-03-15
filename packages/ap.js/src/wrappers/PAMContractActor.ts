@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
 const PAMContractActorArtifact: any = require('../../../ap-contracts/build/contracts/PAMContractActor.json');
@@ -12,8 +12,12 @@ export class PAMContractActor {
     this.pamContractActor = pamContractActorInstance
   }
 
-  public async progress (contractId: string, timestamp: number): Promise<void> {
-    await this.pamContractActor.methods.progress(toHex(contractId), timestamp);
+  public async progress (
+    contractId: string, 
+    timestamp: number, 
+    txOptions?: SendOptions
+  ): Promise<void> {
+    await this.pamContractActor.methods.progress(toHex(contractId), timestamp).send({ ...txOptions });
   }
 
   public static async instantiate (web3: Web3): Promise<PAMContractActor> {

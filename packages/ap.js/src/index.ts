@@ -6,6 +6,7 @@ import { ContractChannel } from './channel/ContractChannel';
 import { SignedContractUpdate } from './types';
 import { Common } from './utils/Common';
 import { OwnershipAPI, EconomicsAPI, PaymentAPI } from './apis';
+import { LifecycleAPI } from './apis/LifecycleAPI';
 
 
 export class AP {
@@ -15,6 +16,7 @@ export class AP {
   public ownership: OwnershipAPI;
   public economics: EconomicsAPI;
   public payment: PaymentAPI;
+  public lifecycle: LifecycleAPI;
 
   public signer: Signer;
   public common: Common;
@@ -25,6 +27,7 @@ export class AP {
     ownership: OwnershipAPI, 
     economics: EconomicsAPI,
     payment: PaymentAPI,
+    lifecycle: LifecycleAPI,
     signer: Signer, 
     common: Common, 
     client?: Client
@@ -34,6 +37,7 @@ export class AP {
     this.ownership = ownership;
     this.economics = economics;
     this.payment = payment;
+    this.lifecycle = lifecycle;
 
     this.signer = signer;
     this.common = common;
@@ -74,6 +78,7 @@ export class AP {
     const ownership = await OwnershipAPI.init(web3, signer);
     const economics = await EconomicsAPI.init(web3, signer);
     const payment = await PaymentAPI.init(web3, signer);
+    const lifecycle = await LifecycleAPI.init(web3, signer);
   
     let client: Client | undefined = undefined;
 
@@ -89,7 +94,7 @@ export class AP {
       // throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); 
     }
 
-    return new AP(web3, ownership, economics, payment, signer, common, client);
+    return new AP(web3, ownership, economics, payment, lifecycle, signer, common, client);
   }
 }
 
