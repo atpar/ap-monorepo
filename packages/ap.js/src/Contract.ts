@@ -129,7 +129,7 @@ export class Contract {
    * @param {string} contractId 
    * @returns {Promise<Contract>}
    */
-  public static async loadContract (
+  public static async load (
     ap: AP,
     contractId: string
   ): Promise<Contract> {

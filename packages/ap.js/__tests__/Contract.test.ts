@@ -53,8 +53,8 @@ describe('testContractClass', () => {
     expect(terms.statusDate === storedTerms.statusDate);
   });
 
-  it('should', async () => {
-    const eventSchedule = await contract.getExpectedSchedule();
-    console.log(eventSchedule);
-  });
+  // it('should', async () => {
+  //   const eventSchedule = await contract.getExpectedSchedule();
+  //   // console.log(eventSchedule);
+  // });
 });
