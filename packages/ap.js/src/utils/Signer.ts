@@ -1,8 +1,16 @@
 import Web3 from 'web3';
 import sigUtil from 'eth-sig-util';
 
-import { ContractUpdate, SignedContractUpdate } from '../types';
-import { ContractUpdateAsTypedData } from '../types/AP';
+const AssetIssuerArtifact: any = require('../../../ap-contracts/build/contracts/AssetIssuer.json');
+
+import { 
+  TypedData,
+  ContractUpdate, 
+  SignedContractUpdate, 
+  ContractUpdateAsTypedData, 
+  OrderData, 
+  OrderDataAsTypedData 
+} from '../types';
 
 
 export class Signer {
@@ -16,35 +24,26 @@ export class Signer {
   }
 
   /**
-   * signs a given contract update with the provided account
+   * signs a given order with the provided account and returns the signature
    * EIP712 compliant (tries both eth_signTypedData_v3 and eth_signTypedData)
-   * @param {ContractUpdate} contractUpdate contract update to sign
-   * @returns {SignedContractUpdate}
+   * @param {OrderData} orderData contract update to sign
+   * @returns {string}
    */
-  public async signContractUpdate (contractUpdate: ContractUpdate): Promise<string> {
-    const typedData = await this._getContractUpdateAsTypedData(contractUpdate);
-    const typedDataString = JSON.stringify(typedData);
-    
-    try {
-      const signature: string = await this._sendJsonRpcRequest('eth_signTypedData_v3', [this.account, typedDataString]); 
-      return signature;
-    } catch (error) {
-      try {
-        if (!(String(error.message.toString()).includes('Method eth_signTypedData_v3 not supported.'))) { 
-          throw(new Error(error)); 
-        }
-        const signature: string = await this._sendJsonRpcRequest('eth_signTypedData', [this.account, typedData]);
-        return signature;
-      } catch (error) {
-        if (!(String(error.message.toString()).includes('Method eth_signTypedData not supported.'))) { 
-          throw(new Error('NOT_DEFINED_ERROR: eth_signTypedData and eth_signTypedData_v3 not provided by web3 provider.'));
-        }
-        throw(new Error(error)); 
-      }
-    }
+  public async signOrder (orderData: OrderData): Promise<string> {
+    return this._signTypedData(await this._getOrderDataAsTypedData(orderData));
   }
 
   /**
+   * signs a given contract update with the provided account and returns the signature
+   * EIP712 compliant (tries both eth_signTypedData_v3 and eth_signTypedData)
+   * @param {ContractUpdate} contractUpdate contract update to sign
+   * @returns {string}
+   */
+  public async signContractUpdate (contractUpdate: ContractUpdate): Promise<string> {    
+    return this._signTypedData(await this._getContractUpdateAsTypedData(contractUpdate));
+  }
+
+    /**
    * validates the signatures for a given signed contract update
    * @param {SignedContractUpdate} signedContractUpdate signed contract update to validate
    * @returns {Promise<boolean>} true if signatures are valid
@@ -85,15 +84,67 @@ export class Signer {
     return true;
   }
 
+  private async _getOrderDataAsTypedData (
+    orderData: OrderData
+  ): Promise<OrderDataAsTypedData> {
+    const chainId = await this.web3.eth.net.getId();
+    const verifyingContract = AssetIssuerArtifact.networks[chainId].address;
+
+    // todo: add to solidity ContractTerms struct
+    delete orderData.terms.contractType;
+
+    const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
+      ContractTermsABI, this._toTuple(orderData.terms)
+    ));
+
+    const typedData: OrderDataAsTypedData = {
+      domain: {
+        name: 'ACTUS Protocol',
+        version: '1',
+        chainId: 0,
+        verifyingContract: verifyingContract
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' }
+        ],
+        Order: [
+          { name: 'maker', type: 'address' },
+          { name: 'taker', type: 'address' },
+          { name: 'actor', type: 'address' },
+          { name: 'contractTermsHash', type: 'bytes32' },
+          { name: 'makerCreditEnhancement', type: 'address' },
+          { name: 'takerCreditEnhancement', type: 'address' },
+          { name: 'salt', type: 'uint256' }
+        ]
+      },
+      primaryType: 'Order',
+      message: {
+        maker: orderData.makerAddress,
+        taker: orderData.takerAddress,
+        actor: orderData.actorAddress,
+        contractTermsHash: contractTermsHash,
+        makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
+        takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
+        salt: orderData.salt
+      }
+    };
+
+    return typedData;
+  }
+
   private async _getContractUpdateAsTypedData (
     contractUpdate: ContractUpdate
   ): Promise<ContractUpdateAsTypedData> {
-    const chainId = await this.web3.eth.net.getId();
+    // const chainId = await this.web3.eth.net.getId();
     const typedData: ContractUpdateAsTypedData = {
       domain: {
-        name: 'ap-poc',
+        name: 'actus-protocol',
         version: '1',
-        chainId: chainId,
+        chainId: 0,
         verifyingContract: contractUpdate.contractAddress
       },
       types: {
@@ -127,10 +178,309 @@ export class Signer {
     return typedData;
   }
 
+  private async _signTypedData (typedData: TypedData): Promise<string> {
+    const typedDataString = JSON.stringify(typedData);
+
+    try {
+      const signature: string = await this._sendJsonRpcRequest('eth_signTypedData_v3', [this.account, typedDataString]); 
+      return signature;
+    } catch (error) {
+      try {
+        if (!(String(error.message.toString()).includes('Method eth_signTypedData_v3 not supported.'))) { 
+          throw(new Error(error)); 
+        }
+        const signature: string = await this._sendJsonRpcRequest('eth_signTypedData', [this.account, typedData]);
+        return signature;
+      } catch (error) {
+        if (!(String(error.message.toString()).includes('Method eth_signTypedData not supported.'))) { 
+          throw(new Error('NOT_DEFINED_ERROR: eth_signTypedData and eth_signTypedData_v3 not provided by web3 provider.'));
+        }
+        throw(new Error(error)); 
+      }
+    }
+  }
+
   private async _sendJsonRpcRequest (method: string, params: any[]): Promise<string> {
     // @ts-ignore
     return this.web3.currentProvider.send(method, params);
   }
+
+  // @ts-ignore
+  private _toTuple (obj) {
+    if (!(obj instanceof Object)) {
+      return [];
+    }
+    // @ts-ignore
+    var output = [];
+    var i = 0;
+    Object.keys(obj).forEach((k) => {
+      if (obj[k] instanceof Object) {
+        // @ts-ignore
+        output[i] = this._toTuple(obj[k]);
+      } else if (obj[k] instanceof Array) {
+        let j1 = 0;
+        // @ts-ignore
+        let temp1 = [];
+        // @ts-ignore
+        obj[k].forEach((ak) => {
+          // @ts-ignore
+          temp1[j1] = this._toTuple(obj[k]);
+          j1++;
+        });
+        // @ts-ignore
+        output[i] = temp1;
+      } else {
+        output[i] = obj[k];
+      }
+      i++;
+    });
+    // @ts-ignore
+    return output;
+  }
+}
+
+// @ts-ignore 
+const ContractTermsABI = {
+  "components": [
+    {
+      "name": "calendar",
+      "type": "uint8"
+    },
+    {
+      "name": "contractRole",
+      "type": "uint8"
+    },
+    {
+      "name": "legalEntityIdRecordCreator",
+      "type": "string"
+    },
+    {
+      "name": "legalEntityIdCounterparty",
+      "type": "string"
+    },
+    {
+      "name": "dayCountConvention",
+      "type": "uint8"
+    },
+    {
+      "name": "businessDayConvention",
+      "type": "uint8"
+    },
+    {
+      "name": "endOfMonthConvention",
+      "type": "uint8"
+    },
+    {
+      "name": "currency",
+      "type": "uint8"
+    },
+    {
+      "name": "scalingEffect",
+      "type": "uint8"
+    },
+    {
+      "name": "penaltyType",
+      "type": "uint8"
+    },
+    {
+      "name": "feeBasis",
+      "type": "uint8"
+    },
+    {
+      "name": "statusDate",
+      "type": "uint256"
+    },
+    {
+      "name": "initialExchangeDate",
+      "type": "uint256"
+    },
+    {
+      "name": "maturityDate",
+      "type": "uint256"
+    },
+    {
+      "name": "terminationDate",
+      "type": "uint256"
+    },
+    {
+      "name": "purchaseDate",
+      "type": "uint256"
+    },
+    {
+      "name": "capitalizationEndDate",
+      "type": "uint256"
+    },
+    {
+      "name": "cycleAnchorDateOfInterestPayment",
+      "type": "uint256"
+    },
+    {
+      "name": "cycleAnchorDateOfRateReset",
+      "type": "uint256"
+    },
+    {
+      "name": "cycleAnchorDateOfScalingIndex",
+      "type": "uint256"
+    },
+    {
+      "name": "cycleAnchorDateOfFee",
+      "type": "uint256"
+    },
+    {
+      "name": "notionalPrincipal",
+      "type": "int256"
+    },
+    {
+      "name": "nominalInterestRate",
+      "type": "int256"
+    },
+    {
+      "name": "feeAccrued",
+      "type": "int256"
+    },
+    {
+      "name": "accruedInterest",
+      "type": "int256"
+    },
+    {
+      "name": "rateMultiplier",
+      "type": "int256"
+    },
+    {
+      "name": "rateSpread",
+      "type": "int256"
+    },
+    {
+      "name": "feeRate",
+      "type": "int256"
+    },
+    {
+      "name": "nextResetRate",
+      "type": "int256"
+    },
+    {
+      "name": "penaltyRate",
+      "type": "int256"
+    },
+    {
+      "name": "premiumDiscountAtIED",
+      "type": "int256"
+    },
+    {
+      "name": "priceAtPurchaseDate",
+      "type": "int256"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "s",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "cycleOfInterestPayment",
+      "type": "tuple"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "s",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "cycleOfRateReset",
+      "type": "tuple"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "s",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "cycleOfScalingIndex",
+      "type": "tuple"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "s",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "cycleOfFee",
+      "type": "tuple"
+    },
+    {
+      "name": "lifeCap",
+      "type": "int256"
+    },
+    {
+      "name": "lifePeriod",
+      "type": "int256"
+    },
+    {
+      "name": "lifeFloor",
+      "type": "int256"
+    },
+    {
+      "name": "periodCap",
+      "type": "int256"
+    },
+    {
+      "name": "periodFloor",
+      "type": "int256"
+    }
+  ],
+  "name": "terms",
+  "type": "tuple"
 }
 
 export default Signer;

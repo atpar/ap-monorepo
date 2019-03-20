@@ -2,7 +2,8 @@
 
 (
 	cd ../../packages/simple-relayer
-	echo "" > Database.json
+	echo "" > Channel-Database.json
+	echo "" > Orderbook-Database.json
 )
 
-echo "cleared relayer database."
+echo "cleared relayer databases."

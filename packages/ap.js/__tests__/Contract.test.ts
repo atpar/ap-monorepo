@@ -26,7 +26,7 @@ describe('testContractClass', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    ap = await AP.init(web3, recordCreator, 'http://localhost:9000');
+    ap = await AP.init(web3, recordCreator, {});
   });
 
   it('should create a new contract instance', async () => {
