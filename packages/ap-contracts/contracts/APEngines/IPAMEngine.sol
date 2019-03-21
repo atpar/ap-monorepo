@@ -8,7 +8,7 @@ contract IPAMEngine is APDefinitions {
  	function computeInitialState(ContractTerms memory contractTerms) 
 		public 
 		pure 
-		returns (ContractState memory, uint256[2][MAX_EVENT_SCHEDULE_SIZE] memory);
+		returns (ContractState memory);
 
 	function computeNextState(
 		ContractTerms memory contractTerms, 

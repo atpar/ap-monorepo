@@ -26,11 +26,12 @@ echo "migrating contracts ..."
 	truffle migrate --network development | 1>/dev/null
 )
 
-echo "clearing database ..."
+echo "clearing databases ..."
 
 (
 	cd packages/simple-relayer
-	echo "" > Database.json
+	echo "" > Channel-Database.json
+	echo "" > Orderbook-Database.json
 )
 
 echo "running simple-relayer ..."

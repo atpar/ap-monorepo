@@ -42,8 +42,13 @@ export class HTTPProvider implements Provider {
 
   private host: string;
 
-  constructor (host: string) {
+  private sendMessageRoute: string;
+  private listenForMessagesRoute: string;
+
+  constructor (host: string, routes: { sendMessageRoute: string, listenForMessagesRoute: string }) {
     this.host = host;
+    this.sendMessageRoute = routes.sendMessageRoute;
+    this.listenForMessagesRoute = routes.listenForMessagesRoute;
   }
   
   /**
@@ -52,7 +57,7 @@ export class HTTPProvider implements Provider {
    * @returns {Promise<boolean>}
    */
   public async sendMessage (payload: string): Promise<boolean> {
-    const response = await fetch(this.host + '/api/contracts', {
+    const response = await fetch(this.host + this.sendMessageRoute, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: payload
@@ -70,7 +75,7 @@ export class HTTPProvider implements Provider {
   public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
     setInterval(async () => {
       try {
-        const response = await fetch(this.host + '/api/contracts?address=' + identifier, {});
+        const response = await fetch(this.host + this.listenForMessagesRoute + identifier, {});
         const json = await response.json();
         cb(json);
       } catch (error) { return; }

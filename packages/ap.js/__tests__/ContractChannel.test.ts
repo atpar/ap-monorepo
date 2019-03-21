@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
-import { AP, ContractChannel } from '../../src';
-import { ContractTerms, ContractType } from '../../src/types';
+import { AP, ContractChannel } from '../src';
+import { ContractTerms, ContractType } from '../src/types';
 
 describe('testContractChannelClass', () => {
 
@@ -34,8 +34,8 @@ describe('testContractChannelClass', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    apRC = await AP.init(web3, recordCreator, 'http://localhost:9000');
-    apCP = await AP.init(web3, counterparty, 'http://localhost:9000');
+    apRC = await AP.init(web3, recordCreator, { channelRelayer: 'http://localhost:9000' });
+    apCP = await AP.init(web3, counterparty, { channelRelayer: 'http://localhost:9000' });
 
     const terms = (<any>contractTemplatesTyped)['10001'];
     const ownership = {

@@ -10,7 +10,7 @@ const getContractTerms = (precision) => {
   return parseContractTerms(PAMTestTerms, precision)
 }
 
-contract('this.PAMEngine', () => {
+contract('PAMEngine', () => {
 
   before(async () => {    
     const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));

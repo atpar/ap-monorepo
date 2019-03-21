@@ -8,14 +8,16 @@ const PaymentRouter = artifacts.require('PaymentRouter')
 
 const PAMContractActor = artifacts.require('PAMContractActor')
 
+const AssetIssuer = artifacts.require('AssetIssuer')
+
 // const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
 // const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20')
 // const ClaimsTokenMulti = artifacts.require('ClaimsTokenMulti')
 // const ClaimsTokenETHExtension = artifacts.require('ClaimsTokenETHExtension')
 // const ClaimsTokenERC20Extension = artifacts.require('ClaimsTokenERC20Extension')
 // const ClaimsTokenMultiExtension = artifacts.require('ClaimsTokenMultiExtension')
-
 // const ERC223SampleToken = artifacts.require('ERC223SampleToken')
+
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -45,6 +47,9 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRouter.address,
     PAMEngine.address
   )
+
+  // Exchange
+  await deployer.deploy(AssetIssuer)
 
   // Tokenization / Claims Token
   // await deployer.deploy(ERC223SampleToken)

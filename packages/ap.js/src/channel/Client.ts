@@ -1,4 +1,4 @@
-import { Provider, SocketProvider, HTTPProvider } from './Provider';
+import { Provider, SocketProvider, HTTPProvider } from '../utils/Provider';
 
 import { SignedContractUpdate } from '../types';
 
@@ -20,11 +20,14 @@ export class Client {
   /**
    * sends a signed contract update utilizing the provided method (http or websocket)
    * @param {SignedContractUpdate} signedContractUpdate signed contract update to send
-   * @returns {Promise<boolean>} returns true if messages was successfully broadcasted
+   * @returns {Promise<void>} returns true if messages was successfully broadcasted
    */
-  public async sendContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<boolean> {
+  public async sendContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<void> {
     const message = JSON.stringify({ signedContractUpdate: signedContractUpdate });
-    return this.provider.sendMessage(message);
+
+    if (!(await this.provider.sendMessage(message))) { 
+      throw(new Error('EXECUTION_ERROR: Could not send contract update!'));
+    }
   } 
 
   private async _receiveContractUpdates (receiver: string): Promise<void> {
@@ -89,6 +92,7 @@ export class Client {
    * @returns {Client}
    */
   public static http (receiver: string, url: string): Client {
-    return new Client(receiver,  new HTTPProvider(url));
+    const routes = { sendMessageRoute: '/api/contracts', listenForMessagesRoute: '/api/contracts?address=' };
+    return new Client(receiver,  new HTTPProvider(url, routes));
   }
 }

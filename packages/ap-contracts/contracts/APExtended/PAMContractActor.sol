@@ -34,11 +34,40 @@ contract PAMContractActor is APDefinitions {
 		pamEngine = _pamEngine;
 	}
 
+	function initialize (
+		bytes32 contractId,
+		ContractOwnership memory ownership, 
+		ContractTerms memory terms
+	) 
+		public
+		returns(bool)
+	{
+		ContractState memory initialState = pamEngine.computeInitialState(terms);
+
+		ownershipRegistry.registerOwnership(
+			contractId,
+			ownership.recordCreatorObligor,
+			ownership.recordCreatorBeneficiary,
+			ownership.counterpartyObligor,
+			ownership.counterpartyBeneficiary
+		);
+
+		contractRegistry.registerContract(
+			contractId,
+			terms,
+			initialState,
+			address(this)
+		);
+
+		return(true);
+	}
+
 	function progress (
 		bytes32 contractId,
 		uint256 timestamp
 	) 
-		external 
+		external
+		returns(bool)
 	{
 		ContractTerms memory terms = contractRegistry.getTerms(contractId);
 		ContractState memory state = contractRegistry.getState(contractId);
@@ -68,5 +97,7 @@ contract PAMContractActor is APDefinitions {
 
 		contractRegistry.setState(contractId, nextState);
 		contractRegistry.setEventId(contractId, eventId);
+
+		return(true);
 	}
 }

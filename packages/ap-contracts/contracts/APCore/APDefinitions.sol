@@ -139,4 +139,11 @@ contract APDefinitions {
 		// ObjectCodeOfPrepaymentModel objectCodeOfPrepaymentModel;
 		// MarketObjectCodeOfRateReset marketObjectCodeOfRateReset;
 	}
+
+	struct ContractOwnership {
+		address recordCreatorObligor;
+		address payable recordCreatorBeneficiary;
+		address counterpartyObligor;
+		address payable counterpartyBeneficiary;
+	}
 }

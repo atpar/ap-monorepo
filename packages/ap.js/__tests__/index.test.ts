@@ -11,12 +11,11 @@ describe('testAPClass', () => {
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
-
     recordCreator = (await web3.eth.getAccounts())[0];
   });
 
   it('should initialize ap.js', async () => {
-    ap = await AP.init(web3, recordCreator, 'http://localhost:9000');
+    ap = await AP.init(web3, recordCreator, {});
     expect(ap instanceof AP).toBe(true);
   });
 });
