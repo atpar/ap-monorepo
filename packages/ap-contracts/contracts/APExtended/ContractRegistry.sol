@@ -2,9 +2,10 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
+import "./IContractRegistry.sol";
 
 
-contract ContractRegistry is APDefinitions {
+contract ContractRegistry is APDefinitions, IContractRegistry {
 
 	struct Contract {
 		bytes32 contractId;
@@ -48,7 +49,7 @@ contract ContractRegistry is APDefinitions {
 		contracts[contractId].terms = terms;
 	}
 
-	function setEventId (bytes32 contractId, uint256 eventId) onlyDesignatedActor (contractId) external {
+	function setEventId (bytes32 contractId, uint256 eventId) onlyDesignatedActor (contractId) public {
 		contracts[contractId].eventId = eventId;
 	}
 

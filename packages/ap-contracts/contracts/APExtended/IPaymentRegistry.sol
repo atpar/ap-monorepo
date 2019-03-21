@@ -12,7 +12,8 @@ interface IPaymentRegistry {
 		address token,
 		uint256 amount
 	) 
-		external;
+		external
+		payable;
 
 	function getPayoffBalance (bytes32 contractId, uint256 eventId)
 		external

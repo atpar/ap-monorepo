@@ -4,11 +4,12 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
+import "./IPaymentRouter.sol";
 import "./IOwnershipRegistry.sol";
 import "./IPaymentRegistry.sol";
 
 
-contract PaymentRouter is Ownable {
+contract PaymentRouter is IPaymentRouter, Ownable {
 
 	IOwnershipRegistry public ownershipRegistry;
 	IPaymentRegistry public paymentRegistry;

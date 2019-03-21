@@ -3,8 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+import "./IPaymentRegistry.sol";
 
-contract PaymentRegistry is Ownable {
+
+contract PaymentRegistry is IPaymentRegistry, Ownable {
   
 	event Paid(bytes32, uint256, uint256);
 

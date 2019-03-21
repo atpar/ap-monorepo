@@ -2,8 +2,10 @@ pragma solidity ^0.5.2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+import "./IOwnershipRegistry.sol";
 
-contract OwnershipRegistry is Ownable {
+
+contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	
 	struct ContractOwnership {
 		address recordCreatorObligor; // or covenantor

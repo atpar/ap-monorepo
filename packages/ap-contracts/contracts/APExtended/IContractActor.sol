@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
 
+
 contract IContractActor is APDefinitions {
 
   function initialize (
