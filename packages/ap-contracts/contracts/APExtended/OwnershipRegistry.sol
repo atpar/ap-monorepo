@@ -36,6 +36,30 @@ contract OwnershipRegistry is Ownable {
 		);
 	}
 
+	function setRecordCreatorBeneficiary (
+		bytes32 contractId, 
+		address payable newRecordCreatorBeneficiary
+	)
+		external
+	{
+		require(contractOwnerships[contractId].recordCreatorBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
+		require(msg.sender == contractOwnerships[contractId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
+
+		contractOwnerships[contractId].recordCreatorBeneficiary = newRecordCreatorBeneficiary;
+	}
+
+	function setCounterpartyBeneficiary (
+		bytes32 contractId, 
+		address payable newCounterpartyBeneficiary
+	)
+		external
+	{
+		require(contractOwnerships[contractId].counterpartyBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
+		require(msg.sender == contractOwnerships[contractId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
+
+		contractOwnerships[contractId].counterpartyBeneficiary = newCounterpartyBeneficiary;
+	}
+
 	function setBeneficiaryForCashflowId (
 		bytes32 contractId, 
 		int8 cashflowId, 
