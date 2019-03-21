@@ -16,7 +16,7 @@ contract ContractRegistry is APDefinitions {
 
 	mapping (bytes32 => Contract) public contracts;
 
-	modifier onlyActor (bytes32 contractId) {
+	modifier onlyDesignatedActor (bytes32 contractId) {
 		require(contracts[contractId].actor == msg.sender, "UNAUTHORIZED_SENDER");
 		_;
 	}
@@ -40,15 +40,15 @@ contract ContractRegistry is APDefinitions {
 		);
 	}
 
-	function setState (bytes32 contractId, ContractState memory state) onlyActor (contractId) public {
+	function setState (bytes32 contractId, ContractState memory state) onlyDesignatedActor (contractId) public {
 		contracts[contractId].state = state;
 	}
 
-	function setTerms (bytes32 contractId, ContractTerms memory terms) onlyActor (contractId) public {
+	function setTerms (bytes32 contractId, ContractTerms memory terms) onlyDesignatedActor (contractId) public {
 		contracts[contractId].terms = terms;
 	}
 
-	function setEventId (bytes32 contractId, uint256 eventId) onlyActor (contractId) external {
+	function setEventId (bytes32 contractId, uint256 eventId) onlyDesignatedActor (contractId) external {
 		contracts[contractId].eventId = eventId;
 	}
 
