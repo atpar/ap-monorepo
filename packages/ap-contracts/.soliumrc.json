@@ -1,0 +1,17 @@
+{
+  "extends": "solium:all",
+  "plugins": [
+    "security"
+  ],
+  "rules": {
+    "quotes": ["error", "double"],
+    "indentation": "off",
+    "linebreak-style": "off",
+    "no-empty-blocks": "off",
+    "whitespace": "off",
+    "operator-whitespace": "off",
+    "lbrace": "off",
+    "no-experimental": "off",
+    "mixedcase": "off"
+  }
+}
