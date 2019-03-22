@@ -5,6 +5,7 @@ import "truffle/DeployedAddresses.sol";
 
 import "../../contracts/APCore/APFloatMath.sol";
 
+
 contract TestAPFloatMath {
 
   using APFloatMath for int;

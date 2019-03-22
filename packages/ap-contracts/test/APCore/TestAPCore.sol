@@ -4,6 +4,7 @@ import "truffle/Assert.sol";
 
 import "../../contracts/APCore/APCore.sol";
 
+
 contract TestAPCore is APCore {
 
   function testPerformanceIndicator() public {

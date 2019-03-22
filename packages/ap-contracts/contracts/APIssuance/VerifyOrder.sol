@@ -5,6 +5,7 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 import "../APCore/APDefinitions.sol";
 
+
 contract VerifyOrder is APDefinitions {
 
 	struct EIP712Domain {
@@ -60,7 +61,7 @@ contract VerifyOrder is APDefinitions {
   function hashStruct(ContractTerms memory terms) 
     internal
     pure
-    returns(bytes32)
+    returns (bytes32)
   {
     return keccak256(abi.encode(terms));
   }
@@ -68,7 +69,7 @@ contract VerifyOrder is APDefinitions {
 	function hashStruct(Order memory order)
 		internal
 		pure
-		returns(bytes32)
+		returns (bytes32)
 	{
 		return keccak256(abi.encode(
 			ORDER_TYPEHASH,
@@ -89,7 +90,7 @@ contract VerifyOrder is APDefinitions {
 	)
 		internal 
 		view
-    returns(bool)
+    returns (bool)
 	{
 		bytes32 digest = keccak256(abi.encodePacked(
 			"\x19\x01",

@@ -3,9 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
 
+
 contract IPAMEngine is APDefinitions {
 
- 	function computeInitialState(ContractTerms memory contractTerms) 
+	function computeInitialState(ContractTerms memory contractTerms) 
 		public 
 		pure 
 		returns (ContractState memory);
@@ -13,19 +14,19 @@ contract IPAMEngine is APDefinitions {
 	function computeNextState(
 		ContractTerms memory contractTerms, 
 		ContractState memory contractState, 
-		ContractEvent memory contractEvent, 
 		uint256 timestamp
-	) 
-		public 
-		pure 
-		returns (ContractState memory, ContractEvent memory);
+	)
+		public
+		pure
+		returns (ContractState memory, ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory);
 
-	function computeNextState(
+	function computeNextStateForProtoEvent(
 		ContractTerms memory contractTerms, 
 		ContractState memory contractState, 
+		ProtoEvent memory protoEvent,
 		uint256 timestamp
-	) 
-		public 
-		pure 
-		returns (ContractState memory, ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory);
+	)
+		public
+		pure
+		returns (ContractState memory, ContractEvent memory);
 }

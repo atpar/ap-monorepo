@@ -8,11 +8,13 @@ import "../APExtended/IContractActor.sol";
 
 contract AssetIssuer is APDefinitions, VerifyOrder {
 
-  function fillOrder (
+  function fillOrder(
     Order memory order, 
     bytes memory makerSignature,
     bytes memory takerSignature
-  ) public {
+  ) 
+    public 
+  {
     require(
       assertOrderSignatures(order, makerSignature, takerSignature), 
       "INVALID_SIGNATURE: Order signatures are invalid!"

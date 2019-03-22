@@ -27,11 +27,11 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		_;
 	}
 
-	function setPaymentRouter (address _paymentRouter) onlyOwner () external {
+	function setPaymentRouter(address _paymentRouter) external onlyOwner {
 		paymentRouter = _paymentRouter;
 	}
 	
-	function registerPayment (
+	function registerPayment(
 		bytes32 contractId,
 		int8 cashflowId,
 		uint256 eventId,
@@ -40,7 +40,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 	) 
 		external 
 		payable
-		onlyPaymentRouter ()
+		onlyPaymentRouter
 	{		
 		if (payoffRegistry[contractId][eventId].cashflowId == int8(0)) {
 			payoffRegistry[contractId][eventId] = Payoff(
@@ -55,7 +55,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		emit Paid(contractId, eventId, amount);
 	}
 
-	function getPayoffBalance (bytes32 contractId, uint256 eventId)
+	function getPayoffBalance(bytes32 contractId, uint256 eventId)
 		external
 		view
 		returns (uint256)
@@ -63,7 +63,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		return payoffRegistry[contractId][eventId].balance;
 	}
 	
-	function getPayoff (bytes32 contractId, uint256 eventId)
+	function getPayoff(bytes32 contractId, uint256 eventId)
 		external
 		view
 		returns (int8, address, uint256)

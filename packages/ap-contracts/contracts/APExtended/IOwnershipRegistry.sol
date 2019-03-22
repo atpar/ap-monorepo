@@ -3,7 +3,7 @@ pragma solidity ^0.5.2;
 
 interface IOwnershipRegistry {
 	
-	function registerOwnership (
+	function registerOwnership(
 		bytes32 contractId,
 		address recordCreatorObligor,
 		address payable recordCreatorBeneficiary,
@@ -12,24 +12,24 @@ interface IOwnershipRegistry {
 	)
 		external;
 
-	function getContractOwnership (bytes32 contractId) 
+	function getContractOwnership(bytes32 contractId) 
 		external 
 		view 
 		returns (address, address payable, address, address payable);
 	
-	function setRecordCreatorBeneficiary (
+	function setRecordCreatorBeneficiary(
 		bytes32 contractId, 
 		address payable newRecordCreatorBeneficiary
 	)
 		external;
 
-	function setCounterpartyBeneficiary (
+	function setCounterpartyBeneficiary(
 		bytes32 contractId, 
 		address payable newCounterpartyBeneficiary
 	)
 		external;
 
-	function getCashflowBeneficiary (bytes32 contractId, int8 cashflowId) 
+	function getCashflowBeneficiary(bytes32 contractId, int8 cashflowId) 
 		external 
 		view 
 		returns (address payable);

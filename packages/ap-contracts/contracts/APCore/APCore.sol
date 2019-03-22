@@ -12,7 +12,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	function performanceIndicator(ContractStatus contractStatus) 
 		internal
 		pure
-		returns(int8)
+		returns (int8)
 	{
 		if (contractStatus == ContractStatus.DF) { return 0; }
 		return 1;
@@ -21,7 +21,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	function roleSign(ContractRole contractRole) 
 		internal
 		pure
-		returns(int8)
+		returns (int8)
 	{
 		if (contractRole == ContractRole.RPA) { return 1; }
 		if (contractRole == ContractRole.RPL) { return -1; }
@@ -49,7 +49,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	function yearFraction(uint256 startTimestamp, uint256 endTimestamp, DayCountConvention ipdc) 
 		internal 
 		pure 
-		returns(int256) 
+		returns (int256) 
 	{
 		require(endTimestamp >= startTimestamp, "dateTimeEnd has to be >= dateTimeBegin");
 		if (ipdc == DayCountConvention.A_360) {
@@ -66,7 +66,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	// function getEventTimeOffset(EventType eventType)
 	// 	private
 	// 	pure
-	// 	returns(uint256)
+	// 	returns (uint256)
 	// {
 	// 	if (eventType == EventType.IED) { return 20; }
 	// 	if (eventType == EventType.IP) { return 30; }
@@ -136,7 +136,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	)
 		internal
 		pure
-		returns(bool)
+		returns (bool)
 	{
 		if (startTimestamp < timestamp && endTimestamp >= timestamp) { 
 			return true; 
@@ -147,7 +147,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	function getTimestampPlusPeriod(IPS memory cycle, uint256 timestamp)
 		internal
 		pure
-		returns(uint256)
+		returns (uint256)
 	{
 		uint256 newTimestamp;
 
@@ -181,7 +181,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	) 
 		internal
 		pure
-		returns(uint256[MAX_CYCLE_SIZE] memory)
+		returns (uint256[MAX_CYCLE_SIZE] memory)
 	{
 		uint256[MAX_CYCLE_SIZE] memory dates;
 		uint256 index = 0;
@@ -199,7 +199,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 
 		// simplified
 		uint256 date = cycleStart;
-		while((date < cycleEnd)) {
+		while (date < cycleEnd) {
 			if (isInPeriod(date, segmentStart, segmentEnd)) {
 				require(index < (MAX_CYCLE_SIZE - 2), "MAX_CYCLE_SIZE reached");
 				dates[index] = date;

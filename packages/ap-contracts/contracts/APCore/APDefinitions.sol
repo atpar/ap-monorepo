@@ -1,5 +1,6 @@
 pragma solidity ^0.5.2;
 
+
 contract APDefinitions {
 
 	int256 constant INT256_MIN = int256((uint256(1) << 255));

@@ -12,17 +12,17 @@ contract ClaimsTokenMultiExtension is IClaimsToken, ClaimsToken {
 	IERC20 public fundsToken;
 
 
-	modifier onlyETHInstantiated () {
+	modifier onlyETHInstantiated {
 		require(address(fundsToken) == address(0), "INSTANTIATED_WITH_ETH");
 		_;
 	}
 
-	modifier onlyERC20Instantiated () {
+	modifier onlyERC20Instantiated {
 		require(address(fundsToken) != address(0), "INSTANTIATED_WITH_ERC20");
 		_;
 	}
 
-	modifier onlyFundsToken () {
+	modifier onlyFundsToken {
 		require(msg.sender == address(fundsToken), "UNAUTHORIZED_SENDER");
 		_;
 	}
@@ -57,8 +57,8 @@ contract ClaimsTokenMultiExtension is IClaimsToken, ClaimsToken {
 	 */
 	function tokenFallback (address, uint256 _value, bytes memory) 
 		public 
-		onlyERC20Instantiated()
-		onlyFundsToken()
+		onlyERC20Instantiated
+		onlyFundsToken
 	{
 		if (_value > 0) {
 			_registerFunds(_value);
@@ -72,7 +72,7 @@ contract ClaimsTokenMultiExtension is IClaimsToken, ClaimsToken {
 	function () 
 		external 
 		payable 
-		onlyETHInstantiated()
+		onlyETHInstantiated
 	{
 		if (msg.value > 0) {
 			_registerFunds(msg.value);

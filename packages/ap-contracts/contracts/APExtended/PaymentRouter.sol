@@ -17,12 +17,14 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 	constructor (
 		IOwnershipRegistry _ownershipRegistry,
 		IPaymentRegistry _paymentRegistry
-	) public {
+	) 
+		public 
+	{
 		ownershipRegistry = IOwnershipRegistry(_ownershipRegistry);
 		paymentRegistry = IPaymentRegistry(_paymentRegistry);
 	}
 
-	function settlePayment (
+	function settlePayment(
 		bytes32 contractId,
 		int8 cashflowId,
 		uint256 eventId,
@@ -42,7 +44,12 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 		address counterpartyObligor;
 		address payable counterpartyBeneficiary;
 
-		(recordCreatorObligor, recordCreatorBeneficiary, counterpartyObligor, counterpartyBeneficiary) = ownershipRegistry.getContractOwnership(contractId);
+		(
+			recordCreatorObligor, 
+			recordCreatorBeneficiary, 
+			counterpartyObligor, 
+			counterpartyBeneficiary
+		) = ownershipRegistry.getContractOwnership(contractId);
 		
 		if (cashflowId > 0) {
 			require(msg.sender == counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
@@ -57,7 +64,7 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 		}
 		
 		if (token == address(0)) {
-			(bool result, ) = payee.call.value(msg.value)("");
+			(bool result, ) = payee.call.value(msg.value)(""); // solium-disable-line 
       require(result, "TRANSFER_FAILED");
 			amount = msg.value;
 		} else {

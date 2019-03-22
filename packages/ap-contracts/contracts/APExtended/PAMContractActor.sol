@@ -27,7 +27,9 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
 		IPAMEngine _pamEngine
-	) public {
+	) 
+		public 
+	{
 		ownershipRegistry = _ownershipRegistry;
 		contractRegistry = _contractRegistry;
 		paymentRegistry = _paymentRegistry;
@@ -35,47 +37,19 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		pamEngine = _pamEngine;
 	}
 
-	function initialize (
-		bytes32 contractId,
-		ContractOwnership memory ownership, 
-		ContractTerms memory terms
-	) 
-		public
-		returns(bool)
-	{
-		ContractState memory initialState = pamEngine.computeInitialState(terms);
-
-		ownershipRegistry.registerOwnership(
-			contractId,
-			ownership.recordCreatorObligor,
-			ownership.recordCreatorBeneficiary,
-			ownership.counterpartyObligor,
-			ownership.counterpartyBeneficiary
-		);
-
-		contractRegistry.registerContract(
-			contractId,
-			terms,
-			initialState,
-			address(this)
-		);
-
-		return(true);
-	}
-
-	function progress (
+	function progress(
 		bytes32 contractId,
 		uint256 timestamp
 	) 
 		external
-		returns(bool)
+		returns (bool)
 	{
 		ContractTerms memory terms = contractRegistry.getTerms(contractId);
 		ContractState memory state = contractRegistry.getState(contractId);
 		
-		require(terms.statusDate != uint256(0));
-		require(state.lastEventTime != uint256(0));
-		require(state.contractStatus == ContractStatus.PF);
+		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
+		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
+		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
 
 		uint256 eventId = contractRegistry.getEventId(contractId);
 
@@ -98,6 +72,34 @@ contract PAMContractActor is APDefinitions, IContractActor {
 
 		contractRegistry.setState(contractId, nextState);
 		contractRegistry.setEventId(contractId, eventId);
+
+		return(true);
+	}
+
+	function initialize(
+		bytes32 contractId,
+		ContractOwnership memory ownership, 
+		ContractTerms memory terms
+	) 
+		public
+		returns (bool)
+	{
+		ContractState memory initialState = pamEngine.computeInitialState(terms);
+
+		ownershipRegistry.registerOwnership(
+			contractId,
+			ownership.recordCreatorObligor,
+			ownership.recordCreatorBeneficiary,
+			ownership.counterpartyObligor,
+			ownership.counterpartyBeneficiary
+		);
+
+		contractRegistry.registerContract(
+			contractId,
+			terms,
+			initialState,
+			address(this)
+		);
 
 		return(true);
 	}

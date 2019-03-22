@@ -19,7 +19,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	// contractId => cashflowId => Ownership
 	mapping (bytes32 => mapping (int8 => address payable)) cashflowBeneficiaries;
 
-	function registerOwnership (
+	function registerOwnership(
 		bytes32 contractId, 
 		address recordCreatorObligor, 
 		address payable recordCreatorBeneficiary,
@@ -38,7 +38,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		);
 	}
 
-	function setRecordCreatorBeneficiary (
+	function setRecordCreatorBeneficiary(
 		bytes32 contractId, 
 		address payable newRecordCreatorBeneficiary
 	)
@@ -50,7 +50,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		contractOwnerships[contractId].recordCreatorBeneficiary = newRecordCreatorBeneficiary;
 	}
 
-	function setCounterpartyBeneficiary (
+	function setCounterpartyBeneficiary(
 		bytes32 contractId, 
 		address payable newCounterpartyBeneficiary
 	)
@@ -62,7 +62,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		contractOwnerships[contractId].counterpartyBeneficiary = newCounterpartyBeneficiary;
 	}
 
-	function setBeneficiaryForCashflowId (
+	function setBeneficiaryForCashflowId(
 		bytes32 contractId, 
 		int8 cashflowId, 
 		address payable beneficiary
@@ -84,7 +84,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		cashflowBeneficiaries[contractId][cashflowId] = beneficiary;
 	}
 	
-	function getContractOwnership (bytes32 contractId) 
+	function getContractOwnership(bytes32 contractId) 
 		external 
 		view 
 		returns (address, address payable, address, address payable) 
@@ -97,7 +97,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		);
 	}
 	
-	function getCashflowBeneficiary (bytes32 contractId, int8 cashflowId) 
+	function getCashflowBeneficiary(bytes32 contractId, int8 cashflowId) 
 		external 
 		view 
 		returns (address payable) 

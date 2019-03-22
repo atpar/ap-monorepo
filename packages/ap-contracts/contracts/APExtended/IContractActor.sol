@@ -6,18 +6,18 @@ import "../APCore/APDefinitions.sol";
 
 contract IContractActor is APDefinitions {
 
-  function initialize (
+  function progress(
+    bytes32 contractId, 
+    uint256 timestamp
+  ) 
+    external 
+    returns (bool);
+
+  function initialize(
     bytes32 contractId, 
     ContractOwnership memory ownership, 
     ContractTerms memory terms
   )
     public
-    returns(bool);
-
-  function progress (
-    bytes32 contractId, 
-    uint256 timestamp
-  ) 
-    external 
-    returns(bool);
+    returns (bool);
 }

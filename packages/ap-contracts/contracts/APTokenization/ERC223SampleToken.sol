@@ -19,7 +19,7 @@ contract ERC223SampleToken is ERC20 {
 
 	function transfer(address _to, uint256 _value, bytes memory _data) 
 		public 
-		returns(bool)
+		returns (bool)
 	{
 		uint codeLength;
 
@@ -35,7 +35,7 @@ contract ERC223SampleToken is ERC20 {
 	
 	function transfer(address _to, uint256 _value) 
 		public 
-		returns(bool)
+		returns (bool)
 	{
 		uint codeLength;
 		bytes memory empty;

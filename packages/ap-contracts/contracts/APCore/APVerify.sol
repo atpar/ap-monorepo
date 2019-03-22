@@ -59,7 +59,7 @@ contract APVerify {
 	function hashStruct(ContractUpdate memory contractUpdate)
 		internal
 		pure
-		returns(bytes32)
+		returns (bytes32)
 	{
 		return keccak256(abi.encode(
 			CONTRACTUPDATE_TYPEHASH,

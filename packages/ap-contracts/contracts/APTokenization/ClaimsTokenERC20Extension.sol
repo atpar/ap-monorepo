@@ -9,7 +9,7 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 	// token that ClaimsToken takes in custodianship 
 	IERC20 public fundsToken;
 
-	modifier onlyFundsToken () {
+	modifier onlyFundsToken {
 		require(msg.sender == address(fundsToken), "UNAUTHORIZED_SENDER");
 		_;
 	}
@@ -42,9 +42,9 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 	 * Calls _registerFunds(), whereby total received funds (cumulative) gets updated.
 	 * @param _value Amount of tokens
 	 */
-	function tokenFallback (address, uint256 _value, bytes memory) 
+	function tokenFallback(address, uint256 _value, bytes memory) 
 		public 
-		onlyFundsToken()
+		onlyFundsToken
 	{
 		if (_value > 0) {
 			_registerFunds(_value);
