@@ -4,8 +4,8 @@ import { SignedContractUpdate, OrderData } from './types';
 
 import { ContractChannel } from './channel/ContractChannel';
 import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI } from './apis';
-import { Relayer } from './trading/Relayer';
-import { Order } from './trading/Order';
+import { Relayer } from './issuance/Relayer';
+import { Order } from './issuance/Order';
 import { Client } from './channel/Client';
 import { Signer } from './utils/Signer';
 import { Common } from './utils/Common';
@@ -130,4 +130,4 @@ export class AP {
 
 export { Contract } from './Contract';
 export { ContractChannel } from './channel/ContractChannel';
-export { Order } from './trading/Order';
+export { Order } from './issuance/Order';
