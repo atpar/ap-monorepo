@@ -1,7 +1,4 @@
-const Web3 = require('web3')
-
-const PAMEngineTruffleArtifact = artifacts.require('PAMEngine.sol')
-const PAMEngineArtifact = require('../../build/contracts/PAMEngine.json')
+const PAMEngine = artifacts.require('PAMEngine.sol')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
 const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
@@ -12,22 +9,18 @@ const getContractTerms = (precision) => {
 
 contract('PAMEngine', () => {
 
-  before(async () => {    
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
-    
-    await PAMEngineTruffleArtifact.new()
-    this.PAMEngine = new web3.eth.Contract(PAMEngineArtifact.abi, PAMEngineTruffleArtifact.address);
+  before(async () => {        
+    this.PAMEngineInstance = await PAMEngine.new()
 
-    const PRECISION = Number(await this.PAMEngine.methods.PRECISION().call())
+    const PRECISION = Number(await this.PAMEngineInstance.PRECISION())
     const testTerms = await getContractTerms(PRECISION)
     this.contractTerms = testTerms['10001']
   })
 
-  it('should yield the first contract state and the event schedule', async () => {
-    const response = await this.PAMEngine.methods.computeInitialState(this.contractTerms).call()
-    this.contractState = response[0]
-    this.protoEventSchedule = response[1]
-    assert.isTrue(this.contractState != null && this.protoEventSchedule != null)
+  it('should yield the correct initial contract state', async () => {
+    const initialState = await this.PAMEngineInstance.computeInitialState(this.contractTerms, {})
+
+    assert.isTrue(Number(initialState['lastEventTime']) === Number(this.contractTerms['statusDate']))
   })
 
   // it('should yield the next contract state and the next contract event', async () => {
@@ -36,11 +29,11 @@ contract('PAMEngine', () => {
     const timestamp = 1388534400 // 30.12.2012
     const lastEventTime = 1356825600 // 01.01.2014
 
-    let protoEventSchedule = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    let protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.contractTerms, 
       lastEventTime,
       timestamp
-    ).call()
+    )
 
     // protoEventSchedule.sort((a,b) => {
     //   // if (a[1] == b[1]) { return 0 }
@@ -63,11 +56,11 @@ contract('PAMEngine', () => {
     let lastEventTime = 1356825600 // 30.12.2012
     let timestamp = 1388534400 // 01.01.2014
     
-    let entireProtoEventSchedule = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    let entireProtoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.contractTerms, 
       lastEventTime,
       timestamp
-    ).call()
+    )
 
     entireProtoEventSchedule.sort((a,b) => {
       if (a[1] == 0) { return 1 }
@@ -86,29 +79,29 @@ contract('PAMEngine', () => {
 
     lastEventTime = 0 
     timestamp = 1362096000 // 01.03.2013
-    response = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    response = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.contractTerms, 
       lastEventTime,
       timestamp
-    ).call()
+    )
     protoEventSchedule = [...response]
 
     lastEventTime = 1362096000 // 01.03.2013
     timestamp = 1372636800 // 01.07.2013
-    response = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    response = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.contractTerms, 
       lastEventTime,
       timestamp
-    ).call()
+    )
     protoEventSchedule = [...protoEventSchedule, ...response]
     
     lastEventTime = 1372636800 // 01.07.2013
     timestamp = 1388534400 // 01.01.2014
-    response = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    response = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.contractTerms, 
       lastEventTime,
       timestamp
-    ).call()
+    )
     protoEventSchedule = [...protoEventSchedule, ...response]
 
     protoEventSchedule.sort((a,b) => {
@@ -127,10 +120,10 @@ contract('PAMEngine', () => {
   })
 
   it('should yield the next next contract state and the contract events', async() => {
-    this.contractState= await this.PAMEngine.methods.computeInitialState(this.contractTerms).call()
+    const initialState = await this.PAMEngineInstance.computeInitialState(this.contractTerms, {})
     const timestamp = 1362096000 // 01.03.2013
     // const timestamp = 1388534400 // 01.01.2014
-
-    await this.PAMEngine.methods.computeNextState(this.contractTerms, this.contractState, timestamp).call()
+    
+    await this.PAMEngineInstance.computeNextState(this.contractTerms, initialState, timestamp)
   })
 })

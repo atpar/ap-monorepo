@@ -1,8 +1,6 @@
-const Web3 = require('web3')
 const fs = require('fs')
 
-const PAMEngineTruffleArtifact = artifacts.require('PAMEngine.sol')
-const PAMEngineArtifact = require('../../build/contracts/PAMEngine.json')
+const PAMEngine = artifacts.require('PAMEngine.sol')
 
 const parseTestResults = require('../parser.js').parseTestResults
 const parseContractTerms = require('../parser.js').parseContractTerms
@@ -36,38 +34,34 @@ const getContractTerms = (precision) => {
 
 contract('PAMEngine', () => {
 
+  before(async () => {    
+    this.PAMEngineInstance = await PAMEngine.new()
+    
+    this.PRECISION = Number(await this.PAMEngineInstance.PRECISION())
+    
+    this.testTerms = await getContractTerms(this.PRECISION)
+    this.refTestResults = await getTestResults()
+  })
+
   const evaluateEventSchedule = async (contractTerms) => {
-    const initialContractState = await this.PAMEngine.methods.computeInitialState(contractTerms).call()
-    const protoEventSchedule = await this.PAMEngine.methods.computeProtoEventScheduleSegment(
+    const initialContractState = await this.PAMEngineInstance.computeInitialState(contractTerms, {})
+    const protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       contractTerms,
       contractTerms.statusDate,
       contractTerms.maturityDate
-    ).call()
-    // eventSchedule.sort((a,b) => {
-    //   // if (a[1] == b[1]) { return 0 }
-    //   // if (a[1] == 0) { return 1 }
-    //   // if (b[1] == 0) { return -1 }
-    //   // return a[1] - b[1]
-    //   if (a[1] == 0) { return 1 }
-    //   if (b[1] == 0) { return -1 }
-    //   if (a[1] > b[1]) { return 1 }
-    //   if (a[1] < b[1]) { return -1 }
-    //   if (a[0] > b[0]) { return 1 }
-    //   if (a[0] < b[0]) { return -1 }
-    //   return 0
-    // })
+    )
 
     const evaluatedSchedule = []
     let contractState = initialContractState
 
     for (let i = 0; i < 20; i++) {
       if (protoEventSchedule[i].scheduledTime == 0) { break; }
-      const { 0: nextContractState, 1: contractEvent } = await this.PAMEngine.methods.computeNextStateForProtoEvent(
+      const { 0: nextContractState, 1: contractEvent } = await this.PAMEngineInstance.computeNextStateForProtoEvent(
         contractTerms, 
         contractState, 
         protoEventSchedule[i], 
         protoEventSchedule[i].scheduledTime
-      ).call()
+      )
 
       contractState = nextContractState
 
@@ -83,18 +77,6 @@ contract('PAMEngine', () => {
 
     return evaluatedSchedule
   }
-
-  before(async () => {
-    const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
-    
-    await PAMEngineTruffleArtifact.new()
-    this.PAMEngine = new web3.eth.Contract(PAMEngineArtifact.abi, PAMEngineTruffleArtifact.address);
-    
-    this.PRECISION = Number(await this.PAMEngine.methods.PRECISION().call())
-    
-    this.testTerms = await getContractTerms(this.PRECISION)
-    this.refTestResults = await getTestResults()
-  })
 
   it('should yield the expected evaluated contract schedule for test PAM10001', async () => {
     const contractTerms = this.testTerms['10001']
