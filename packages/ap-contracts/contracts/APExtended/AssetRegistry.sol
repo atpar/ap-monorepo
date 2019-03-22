@@ -2,10 +2,10 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
-import "./IContractRegistry.sol";
+import "./IAssetRegistry.sol";
 
 
-contract ContractRegistry is APDefinitions, IContractRegistry {
+contract AssetRegistry is APDefinitions, IAssetRegistry {
 
 	struct Contract {
 		bytes32 contractId;

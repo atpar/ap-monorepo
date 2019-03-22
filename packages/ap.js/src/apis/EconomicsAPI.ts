@@ -1,15 +1,15 @@
 import Web3 from 'web3';
 
-import { ContractRegistry } from '../wrappers/ContractRegistry';
+import { AssetRegistry } from '../wrappers/AssetRegistry';
 import { ContractTerms, ContractState } from  '../types';
 import { Signer } from '../utils/Signer';
 
 export class EconomicsAPI {
 
-  private registry: ContractRegistry;
+  private registry: AssetRegistry;
   private signer: Signer;
 
-  private constructor (registry: ContractRegistry, signer: Signer) {
+  private constructor (registry: AssetRegistry, signer: Signer) {
     this.registry = registry;
     this.signer = signer;
   }
@@ -59,7 +59,7 @@ export class EconomicsAPI {
    * @returns {Promise<EconomicsAPI>}
    */
   public static async init (web3: Web3, signer: Signer): Promise<EconomicsAPI> {
-    const registry = await ContractRegistry.instantiate(web3);
+    const registry = await AssetRegistry.instantiate(web3);
     return new EconomicsAPI(registry, signer);
   }
 }

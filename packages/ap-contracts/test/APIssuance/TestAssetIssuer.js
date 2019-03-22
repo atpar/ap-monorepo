@@ -1,7 +1,7 @@
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 const PAMContractActor = artifacts.require('PAMContractActor')
-const ContractRegistry = artifacts.require('ContractRegistry')
+const AssetRegistry = artifacts.require('AssetRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
@@ -22,7 +22,7 @@ contract('AssetIssuer', (accounts) => {
     ;({ '10001': this.terms } = await getContractTerms(precision))
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
-    this.ContractRegistryInstance = await ContractRegistry.deployed()
+    this.AssetRegistryInstance = await AssetRegistry.deployed()
     this.OwnershipRegistryInstance = await OwnershipRegistry.deployed()
     this.PAMContractActorInstance = await PAMContractActor.deployed()
     this.AssetIssuerInstance = await AssetIssuer.new()
@@ -71,7 +71,7 @@ contract('AssetIssuer', (accounts) => {
       )
     )
 
-    const storedTerms = await this.ContractRegistryInstance.getTerms(contractId)
+    const storedTerms = await this.AssetRegistryInstance.getTerms(contractId)
     const storedOwnership = await this.OwnershipRegistryInstance.getContractOwnership(contractId)
 
     assert.equal(storedTerms['statusDate'], orderData.terms['statusDate'])

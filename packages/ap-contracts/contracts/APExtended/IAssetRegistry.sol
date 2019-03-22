@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "../APCore/APDefinitions.sol";
 
 
-contract IContractRegistry is APDefinitions {
+contract IAssetRegistry is APDefinitions {
 
 	function getTerms(bytes32 contractId) 
 		external 

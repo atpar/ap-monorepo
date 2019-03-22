@@ -1,6 +1,6 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const ContractRegistry = artifacts.require('ContractRegistry')
+const AssetRegistry = artifacts.require('AssetRegistry')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
@@ -13,7 +13,7 @@ const getContractTerms = (precision) => {
   return parseContractTerms(PAMTestTerms, precision)
 }
 
-contract('ContractRegistry', (accounts) => {
+contract('AssetRegistry', (accounts) => {
 
   const actor = accounts[1]
 
@@ -24,27 +24,27 @@ contract('ContractRegistry', (accounts) => {
     ;({ '10001': this.terms } = await getContractTerms(precision))
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
-    this.ContractRegistryInstance = await ContractRegistry.new()
+    this.AssetRegistryInstance = await AssetRegistry.new()
     this.contractId = 'C123'
   })
 
   it('should register a contract', async () => {
-    await this.ContractRegistryInstance.registerContract(
+    await this.AssetRegistryInstance.registerContract(
       web3.utils.toHex(this.contractId), 
       this.terms,
       this.state,
       actor
     )
 
-    // const terms = await this.ContractRegistryInstance.getTerms(web3.utils.toHex(this.contractId))
-    const state = await this.ContractRegistryInstance.getState(web3.utils.toHex(this.contractId))
+    // const terms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.contractId))
+    const state = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.contractId))
 
     assert.deepEqual(state, this.state)
   })
 
   it('should not overwrite an existing contract', async () => {
     await shouldFail.reverting.withMessage(
-      this.ContractRegistryInstance.registerContract(
+      this.AssetRegistryInstance.registerContract(
         web3.utils.toHex(this.contractId), 
         this.terms,
         this.state,
@@ -55,19 +55,19 @@ contract('ContractRegistry', (accounts) => {
   })
 
   it('should let the actor overwrite and update the terms, state and the eventId of a contract', async () => {
-    await this.ContractRegistryInstance.setTerms(
+    await this.AssetRegistryInstance.setTerms(
       web3.utils.toHex(this.contractId), 
       this.terms,
       { from: actor }
     )
 
-    await this.ContractRegistryInstance.setState(
+    await this.AssetRegistryInstance.setState(
       web3.utils.toHex(this.contractId), 
       this.state,
       { from: actor }
     )
 
-    await this.ContractRegistryInstance.setEventId(
+    await this.AssetRegistryInstance.setEventId(
       web3.utils.toHex(this.contractId), 
       1,
       { from: actor }
@@ -76,7 +76,7 @@ contract('ContractRegistry', (accounts) => {
 
   it('should not let an unauthorized account overwrite and update the terms, state and the eventId of a contract', async () => {
     await shouldFail.reverting.withMessage(
-      this.ContractRegistryInstance.setTerms(
+      this.AssetRegistryInstance.setTerms(
         web3.utils.toHex(this.contractId), 
         this.terms,
       ),
@@ -84,7 +84,7 @@ contract('ContractRegistry', (accounts) => {
     )
 
     await shouldFail.reverting.withMessage(
-      this.ContractRegistryInstance.setState(
+      this.AssetRegistryInstance.setState(
         web3.utils.toHex(this.contractId), 
         this.state,
       ),
@@ -92,7 +92,7 @@ contract('ContractRegistry', (accounts) => {
     )
 
     await shouldFail.reverting.withMessage(
-      this.ContractRegistryInstance.setEventId(
+      this.AssetRegistryInstance.setEventId(
         web3.utils.toHex(this.contractId), 
         1,
       ),

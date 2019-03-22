@@ -1,7 +1,7 @@
 const BigNumber = require('bignumber.js')
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
-const ContractRegistry = artifacts.require('ContractRegistry')
+const AssetRegistry = artifacts.require('AssetRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
@@ -36,7 +36,7 @@ contract('PAMContractActor', (accounts) => {
     
     // deploy APExtended
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
-    this.ContractRegistryInstance = await ContractRegistry.new()
+    this.AssetRegistryInstance = await AssetRegistry.new()
     this.PaymentRegistryInstance = await PaymentRegistry.new()
     this.PaymentRouterInstance = await PaymentRouter.new(
       this.OwnershipRegistryInstance.address, 
@@ -44,7 +44,7 @@ contract('PAMContractActor', (accounts) => {
     )
     this.PAMContractActorInstance = await PAMContractActor.new(
       this.OwnershipRegistryInstance.address,
-      this.ContractRegistryInstance.address,
+      this.AssetRegistryInstance.address,
       this.PaymentRegistryInstance.address,
       this.PaymentRouterInstance.address,
       this.PAMEngineInstance.address
@@ -62,7 +62,7 @@ contract('PAMContractActor', (accounts) => {
     )
 
     // register Contract with contractId
-    const tx2 = await this.ContractRegistryInstance.registerContract(
+    const tx2 = await this.AssetRegistryInstance.registerContract(
       web3.utils.toHex(contractId),
       this.terms,
       this.state,
@@ -85,7 +85,7 @@ contract('PAMContractActor', (accounts) => {
 
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
-    const eventId = await this.ContractRegistryInstance.getEventId(web3.utils.toHex(contractId))
+    const eventId = await this.AssetRegistryInstance.getEventId(web3.utils.toHex(contractId))
 
     const tx3 = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(contractId),
@@ -100,8 +100,8 @@ contract('PAMContractActor', (accounts) => {
 
     const tx4 = await this.PAMContractActorInstance.progress(web3.utils.toHex(contractId), currentTimestamp);
 
-    const nextState = await this.ContractRegistryInstance.getState(web3.utils.toHex(contractId))
-    const nextEventId = new BigNumber(await this.ContractRegistryInstance.getEventId(web3.utils.toHex(contractId)))
+    const nextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(contractId))
+    const nextEventId = new BigNumber(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(contractId)))
    
     assert.equal(nextState.lastEventTime, currentTimestamp)
     assert.isTrue(nextEventId.isEqualTo(Number(eventId.toString()) + 1))

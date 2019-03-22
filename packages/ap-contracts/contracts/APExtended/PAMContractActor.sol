@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "./IContractActor.sol";
 import "./IOwnershipRegistry.sol";
-import "./IContractRegistry.sol";
+import "./IAssetRegistry.sol";
 import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
@@ -14,7 +14,7 @@ import "../APEngines/IPAMEngine.sol";
 contract PAMContractActor is APDefinitions, IContractActor {
 
 	IOwnershipRegistry ownershipRegistry;
-	IContractRegistry contractRegistry;
+	IAssetRegistry assetRegistry;
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
@@ -23,7 +23,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 
 	constructor (
 		IOwnershipRegistry _ownershipRegistry,
-		IContractRegistry _contractRegistry,
+		IAssetRegistry _assetRegistry,
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
 		IPAMEngine _pamEngine
@@ -31,7 +31,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		public 
 	{
 		ownershipRegistry = _ownershipRegistry;
-		contractRegistry = _contractRegistry;
+		assetRegistry = _assetRegistry;
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
 		pamEngine = _pamEngine;
@@ -44,14 +44,14 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		external
 		returns (bool)
 	{
-		ContractTerms memory terms = contractRegistry.getTerms(contractId);
-		ContractState memory state = contractRegistry.getState(contractId);
+		ContractTerms memory terms = assetRegistry.getTerms(contractId);
+		ContractState memory state = assetRegistry.getState(contractId);
 		
 		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
 
-		uint256 eventId = contractRegistry.getEventId(contractId);
+		uint256 eventId = assetRegistry.getEventId(contractId);
 
 		(
 			ContractState memory nextState, 
@@ -70,8 +70,8 @@ contract PAMContractActor is APDefinitions, IContractActor {
 
 		// check for non-payment events ...
 
-		contractRegistry.setState(contractId, nextState);
-		contractRegistry.setEventId(contractId, eventId);
+		assetRegistry.setState(contractId, nextState);
+		assetRegistry.setEventId(contractId, eventId);
 
 		return(true);
 	}
@@ -94,7 +94,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 			ownership.counterpartyBeneficiary
 		);
 
-		contractRegistry.registerContract(
+		assetRegistry.registerContract(
 			contractId,
 			terms,
 			initialState,
