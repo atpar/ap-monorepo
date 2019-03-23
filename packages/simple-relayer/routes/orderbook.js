@@ -92,11 +92,13 @@ async function removeUnfilledOrder (order) {
 
 function assertOrderData (orderData) {
   if (!orderData) { return false }
-  if (!orderData['signatures']['makerSignature']) { return false }
-  if (!orderData['makerAddress']  || !orderData['takerAddress'] || !orderData['actorAddress']) { return  false }
+  if (!orderData['makerAddress'] || !orderData['actorAddress']) { return  false }
   if (!orderData['terms']) { return false }
-  if (!orderData['makerCreditEnhancementAddress'] || !orderData['takerCreditEnhancementAddress']) { return false }
+  if (!orderData['makerCreditEnhancementAddress']) { return false }
+  if (!orderData['takerAddress'] !== !orderData['takerCreditEnhancementAddress']) { return false }
   if (!orderData['salt']) { return false}
+  if (!orderData['takerAddress'] !== !orderData['signatures']['takerSignature']) { return false }
+  if (!orderData['signatures']['makerSignature']) { return false }
   return true
 }
 

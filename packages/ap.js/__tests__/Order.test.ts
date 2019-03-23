@@ -43,11 +43,11 @@ describe('testOrderClass', () => {
 
     const orderParams: OrderParams = {
       makerAddress: recordCreator,
-      takerAddress: counterparty,
+      takerAddress: null,
       actorAddress: contractActor,
       terms,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
-      takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000'
+      takerCreditEnhancementAddress: null
     }
 
     const order = Order.create(apRC, orderParams);

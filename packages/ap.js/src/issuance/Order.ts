@@ -17,16 +17,15 @@ export class Order {
       throw(new Error('FEATURE_NOT_AVAILABLE: Relayer is not enabled!')); 
     }
 
-    const signature = await this.ap.signer.signOrder(this.orderData);
-    const signer = this.ap.signer.account;
-
-    if (signer === this.orderData.makerAddress) {
-      this.orderData.signatures.makerSignature = signature;
-    } else if (signer === this.orderData.takerAddress) {
-      this.orderData.signatures.takerSignature = signature;
+    if (this.orderData.makerAddress === this.ap.signer.account) {
+      this.orderData.signatures.makerSignature = await this.ap.signer.signOrderAsMaker(this.orderData);
+    } else if (this.orderData.takerAddress === null) {
+      this.orderData.takerAddress = this.ap.signer.account;
+      this.orderData.takerCreditEnhancementAddress = '0x0000000000000000000000000000000000000000';
+      this.orderData.signatures.takerSignature = await this.ap.signer.signOrderAsTaker(this.orderData);
     } else {
       throw(new Error(
-        'EXECUTION_ERROR: Addresses do not match. Address of signer has to be equal to makerAddress or takerAddress.'
+        'EXECUTION_ERROR: makerAddress does not match or takerAddress is already set.'
       ));
     }
 

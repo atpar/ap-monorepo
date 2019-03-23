@@ -43,10 +43,11 @@ contract('AssetIssuer', (accounts) => {
       salt: Math.floor(Math.random() * 1000000) 
     }
 
-    const orderAsTypedData = getOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address)
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address)
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address)
 
-    orderData.signatures.makerSignature = await sign(orderAsTypedData, recordCreator)
-    orderData.signatures.takerSignature = await sign(orderAsTypedData, counterparty)
+    orderData.signatures.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator)
+    orderData.signatures.takerSignature = await sign(filledOrderAsTypedData, counterparty)
 
     const order = {
       maker: orderData.makerAddress,
@@ -96,7 +97,52 @@ const sign = (typedData, account) => {
   })
 }
 
-const getOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
+const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
+  const verifyingContract = verifyingContractAddress
+
+  // todo: add to solidity ContractTerms struct
+  delete orderData.terms.contractType
+
+  const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+    ContractTermsABI, _toTuple(orderData.terms)
+  ))
+
+  const typedData = {
+    domain: {
+      name: 'ACTUS Protocol',
+      version: '1',
+      chainId: 0,
+      verifyingContract: verifyingContract
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' }
+      ],
+      Order: [
+        { name: 'maker', type: 'address' },
+        { name: 'actor', type: 'address' },
+        { name: 'contractTermsHash', type: 'bytes32' },
+        { name: 'makerCreditEnhancement', type: 'address' },
+        { name: 'salt', type: 'uint256' }
+      ]
+    },
+    primaryType: 'Order',
+    message: {
+      maker: orderData.makerAddress,
+      actor: orderData.actorAddress,
+      contractTermsHash: contractTermsHash,
+      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
+      salt: orderData.salt
+    }
+  }
+
+  return typedData
+}
+
+const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
   const verifyingContract = verifyingContractAddress
 
   // todo: add to solidity ContractTerms struct

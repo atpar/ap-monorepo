@@ -29,14 +29,18 @@ contract VerifyOrder is APDefinitions {
 		"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
 	);
 
-	bytes32 constant ORDER_TYPEHASH = keccak256(
+	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
+		"Order(address maker,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,uint256 salt)"
+	);
+
+	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
 		"Order(address maker,address taker,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
 
 	constructor () public {
-		DOMAIN_SEPARATOR = hashStruct(EIP712Domain({
+		DOMAIN_SEPARATOR = hashEIP712Domain(EIP712Domain({
 			name: "ACTUS Protocol",
 			version: "1",
 			chainId: 0,
@@ -44,7 +48,7 @@ contract VerifyOrder is APDefinitions {
 		}));
 	}
 
-	function hashStruct(EIP712Domain memory eip712Domain) 
+	function hashEIP712Domain(EIP712Domain memory eip712Domain) 
 		internal 
 		pure 
 		returns (bytes32) 
@@ -58,7 +62,7 @@ contract VerifyOrder is APDefinitions {
 		));
 	}
 
-  function hashStruct(ContractTerms memory terms) 
+  function hashTerms(ContractTerms memory terms) 
     internal
     pure
     returns (bytes32)
@@ -66,17 +70,32 @@ contract VerifyOrder is APDefinitions {
     return keccak256(abi.encode(terms));
   }
 
-	function hashStruct(Order memory order)
+	function hashUnfilledOrder(Order memory order)
 		internal
 		pure
 		returns (bytes32)
 	{
 		return keccak256(abi.encode(
-			ORDER_TYPEHASH,
+			UNFILLED_ORDER_TYPEHASH,
+			order.maker,
+			order.actor,
+			hashTerms(order.terms),
+      order.makerCreditEnhancement,
+			order.salt
+		));
+	}
+
+	function hashFilledOrder(Order memory order)
+		internal
+		pure
+		returns (bytes32)
+	{
+		return keccak256(abi.encode(
+			FILLED_ORDER_TYPEHASH,
 			order.maker,
 			order.taker,
 			order.actor,
-			hashStruct(order.terms),
+			hashTerms(order.terms),
       order.makerCreditEnhancement,
       order.takerCreditEnhancement,
 			order.salt
@@ -92,14 +111,20 @@ contract VerifyOrder is APDefinitions {
 		view
     returns (bool)
 	{
-		bytes32 digest = keccak256(abi.encodePacked(
+		bytes32 makerDigest = keccak256(abi.encodePacked(
 			"\x19\x01",
 			DOMAIN_SEPARATOR,
-			hashStruct(order)
+			hashUnfilledOrder(order)
 		));
 
-		require(ECDSA.recover(digest, makerSignature) == order.maker, "INVALID_ORDER_SIGNATURE: Recovered address is not the maker!");
-		require(ECDSA.recover(digest, takerSignature) == order.taker, "INVALID_ORDER_SIGNATURE: Recovered address is not the taker!");
+		bytes32 takerDigest = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashFilledOrder(order)
+		));
+
+		require(ECDSA.recover(makerDigest, makerSignature) == order.maker, "INVALID_ORDER_SIGNATURE: Recovered address is not the maker!");
+		require(ECDSA.recover(takerDigest, takerSignature) == order.taker, "INVALID_ORDER_SIGNATURE: Recovered address is not the taker!");
     
     return true;
 	}

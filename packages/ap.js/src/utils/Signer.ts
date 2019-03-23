@@ -9,7 +9,8 @@ import {
   SignedContractUpdate, 
   ContractUpdateAsTypedData, 
   OrderData, 
-  OrderDataAsTypedData 
+  FilledOrderDataAsTypedData,
+  UnfilledOrderDataAsTypedData 
 } from '../types';
 
 
@@ -29,8 +30,18 @@ export class Signer {
    * @param {OrderData} orderData contract update to sign
    * @returns {string}
    */
-  public async signOrder (orderData: OrderData): Promise<string> {
-    return this._signTypedData(await this._getOrderDataAsTypedData(orderData));
+  public async signOrderAsMaker (orderData: OrderData): Promise<string> {
+    return this._signTypedData(await this._getUnfilledOrderDataAsTypedData(orderData));
+  }
+
+  /**
+   * signs a given order with the provided account and returns the signature
+   * EIP712 compliant (tries both eth_signTypedData_v3 and eth_signTypedData)
+   * @param {OrderData} orderData contract update to sign
+   * @returns {string}
+   */
+  public async signOrderAsTaker (orderData: OrderData): Promise<string> {
+    return this._signTypedData(await this._getFilledOrderDataAsTypedData(orderData));
   }
 
   /**
@@ -84,9 +95,9 @@ export class Signer {
     return true;
   }
 
-  private async _getOrderDataAsTypedData (
+  private async _getUnfilledOrderDataAsTypedData (
     orderData: OrderData
-  ): Promise<OrderDataAsTypedData> {
+  ): Promise<UnfilledOrderDataAsTypedData> {
     const chainId = await this.web3.eth.net.getId();
     const verifyingContract = AssetIssuerArtifact.networks[chainId].address;
 
@@ -97,7 +108,62 @@ export class Signer {
       ContractTermsABI, this._toTuple(orderData.terms)
     ));
 
-    const typedData: OrderDataAsTypedData = {
+    const typedData: UnfilledOrderDataAsTypedData = {
+      domain: {
+        name: 'ACTUS Protocol',
+        version: '1',
+        chainId: 0,
+        verifyingContract: verifyingContract
+      },
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' }
+        ],
+        Order: [
+          { name: 'maker', type: 'address' },
+          { name: 'actor', type: 'address' },
+          { name: 'contractTermsHash', type: 'bytes32' },
+          { name: 'makerCreditEnhancement', type: 'address' },
+          { name: 'salt', type: 'uint256' }
+        ]
+      },
+      primaryType: 'Order',
+      message: {
+        maker: orderData.makerAddress,
+        actor: orderData.actorAddress,
+        contractTermsHash: contractTermsHash,
+        makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
+        salt: orderData.salt
+      }
+    };
+
+    return typedData;
+  }
+
+  private async _getFilledOrderDataAsTypedData (
+    orderData: OrderData
+  ): Promise<FilledOrderDataAsTypedData> {
+    if (!orderData.takerAddress) { 
+      throw(new Error('EXECUTION_ERROR: takerAddress is not set!')); 
+    }
+    if (!orderData.takerCreditEnhancementAddress) { 
+      throw(new Error('EXECUTION_ERROR: takerCreditEnhancementAddress is not set!')); 
+    }
+
+    const chainId = await this.web3.eth.net.getId();
+    const verifyingContract = AssetIssuerArtifact.networks[chainId].address;
+
+    // todo: add to solidity ContractTerms struct
+    delete orderData.terms.contractType;
+
+    const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
+      ContractTermsABI, this._toTuple(orderData.terms)
+    ));
+
+    const typedData: FilledOrderDataAsTypedData = {
       domain: {
         name: 'ACTUS Protocol',
         version: '1',

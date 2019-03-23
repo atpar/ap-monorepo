@@ -68,11 +68,11 @@ export interface ContractUpdateAsTypedData extends TypedData {
 
 export interface OrderParams {
   makerAddress: string,
-  takerAddress: string,
+  takerAddress: string | null,
   actorAddress: string,
   terms: ContractTerms,
   makerCreditEnhancementAddress: string,
-  takerCreditEnhancementAddress: string
+  takerCreditEnhancementAddress: string | null
 }
 
 export interface OrderData extends OrderParams {
@@ -83,7 +83,28 @@ export interface OrderData extends OrderParams {
   }
 }
 
-export interface OrderDataAsTypedData extends TypedData {
+export interface UnfilledOrderDataAsTypedData extends TypedData {
+  domain: {
+    name: string,
+    version: string,
+    chainId: number,
+    verifyingContract: string
+  },
+  types: {
+    EIP712Domain: { name: string, type: string }[],
+    Order: { name: string, type: string }[]
+  },
+  primaryType: string,
+  message: {
+    maker: string,
+    actor: string,
+    contractTermsHash: string,
+    makerCreditEnhancement: string,
+    salt: number
+  }
+}
+
+export interface FilledOrderDataAsTypedData extends TypedData {
   domain: {
     name: string,
     version: string,
