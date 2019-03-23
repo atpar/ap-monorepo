@@ -24,6 +24,17 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 		paymentRegistry = IPaymentRegistry(_paymentRegistry);
 	}
 
+	/**
+	 * routes a payment to the designated beneficiary and 
+	 * registers that the payment was made in the payment registry
+	 * @dev checks if an owner of the specified cashflowId is set, 
+	 * if not it sends funds to the default beneficiary
+	 * @param contractId id of the asset which the payment relates to
+	 * @param cashflowId id of the claim ((EventType + 1) * direction of the payment)
+	 * @param eventId id of the event (order in the event schedule)
+	 * @param token address of the token to pay (0x0 if paid in Ether)
+	 * @param _amount payment amount
+	 */
 	function settlePayment(
 		bytes32 contractId,
 		int8 cashflowId,

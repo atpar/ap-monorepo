@@ -27,10 +27,24 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		_;
 	}
 
+	/**
+	 * whitelists the address of the payment router for registering payments
+	 * @dev can only be called by the owner of the contract
+	 * @param _paymentRouter address of the payment router
+	 */
 	function setPaymentRouter(address _paymentRouter) external onlyOwner {
 		paymentRouter = _paymentRouter;
 	}
 	
+	/**
+   * register a payment made for servicing a claim from a specific financial asset
+	 * @dev can only be called by the whitelisted payment router
+   * @param contractId id of the asset to which the claim (i.e. eventId) relates
+   * @param cashflowId id of the claim which is serviced with the payment
+   * @param eventId id of the specific contractual event which is serviced with the payment
+   * @param token the address of the token contract from which tokens are transferred with the payment
+   * @param amount the amount transferred with the payment
+   */
 	function registerPayment(
 		bytes32 contractId,
 		int8 cashflowId,
@@ -55,6 +69,12 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		emit Paid(contractId, eventId, amount);
 	}
 
+	/**
+	 * retrieve the total balance (sum over all amounts) paid for servicing a specific claim
+	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
+	 * @return current balance paid off for the given claim
+	 */
 	function getPayoffBalance(bytes32 contractId, uint256 eventId)
 		external
 		view
@@ -63,6 +83,12 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		return payoffRegistry[contractId][eventId].balance;
 	}
 	
+	/**
+	 * retrieve the full details of amounts paid for servicing a specific claim
+	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
+	 * @return cashflowId, address of the token used to payoff the claim, current balance of the claim
+	 */	
 	function getPayoff(bytes32 contractId, uint256 eventId)
 		external
 		view
