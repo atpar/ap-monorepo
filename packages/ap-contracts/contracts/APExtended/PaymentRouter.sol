@@ -76,7 +76,7 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 		
 		if (token == address(0)) {
 			(bool result, ) = payee.call.value(msg.value)(""); // solium-disable-line 
-      require(result, "TRANSFER_FAILED");
+			require(result, "TRANSFER_FAILED");
 			amount = msg.value;
 		} else {
 			require(IERC20(token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");

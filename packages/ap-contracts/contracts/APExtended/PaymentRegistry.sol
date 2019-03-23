@@ -7,7 +7,7 @@ import "./IPaymentRegistry.sol";
 
 
 contract PaymentRegistry is IPaymentRegistry, Ownable {
-  
+	
 	event Paid(bytes32, uint256, uint256);
 
 	struct Payoff {
@@ -37,14 +37,14 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 	}
 	
 	/**
-   * register a payment made for servicing a claim from a specific financial asset
+	 * register a payment made for servicing a claim from a specific financial asset
 	 * @dev can only be called by the whitelisted payment router
-   * @param contractId id of the asset to which the claim (i.e. eventId) relates
-   * @param cashflowId id of the claim which is serviced with the payment
-   * @param eventId id of the specific contractual event which is serviced with the payment
-   * @param token the address of the token contract from which tokens are transferred with the payment
-   * @param amount the amount transferred with the payment
-   */
+	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param cashflowId id of the claim which is serviced with the payment
+	 * @param eventId id of the specific contractual event which is serviced with the payment
+	 * @param token the address of the token contract from which tokens are transferred with the payment
+	 * @param amount the amount transferred with the payment
+	 */
 	function registerPayment(
 		bytes32 contractId,
 		int8 cashflowId,

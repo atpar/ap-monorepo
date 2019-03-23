@@ -47,10 +47,10 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	}
 
 	/**
-   * update the address of the default beneficiary of cashflows going to the record creator
-   * @param contractId id of the asset
-   * @param newRecordCreatorBeneficiary address of the new beneficiary
-   */
+	 * update the address of the default beneficiary of cashflows going to the record creator
+	 * @param contractId id of the asset
+	 * @param newRecordCreatorBeneficiary address of the new beneficiary
+	 */
 	function setRecordCreatorBeneficiary(
 		bytes32 contractId, 
 		address payable newRecordCreatorBeneficiary
@@ -64,10 +64,10 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	}
 
 	/**
-   * update the address of the default beneficiary of cashflows going to the counter party
-   * @param contractId id of the asset
-   * @param newCounterpartyBeneficiary address of the new beneficiary
-   */
+	 * update the address of the default beneficiary of cashflows going to the counter party
+	 * @param contractId id of the asset
+	 * @param newCounterpartyBeneficiary address of the new beneficiary
+	 */
 	function setCounterpartyBeneficiary(
 		bytes32 contractId, 
 		address payable newCounterpartyBeneficiary
@@ -82,10 +82,10 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 
 	/**
  	 * register the address of the owner of specific claims of the asset
-   * @param contractId id of the asset
-   * @param cashflowId id of the specific claims for which to register the owner
-   * @param beneficiary the address of the owner
-   */
+	 * @param contractId id of the asset
+	 * @param cashflowId id of the specific claims for which to register the owner
+	 * @param beneficiary the address of the owner
+	 */
 	function setBeneficiaryForCashflowId(
 		bytes32 contractId, 
 		int8 cashflowId, 
@@ -110,9 +110,9 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	
 	/**
  	 * retrieve the registered addresses of owners (Creator, Counterparty) of an asset
-   * @param contractId id of the asset
-   * @return addresses of all owners of the asset
-   */
+	 * @param contractId id of the asset
+	 * @return addresses of all owners of the asset
+	 */
 	function getContractOwnership(bytes32 contractId) 
 		external 
 		view 
@@ -127,11 +127,11 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	}
 	
 	/**
-   * retrieve the registered address of the owner of specific future claims from an asset
-   * @param contractId id of the asset
-   * @param cashflowId the identifier of the specific claims owned by the registerd address
-   * @return address of the beneficiary corresponding to the given cashflowId
-   */
+	 * retrieve the registered address of the owner of specific future claims from an asset
+	 * @param contractId id of the asset
+	 * @param cashflowId the identifier of the specific claims owned by the registerd address
+	 * @return address of the beneficiary corresponding to the given cashflowId
+	 */
 	function getCashflowBeneficiary(bytes32 contractId, int8 cashflowId) 
 		external 
 		view 
