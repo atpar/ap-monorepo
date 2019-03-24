@@ -15,7 +15,7 @@ export class EconomicsAPI {
   }
 
   /**
-   * registers the terms and the state of a new contract
+   * registers the terms and the state of a new asset
    * @param {string} assetId 
    * @param {ContractTerms} contractTerms 
    * @param {ContractState} contractState 
@@ -36,7 +36,7 @@ export class EconomicsAPI {
   }
 
   /**
-   * fetches the terms of a contract with given AssetId
+   * fetches the terms of a asset with given AssetId
    * @param {string} assetId
    * @returns {Promise<ContractTerms>} ContractTerms
    */
@@ -45,7 +45,7 @@ export class EconomicsAPI {
   }
 
   /**
-   * fetches the current state of a contract with a given AssetId
+   * fetches the current state of a asset with a given AssetId
    * @param assetId
    * @returns {Promise<ContractState>}
    */

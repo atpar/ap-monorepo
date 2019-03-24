@@ -17,7 +17,7 @@ import {
  * stores all contract updates of the respective financial channel
  * processes contract updates
  */
-export class ContractChannel {
+export class AssetChannel {
 
   private ap: AP;
   private contractEngine: ContractEngine;
@@ -44,7 +44,7 @@ export class ContractChannel {
   }
 
   /**
-   * returns the contract terms
+   * returns the assets terms
    * @returns {ContractTerms}
    */
   public getContractTerms (): ContractTerms {
@@ -61,7 +61,7 @@ export class ContractChannel {
   }
 
   /**
-   * returns the initial schedule derived from the terms of the contract
+   * returns the initial schedule derived from the terms of the asset
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getInitialSchedule (): Promise<EvaluatedEventSchedule> {
@@ -69,7 +69,7 @@ export class ContractChannel {
   }
 
   /**
-   * returns the pending schedule derived from the terms and the current state of the contract
+   * returns the pending schedule derived from the terms and the current state of the asset
    * (contains all events between the last executed state transition and the specified timestamp)
    * @param {number} timestamp current timestamp
    * @returns {Promise<EvaluatedEventSchedule>}
@@ -84,8 +84,8 @@ export class ContractChannel {
 
   // or getTurnTakerStatus, getObligation
   /**
-   * returns the state of the ContractChannel based on the 
-   * current state of the contract and the provided timestamp
+   * returns the state of the AssetChannel based on the 
+   * current state of the asset and the provided timestamp
    * @param {number} timestamp current timestamp
    * @returns {Promise<ChannelState>}
    */
@@ -130,7 +130,7 @@ export class ContractChannel {
   }
 
   /**
-   * computes the initial state of the contact, creates a new contract update from it
+   * computes the initial state of the asset, creates a new contract update from it
    * and sends it after receiving a signature from the user
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
    * @param {string} assetId 
@@ -148,7 +148,7 @@ export class ContractChannel {
     }
     if (this.signedContractUpdates.length !== 0) { 
       throw(new Error(
-        'EXECUTION_ERROR: ContractChannel is already initialized! Use signAndSendNextContractUpdate method instead.'
+        'EXECUTION_ERROR: AssetChannel is already initialized! Use signAndSendNextContractUpdate method instead.'
       )); 
     }
 
@@ -170,11 +170,11 @@ export class ContractChannel {
   }
 
   /**
-   * computes the next state of the contract for a given timestamp, 
+   * computes the next state of the asset for a given timestamp, 
    * creates a new contract update from it and sends it after receiving a signature from the user
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
    * @param {number} timestamp current timestamp
-   * @returns {Promise<void>} promise when signed contractupdate was sent
+   * @returns {Promise<void>} promise when signed contract update was sent
    */
   public async signAndSendNextContractUpdate (timestamp: number): Promise<void> {
     if (!this.ap.client) { 
@@ -185,7 +185,7 @@ export class ContractChannel {
     
     if (!previousSignedContractUpdate) { 
       throw(new Error(
-        'EXECUTION_ERROR: ContractChannel is not initialized! Use signAndSendInitialContractUpdate method instead.'
+        'EXECUTION_ERROR: AssetChannel is not initialized! Use signAndSendInitialContractUpdate method instead.'
       )); 
     }
   
@@ -224,13 +224,13 @@ export class ContractChannel {
     }
     if (this.signedContractUpdates.length == 0) { 
       throw(new Error(
-        'EXECUTION_ERROR: ContractChannel is not initialized! There has to be at least one previous valid signed contract update in order to start the listener.'
+        'EXECUTION_ERROR: AssetChannel is not initialized! There has to be at least one previous valid signed contract update in order to start the listener.'
       )); 
     }
     
     const { contractUpdate: { assetId } } = this.getLastSignedContractUpdate();
 
-    this.ap.client.registerContractListener(
+    this.ap.client.registerContractUpdateListener(
       assetId,
       async (signedContractUpdate: SignedContractUpdate) => {
         if (!(await this._validateSignedContractUpdate(signedContractUpdate))) { return; } 
@@ -386,19 +386,19 @@ export class ContractChannel {
   }
 
   /**
-   * returns a new ContractChannel instance
+   * returns a new AssetChannel instance
    * @notice calls signAndSendInitialContractUpdate method, whereby eth_signedTypedData or 
    * eth_signedTypedData_v3 is called, prompting the user to sign a contract update
    * @param {AP} ap AP instance
    * @param {ContractTerms} terms
    * @param {ContractOwnership} ownership
-   * @returns {Promise<ContractChannel>}
+   * @returns {Promise<AssetChannel>}
    */
   public static async create (
     ap: AP, 
     terms: ContractTerms,
     ownership: ContractOwnership
-  ): Promise<ContractChannel> {    
+  ): Promise<AssetChannel> {    
     const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
@@ -410,24 +410,24 @@ export class ContractChannel {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const contractChannel = new ContractChannel(ap, contractEngine);
-    await contractChannel._signAndSendInitialContractUpdate(assetId, terms, ownership);
+    const assetChannel = new AssetChannel(ap, contractEngine);
+    await assetChannel._signAndSendInitialContractUpdate(assetId, terms, ownership);
 
-    return contractChannel;
+    return assetChannel;
   }
 
   /**
-   * returns a new ContractChannel instance based on a valid initial signed contract update
+   * returns a new AssetChannel instance based on a valid initial signed contract update
    * @notice validates the provided signed contract upodate 
    * (has to be the initial signed contract update)
    * @param {AP} ap AP instance
    * @param {SignedContractUpdate} signedContractUpdate
-   * @returns {Promise<ContractChannel>}
+   * @returns {Promise<AssetChannel>}
    */
   public static async fromSignedContractUpdate (
     ap: AP,
     signedContractUpdate: SignedContractUpdate
-  ): Promise<ContractChannel> {
+  ): Promise<AssetChannel> {
     const { contractTerms: { contractType }} = signedContractUpdate.contractUpdate;
     
     let ContractEngine;
@@ -439,26 +439,26 @@ export class ContractChannel {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const contractChannel = new ContractChannel(ap, ContractEngine);
+    const assetChannel = new AssetChannel(ap, ContractEngine);
 
-    if (!(await contractChannel._validateSignedContractUpdate(signedContractUpdate))) {
+    if (!(await assetChannel._validateSignedContractUpdate(signedContractUpdate))) {
       throw(new Error('EXECUTION_ERROR: invalid signed contract update provided.'));
     }
 
-    return new ContractChannel(ap, ContractEngine, signedContractUpdate);
+    return new AssetChannel(ap, ContractEngine, signedContractUpdate);
   }
 
   /**
-   * initializes a new ContractChannel instance based on an arbitrary signed contract update
+   * initializes a new AssetChannel instance based on an arbitrary signed contract update
    * @notice does not validate the provided signed contract update
    * @param {AP} ap AP instance
    * @param {SignedContractUpdate} signedContractUpdate
-   * @returns {Promise<ContractChannel>}
+   * @returns {Promise<AssetChannel>}
    */
   public static async fromSignedContractUpdate_Unsafe (
     ap: AP, 
     signedContractUpdate: SignedContractUpdate
-  ): Promise<ContractChannel> {
+  ): Promise<AssetChannel> {
     const { contractTerms: { contractType } } = signedContractUpdate.contractUpdate;
     
     let ContractEngine;
@@ -470,6 +470,6 @@ export class ContractChannel {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    return new ContractChannel(ap, ContractEngine, signedContractUpdate);
+    return new AssetChannel(ap, ContractEngine, signedContractUpdate);
   }
 }

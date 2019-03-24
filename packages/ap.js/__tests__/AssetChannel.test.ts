@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 
-import { AP, ContractChannel } from '../src';
+import { AP, AssetChannel } from '../src';
 import { ContractTerms, ContractType } from '../src/types';
 
-describe('testContractChannelClass', () => {
+describe('testAssetChannelClass', () => {
 
   let web3: Web3;
   let recordCreator: string;
@@ -16,7 +16,7 @@ describe('testContractChannelClass', () => {
   let apRC: AP;
   let apCP: AP;
 
-  let contractChannel: ContractChannel;
+  let assetChannel: AssetChannel;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -45,28 +45,28 @@ describe('testContractChannelClass', () => {
       counterpartyBeneficiaryAddress: counterparty
     };
 
-    contractChannel = await ContractChannel.create(apRC, terms, ownership);
+    assetChannel = await AssetChannel.create(apRC, terms, ownership);
   });
 
   it('should instantiate channel from valid signed contract update', async () => {
-    const initialSignedContractUpdate = contractChannel.getLastSignedContractUpdate();
-    const contractChannel2 = await ContractChannel.fromSignedContractUpdate(apRC, initialSignedContractUpdate);
-    expect(contractChannel2 instanceof ContractChannel).toBe(true);
+    const initialSignedContractUpdate = assetChannel.getLastSignedContractUpdate();
+    const assetChannel2 = await AssetChannel.fromSignedContractUpdate(apRC, initialSignedContractUpdate);
+    expect(assetChannel2 instanceof AssetChannel).toBe(true);
   });
 
   it('should not instantiate channel from invalid signed contract update', async () => {
-    const lastSignedContractUpdate = contractChannel.getLastSignedContractUpdate();
+    const lastSignedContractUpdate = assetChannel.getLastSignedContractUpdate();
     lastSignedContractUpdate.contractUpdate.assetId = '03';
 
     await expect(
-      ContractChannel.fromSignedContractUpdate(apRC, lastSignedContractUpdate)
+      AssetChannel.fromSignedContractUpdate(apRC, lastSignedContractUpdate)
     ).rejects.toThrow('EXECUTION_ERROR: invalid signed contract update provided.');
   });
 
   it('should receive at least one new contract on behalf of the counterparty', async () => {
     const mockCallback = jest.fn(() => {});
 
-    apCP.onNewContractChannel(mockCallback);
+    apCP.onNewAssetChannel(mockCallback);
 
     await new Promise(resolve => setTimeout(resolve, 3000));
 

@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 import { SignedContractUpdate, OrderData } from './types';
 
-import { ContractChannel } from './channel/ContractChannel';
+import { AssetChannel } from './channel/AssetChannel';
 import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI } from './apis';
 import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
@@ -52,16 +52,16 @@ export class AP {
   }
 
   /**
-   * polls for / subscribes to new uninstantiated contracts
-   * @param {(contractChannel: ContractChannel) => void} cb callback function to be called 
-   * upon receiving a signed contract update of an uninstantiated ContractChannel
+   * polls for new uninstantiated AssetChannels
+   * @param {(assetChannel: AssetChannel) => void} cb callback function to be called 
+   * upon receiving a signed contract update of an uninstantiated AssetChannel
    */
-  public onNewContractChannel (cb: (contractChannel: ContractChannel) => void): void {
+  public onNewAssetChannel (cb: (assetChannel: AssetChannel) => void): void {
     if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
     this.client.onNewContractUpdate(async (signedContractUpdate: SignedContractUpdate) => {
       try {
-        const contractChannel = await ContractChannel.fromSignedContractUpdate(this, signedContractUpdate);
-        cb(contractChannel);
+        const assetChannel = await AssetChannel.fromSignedContractUpdate(this, signedContractUpdate);
+        cb(assetChannel);
       } catch (error) { return; }
     });
   }
@@ -128,6 +128,6 @@ export class AP {
   }
 }
 
-export { Contract } from './Contract';
-export { ContractChannel } from './channel/ContractChannel';
+export { Asset } from './Asset';
+export { AssetChannel } from './channel/AssetChannel';
 export { Order } from './issuance/Order';

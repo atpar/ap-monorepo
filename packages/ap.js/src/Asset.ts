@@ -4,11 +4,11 @@ import { AP } from './index';
 
 
 /**
- * class which provides methods for managing an ACTUS contract 
+ * class which provides methods for managing an ACTUS asset 
  * exposes methods for ownership management, settlement of payoffs and 
- * economic lifecycle management for an ACTUS contract
+ * economic lifecycle management for an ACTUS asset
  */
-export class Contract {
+export class Asset {
   
   private ap: AP;
   // @ts-ignore
@@ -28,7 +28,7 @@ export class Contract {
   }
 
   /**
-   * return the terms of the contract
+   * return the terms of the asset
    * @returns {Promise<ContractTerms>}
    */
   public async getContractTerms (): Promise<ContractTerms> { 
@@ -36,7 +36,7 @@ export class Contract {
   }
 
   /**
-   * returns the current state of the contract
+   * returns the current state of the asset
    * @returns {Promise<ContractState>}
    */
   public async getContractState (): Promise<ContractState> { 
@@ -44,7 +44,7 @@ export class Contract {
   }
 
   /**
-   * returns the current ownership of the contract
+   * returns the current ownership of the asset
    * @param {string} assetId 
    * @returns {Promise<ContractOwnership>}
    */
@@ -53,7 +53,7 @@ export class Contract {
   }
  
   /**
-   * returns the schedule derived from the terms of the contract
+   * returns the schedule derived from the terms of the asset
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
@@ -61,7 +61,7 @@ export class Contract {
   }
 
   /**
-   * returns the pending schedule derived from the terms and the current state of the contract
+   * returns the pending schedule derived from the terms and the current state of the asset
    * (contains all events between the last state and the specified timestamp)
    * @param {number} timestamp current timestamp
    * @returns {Promise<EvaluatedEventSchedule>}
@@ -75,7 +75,7 @@ export class Contract {
   }
 
   /**
-   * derives obligations by computing the next state of the contract and 
+   * derives obligations by computing the next state of the asset and 
    * stores the new state if all obligation where fulfilled
    * @param {number} timestamp 
    * @return {Promise<void>}
@@ -85,21 +85,21 @@ export class Contract {
   }
 
   /**
-   * registers the terms, the initial state and the ownership of a contract 
-   * and returns a new Contract instance.
-   * computes the initial contract state,
+   * registers the terms, the initial state and the ownership of an asset 
+   * and returns a new Asset instance.
+   * computes the initial state of the asset,
    * stores it together with the terms of the EconomicsRegistry,
-   * stores the ownership of the contract in the OwnershipRegistry and sends it
+   * stores the ownership of the asset in the OwnershipRegistry and sends it
    * @param {AP} ap AP instance
-   * @param {ContractTerms} terms terms of the contract
-   * @param {ContractOwnership} ownership ownership of the contract
-   * @returns {Promise<Contract>}
+   * @param {ContractTerms} terms terms of the asset
+   * @param {ContractOwnership} ownership ownership of the asset
+   * @returns {Promise<Asset>}
    */
   public static async create (
     ap: AP,
     terms: ContractTerms,
     ownership: ContractOwnership
-  ): Promise<Contract> {
+  ): Promise<Asset> {
     const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
@@ -120,19 +120,19 @@ export class Contract {
       initialContractState
     );
 
-    return new Contract(ap, contractEngine, assetId);
+    return new Asset(ap, contractEngine, assetId);
   }
 
   /**
-   * loads a already registered Contract and returns a new Contract instance from a provided ContactId
+   * loads an already registered asset and returns a new Asset instance from a provided AssetId
    * @param {AP} ap AP instance
    * @param {string} assetId 
-   * @returns {Promise<Contract>}
+   * @returns {Promise<Asset>}
    */
   public static async load (
     ap: AP,
     assetId: string
-  ): Promise<Contract> {
+  ): Promise<Asset> {
     const { contractType, statusDate } = await ap.economics.getContractTerms(assetId);
 
     if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
@@ -146,6 +146,6 @@ export class Contract {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
     
-    return new Contract(ap, contractEngine, assetId);
+    return new Asset(ap, contractEngine, assetId);
   }
 }

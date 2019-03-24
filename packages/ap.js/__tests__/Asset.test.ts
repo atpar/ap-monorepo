@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 
-import { AP, Contract } from '../src';
+import { AP, Asset } from '../src';
 import { ContractTerms, ContractType, ContractOwnership } from '../src/types';
 
 describe('testContractClass', () => {
@@ -10,7 +10,7 @@ describe('testContractClass', () => {
   let contractTemplatesTyped: any;
 
   let ap: AP;
-  let contract: Contract;
+  let asset: Asset;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -39,16 +39,16 @@ describe('testContractClass', () => {
       counterpartyBeneficiaryAddress: '0xb1495069F8d780B0C4123E96b0B6bb0217048C09'
     }
 
-    contract = await Contract.create(
+    asset = await Asset.create(
       ap,
       terms, 
       ownership
     );
 
-    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(contract.assetId);
-    const storedTerms: ContractTerms = await contract.getContractTerms();
+    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(asset.assetId);
+    const storedTerms: ContractTerms = await asset.getContractTerms();
     
-    expect(contract instanceof Contract).toBe(true);
+    expect(asset instanceof Asset).toBe(true);
     expect(ownership.toString() === storedOwnership.toString()).toBe(true);
     expect(terms.statusDate === storedTerms.statusDate);
   });

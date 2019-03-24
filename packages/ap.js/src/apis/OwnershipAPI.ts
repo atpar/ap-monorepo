@@ -15,9 +15,9 @@ export class OwnershipAPI {
   }
 
   /**
-   * registers the ownership of a new contract for a given AssetId
+   * registers the ownership of a new asset for a given AssetId
    * @param assetId 
-   * @param contractOwnership ownership object for a contract
+   * @param contractOwnership ownership object for a asset
    * @returns {Promise<void>}
    */
   public async registerContractOwnership (

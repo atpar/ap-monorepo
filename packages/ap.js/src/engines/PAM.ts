@@ -18,7 +18,7 @@ export class PAM implements ContractEngine {
   }
 
   /**
-   * computes the inital state based on the contract terms and the current state
+   * computes the inital state based on the terms and the current state
    * @param {ContractTerms} terms
    * @returns {Promise<ContractState>}
    */
@@ -30,7 +30,7 @@ export class PAM implements ContractEngine {
   }
 
   /**
-   * computes the next state based on the contract terms and the current state
+   * computes the next state based on the terms and the current state
    * @param {ContractTerms} terms
    * @param {ContractState} state
    * @param {number} timestamp current timestamp

@@ -6,12 +6,12 @@ import { SignedContractUpdate } from '../types';
 export class Client {
 
   private provider: Provider;
-  private contractListenerRegistry: Map<string, (signedContractUpdate: SignedContractUpdate) => void>;
+  private contractUpdateListenerRegistry: Map<string, (signedContractUpdate: SignedContractUpdate) => void>;
   private fallbackListener: null | ((signedContractUpdate: SignedContractUpdate) => void);
 
   private constructor (receiver: string, provider: Provider) {
     this.provider = provider;
-    this.contractListenerRegistry = new Map<string, (signedContractUpdate: SignedContractUpdate) => void>();
+    this.contractUpdateListenerRegistry = new Map<string, (signedContractUpdate: SignedContractUpdate) => void>();
     this.fallbackListener = null;
 
     this._receiveContractUpdates(receiver);
@@ -36,7 +36,7 @@ export class Client {
       Object.values(data).forEach((obj) => {
         const signedContractUpdate: SignedContractUpdate = obj; 
         const assetId = signedContractUpdate.contractUpdate.assetId;
-        const contractListener = this.contractListenerRegistry.get(assetId);
+        const contractListener = this.contractUpdateListenerRegistry.get(assetId);
         if (contractListener) { return contractListener(signedContractUpdate); }
         if (this.fallbackListener) { return this.fallbackListener(signedContractUpdate); }
       });
@@ -44,29 +44,29 @@ export class Client {
   }
 
   /**
-   * registers a contract listener which calls the provided callback function
-   * upon receiving a new signed contract update for ContractChannel
+   * registers a contract update listener which calls the provided callback function
+   * upon receiving a new signed contract update for AssetChannel
    * @param assetId
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
-  public registerContractListener (
+  public registerContractUpdateListener (
     assetId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
   ): void {
-    this.contractListenerRegistry.set(assetId, cb);
+    this.contractUpdateListenerRegistry.set(assetId, cb);
   }
 
   /**
-   * removes a contract listener from the contract listener registry
+   * removes a contract update listener from the contract update listener registry
    * @param {string} assetId
    */
-  public removeContractListener (assetId: string): void {
-    this.contractListenerRegistry.delete(assetId);
+  public removeContractUpdateListener (assetId: string): void {
+    this.contractUpdateListenerRegistry.delete(assetId);
   }
 
   /**
    * registers a listener which calls the provided callback 
-   * when a signed contract update of an unregistered ContractChannel is fetched
+   * when a signed contract update of an unregistered AssetChannel is fetched
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void): void {
