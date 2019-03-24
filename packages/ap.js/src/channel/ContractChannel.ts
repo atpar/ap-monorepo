@@ -133,13 +133,13 @@ export class ContractChannel {
    * computes the initial state of the contact, creates a new contract update from it
    * and sends it after receiving a signature from the user
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
-   * @param {string} contractId 
+   * @param {string} assetId 
    * @param {ContractTerms} terms
    * @param {ContractOwnership} ownership 
    * @returns {Promise<void>}
    */
   private async _signAndSendInitialContractUpdate (
-    contractId: string,
+    assetId: string,
     terns: ContractTerms,
     ownership: ContractOwnership,
   ): Promise<void> {
@@ -155,7 +155,7 @@ export class ContractChannel {
     const initialContractState = await this.contractEngine.computeInitialState(terns);
 
     const contractUpdate = this._constructInitialContractUpdate(
-      contractId,
+      assetId,
       ownership,
       terns,
       initialContractState
@@ -228,10 +228,10 @@ export class ContractChannel {
       )); 
     }
     
-    const { contractUpdate: { contractId } } = this.getLastSignedContractUpdate();
+    const { contractUpdate: { assetId } } = this.getLastSignedContractUpdate();
 
     this.ap.client.registerContractListener(
-      contractId,
+      assetId,
       async (signedContractUpdate: SignedContractUpdate) => {
         if (!(await this._validateSignedContractUpdate(signedContractUpdate))) { return; } 
         this._storeSignedContractUpdate(signedContractUpdate);
@@ -240,13 +240,13 @@ export class ContractChannel {
   }
 
   private _constructInitialContractUpdate (
-    contractId: string,
+    assetId: string,
     ownership: ContractOwnership,
     terms: ContractTerms,
     initialState: ContractState
   ): ContractUpdate {
     return {
-      contractId: contractId,
+      assetId: assetId,
       recordCreatorObligorAddress: ownership.recordCreatorObligorAddress,
       counterpartyObligorAddress: ownership.counterpartyObligorAddress,
       contractAddress: '',
@@ -264,7 +264,7 @@ export class ContractChannel {
     const { contractUpdate } = this.getLastSignedContractUpdate();
 
     return {
-      contractId: contractUpdate.contractId,
+      assetId: contractUpdate.assetId,
       recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
       counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
       contractAddress: '',
@@ -399,7 +399,7 @@ export class ContractChannel {
     terms: ContractTerms,
     ownership: ContractOwnership
   ): Promise<ContractChannel> {    
-    const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
+    const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
     switch (terms.contractType) {
@@ -411,7 +411,7 @@ export class ContractChannel {
     }
 
     const contractChannel = new ContractChannel(ap, contractEngine);
-    await contractChannel._signAndSendInitialContractUpdate(contractId, terms, ownership);
+    await contractChannel._signAndSendInitialContractUpdate(assetId, terms, ownership);
 
     return contractChannel;
   }

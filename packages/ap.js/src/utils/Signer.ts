@@ -221,7 +221,7 @@ export class Signer {
           { name: 'verifyingContract', type: 'address' }
         ],
         ContractUpdate: [
-          { name: 'contractId', type: 'string' },
+          { name: 'assetId', type: 'string' },
           { name: 'recordCreatorObligorAddress', type: 'address' },
           { name: 'counterpartyObligorAddress', type: 'address' },
           { name: 'contractAddress', type: 'address' },
@@ -232,7 +232,7 @@ export class Signer {
       },
       primaryType: 'ContractUpdate',
       message: {
-        contractId: contractUpdate.contractId,
+        assetId: contractUpdate.assetId,
         recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
         counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
         contractAddress: contractUpdate.contractAddress,

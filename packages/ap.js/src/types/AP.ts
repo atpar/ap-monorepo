@@ -16,7 +16,7 @@ export interface ContractOwnership {
 }
 
 export interface ContractUpdate {
-  contractId: string,
+  assetId: string,
   recordCreatorObligorAddress: string,
   counterpartyObligorAddress: string,
   contractAddress: string,
@@ -56,7 +56,7 @@ export interface ContractUpdateAsTypedData extends TypedData {
   },
   primaryType: string,
   message: {
-    contractId: string,
+    assetId: string,
     recordCreatorObligorAddress: string,
     counterpartyObligorAddress: string,
     contractAddress: string,

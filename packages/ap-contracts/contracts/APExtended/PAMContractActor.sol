@@ -41,25 +41,25 @@ contract PAMContractActor is APDefinitions, IContractActor {
 	 * proceeds with the next state of the asset based on the terms, the last state and 
 	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled 
 	 * the actor updates the state of the asset in the EconomicsRegistry
-	 * @param contractId id of the asset
+	 * @param assetId id of the asset
 	 * @param timestamp current timestamp
 	 * @return true if state was updated
 	 */
 	function progress(
-		bytes32 contractId,
+		bytes32 assetId,
 		uint256 timestamp
 	) 
 		external
 		returns (bool)
 	{
-		ContractTerms memory terms = economicsRegistry.getTerms(contractId);
-		ContractState memory state = economicsRegistry.getState(contractId);
+		ContractTerms memory terms = economicsRegistry.getTerms(assetId);
+		ContractState memory state = economicsRegistry.getState(assetId);
 		
 		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
 
-		uint256 eventId = economicsRegistry.getEventId(contractId);
+		uint256 eventId = economicsRegistry.getEventId(assetId);
 
 		(
 			ContractState memory nextState, 
@@ -72,14 +72,14 @@ contract PAMContractActor is APDefinitions, IContractActor {
 			uint256 payoff = (pendingEvents[i].payoff < 0) ? 
 				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
 			if (payoff == uint256(0)) { continue; }
-			require(paymentRegistry.getPayoffBalance(contractId, eventId) >= payoff, "OUTSTANDING_PAYMENTS");
+			require(paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff, "OUTSTANDING_PAYMENTS");
 			eventId += 1;
 		}
 
 		// check for non-payment events ...
 
-		economicsRegistry.setState(contractId, nextState);
-		economicsRegistry.setEventId(contractId, eventId);
+		economicsRegistry.setState(assetId, nextState);
+		economicsRegistry.setEventId(assetId, eventId);
 
 		return(true);
 	}
@@ -88,13 +88,13 @@ contract PAMContractActor is APDefinitions, IContractActor {
 	 * derives the initial state of the asset from the provided terms and sets the initial state, the terms 
 	 * together with the ownership of the asset in the EconomicsRegistry and OwnershipRegistry
 	 * @dev can only be called by the whitelisted account
-	 * @param contractId id of the asset
+	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param terms terms of the asset
 	 * @return true on success
 	 */
 	function initialize(
-		bytes32 contractId,
+		bytes32 assetId,
 		ContractOwnership memory ownership, 
 		ContractTerms memory terms
 	) 
@@ -104,7 +104,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		ContractState memory initialState = pamEngine.computeInitialState(terms);
 
 		ownershipRegistry.registerOwnership(
-			contractId,
+			assetId,
 			ownership.recordCreatorObligor,
 			ownership.recordCreatorBeneficiary,
 			ownership.counterpartyObligor,
@@ -112,7 +112,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		);
 
 		economicsRegistry.registerContract(
-			contractId,
+			assetId,
 			terms,
 			initialState,
 			address(this)

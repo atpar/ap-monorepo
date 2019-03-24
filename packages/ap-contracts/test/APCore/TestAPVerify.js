@@ -20,7 +20,7 @@ const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId
         { name: 'verifyingContract', type: 'address' }
       ],
       ContractUpdate: [
-        { name: 'contractId', type: 'bytes32' },
+        { name: 'assetId', type: 'bytes32' },
         { name: 'recordCreatorAddress', type: 'address' },
         { name: 'counterpartyAddress', type: 'address' },
         { name: 'contractAddress', type: 'address' },
@@ -31,7 +31,7 @@ const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId
     },
     primaryType: 'ContractUpdate',
     message: {
-      contractId: contractUpdate.contractId,
+      assetId: contractUpdate.assetId,
       recordCreatorAddress: contractUpdate.recordCreatorAddress,
       counterpartyAddress: contractUpdate.counterpartyAddress,
       contractAddress: contractUpdate.contractAddress,
@@ -73,9 +73,9 @@ contract('APVerify', (accounts) => {
   })
 
   it('should sign the given typed data correctly and yield the correct recovered addresses', async () => {
-    const contractId = 'PAM' + Math.floor(new Date().getTime() / 1000)
+    const assetId = 'PAM' + Math.floor(new Date().getTime() / 1000)
     const contractUpdate = {
-      contractId: web3.utils.toHex(contractId),
+      assetId: web3.utils.toHex(assetId),
       recordCreatorAddress: recordCreatorAddress,
       counterpartyAddress: counterpartyAddress,
       contractAddress: APVerifyDeployed.options.address,

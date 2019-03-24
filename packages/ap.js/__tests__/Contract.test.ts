@@ -45,7 +45,7 @@ describe('testContractClass', () => {
       ownership
     );
 
-    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(contract.contractId);
+    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(contract.assetId);
     const storedTerms: ContractTerms = await contract.getContractTerms();
     
     expect(contract instanceof Contract).toBe(true);

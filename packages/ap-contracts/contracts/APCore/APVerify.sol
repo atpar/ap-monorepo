@@ -14,7 +14,7 @@ contract APVerify {
 	}
 
 	struct ContractUpdate {
-		bytes32 contractId;
+		bytes32 assetId;
 		address payable recordCreatorAddress;
 		address payable counterpartyAddress;
 		address contractAddress;
@@ -28,7 +28,7 @@ contract APVerify {
 	);
 
 	bytes32 constant CONTRACTUPDATE_TYPEHASH = keccak256(
-		"ContractUpdate(bytes32 contractId,address recordCreatorAddress,address counterpartyAddress,address contractAddress,bytes32 contractTermsHash,bytes32 contractStateHash,uint256 contractUpdateNonce)"
+		"ContractUpdate(bytes32 assetId,address recordCreatorAddress,address counterpartyAddress,address contractAddress,bytes32 contractTermsHash,bytes32 contractStateHash,uint256 contractUpdateNonce)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -63,7 +63,7 @@ contract APVerify {
 	{
 		return keccak256(abi.encode(
 			CONTRACTUPDATE_TYPEHASH,
-			contractUpdate.contractId,
+			contractUpdate.assetId,
 			contractUpdate.recordCreatorAddress,
 			contractUpdate.counterpartyAddress,
 			contractUpdate.contractAddress,

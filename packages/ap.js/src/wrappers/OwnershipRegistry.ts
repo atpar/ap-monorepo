@@ -14,7 +14,7 @@ export class OwnershipRegistry {
   }
 
   public async registerOwnership (
-    contractId: string,
+    assetId: string,
     recordCreatorObligorAddress: string,
     recordCreatorBeneficiaryAddress: string,
     counterpartyObligorAddress: string,
@@ -22,7 +22,7 @@ export class OwnershipRegistry {
     txOptions?: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.registerOwnership(
-      toHex(contractId), 
+      toHex(assetId), 
       recordCreatorObligorAddress,
       recordCreatorBeneficiaryAddress,
       counterpartyObligorAddress,
@@ -31,19 +31,19 @@ export class OwnershipRegistry {
   }
 
   public async setBeneficiaryForCashflowId (
-    contractId: string, 
+    assetId: string, 
     cashflowId: number, 
     beneficiaryAddress: string,
     txOptions?: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
-      toHex(contractId),
+      toHex(assetId),
       cashflowId,
       beneficiaryAddress
     ).send({ ...txOptions });
   }
 
-  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
+  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
     const { 
       0: recordCreatorObligorAddress, 
       1: recordCreatorBeneficiaryAddress, 
@@ -54,7 +54,7 @@ export class OwnershipRegistry {
       1: string, 
       2: string, 
       3: string 
-    } = await this.ownershipRegistry.methods.getContractOwnership(toHex(contractId)).call();
+    } = await this.ownershipRegistry.methods.getContractOwnership(toHex(assetId)).call();
 
     return { 
       recordCreatorObligorAddress, 
@@ -64,8 +64,8 @@ export class OwnershipRegistry {
     };
   }
 
-  public async getCashflowBeneficiary (contractId: string, cashflowId: number): Promise<string> {
-    const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(contractId), cashflowId).call();
+  public async getCashflowBeneficiary (assetId: string, cashflowId: number): Promise<string> {
+    const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(assetId), cashflowId).call();
     return beneficiary;
   }
 

@@ -16,18 +16,18 @@ export class EconomicsAPI {
 
   /**
    * registers the terms and the state of a new contract
-   * @param {string} contractId 
+   * @param {string} assetId 
    * @param {ContractTerms} contractTerms 
    * @param {ContractState} contractState 
    * @returns {Promise<void>}
    */
   public async registerContract (
-    contractId: string, 
+    assetId: string, 
     contractTerms: ContractTerms, 
     contractState: ContractState
   ): Promise<void> {
     await this.registry.registerContract(
-      contractId,
+      assetId,
       contractTerms, 
       contractState, 
       '0x0000000000000000000000000000000000000001',
@@ -36,21 +36,21 @@ export class EconomicsAPI {
   }
 
   /**
-   * fetches the terms of a contract with given ContractId
-   * @param {string} contractId
+   * fetches the terms of a contract with given AssetId
+   * @param {string} assetId
    * @returns {Promise<ContractTerms>} ContractTerms
    */
-  public async getContractTerms (contractId: string): Promise<ContractTerms> {
-    return this.registry.getContractTerms(contractId);
+  public async getContractTerms (assetId: string): Promise<ContractTerms> {
+    return this.registry.getContractTerms(assetId);
   }
 
   /**
-   * fetches the current state of a contract with a given ContractId
-   * @param contractId
+   * fetches the current state of a contract with a given AssetId
+   * @param assetId
    * @returns {Promise<ContractState>}
    */
-  public async getContractState (contractId: string): Promise<ContractState> {
-    return this.registry.getContractState(contractId);
+  public async getContractState (assetId: string): Promise<ContractState> {
+    return this.registry.getContractState(assetId);
   }
 
   /**

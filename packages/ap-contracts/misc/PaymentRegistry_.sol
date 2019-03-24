@@ -9,7 +9,7 @@ contract PaymentRegistry_ is Ownable {
 	event Paid(bytes32, bytes32);
 
 	struct Payment {
-		bytes32 contractId;
+		bytes32 assetId;
 		int8 cashflowId;
 		uint256 eventId;
 		address token;
@@ -35,7 +35,7 @@ contract PaymentRegistry_ is Ownable {
 	}
 	
 	function registerPayment (
-		bytes32 _contractId,
+		bytes32 _assetId,
 		int8 _cashflowId,
 		uint256 _eventId,
 		address _token,
@@ -46,16 +46,16 @@ contract PaymentRegistry_ is Ownable {
 		onlyPaymentRouter ()
 	{		
 		bytes32 paymentId = keccak256(abi.encodePacked(
-			_contractId,
+			_assetId,
 			_cashflowId,
 			_eventId,
 			block.timestamp
 		));
 
-		require(paymentRegistry[paymentId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
+		require(paymentRegistry[paymentId].assetId == bytes32(0), "ENTRY_ALREADY_EXISTS");
 		
 		Payment memory payment = Payment(
-			_contractId,
+			_assetId,
 			_cashflowId,
 			_eventId,
 			_token,
@@ -65,7 +65,7 @@ contract PaymentRegistry_ is Ownable {
 	
 		paymentRegistry[paymentId] = payment;
 
-		emit Paid(paymentId, _contractId);
+		emit Paid(paymentId, _assetId);
 	}
 	
 	// function getPaymentIdsForEvent (address _contract, bytes32 _eventId)

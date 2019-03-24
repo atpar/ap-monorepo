@@ -56,7 +56,7 @@ describe('testContractChannelClass', () => {
 
   it('should not instantiate channel from invalid signed contract update', async () => {
     const lastSignedContractUpdate = contractChannel.getLastSignedContractUpdate();
-    lastSignedContractUpdate.contractUpdate.contractId = '03';
+    lastSignedContractUpdate.contractUpdate.assetId = '03';
 
     await expect(
       ContractChannel.fromSignedContractUpdate(apRC, lastSignedContractUpdate)

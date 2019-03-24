@@ -27,7 +27,7 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 			"INVALID_SIGNATURE: Order signatures are invalid!"
 		);
 
-		bytes32 contractId = keccak256(
+		bytes32 assetId = keccak256(
 			abi.encode(makerSignature, takerSignature)
 		);
 		ContractOwnership memory ownership = ContractOwnership(
@@ -38,7 +38,7 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 		);
 
 		require(
-			IContractActor(order.actor).initialize(contractId, ownership, order.terms), 
+			IContractActor(order.actor).initialize(assetId, ownership, order.terms), 
 			"EXECUTION_ERROR: Initialization failed"
 		);
 	}

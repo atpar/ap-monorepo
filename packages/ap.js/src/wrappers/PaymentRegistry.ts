@@ -12,9 +12,9 @@ export class PaymentRegistry {
     this.paymentRegistry = PaymentRegistryInstance
   }
 
-  public async getPayoffBalance (contractId: string, eventId: number): Promise<number> {
+  public async getPayoffBalance (assetId: string, eventId: number): Promise<number> {
     const payoffBalance: number = await this.paymentRegistry.methods.getPayoffBalance(
-      toHex(contractId),
+      toHex(assetId),
       eventId
     ).call();
 
@@ -22,7 +22,7 @@ export class PaymentRegistry {
   }
 
   public async getPayoff (
-    contractId: string, 
+    assetId: string, 
     eventId: number
   ): Promise<{cashflowId: string, tokenAddress: string, payoffBalance: number}> {
     const { 
@@ -33,7 +33,7 @@ export class PaymentRegistry {
       0: string, 
       1: string, 
       2: number 
-    } = await this.paymentRegistry.methods.getPayoff(toHex(contractId), eventId).call();
+    } = await this.paymentRegistry.methods.getPayoff(toHex(assetId), eventId).call();
 
     return { cashflowId, tokenAddress, payoffBalance }
   }

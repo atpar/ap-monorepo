@@ -15,17 +15,17 @@ export class OwnershipAPI {
   }
 
   /**
-   * registers the ownership of a new contract for a given ContractId
-   * @param contractId 
+   * registers the ownership of a new contract for a given AssetId
+   * @param assetId 
    * @param contractOwnership ownership object for a contract
    * @returns {Promise<void>}
    */
   public async registerContractOwnership (
-    contractId: string, 
+    assetId: string, 
     contractOwnership: ContractOwnership
   ): Promise<void> {
     await this.registry.registerOwnership(
-      contractId,
+      assetId,
       contractOwnership.recordCreatorObligorAddress,
       contractOwnership.recordCreatorBeneficiaryAddress,
       contractOwnership.counterpartyObligorAddress,
@@ -35,12 +35,12 @@ export class OwnershipAPI {
   }
 
   /**
-   * fetches the ownership for a given ContractId
-   * @param contractId 
+   * fetches the ownership for a given AssetId
+   * @param assetId 
    * @returns {Promise<ContractOwnership>} 
    */
-  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
-    return this.registry.getContractOwnership(contractId); 
+  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
+    return this.registry.getContractOwnership(assetId); 
   }
 
   /**

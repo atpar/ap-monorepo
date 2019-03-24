@@ -35,8 +35,8 @@ export class Client {
       // try  { signedContractUpdate = JSON.parse(obj); } catch (error) { return; }
       Object.values(data).forEach((obj) => {
         const signedContractUpdate: SignedContractUpdate = obj; 
-        const contractId = signedContractUpdate.contractUpdate.contractId;
-        const contractListener = this.contractListenerRegistry.get(contractId);
+        const assetId = signedContractUpdate.contractUpdate.assetId;
+        const contractListener = this.contractListenerRegistry.get(assetId);
         if (contractListener) { return contractListener(signedContractUpdate); }
         if (this.fallbackListener) { return this.fallbackListener(signedContractUpdate); }
       });
@@ -46,22 +46,22 @@ export class Client {
   /**
    * registers a contract listener which calls the provided callback function
    * upon receiving a new signed contract update for ContractChannel
-   * @param contractId
+   * @param assetId
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public registerContractListener (
-    contractId: string, 
+    assetId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
   ): void {
-    this.contractListenerRegistry.set(contractId, cb);
+    this.contractListenerRegistry.set(assetId, cb);
   }
 
   /**
    * removes a contract listener from the contract listener registry
-   * @param {string} contractId
+   * @param {string} assetId
    */
-  public removeContractListener (contractId: string): void {
-    this.contractListenerRegistry.delete(contractId);
+  public removeContractListener (assetId: string): void {
+    this.contractListenerRegistry.delete(assetId);
   }
 
   /**

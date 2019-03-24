@@ -22,12 +22,12 @@
 
 //   public static async create (
 //     web3: Web3, 
-//     contractId: string, 
+//     assetId: string, 
 //     recordCreatorAddress: string, 
 //     counterpartyAddress: string
 //   ) {
 //     const statelessContract = await PAMStatelessContract.instantiate(web3);
-//     const statefulContract = await PAMStatefulContract.deploy(web3, contractId, recordCreatorAddress, counterpartyAddress);
+//     const statefulContract = await PAMStatefulContract.deploy(web3, assetId, recordCreatorAddress, counterpartyAddress);
 //     return new PAMOnChain(statelessContract, statefulContract);
 //   }
 

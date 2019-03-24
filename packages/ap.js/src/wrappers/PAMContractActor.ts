@@ -13,11 +13,11 @@ export class PAMContractActor {
   }
 
   public async progress (
-    contractId: string, 
+    assetId: string, 
     timestamp: number, 
     txOptions?: SendOptions
   ): Promise<void> {
-    await this.pamContractActor.methods.progress(toHex(contractId), timestamp).send({ ...txOptions });
+    await this.pamContractActor.methods.progress(toHex(assetId), timestamp).send({ ...txOptions });
   }
 
   public static async instantiate (web3: Web3): Promise<PAMContractActor> {

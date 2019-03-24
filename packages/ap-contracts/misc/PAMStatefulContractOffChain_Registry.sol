@@ -19,7 +19,7 @@ contract PAMStatefulContractOffChain_Registry is AFPDefinitions {
 
 	address payable public recordCreator;
 	address payable public counterparty;
-	bytes32 public contractId;
+	bytes32 public assetId;
 	bytes32 public lastContractUpdateHash;
 
 	modifier onlyRecordCreatorOrCounterparty() {
@@ -28,11 +28,11 @@ contract PAMStatefulContractOffChain_Registry is AFPDefinitions {
 	}
 
 	constructor(
-		bytes32 _contractId,
+		bytes32 _assetId,
 		address payable _recordCreator, 
 		address payable _counterparty
 	) public {
-		contractId = _contractId;
+		assetId = _assetId;
 		recordCreator = _recordCreator;
 		counterparty = _counterparty;
 	}

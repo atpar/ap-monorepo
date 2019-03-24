@@ -14,7 +14,7 @@ export class PaymentRouter {
   }
 
   public async settlePayment (
-    contractId: string, 
+    assetId: string, 
     cashflowId: number,
     eventId: number,
     tokenAddress: string,
@@ -22,7 +22,7 @@ export class PaymentRouter {
     txOptions?: SendOptions
   ): Promise<void> {
     await this.paymentRouter.methods.settlePayment(
-      toHex(contractId),
+      toHex(assetId),
       cashflowId,
       eventId,
       tokenAddress,

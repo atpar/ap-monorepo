@@ -17,7 +17,7 @@ contract('Settlement', (accounts) => {
   const ownerC = '0x0000000000000000000000000000000000000002'
   const ownerD = '0x0000000000000000000000000000000000000003'
   
-  const contractId = 'C123'
+  const assetId = 'C123'
   const cashflowId = 5
   const payoffAmount = 2 * 10  ** 15
 
@@ -27,9 +27,9 @@ contract('Settlement', (accounts) => {
     this.PaymentRouterInstance = await PaymentRouter.new(this.OwnershipRegistryInstance.address, this.PaymentRegistryInstance.address)
     await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
 
-    // register Ownership for contractId
+    // register Ownership for assetId
     await this.OwnershipRegistryInstance.registerOwnership(
-      web3.utils.toHex(contractId), 
+      web3.utils.toHex(assetId), 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
@@ -46,7 +46,7 @@ contract('Settlement', (accounts) => {
 
     // set ClaimsTokenETH as beneficiary for CashflowId
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-      web3.utils.toHex(contractId), 
+      web3.utils.toHex(assetId), 
       cashflowId, 
       this.ClaimsTokenETHInstance.address,
       { from: recordCreatorBeneficiary }
@@ -57,7 +57,7 @@ contract('Settlement', (accounts) => {
     const preBalanceOfClaimsTokenETH = await web3.eth.getBalance(this.ClaimsTokenETHInstance.address)
 
     await this.PaymentRouterInstance.settlePayment(
-      web3.utils.toHex(contractId), 
+      web3.utils.toHex(assetId), 
       cashflowId,
       0,
       '0x0000000000000000000000000000000000000000',

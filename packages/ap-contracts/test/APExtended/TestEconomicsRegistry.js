@@ -25,19 +25,19 @@ contract('EconomicsRegistry', (accounts) => {
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.new()
-    this.contractId = 'C123'
+    this.assetId = 'C123'
   })
 
   it('should register a contract', async () => {
     await this.EconomicsRegistryInstance.registerContract(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       this.terms,
       this.state,
       actor
     )
 
-    // const terms = await this.EconomicsRegistryInstance.getTerms(web3.utils.toHex(this.contractId))
-    const state = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(this.contractId))
+    // const terms = await this.EconomicsRegistryInstance.getTerms(web3.utils.toHex(this.assetId))
+    const state = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(this.assetId))
 
     assert.deepEqual(state, this.state)
   })
@@ -45,7 +45,7 @@ contract('EconomicsRegistry', (accounts) => {
   it('should not overwrite an existing contract', async () => {
     await shouldFail.reverting.withMessage(
       this.EconomicsRegistryInstance.registerContract(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         this.terms,
         this.state,
         actor
@@ -56,19 +56,19 @@ contract('EconomicsRegistry', (accounts) => {
 
   it('should let the actor overwrite and update the terms, state and the eventId of a contract', async () => {
     await this.EconomicsRegistryInstance.setTerms(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       this.terms,
       { from: actor }
     )
 
     await this.EconomicsRegistryInstance.setState(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       this.state,
       { from: actor }
     )
 
     await this.EconomicsRegistryInstance.setEventId(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       1,
       { from: actor }
     )
@@ -77,7 +77,7 @@ contract('EconomicsRegistry', (accounts) => {
   it('should not let an unauthorized account overwrite and update the terms, state and the eventId of a contract', async () => {
     await shouldFail.reverting.withMessage(
       this.EconomicsRegistryInstance.setTerms(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         this.terms,
       ),
       UNAUTHORIZED_SENDER
@@ -85,7 +85,7 @@ contract('EconomicsRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.EconomicsRegistryInstance.setState(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         this.state,
       ),
       UNAUTHORIZED_SENDER
@@ -93,7 +93,7 @@ contract('EconomicsRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.EconomicsRegistryInstance.setEventId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         1,
       ),
       UNAUTHORIZED_SENDER

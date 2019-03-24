@@ -19,19 +19,19 @@ contract('OwnershipRegistry', (accounts) => {
 
   before(async () => {
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
-    this.contractId = 'C123'
+    this.assetId = 'C123'
   })
 
   it('should register ownership of an asset', async () => {
     await this.OwnershipRegistryInstance.registerOwnership(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     )
 
-    const result = await this.OwnershipRegistryInstance.getContractOwnership(web3.utils.toHex(this.contractId))
+    const result = await this.OwnershipRegistryInstance.getContractOwnership(web3.utils.toHex(this.assetId))
     
     assert.equal(result[0], recordCreatorObligor)
     assert.equal(result[1], recordCreatorBeneficiary)
@@ -42,7 +42,7 @@ contract('OwnershipRegistry', (accounts) => {
   it('should not register ownership of an already registered asset', async () => {
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.registerOwnership(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         recordCreatorObligor, 
         recordCreatorBeneficiary, 
         counterpartyObligor, 
@@ -56,14 +56,14 @@ contract('OwnershipRegistry', (accounts) => {
     const cashflowIdA = 5
     
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       cashflowIdA, 
       cashflowIdBeneficiary,
       { from: recordCreatorBeneficiary }
     )
     
     const resultA = await this.OwnershipRegistryInstance.getCashflowBeneficiary(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       cashflowIdA
     )
     assert.equal(resultA, cashflowIdBeneficiary)
@@ -72,28 +72,28 @@ contract('OwnershipRegistry', (accounts) => {
     const cashflowIdB = -5
     
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       cashflowIdB, 
       cashflowIdBeneficiary,
       { from: counterpartyBeneficiary }
     )
     
     const resultB = await this.OwnershipRegistryInstance.getCashflowBeneficiary(web3
-      .utils.toHex(this.contractId), 
+      .utils.toHex(this.assetId), 
       cashflowIdB
     )
     assert.equal(resultB, cashflowIdBeneficiary)
 
 
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       cashflowIdA, 
       newCashflowBeneficiary,
       { from: cashflowIdBeneficiary }
     )
     
     const resultC = await this.OwnershipRegistryInstance.getCashflowBeneficiary(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       cashflowIdA
     )
     assert.equal(resultC, newCashflowBeneficiary)
@@ -104,7 +104,7 @@ contract('OwnershipRegistry', (accounts) => {
     
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdA, 
         cashflowIdBeneficiary,
         { from: recordCreatorObligor }
@@ -114,7 +114,7 @@ contract('OwnershipRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdA, 
         cashflowIdBeneficiary,
         { from: counterpartyObligor }
@@ -124,7 +124,7 @@ contract('OwnershipRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdA, 
         cashflowIdBeneficiary,
         { from: counterpartyBeneficiary }
@@ -136,7 +136,7 @@ contract('OwnershipRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
         { from: counterpartyObligor }
@@ -146,7 +146,7 @@ contract('OwnershipRegistry', (accounts) => {
     
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
         { from: recordCreatorObligor }
@@ -156,7 +156,7 @@ contract('OwnershipRegistry', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
         { from: recordCreatorBeneficiary }
@@ -170,7 +170,7 @@ contract('OwnershipRegistry', (accounts) => {
     
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         cashflowId, 
         cashflowIdBeneficiary,
         { from: recordCreatorBeneficiary }

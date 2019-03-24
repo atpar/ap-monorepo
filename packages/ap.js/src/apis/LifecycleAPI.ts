@@ -13,8 +13,8 @@ export class LifecycleAPI {
     this.signer = signer;
   }
 
-  public async progress (contractId: string, timestamp: number): Promise<void> {
-    await this.actor.progress(contractId, timestamp, { from: this.signer.account, gas: 500000 });
+  public async progress (assetId: string, timestamp: number): Promise<void> {
+    await this.actor.progress(assetId, timestamp, { from: this.signer.account, gas: 500000 });
   }
 
   /**

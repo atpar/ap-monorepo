@@ -18,7 +18,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 
 	address public paymentRouter;
 
-	// contractId => eventId => Payoff    
+	// assetId => eventId => Payoff    
 	mapping (bytes32 => mapping (uint256 => Payoff)) payoffRegistry;
 
 
@@ -39,14 +39,14 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 	/**
 	 * register a payment made for servicing a claim from a specific financial asset
 	 * @dev can only be called by the whitelisted payment router
-	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param assetId id of the asset to which the claim (i.e. eventId) relates
 	 * @param cashflowId id of the claim which is serviced with the payment
 	 * @param eventId id of the specific contractual event which is serviced with the payment
 	 * @param token the address of the token contract from which tokens are transferred with the payment
 	 * @param amount the amount transferred with the payment
 	 */
 	function registerPayment(
-		bytes32 contractId,
+		bytes32 assetId,
 		int8 cashflowId,
 		uint256 eventId,
 		address token,
@@ -56,48 +56,48 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		payable
 		onlyPaymentRouter
 	{		
-		if (payoffRegistry[contractId][eventId].cashflowId == int8(0)) {
-			payoffRegistry[contractId][eventId] = Payoff(
+		if (payoffRegistry[assetId][eventId].cashflowId == int8(0)) {
+			payoffRegistry[assetId][eventId] = Payoff(
 				cashflowId,
 				token,
 				amount
 			);
 		} else {
-			payoffRegistry[contractId][eventId].balance += amount;
+			payoffRegistry[assetId][eventId].balance += amount;
 		}
 
-		emit Paid(contractId, eventId, amount);
+		emit Paid(assetId, eventId, amount);
 	}
 
 	/**
 	 * retrieve the total balance (sum over all amounts) paid for servicing a specific claim
-	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param assetId id of the asset to which the claim (i.e. eventId) relates
 	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
 	 * @return current balance paid off for the given claim
 	 */
-	function getPayoffBalance(bytes32 contractId, uint256 eventId)
+	function getPayoffBalance(bytes32 assetId, uint256 eventId)
 		external
 		view
 		returns (uint256)
 	{
-		return payoffRegistry[contractId][eventId].balance;
+		return payoffRegistry[assetId][eventId].balance;
 	}
 	
 	/**
 	 * retrieve the full details of amounts paid for servicing a specific claim
-	 * @param contractId id of the asset to which the claim (i.e. eventId) relates
+	 * @param assetId id of the asset to which the claim (i.e. eventId) relates
 	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
 	 * @return cashflowId, address of the token used to payoff the claim, current balance of the claim
 	 */	
-	function getPayoff(bytes32 contractId, uint256 eventId)
+	function getPayoff(bytes32 assetId, uint256 eventId)
 		external
 		view
 		returns (int8, address, uint256)
 	{
 		return (
-			payoffRegistry[contractId][eventId].cashflowId, 
-			payoffRegistry[contractId][eventId].token,
-			payoffRegistry[contractId][eventId].balance
+			payoffRegistry[assetId][eventId].cashflowId, 
+			payoffRegistry[assetId][eventId].token,
+			payoffRegistry[assetId][eventId].balance
 		);
 	}
 }

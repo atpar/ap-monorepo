@@ -41,7 +41,7 @@ contract PAMStatefulContractOffChain is AFPDefinitions, AFPVerify {
 	address payable public recordCreator;
 	address payable public counterparty;
 
-	bytes32 public contractId;
+	bytes32 public assetId;
 	bytes32 public contractTermsHash;
 	uint256 public contractUpdateNonce;
 
@@ -68,7 +68,7 @@ contract PAMStatefulContractOffChain is AFPDefinitions, AFPVerify {
 
 		recordCreator = _initialContractUpdate.recordCreatorAddress;
 		counterparty = _initialContractUpdate.counterpartyAddress;
-		contractId = _initialContractUpdate.contractId;
+		assetId = _initialContractUpdate.assetId;
 		contractTermsHash = _initialContractUpdate.contractTermsHash;
 	}
 
@@ -88,7 +88,7 @@ contract PAMStatefulContractOffChain is AFPDefinitions, AFPVerify {
 		public
 		payable
 	{
-		require(_contractUpdate.contractId == contractId, "supplied contractId differs");
+		require(_contractUpdate.assetId == assetId, "supplied assetId differs");
 		require(
 			_contractUpdate.recordCreatorAddress == recordCreator &&
 			_contractUpdate.counterpartyAddress == counterparty,

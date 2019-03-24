@@ -65,15 +65,15 @@ contract('AssetIssuer', (accounts) => {
       orderData.signatures.takerSignature
     )
 
-    const contractId = web3.utils.keccak256(
+    const assetId = web3.utils.keccak256(
       web3.eth.abi.encodeParameters(
         ['bytes', 'bytes'],
         [orderData.signatures.makerSignature, orderData.signatures.takerSignature]
       )
     )
 
-    const storedTerms = await this.EconomicsRegistryInstance.getTerms(contractId)
-    const storedOwnership = await this.OwnershipRegistryInstance.getContractOwnership(contractId)
+    const storedTerms = await this.EconomicsRegistryInstance.getTerms(assetId)
+    const storedOwnership = await this.OwnershipRegistryInstance.getContractOwnership(assetId)
 
     assert.equal(storedTerms['statusDate'], orderData.terms['statusDate'])
     assert.equal(storedOwnership[0], recordCreator)

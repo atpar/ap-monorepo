@@ -24,7 +24,7 @@ Creating a new Contract
 ```js
 const contract = await Contract.create(ap, CONTRACT_TERMS, CONTRACT_OWNERSHIP);
 ```
-Loading a Contract given its ContractId from the on-chain registries
+Loading a Contract given its AssetId from the on-chain registries
 ```js
 const contract = await Contract.load(ap, CONTRACT_ID);
 ```

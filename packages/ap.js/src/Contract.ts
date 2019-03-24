@@ -14,17 +14,17 @@ export class Contract {
   // @ts-ignore
   private contractEngine: ContractEngine;
   
-  public contractId: string;
+  public assetId: string;
 
   private constructor (
     ap: AP,
     contractEngine: ContractEngine,
-    contractId: string
+    assetId: string
   ) {
     this.ap = ap;
     this.contractEngine = contractEngine;
 
-    this.contractId = contractId;
+    this.assetId = assetId;
   }
 
   /**
@@ -32,7 +32,7 @@ export class Contract {
    * @returns {Promise<ContractTerms>}
    */
   public async getContractTerms (): Promise<ContractTerms> { 
-    return this.ap.economics.getContractTerms(this.contractId); 
+    return this.ap.economics.getContractTerms(this.assetId); 
   }
 
   /**
@@ -40,16 +40,16 @@ export class Contract {
    * @returns {Promise<ContractState>}
    */
   public async getContractState (): Promise<ContractState> { 
-    return this.ap.economics.getContractState(this.contractId); 
+    return this.ap.economics.getContractState(this.assetId); 
   }
 
   /**
    * returns the current ownership of the contract
-   * @param {string} contractId 
+   * @param {string} assetId 
    * @returns {Promise<ContractOwnership>}
    */
-  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
-    return this.ap.ownership.getContractOwnership(contractId);
+  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
+    return this.ap.ownership.getContractOwnership(assetId);
   }
  
   /**
@@ -81,7 +81,7 @@ export class Contract {
    * @return {Promise<void>}
    */
   public async progress (timestamp: number): Promise<void> {
-    await this.ap.lifecycle.progress(this.contractId, timestamp);
+    await this.ap.lifecycle.progress(this.assetId, timestamp);
   }
 
   /**
@@ -100,7 +100,7 @@ export class Contract {
     terms: ContractTerms,
     ownership: ContractOwnership
   ): Promise<Contract> {
-    const contractId = 'PAM' + String(Math.floor(Date.now() / 1000));
+    const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
     let contractEngine;
     switch (terms.contractType) {
@@ -113,29 +113,29 @@ export class Contract {
 
     const initialContractState = await contractEngine.computeInitialState(terms);
 
-    await ap.ownership.registerContractOwnership(contractId, ownership);
+    await ap.ownership.registerContractOwnership(assetId, ownership);
     await ap.economics.registerContract(
-      contractId, 
+      assetId, 
       terms, 
       initialContractState
     );
 
-    return new Contract(ap, contractEngine, contractId);
+    return new Contract(ap, contractEngine, assetId);
   }
 
   /**
    * loads a already registered Contract and returns a new Contract instance from a provided ContactId
    * @param {AP} ap AP instance
-   * @param {string} contractId 
+   * @param {string} assetId 
    * @returns {Promise<Contract>}
    */
   public static async load (
     ap: AP,
-    contractId: string
+    assetId: string
   ): Promise<Contract> {
-    const { contractType, statusDate } = await ap.economics.getContractTerms(contractId);
+    const { contractType, statusDate } = await ap.economics.getContractTerms(assetId);
 
-    if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given ContractId!'); }
+    if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
 
     let contractEngine;
     switch (contractType) {
@@ -146,6 +146,6 @@ export class Contract {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
     
-    return new Contract(ap, contractEngine, contractId);
+    return new Contract(ap, contractEngine, assetId);
   }
 }
