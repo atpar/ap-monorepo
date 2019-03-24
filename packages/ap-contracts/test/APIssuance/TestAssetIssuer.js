@@ -1,6 +1,6 @@
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
 const PAMEngine = artifacts.require('PAMEngine.sol')
-const PAMContractActor = artifacts.require('PAMContractActor')
+const PAMAssetActor = artifacts.require('PAMAssetActor')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
@@ -24,7 +24,7 @@ contract('AssetIssuer', (accounts) => {
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.deployed()
     this.OwnershipRegistryInstance = await OwnershipRegistry.deployed()
-    this.PAMContractActorInstance = await PAMContractActor.deployed()
+    this.PAMAssetActorInstance = await PAMAssetActor.deployed()
     this.AssetIssuerInstance = await AssetIssuer.new()
   })
 
@@ -32,7 +32,7 @@ contract('AssetIssuer', (accounts) => {
     const orderData = { 
       makerAddress: recordCreator,
       takerAddress: counterparty,
-      actorAddress: this.PAMContractActorInstance.address,
+      actorAddress: this.PAMAssetActorInstance.address,
       terms: this.terms,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
       takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',

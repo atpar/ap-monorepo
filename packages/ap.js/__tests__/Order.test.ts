@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { AP, Order } from '../src';
 import { ContractTerms, ContractType, OrderParams } from '../src/types';
 
-const PAMContractActorArtifact: any = require('../../ap-contracts/build/contracts/PAMContractActor.json');
+const PAMAssetActorArtifact: any = require('../../ap-contracts/build/contracts/PAMAssetActor.json');
 
 
 describe('testOrderClass', () => {
@@ -22,7 +22,7 @@ describe('testOrderClass', () => {
 
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
-    contractActor = PAMContractActorArtifact.networks[await web3.eth.net.getId()].address
+    contractActor = PAMAssetActorArtifact.networks[await web3.eth.net.getId()].address
 
     const response = await fetch('http://localhost:9000' + '/api/terms', {});
     const contractTemplates = await response.json();

@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "../APCore/APDefinitions.sol";
 
 
-contract IContractActor is APDefinitions {
+contract IAssetActor is APDefinitions {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and 

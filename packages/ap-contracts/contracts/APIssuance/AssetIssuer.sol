@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
 import "./VerifyOrder.sol"; 
-import "../APExtended/IContractActor.sol";
+import "../APExtended/IAssetActor.sol";
 
 
 contract AssetIssuer is APDefinitions, VerifyOrder {
@@ -38,7 +38,7 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 		);
 
 		require(
-			IContractActor(order.actor).initialize(assetId, ownership, order.terms), 
+			IAssetActor(order.actor).initialize(assetId, ownership, order.terms), 
 			"EXECUTION_ERROR: Initialization failed"
 		);
 	}

@@ -5,7 +5,7 @@ const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const PAMContractActor = artifacts.require('PAMContractActor')
+const PAMAssetActor = artifacts.require('PAMAssetActor')
 const PAMEngine = artifacts.require('PAMEngine')
 
 const parseContractTerms = require('../parser.js').parseContractTerms
@@ -15,7 +15,7 @@ const getContractTerms = (precision) => {
   return parseContractTerms(PAMTestTerms, precision)
 }
 
-contract('PAMContractActor', (accounts) => {
+contract('PAMAssetActor', (accounts) => {
 
   const recordCreatorObligor = accounts[0]
   const recordCreatorBeneficiary = accounts[1]
@@ -42,7 +42,7 @@ contract('PAMContractActor', (accounts) => {
       this.OwnershipRegistryInstance.address, 
       this.PaymentRegistryInstance.address
     )
-    this.PAMContractActorInstance = await PAMContractActor.new(
+    this.PAMAssetActorInstance = await PAMAssetActor.new(
       this.OwnershipRegistryInstance.address,
       this.EconomicsRegistryInstance.address,
       this.PaymentRegistryInstance.address,
@@ -66,7 +66,7 @@ contract('PAMContractActor', (accounts) => {
       web3.utils.toHex(assetId),
       this.terms,
       this.state,
-      this.PAMContractActorInstance.address
+      this.PAMAssetActorInstance.address
     )
 
     // console.log(tx1.receipt.cumulativeGasUsed)
@@ -98,7 +98,7 @@ contract('PAMContractActor', (accounts) => {
 
     // const { 2: balance } = await this.PaymentRegistryInstance.getPayoff(web3.utils.toHex(assetId), eventId)
 
-    const tx4 = await this.PAMContractActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp);
+    const tx4 = await this.PAMAssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp);
 
     const nextState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(assetId))
     const nextEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))

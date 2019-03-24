@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "./IContractActor.sol";
+import "./IAssetActor.sol";
 import "./IOwnershipRegistry.sol";
 import "./IEconomicsRegistry.sol";
 import "./IPaymentRegistry.sol";
@@ -11,7 +11,7 @@ import "../APCore/APDefinitions.sol";
 import "../APEngines/IPAMEngine.sol";
 
 
-contract PAMContractActor is APDefinitions, IContractActor {
+contract PAMAssetActor is APDefinitions, IAssetActor {
 
 	IOwnershipRegistry ownershipRegistry;
 	IEconomicsRegistry economicsRegistry;
