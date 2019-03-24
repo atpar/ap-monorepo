@@ -2,7 +2,7 @@ const PAMEngine = artifacts.require('PAMEngine')
 const APFloatMath = artifacts.require('APFloatMath')
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
-const AssetRegistry = artifacts.require('AssetRegistry')
+const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
@@ -29,7 +29,7 @@ module.exports = async (deployer, network, accounts) => {
 
   // APExtended
   await deployer.deploy(OwnershipRegistry)  
-  await deployer.deploy(AssetRegistry)
+  await deployer.deploy(EconomicsRegistry)
   const PaymentRegistryInstance = await deployer.deploy(PaymentRegistry)
   await deployer.deploy(
     PaymentRouter, 
@@ -42,7 +42,7 @@ module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(
     PAMContractActor,
     OwnershipRegistry.address,
-    AssetRegistry.address,
+    EconomicsRegistry.address,
     PaymentRegistry.address,
     PaymentRouter.address,
     PAMEngine.address

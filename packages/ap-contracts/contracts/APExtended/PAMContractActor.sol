@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "./IContractActor.sol";
 import "./IOwnershipRegistry.sol";
-import "./IAssetRegistry.sol";
+import "./IEconomicsRegistry.sol";
 import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
@@ -14,7 +14,7 @@ import "../APEngines/IPAMEngine.sol";
 contract PAMContractActor is APDefinitions, IContractActor {
 
 	IOwnershipRegistry ownershipRegistry;
-	IAssetRegistry assetRegistry;
+	IEconomicsRegistry economicsRegistry;
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
@@ -23,7 +23,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 
 	constructor (
 		IOwnershipRegistry _ownershipRegistry,
-		IAssetRegistry _assetRegistry,
+		IEconomicsRegistry _economicsRegistry,
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
 		IPAMEngine _pamEngine
@@ -31,7 +31,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		public 
 	{
 		ownershipRegistry = _ownershipRegistry;
-		assetRegistry = _assetRegistry;
+		economicsRegistry = _economicsRegistry;
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
 		pamEngine = _pamEngine;
@@ -40,7 +40,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and 
 	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled 
-	 * the actor updates the state of the asset in the AssetRegistry
+	 * the actor updates the state of the asset in the EconomicsRegistry
 	 * @param contractId id of the asset
 	 * @param timestamp current timestamp
 	 * @return true if state was updated
@@ -52,14 +52,14 @@ contract PAMContractActor is APDefinitions, IContractActor {
 		external
 		returns (bool)
 	{
-		ContractTerms memory terms = assetRegistry.getTerms(contractId);
-		ContractState memory state = assetRegistry.getState(contractId);
+		ContractTerms memory terms = economicsRegistry.getTerms(contractId);
+		ContractState memory state = economicsRegistry.getState(contractId);
 		
 		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
 
-		uint256 eventId = assetRegistry.getEventId(contractId);
+		uint256 eventId = economicsRegistry.getEventId(contractId);
 
 		(
 			ContractState memory nextState, 
@@ -78,15 +78,15 @@ contract PAMContractActor is APDefinitions, IContractActor {
 
 		// check for non-payment events ...
 
-		assetRegistry.setState(contractId, nextState);
-		assetRegistry.setEventId(contractId, eventId);
+		economicsRegistry.setState(contractId, nextState);
+		economicsRegistry.setEventId(contractId, eventId);
 
 		return(true);
 	}
 
 	/**
 	 * derives the initial state of the asset from the provided terms and sets the initial state, the terms 
-	 * together with the ownership of the asset in the AssetRegistry and OwnershipRegistry
+	 * together with the ownership of the asset in the EconomicsRegistry and OwnershipRegistry
 	 * @dev can only be called by the whitelisted account
 	 * @param contractId id of the asset
 	 * @param ownership ownership of the asset
@@ -111,7 +111,7 @@ contract PAMContractActor is APDefinitions, IContractActor {
 			ownership.counterpartyBeneficiary
 		);
 
-		assetRegistry.registerContract(
+		economicsRegistry.registerContract(
 			contractId,
 			terms,
 			initialState,

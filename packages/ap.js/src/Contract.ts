@@ -88,7 +88,7 @@ export class Contract {
    * registers the terms, the initial state and the ownership of a contract 
    * and returns a new Contract instance.
    * computes the initial contract state,
-   * stores it together with the terms of the AssetRegistry,
+   * stores it together with the terms of the EconomicsRegistry,
    * stores the ownership of the contract in the OwnershipRegistry and sends it
    * @param {AP} ap AP instance
    * @param {ContractTerms} terms terms of the contract

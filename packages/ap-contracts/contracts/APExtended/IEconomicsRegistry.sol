@@ -2,52 +2,30 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
-import "./IAssetRegistry.sol";
 
 
-contract AssetRegistry is APDefinitions, IAssetRegistry {
-
-	struct Contract {
-		bytes32 contractId;
-		ContractTerms terms;
-		ContractState state;
-		uint256 eventId;
-		address actor;
-	}
-
-	mapping (bytes32 => Contract) public contracts;
-
-	modifier onlyDesignatedActor(bytes32 contractId) {
-		require(contracts[contractId].actor == msg.sender, "UNAUTHORIZED_SENDER");
-		_;
-	}
+contract IEconomicsRegistry is APDefinitions {
 
 	/**
 	 * returns the terms of a registered asset
 	 * @param contractId id of the asset
 	 * @return terms of the asset
 	 */
-	function getTerms(bytes32 contractId) external view returns (ContractTerms memory) {
-		return contracts[contractId].terms;
-	}  
+	function getTerms(bytes32 contractId) external view returns (ContractTerms memory); 
 
 	/**
 	 * returns the state of a registered asset
 	 * @param contractId id of the asset
 	 * @return state of the asset
 	 */
-	function getState(bytes32 contractId) external view returns (ContractState memory) {
-		return contracts[contractId].state;
-	}
+	function getState(bytes32 contractId) external view returns (ContractState memory);
 
 	/**
 	 * returns the last event id of a registered asset
 	 * @param contractId id of the asset
 	 * @return last event id
 	 */
-	function getEventId(bytes32 contractId) external view returns (uint256) {
-		return contracts[contractId].eventId;
-	}
+	function getEventId(bytes32 contractId) external view returns (uint256);
 
 	/**
 	 * sets next state of a registered asset
@@ -55,9 +33,7 @@ contract AssetRegistry is APDefinitions, IAssetRegistry {
 	 * @param contractId id of the asset
 	 * @param state next state of the asset
 	 */
-	function setState(bytes32 contractId, ContractState memory state) public onlyDesignatedActor (contractId) {
-		contracts[contractId].state = state;
-	}
+	function setState(bytes32 contractId, ContractState memory state) public;
 
 	/**
 	 * sets new terms for a registered asset
@@ -65,9 +41,7 @@ contract AssetRegistry is APDefinitions, IAssetRegistry {
 	 * @param contractId id of the asset
 	 * @param terms new terms of the asset
 	 */
-	function setTerms(bytes32 contractId, ContractTerms memory terms) public onlyDesignatedActor (contractId) {
-		contracts[contractId].terms = terms;
-	}
+	function setTerms(bytes32 contractId, ContractTerms memory terms) public;
 
 	/**
 	 * sets the last event id for a registered asset
@@ -75,9 +49,7 @@ contract AssetRegistry is APDefinitions, IAssetRegistry {
 	 * @param contractId id of the asset
 	 * @param eventId the last event id
 	 */
-	function setEventId(bytes32 contractId, uint256 eventId) public onlyDesignatedActor (contractId) {
-		contracts[contractId].eventId = eventId;
-	}
+	function setEventId(bytes32 contractId, uint256 eventId) public;
 
 	/**
 	 * stores the terms and the initial state of an asset and sets the address of 
@@ -94,16 +66,5 @@ contract AssetRegistry is APDefinitions, IAssetRegistry {
 		ContractState memory state,
 		address actor
 	) 
-		public 
-	{
-		require(contracts[contractId].contractId == bytes32(0), "ENTRY_ALREADY_EXISTS");
-		
-		contracts[contractId] = Contract(
-			contractId,
-			terms,
-			state,
-			0,
-			actor
-		);
-	}
+		public;
 }
