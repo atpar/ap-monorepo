@@ -1,4 +1,4 @@
-import { ContractTerms, ContractType, ContractOwnership, ContractState, EvaluatedEventSchedule } from './types';
+import { ContractTerms, ContractType, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { ContractEngine, PAM } from './engines';
 import { AP } from './index';
 
@@ -31,25 +31,25 @@ export class Asset {
    * return the terms of the asset
    * @returns {Promise<ContractTerms>}
    */
-  public async getContractTerms (): Promise<ContractTerms> { 
-    return this.ap.economics.getContractTerms(this.assetId); 
+  public async getTerms (): Promise<ContractTerms> { 
+    return this.ap.economics.getTerms(this.assetId); 
   }
 
   /**
    * returns the current state of the asset
    * @returns {Promise<ContractState>}
    */
-  public async getContractState (): Promise<ContractState> { 
-    return this.ap.economics.getContractState(this.assetId); 
+  public async getState (): Promise<ContractState> { 
+    return this.ap.economics.getState(this.assetId); 
   }
 
   /**
    * returns the current ownership of the asset
    * @param {string} assetId 
-   * @returns {Promise<ContractOwnership>}
+   * @returns {Promise<AssetOwnership>}
    */
-  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
-    return this.ap.ownership.getContractOwnership(assetId);
+  public async getOwnership (assetId: string): Promise<AssetOwnership> {
+    return this.ap.ownership.getOwnership(assetId);
   }
  
   /**
@@ -57,7 +57,7 @@ export class Asset {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
-    return await this.contractEngine.computeEvaluatedInitialSchedule(await this.getContractTerms());
+    return await this.contractEngine.computeEvaluatedInitialSchedule(await this.getTerms());
   }
 
   /**
@@ -68,8 +68,8 @@ export class Asset {
    */
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
     return await this.contractEngine.computeEvaluatedPendingSchedule(
-      await this.getContractTerms(),
-      await this.getContractState(),
+      await this.getTerms(),
+      await this.getState(),
       timestamp
     );
   }
@@ -92,13 +92,13 @@ export class Asset {
    * stores the ownership of the asset in the OwnershipRegistry and sends it
    * @param {AP} ap AP instance
    * @param {ContractTerms} terms terms of the asset
-   * @param {ContractOwnership} ownership ownership of the asset
+   * @param {AssetOwnership} ownership ownership of the asset
    * @returns {Promise<Asset>}
    */
   public static async create (
     ap: AP,
     terms: ContractTerms,
-    ownership: ContractOwnership
+    ownership: AssetOwnership
   ): Promise<Asset> {
     const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
@@ -113,8 +113,8 @@ export class Asset {
 
     const initialContractState = await contractEngine.computeInitialState(terms);
 
-    await ap.ownership.registerContractOwnership(assetId, ownership);
-    await ap.economics.registerContract(
+    await ap.ownership.registerOwnership(assetId, ownership);
+    await ap.economics.registerEconomics(
       assetId, 
       terms, 
       initialContractState
@@ -133,7 +133,7 @@ export class Asset {
     ap: AP,
     assetId: string
   ): Promise<Asset> {
-    const { contractType, statusDate } = await ap.economics.getContractTerms(assetId);
+    const { contractType, statusDate } = await ap.economics.getTerms(assetId);
 
     if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
 

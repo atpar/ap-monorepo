@@ -21,12 +21,12 @@ export class EconomicsAPI {
    * @param {ContractState} contractState 
    * @returns {Promise<void>}
    */
-  public async registerContract (
+  public async registerEconomics (
     assetId: string, 
     contractTerms: ContractTerms, 
     contractState: ContractState
   ): Promise<void> {
-    await this.registry.registerContract(
+    await this.registry.registerEconomics(
       assetId,
       contractTerms, 
       contractState, 
@@ -40,8 +40,8 @@ export class EconomicsAPI {
    * @param {string} assetId
    * @returns {Promise<ContractTerms>} ContractTerms
    */
-  public async getContractTerms (assetId: string): Promise<ContractTerms> {
-    return this.registry.getContractTerms(assetId);
+  public async getTerms (assetId: string): Promise<ContractTerms> {
+    return this.registry.getTerms(assetId);
   }
 
   /**
@@ -49,8 +49,8 @@ export class EconomicsAPI {
    * @param assetId
    * @returns {Promise<ContractState>}
    */
-  public async getContractState (assetId: string): Promise<ContractState> {
-    return this.registry.getContractState(assetId);
+  public async getState (assetId: string): Promise<ContractState> {
+    return this.registry.getState(assetId);
   }
 
   /**

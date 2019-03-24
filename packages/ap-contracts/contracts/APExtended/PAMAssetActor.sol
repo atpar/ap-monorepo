@@ -95,7 +95,7 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 	 */
 	function initialize(
 		bytes32 assetId,
-		ContractOwnership memory ownership, 
+		AssetOwnership memory ownership, 
 		ContractTerms memory terms
 	) 
 		public
@@ -111,7 +111,7 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 			ownership.counterpartyBeneficiary
 		);
 
-		economicsRegistry.registerContract(
+		economicsRegistry.registerEconomics(
 			assetId,
 			terms,
 			initialState,

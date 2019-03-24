@@ -8,7 +8,7 @@ export enum ChannelState {
   Receivable
 }
 
-export interface ContractOwnership {
+export interface AssetOwnership {
   recordCreatorObligorAddress: string,
   recordCreatorBeneficiaryAddress: string,
   counterpartyObligorAddress: string,

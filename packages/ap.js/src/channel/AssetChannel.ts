@@ -8,7 +8,7 @@ import {
   SignedContractUpdate, 
   ChannelState, 
   ContractTerms, 
-  ContractOwnership, 
+  AssetOwnership, 
   EvaluatedEventSchedule
 } from '../types';
 
@@ -135,13 +135,13 @@ export class AssetChannel {
    * @notice calls eth_signedTypedData or eth_signedTypedData_v3, prompting the user to sign a contract update
    * @param {string} assetId 
    * @param {ContractTerms} terms
-   * @param {ContractOwnership} ownership 
+   * @param {AssetOwnership} ownership 
    * @returns {Promise<void>}
    */
   private async _signAndSendInitialContractUpdate (
     assetId: string,
     terns: ContractTerms,
-    ownership: ContractOwnership,
+    ownership: AssetOwnership,
   ): Promise<void> {
     if (!this.ap.client) { 
       throw(new Error('FEATURE_NOT_AVAILABLE: Client is not enabled!')); 
@@ -241,7 +241,7 @@ export class AssetChannel {
 
   private _constructInitialContractUpdate (
     assetId: string,
-    ownership: ContractOwnership,
+    ownership: AssetOwnership,
     terms: ContractTerms,
     initialState: ContractState
   ): ContractUpdate {
@@ -391,13 +391,13 @@ export class AssetChannel {
    * eth_signedTypedData_v3 is called, prompting the user to sign a contract update
    * @param {AP} ap AP instance
    * @param {ContractTerms} terms
-   * @param {ContractOwnership} ownership
+   * @param {AssetOwnership} ownership
    * @returns {Promise<AssetChannel>}
    */
   public static async create (
     ap: AP, 
     terms: ContractTerms,
-    ownership: ContractOwnership
+    ownership: AssetOwnership
   ): Promise<AssetChannel> {    
     const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 

@@ -31,7 +31,7 @@ contract('OwnershipRegistry', (accounts) => {
       counterpartyBeneficiary
     )
 
-    const result = await this.OwnershipRegistryInstance.getContractOwnership(web3.utils.toHex(this.assetId))
+    const result = await this.OwnershipRegistryInstance.getOwnership(web3.utils.toHex(this.assetId))
     
     assert.equal(result[0], recordCreatorObligor)
     assert.equal(result[1], recordCreatorBeneficiary)

@@ -32,7 +32,7 @@ contract IAssetActor is APDefinitions {
 	 */
 	function initialize(
 		bytes32 assetId, 
-		ContractOwnership memory ownership, 
+		AssetOwnership memory ownership, 
 		ContractTerms memory terms
 	)
 		public

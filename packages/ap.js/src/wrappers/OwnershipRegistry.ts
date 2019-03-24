@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
-import { ContractOwnership } from '../types';
+import { AssetOwnership } from '../types';
 
 const OwnershipRegistryArtifact: any = require('../../../ap-contracts/build/contracts/OwnershipRegistry.json');
 
@@ -43,7 +43,7 @@ export class OwnershipRegistry {
     ).send({ ...txOptions });
   }
 
-  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
+  public async getOwnership (assetId: string): Promise<AssetOwnership> {
     const { 
       0: recordCreatorObligorAddress, 
       1: recordCreatorBeneficiaryAddress, 
@@ -54,7 +54,7 @@ export class OwnershipRegistry {
       1: string, 
       2: string, 
       3: string 
-    } = await this.ownershipRegistry.methods.getContractOwnership(toHex(assetId)).call();
+    } = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
 
     return { 
       recordCreatorObligorAddress, 

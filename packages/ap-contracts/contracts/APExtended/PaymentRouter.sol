@@ -60,7 +60,7 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 			recordCreatorBeneficiary, 
 			counterpartyObligor, 
 			counterpartyBeneficiary
-		) = ownershipRegistry.getContractOwnership(assetId);
+		) = ownershipRegistry.getOwnership(assetId);
 		
 		if (cashflowId > 0) {
 			require(msg.sender == counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");

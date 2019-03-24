@@ -7,15 +7,15 @@ import "./IOwnershipRegistry.sol";
 
 contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	
-	struct ContractOwnership {
+	struct AssetOwnership {
 		address recordCreatorObligor; // or covenantor
 		address payable recordCreatorBeneficiary;
 		address counterpartyObligor;
 		address payable counterpartyBeneficiary;
 	}
 
-	// assetId => ContractOwnership
-	mapping (bytes32 => ContractOwnership) public contractOwnerships;
+	// assetId => AssetOwnership
+	mapping (bytes32 => AssetOwnership) public assetOwnerships;
 	// assetId => cashflowId => Ownership
 	mapping (bytes32 => mapping (int8 => address payable)) cashflowBeneficiaries;
 
@@ -36,9 +36,9 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	) 
 		external 
 	{
-		require(contractOwnerships[assetId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
+		require(assetOwnerships[assetId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
 		
-		contractOwnerships[assetId] = ContractOwnership(
+		assetOwnerships[assetId] = AssetOwnership(
 			recordCreatorObligor,
 			recordCreatorBeneficiary,
 			counterpartyObligor,
@@ -57,10 +57,10 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	)
 		external
 	{
-		require(contractOwnerships[assetId].recordCreatorBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
-		require(msg.sender == contractOwnerships[assetId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
+		require(assetOwnerships[assetId].recordCreatorBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
+		require(msg.sender == assetOwnerships[assetId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
 
-		contractOwnerships[assetId].recordCreatorBeneficiary = newRecordCreatorBeneficiary;
+		assetOwnerships[assetId].recordCreatorBeneficiary = newRecordCreatorBeneficiary;
 	}
 
 	/**
@@ -74,10 +74,10 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	)
 		external
 	{
-		require(contractOwnerships[assetId].counterpartyBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
-		require(msg.sender == contractOwnerships[assetId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
+		require(assetOwnerships[assetId].counterpartyBeneficiary != address(0), "ENTRY_DOES_NOT_EXIST");
+		require(msg.sender == assetOwnerships[assetId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
 
-		contractOwnerships[assetId].counterpartyBeneficiary = newCounterpartyBeneficiary;
+		assetOwnerships[assetId].counterpartyBeneficiary = newCounterpartyBeneficiary;
 	}
 
 	/**
@@ -97,9 +97,9 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 
 		if (cashflowBeneficiaries[assetId][cashflowId] == address(0)) {
 			if (cashflowId > 0) {
-				require(msg.sender == contractOwnerships[assetId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
+				require(msg.sender == assetOwnerships[assetId].recordCreatorBeneficiary, "UNAUTHORIZED_SENDER");
 			} else {
-				require(msg.sender == contractOwnerships[assetId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
+				require(msg.sender == assetOwnerships[assetId].counterpartyBeneficiary, "UNAUTHORIZED_SENDER");
 			}
 		} else {
 			require(msg.sender == cashflowBeneficiaries[assetId][cashflowId], "UNAUTHORIZED_SENDER");
@@ -113,16 +113,16 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	 * @param assetId id of the asset
 	 * @return addresses of all owners of the asset
 	 */
-	function getContractOwnership(bytes32 assetId) 
+	function getOwnership(bytes32 assetId) 
 		external 
 		view 
 		returns (address, address payable, address, address payable) 
 	{
 		return (
-			contractOwnerships[assetId].recordCreatorObligor,
-			contractOwnerships[assetId].recordCreatorBeneficiary,
-			contractOwnerships[assetId].counterpartyObligor,
-			contractOwnerships[assetId].counterpartyBeneficiary
+			assetOwnerships[assetId].recordCreatorObligor,
+			assetOwnerships[assetId].recordCreatorBeneficiary,
+			assetOwnerships[assetId].counterpartyObligor,
+			assetOwnerships[assetId].counterpartyBeneficiary
 		);
 	}
 	

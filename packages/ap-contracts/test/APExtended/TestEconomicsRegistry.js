@@ -29,7 +29,7 @@ contract('EconomicsRegistry', (accounts) => {
   })
 
   it('should register a contract', async () => {
-    await this.EconomicsRegistryInstance.registerContract(
+    await this.EconomicsRegistryInstance.registerEconomics(
       web3.utils.toHex(this.assetId), 
       this.terms,
       this.state,
@@ -44,7 +44,7 @@ contract('EconomicsRegistry', (accounts) => {
 
   it('should not overwrite an existing contract', async () => {
     await shouldFail.reverting.withMessage(
-      this.EconomicsRegistryInstance.registerContract(
+      this.EconomicsRegistryInstance.registerEconomics(
         web3.utils.toHex(this.assetId), 
         this.terms,
         this.state,

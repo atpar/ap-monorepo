@@ -60,7 +60,7 @@ interface IOwnershipRegistry {
 	 * @param assetId id of the asset
 	 * @return addresses of all owners of the asset
 	 */
-	function getContractOwnership(bytes32 assetId) 
+	function getOwnership(bytes32 assetId) 
 		external 
 		view 
 		returns (address, address payable, address, address payable);

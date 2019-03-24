@@ -141,7 +141,7 @@ contract APDefinitions {
 		// MarketObjectCodeOfRateReset marketObjectCodeOfRateReset;
 	}
 
-	struct ContractOwnership {
+	struct AssetOwnership {
 		address recordCreatorObligor;
 		address payable recordCreatorBeneficiary;
 		address counterpartyObligor;

@@ -7,7 +7,7 @@ import "./IEconomicsRegistry.sol";
 
 contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 
-	struct Contract {
+	struct Economics {
 		bytes32 assetId;
 		ContractTerms terms;
 		ContractState state;
@@ -15,10 +15,10 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 		address actor;
 	}
 
-	mapping (bytes32 => Contract) public contracts;
+	mapping (bytes32 => Economics) public economics;
 
 	modifier onlyDesignatedActor(bytes32 assetId) {
-		require(contracts[assetId].actor == msg.sender, "UNAUTHORIZED_SENDER");
+		require(economics[assetId].actor == msg.sender, "UNAUTHORIZED_SENDER");
 		_;
 	}
 
@@ -28,7 +28,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @return terms of the asset
 	 */
 	function getTerms(bytes32 assetId) external view returns (ContractTerms memory) {
-		return contracts[assetId].terms;
+		return economics[assetId].terms;
 	}  
 
 	/**
@@ -37,7 +37,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @return state of the asset
 	 */
 	function getState(bytes32 assetId) external view returns (ContractState memory) {
-		return contracts[assetId].state;
+		return economics[assetId].state;
 	}
 
 	/**
@@ -46,7 +46,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @return last event id
 	 */
 	function getEventId(bytes32 assetId) external view returns (uint256) {
-		return contracts[assetId].eventId;
+		return economics[assetId].eventId;
 	}
 
 	/**
@@ -56,7 +56,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @param state next state of the asset
 	 */
 	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
-		contracts[assetId].state = state;
+		economics[assetId].state = state;
 	}
 
 	/**
@@ -66,7 +66,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @param terms new terms of the asset
 	 */
 	function setTerms(bytes32 assetId, ContractTerms memory terms) public onlyDesignatedActor (assetId) {
-		contracts[assetId].terms = terms;
+		economics[assetId].terms = terms;
 	}
 
 	/**
@@ -76,7 +76,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @param eventId the last event id
 	 */
 	function setEventId(bytes32 assetId, uint256 eventId) public onlyDesignatedActor (assetId) {
-		contracts[assetId].eventId = eventId;
+		economics[assetId].eventId = eventId;
 	}
 
 	/**
@@ -88,7 +88,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 * @param state initial state of the asset
 	 * @param actor account which is allowed to update the asset state in the future	 
 	 */
-	function registerContract(
+	function registerEconomics(
 		bytes32 assetId,
 		ContractTerms memory terms,
 		ContractState memory state,
@@ -96,9 +96,9 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	) 
 		public 
 	{
-		require(contracts[assetId].assetId == bytes32(0), "ENTRY_ALREADY_EXISTS");
+		require(economics[assetId].assetId == bytes32(0), "ENTRY_ALREADY_EXISTS");
 		
-		contracts[assetId] = Contract(
+		economics[assetId] = Economics(
 			assetId,
 			terms,
 			state,

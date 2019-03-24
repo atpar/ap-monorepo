@@ -30,7 +30,7 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 		bytes32 assetId = keccak256(
 			abi.encode(makerSignature, takerSignature)
 		);
-		ContractOwnership memory ownership = ContractOwnership(
+		AssetOwnership memory ownership = AssetOwnership(
 			order.maker, 
 			order.maker, 
 			order.taker, 

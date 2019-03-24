@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 import { AP, Asset } from '../src';
-import { ContractTerms, ContractType, ContractOwnership } from '../src/types';
+import { ContractTerms, ContractType, AssetOwnership } from '../src/types';
 
 describe('testContractClass', () => {
 
@@ -32,7 +32,7 @@ describe('testContractClass', () => {
   it('should create a new contract instance', async () => {
     const terms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
 
-    const ownership: ContractOwnership = { 
+    const ownership: AssetOwnership = { 
       recordCreatorObligorAddress: recordCreator,
       recordCreatorBeneficiaryAddress: recordCreator,
       counterpartyObligorAddress: '0xb1495069F8d780B0C4123E96b0B6bb0217048C09', 
@@ -45,8 +45,8 @@ describe('testContractClass', () => {
       ownership
     );
 
-    const storedOwnership: ContractOwnership = await ap.ownership.getContractOwnership(asset.assetId);
-    const storedTerms: ContractTerms = await asset.getContractTerms();
+    const storedOwnership: AssetOwnership = await ap.ownership.getOwnership(asset.assetId);
+    const storedTerms: ContractTerms = await asset.getTerms();
     
     expect(asset instanceof Asset).toBe(true);
     expect(ownership.toString() === storedOwnership.toString()).toBe(true);

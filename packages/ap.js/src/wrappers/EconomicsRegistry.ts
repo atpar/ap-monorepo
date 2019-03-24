@@ -14,14 +14,14 @@ export class EconomicsRegistry {
     this.economicsRegistry = economicsRegistryInstance
   }
 
-  public async registerContract (
+  public async registerEconomics (
     assetId: string, 
     contractTerms: ContractTerms,
     contractState: ContractState,
     actorAddress: string,
     txOptions?: SendOptions
   ): Promise<void> {
-    await this.economicsRegistry.methods.registerContract(
+    await this.economicsRegistry.methods.registerEconomics(
       toHex(assetId), 
       contractTerms,
       contractState,
@@ -29,12 +29,12 @@ export class EconomicsRegistry {
     ).send({ ...txOptions });
   }
 
-  public async getContractTerms (assetId: string): Promise<ContractTerms> {
+  public async getTerms (assetId: string): Promise<ContractTerms> {
     const contractTerms: ContractTerms = await this.economicsRegistry.methods.getTerms(toHex(assetId)).call();
     return contractTerms;
   }
 
-  public async getContractState (assetId: string): Promise<ContractState> {
+  public async getState (assetId: string): Promise<ContractState> {
     const contractState: ContractState = await this.economicsRegistry.methods.getState(toHex(assetId)).call();
 
     return contractState;

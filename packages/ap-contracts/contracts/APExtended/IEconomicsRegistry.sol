@@ -60,7 +60,7 @@ contract IEconomicsRegistry is APDefinitions {
 	 * @param state initial state of the asset
 	 * @param actor account which is allowed to update the asset state in the future	 
 	 */
-	function registerContract(
+	function registerEconomics(
 		bytes32 assetId,
 		ContractTerms memory terms,
 		ContractState memory state,

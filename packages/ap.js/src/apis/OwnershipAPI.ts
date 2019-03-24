@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
-import { ContractOwnership } from '../types';
+import { AssetOwnership } from '../types';
 import { Signer } from '../utils/Signer';
 
 export class OwnershipAPI {
@@ -17,19 +17,19 @@ export class OwnershipAPI {
   /**
    * registers the ownership of a new asset for a given AssetId
    * @param assetId 
-   * @param contractOwnership ownership object for a asset
+   * @param assetOwnership ownership object for a asset
    * @returns {Promise<void>}
    */
-  public async registerContractOwnership (
+  public async registerOwnership (
     assetId: string, 
-    contractOwnership: ContractOwnership
+    assetOwnership: AssetOwnership
   ): Promise<void> {
     await this.registry.registerOwnership(
       assetId,
-      contractOwnership.recordCreatorObligorAddress,
-      contractOwnership.recordCreatorBeneficiaryAddress,
-      contractOwnership.counterpartyObligorAddress,
-      contractOwnership.counterpartyBeneficiaryAddress,
+      assetOwnership.recordCreatorObligorAddress,
+      assetOwnership.recordCreatorBeneficiaryAddress,
+      assetOwnership.counterpartyObligorAddress,
+      assetOwnership.counterpartyBeneficiaryAddress,
       { from: this.signer.account, gas: 300000 }
     );
   }
@@ -37,10 +37,10 @@ export class OwnershipAPI {
   /**
    * fetches the ownership for a given AssetId
    * @param assetId 
-   * @returns {Promise<ContractOwnership>} 
+   * @returns {Promise<AssetOwnership>} 
    */
-  public async getContractOwnership (assetId: string): Promise<ContractOwnership> {
-    return this.registry.getContractOwnership(assetId); 
+  public async getOwnership (assetId: string): Promise<AssetOwnership> {
+    return this.registry.getOwnership(assetId); 
   }
 
   /**

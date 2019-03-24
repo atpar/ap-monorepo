@@ -62,7 +62,7 @@ contract('PAMAssetActor', (accounts) => {
     )
 
     // register Contract with assetId
-    const tx2 = await this.EconomicsRegistryInstance.registerContract(
+    const tx2 = await this.EconomicsRegistryInstance.registerEconomics(
       web3.utils.toHex(assetId),
       this.terms,
       this.state,
