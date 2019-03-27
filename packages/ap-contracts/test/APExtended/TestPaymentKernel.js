@@ -50,7 +50,7 @@ contract('PaymentKernel', (accounts) => {
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       -3,
-      0,
+      1,
       '0x0000000000000000000000000000000000000000',
       5000,
       { value: this.value }
@@ -58,8 +58,8 @@ contract('PaymentKernel', (accounts) => {
     
     // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
     // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), eventId)
+    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 1); // eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary)
 
@@ -74,7 +74,7 @@ contract('PaymentKernel', (accounts) => {
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       5,
-      0,
+      2,
       '0x0000000000000000000000000000000000000000',
       5000,
       { from: counterpartyObligor, value: this.value }
@@ -82,8 +82,8 @@ contract('PaymentKernel', (accounts) => {
     
     // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
     // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), eventId)
+    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2); // eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary)
 
