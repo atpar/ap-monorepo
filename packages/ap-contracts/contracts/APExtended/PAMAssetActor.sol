@@ -69,11 +69,11 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 		
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].scheduledTime == uint256(0)) { break; }
+			eventId += 1;
 			uint256 payoff = (pendingEvents[i].payoff < 0) ? 
 				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
 			if (payoff == uint256(0)) { continue; }
 			require(paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff, "OUTSTANDING_PAYMENTS");
-			eventId += 1;
 		}
 
 		// check for non-payment events ...

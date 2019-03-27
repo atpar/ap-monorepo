@@ -85,12 +85,12 @@ contract('PAMAssetActor', (accounts) => {
 
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
-    const eventId = await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId))
+    const lastEventId = Number(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
 
     const tx3 = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId),
       cashflowId,
-      eventId,
+      lastEventId + 1,
       '0x0000000000000000000000000000000000000000',
       value,
       { from: recordCreatorObligor, value: value }
@@ -101,10 +101,10 @@ contract('PAMAssetActor', (accounts) => {
     const tx4 = await this.PAMAssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp);
 
     const nextState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(assetId))
-    const nextEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
-   
+    const nextLastEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
+
     assert.equal(nextState.lastEventTime, currentTimestamp)
-    assert.isTrue(nextEventId.isEqualTo(Number(eventId.toString()) + 1))
+    assert.isTrue(nextLastEventId.isEqualTo(lastEventId + 2)) // todo: do it programmatically
 
     // console.log(tx3.receipt.cumulativeGasUsed)
     // console.log(tx4.receipt.cumulativeGasUsed)
