@@ -1,9 +1,9 @@
 import Web3 from 'web3';
-
 import { Contract, SendOptions } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractState } from '../types';
 import { toHex } from '../utils/Utils';
+import { toContractState, fromContractState } from './Conversions';
 
 const EconomicsRegistryArtifact: any = require('../../../ap-contracts/build/contracts/EconomicsRegistry.json');
 
@@ -24,7 +24,7 @@ export class EconomicsRegistry {
     await this.economicsRegistry.methods.registerEconomics(
       toHex(assetId), 
       contractTerms,
-      contractState,
+      fromContractState(contractState),
       actorAddress
     ).send({ ...txOptions });
   }
@@ -35,9 +35,15 @@ export class EconomicsRegistry {
   }
 
   public async getState (assetId: string): Promise<ContractState> {
-    const contractState: ContractState = await this.economicsRegistry.methods.getState(toHex(assetId)).call();
-
+    const response = await this.economicsRegistry.methods.getState(toHex(assetId)).call();
+    const contractState = toContractState(response);
     return contractState;
+  }
+
+  public async getEventId (assetId: string): Promise<number> {
+    const response = await this.economicsRegistry.methods.getEventId(toHex(assetId)).call();
+    const eventId = Number(response);
+    return eventId;
   }
 
   public static async instantiate (web3: Web3): Promise<EconomicsRegistry> {

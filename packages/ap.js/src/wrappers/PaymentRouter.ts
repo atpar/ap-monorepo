@@ -19,14 +19,14 @@ export class PaymentRouter {
     eventId: number,
     tokenAddress: string,
     amount: BigNumber,
-    txOptions?: SendOptions
+    txOptions: SendOptions
   ): Promise<void> {
     await this.paymentRouter.methods.settlePayment(
       toHex(assetId),
       cashflowId,
       eventId,
       tokenAddress,
-      amount
+      toHex(amount)
     ).send({ ...txOptions });
   }
 

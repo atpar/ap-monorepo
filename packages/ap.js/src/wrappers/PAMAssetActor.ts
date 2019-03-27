@@ -12,6 +12,8 @@ export class PAMAssetActor {
     this.pamAssetActor = pamAssetActorInstance
   }
 
+  public getAddress (): string { return this.pamAssetActor.options.address; }
+
   public async progress (
     assetId: string, 
     timestamp: number, 

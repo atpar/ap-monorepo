@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
 
 import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
@@ -12,30 +13,32 @@ export class PaymentRegistry {
     this.paymentRegistry = PaymentRegistryInstance
   }
 
-  public async getPayoffBalance (assetId: string, eventId: number): Promise<number> {
-    const payoffBalance: number = await this.paymentRegistry.methods.getPayoffBalance(
+  public async getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
+    const payoffBalanceAsString: string = await this.paymentRegistry.methods.getPayoffBalance(
       toHex(assetId),
       eventId
     ).call();
 
-    return payoffBalance;
+    return new BigNumber(payoffBalanceAsString);
   }
 
   public async getPayoff (
     assetId: string, 
     eventId: number
-  ): Promise<{cashflowId: string, tokenAddress: string, payoffBalance: number}> {
+  ): Promise<{cashflowId: string, tokenAddress: string, payoffBalance: BigNumber}> {
     const { 
       0: cashflowId, 
       1: tokenAddress, 
-      2: payoffBalance 
+      2: payoffBalanceAsString
     } : { 
       0: string, 
       1: string, 
-      2: number 
+      2: string 
     } = await this.paymentRegistry.methods.getPayoff(toHex(assetId), eventId).call();
 
-    return { cashflowId, tokenAddress, payoffBalance }
+    const payoffBalance = new BigNumber(payoffBalanceAsString)
+
+    return { cashflowId, tokenAddress, payoffBalance}
   }
 
 

@@ -2,6 +2,7 @@ import Web3 from 'web3';
 
 import { PAMAssetActor } from '../wrappers/PAMAssetActor';
 import { Signer } from '../utils/Signer';
+import { SendOptions } from 'web3-eth-contract/types';
 
 export class LifecycleAPI {
 
@@ -13,8 +14,14 @@ export class LifecycleAPI {
     this.signer = signer;
   }
 
-  public async progress (assetId: string, timestamp: number): Promise<void> {
-    await this.actor.progress(assetId, timestamp, { from: this.signer.account, gas: 500000 });
+  public getActorAddress(): string { return this.actor.getAddress(); }
+
+  public async progress (assetId: string, timestamp: number, txOptions: SendOptions): Promise<void> {
+    await this.actor.progress(
+      assetId, 
+      timestamp, 
+      { ...txOptions, from: this.signer.account, gas: 500000 }
+    );
   }
 
   /**

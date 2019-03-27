@@ -70,15 +70,17 @@ export interface ProtoEvent {
   scheduledTime: number, 
   eventType: EventType,
   currency: Currency,
-  pofType: EventType
-  stfType: EventType,
+  pofType: EventType,
+  stfType: EventType
 }
 
 export interface ContractState {
   lastEventTime: number,
   contractStatus: ContractStatus,
-  timeFromLastEvent: number,
+  timeFromLastEvent: BigNumber,
+  nominalValue: BigNumber,
   nominalAccrued: BigNumber,
+  feeAccrued: BigNumber,
   nominalRate: BigNumber,
   interestScalingMultiplier: BigNumber,
   nominalScalingMultiplier: BigNumber,

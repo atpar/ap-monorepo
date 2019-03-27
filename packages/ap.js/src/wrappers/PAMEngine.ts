@@ -1,7 +1,14 @@
 import Web3 from 'web3';
+import { Contract } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
-import { Contract } from 'web3-eth-contract/types';
+import { 
+  toContractState, 
+  toContractEvent, 
+  fromContractState, 
+  fromProtoEvent,
+  toProtoEventSchedule
+} from './Conversions';
 
 const PAMEngineArtifact: any = require('../../../ap-contracts/build/contracts/PAMEngine.json');
 
@@ -14,11 +21,12 @@ export class PAMEngine {
   }
 
   public async getPrecision (): Promise<number> {
-    return await this.pamEngine.methods.precision().call();
+    return Number(await this.pamEngine.methods.precision().call());
   }
 
   public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
-    const initialState: ContractState = await this.pamEngine.methods.computeInitialState(terms).call();
+    const response = await this.pamEngine.methods.computeInitialState(terms).call();
+    const initialState = toContractState(response);
     return initialState;
   }
 
@@ -27,9 +35,15 @@ export class PAMEngine {
     state: ContractState, 
     timestamp: number
   ): Promise<{nextState: ContractState, events: ContractEvent[]}> {
-    const response = await this.pamEngine.methods.computeNextState(terms, state, timestamp).call();
-    const { 0: nextState, 1: events } : { 0: ContractState, 1: ContractEvent[] } = response;
-
+    const response = await this.pamEngine.methods.computeNextState(
+      terms, 
+      fromContractState(state), 
+      timestamp
+    ).call();
+    
+    const nextState = toContractState(response[0]);
+    const events: ContractEvent[] = response[1].map((raw: any) => toContractEvent(raw));
+  
     return { nextState, events };
   }
 
@@ -41,11 +55,13 @@ export class PAMEngine {
   ): Promise<{nextState: ContractState, event: ContractEvent}> {
     const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
       terms,
-      state,
-      protoEvent,
+      fromContractState(state),
+      fromProtoEvent(protoEvent),
       timestamp
     ).call();
-    const { 0: nextState, 1: event } : { 0: ContractState, 1: ContractEvent } = response;
+    
+    const nextState = toContractState(response[0]);
+    const event = toContractEvent(response[1]);
 
     return { nextState, event };
   }
@@ -61,12 +77,7 @@ export class PAMEngine {
       endTimestamp
     ).call();
 
-    const pendingProtoEventSchedule: ProtoEventSchedule = [];
-
-    for (const protoEvent of response) {
-      if (Number(protoEvent.scheduledTime) === 0) { break; }
-      pendingProtoEventSchedule.push(protoEvent);
-    }
+    const pendingProtoEventSchedule = toProtoEventSchedule(response);
 
     return pendingProtoEventSchedule;
   }

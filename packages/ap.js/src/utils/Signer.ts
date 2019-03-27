@@ -225,7 +225,7 @@ export class Signer {
           { name: 'recordCreatorObligorAddress', type: 'address' },
           { name: 'counterpartyObligorAddress', type: 'address' },
           { name: 'contractAddress', type: 'address' },
-          { name: 'contractTermsHash', type: 'string' },
+          { name: 'contractTermsHash', type: 'string' }, // see: for version > 2.1.1 of eth-sig-util: https://github.com/MetaMask/eth-sig-util/commit/0fbac013cf1da2f7bf7a7383fa18535914d279a9
           { name: 'contractStateHash', type: 'string' },
           { name: 'contractUpdateNonce', type: 'uint256' }
         ]

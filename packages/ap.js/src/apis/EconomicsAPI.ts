@@ -16,6 +16,7 @@ export class EconomicsAPI {
 
   /**
    * registers the terms and the state of a new asset
+   * @dev this requires the users signature (metamask pop-up)
    * @param {string} assetId 
    * @param {ContractTerms} contractTerms 
    * @param {ContractState} contractState 
@@ -24,13 +25,14 @@ export class EconomicsAPI {
   public async registerEconomics (
     assetId: string, 
     contractTerms: ContractTerms, 
-    contractState: ContractState
+    contractState: ContractState,
+    actorAddress: string
   ): Promise<void> {
     await this.registry.registerEconomics(
       assetId,
       contractTerms, 
       contractState, 
-      '0x0000000000000000000000000000000000000001',
+      actorAddress,
       { from: this.signer.account, gas: 700000 }
     );
   }
@@ -51,6 +53,10 @@ export class EconomicsAPI {
    */
   public async getState (assetId: string): Promise<ContractState> {
     return this.registry.getState(assetId);
+  }
+
+  public async getEventId (assetId: string): Promise<number> {
+    return this.registry.getEventId(assetId);
   }
 
   /**

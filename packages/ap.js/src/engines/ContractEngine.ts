@@ -41,4 +41,16 @@ export interface ContractEngine {
     currentState: ContractState, 
     currentTimestamp: number
   ): Promise<BigNumber>;
+
+  computeDuePayoffForRecordCreator (
+    terms: ContractTerms, 
+    currentState: ContractState, 
+    currentTimestamp: number
+  ): Promise<BigNumber>;
+
+  computeDuePayoffForCounterparty (
+    terms: ContractTerms, 
+    currentState: ContractState, 
+    currentTimestamp: number
+  ): Promise<BigNumber>;
 }

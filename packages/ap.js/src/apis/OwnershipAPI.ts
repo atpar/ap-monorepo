@@ -16,6 +16,7 @@ export class OwnershipAPI {
 
   /**
    * registers the ownership of a new asset for a given AssetId
+   * @dev this requires the users signature (metamask pop-up)
    * @param assetId 
    * @param assetOwnership ownership object for a asset
    * @returns {Promise<void>}

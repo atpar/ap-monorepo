@@ -109,22 +109,21 @@ export class PAM implements ContractEngine {
     );
     
     let state = initialContractState;
+    const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
 
-    const evaluatedInitialSchedule: EvaluatedEventSchedule = await Promise.all(
-      protoEventSchedule.map(async (protoEvent) => {
-        const response = await this.pamEngine.computeNextStateForProtoEvent(
-          terms,
-          state,
-          protoEvent,
-          protoEvent.scheduledTime
-        );
-
-        const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
-        state = nextState;
-
-        return { event, state: nextState };
-      })
-    );
+    for (let protoEvent of protoEventSchedule) {
+      const response = await this.pamEngine.computeNextStateForProtoEvent(
+        terms,
+        state,
+        protoEvent,
+        protoEvent.scheduledTime
+      );
+      
+      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+      state = nextState;
+      
+      evaluatedInitialSchedule.push({ event, state: nextState });
+    }
 
     return evaluatedInitialSchedule;
   }
@@ -149,22 +148,21 @@ export class PAM implements ContractEngine {
     );
 
     let state = currentState;
+    const evaluatedPendingSchedule: EvaluatedEventSchedule = [];
 
-    const evaluatedPendingSchedule: EvaluatedEventSchedule = await Promise.all(
-      protoEventSchedule.map(async (protoEvent) => {
-        const response = await this.pamEngine.computeNextStateForProtoEvent(
-          terms,
-          state,
-          protoEvent,
-          protoEvent.scheduledTime
-        );
-
-        const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
-        state = nextState;
-
-        return { event, state: nextState };
-      })
-    );
+    for (let protoEvent of protoEventSchedule) {
+      const response = await this.pamEngine.computeNextStateForProtoEvent(
+        terms,
+        state,
+        protoEvent,
+        protoEvent.scheduledTime
+      );
+      
+      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+      state = nextState;      
+      
+      evaluatedPendingSchedule.push({ event, state: nextState });
+    }
 
     return evaluatedPendingSchedule;
   }
@@ -193,6 +191,85 @@ export class PAM implements ContractEngine {
 
     return this._getPayOffFromContractEvents(events);
   }
+
+  /**
+   * calculates the outstanding payoff for the record creator 
+   * based on all pending events with negative payoff for a given timestamp
+   * @param {ContractTerms} terms
+   * @param {ContractState} currentState
+   * @param {number} currentTimestamp current timestamp
+   * @returns {Promise<BigNumber>} summed up payoff
+   */
+  public async computeDuePayoffForRecordCreator (
+    terms: ContractTerms,
+    currentState: ContractState,
+    currentTimestamp: number
+  ): Promise<BigNumber> {
+    const evaluatedPendingEventSchedule = await this.computeEvaluatedPendingSchedule(
+      terms, 
+      currentState, 
+      currentTimestamp
+    );
+
+    const events: ContractEvent[] = [];
+
+    for (const evaluatedEvent of evaluatedPendingEventSchedule) {
+      if (evaluatedEvent.event.payoff.isLessThan(0)) {
+        events.push(evaluatedEvent.event); 
+      }
+    }
+
+    return this._getPayOffFromContractEvents(events).abs();
+  }
+
+  /**
+   * calculates the outstanding payoff for the counterparty 
+   * based on all pending events with positive payoff for a given timestamp
+   * @param {ContractTerms} terms
+   * @param {ContractState} currentState
+   * @param {number} currentTimestamp current timestamp
+   * @returns {Promise<BigNumber>} summed up payoff
+   */
+  public async computeDuePayoffForCounterparty (
+    terms: ContractTerms,
+    currentState: ContractState,
+    currentTimestamp: number
+  ): Promise<BigNumber> {
+    const evaluatedPendingEventSchedule = await this.computeEvaluatedPendingSchedule(
+      terms, 
+      currentState, 
+      currentTimestamp
+    );
+
+    const events: ContractEvent[] = [];
+
+    for (const evaluatedEvent of evaluatedPendingEventSchedule) {
+      if (evaluatedEvent.event.payoff.isGreaterThan(0)) {
+        events.push(evaluatedEvent.event); 
+      }
+    }
+
+    return this._getPayOffFromContractEvents(events);
+  }
+
+  
+
+  // /**
+  //  * calculates the total payoff based on events derived from the initial schedule
+  //  * @param terms 
+  //  * @returns {Promise<BigNumber>}
+  //  */
+  // public async computeInitialTotalPayoff (
+  //   terms: ContractTerms
+  // ): Promise<BigNumber> {
+  //   const evaluatedInitialSchedule = await this.computeEvaluatedInitialSchedule(terms);
+
+  //   const events = evaluatedInitialSchedule.map(
+  //     (evaluatedEvent: {event: ContractEvent, state: ContractState}) => { return evaluatedEvent.event; }
+  //   );
+
+  //   return this._getPayOffFromContractEvents(events);
+  // }
   
   /**
    * sums up payoff for a set of evaluated events
