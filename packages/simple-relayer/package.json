@@ -1,5 +1,5 @@
 {
-  "name": "simple-relayer",
+  "name": "@atpar/simple-relayer",
   "version": "0.0.0",
   "description": "Simple relayer",
   "author": "jo-es <escherich.johannes+github@gmail.com>",

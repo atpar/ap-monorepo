@@ -1,5 +1,5 @@
 {
-  "name": "ap-contracts",
+  "name": "@atpar/ap-contracts",
   "version": "0.0.0",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <escherich.johannes+github@gmail.com>",

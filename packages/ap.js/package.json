@@ -1,5 +1,5 @@
 {
-  "name": "ap.js",
+  "name": "@atpar/ap.js",
   "version": "0.0.0",
   "description": "Typescript Library implementing the ACTUS protocol",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
