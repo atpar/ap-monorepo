@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Typescript Library implementing the ACTUS protocol",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
-  "homepage": "https://github.com/jo-es/ap-monorepo#readme",
+  "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "lib/index.js",
   "directories": {
@@ -15,7 +15,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jo-es/ap-monorepo.git"
+    "url": "git+https://github.com/atpar/ap-monorepo.git"
+  },
+  "publishConfig": {
+    "access": "restricted"
   },
   "scripts": {
     "build": "rm -rf lib/ && tsc",
@@ -23,7 +26,7 @@
     "test": "scripts/prune-relayer-database.sh && jest"
   },
   "bugs": {
-    "url": "https://github.com/jo-es/ap-monorepo/issues"
+    "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
     "eth-sig-util": "2.1.1",

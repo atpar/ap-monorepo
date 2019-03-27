@@ -3,18 +3,21 @@
   "version": "0.0.0",
   "description": "Simple relayer",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
-  "homepage": "https://github.com/jo-es/ap-monorepo#readme",
+  "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jo-es/ap-monorepo.git"
+    "url": "git+https://github.com/atpar/ap-monorepo.git"
   },
   "scripts": {
     "start": "node server.js"
   },
+  "publishConfig": {
+    "access": "restricted"
+  },
   "bugs": {
-    "url": "https://github.com/jo-es/ap-monorepo/issues"
+    "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
     "bignumber.js": "^7.2.1",

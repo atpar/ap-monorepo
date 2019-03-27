@@ -6,5 +6,8 @@
   },
 	"scripts": {
 		"publish": "lerna run build && lerna publish"
-	}
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
 }
