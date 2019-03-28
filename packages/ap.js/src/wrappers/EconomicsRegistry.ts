@@ -5,7 +5,9 @@ import { ContractTerms, ContractState } from '../types';
 import { toHex } from '../utils/Utils';
 import { toContractState, fromContractState } from './Conversions';
 
-const EconomicsRegistryArtifact: any = require('../../../ap-contracts/build/contracts/EconomicsRegistry.json');
+// const EconomicsRegistryArtifact: any = require('../../../ap-contracts/build/contracts/EconomicsRegistry.json');
+import EconomicsRegistryArtifact from '../../../ap-contracts/build/contracts/EconomicsRegistry.json';
+
 
 export class EconomicsRegistry {
   private economicsRegistry: Contract;
@@ -48,8 +50,14 @@ export class EconomicsRegistry {
 
   public static async instantiate (web3: Web3): Promise<EconomicsRegistry> {
     const chainId = await web3.eth.net.getId();
+    // @ts-ignore
+    if (!EconomicsRegistryArtifact.networks[chainId]) { 
+      throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
+    }
     const economicsRegistryInstance = new web3.eth.Contract(
+      //@ts-ignore
       EconomicsRegistryArtifact.abi,
+      //@ts-ignore
       EconomicsRegistryArtifact.networks[chainId].address
     );
 

@@ -4,7 +4,9 @@ import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 import { AssetOwnership } from '../types';
 
-const OwnershipRegistryArtifact: any = require('../../../ap-contracts/build/contracts/OwnershipRegistry.json');
+// const OwnershipRegistryArtifact: any = require('../../../ap-contracts/build/contracts/OwnershipRegistry.json');
+import OwnershipRegistryArtifact from '../../../ap-contracts/build/contracts/OwnershipRegistry.json';
+
 
 export class OwnershipRegistry {
   private ownershipRegistry: Contract;
@@ -71,8 +73,14 @@ export class OwnershipRegistry {
 
   public static async instantiate (web3: Web3): Promise<OwnershipRegistry> {
     const chainId = await web3.eth.net.getId();
+    // @ts-ignore
+    if (!OwnershipRegistryArtifact.networks[chainId]) { 
+      throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
+    }
     const ownershipRegistryInstance = new web3.eth.Contract(
+      // @ts-ignore
       OwnershipRegistryArtifact.abi,
+      // @ts-ignore
       OwnershipRegistryArtifact.networks[chainId].address
     );
 

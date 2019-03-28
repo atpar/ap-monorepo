@@ -1,7 +1,8 @@
 import Web3 from 'web3';
 import sigUtil from 'eth-sig-util';
 
-const AssetIssuerArtifact: any = require('../../../ap-contracts/build/contracts/AssetIssuer.json');
+// const AssetIssuerArtifact: any = require('../../../ap-contracts/build/contracts/AssetIssuer.json');
+import AssetIssuerArtifact from '../../../ap-contracts/build/contracts/AssetIssuer.json';
 
 import { 
   TypedData,
@@ -99,7 +100,8 @@ export class Signer {
     orderData: OrderData
   ): Promise<UnfilledOrderDataAsTypedData> {
     const chainId = await this.web3.eth.net.getId();
-    const verifyingContract = AssetIssuerArtifact.networks[chainId].address;
+    // @ts-ignore
+    const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
 
     // todo: add to solidity ContractTerms struct
     delete orderData.terms.contractType;
@@ -113,7 +115,7 @@ export class Signer {
         name: 'ACTUS Protocol',
         version: '1',
         chainId: 0,
-        verifyingContract: verifyingContract
+        verifyingContract: verifyingContractAddress
       },
       types: {
         EIP712Domain: [
@@ -154,7 +156,8 @@ export class Signer {
     }
 
     const chainId = await this.web3.eth.net.getId();
-    const verifyingContract = AssetIssuerArtifact.networks[chainId].address;
+    // @ts-ignore
+    const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
 
     // todo: add to solidity ContractTerms struct
     delete orderData.terms.contractType;
@@ -168,7 +171,7 @@ export class Signer {
         name: 'ACTUS Protocol',
         version: '1',
         chainId: 0,
-        verifyingContract: verifyingContract
+        verifyingContract: verifyingContractAddress
       },
       types: {
         EIP712Domain: [

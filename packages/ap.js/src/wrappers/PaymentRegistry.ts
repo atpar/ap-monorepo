@@ -4,7 +4,9 @@ import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
-const PaymentRegistryArtifact: any = require('../../../ap-contracts/build/contracts/PaymentRegistry.json');
+// const PaymentRegistryArtifact: any = require('../../../ap-contracts/build/contracts/PaymentRegistry.json');
+import PaymentRegistryArtifact from '../../../ap-contracts/build/contracts/PaymentRegistry.json';
+
 
 export class PaymentRegistry {
   private paymentRegistry: Contract;
@@ -44,8 +46,14 @@ export class PaymentRegistry {
 
   public static async instantiate (web3: Web3): Promise<PaymentRegistry> {
     const chainId = await web3.eth.net.getId();
+    // @ts-ignore
+    if (!PaymentRegistryArtifact.networks[chainId]) { 
+      throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
+    }
     const PaymentRegistryInstance = new web3.eth.Contract(
+      // @ts-ignore
       PaymentRegistryArtifact.abi,
+      // @ts-ignore
       PaymentRegistryArtifact.networks[chainId].address
     );
 
