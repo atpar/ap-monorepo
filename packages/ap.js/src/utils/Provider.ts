@@ -1,6 +1,7 @@
 import * as io from 'socket.io-client';
-import 'isomorphic-fetch';
-
+// import 'whatwg-fetch';
+import 'cross-fetch/polyfill';
+ 
 
 export interface Provider {
   sendMessage(payload: string): Promise<boolean>;

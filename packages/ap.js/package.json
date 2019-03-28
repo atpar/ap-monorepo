@@ -5,14 +5,9 @@
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
-  "main": "lib/index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
+  "main": "./dist/umd/index.js",
+  "module": "./dist/esm/ap.js/src/index.js",
+  "types": "./dist/typings/ap.js/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atpar/ap-monorepo.git"
@@ -21,35 +16,32 @@
     "access": "restricted"
   },
   "scripts": {
-    "build": "rm -rf lib/ && tsc",
-    "build:umd": "rm -rf dist/ && webpack",
+    "prebuild": "rm -rf dist/ && tsc",
+    "build": "webpack",
     "test": "scripts/prune-relayer-database.sh && jest"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
+    "cross-fetch": "^3.0.2",
     "eth-sig-util": "2.1.1",
-    "isomorphic-fetch": "^2.2.1",
     "socket.io": "^2.2.0",
     "web3": "1.0.0-beta.46",
     "web3-utils": "1.0.0-beta.46"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "@types/bignumber.js": "^5.0.0",
     "@types/bn.js": "^4.11.4",
-    "@types/isomorphic-fetch": "^0.0.34",
     "@types/jest": "^23.3.12",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
-    "compression-webpack-plugin": "^2.0.0",
     "jest": "^23.6.0",
-    "terser-webpack-plugin": "^1.2.1",
     "ts-jest": "^23.10.5",
-    "ts-loader": "^5.3.3",
     "typescript": "^3.2.2",
-    "webpack": "^4.28.4",
-    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack": "^4.29.1",
     "webpack-cli": "^3.2.1"
   }
 }

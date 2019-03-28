@@ -1,24 +1,24 @@
 const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
   mode: 'production',
+  entry: {
+    index: path.resolve(__dirname, './dist/esm/ap.js/src/index.js')
+  },
   output: {
-    filename: 'ap.umd.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, './dist/umd'),
+    filename: '[name].js',
     library: 'AP',
     libraryTarget: 'umd',
+    globalObject: 'typeof self !== \'undefined\' ? self : this',
     umdNamedDefine: true
   },
-  devtool: 'inline-source-map',
-  plugins: [ 
-    // new BundleAnalyzerPlugin()
-  ],
+  plugins: [],
   optimization: {
-    minimizer: [ new TerserPlugin() ]
+    // minimizer: [ new TerserPlugin() ]
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -27,8 +27,8 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           compilerOptions: {
-            declaration: false,
-            declarationMap: false,
+            declaration: true,
+            declarationMap: true,
             composite: false
           }
         }
