@@ -5,7 +5,7 @@ trap "trap - TERM && kill -- -$$" INT TERM EXIT
 echo "running ganache-cli ..."
 
 { 
-	ganache-cli -e 50000000
+	ganache-cli -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
 } 1>/dev/null &
 
 sleep 1
@@ -23,7 +23,7 @@ echo "migrating contracts ..."
 
 (
 	cd packages/ap-contracts
-	truffle migrate --network development | 1>/dev/null
+	truffle migrate --reset --network development | 1>/dev/null
 )
 
 echo "clearing databases ..."
