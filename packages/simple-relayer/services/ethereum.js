@@ -12,8 +12,11 @@ async function initialize () {
 
   const chainId = await state.web3.eth.net.getId();
 
+  if (!AssetIssuerArtifact['networks'][chainId]) {
+    throw(new Error('INITIALIZATION_ERROR: Contracts are not found on network!'))
+  }
+
   const assetIssuerContractAddress = AssetIssuerArtifact['networks'][chainId].address
-  if (!assetIssuerContractAddress) { throw(new Error('')) }
   
   state.assetIssuer = new state.web3.eth.Contract(AssetIssuerArtifact.abi, assetIssuerContractAddress)
 }
