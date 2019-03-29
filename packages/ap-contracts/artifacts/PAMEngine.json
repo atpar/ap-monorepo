@@ -65730,7 +65730,7 @@
     }
   },
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-03-29T13:25:19.213Z",
+  "updatedAt": "2019-03-29T15:08:57.049Z",
   "devdoc": {
     "details": "all numbers except unix timestamp are represented as multiple of 10 ** 18 inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18",
     "methods": {

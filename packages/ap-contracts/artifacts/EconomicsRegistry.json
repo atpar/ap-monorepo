@@ -5604,7 +5604,7 @@
     }
   },
   "schemaVersion": "3.0.1",
-  "updatedAt": "2019-03-29T13:25:19.179Z",
+  "updatedAt": "2019-03-29T15:08:57.015Z",
   "devdoc": {
     "methods": {
       "getEventId(bytes32)": {
