@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
-import { ContractOwnership } from '../types';
+import { AssetOwnership } from '../types';
 import { Signer } from '../utils/Signer';
 
 export class OwnershipAPI {
@@ -15,32 +15,33 @@ export class OwnershipAPI {
   }
 
   /**
-   * registers the ownership of a new contract for a given ContractId
-   * @param contractId 
-   * @param contractOwnership ownership object for a contract
+   * registers the ownership of a new asset for a given AssetId
+   * @dev this requires the users signature (metamask pop-up)
+   * @param assetId 
+   * @param assetOwnership ownership object for a asset
    * @returns {Promise<void>}
    */
-  public async registerContractOwnership (
-    contractId: string, 
-    contractOwnership: ContractOwnership
+  public async registerOwnership (
+    assetId: string, 
+    assetOwnership: AssetOwnership
   ): Promise<void> {
     await this.registry.registerOwnership(
-      contractId,
-      contractOwnership.recordCreatorObligorAddress,
-      contractOwnership.recordCreatorBeneficiaryAddress,
-      contractOwnership.counterpartyObligorAddress,
-      contractOwnership.counterpartyBeneficiaryAddress,
+      assetId,
+      assetOwnership.recordCreatorObligorAddress,
+      assetOwnership.recordCreatorBeneficiaryAddress,
+      assetOwnership.counterpartyObligorAddress,
+      assetOwnership.counterpartyBeneficiaryAddress,
       { from: this.signer.account, gas: 300000 }
     );
   }
 
   /**
-   * fetches the ownership for a given ContractId
-   * @param contractId 
-   * @returns {Promise<ContractOwnership>} 
+   * fetches the ownership for a given AssetId
+   * @param assetId 
+   * @returns {Promise<AssetOwnership>} 
    */
-  public async getContractOwnership (contractId: string): Promise<ContractOwnership> {
-    return this.registry.getContractOwnership(contractId); 
+  public async getOwnership (assetId: string): Promise<AssetOwnership> {
+    return this.registry.getOwnership(assetId); 
   }
 
   /**

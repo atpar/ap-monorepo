@@ -1,9 +1,17 @@
 import Web3 from 'web3';
-
-import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
 import { Contract } from 'web3-eth-contract/types';
 
-const PAMEngineArtifact: any = require('../../../ap-contracts/build/contracts/PAMEngine.json');
+import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
+import { 
+  toContractState, 
+  toContractEvent, 
+  fromContractState, 
+  fromProtoEvent,
+  toProtoEventSchedule
+} from './Conversions';
+
+// const PAMEngineArtifact: any = require('../../../ap-contracts/build/contracts/PAMEngine.json');
+import PAMEngineArtifact from '../../../ap-contracts/build/contracts/PAMEngine.json';
 
 
 export class PAMEngine {
@@ -14,11 +22,12 @@ export class PAMEngine {
   }
 
   public async getPrecision (): Promise<number> {
-    return await this.pamEngine.methods.precision().call();
+    return Number(await this.pamEngine.methods.precision().call());
   }
 
   public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
-    const initialState: ContractState = await this.pamEngine.methods.computeInitialState(terms).call();
+    const response = await this.pamEngine.methods.computeInitialState(terms).call();
+    const initialState = toContractState(response);
     return initialState;
   }
 
@@ -27,55 +36,63 @@ export class PAMEngine {
     state: ContractState, 
     timestamp: number
   ): Promise<{nextState: ContractState, events: ContractEvent[]}> {
-    const response = await this.pamEngine.methods.computeNextState(terms, state, timestamp).call();
-    const { 0: nextState, 1: events } : { 0: ContractState, 1: ContractEvent[] } = response;
-
+    const response = await this.pamEngine.methods.computeNextState(
+      terms, 
+      fromContractState(state), 
+      timestamp
+    ).call();
+    
+    const nextState = toContractState(response[0]);
+    const events: ContractEvent[] = response[1].map((raw: any) => toContractEvent(raw));
+  
     return { nextState, events };
   }
 
   public async computeNextStateForProtoEvent (
     terms: ContractTerms, 
-    state: ContractState, 
+    state: ContractState,
     protoEvent: ProtoEvent, 
     timestamp: number
   ): Promise<{nextState: ContractState, event: ContractEvent}> {
-    const response = await this.pamEngine.methods.getNextState(
+    const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
       terms,
-      state,
-      protoEvent,
+      fromContractState(state),
+      fromProtoEvent(protoEvent),
       timestamp
     ).call();
-    const { 0: nextState, 1: event } : { 0: ContractState, 1: ContractEvent } = response;
+    
+    const nextState = toContractState(response[0]);
+    const event = toContractEvent(response[1]);
 
     return { nextState, event };
   }
 
-  public async computeInitialProtoEventSchedule (terms: ContractTerms): Promise<ProtoEventSchedule> {
-    const protoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
-      terms,
-      terms.statusDate,
-      terms.maturityDate
-    ).call();
-    return protoEventSchedule;
-  }
-
-  public async computePendingProtoEventSchedule (
+  public async computeProtoEventScheduleSegment (
     terms: ContractTerms, 
     startTimestamp: number, 
     endTimestamp: number
   ): Promise<ProtoEventSchedule> {
-    const pendingProtoEventSchedule = await this.pamEngine.methods.computeContractEventScheduleSegment(
+    const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
       terms,
       startTimestamp,
       endTimestamp
     ).call();
+
+    const pendingProtoEventSchedule = toProtoEventSchedule(response);
+
     return pendingProtoEventSchedule;
   }
 
   public static async instantiate (web3: Web3): Promise<PAMEngine> {
     const chainId = await web3.eth.net.getId();
+    // @ts-ignore
+    if (!PAMEngineArtifact.networks[chainId]) { 
+      throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
+    }
     const pamEngineInstance = new web3.eth.Contract(
+      // @ts-ignore
       PAMEngineArtifact.abi,
+      // @ts-ignore
       PAMEngineArtifact.networks[chainId].address
     );
 

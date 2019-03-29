@@ -27,10 +27,10 @@
 //   //   ).send({ value: Utils.toHex(payOffAbsolute) });
 //   // }
 
-//   public async getContractId () {
-//     const contractId = await this.statefulContract.methods.contractId().call();
+//   public async getAssetId () {
+//     const assetId = await this.statefulContract.methods.assetId().call();
 
-//     return Utils.hexToUtf8(contractId);
+//     return Utils.hexToUtf8(assetId);
 //   }
 
 //   public async getRecordCreatorAddress () {
@@ -64,7 +64,7 @@
 
 //   public static async deploy (
 //     web3: Web3, 
-//     contractId: string,
+//     assetId: string,
 //     recordCreatorAddress: string,
 //     counterpartyAddress: string,
 //     txOptions: CustomOptions
@@ -76,7 +76,7 @@
 //     const { options: { address } } = await statefulContractInstance.deploy({
 //       data: PAMStatefulContractArtifact.bytecode,
 //       arguments: [
-//         Utils.toHex(contractId),
+//         Utils.toHex(assetId),
 //         recordCreatorAddress,
 //         counterpartyAddress
 //       ]

@@ -25,11 +25,11 @@ contract('PaymentKernel', (accounts) => {
 
     await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
 
-    this.contractId = 'C123'
+    this.assetId = 'C123'
     this.value = 5000
 
     await this.OwnershipRegistryInstance.registerOwnership(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
@@ -37,7 +37,7 @@ contract('PaymentKernel', (accounts) => {
     )
 
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
-      web3.utils.toHex(this.contractId),
+      web3.utils.toHex(this.assetId),
       5,
       cashflowIdBeneficiary,
       { from: recordCreatorBeneficiary }
@@ -48,9 +48,9 @@ contract('PaymentKernel', (accounts) => {
     const preBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary)
 
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       -3,
-      0,
+      1,
       '0x0000000000000000000000000000000000000000',
       5000,
       { value: this.value }
@@ -58,12 +58,12 @@ contract('PaymentKernel', (accounts) => {
     
     // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
     // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.contractId), eventId)
+    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 1); // eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary)
 
-    // assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    // assert.equal(web3.utils.hexToUtf8(payment.assetId), this.assetId)
     assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
@@ -72,9 +72,9 @@ contract('PaymentKernel', (accounts) => {
     const preBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary)
 
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
-      web3.utils.toHex(this.contractId), 
+      web3.utils.toHex(this.assetId), 
       5,
-      0,
+      2,
       '0x0000000000000000000000000000000000000000',
       5000,
       { from: counterpartyObligor, value: this.value }
@@ -82,12 +82,12 @@ contract('PaymentKernel', (accounts) => {
     
     // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
     // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.contractId), eventId)
+    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2); // eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary)
 
-    // assert.equal(web3.utils.hexToUtf8(payment.contractId), this.contractId)
+    // assert.equal(web3.utils.hexToUtf8(payment.assetId), this.assetId)
     assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
@@ -95,7 +95,7 @@ contract('PaymentKernel', (accounts) => {
   // it('should not overwrite an existing payment entry', async () => {
   //   await shouldFail.reverting.withMessage(
   //     this.PaymentRouterInstance.settlePayment(
-  //       web3.utils.toHex(this.contractId), 
+  //       web3.utils.toHex(this.assetId), 
   //       -3,
   //       0,
   //       '0x0000000000000000000000000000000000000000',
@@ -106,7 +106,7 @@ contract('PaymentKernel', (accounts) => {
   //   )
   // })
 
-  it('should revert for an invalid ContractId and an invalid CashflowId', async () => {
+  it('should revert for an invalid AssetId and an invalid CashflowId', async () => {
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(''), 
@@ -121,7 +121,7 @@ contract('PaymentKernel', (accounts) => {
 
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         0,
         0,
         '0x0000000000000000000000000000000000000000',
@@ -149,7 +149,7 @@ contract('PaymentKernel', (accounts) => {
   it('should revert for an unauthorized sender', async () => {
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         3,
         0,
         '0x0000000000000000000000000000000000000000',
@@ -163,7 +163,7 @@ contract('PaymentKernel', (accounts) => {
   it('should revert for an unauthorized sender (for a payment routed to a beneficiary corresponding to a CashflowId)', async () => {
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.contractId), 
+        web3.utils.toHex(this.assetId), 
         5,
         1,
         '0x0000000000000000000000000000000000000000',

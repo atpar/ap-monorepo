@@ -16,7 +16,7 @@
 
 //   protected statelessContract: PAMStatelessContract;
 
-//   public readonly contractId: string;
+//   public readonly assetId: string;
 //   public readonly contractTerms: ContractTerms;
 //   public contractState: ContractState;
 //   public readonly statefulContractAddress: string;
@@ -26,7 +26,7 @@
 //   constructor (
 //     statelessContract: PAMStatelessContract,
 //     statefulContractAddress: string,
-//     contractId: string,
+//     assetId: string,
 //     recordCreatorAddress: string,
 //     counterpartyAddress: string,
 //     contractTerms: ContractTerms, 
@@ -34,7 +34,7 @@
 //   ) {
 //     this.statelessContract = statelessContract;
 //     this.statefulContractAddress = statefulContractAddress;
-//     this.contractId = contractId;
+//     this.assetId = assetId;
 //     this.recordCreatorAddress = recordCreatorAddress;
 //     this.counterpartyAddress = counterpartyAddress;
 //     this.contractTerms = contractTerms;

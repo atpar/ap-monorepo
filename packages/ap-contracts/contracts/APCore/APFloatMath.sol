@@ -16,7 +16,7 @@ library APFloatMath {
 	function floatMult(int256 self, int256 b)
 		public
 		pure
-		returns(int256)
+		returns (int256)
 	{
 		if (self == 0 || b == 0) { return 0; }
 		
@@ -34,7 +34,7 @@ library APFloatMath {
 	function floatDiv(int256 self, int256 b) 
 		public
 		pure 
-		returns(int256)
+		returns (int256)
 	{
 		require(b != 0, "DIVIDEDBY_ZERO");
 

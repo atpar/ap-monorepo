@@ -19,23 +19,23 @@ contract APDayCountConventions {
 	function actualThreeSixty(uint256 startTime, uint256 endTime) 
 		internal
 		pure
-		returns(int256)
+		returns (int256)
 	{
-		return(int256((endTime.sub(startTime)).div(86400)).floatDiv(360));
+		return (int256((endTime.sub(startTime)).div(86400)).floatDiv(360));
 	}
 
 	function actualThreeSixtyFive(uint256 startTime, uint256 endTime) 
 		internal
 		pure
-		returns(int256)
+		returns (int256)
 	{
-		return(int256((endTime.sub(startTime)).div(86400)).floatDiv(365));
+		return (int256((endTime.sub(startTime)).div(86400)).floatDiv(365));
 	}
 
 	function thirtyEThreeSixty(uint256 startTime, uint256 endTime) 
 		internal
 		pure
-		returns(int256) 
+		returns (int256) 
 	{
 		uint256 d1Day; 
 		uint256 d1Month;

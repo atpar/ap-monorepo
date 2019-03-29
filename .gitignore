@@ -1,5 +1,8 @@
-lib/
+dist/
 build/
+Database.json
+Orderbook-Database.json
+Channel-Database.json
 
 node_modules/
 

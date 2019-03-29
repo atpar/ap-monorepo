@@ -5,330 +5,130 @@ import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
 
 import "../APCore/APCore.sol";
 import "../APCore/APFloatMath.sol";
+import "./IPAMEngine.sol";
 
 
 /**
  * @title the stateless component for a PAM contract
- * @notice implements the STF and POF of the Actus standard for a PAM contract 
- * @dev all numbers except unix timestamp are represented of multiples of 10 ** 18
-	inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
+ * implements the STF and POF of the Actus standard for a PAM contract 
+ * @dev all numbers except unix timestamp are represented as multiple of 10 ** 18
+ * inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
-contract PAMEngine is APCore {
+contract PAMEngine is APCore, IPAMEngine {
 
 	using SignedSafeMath for int;
 	using APFloatMath for int;
 
+			
 	/**
-	 * @notice computes the next contract state based on the contract terms, state and the event type
-	 * @param timestamp current timestamp
+	 * get the initial contract state
 	 * @param contractTerms terms of the contract
-	 * @param contractState current state of the contract
-	 * @param eventType event type
-	 * @return next contract state
+	 * @return initial contract state
 	 */
-	function stateTransitionFunction(
-		uint256 timestamp, 
-		ContractTerms memory contractTerms, 
-		ContractState memory contractState, 
-		EventType eventType
-	) 
-		private 
-		pure
-		returns(ContractState memory) 
+	function computeInitialState(ContractTerms memory contractTerms) 
+		public 
+		pure 
+		returns (ContractState memory)
 	{
-		if (eventType == EventType.AD) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.CD) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.contractStatus = ContractStatus.DF;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.FP) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = 0;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.IED) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalValue = roleSign(contractTerms.contractRole) * contractTerms.notionalPrincipal;
-			contractState.nominalRate = contractTerms.nominalInterestRate;
-			contractState.lastEventTime = timestamp;
+		ContractState memory contractState = initializeContractState(contractTerms);
 
-			if (contractTerms.cycleAnchorDateOfInterestPayment != 0 && 
-				contractTerms.cycleAnchorDateOfInterestPayment < contractTerms.initialExchangeDate
-			) {
-				contractState.nominalAccrued = contractState.nominalRate
-				.floatMult(contractState.nominalValue)
-				.floatMult(yearFraction(contractTerms.cycleAnchorDateOfInterestPayment, timestamp, contractTerms.dayCountConvention));
-			}   
-			return contractState;
-		}
-		if (eventType == EventType.IPCI) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent)));
-			contractState.nominalAccrued = 0;
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.IP) { 
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = 0;
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.PP) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.nominalValue -= 0; // riskFactor(contractTerms.objectCodeOfPrepaymentModel, timestamp, contractState, contractTerms) * contractState.nominalValue;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.PRD) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.PR) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalValue = 0;
-			contractState.nominalRate = 0;
-			contractState.nominalAccrued = 0;
-			contractState.feeAccrued = 0;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.PY) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.RRY) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.nominalRate = contractTerms.nextResetRate;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.RR) {
-			// int256 rate = //riskFactor(contractTerms.marketObjectCodeOfRateReset, timestamp, contractState, contractTerms)
-			// 	* contractTerms.rateMultiplier + contractTerms.rateSpread;
-			int256 rate = contractTerms.rateSpread;
-			int256 deltaRate = rate.sub(contractState.nominalRate);
-			
-			 // apply period cap/floor
-			if ((contractTerms.lifeCap < deltaRate) && (contractTerms.lifeCap < ((-1) * contractTerms.periodFloor))) {
-				deltaRate = contractTerms.lifeCap;
-			} else if (deltaRate < ((-1) * contractTerms.periodFloor)) {
-				deltaRate = ((-1) * contractTerms.periodFloor);
-			}
-			rate = contractState.nominalRate.add(deltaRate);
-
-			// apply life cap/floor
-			if (contractTerms.lifeCap < rate && contractTerms.lifeCap < contractTerms.lifeFloor) {
-				rate = contractTerms.lifeCap;
-			} else if (rate < contractTerms.lifeFloor) {
-				rate = contractTerms.lifeFloor;
-			}
-
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.nominalRate = rate;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.SC) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
-			
-			if ((contractTerms.scalingEffect == ScalingEffect.I00) 
-				|| (contractTerms.scalingEffect == ScalingEffect.IN0)
-				|| (contractTerms.scalingEffect == ScalingEffect.I0M)
-				|| (contractTerms.scalingEffect == ScalingEffect.INM)
-			) {
-				contractState.interestScalingMultiplier = 0; // riskFactor(contractTerms.marketObjectCodeOfScalingIndex, timestamp, contractState, contractTerms)
-			}
-			if ((contractTerms.scalingEffect == ScalingEffect._0N0) 
-				|| (contractTerms.scalingEffect == ScalingEffect._0NM)
-				|| (contractTerms.scalingEffect == ScalingEffect.IN0)
-				|| (contractTerms.scalingEffect == ScalingEffect.INM)
-			) {
-				contractState.nominalScalingMultiplier = 0; // riskFactor(contractTerms.marketObjectCodeOfScalingIndex, timestamp, contractState, contractTerms)
-			}
-
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
-		if (eventType == EventType.TD) {
-			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
-			contractState.nominalValue = 0;
-			contractState.nominalRate = 0;
-			contractState.nominalAccrued = 0;
-			contractState.feeAccrued = 0;
-			contractState.lastEventTime = timestamp;
-			return contractState;
-		}
+		return (contractState);
 	}
 
 	/**
-	 * @notice calculates the payoff for the current time based on the contract terms, state and the event type
-	 * @param timestamp current timestamp
+	 * computes pending events based on the contract state and 
+	 * applys them to the contract state and returns the evaluated events and the new contract state
+	 * @dev evaluates all events between the scheduled time of the last executed event and now 
+	 * (such that Led < Tev && now >= Tev)
 	 * @param contractTerms terms of the contract
 	 * @param contractState current state of the contract
-	 * @param eventType event type
-	 * @return payoff
+	 * @param timestamp current timestamp
+	 * @return the new contract state and the evaluated events
 	 */
-	function payoffFunction(
-		uint256 timestamp, 
+	function computeNextState(
 		ContractTerms memory contractTerms, 
 		ContractState memory contractState, 
-		EventType eventType
+		uint256 timestamp
 	)
-		private
+		public
 		pure
-		returns(int256 payoff)
+		returns (ContractState memory, ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory)
 	{
-		if (eventType == EventType.AD) { return 0; } 
-		if (eventType == EventType.CD) { return 0; }
-		if (eventType == EventType.IPCI) { return 0; }
-		if (eventType == EventType.RRY) { return 0; }
-		if (eventType == EventType.RR) { return 0; }
-		if (eventType == EventType.SC) { return 0; }
-		if (eventType == EventType.FP) { 
-			if (contractTerms.feeBasis == FeeBasis.A) {
-				return (
-					performanceIndicator(contractState.contractStatus) 
-					* roleSign(contractTerms.contractRole) 
-					* contractTerms.feeRate
-				); 
-			} else {
-				return (
-					performanceIndicator(contractState.contractStatus) 
-					* contractState.feeAccrued
-						.add(
-							yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention) 
-							.floatMult(contractTerms.feeRate)
-							.floatMult(contractState.nominalValue)
-						)
-				); 
-			}
-		}
-		if (eventType == EventType.IED) { 
-			return (
-				performanceIndicator(contractState.contractStatus) 
-				* roleSign(contractTerms.contractRole) 
-				* (-1) 
-				* contractTerms.notionalPrincipal
-					.add(contractTerms.premiumDiscountAtIED)
+		ContractState memory nextContractState = contractState;
+		ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory nextContractEvents;
+		
+		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEventSchedule = computeProtoEventScheduleSegment(
+			contractTerms,
+			contractState.lastEventTime,
+			timestamp
+		);
+
+		for (uint8 index = 0; index < MAX_EVENT_SCHEDULE_SIZE; index++) {
+			if (pendingProtoEventSchedule[index].scheduledTime == 0) { continue; }
+			
+			nextContractEvents[index] = ContractEvent(
+				pendingProtoEventSchedule[index].scheduledTime, 
+				pendingProtoEventSchedule[index].eventType, 
+				pendingProtoEventSchedule[index].currency,
+				payoffFunction(
+					pendingProtoEventSchedule[index].scheduledTime, 
+					contractTerms, 
+					contractState, 
+					pendingProtoEventSchedule[index].eventType
+				),
+				timestamp
 			);
+
+			nextContractState = stateTransitionFunction(
+				pendingProtoEventSchedule[index].scheduledTime, 
+				contractTerms, 
+				contractState, 
+				pendingProtoEventSchedule[index].eventType
+			);   
 		}
-		if (eventType == EventType.IP) { 
-			return (
-				performanceIndicator(contractState.contractStatus) 
-				* contractState.interestScalingMultiplier
-					.floatMult(
-						contractState.nominalAccrued 
-						.add(
-							yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
-							.floatMult(contractState.nominalRate)
-							.floatMult(contractState.nominalValue)
-						)
-					)
-			);
-		}
-		if (eventType == EventType.PP) { 
-			return (
-				performanceIndicator(contractState.contractStatus) 
-				* roleSign(contractTerms.contractRole)
-				* 0 // riskFactor(timestamp, contractState, contractTerms, contractTerms.objectCodeOfPrepaymentModel)
-				* contractState.nominalValue
-			);
-		}
-		if (eventType == EventType.PRD) { 
-			return (
-				performanceIndicator(contractState.contractStatus) 
-				* roleSign(contractTerms.contractRole) 
-				* (-1) 
-				* contractTerms.priceAtPurchaseDate
-					.add(contractState.nominalAccrued)
-					.add(
-						yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
-						.floatMult(contractState.nominalRate)
-						.floatMult(contractState.nominalValue)
-					)
-			);
-		}
-		if (eventType == EventType.PR) { 
-			return (
-				performanceIndicator(contractState.contractStatus) 
-				* contractState.nominalScalingMultiplier
-					.floatMult(contractState.nominalValue)
-			);
-		}
-		if (eventType == EventType.PY) { 
-			if (contractTerms.penaltyType == PenaltyType.A) {
-				return (
-					performanceIndicator(contractState.contractStatus)
-					* roleSign(contractTerms.contractRole)
-					* contractTerms.penaltyRate
-				);
-			} else if (contractTerms.penaltyType == PenaltyType.N) {
-				return (
-					performanceIndicator(contractState.contractStatus)
-					* roleSign(contractTerms.contractRole)
-					* yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
-						.floatMult(contractTerms.penaltyRate)
-						.floatMult(contractState.nominalValue)
-				);
-			} else {
-				// riskFactor(timestamp, contractState, contractTerms, contractTerms.marketObjectCodeOfRateReset);
-				int256 risk = 0; 
-				int256 param = 0;
-				if (contractState.nominalRate - risk > 0) { param = contractState.nominalRate - risk; }
-				return (
-					performanceIndicator(contractState.contractStatus)
-					* roleSign(contractTerms.contractRole)
-					* yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
-						.floatMult(contractState.nominalValue)
-						.floatMult(param)
-				);
-			}
-		}
-		if (eventType == EventType.TD) { 
-			return (
-				performanceIndicator(contractState.contractStatus)
-				* roleSign(contractTerms.contractRole)
-				* contractTerms.priceAtPurchaseDate
-					.add(contractState.nominalAccrued)
-					.add(
-						yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
-						.floatMult(contractState.nominalRate)
-						.floatMult(contractState.nominalValue)
-					)
-			);
-		}
+
+		return (nextContractState, nextContractEvents);
 	}
 
 	/**
-	 * @notice computes a schedule segment of contract events based on the contract terms and the specified period
+	 * applys a prototype event to the current state of a contract and 
+	 * returns the contrat event and the new contract state
+	 * @param contractTerms terms of the contract
+	 * @param contractState current state of the contract
+	 * @param protoEvent prototype event to be evaluated and applied to the contract state
+	 * @param timestamp current timestamp
+	 * @return the new contract state and the evaluated event
+	 */
+	function computeNextStateForProtoEvent(
+		ContractTerms memory contractTerms, 
+		ContractState memory contractState, 
+		ProtoEvent memory protoEvent,
+		uint256 timestamp
+	)
+		public
+		pure
+		returns (ContractState memory, ContractEvent memory)
+	{
+		ContractEvent memory contractEvent = ContractEvent(
+			protoEvent.scheduledTime,
+			protoEvent.eventType,
+			protoEvent.currency,
+			payoffFunction(timestamp, contractTerms, contractState, protoEvent.pofType), // solium-disable-line 
+			timestamp
+		);
+
+		ContractState memory nextContractState = stateTransitionFunction(
+			timestamp,
+			contractTerms, 
+			contractState,
+			protoEvent.stfType
+		);
+
+		return (nextContractState, contractEvent);
+	}
+
+	/**
+	 * computes a schedule segment of contract events based on the contract terms and the specified period
 	 * @param contractTerms terms of the contract
 	 * @param segmentStart start timestamp of the segment
 	 * @param segmentEnd end timestamp of the segement
@@ -341,7 +141,7 @@ contract PAMEngine is APCore {
 	)
 		public 
 		pure 
-		returns(ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory)
+		returns (ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory)
 	{
 		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEventSchedule;
 		uint16 index = 0;
@@ -537,7 +337,7 @@ contract PAMEngine is APCore {
 	}
 
 	/**
-	 * @notice initialize contract state space based on the contract terms
+	 * initialize contract state space based on the contract terms
 	 * @dev see initStateSpace()
 	 * @param contractTerms terms of the contract
 	 * @return initial contract state
@@ -545,7 +345,7 @@ contract PAMEngine is APCore {
 	function initializeContractState(ContractTerms memory contractTerms) 
 		private 
 		pure
-		returns(ContractState memory)
+		returns (ContractState memory)
 	{ 
 		ContractState memory contractState;
 
@@ -561,114 +361,314 @@ contract PAMEngine is APCore {
 		
 		return contractState;
 	}
-		
-	/**
-	 * @notice get the initial contract state and schedule of events
-	 * @param contractTerms terms of the contract
-	 * @return initial contract state
-	 */
-	function computeInitialState(ContractTerms memory contractTerms) 
-		public 
-		pure 
-		returns (ContractState memory) // , ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory)
-	{
-		ContractState memory contractState = initializeContractState(contractTerms);
-		// ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEventSchedule = computeProtoEventScheduleSegment(
-		// 	contractTerms, 
-		// 	contractTerms.statusDate, 
-		// 	contractTerms.maturityDate
-		// );
 
-		return (contractState);
-	}
-	
 	/**
-	 * @notice apply a prototype event to the current state of a contract and 
-	 * return the contrat event and the new contract state
+	 * computes the next contract state based on the contract terms, state and the event type
+	 * @param timestamp current timestamp
 	 * @param contractTerms terms of the contract
 	 * @param contractState current state of the contract
-	 * @param protoEvent prototype event to be evaluated and applied to the contract state
-	 * @return the new contract state and the evaluated event
+	 * @param eventType event type
+	 * @return next contract state
 	 */
-	function computeNextStateForProtoEvent(
+	function stateTransitionFunction(
+		uint256 timestamp, 
 		ContractTerms memory contractTerms, 
 		ContractState memory contractState, 
-		ProtoEvent memory protoEvent,
-		uint256 timestamp
-	)
-		public
+		EventType eventType
+	) 
+		private 
 		pure
-		returns (ContractState memory, ContractEvent memory)
+		returns (ContractState memory) 
 	{
-		ContractEvent memory contractEvent = ContractEvent(
-			protoEvent.scheduledTime,
-			protoEvent.eventType,
-			protoEvent.currency,
-			payoffFunction(timestamp, contractTerms, contractState, protoEvent.pofType),
-			timestamp
-		);
-
-		ContractState memory nextContractState = stateTransitionFunction(
-			timestamp,
-			contractTerms, 
-			contractState,
-			protoEvent.stfType
-		);
-
-		return (nextContractState, contractEvent);
-	}
-
-	/**
-	 * @notice computes pending events based on the contract state and 
-	 * applys them to the contract state and returns the evaluated events and the new contract state
-	 * @dev evaluates all events between the scheduled time of the last executed event and now 
-	 * (such that Led < Tev && now >= Tev)
-	 * @param contractTerms terms of the contract
-	 * @param contractState current state of the contract
-	 * @return the new contract state and the evaluated events
-	 */
-	function computeNextState(
-		ContractTerms memory contractTerms, 
-		ContractState memory contractState, 
-		uint256 timestamp
-	)
-		public
-		pure
-		returns (ContractState memory, ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory)
-	{
-		ContractState memory nextContractState = contractState;
-		ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory nextContractEvents;
-		
-		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEventSchedule = computeProtoEventScheduleSegment(
-			contractTerms,
-			contractState.lastEventTime,
-			timestamp
-		);
-
-		for (uint8 index = 0; index < MAX_EVENT_SCHEDULE_SIZE; index++) {
-			if (pendingProtoEventSchedule[index].scheduledTime == 0) { continue; }
-			
-			nextContractEvents[index] = ContractEvent(
-				pendingProtoEventSchedule[index].scheduledTime, 
-				pendingProtoEventSchedule[index].eventType, 
-				pendingProtoEventSchedule[index].currency,
-				payoffFunction(
-					pendingProtoEventSchedule[index].scheduledTime, 
-					contractTerms, 
-					contractState, 
-					pendingProtoEventSchedule[index].eventType
-				),
-				timestamp
-			);
-
-			nextContractState = stateTransitionFunction(
-				pendingProtoEventSchedule[index].scheduledTime, 
-				contractTerms, 
-				contractState, 
-				pendingProtoEventSchedule[index].eventType
-			);   
+		if (eventType == EventType.AD) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.lastEventTime = timestamp;
+			return contractState;
 		}
+		if (eventType == EventType.CD) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.contractStatus = ContractStatus.DF;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.FP) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = 0;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.IED) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalValue = roleSign(contractTerms.contractRole) * contractTerms.notionalPrincipal;
+			contractState.nominalRate = contractTerms.nominalInterestRate;
+			contractState.lastEventTime = timestamp;
 
-		return (nextContractState, nextContractEvents);
+			if (contractTerms.cycleAnchorDateOfInterestPayment != 0 && 
+				contractTerms.cycleAnchorDateOfInterestPayment < contractTerms.initialExchangeDate
+			) {
+				contractState.nominalAccrued = contractState.nominalRate
+				.floatMult(contractState.nominalValue)
+				.floatMult(yearFraction(contractTerms.cycleAnchorDateOfInterestPayment, timestamp, contractTerms.dayCountConvention));
+			}   
+			return contractState;
+		}
+		if (eventType == EventType.IPCI) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent)));
+			contractState.nominalAccrued = 0;
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.IP) { 
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = 0;
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.PP) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.nominalValue -= 0; // riskFactor(contractTerms.objectCodeOfPrepaymentModel, timestamp, contractState, contractTerms) * contractState.nominalValue;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.PRD) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.PR) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalValue = 0;
+			contractState.nominalRate = 0;
+			contractState.nominalAccrued = 0;
+			contractState.feeAccrued = 0;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.PY) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.RRY) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.nominalRate = contractTerms.nextResetRate;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.RR) {
+			// int256 rate = //riskFactor(contractTerms.marketObjectCodeOfRateReset, timestamp, contractState, contractTerms)
+			// 	* contractTerms.rateMultiplier + contractTerms.rateSpread;
+			int256 rate = contractTerms.rateSpread;
+			int256 deltaRate = rate.sub(contractState.nominalRate);
+			
+			 // apply period cap/floor
+			if ((contractTerms.lifeCap < deltaRate) && (contractTerms.lifeCap < ((-1) * contractTerms.periodFloor))) {
+				deltaRate = contractTerms.lifeCap;
+			} else if (deltaRate < ((-1) * contractTerms.periodFloor)) {
+				deltaRate = ((-1) * contractTerms.periodFloor);
+			}
+			rate = contractState.nominalRate.add(deltaRate);
+
+			// apply life cap/floor
+			if (contractTerms.lifeCap < rate && contractTerms.lifeCap < contractTerms.lifeFloor) {
+				rate = contractTerms.lifeCap;
+			} else if (rate < contractTerms.lifeFloor) {
+				rate = contractTerms.lifeFloor;
+			}
+
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.nominalRate = rate;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.SC) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalAccrued = contractState.nominalAccrued.add(contractState.nominalRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			contractState.feeAccrued = contractState.feeAccrued.add(contractTerms.feeRate.floatMult(contractState.nominalValue).floatMult(contractState.timeFromLastEvent));
+			
+			if ((contractTerms.scalingEffect == ScalingEffect.I00) 
+				|| (contractTerms.scalingEffect == ScalingEffect.IN0)
+				|| (contractTerms.scalingEffect == ScalingEffect.I0M)
+				|| (contractTerms.scalingEffect == ScalingEffect.INM)
+			) {
+				contractState.interestScalingMultiplier = 0; // riskFactor(contractTerms.marketObjectCodeOfScalingIndex, timestamp, contractState, contractTerms)
+			}
+			if ((contractTerms.scalingEffect == ScalingEffect._0N0) 
+				|| (contractTerms.scalingEffect == ScalingEffect._0NM)
+				|| (contractTerms.scalingEffect == ScalingEffect.IN0)
+				|| (contractTerms.scalingEffect == ScalingEffect.INM)
+			) {
+				contractState.nominalScalingMultiplier = 0; // riskFactor(contractTerms.marketObjectCodeOfScalingIndex, timestamp, contractState, contractTerms)
+			}
+
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+		if (eventType == EventType.TD) {
+			contractState.timeFromLastEvent = yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention);
+			contractState.nominalValue = 0;
+			contractState.nominalRate = 0;
+			contractState.nominalAccrued = 0;
+			contractState.feeAccrued = 0;
+			contractState.lastEventTime = timestamp;
+			return contractState;
+		}
+	}
+
+	/**
+	 * calculates the payoff for the current time based on the contract terms, 
+	 * state and the event type
+	 * @param timestamp current timestamp
+	 * @param contractTerms terms of the contract
+	 * @param contractState current state of the contract
+	 * @param eventType event type
+	 * @return payoff
+	 */
+	function payoffFunction(
+		uint256 timestamp, 
+		ContractTerms memory contractTerms, 
+		ContractState memory contractState, 
+		EventType eventType
+	)
+		private
+		pure
+		returns (int256 payoff)
+	{
+		if (eventType == EventType.AD) { return 0; } 
+		if (eventType == EventType.CD) { return 0; }
+		if (eventType == EventType.IPCI) { return 0; }
+		if (eventType == EventType.RRY) { return 0; }
+		if (eventType == EventType.RR) { return 0; }
+		if (eventType == EventType.SC) { return 0; }
+		if (eventType == EventType.FP) { 
+			if (contractTerms.feeBasis == FeeBasis.A) {
+				return (
+					performanceIndicator(contractState.contractStatus) 
+					* roleSign(contractTerms.contractRole) 
+					* contractTerms.feeRate
+				); 
+			} else {
+				return (
+					performanceIndicator(contractState.contractStatus) 
+					* contractState.feeAccrued
+						.add(
+							yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention) 
+							.floatMult(contractTerms.feeRate)
+							.floatMult(contractState.nominalValue)
+						)
+				); 
+			}
+		}
+		if (eventType == EventType.IED) { 
+			return (
+				performanceIndicator(contractState.contractStatus) 
+				* roleSign(contractTerms.contractRole) 
+				* (-1) 
+				* contractTerms.notionalPrincipal
+					.add(contractTerms.premiumDiscountAtIED)
+			);
+		}
+		if (eventType == EventType.IP) { 
+			return (
+				performanceIndicator(contractState.contractStatus) 
+				* contractState.interestScalingMultiplier
+					.floatMult(
+						contractState.nominalAccrued 
+						.add(
+							yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
+							.floatMult(contractState.nominalRate)
+							.floatMult(contractState.nominalValue)
+						)
+					)
+			);
+		}
+		if (eventType == EventType.PP) { 
+			return (
+				performanceIndicator(contractState.contractStatus) 
+				* roleSign(contractTerms.contractRole)
+				* 0 // riskFactor(timestamp, contractState, contractTerms, contractTerms.objectCodeOfPrepaymentModel)
+				* contractState.nominalValue
+			);
+		}
+		if (eventType == EventType.PRD) { 
+			return (
+				performanceIndicator(contractState.contractStatus) 
+				* roleSign(contractTerms.contractRole) 
+				* (-1) 
+				* contractTerms.priceAtPurchaseDate
+					.add(contractState.nominalAccrued)
+					.add(
+						yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
+						.floatMult(contractState.nominalRate)
+						.floatMult(contractState.nominalValue)
+					)
+			);
+		}
+		if (eventType == EventType.PR) { 
+			return (
+				performanceIndicator(contractState.contractStatus) 
+				* contractState.nominalScalingMultiplier
+					.floatMult(contractState.nominalValue)
+			);
+		}
+		if (eventType == EventType.PY) { 
+			if (contractTerms.penaltyType == PenaltyType.A) {
+				return (
+					performanceIndicator(contractState.contractStatus)
+					* roleSign(contractTerms.contractRole)
+					* contractTerms.penaltyRate
+				);
+			} else if (contractTerms.penaltyType == PenaltyType.N) {
+				return (
+					performanceIndicator(contractState.contractStatus)
+					* roleSign(contractTerms.contractRole)
+					* yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
+						.floatMult(contractTerms.penaltyRate)
+						.floatMult(contractState.nominalValue)
+				);
+			} else {
+				// riskFactor(timestamp, contractState, contractTerms, contractTerms.marketObjectCodeOfRateReset);
+				int256 risk = 0; 
+				int256 param = 0;
+				if (contractState.nominalRate - risk > 0) { param = contractState.nominalRate - risk; }
+				return (
+					performanceIndicator(contractState.contractStatus)
+					* roleSign(contractTerms.contractRole)
+					* yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
+						.floatMult(contractState.nominalValue)
+						.floatMult(param)
+				);
+			}
+		}
+		if (eventType == EventType.TD) { 
+			return (
+				performanceIndicator(contractState.contractStatus)
+				* roleSign(contractTerms.contractRole)
+				* contractTerms.priceAtPurchaseDate
+					.add(contractState.nominalAccrued)
+					.add(
+						yearFraction(contractState.lastEventTime, timestamp, contractTerms.dayCountConvention)
+						.floatMult(contractState.nominalRate)
+						.floatMult(contractState.nominalValue)
+					)
+			);
+		}
 	}
 }

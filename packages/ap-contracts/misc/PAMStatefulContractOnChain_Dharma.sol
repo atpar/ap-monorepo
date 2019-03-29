@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./AFPCore/AFPDefinitions.sol";
 
 import "./external/dharma/TermsContract.sol";
-import "./external/dharma/ContractRegistry.sol";
+import "./external/dharma/EconomicsRegistry.sol";
 
 contract PAMStatefulContractOnChain_Dharma is TermsContract {
 
@@ -24,11 +24,11 @@ contract PAMStatefulContractOnChain_Dharma is TermsContract {
 
   mapping (bytes32 => uint) public valueRepaid;
 
-  ContractRegistry public contractRegistry;
+  EconomicsRegistry public EconomicsRegistry;
 
 
   modifier onlyDebtKernel() {
-    require(msg.sender == address(contractRegistry.debtKernel()));
+    require(msg.sender == address(EconomicsRegistry.debtKernel()));
     _;
   }
 
@@ -51,7 +51,7 @@ contract PAMStatefulContractOnChain_Dharma is TermsContract {
     address termsContract;
     bytes32 termsContractParameters;
 
-    (termsContract, termsContractParameters) = contractRegistry.debtRegistry().getTerms(agreementId);
+    (termsContract, termsContractParameters) = EconomicsRegistry.debtRegistry().getTerms(agreementId);
 
     uint principalTokenIndex;
     uint principalAmount;
@@ -63,7 +63,7 @@ contract PAMStatefulContractOnChain_Dharma is TermsContract {
       unpackParametersFromBytes(termsContractParameters);
 
     address principalTokenAddress = 
-      contractRegistry.tokenRegistry().getTokenAddressByIndex(principalTokenIndex);
+      EconomicsRegistry.tokenRegistry().getTokenAddressByIndex(principalTokenIndex);
 
     // Returns true (i.e. valid) if the specified principal token is valid,
     // the specified amortization unit type is valid, and the terms contract

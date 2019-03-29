@@ -1,31 +1,35 @@
 {
-  "name": "ap-contracts",
-  "version": "0.0.0",
+  "name": "@atpar/ap-contracts",
+  "version": "0.1.0-alpha.2",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
-  "homepage": "https://github.com/jo-es/ap-monorepo#readme",
+  "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "truffle-config.js",
-  "directories": {
-    "test": "__tests__"
-  },
   "files": [
-    "lib"
+    "contracts/",
+    "migrations",
+    "truffle-config.js"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jo-es/ap-monorepo.git"
+    "url": "git+https://github.com/atpar/ap-monorepo.git"
+  },
+  "publishConfig": {
+    "access": "restricted"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "save-artifacts": "mkdir -p ./artifacts && cp -r ./build/contracts/* ./artifacts/",
+    "lint": "solium -d contracts/"
   },
   "bugs": {
-    "url": "https://github.com/jo-es/ap-monorepo/issues"
+    "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
     "bignumber.js": "^7.2.1",
     "csv-parse": "^3.1.2",
-    "eth-sig-util": "^2.1.0",
+    "eth-sig-util": "2.1.1",
+    "ethlint": "^1.2.3",
     "openzeppelin-solidity": "^2.1.2",
     "openzeppelin-test-helpers": "^0.1.2",
     "truffle-hdwallet-provider": "^1.0.0-web3one.0",

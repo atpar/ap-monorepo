@@ -27,7 +27,7 @@
 //         { name: 'verifyingContract', type: 'address' }
 //       ],
 //       ContractUpdate: [
-//         { name: 'contractId', type: 'bytes32' },
+//         { name: 'assetId', type: 'bytes32' },
 //         { name: 'recordCreatorAddress', type: 'address' },
 //         { name: 'counterpartyAddress', type: 'address' },
 //         { name: 'contractAddress', type: 'address' },
@@ -38,7 +38,7 @@
 //     },
 //     primaryType: 'ContractUpdate',
 //     message: {
-//       contractId: contractUpdate.contractId,
+//       assetId: contractUpdate.assetId,
 //       recordCreatorAddress: contractUpdate.recordCreatorAddress,
 //       counterpartyAddress: contractUpdate.counterpartyAddress,
 //       contractAddress: contractUpdate.contractAddress,
@@ -103,12 +103,12 @@
 //   it('should register the first contractUpdate with the contract terms and the initial contract state', async () => {
 //     ({ 0: contractState } = await PAMStatelessContractDeployed.methods.getInitialState(contractTerms).call())
     
-//     const contractId = 'PAM' + Math.floor(new Date().getTime() / 1000)
+//     const assetId = 'PAM' + Math.floor(new Date().getTime() / 1000)
 //     const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))  
 //       .reduce((obj, key) => { obj[key] = contractState[key]; return obj }, {})
     
 //     const contractUpdate = {
-//       contractId: web3.utils.toHex(contractId),
+//       assetId: web3.utils.toHex(assetId),
 //       recordCreatorAddress: recordCreatorAddress,
 //       counterpartyAddress: counterpartyAddress,
 //       contractAddress: '0x0000000000000000000000000000000000000000',
@@ -182,13 +182,13 @@
 //       1367366400
 //     ).call())
 
-//     const contractId = await PAMStatefulContractOffChainDeployed.methods.contractId().call()
+//     const assetId = await PAMStatefulContractOffChainDeployed.methods.assetId().call()
   
 //     const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))  
 //       .reduce((obj, key) => { obj[key] = contractState[key]; return obj }, {})
     
 //     const contractUpdate = {
-//       contractId: web3.utils.toHex(contractId),
+//       assetId: web3.utils.toHex(assetId),
 //       recordCreatorAddress: recordCreatorAddress,
 //       counterpartyAddress: counterpartyAddress,
 //       contractAddress: PAMStatefulContractOffChainDeployed.options.address,

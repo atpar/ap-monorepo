@@ -2,11 +2,13 @@ const PAMEngine = artifacts.require('PAMEngine')
 const APFloatMath = artifacts.require('APFloatMath')
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
-const ContractRegistry = artifacts.require('ContractRegistry')
+const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const PAMContractActor = artifacts.require('PAMContractActor')
+const PAMAssetActor = artifacts.require('PAMAssetActor')
+
+const AssetIssuer = artifacts.require('AssetIssuer')
 
 // const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
 // const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20')
@@ -14,8 +16,8 @@ const PAMContractActor = artifacts.require('PAMContractActor')
 // const ClaimsTokenETHExtension = artifacts.require('ClaimsTokenETHExtension')
 // const ClaimsTokenERC20Extension = artifacts.require('ClaimsTokenERC20Extension')
 // const ClaimsTokenMultiExtension = artifacts.require('ClaimsTokenMultiExtension')
-
 // const ERC223SampleToken = artifacts.require('ERC223SampleToken')
+
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -27,7 +29,7 @@ module.exports = async (deployer, network, accounts) => {
 
   // APExtended
   await deployer.deploy(OwnershipRegistry)  
-  await deployer.deploy(ContractRegistry)
+  await deployer.deploy(EconomicsRegistry)
   const PaymentRegistryInstance = await deployer.deploy(PaymentRegistry)
   await deployer.deploy(
     PaymentRouter, 
@@ -38,13 +40,16 @@ module.exports = async (deployer, network, accounts) => {
 
   // Contract Actor
   await deployer.deploy(
-    PAMContractActor,
+    PAMAssetActor,
     OwnershipRegistry.address,
-    ContractRegistry.address,
+    EconomicsRegistry.address,
     PaymentRegistry.address,
     PaymentRouter.address,
     PAMEngine.address
   )
+
+  // Exchange
+  await deployer.deploy(AssetIssuer)
 
   // Tokenization / Claims Token
   // await deployer.deploy(ERC223SampleToken)

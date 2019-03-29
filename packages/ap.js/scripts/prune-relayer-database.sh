@@ -1,8 +1,9 @@
 #!/bin/sh
 
 (
-	cd ../../packages/simple-relayer
-	echo "" > Database.json
+	cd ../../packages/ap-helper
+	echo "" > Channel-Database.json
+	echo "" > Orderbook-Database.json
 )
 
-echo "cleared relayer database."
+echo "cleared relayer databases."

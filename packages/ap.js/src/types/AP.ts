@@ -8,7 +8,7 @@ export enum ChannelState {
   Receivable
 }
 
-export interface ContractOwnership {
+export interface AssetOwnership {
   recordCreatorObligorAddress: string,
   recordCreatorBeneficiaryAddress: string,
   counterpartyObligorAddress: string,
@@ -16,7 +16,7 @@ export interface ContractOwnership {
 }
 
 export interface ContractUpdate {
-  contractId: string,
+  assetId: string,
   recordCreatorObligorAddress: string,
   counterpartyObligorAddress: string,
   contractAddress: string,
@@ -31,7 +31,19 @@ export interface SignedContractUpdate {
   counterpartyObligorSignature: string
 }
 
-export interface ContractUpdateAsTypedData {
+export interface TypedData {
+  domain: {
+    name: string,
+    version: string,
+    chainId: number,
+    verifyingContract: string
+  },
+  types: object,
+  primaryType: string,
+  message: object
+}
+
+export interface ContractUpdateAsTypedData extends TypedData {
   domain: {
     name: string,
     version: string,
@@ -44,12 +56,73 @@ export interface ContractUpdateAsTypedData {
   },
   primaryType: string,
   message: {
-    contractId: string,
+    assetId: string,
     recordCreatorObligorAddress: string,
     counterpartyObligorAddress: string,
     contractAddress: string,
     contractTermsHash: string,
     contractStateHash: string,
     contractUpdateNonce: number
+  }
+}
+
+export interface OrderParams {
+  makerAddress: string,
+  takerAddress: string | null,
+  actorAddress: string,
+  terms: ContractTerms,
+  makerCreditEnhancementAddress: string,
+  takerCreditEnhancementAddress: string | null
+}
+
+export interface OrderData extends OrderParams {
+  salt: number,
+  signatures: {
+    makerSignature: string | null,
+    takerSignature: string | null
+  }
+}
+
+export interface UnfilledOrderDataAsTypedData extends TypedData {
+  domain: {
+    name: string,
+    version: string,
+    chainId: number,
+    verifyingContract: string
+  },
+  types: {
+    EIP712Domain: { name: string, type: string }[],
+    Order: { name: string, type: string }[]
+  },
+  primaryType: string,
+  message: {
+    maker: string,
+    actor: string,
+    contractTermsHash: string,
+    makerCreditEnhancement: string,
+    salt: number
+  }
+}
+
+export interface FilledOrderDataAsTypedData extends TypedData {
+  domain: {
+    name: string,
+    version: string,
+    chainId: number,
+    verifyingContract: string
+  },
+  types: {
+    EIP712Domain: { name: string, type: string }[],
+    Order: { name: string, type: string }[]
+  },
+  primaryType: string,
+  message: {
+    maker: string,
+    taker: string,
+    actor: string,
+    contractTermsHash: string,
+    makerCreditEnhancement: string,
+    takerCreditEnhancement: string,
+    salt: number
   }
 }

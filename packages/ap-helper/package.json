@@ -1,0 +1,42 @@
+{
+  "name": "@atpar/ap-helper",
+  "version": "0.1.0-alpha.2",
+  "description": "Helper service for working with ap.js.",
+  "author": "jo-es <escherich.johannes+github@gmail.com>",
+  "homepage": "https://github.com/atpar/ap-monorepo#readme",
+  "license": "UNLICENSED",
+  "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atpar/ap-monorepo.git"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "prebuild": "rm -rf ./dist",
+    "build": "webpack"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "bugs": {
+    "url": "https://github.com/atpar/ap-monorepo/issues"
+  },
+  "dependencies": {
+    "bignumber.js": "^7.2.1",
+    "cors": "^2.8.4",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.3",
+    "web3": "1.0.0-beta.46"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "babel-loader": "^8.0.5",
+    "raw-loader": "^2.0.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

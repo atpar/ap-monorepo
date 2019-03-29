@@ -5,7 +5,7 @@ trap "trap - TERM && kill -- -$$" INT TERM EXIT
 echo "running ganache-cli ..."
 
 { 
-	ganache-cli -e 50000000
+	ganache-cli -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
 } 1>/dev/null &
 
 sleep 1
@@ -23,26 +23,27 @@ echo "migrating contracts ..."
 
 (
 	cd packages/ap-contracts
-	truffle migrate --network development | 1>/dev/null
+	truffle migrate --reset --network development | 1>/dev/null
 )
 
-echo "clearing database ..."
+echo "clearing databases ..."
 
 (
-	cd packages/simple-relayer
-	echo "" > Database.json
+	cd packages/ap-helper
+	echo "" > Channel-Database.json
+	echo "" > Orderbook-Database.json
 )
 
-echo "running simple-relayer ..."
+echo "running ap-helper ..."
 
 if ! [ -x "$(command -v yarn)" ]; then
 	{
-		cd packages/simple-relayer
+		cd packages/ap-helper
 		npm start
 	} 1>/dev/null &
 else
 	{
-		cd packages/simple-relayer
+		cd packages/ap-helper
 		yarn start
 	} 1>/dev/null &
 fi

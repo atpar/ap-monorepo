@@ -1,5 +1,6 @@
 pragma solidity ^0.5.2;
 
+
 contract APDefinitions {
 
 	int256 constant INT256_MIN = int256((uint256(1) << 255));
@@ -138,5 +139,12 @@ contract APDefinitions {
 
 		// ObjectCodeOfPrepaymentModel objectCodeOfPrepaymentModel;
 		// MarketObjectCodeOfRateReset marketObjectCodeOfRateReset;
+	}
+
+	struct AssetOwnership {
+		address recordCreatorObligor;
+		address payable recordCreatorBeneficiary;
+		address counterpartyObligor;
+		address payable counterpartyBeneficiary;
 	}
 }

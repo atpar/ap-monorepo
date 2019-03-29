@@ -1,4 +1,4 @@
-import { Provider, SocketProvider, HTTPProvider } from './Provider';
+import { Provider, SocketProvider, HTTPProvider } from '../utils/Provider';
 
 import { SignedContractUpdate } from '../types';
 
@@ -6,12 +6,12 @@ import { SignedContractUpdate } from '../types';
 export class Client {
 
   private provider: Provider;
-  private contractListenerRegistry: Map<string, (signedContractUpdate: SignedContractUpdate) => void>;
+  private contractUpdateListenerRegistry: Map<string, (signedContractUpdate: SignedContractUpdate) => void>;
   private fallbackListener: null | ((signedContractUpdate: SignedContractUpdate) => void);
 
   private constructor (receiver: string, provider: Provider) {
     this.provider = provider;
-    this.contractListenerRegistry = new Map<string, (signedContractUpdate: SignedContractUpdate) => void>();
+    this.contractUpdateListenerRegistry = new Map<string, (signedContractUpdate: SignedContractUpdate) => void>();
     this.fallbackListener = null;
 
     this._receiveContractUpdates(receiver);
@@ -20,11 +20,14 @@ export class Client {
   /**
    * sends a signed contract update utilizing the provided method (http or websocket)
    * @param {SignedContractUpdate} signedContractUpdate signed contract update to send
-   * @returns {Promise<boolean>} returns true if messages was successfully broadcasted
+   * @returns {Promise<void>} returns true if messages was successfully broadcasted
    */
-  public async sendContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<boolean> {
+  public async sendContractUpdate (signedContractUpdate: SignedContractUpdate): Promise<void> {
     const message = JSON.stringify({ signedContractUpdate: signedContractUpdate });
-    return this.provider.sendMessage(message);
+
+    if (!(await this.provider.sendMessage(message))) { 
+      throw(new Error('EXECUTION_ERROR: Could not send contract update!'));
+    }
   } 
 
   private async _receiveContractUpdates (receiver: string): Promise<void> {
@@ -32,8 +35,8 @@ export class Client {
       // try  { signedContractUpdate = JSON.parse(obj); } catch (error) { return; }
       Object.values(data).forEach((obj) => {
         const signedContractUpdate: SignedContractUpdate = obj; 
-        const contractId = signedContractUpdate.contractUpdate.contractId;
-        const contractListener = this.contractListenerRegistry.get(contractId);
+        const assetId = signedContractUpdate.contractUpdate.assetId;
+        const contractListener = this.contractUpdateListenerRegistry.get(assetId);
         if (contractListener) { return contractListener(signedContractUpdate); }
         if (this.fallbackListener) { return this.fallbackListener(signedContractUpdate); }
       });
@@ -41,29 +44,29 @@ export class Client {
   }
 
   /**
-   * registers a contract listener which calls the provided callback function
-   * upon receiving a new signed contract update for ContractChannel
-   * @param contractId
+   * registers a contract update listener which calls the provided callback function
+   * upon receiving a new signed contract update for AssetChannel
+   * @param assetId
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
-  public registerContractListener (
-    contractId: string, 
+  public registerContractUpdateListener (
+    assetId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
   ): void {
-    this.contractListenerRegistry.set(contractId, cb);
+    this.contractUpdateListenerRegistry.set(assetId, cb);
   }
 
   /**
-   * removes a contract listener from the contract listener registry
-   * @param {string} contractId
+   * removes a contract update listener from the contract update listener registry
+   * @param {string} assetId
    */
-  public removeContractListener (contractId: string): void {
-    this.contractListenerRegistry.delete(contractId);
+  public removeContractUpdateListener (assetId: string): void {
+    this.contractUpdateListenerRegistry.delete(assetId);
   }
 
   /**
    * registers a listener which calls the provided callback 
-   * when a signed contract update of an unregistered ContractChannel is fetched
+   * when a signed contract update of an unregistered AssetChannel is fetched
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void): void {
@@ -89,6 +92,7 @@ export class Client {
    * @returns {Client}
    */
   public static http (receiver: string, url: string): Client {
-    return new Client(receiver,  new HTTPProvider(url));
+    const routes = { sendMessageRoute: '/api/contracts', listenForMessagesRoute: '/api/contracts?address=' };
+    return new Client(receiver,  new HTTPProvider(url, routes));
   }
 }

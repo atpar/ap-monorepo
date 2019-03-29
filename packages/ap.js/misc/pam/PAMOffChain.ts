@@ -20,7 +20,7 @@
 //   private constructor (
 //     statelessContract: PAMStatelessContract, 
 //     statefulContract: PAMStatefulContract,
-//     contractId: string,
+//     assetId: string,
 //     recordCreatorAddress: string,
 //     counterpartyAddress: string,
 //     contractTerms: ContractTerms,
@@ -29,7 +29,7 @@
 //     super(
 //       statelessContract,
 //       statefulContract.address,
-//       contractId,
+//       assetId,
 //       recordCreatorAddress, 
 //       counterpartyAddress,
 //       contractTerms, 
@@ -81,7 +81,7 @@
 //    * returns a new PAMOffChain instance
 //    * computes and stores the first contract state and deploys a new stateful contract
 //    * @param web3 Web3 instance
-//    * @param contractId contract id
+//    * @param assetId contract id
 //    * @param recordCreatorAddress address of the record creator
 //    * @param counterpartyAddress address of the counterparty
 //    * @param contractTerms contact terms
@@ -90,7 +90,7 @@
 //    */
 //   public static async create (
 //     web3: Web3, 
-//     contractId: string,
+//     assetId: string,
 //     recordCreatorAddress: string,
 //     counterpartyAddress: string,
 //     contractTerms: ContractTerms,
@@ -99,7 +99,7 @@
 //     const statelessContract = await PAMStatelessContract.instantiate(web3);
 //     const statefulContract = await PAMStatefulContract.deploy(
 //       web3, 
-//       contractId, 
+//       assetId, 
 //       recordCreatorAddress, 
 //       counterpartyAddress, 
 //       txOptions
@@ -109,7 +109,7 @@
 //     return new PAMOffChain(
 //       statelessContract, 
 //       statefulContract, 
-//       contractId,
+//       assetId,
 //       recordCreatorAddress,
 //       counterpartyAddress,
 //       contractTerms, 
@@ -123,7 +123,7 @@
 //    * the address of an already deployed stateful contract
 //    * @param web3 Web3 instance
 //    * @param statefulContractAddress address of the stateful contract
-//    * @param contractId contract id
+//    * @param assetId contract id
 //    * @param contractTerms contract terms
 //    * @param contractState contract state
 //    * @returns PAMOffChain
@@ -131,7 +131,7 @@
 //   public static async init (
 //     web3: Web3, 
 //     statefulContractAddress: string,
-//     contractId: string,
+//     assetId: string,
 //     contractTerms: ContractTerms,
 //     contractState: ContractState
 //   ) {
@@ -143,7 +143,7 @@
 //     return new PAMOffChain(
 //       statelessContract, 
 //       statefulContract, 
-//       contractId, 
+//       assetId, 
 //       recordCreatorAddress,
 //       counterpartyAddress,
 //       contractTerms, 
