@@ -20,6 +20,7 @@
     "access": "restricted"
   },
   "scripts": {
+    "build": "truffle compile && mkdir -p ./artifacts && cp -r ./build/contracts/* ./artifacts/",
     "lint": "solium -d contracts/"
   },
   "bugs": {

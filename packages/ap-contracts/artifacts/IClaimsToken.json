@@ -1,0 +1,607 @@
+{
+  "contractName": "IClaimsToken",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "fundsDeposited",
+          "type": "uint256"
+        }
+      ],
+      "name": "Deposit",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "withdrawFunds",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_forAddress",
+          "type": "address"
+        }
+      ],
+      "name": "availableFunds",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalReceivedFunds",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.2;\n\nimport \"openzeppelin-solidity/contracts/token/ERC20/IERC20.sol\";\n\n\ninterface IClaimsToken {\n\n\tevent Deposit(uint256 fundsDeposited);\n\t\n\t/**\n\t * @dev Withdraws available funds for user.\n\t */\n\tfunction withdrawFunds() external payable;\n\n\t/**\n\t * @dev Returns the amount of funds a given address is able to withdraw currently.\n\t * @param _forAddress Address of ClaimsToken holder\n\t * @return A uint256 representing the available funds for a given account\n\t */\n\tfunction availableFunds(address _forAddress) external view returns (uint256);\n\n\t/**\n\t * @dev Get cumulative funds received by ClaimsToken.\n\t * @return A uint256 representing the total funds received by ClaimsToken\n\t */\n\tfunction totalReceivedFunds () external view returns (uint256);\n}",
+  "sourcePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APTokenization/IClaimsToken.sol",
+  "ast": {
+    "absolutePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APTokenization/IClaimsToken.sol",
+    "exportedSymbols": {
+      "IClaimsToken": [
+        6111
+      ]
+    },
+    "id": 6112,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6090,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:25"
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "file": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "id": 6091,
+        "nodeType": "ImportDirective",
+        "scope": 6112,
+        "sourceUnit": 8763,
+        "src": "25:64:25",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 6111,
+        "linearizedBaseContracts": [
+          6111
+        ],
+        "name": "IClaimsToken",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 6095,
+            "name": "Deposit",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 6094,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6093,
+                  "indexed": false,
+                  "name": "fundsDeposited",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6095,
+                  "src": "133:22:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6092,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "133:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "132:24:25"
+            },
+            "src": "119:38:25"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Withdraws available funds for user.",
+            "id": 6098,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdrawFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6096,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "238:2:25"
+            },
+            "returnParameters": {
+              "id": 6097,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "257:0:25"
+            },
+            "scope": 6111,
+            "src": "216:42:25",
+            "stateMutability": "payable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Returns the amount of funds a given address is able to withdraw currently.\n@param _forAddress Address of ClaimsToken holder\n@return A uint256 representing the available funds for a given account",
+            "id": 6105,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "availableFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6101,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6100,
+                  "name": "_forAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6105,
+                  "src": "507:19:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6099,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "507:7:25",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "506:21:25"
+            },
+            "returnParameters": {
+              "id": 6104,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6103,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6105,
+                  "src": "551:7:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6102,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "551:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "550:9:25"
+            },
+            "scope": 6111,
+            "src": "483:77:25",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Get cumulative funds received by ClaimsToken.\n@return A uint256 representing the total funds received by ClaimsToken",
+            "id": 6110,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "totalReceivedFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6106,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "731:2:25"
+            },
+            "returnParameters": {
+              "id": 6109,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6108,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6110,
+                  "src": "757:7:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6107,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "757:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "756:9:25"
+            },
+            "scope": 6111,
+            "src": "703:63:25",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 6112,
+        "src": "92:676:25"
+      }
+    ],
+    "src": "0:768:25"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APTokenization/IClaimsToken.sol",
+    "exportedSymbols": {
+      "IClaimsToken": [
+        6111
+      ]
+    },
+    "id": 6112,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6090,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:25"
+      },
+      {
+        "absolutePath": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "file": "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol",
+        "id": 6091,
+        "nodeType": "ImportDirective",
+        "scope": 6112,
+        "sourceUnit": 8763,
+        "src": "25:64:25",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 6111,
+        "linearizedBaseContracts": [
+          6111
+        ],
+        "name": "IClaimsToken",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 6095,
+            "name": "Deposit",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 6094,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6093,
+                  "indexed": false,
+                  "name": "fundsDeposited",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6095,
+                  "src": "133:22:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6092,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "133:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "132:24:25"
+            },
+            "src": "119:38:25"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Withdraws available funds for user.",
+            "id": 6098,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdrawFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6096,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "238:2:25"
+            },
+            "returnParameters": {
+              "id": 6097,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "257:0:25"
+            },
+            "scope": 6111,
+            "src": "216:42:25",
+            "stateMutability": "payable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Returns the amount of funds a given address is able to withdraw currently.\n@param _forAddress Address of ClaimsToken holder\n@return A uint256 representing the available funds for a given account",
+            "id": 6105,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "availableFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6101,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6100,
+                  "name": "_forAddress",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6105,
+                  "src": "507:19:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 6099,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "507:7:25",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "506:21:25"
+            },
+            "returnParameters": {
+              "id": 6104,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6103,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6105,
+                  "src": "551:7:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6102,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "551:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "550:9:25"
+            },
+            "scope": 6111,
+            "src": "483:77:25",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": "@dev Get cumulative funds received by ClaimsToken.\n@return A uint256 representing the total funds received by ClaimsToken",
+            "id": 6110,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "totalReceivedFunds",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6106,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "731:2:25"
+            },
+            "returnParameters": {
+              "id": 6109,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6108,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6110,
+                  "src": "757:7:25",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 6107,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "757:7:25",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "756:9:25"
+            },
+            "scope": 6111,
+            "src": "703:63:25",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 6112,
+        "src": "92:676:25"
+      }
+    ],
+    "src": "0:768:25"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.2+commit.1df8f40c.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-03-28T18:25:01.747Z",
+  "devdoc": {
+    "methods": {
+      "availableFunds(address)": {
+        "details": "Returns the amount of funds a given address is able to withdraw currently.",
+        "params": {
+          "_forAddress": "Address of ClaimsToken holder"
+        },
+        "return": "A uint256 representing the available funds for a given account"
+      },
+      "totalReceivedFunds()": {
+        "details": "Get cumulative funds received by ClaimsToken.",
+        "return": "A uint256 representing the total funds received by ClaimsToken"
+      },
+      "withdrawFunds()": {
+        "details": "Withdraws available funds for user."
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

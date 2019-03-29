@@ -1,0 +1,103 @@
+{
+  "contractName": "APEndOfMonthConventions",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3fe6080604052600080fdfea165627a7a723058201f2f08be211e033b76b809311713bc4e68ece19ab8df4b1c2f6a4942fdb3dc010029",
+  "deployedBytecode": "0x6080604052600080fdfea165627a7a723058201f2f08be211e033b76b809311713bc4e68ece19ab8df4b1c2f6a4942fdb3dc010029",
+  "sourceMap": "26:308:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:308:3;;;;;;;",
+  "deployedSourceMap": "26:308:3:-;;;;;",
+  "source": "pragma solidity ^0.5.2;\n\n\ncontract APEndOfMonthConventions {\n\n\t// function endOfMonthShift(EndOfMonthConvention _eomc, uint256 _startTime, IPS _period, uint256 _currentTimestamp)\n\t//   internal\n\t//   pure \n\t//   returns(uint256)\n\t// {\n\n\t// }\n\n\t// function sameDayShift()\n\t//   internal\n\t//   pure\n\t//   returns(uint256)\n\t// {\n\n\t// }\n}",
+  "sourcePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APCore/APEndOfMonthConventions.sol",
+  "ast": {
+    "absolutePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APCore/APEndOfMonthConventions.sol",
+    "exportedSymbols": {
+      "APEndOfMonthConventions": [
+        1151
+      ]
+    },
+    "id": 1152,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1150,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:3"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1151,
+        "linearizedBaseContracts": [
+          1151
+        ],
+        "name": "APEndOfMonthConventions",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 1152,
+        "src": "26:308:3"
+      }
+    ],
+    "src": "0:334:3"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/johannes/Documents/dev/actus-protocol/ap-monorepo/packages/ap-contracts/contracts/APCore/APEndOfMonthConventions.sol",
+    "exportedSymbols": {
+      "APEndOfMonthConventions": [
+        1151
+      ]
+    },
+    "id": 1152,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1150,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:3"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 1151,
+        "linearizedBaseContracts": [
+          1151
+        ],
+        "name": "APEndOfMonthConventions",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 1152,
+        "src": "26:308:3"
+      }
+    ],
+    "src": "0:334:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.2+commit.1df8f40c.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.1",
+  "updatedAt": "2019-03-28T18:25:01.721Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
