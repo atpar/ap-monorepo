@@ -1,11 +1,14 @@
 {
-  "name": "@atpar/simple-relayer",
+  "name": "@atpar/ap-helper",
   "version": "0.0.0",
-  "description": "Simple relayer",
+  "description": "Helper service for working with ap.js.",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "./dist/index.js",
+  "files": [
+    "dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atpar/ap-monorepo.git"

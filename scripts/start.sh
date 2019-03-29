@@ -29,21 +29,21 @@ echo "migrating contracts ..."
 echo "clearing databases ..."
 
 (
-	cd packages/simple-relayer
+	cd packages/ap-helper
 	echo "" > Channel-Database.json
 	echo "" > Orderbook-Database.json
 )
 
-echo "running simple-relayer ..."
+echo "running ap-helper ..."
 
 if ! [ -x "$(command -v yarn)" ]; then
 	{
-		cd packages/simple-relayer
+		cd packages/ap-helper
 		npm start
 	} 1>/dev/null &
 else
 	{
-		cd packages/simple-relayer
+		cd packages/ap-helper
 		yarn start
 	} 1>/dev/null &
 fi

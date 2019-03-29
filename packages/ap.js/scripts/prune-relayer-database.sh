@@ -1,7 +1,7 @@
 #!/bin/sh
 
 (
-	cd ../../packages/simple-relayer
+	cd ../../packages/ap-helper
 	echo "" > Channel-Database.json
 	echo "" > Orderbook-Database.json
 )
