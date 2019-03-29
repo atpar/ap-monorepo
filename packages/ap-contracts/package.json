@@ -6,11 +6,10 @@
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "truffle-config.js",
-  "directories": {
-    "test": "__tests__"
-  },
   "files": [
-    "lib"
+    "contracts/",
+    "migrations",
+    "truffle-config.js"
   ],
   "repository": {
     "type": "git",
