@@ -38,8 +38,8 @@ node ./node_modules/@atpar/ap-helper
 
 To clear the orderbook and channel message database:
 ```sh
-rm Orderbook-Database.json
-rm Channel-Database.json
+echo "" > ./node_modules/@atpar/ap-helper/Orderbook-Database.json
+echo "" > ./node_modules/@atpar/ap-helper/Channel-Database.json
 ```
 
 ## Development
