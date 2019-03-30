@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap.js",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "Typescript Library implementing the ACTUS protocol",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -30,19 +30,19 @@
     "web3": "1.0.0-beta.46"
   },
   "devDependencies": {
-    "cross-fetch": "^3.0.2",
-    "eth-sig-util": "2.1.1",
-    "socket.io": "^2.2.0",
-    "web3-utils": "1.0.0-beta.46",
     "@types/bignumber.js": "^5.0.0",
     "@types/bn.js": "^4.11.4",
     "@types/jest": "^23.3.12",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
+    "cross-fetch": "^3.0.2",
+    "eth-sig-util": "2.1.1",
     "jest": "^23.6.0",
+    "socket.io": "^2.2.0",
     "ts-jest": "^23.10.5",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.2",
+    "web3-utils": "1.0.0-beta.46",
     "webpack": "^4.29.1",
     "webpack-cli": "^3.2.1"
   }
