@@ -2,6 +2,7 @@ import Web3 from 'web3';
 
 import { SignedContractUpdate, OrderData } from './types';
 
+import { Asset } from './Asset';
 import { AssetChannel } from './channel/AssetChannel';
 import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI } from './apis';
 import { Relayer } from './issuance/Relayer';
@@ -9,6 +10,8 @@ import { Order } from './issuance/Order';
 import { Client } from './channel/Client';
 import { Signer } from './utils/Signer';
 import { Common } from './utils/Common';
+
+import * as APTypes from './types';
 
 
 export class AP {
@@ -128,6 +131,7 @@ export class AP {
   }
 }
 
-export { Asset } from './Asset';
-export { AssetChannel } from './channel/AssetChannel';
-export { Order } from './issuance/Order';
+export { Asset };
+export { AssetChannel };
+export { Order };
+export { APTypes };
