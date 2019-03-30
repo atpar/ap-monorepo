@@ -22,16 +22,11 @@ Contains:
 
 - **Resources**
 
-  `GET /terms** Retrieve ACTUS test terms
+  `GET /terms` Retrieve ACTUS test terms
 
 - **Faucet**
 
   `POST /faucet` Request Ether for an address
-
-
-
-
-
 
 ## Usage
 Quick start:
@@ -41,7 +36,7 @@ yarn add @atpar/ap-helper
 node ./node_modules/@atpar/ap-helper
 ```
 
-To clear the orderbook and channel messages:
+To clear the orderbook and channel message database:
 ```sh
 rm Orderbook-Database.json
 rm Channel-Database.json
@@ -60,7 +55,7 @@ yarn install
 yarn build
 ```
 
-2. start simple-relayer
+2. start ap-helper
 ```sh
 yarn start
 ```
