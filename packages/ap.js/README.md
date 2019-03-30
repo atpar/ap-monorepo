@@ -1,6 +1,6 @@
 # AP.js
 
-AP.js is a typescript implementation of the ACTUS protocol. 
+AP.js is a typescript library for interacting with the ACTUS protocol smart contracts. 
 It allows developers to create and manage ACTUS assets.
 
 ## Overview
