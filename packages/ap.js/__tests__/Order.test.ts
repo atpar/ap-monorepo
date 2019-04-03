@@ -3,8 +3,6 @@ import Web3 from 'web3';
 import { AP, Order } from '../src';
 import { ContractTerms, ContractType, OrderParams } from '../src/types';
 
-const PAMAssetActorArtifact: any = require('../../ap-contracts/build/contracts/PAMAssetActor.json');
-
 
 describe('testOrderClass', () => {
 
@@ -15,14 +13,12 @@ describe('testOrderClass', () => {
   let apCP: AP;
   let recordCreator: string;
   let counterparty: string;
-  let contractActor: string;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
-    contractActor = PAMAssetActorArtifact.networks[await web3.eth.net.getId()].address
 
     const response = await fetch('http://localhost:9000' + '/api/terms', {});
     const contractTemplates = await response.json();
@@ -43,15 +39,11 @@ describe('testOrderClass', () => {
 
     const orderParams: OrderParams = {
       makerAddress: recordCreator,
-      takerAddress: null,
-      actorAddress: contractActor,
       terms,
-      makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
-      takerCreditEnhancementAddress: null
+      makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000'
     }
 
     const order = Order.create(apRC, orderParams);
-
     await order.signAndSendOrder();
   });
 

@@ -68,14 +68,14 @@ export interface ContractUpdateAsTypedData extends TypedData {
 
 export interface OrderParams {
   makerAddress: string,
-  takerAddress: string | null,
-  actorAddress: string,
   terms: ContractTerms,
   makerCreditEnhancementAddress: string,
-  takerCreditEnhancementAddress: string | null
 }
 
 export interface OrderData extends OrderParams {
+  takerAddress: string | null,
+  takerCreditEnhancementAddress: string | null
+  actorAddress: string,
   salt: number,
   signatures: {
     makerSignature: string | null,

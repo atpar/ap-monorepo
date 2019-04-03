@@ -38,7 +38,10 @@ export class Order {
 
   public static create (ap: AP, orderParams: OrderParams): Order {
     const orderData: OrderData = { 
-      ...orderParams, 
+      ...orderParams,
+      takerAddress: null,
+      takerCreditEnhancementAddress: null,
+      actorAddress: ap.lifecycle.getActorAddress(),
       signatures: {
         makerSignature: null,
         takerSignature: null
