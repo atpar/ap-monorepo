@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-helper",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.4",
   "description": "Helper service for working with ap.js.",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
