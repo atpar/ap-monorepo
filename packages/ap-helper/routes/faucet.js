@@ -2,7 +2,9 @@ const router = require('express').Router()
 const sendEther = require('../services/ethereum').sendEther
 
 router.post('/faucet', async (req, res) => {
-  const receiver = req.query.address
+  const receiver = req.body.address
+  
+  if (!receiver) { return res.status(400).end() }
   
   try {
     await sendEther(receiver)

@@ -29,13 +29,13 @@ async function getAccount () {
   return (await state.web3.eth.getAccounts())[0]
 }
 
-async function sendEther () {
+async function sendEther (receiver) {
   const account = await getAccount()
  
   return await state.web3.eth.sendTransaction({
     from: account,
     to: receiver,
-    value: '7000000000000000000000'
+    value: '10000000000000000000000'
   })
 }
 
