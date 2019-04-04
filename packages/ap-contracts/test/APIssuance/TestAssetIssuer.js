@@ -1,3 +1,6 @@
+const { expectEvent } = require('openzeppelin-test-helpers');
+
+
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 const PAMAssetActor = artifacts.require('PAMAssetActor')
@@ -59,7 +62,7 @@ contract('AssetIssuer', (accounts) => {
       salt: orderData.salt
     }
 
-    await this.AssetIssuerInstance.fillOrder(
+    const { tx: txHash } = await this.AssetIssuerInstance.fillOrder(
       order,
       orderData.signatures.makerSignature,
       orderData.signatures.takerSignature
@@ -80,6 +83,12 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership[1], recordCreator)
     assert.equal(storedOwnership[2], counterparty)
     assert.equal(storedOwnership[3], counterparty)
+
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+      assetId: assetId,
+      recordCreator: recordCreator,
+      counterparty: counterparty
+    })
   })
 })
 

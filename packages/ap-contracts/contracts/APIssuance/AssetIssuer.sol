@@ -8,6 +8,8 @@ import "../APExtended/IAssetActor.sol";
 
 contract AssetIssuer is APDefinitions, VerifyOrder {
 
+	event AssetIssued(bytes32 indexed assetId, address indexed recordCreator, address indexed counterparty);
+
 	/**
 	 * issues an asset from an order which was signed by the maker and taker
 	 * @dev verifies both signatures and calls the init code defined in the actor contract
@@ -41,5 +43,7 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 			IAssetActor(order.actor).initialize(assetId, ownership, order.terms), 
 			"EXECUTION_ERROR: Initialization failed"
 		);
+
+		emit AssetIssued(assetId, order.maker, order.taker);
 	}
 }

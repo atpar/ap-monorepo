@@ -14,6 +14,8 @@ describe('testOrderClass', () => {
   let recordCreator: string;
   let counterparty: string;
 
+  let receivedNewAsset: boolean = false;
+
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 
@@ -32,6 +34,10 @@ describe('testOrderClass', () => {
 
     apRC = await AP.init(web3, recordCreator, { orderRelayer: 'http://localhost:9000' });
     apCP = await AP.init(web3, counterparty, { orderRelayer: 'http://localhost:9000' });
+
+    apCP.onNewAssetIssued(async () => {
+      receivedNewAsset = true;
+    });
   });
 
   it('should create a order instance', async () => {
@@ -68,5 +74,14 @@ describe('testOrderClass', () => {
     });
 
     await new Promise(resolve => setTimeout(resolve, 3000));
-  })
+  });
+
+  it('should receive a new issued asset', async () => {
+    expect(receivedNewAsset).toBe(true);
+  });
+
+  it('should retrieve one or more assetIds from issued assets', async () => {
+    const assetIds = await apCP.getAssetIds();
+    expect(assetIds.length > 0).toBe(true);
+  });
 });

@@ -5,6 +5,7 @@ import { SignedContractUpdate, OrderData } from './types';
 import { Asset } from './Asset';
 import { AssetChannel } from './channel/AssetChannel';
 import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI } from './apis';
+import { IssuanceAPI } from './issuance/IssuanceAPI';
 import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
 import { Client } from './channel/Client';
@@ -22,7 +23,8 @@ export class AP {
   public economics: EconomicsAPI;
   public payment: PaymentAPI;
   public lifecycle: LifecycleAPI;
-
+  public issuance: IssuanceAPI;
+  
   public signer: Signer;
   public common: Common;
 
@@ -35,6 +37,7 @@ export class AP {
     economics: EconomicsAPI,
     payment: PaymentAPI,
     lifecycle: LifecycleAPI,
+    issuance: IssuanceAPI,
     signer: Signer, 
     common: Common,
     relayer?: Relayer,
@@ -46,6 +49,7 @@ export class AP {
     this.economics = economics;
     this.payment = payment;
     this.lifecycle = lifecycle;
+    this.issuance = issuance;
 
     this.signer = signer;
     this.common = common;
@@ -69,11 +73,38 @@ export class AP {
     });
   }
 
+  /**
+   * polls for new unfilled orders from the order relayer
+   * @param {(order: Order) => void} cb callback function to be called
+   * upon receiving a new unfilled order from the orderbook of the relayer
+   */
   public onNewOrder (cb: (order: Order) => void): void {
     if (!this.relayer) { throw('FEATURE_NOT_AVAILABLE: Relayer is not enabled!'); }
     this.relayer.onNewOrder((orderData: OrderData) => {
       cb(Order.load(this, orderData));
     });
+  }
+
+  /**
+   * look for new issued assets in which the default account is involved
+   * @param {(asset: Asset) => void} cb callback function to be called
+   * after a new asset in which the default account is involved is issued
+   */
+  public onNewAssetIssued (cb: (asset: Asset) => void): void {
+    this.issuance.onAssetIssued(async (assetId) => {  
+      try {
+        const asset = await Asset.load(this, assetId);
+        cb(asset);
+      } catch (error) { console.log(error); return; }
+    });
+  }
+
+  /**
+   * returns an array of assetIds of assets in which the default account is involved
+   * @returns {Promise<string[]>}
+   */
+  public async getAssetIds (): Promise<string[]> {
+    return this.issuance.getAssetIds();
   }
 
   /**
@@ -99,6 +130,7 @@ export class AP {
     const economics = await EconomicsAPI.init(web3, signer);
     const payment = await PaymentAPI.init(web3, signer);
     const lifecycle = await LifecycleAPI.init(web3, signer);
+    const issuance = await IssuanceAPI.init(web3, signer);
     
     let relayer: Relayer | undefined = undefined;
     let client: Client | undefined = undefined;
@@ -127,7 +159,7 @@ export class AP {
       // throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); 
     }
 
-    return new AP(web3, ownership, economics, payment, lifecycle, signer, common, relayer, client);
+    return new AP(web3, ownership, economics, payment, lifecycle, issuance, signer, common, relayer, client);
   }
 }
 

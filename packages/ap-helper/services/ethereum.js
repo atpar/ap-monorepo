@@ -52,11 +52,29 @@ async function fillOrder (orderData) {
     salt: orderData.salt
   }
 
-  await state.assetIssuer.methods.fillOrder(
-    order,
-    orderData.signatures.makerSignature,
-    orderData.signatures.takerSignature
-  ).send({ from: account, gas: 3000000 })
+  try {
+    await state.assetIssuer.methods.fillOrder(
+      order,
+      orderData.signatures.makerSignature,
+      orderData.signatures.takerSignature
+    ).send({ from: account, gas: 3000000 })
+  } catch (error) {
+    const assetId = state.web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ['bytes', 'bytes'],
+        [orderData.signatures.makerSignature, orderData.signatures.takerSignature]
+      )
+    )
+    const event = await state.assetIssuer.getPastEvents('AssetIssued', {
+      filter: { assetId: assetId },
+      fromBlock: 0,
+      toBlock: 'latest'
+    })
+
+    if (event.length === 0) {
+      throw(new Error('TRANSACTION_ERROR: Transaction failed!'))
+    }
+  }
 }
 
 async function getPrecision () {

@@ -126,3 +126,9 @@ export interface FilledOrderDataAsTypedData extends TypedData {
     salt: number
   }
 }
+
+export interface AssetIssuedEvent {
+  assetId: string,
+  recordCreatorAddress: string,
+  counterpartyAddress: string
+}
