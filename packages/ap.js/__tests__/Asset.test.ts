@@ -117,7 +117,7 @@ describe('testContractClass', () => {
 
   it('should settle payoff for events on behalf of the counterparty and progress the next state', async () => {
     // wait for tx of previous test (balance of record creator)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // settle obligations
     const assetCP = await Asset.load(apCP, assetRC.assetId);

@@ -69,7 +69,7 @@ describe('testAssetChannelClass', () => {
 
     apCP.onNewAssetChannel(mockCallback);
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 2500)); // poll frequency set to 2s
 
     expect(mockCallback.mock.calls.length).toBe(1);    
   });
