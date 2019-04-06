@@ -8,7 +8,7 @@ import "./IPaymentRegistry.sol";
 
 contract PaymentRegistry is IPaymentRegistry, Ownable {
 	
-	event Paid(bytes32, uint256, uint256);
+	event Paid(bytes32 indexed assetId, uint256 eventId, uint256 amount);
 
 	struct Payoff {
 		int8 cashflowId;
