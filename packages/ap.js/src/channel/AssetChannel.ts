@@ -231,6 +231,7 @@ export class AssetChannel {
     const { contractUpdate: { assetId } } = this.getLastSignedContractUpdate();
 
     this.ap.client.registerContractUpdateListener(
+      this.ap.signer.account,
       assetId,
       async (signedContractUpdate: SignedContractUpdate) => {
         if (!(await this._validateSignedContractUpdate(signedContractUpdate))) { return; } 

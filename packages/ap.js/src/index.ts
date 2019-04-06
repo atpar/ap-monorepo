@@ -65,7 +65,7 @@ export class AP {
    */
   public onNewAssetChannel (cb: (assetChannel: AssetChannel) => void): void {
     if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
-    this.client.onNewContractUpdate(async (signedContractUpdate: SignedContractUpdate) => {
+    this.client.onNewContractUpdate(this.signer.account, async (signedContractUpdate: SignedContractUpdate) => {
       try {
         const assetChannel = await AssetChannel.fromSignedContractUpdate(this, signedContractUpdate);
         cb(assetChannel);
@@ -149,9 +149,9 @@ export class AP {
 
     if (relayers.channelRelayer != null) {
       if (relayers.channelRelayer.startsWith('http')) {
-      client = Client.http(signer.account, relayers.channelRelayer);
+      client = Client.http(relayers.channelRelayer);
       } else if (relayers.channelRelayer.startsWith('ws')) {
-        client = Client.websocket(signer.account, relayers.channelRelayer);
+        client = Client.websocket(relayers.channelRelayer);
       } else {
         throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
       }

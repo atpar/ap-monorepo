@@ -16,11 +16,6 @@ export class LifecycleAPI {
     this.signer = signer;
 
     this.assetListenerRegistry = new Map<string, (assetId: string) => void>();
-
-    this.actor.onAssetProgressedEvent((event) => {
-      const listener = this.assetListenerRegistry.get(event.assetId);
-      if (listener) { return listener(event.assetId, event.eventId); }
-    });
   }
 
   public getActorAddress(): string { return this.actor.getAddress(); }
@@ -43,6 +38,13 @@ export class LifecycleAPI {
     assetId: string, 
     cb: (assetId: string, eventId: number) => void
   ): void {
+    if (this.assetListenerRegistry.size === 0) {
+      this.actor.onAssetProgressedEvent((event) => {
+        const listener = this.assetListenerRegistry.get(event.assetId);
+        if (listener) { return listener(event.assetId, event.eventId); }
+      });
+    }
+
     this.assetListenerRegistry.set(assetId, cb);
   }
 

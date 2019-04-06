@@ -5,13 +5,9 @@ import { Provider, SocketProvider, HTTPProvider } from '../utils/Provider';
 export class Relayer {
 
   private provider: Provider;
-  private orderListener: null | ((orderData: OrderData) => void);
 
   private constructor (provider: Provider) {
     this.provider = provider;
-    this.orderListener = null;
-
-    this._receiveOrders();
   }
 
   /**
@@ -27,21 +23,17 @@ export class Relayer {
     }
   } 
 
-  private async _receiveOrders (): Promise<void> {
-    this.provider.listenForMessages('', (data: object) => {
-      Object.values(data).forEach((orderData: OrderData) => {
-        if (this.orderListener) { this.orderListener(orderData); }
-      });
-    });
-  }
-
   /**
    * registers a listener which calls the provided callback 
    * when a new order from the relayer is fetched
    * @param {(orderData: OrderData) => void} cb callback function which returns received OrderData
    */
   public onNewOrder (cb: (orderData: OrderData) => void): void {
-    this.orderListener = cb;
+    this.provider.listenForMessages('', (data: object) => {
+      Object.values(data).forEach((orderData: OrderData) => {
+        cb(orderData);
+      });
+    });
   }
 
   /**

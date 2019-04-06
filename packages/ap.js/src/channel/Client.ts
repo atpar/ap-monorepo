@@ -9,12 +9,10 @@ export class Client {
   private contractUpdateListenerRegistry: Map<string, (signedContractUpdate: SignedContractUpdate) => void>;
   private fallbackListener: null | ((signedContractUpdate: SignedContractUpdate) => void);
 
-  private constructor (receiver: string, provider: Provider) {
+  private constructor (provider: Provider) {
     this.provider = provider;
     this.contractUpdateListenerRegistry = new Map<string, (signedContractUpdate: SignedContractUpdate) => void>();
     this.fallbackListener = null;
-
-    this._receiveContractUpdates(receiver);
   }
 
   /**
@@ -30,9 +28,12 @@ export class Client {
     }
   } 
 
-  private async _receiveContractUpdates (receiver: string): Promise<void> {
-    this.provider.listenForMessages(receiver, (data: object) => {
-      // try  { signedContractUpdate = JSON.parse(obj); } catch (error) { return; }
+  private _receiveContractUpdate (receiverAddress: string): void {
+    if (!(this.contractUpdateListenerRegistry.size === 0 && this.fallbackListener === null)) { 
+      throw(new Error('INITIALIZATION_ERROR: Listener already setup!')); 
+    }
+
+    this.provider.listenForMessages(receiverAddress, (data: object) => {
       Object.values(data).forEach((obj) => {
         const signedContractUpdate: SignedContractUpdate = obj; 
         const assetId = signedContractUpdate.contractUpdate.assetId;
@@ -46,13 +47,19 @@ export class Client {
   /**
    * registers a contract update listener which calls the provided callback function
    * upon receiving a new signed contract update for AssetChannel
+   * @param {string} receiverAddress address of the receiver 
    * @param assetId
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
   public registerContractUpdateListener (
+    receiverAddress: string,
     assetId: string, 
     cb: (signedContractUpdate: SignedContractUpdate) => void
   ): void {
+    if (this.contractUpdateListenerRegistry.size === 0 && this.fallbackListener === null) {
+      this._receiveContractUpdate(receiverAddress);
+    }
+
     this.contractUpdateListenerRegistry.set(assetId, cb);
   }
 
@@ -67,32 +74,38 @@ export class Client {
   /**
    * registers a listener which calls the provided callback 
    * when a signed contract update of an unregistered AssetChannel is fetched
+   * @param {string} receiverAddress address of the receiver 
    * @param {(signedContractUpdate: SignedContractUpdate) => void} cb callback function which returns SignedContractUpdate
    */
-  public onNewContractUpdate (cb: (signedContractUpdate: SignedContractUpdate) => void): void {
+  public onNewContractUpdate (
+    receiverAddress: string,
+    cb: (signedContractUpdate: SignedContractUpdate) => void
+  ): void {
+    if (this.contractUpdateListenerRegistry.size === 0 && this.fallbackListener === null) {
+      this._receiveContractUpdate(receiverAddress);
+    }
+
     this.fallbackListener = cb;
   }
 
   /**
    * returns a new Client instance that utilizes a websocket 
    * for communicating with a provided relayer endpoint
-   * @param {string} receiver address of the receiver
    * @param {string} url websocket url
    * @returns {Client}
    */
-  public static websocket (receiver: string, url: string): Client {
-    return new Client(receiver, new SocketProvider(url));
+  public static websocket (url: string): Client {
+    return new Client(new SocketProvider(url));
   }
 
   /**
    * returns a new Client instance that utilizes http 
    * for communicating with a provided relayer endpoint
-   * @param {string} receiver address of the receiver 
    * @param {string} url http url
    * @returns {Client}
    */
-  public static http (receiver: string, url: string): Client {
+  public static http (url: string): Client {
     const routes = { sendMessageRoute: '/api/contracts', listenForMessagesRoute: '/api/contracts?address=' };
-    return new Client(receiver,  new HTTPProvider(url, routes));
+    return new Client(new HTTPProvider(url, routes));
   }
 }
