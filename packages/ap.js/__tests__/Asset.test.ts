@@ -2,7 +2,6 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
 import { AP, Asset } from '../src';
-// @ts-ignore
 import { ContractTerms, ContractState, ContractType, AssetOwnership } from '../src/types';
 
 
@@ -17,6 +16,8 @@ describe('testContractClass', () => {
   let apRC: AP;
   let apCP: AP;
   let assetRC: Asset;
+
+  let assetListenerCounter = 0;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -37,7 +38,7 @@ describe('testContractClass', () => {
     apCP = await AP.init(web3, counterparty, {});
   });
 
-  it('should create a new contract instance', async () => {
+  it('should create a new asset instance', async () => {
     const terms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
 
     const ownership: AssetOwnership = { 
@@ -47,11 +48,9 @@ describe('testContractClass', () => {
       counterpartyBeneficiaryAddress: counterparty
     }
 
-    assetRC = await Asset.create(
-      apRC,
-      terms, 
-      ownership
-    );
+    assetRC = await Asset.create(apRC, terms, ownership);
+
+    assetRC.onProgress(() => assetListenerCounter++);
 
     const storedOwnership: AssetOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
     const storedTerms: ContractTerms = await assetRC.getTerms();
@@ -62,10 +61,7 @@ describe('testContractClass', () => {
   });
 
   it('should load asset from registries for counterparty', async () => {
-    const assetCP = await Asset.load(
-      apCP,
-      assetRC.assetId
-    );
+    const assetCP = await Asset.load(apCP, assetRC.assetId);
 
     const storedOwnershipRC: AssetOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
     const storedTermsRC: ContractTerms = await assetRC.getTerms();
@@ -87,8 +83,12 @@ describe('testContractClass', () => {
 
     for (const evaluatedEvent of pendingSchedule) {
       const payoff = evaluatedEvent.event.payoff;
+  
       if (payoff.isLessThan(0)) {
-        await assetRC.settleNextPendingEvent(timestamp, { from: recordCreator, value: payoff.abs().toFixed() });
+        const amountOutstandingForObligation = await assetRC.getAmountOutstandingForNextObligation(timestamp);
+        expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
+
+        await assetRC.settleNextObligation(timestamp, { from: recordCreator, value: payoff.abs().toFixed() });
         totalPaid = totalPaid.plus(payoff.abs());
       }
     }
@@ -116,6 +116,10 @@ describe('testContractClass', () => {
   });
 
   it('should settle payoff for events on behalf of the counterparty and progress the next state', async () => {
+    // wait for tx of previous test (balance of record creator)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // settle obligations
     const assetCP = await Asset.load(apCP, assetRC.assetId);
     const state: ContractState = await assetCP.getState();
     const timestamp = Number(state.lastEventTime) + 2678400;
@@ -128,7 +132,10 @@ describe('testContractClass', () => {
     for (const evaluatedEvent of pendingSchedule) {
       const payoff = evaluatedEvent.event.payoff;
       if (payoff.isGreaterThan(0)) {
-        await assetCP.settleNextPendingEvent(timestamp, { from: counterparty, value: payoff.abs().toFixed() });
+        const amountOutstandingForObligation = await assetCP.getAmountOutstandingForNextObligation(timestamp);
+        expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
+
+        await assetCP.settleNextObligation(timestamp, { from: counterparty, value: payoff.abs().toFixed() });
         totalPaid = totalPaid.plus(payoff.abs());
       }
       lastEventTime = Number(evaluatedEvent.state.lastEventTime);
@@ -140,7 +147,7 @@ describe('testContractClass', () => {
     expect(totalPaid.isEqualTo(await assetCP.getTotalPaidOff(timestamp))).toBe(true);
     expect(recordCreatorOldBalance.plus(totalPaid.abs()).isEqualTo(recordCreatorNewBalance)).toBe(true);
 
-
+    // progress to next state
     const numberOfPendingEvents = pendingSchedule.length;
     const oldEventId = await apCP.economics.getEventId(assetCP.assetId);
 
@@ -150,5 +157,9 @@ describe('testContractClass', () => {
 
     expect((await assetCP.getState()).lastEventTime === lastEventTime).toBe(true);
     expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
+  });
+
+  it('should have called the asset listener more than once', () => {
+    expect(assetListenerCounter > 0).toBe(true);
   });
 });

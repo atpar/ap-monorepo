@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js';
+import { SendOptions } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractType, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { ContractEngine, PAM } from './engines';
 import { AP } from './index';
-import { SendOptions } from 'web3-eth-contract/types';
+import { sha3 } from './utils/Utils';
 
 
 /**
@@ -14,7 +15,6 @@ import { SendOptions } from 'web3-eth-contract/types';
 export class Asset {
   
   private ap: AP;
-  // @ts-ignore
   private contractEngine: ContractEngine;
   
   public assetId: string;
@@ -108,7 +108,7 @@ export class Asset {
   /**
    * returns the amount due to date
    * absolute value of the sum of only positive or only negative payoffs of all pending events 
-   * (depending on record creator or counterparty)
+   * (depending on the accounts role)
    * @param {number} timestamp current timestamp
    * @returns {Promise<BigNumber>}
    */
@@ -146,7 +146,37 @@ export class Asset {
     return new BigNumber(0);
   }
 
-  public async settleNextPendingEvent (timestamp: number, txOptions: SendOptions): Promise<void> {
+  /**
+   * returns the amount outstanding for the next payment oligation of a pending event
+   * (depending on the accounts role)
+   * @param {number} timestamp current timestamp
+   * @returns {Promise<BigNumber>}
+   */
+  public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
+    const pendingSchedule = await this.getPendingSchedule(timestamp);
+    const lastEventId = await this.ap.economics.getEventId(this.assetId);
+
+    for (let i = 0; i < pendingSchedule.length; i++) {
+      const eventId = lastEventId + i + 1;
+      const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
+      const duePayoff = pendingSchedule[i].event.payoff.abs();
+      const outstanding = duePayoff.minus(settledPayoff);
+
+      if (outstanding.isGreaterThan(0)) { return outstanding; }
+    }
+
+    return new BigNumber(0);
+  }
+
+  /**
+   * settles the next payment obligation of a pending event (depending on the accounts role)
+   * can be paid partially (has to be specified in the value field in txOptions)
+   * @dev this requires the users signature (metamask pop-up)
+   * @param {number} timestamp current timestamp
+   * @param {SendOptions} txOptions web3 transaction options
+   * @returns {Promise<void>}
+   */
+  public async settleNextObligation (timestamp: number, txOptions: SendOptions): Promise<void> {
     const pendingSchedule = await this.getPendingSchedule(timestamp);
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
@@ -176,11 +206,23 @@ export class Asset {
   /**
    * derives obligations by computing the next state of the asset and 
    * stores the new state if all obligation where fulfilled
-   * @param {number} timestamp 
+   * @param {number} timestamp
+   * @param {SendOptions} txOptions web3 transaction options
    * @return {Promise<void>}
    */
   public async progress (timestamp: number, txOptions: SendOptions): Promise<void> {
     await this.ap.lifecycle.progress(this.assetId, timestamp, txOptions);
+  }
+
+
+  /**
+   * calls the provided callback function when the state of the asset is updated
+   * @param {cb: () => void} cb callback function
+   */
+  public onProgress (cb: () => void): void {
+    this.ap.lifecycle.registerAssetListener(this.assetId, () => {
+      cb();
+    });
   }
 
   /**
@@ -199,7 +241,11 @@ export class Asset {
     terms: ContractTerms,
     ownership: AssetOwnership
   ): Promise<Asset> {
-    const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
+    const assetId = sha3(
+      ownership.recordCreatorObligorAddress, 
+      ownership.counterpartyObligorAddress, 
+      String(Math.floor(Math.random() * 1000000))
+    );
 
     let contractEngine;
     switch (terms.contractType) {

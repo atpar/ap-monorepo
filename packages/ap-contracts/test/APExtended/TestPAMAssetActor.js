@@ -1,4 +1,5 @@
 const BigNumber = require('bignumber.js')
+const { expectEvent } = require('openzeppelin-test-helpers');
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
@@ -53,7 +54,7 @@ contract('PAMAssetActor', (accounts) => {
     await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
 
     // register Ownership for assetId
-    const tx1 = await this.OwnershipRegistryInstance.registerOwnership(
+    await this.OwnershipRegistryInstance.registerOwnership(
       web3.utils.toHex(assetId), 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -62,15 +63,12 @@ contract('PAMAssetActor', (accounts) => {
     )
 
     // register Contract with assetId
-    const tx2 = await this.EconomicsRegistryInstance.registerEconomics(
+    await this.EconomicsRegistryInstance.registerEconomics(
       web3.utils.toHex(assetId),
       this.terms,
       this.state,
       this.PAMAssetActorInstance.address
     )
-
-    // console.log(tx1.receipt.cumulativeGasUsed)
-    // console.log(tx2.receipt.cumulativeGasUsed)
   })
 
   it('should process next state', async () => {
@@ -87,7 +85,8 @@ contract('PAMAssetActor', (accounts) => {
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
     const lastEventId = Number(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
 
-    const tx3 = await this.PaymentRouterInstance.settlePayment(
+    // settle obligations
+    await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId),
       cashflowId,
       lastEventId + 1,
@@ -96,17 +95,18 @@ contract('PAMAssetActor', (accounts) => {
       { from: recordCreatorObligor, value: value }
     )
 
-    // const { 2: balance } = await this.PaymentRegistryInstance.getPayoff(web3.utils.toHex(assetId), eventId)
+    // progress asset state
+    const { tx: txHash } = await this.PAMAssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp)
 
-    const tx4 = await this.PAMAssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp);
-
+    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
+      txHash, PAMAssetActor, 'AssetProgressed'
+    )
     const nextState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(assetId))
     const nextLastEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
 
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), assetId)
+    assert.equal(emittedEventId.toString(), nextLastEventId.toString())
     assert.equal(nextState.lastEventTime, currentTimestamp)
     assert.isTrue(nextLastEventId.isEqualTo(lastEventId + 2)) // todo: do it programmatically
-
-    // console.log(tx3.receipt.cumulativeGasUsed)
-    // console.log(tx4.receipt.cumulativeGasUsed)
   })
 })

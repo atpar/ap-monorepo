@@ -66,7 +66,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 			payoffRegistry[assetId][eventId].balance += amount;
 		}
 
-		// emit Paid(assetId, eventId, amount);
+		emit Paid(assetId, eventId, amount);
 	}
 
 	/**

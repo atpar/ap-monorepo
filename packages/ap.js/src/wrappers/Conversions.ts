@@ -1,7 +1,14 @@
 import { BigNumber } from 'bignumber.js';
 
-import { numberToHex, toChecksumAddress } from '../utils/Utils';
-import { ContractState, ContractEvent, ProtoEvent, ProtoEventSchedule, AssetIssuedEvent } from '../types';
+import { numberToHex, toChecksumAddress, hexToNumber } from '../utils/Utils';
+import { 
+  ContractState, 
+  ContractEvent, 
+  ProtoEvent, 
+  ProtoEventSchedule, 
+  AssetIssuedEvent, 
+  AssetProgressedEvent 
+} from '../types';
 
 
 export function toContractState (raw: any): ContractState {
@@ -93,5 +100,14 @@ export function toAssetIssuedEvent (raw: any): AssetIssuedEvent {
     recordCreatorAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][2].substring(26))),
     // @ts-ignore
     counterpartyAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][3].substring(26)))
+  };
+}
+
+export function toAssetProgressedEvent (raw: any): AssetProgressedEvent {
+  return {
+    // @ts-ignore
+    assetId: <string> raw['raw']['topics'][1],
+    // @ts-ignore
+    eventId: hexToNumber(String(raw['raw']['data'][0]))
   };
 }

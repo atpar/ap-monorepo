@@ -6,6 +6,8 @@ import "../APCore/APDefinitions.sol";
 
 contract IAssetActor is APDefinitions {
 
+	event AssetProgressed(bytes32 indexed assetId, uint256 eventId);
+
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and 
 	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled 

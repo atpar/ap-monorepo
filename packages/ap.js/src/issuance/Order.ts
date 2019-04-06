@@ -12,6 +12,11 @@ export class Order {
     this.orderData = orderData;
   }
 
+  /**
+   * signs and send the order to the order relayer
+   * @dev this requires the users signature (metamask pop-up)
+   * @returns {Promise<void>}
+   */
   public async signAndSendOrder (): Promise<void> {
     if (!this.ap.relayer)  {
       throw(new Error('FEATURE_NOT_AVAILABLE: Relayer is not enabled!')); 
@@ -32,10 +37,22 @@ export class Order {
     await this.ap.relayer.sendOrder(this.orderData);
   }
   
+  /**
+   * instantiates a new Order instance with the provided orderData
+   * @param {AP} ap AP instance
+   * @param {OrderData} orderData
+   * @returns {Order}
+   */
   public static load (ap: AP, orderData: OrderData): Order {
     return new Order(ap, orderData);
   }
 
+  /**
+   * creates a new Order instance from the provided orderParams
+   * @param {AP} ap AP instance
+   * @param orderParams 
+   * @returns {Order}
+   */
   public static create (ap: AP, orderParams: OrderParams): Order {
     const orderData: OrderData = { 
       ...orderParams,

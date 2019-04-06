@@ -51,6 +51,12 @@ export class PaymentAPI {
     );
   }
 
+  /**
+   * return the paid off amount for a given event
+   * @param {string} assetId 
+   * @param {number} eventId
+   * @returns {Promise<BigNumber>}
+   */
   public async getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
     return this.registry.getPayoffBalance(assetId, eventId);
   }
@@ -71,6 +77,14 @@ export class PaymentAPI {
   //   return amountSettled;
   // }
 
+  /**
+   * returns the amount settled from a given event to a given event for the record creator
+   * to return the total amount settled fromEventId would be 1 and toEventId would be the last eventId
+   * @param {string} assetId 
+   * @param {number} fromEventId 
+   * @param {number} toEventId 
+   * @returns {Promise<BigNumber>}
+   */
   public async getSettledAmountForRecordCreator (
     assetId: string, 
     fromEventId: number, 
@@ -85,6 +99,14 @@ export class PaymentAPI {
     return amountSettled;
   }
 
+  /**
+   * returns the amount settled from a given event to a given event for the counterparty
+   * to return the total amount settled fromEventId would be 1 and toEventId would be the last eventId
+   * @param {string} assetId 
+   * @param {number} fromEventId 
+   * @param {number} toEventId 
+   * @returns {Promise<BigNumber>}
+   */
   public async getSettledAmountForCounterparty (
     assetId: string, 
     fromEventId: number, 

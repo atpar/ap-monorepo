@@ -38,7 +38,7 @@ export class EconomicsAPI {
   }
 
   /**
-   * fetches the terms of a asset with given AssetId
+   * fetches the terms of an asset with given AssetId
    * @param {string} assetId
    * @returns {Promise<ContractTerms>} ContractTerms
    */
@@ -47,7 +47,7 @@ export class EconomicsAPI {
   }
 
   /**
-   * fetches the current state of a asset with a given AssetId
+   * fetches the current state of an asset with a given AssetId
    * @param assetId
    * @returns {Promise<ContractState>}
    */
@@ -55,6 +55,11 @@ export class EconomicsAPI {
     return this.registry.getState(assetId);
   }
 
+  /**
+   * fetches the last event id of an asset with a given AssetId
+   * @param {string} assetId
+   * @returns {Promise<number>}
+   */
   public async getEventId (assetId: string): Promise<number> {
     return this.registry.getEventId(assetId);
   }

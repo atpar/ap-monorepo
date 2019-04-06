@@ -81,6 +81,8 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 		economicsRegistry.setState(assetId, nextState);
 		economicsRegistry.setEventId(assetId, eventId);
 
+		emit AssetProgressed(assetId, eventId);
+
 		return(true);
 	}
 

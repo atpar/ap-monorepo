@@ -14,6 +14,11 @@ export class IssuanceAPI {
     this.signer = signer;
   }
 
+  /**
+   * calls the provided callback if a new asset associated with 
+   * the default account got issued
+   * @param {(assetId: string) => void} cb 
+   */
   public onAssetIssued (cb: (assetId: string) => void): void {
     this.issuer.onAssetIssuedEvent((event) => {
       if (
@@ -25,6 +30,10 @@ export class IssuanceAPI {
     });
   }
 
+  /**
+   * returns all assetIds of assets which are associated with default account
+   * @returns {Promise<string[]>}
+   */
   public async getAssetIds (): Promise<string[]> {
     const events = await this.issuer.getAssetIssuedEvents();
     const assetIds = [];

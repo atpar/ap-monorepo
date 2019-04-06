@@ -1,7 +1,10 @@
 import Web3 from 'web3';
-
 import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { EventLog } from 'web3-core/types';
+
 import { toHex } from '../utils/Utils';
+import { AssetProgressedEvent } from '../types';
+import { toAssetProgressedEvent } from './Conversions';
 
 // const PAMAssetActorArtifact: any = require('../../../ap-contracts/build/contracts/PAMAssetActor.json');
 import PAMAssetActorArtifact from '../../../ap-contracts/build/contracts/PAMAssetActor.json';
@@ -22,6 +25,14 @@ export class PAMAssetActor {
     txOptions?: SendOptions
   ): Promise<void> {
     await this.pamAssetActor.methods.progress(toHex(assetId), timestamp).send({ ...txOptions });
+  }
+
+    
+  public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
+    this.pamAssetActor.events.AssetProgressed().on('data', (event: EventLog) => {
+      const assetProgressedEvent = toAssetProgressedEvent(event);
+      cb(assetProgressedEvent);
+    });
   }
 
   public static async instantiate (web3: Web3): Promise<PAMAssetActor> {

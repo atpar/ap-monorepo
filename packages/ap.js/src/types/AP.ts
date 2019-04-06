@@ -132,3 +132,8 @@ export interface AssetIssuedEvent {
   recordCreatorAddress: string,
   counterpartyAddress: string
 }
+
+export interface AssetProgressedEvent {
+  assetId: string,
+  eventId: number
+}

@@ -9,9 +9,18 @@ export class LifecycleAPI {
   private actor: PAMAssetActor;
   private signer: Signer;
 
+  private assetListenerRegistry: Map<string, (assetId: string, eventId: number) => void>;
+
   private constructor (actor: PAMAssetActor, signer: Signer) {
     this.actor = actor;
     this.signer = signer;
+
+    this.assetListenerRegistry = new Map<string, (assetId: string) => void>();
+
+    this.actor.onAssetProgressedEvent((event) => {
+      const listener = this.assetListenerRegistry.get(event.assetId);
+      if (listener) { return listener(event.assetId, event.eventId); }
+    });
   }
 
   public getActorAddress(): string { return this.actor.getAddress(); }
@@ -25,12 +34,25 @@ export class LifecycleAPI {
   }
 
   /**
+   * registers an asset listener which calls the provided callback function
+   * upon receiving an AssetProgressed event for an asset
+   * @param {string} assetId id of asset for which a listener should be registered
+   * @param {(assetId: string, eventId: number) => void} cb callback function which returns id of the asset
+   */
+  public registerAssetListener (
+    assetId: string, 
+    cb: (assetId: string, eventId: number) => void
+  ): void {
+    this.assetListenerRegistry.set(assetId, cb);
+  }
+
+  /**
    * return a new instance of the EconomicsAPI class
    * @param {Web3} web3 web3 instance
    * @returns {Promise<EconomicsAPI>}
    */
   public static async init (web3: Web3, signer: Signer): Promise<LifecycleAPI> {
-    const registry = await PAMAssetActor.instantiate(web3);
-    return new LifecycleAPI(registry, signer);
+    const actor = await PAMAssetActor.instantiate(web3);
+    return new LifecycleAPI(actor, signer);
   }
 }

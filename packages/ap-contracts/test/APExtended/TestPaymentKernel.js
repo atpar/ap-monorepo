@@ -56,14 +56,16 @@ contract('PaymentKernel', (accounts) => {
       { value: this.value }
     )
     
-    // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+
+    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId)
     const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 1); // eventId)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary)
 
-    // assert.equal(web3.utils.hexToUtf8(payment.assetId), this.assetId)
+
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId)
+    assert.isTrue(payoffBalanceFromEvent.toString() === payoffBalance.toString())
     assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
@@ -80,14 +82,15 @@ contract('PaymentKernel', (accounts) => {
       { from: counterpartyObligor, value: this.value }
     )
     
-    // const { args: { 0: paymentId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    // const payment = await this.PaymentRegistryInstance.getPayment(paymentId)
-    // const { args: { 1: eventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2); // eventId)
+    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid')
+    
+    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId)
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2)
 
     const postBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary)
 
-    // assert.equal(web3.utils.hexToUtf8(payment.assetId), this.assetId)
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId)
+    assert.isTrue(payoffBalanceFromEvent.toString() === payoffBalance.toString())
     assert.isTrue(payoffBalance > 0)
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary)
   })
