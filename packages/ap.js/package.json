@@ -26,6 +26,9 @@
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
+  "resolutions": {
+    "web3*/**/web3-eth-contract": "file:./web3-eth-contract-v1.0.0-beta.46.tgz"
+  },
   "dependencies": {
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
