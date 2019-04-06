@@ -21,7 +21,7 @@
   "scripts": {
     "prebuild": "rm -rf dist/ && tsc",
     "build": "webpack",
-    "test": "scripts/prune-relayer-database.sh && jest"
+    "test": "scripts/prune-relayer-database.sh && jest --runInBand --detectOpenHandles --forceExit"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
