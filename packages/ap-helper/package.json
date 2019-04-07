@@ -25,6 +25,7 @@
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
+    "@atpar/ap.js": "0.1.0-alpha.4",
     "bignumber.js": "^7.2.1",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",

@@ -13,6 +13,8 @@ router.post('/faucet', async (req, res) => {
     return res.status(500).end()
   }
 
+  console.log('FAUCET: Sent ether.')
+
   res.status(200).end()
 })
 

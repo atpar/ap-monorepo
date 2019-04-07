@@ -15,14 +15,14 @@ router.post('/orders', async (req, res) => {
       console.error(error)
       return res.status(500).end()
     }
-    console.log('filled order')
+    console.log('ORDERBOOK: Filled order.')
     try { await removeUnfilledOrder(orderData) } catch (error) { console.error(error) }
   } else {
     try { await saveUnfilledOrder(orderData) } catch (error) {
       console.error(error)
       return res.status(500).end()
     }
-    console.log('stored unfilled order')
+    console.log('ORDERBOOK: Stored unfilled order.')
   }
 
   res.status(200).end()
