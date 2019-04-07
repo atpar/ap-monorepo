@@ -9,7 +9,8 @@
   "module": "./dist/esm/ap.js/src/index.js",
   "types": "./dist/typings/ap.js/src/index.d.ts",
   "files": [
-    "dist/"
+    "dist/",
+    "web3-eth-contract-v1.0.0-beta.46.tgz"
   ],
   "repository": {
     "type": "git",
