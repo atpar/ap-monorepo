@@ -91,9 +91,16 @@ export class AP {
    * after a new asset in which the default account is involved is issued
    */
   public onNewAssetIssued (cb: (asset: Asset) => void): void {
-    this.issuance.onAssetIssued(async (assetId) => {  
+    this.issuance.onAssetIssued(async (event) => {  
+      if (
+        event.recordCreatorAddress !== this.signer.account &&
+        event.counterpartyAddress !== this.signer.account
+      ) { 
+        return; 
+      }
+      
       try {
-        const asset = await Asset.load(this, assetId);
+        const asset = await Asset.load(this, event.assetId);
         cb(asset);
       } catch (error) { console.log(error); return; }
     });

@@ -2,6 +2,7 @@ import Web3 from 'web3';
 
 import { AssetIssuer } from '../wrappers/AssetIssuer';
 import { Signer } from '../utils/Signer';
+import { AssetIssuedEvent } from '../types';
 
 
 export class IssuanceAPI {
@@ -15,19 +16,11 @@ export class IssuanceAPI {
   }
 
   /**
-   * calls the provided callback if a new asset associated with 
-   * the default account got issued
-   * @param {(assetId: string) => void} cb 
+   * calls the provided callback if a new asset is issued
+   * @param {(event: AssetIssuedEvent) => void} cb 
    */
-  public onAssetIssued (cb: (assetId: string) => void): void {
-    this.issuer.onAssetIssuedEvent((event) => {
-      if (
-        event.recordCreatorAddress === this.signer.account || 
-        event.counterpartyAddress === this.signer.account
-      ) {
-        cb(event.assetId);
-      }
-    });
+  public onAssetIssued (cb: (event: AssetIssuedEvent) => void): void {
+    this.issuer.onAssetIssuedEvent(cb);
   }
 
   /**
