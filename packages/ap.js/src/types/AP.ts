@@ -1,4 +1,5 @@
 import { ContractState, ContractTerms } from './ACTUS';
+import BigNumber from 'bignumber.js';
 
 export enum ChannelState {
   Initializable,
@@ -136,4 +137,10 @@ export interface AssetIssuedEvent {
 export interface AssetProgressedEvent {
   assetId: string,
   eventId: number
+}
+
+export interface PaidEvent {
+  assetId: string,
+  eventId: number,
+  amount: BigNumber
 }

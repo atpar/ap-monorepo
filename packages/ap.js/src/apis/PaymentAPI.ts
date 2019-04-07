@@ -5,6 +5,7 @@ import { PaymentRegistry } from "../wrappers/PaymentRegistry";
 import { PaymentRouter } from "../wrappers/PaymentRouter";
 import { Signer } from '../utils/Signer';
 import { SendOptions } from 'web3-eth-contract/types';
+import { PaidEvent } from 'src/types';
 
 
 export class PaymentAPI {
@@ -119,6 +120,14 @@ export class PaymentAPI {
       if (Number(cashflowId) > 0) { amountSettled = amountSettled.plus(payoffBalance); }
     }
     return amountSettled;
+  }
+
+  /**
+   * calls the provided callback function when a payment for an asset is made
+   * @param {(event: PaidEvent) => void} cb callback function 
+   */
+  public onPayment (cb: (event: PaidEvent) => void): void {
+    this.registry.onPaidEvent(cb);
   }
 
   /**

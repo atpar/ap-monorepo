@@ -7,7 +7,8 @@ import {
   ProtoEvent, 
   ProtoEventSchedule, 
   AssetIssuedEvent, 
-  AssetProgressedEvent 
+  AssetProgressedEvent, 
+  PaidEvent
 } from '../types';
 
 
@@ -94,20 +95,23 @@ export function toProtoEventSchedule (raw: any): ProtoEventSchedule {
 
 export function toAssetIssuedEvent (raw: any): AssetIssuedEvent {
   return {
-    // @ts-ignore
-    assetId: <string> raw['raw']['topics'][1],
-    // @ts-ignore
+    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
     recordCreatorAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][2].substring(26))),
-    // @ts-ignore
     counterpartyAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][3].substring(26)))
   };
 }
 
 export function toAssetProgressedEvent (raw: any): AssetProgressedEvent {
   return {
-    // @ts-ignore
-    assetId: <string> raw['raw']['topics'][1],
-    // @ts-ignore
-    eventId: hexToNumber(String(raw['raw']['data'][0]))
+    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
+    eventId: hexToNumber(String(raw['returnValues']['eventId']))
+  };
+}
+
+export function toPaidEvent (raw: any): PaidEvent {
+  return {
+    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
+    eventId: hexToNumber(String(raw['returnValues']['eventId'])),
+    amount: new BigNumber(String(raw['returnValues']['amount']))
   };
 }

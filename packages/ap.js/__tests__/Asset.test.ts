@@ -17,7 +17,8 @@ describe('testContractClass', () => {
   let apCP: AP;
   let assetRC: Asset;
 
-  let assetListenerCounter = 0;
+  let progressListenerCounter = 0;
+  let paymentListenerCounter = 0;
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -36,6 +37,14 @@ describe('testContractClass', () => {
 
     apRC = await AP.init(web3, recordCreator, {});
     apCP = await AP.init(web3, counterparty, {});
+
+    apRC.lifecycle.onProgress(() => {
+      progressListenerCounter++;
+    });
+
+    apRC.payment.onPayment(() => {
+      paymentListenerCounter++;
+    });
   });
 
   it('should create a new asset instance', async () => {
@@ -49,8 +58,6 @@ describe('testContractClass', () => {
     }
 
     assetRC = await Asset.create(apRC, terms, ownership);
-
-    assetRC.onProgress(() => assetListenerCounter++);
 
     const storedOwnership: AssetOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
     const storedTerms: ContractTerms = await assetRC.getTerms();
@@ -159,7 +166,8 @@ describe('testContractClass', () => {
     expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
   });
 
-  it('should have called the asset listener more than once', () => {
-    expect(assetListenerCounter > 0).toBe(true);
+  it('should have called the progress and payment listener more than once', () => {
+    expect(progressListenerCounter > 0).toBe(true);
+    expect(paymentListenerCounter > 0).toBe(true);
   });
 });
