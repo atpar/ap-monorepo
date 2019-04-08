@@ -6,27 +6,59 @@ It allows developers to create and manage ACTUS assets.
 ## Overview
 
 
-
 ## Usage
+
+```sh
+yarn add @atpar/ap.js 
+```
 
 ### Setup
 Initializing the ACTUS protocol library.
-```js
-import { AP, Asset } from './ap.js';
+```ts
+import { AP, Asset, Order } from './ap.js';
 
-const ap = await AP.init(web3, { orderRelayer?: ORDER_RELAYER_URL, channelRelayer? :CHANNEL_RELAYER_URL });
+const ap = await AP.init(
+  web3, 
+  DEFAULT_ACCOUNT, 
+  { orderRelayer?: ORDER_RELAYER_URL, channelRelayer? :CHANNEL_RELAYER_URL }
+);
 ```
 
 ### Asset
 `Asset` enables you to create and manage the lifecycle of an ACTUS asset.
 
 Creating a new Asset
-```js
+```ts
+const terms: ContractTerms = { ... };
+const ownership: AssetOwnership = { ... };
+
 const asset = await Asset.create(ap, CONTRACT_TERMS, CONTRACT_OWNERSHIP);
 ```
 Loading a Asset given its AssetId from the on-chain registries
-```js
+```ts
 const asset = await Asset.load(ap, ASSET_ID);
+```
+
+
+### Order
+
+Creating a new Order
+```ts
+const orderParams: OrderParams = {
+  makerAddress: MAKER_ADDRESS,
+  terms: CONTRACT_TERMS,
+  makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000'
+};
+
+const order = Order.create(ap, orderParams);
+```
+Receiving orders from the orderbook of an order-relayer
+```ts
+ap.onNewOrder((order) => { ... });    
+```
+Signing and sending an order to an order-relayer (as a maker or taker)
+```ts
+await order.signAndSendOrder();
 ```
 
 ### Asset Channel
