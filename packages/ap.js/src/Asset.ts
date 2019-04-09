@@ -214,17 +214,6 @@ export class Asset {
     await this.ap.lifecycle.progress(this.assetId, timestamp, txOptions);
   }
 
-
-  // /**
-  //  * calls the provided callback function when the state of the asset is updated
-  //  * @param {cb: () => void} cb callback function
-  //  */
-  // public onProgress (cb: () => void): void {
-  //   this.ap.lifecycle.registerAssetListener(this.assetId, () => {
-  //     cb();
-  //   });
-  // }
-
   /**
    * registers the terms, the initial state and the ownership of an asset 
    * and returns a new Asset instance.
