@@ -36,24 +36,28 @@ export class Relayer {
     });
   }
 
-  /**
-   * returns a new Relayer instance that utilizes a websocket 
-   * for communicating with a provided relayer endpoint
-   * @param {string} url websocket url
-   * @returns {Relayer}
-   */
-  public static websocket (url: string): Relayer {
+  private static _websocket (url: string): Relayer {
     return new Relayer(new SocketProvider(url));
   }
 
-  /**
-   * returns a new Relayer instance that utilizes http 
-   * for communicating with a provided relayer endpoint
-   * @param {string} url http url
-   * @returns {Relayer}
-   */
-  public static http (url: string): Relayer {
+  private static _http (url: string): Relayer {
     const routes = { sendMessageRoute: '/api/orders', listenForMessagesRoute: '/api/orders?address=' };
     return new Relayer(new HTTPProvider(url, routes));
   }
+
+  /**
+   * returns a new Relayer instance 
+   * for communicating with a provided relayer endpoint
+   * @param {string} url url of the order-relayer
+   * @returns {Relayer}
+   */
+  public static init (url: string): Relayer {
+    if (url.startsWith('http')) {
+      return Relayer._http(url);
+    } else if (url.startsWith('ws')) {
+      return Relayer._websocket(url);
+    } else {
+      throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
+    }
+  }  
 }

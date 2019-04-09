@@ -88,24 +88,28 @@ export class Client {
     this.fallbackListener = cb;
   }
 
-  /**
-   * returns a new Client instance that utilizes a websocket 
-   * for communicating with a provided relayer endpoint
-   * @param {string} url websocket url
-   * @returns {Client}
-   */
-  public static websocket (url: string): Client {
+  private static _websocket (url: string): Client {
     return new Client(new SocketProvider(url));
   }
 
-  /**
-   * returns a new Client instance that utilizes http 
-   * for communicating with a provided relayer endpoint
-   * @param {string} url http url
-   * @returns {Client}
-   */
-  public static http (url: string): Client {
+  private static _http (url: string): Client {
     const routes = { sendMessageRoute: '/api/contracts', listenForMessagesRoute: '/api/contracts?address=' };
     return new Client(new HTTPProvider(url, routes));
+  }
+
+  /**
+   * returns a new Client instance for communicating with 
+   * a provided relayer endpoint
+   * @param {string} url url of the channel-relayer
+   * @returns {Client}
+   */
+  public static init (url: string): Client {
+    if (url.startsWith('http')) {
+      return Client._http(url);
+    } else if (url.startsWith('ws')) {
+      return Client._websocket(url);
+    } else {
+      throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
+    }
   }
 }

@@ -139,32 +139,8 @@ export class AP {
     const lifecycle = await LifecycleAPI.init(web3, signer);
     const issuance = await IssuanceAPI.init(web3, signer);
     
-    let relayer: Relayer | undefined = undefined;
-    let client: Client | undefined = undefined;
-
-    if (relayers.orderRelayer != null) {
-      if (relayers.orderRelayer.startsWith('http')) {
-        relayer = Relayer.http(relayers.orderRelayer);
-      } else if (relayers.orderRelayer.startsWith('ws')) {
-        relayer = Relayer.websocket(relayers.orderRelayer);
-      } else {
-        throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
-      }
-    } else { 
-      // throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); 
-    }
-
-    if (relayers.channelRelayer != null) {
-      if (relayers.channelRelayer.startsWith('http')) {
-      client = Client.http(relayers.channelRelayer);
-      } else if (relayers.channelRelayer.startsWith('ws')) {
-        client = Client.websocket(relayers.channelRelayer);
-      } else {
-        throw(new Error('NOT_IMPLEMENTED_ERROR: only supporting http and websocket!'));
-      }
-    } else { 
-      // throw(new Error('NOT_DEFINED_ERROR: host address is not defined!')); 
-    }
+    const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
+    const client = (relayers.channelRelayer) ? Client.init(relayers.channelRelayer) : undefined;
 
     return new AP(web3, ownership, economics, payment, lifecycle, issuance, signer, common, relayer, client);
   }
