@@ -1,10 +1,10 @@
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const parseContractTerms = require('../parser.js').parseContractTerms
-const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../parser.js')
+const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
 
-const getContractTerms = (precision) => {
-  return parseContractTerms(PAMTestTerms, precision)
+const getTerms = () => {
+  return parseTermsFromPath(PAMTestTermsPath)
 }
 
 contract('PAMEngine', () => {
@@ -12,8 +12,7 @@ contract('PAMEngine', () => {
   before(async () => {        
     this.PAMEngineInstance = await PAMEngine.new()
 
-    const PRECISION = Number(await this.PAMEngineInstance.PRECISION())
-    const testTerms = await getContractTerms(PRECISION)
+    const testTerms = await getTerms()
     this.contractTerms = testTerms['10001']
   })
 
@@ -22,8 +21,6 @@ contract('PAMEngine', () => {
 
     assert.isTrue(Number(initialState['lastEventTime']) === Number(this.contractTerms['statusDate']))
   })
-
-  // it('should yield the next contract state and the next contract event', async () => {
 
   it('should yield all events', async () => {
     const timestamp = 1388534400 // 30.12.2012

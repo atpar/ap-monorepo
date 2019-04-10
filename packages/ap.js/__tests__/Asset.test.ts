@@ -25,7 +25,7 @@ describe('testContractClass', () => {
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
-    const response = await fetch('http://localhost:9000' + '/api/terms?precision=' + 18, {});
+    const response = await fetch('http://localhost:9000' + '/api/terms', {});
     const contractTemplates = await response.json();
     contractTemplatesTyped = {};
 

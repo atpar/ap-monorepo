@@ -6,9 +6,26 @@ const BigNumber = require('bignumber.js')
 const ContractEventDefinitions = require('./APDefinitions/ContractEventDefinitions.json')
 const ContractTermsDefinitions = require('./APDefinitions/ContractTermsDefinitions.json')
 
-const parseDateToUnix = (date) => {
-  let isoDate = new Date(date + 'Z') // .toISOString()
-  return isoDate.getTime() / 1000
+const PRECISION = 18
+
+const isoToUnix = (date) => {
+  return (new Date(date + 'Z')).getTime() / 1000
+}
+
+const unixToISO = (unix) => {
+  return new Date(unix * 1000).toISOString()
+}
+
+const getIndexOfAttribute = (attribute, value) => {
+  return ContractTermsDefinitions[attribute].options.indexOf(value)
+}
+
+const toPrecision = (value) => {
+  return web3Utils.toHex(new BigNumber(value).shiftedBy(PRECISION))
+}
+
+const fromPrecision = (value) => {
+  return Math.round((value * 10 ** -PRECISION) * 10000000000000) / 10000000000000
 }
 
 const parseCycleToIPS = (cycle) => {
@@ -23,148 +40,107 @@ const parseCycleToIPS = (cycle) => {
   return { i: i, p: p, s: s, isSet: true }
 }
 
-module.exports = {
-  parseTestResults: (pathToFile) => new Promise((resolve, reject) => {
-    const testResults = []
-    let lineCount = 0
+const parseRow = (row) => {
+  const parsedRow = {}
 
-    fs.createReadStream(pathToFile)
-      .on('error', (error) => { reject(error) })  
-      .pipe(parse({ delimiter: ',' }))
-      .on('data', (row) => {
-        lineCount++
-        if (lineCount === 1) { return }
-        let eventTypeIndex = ContractEventDefinitions.eventType.options.indexOf(row[1])
-        if (eventTypeIndex === 2) { return }
-        testResults.push([
-          new Date(row[0] + 'Z').toISOString(),
-          eventTypeIndex.toString(),
-          Number(row[2]),
-          Number(row[3]),
-          Number(row[4]),
-          Number(row[5])
-        ])
-      })
-      .on('end', () => { resolve(testResults) })
-  }),
-  parseContractTerms: (pathToFile, precision) => new Promise((resolve, reject) => {
-    let testTerms = {}
-    let isHeader = true
+  parsedRow['calendar'] = (row[19] === '') ? 0 : getIndexOfAttribute('calendar', row[19])
+  parsedRow['contractRole'] = (row[23] === '') ? 0 : getIndexOfAttribute('contractRole', row[23])
+  parsedRow['legalEntityIdRecordCreator'] = 'PartyA'
+  parsedRow['legalEntityIdCounterparty'] = 'PartyB'
+  parsedRow['dayCountConvention'] = (row[16] === '') ? 0 : getIndexOfAttribute('dayCountConvention', row[16])
+  parsedRow['businessDayConvention'] = (row[17] === '') ? 0 : getIndexOfAttribute('businessDayConvention', row[17])
+  parsedRow['endOfMonthConvention'] = 0 // row[18] === ''? 0 : ContractTermsDefinitions.endOfMonthConvention.options.indexOf(row[18])
+  parsedRow['currency'] = 2 // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
+  parsedRow['scalingEffect'] = 0 // ...
+  parsedRow['penaltyType'] = 0 // ...
+  parsedRow['feeBasis'] = 0 // ...
 
-    fs.createReadStream(pathToFile)
-      .on('error', (error) => { reject(error) })
-      .pipe(parse({ delimiter: ',' }))
-      .on('data', (row) => {
-        if (isHeader === true) { isHeader = false; return }
+  parsedRow['statusDate'] = (row[2] === '') ? 0 : isoToUnix(row[2])
+  parsedRow['initialExchangeDate'] = (row[6] === '') ? 0 : isoToUnix(row[6])
+  parsedRow['maturityDate'] = (row[7] === '') ? 0 : isoToUnix(row[7])
+  parsedRow['terminationDate'] = 0 // ...
+  parsedRow['purchaseDate'] = 0 // ...
+  parsedRow['capitalizationEndDate'] = (row[22] === '') ? 0 : isoToUnix(row[22])
+  parsedRow['cycleAnchorDateOfInterestPayment'] = (row[9] === '') ? 0 : isoToUnix(row[9])
+  parsedRow['cycleAnchorDateOfRateReset'] = (row[12] === '') ? 0 : isoToUnix(row[12])
+  parsedRow['cycleAnchorDateOfScalingIndex'] = 0 // ...
+  parsedRow['cycleAnchorDateOfFee'] = 0 // ...
+  parsedRow['notionalPrincipal'] = (row[5] === '') ? 0 : toPrecision(row[5])
+  parsedRow['nominalInterestRate'] = (row[8] === '') ? 0 : toPrecision(row[8])
+  parsedRow['feeAccrued'] = 0 // ...
+  parsedRow['accruedInterest'] = (row[11] === '') ? 0 : toPrecision(row[11])
+  parsedRow['rateMultiplier'] = (row[21] === '') ? 0 : toPrecision(row[21])
+  parsedRow['rateSpread'] = (row[14] === '') ? 0 : toPrecision(row[14])
+  parsedRow['feeRate'] = 0 // ...
+  parsedRow['nextResetRate'] = 0 // ...
+  parsedRow['penaltyRate'] = 0 // ...
+  parsedRow['premiumDiscountAtIED'] = (row[20] === '') ? 0 : toPrecision(row[20])
+  parsedRow['priceAtPurchaseDate'] = 0 // ...
 
-        let parsedContractTerms = {}
+  parsedRow['cycleOfInterestPayment'] = parseCycleToIPS(row[10])
+  parsedRow['cycleOfRateReset'] = parseCycleToIPS(row[13])
+  parsedRow['cycleOfScalingIndex'] = parseCycleToIPS('')
+  parsedRow['cycleOfFee'] = parseCycleToIPS('')
 
-        parsedContractTerms['calendar'] = (row[19] === '') ? 0 : ContractTermsDefinitions.calendar.options.indexOf(row[19])
-        parsedContractTerms['contractRole'] = (row[23] === '') ? 0 : ContractTermsDefinitions.contractRole.options.indexOf(row[23])
-        parsedContractTerms['legalEntityIdRecordCreator'] = 'PartyA'
-        parsedContractTerms['legalEntityIdCounterparty'] = 'PartyB'
-        parsedContractTerms['dayCountConvention'] = (row[16] === '') ? 0 : ContractTermsDefinitions.dayCountConvention.options.indexOf(row[16])
-        parsedContractTerms['businessDayConvention'] = (row[17] === '') ? 0 : ContractTermsDefinitions.businessDayConvention.options.indexOf(row[17])
-        parsedContractTerms['endOfMonthConvention'] = 0 // row[18] === ''? 0 : ContractTermsDefinitions.endOfMonthConvention.options.indexOf(row[18])
-        parsedContractTerms['currency'] = 2 // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
-        parsedContractTerms['scalingEffect'] = 0 // ...
-        parsedContractTerms['penaltyType'] = 0 // ...
-        parsedContractTerms['feeBasis'] = 0 // ...
+  parsedRow['lifeCap'] = 0 // ...
+  parsedRow['lifePeriod'] = 0 // ...
+  parsedRow['lifeFloor'] = 0 // ...
+  parsedRow['periodCap'] = 0 // ...
+  parsedRow['periodFloor'] = 0 // ...
 
-        parsedContractTerms['statusDate'] = (row[2] === '') ? 0 : parseDateToUnix(row[2])
-        parsedContractTerms['initialExchangeDate'] = (row[6] === '') ? 0 : parseDateToUnix(row[6])
-        parsedContractTerms['maturityDate'] = (row[7] === '') ? 0 : parseDateToUnix(row[7])
-        parsedContractTerms['terminationDate'] = 0 // ...
-        parsedContractTerms['purchaseDate'] = 0 // ...
-        parsedContractTerms['capitalizationEndDate'] = (row[22] === '') ? 0 : parseDateToUnix(row[22])
-        parsedContractTerms['cycleAnchorDateOfInterestPayment'] = (row[9] === '') ? 0 : parseDateToUnix(row[9])
-        parsedContractTerms['cycleAnchorDateOfRateReset'] = (row[12] === '') ? 0 : parseDateToUnix(row[12])
-        parsedContractTerms['cycleAnchorDateOfScalingIndex'] = 0 // ...
-        parsedContractTerms['cycleAnchorDateOfFee'] = 0 // ...
-        parsedContractTerms['notionalPrincipal'] = (row[5] === '') ? 0 : web3Utils.toHex(new BigNumber(row[5]).shiftedBy(precision))
-        parsedContractTerms['nominalInterestRate'] = (row[8] === '') ? 0 : web3Utils.toHex(new BigNumber(row[8]).shiftedBy(precision))
-        parsedContractTerms['feeAccrued'] = 0 // ...
-        parsedContractTerms['accruedInterest'] = (row[11] === '') ? 0 : web3Utils.toHex(new BigNumber(row[11]).shiftedBy(precision))
-        parsedContractTerms['rateMultiplier'] = (row[21] === '') ? 0 : web3Utils.toHex(new BigNumber(row[21]).shiftedBy(precision))
-        parsedContractTerms['rateSpread'] = (row[14] === '') ? 0 : web3Utils.toHex(new BigNumber(row[14]).shiftedBy(precision))
-        parsedContractTerms['feeRate'] = 0 // ...
-        parsedContractTerms['nextResetRate'] = 0 // ...
-        parsedContractTerms['penaltyRate'] = 0 // ...
-        parsedContractTerms['premiumDiscountAtIED'] = (row[20] === '') ? 0 : web3Utils.toHex(new BigNumber(row[20]).shiftedBy(precision))
-        parsedContractTerms['priceAtPurchaseDate'] = 0 // ...
-
-        parsedContractTerms['cycleOfInterestPayment'] = parseCycleToIPS(row[10])
-        parsedContractTerms['cycleOfRateReset'] = parseCycleToIPS(row[13])
-        parsedContractTerms['cycleOfScalingIndex'] = parseCycleToIPS('')
-        parsedContractTerms['cycleOfFee'] = parseCycleToIPS('')
-
-        parsedContractTerms['lifeCap'] = 0
-        parsedContractTerms['lifePeriod'] = 0
-        parsedContractTerms['lifeFloor'] = 0
-        parsedContractTerms['periodCap'] = 0
-        parsedContractTerms['periodFloor'] = 0
-
-        testTerms[row[1]] = parsedContractTerms
-      })
-      .on('end', () => { resolve(testTerms) })
-  }),
-  parseContractTerms2: (csv, precision) => new Promise((resolve, reject) => {
-    let testTerms = {}
-    let isHeader = true
-
-    parse(csv, { delimiter: ',' })
-    .on('data', (row) => {
-      if (isHeader === true) { isHeader = false; return }
-
-      let parsedContractTerms = {}
-
-      parsedContractTerms['calendar'] = (row[19] === '') ? 0 : ContractTermsDefinitions.calendar.options.indexOf(row[19])
-      parsedContractTerms['contractRole'] = (row[23] === '') ? 0 : ContractTermsDefinitions.contractRole.options.indexOf(row[23])
-      parsedContractTerms['legalEntityIdRecordCreator'] = 'PartyA'
-      parsedContractTerms['legalEntityIdCounterparty'] = 'PartyB'
-      parsedContractTerms['dayCountConvention'] = (row[16] === '') ? 0 : ContractTermsDefinitions.dayCountConvention.options.indexOf(row[16])
-      parsedContractTerms['businessDayConvention'] = (row[17] === '') ? 0 : ContractTermsDefinitions.businessDayConvention.options.indexOf(row[17])
-      parsedContractTerms['endOfMonthConvention'] = 0 // row[18] === ''? 0 : ContractTermsDefinitions.endOfMonthConvention.options.indexOf(row[18])
-      parsedContractTerms['currency'] = 2 // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
-      parsedContractTerms['scalingEffect'] = 0 // ...
-      parsedContractTerms['penaltyType'] = 0 // ...
-      parsedContractTerms['feeBasis'] = 0 // ...
-
-      parsedContractTerms['statusDate'] = (row[2] === '') ? 0 : parseDateToUnix(row[2])
-      parsedContractTerms['initialExchangeDate'] = (row[6] === '') ? 0 : parseDateToUnix(row[6])
-      parsedContractTerms['maturityDate'] = (row[7] === '') ? 0 : parseDateToUnix(row[7])
-      parsedContractTerms['terminationDate'] = 0 // ...
-      parsedContractTerms['purchaseDate'] = 0 // ...
-      parsedContractTerms['capitalizationEndDate'] = (row[22] === '') ? 0 : parseDateToUnix(row[22])
-      parsedContractTerms['cycleAnchorDateOfInterestPayment'] = (row[9] === '') ? 0 : parseDateToUnix(row[9])
-      parsedContractTerms['cycleAnchorDateOfRateReset'] = (row[12] === '') ? 0 : parseDateToUnix(row[12])
-      parsedContractTerms['cycleAnchorDateOfScalingIndex'] = 0 // ...
-      parsedContractTerms['cycleAnchorDateOfFee'] = 0 // ...
-      parsedContractTerms['notionalPrincipal'] = (row[5] === '') ? 0 : web3Utils.toHex(new BigNumber(row[5]).shiftedBy(precision))
-      parsedContractTerms['nominalInterestRate'] = (row[8] === '') ? 0 : web3Utils.toHex(new BigNumber(row[8]).shiftedBy(precision))
-      parsedContractTerms['feeAccrued'] = 0 // ...
-      parsedContractTerms['accruedInterest'] = (row[11] === '') ? 0 : web3Utils.toHex(new BigNumber(row[11]).shiftedBy(precision))
-      parsedContractTerms['rateMultiplier'] = (row[21] === '') ? 0 : web3Utils.toHex(new BigNumber(row[21]).shiftedBy(precision))
-      parsedContractTerms['rateSpread'] = (row[14] === '') ? 0 : web3Utils.toHex(new BigNumber(row[14]).shiftedBy(precision))
-      parsedContractTerms['feeRate'] = 0 // ...
-      parsedContractTerms['nextResetRate'] = 0 // ...
-      parsedContractTerms['penaltyRate'] = 0 // ...
-      parsedContractTerms['premiumDiscountAtIED'] = (row[20] === '') ? 0 : web3Utils.toHex(new BigNumber(row[20]).shiftedBy(precision))
-      parsedContractTerms['priceAtPurchaseDate'] = 0 // ...
-
-      parsedContractTerms['cycleOfInterestPayment'] = parseCycleToIPS(row[10])
-      parsedContractTerms['cycleOfRateReset'] = parseCycleToIPS(row[13])
-      parsedContractTerms['cycleOfScalingIndex'] = parseCycleToIPS('')
-      parsedContractTerms['cycleOfFee'] = parseCycleToIPS('')
-
-      parsedContractTerms['lifeCap'] = 0
-      parsedContractTerms['lifePeriod'] = 0
-      parsedContractTerms['lifeFloor'] = 0
-      parsedContractTerms['periodCap'] = 0
-      parsedContractTerms['periodFloor'] = 0
-
-      testTerms[row[1]] = parsedContractTerms
-    })
-    .on('end', () => { resolve(testTerms) })
-  })
+  return parsedRow;
 }
+
+
+const parseResultsFromPath = (pathToFile) => new Promise((resolve, reject) => {
+  const testResults = []
+  let lineCount = 0
+
+  fs.createReadStream(pathToFile)
+  .on('error', (error) => reject(error) )  
+  .pipe(parse({ delimiter: ',' }))
+  .on('data', (row) => {
+    lineCount++
+    if (lineCount === 1) { return }
+    const eventTypeIndex = ContractEventDefinitions.eventType.options.indexOf(row[1])
+    if (eventTypeIndex === 2) { return }
+    testResults.push([
+      new Date(row[0] + 'Z').toISOString(),
+      eventTypeIndex.toString(),
+      Number(row[2]),
+      Number(row[3]),
+      Number(row[4]),
+      Number(row[5])
+    ])
+  })
+  .on('end', () => resolve(testResults))
+})
+
+const parseTermsFromPath = (pathToFile) => new Promise((resolve, reject) => {
+  const testTerms = {}
+  let isHeader = true
+
+  fs.createReadStream(pathToFile)
+  .on('error', (error) => reject(error))
+  .pipe(parse({ delimiter: ',' }))
+  .on('data', (row) => {  
+    if (isHeader === true) { isHeader = false; return }
+    testTerms[row[1]] = parseRow(row)
+  })
+  .on('end', () => resolve(testTerms))
+})
+
+const parseTermsFromCSVString = (csv) => new Promise((resolve, reject) => {
+  const testTerms = {}
+  let isHeader = true
+
+  parse(csv, { delimiter: ',' })
+  .on('error', (error) => reject(error))
+  .on('data', (row) => {
+    if (isHeader === true) { isHeader = false; return }
+    testTerms[row[1]] = parseRow(row)
+  })
+  .on('end', () => resolve(testTerms))
+})
+
+module.exports = { parseTermsFromPath, parseTermsFromCSVString, parseResultsFromPath, fromPrecision, unixToISO }

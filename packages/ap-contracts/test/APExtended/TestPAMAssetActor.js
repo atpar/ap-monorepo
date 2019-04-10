@@ -9,11 +9,11 @@ const PaymentRouter = artifacts.require('PaymentRouter')
 const PAMAssetActor = artifacts.require('PAMAssetActor')
 const PAMEngine = artifacts.require('PAMEngine')
 
-const parseContractTerms = require('../parser.js').parseContractTerms
-const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../parser.js')
+const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
 
-const getContractTerms = (precision) => {
-  return parseContractTerms(PAMTestTerms, precision)
+const getTerms = () => {
+  return parseTermsFromPath(PAMTestTermsPath)
 }
 
 contract('PAMAssetActor', (accounts) => {
@@ -31,8 +31,7 @@ contract('PAMAssetActor', (accounts) => {
 
     // compute first state
     this.PAMEngineInstance = await PAMEngine.new()
-    const precision = Number(await this.PAMEngineInstance.PRECISION())
-    ;({ '10001': this.terms } = await getContractTerms(precision))
+    ;({ '10001': this.terms } = await getTerms())
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
     
     // deploy APExtended

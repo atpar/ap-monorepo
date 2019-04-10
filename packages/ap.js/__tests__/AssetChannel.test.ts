@@ -25,7 +25,7 @@ describe('testAssetChannelClass', () => {
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
-    response = await fetch('http://localhost:9000' + '/api/terms?precision=' + 18, {});
+    response = await fetch('http://localhost:9000' + '/api/terms', {});
     contractTemplates = await response.json();
     contractTemplatesTyped = {};
 

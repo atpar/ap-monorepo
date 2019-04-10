@@ -30,10 +30,6 @@ async function getAccount () {
   return (await state.web3.eth.getAccounts())[0]
 }
 
-async function getPrecision () {
-  return Number(await state.assetIssuer.methods.PRECISION.call())
-}
-
 async function sendEther (receiver) {
   const account = await getAccount()
 
@@ -88,4 +84,4 @@ async function progressAsset (assetId, timestamp) {
   asset.progress(timestamp, { from: await getAccount() })
 }
 
-module.exports = { initialize, hashObject, sendEther, getPrecision, fillOrder, progressAsset }
+module.exports = { initialize, hashObject, sendEther, fillOrder, progressAsset }

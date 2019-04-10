@@ -7,10 +7,10 @@ const PAMAssetActor = artifacts.require('PAMAssetActor')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
-const parseContractTerms = require('../parser.js').parseContractTerms
-const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../parser.js')
+const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
 
-const getContractTerms = (precision) => parseContractTerms(PAMTestTerms, precision)
+const getTerms = () => parseTermsFromPath(PAMTestTermsPath)
 
 
 contract('AssetIssuer', (accounts) => {
@@ -21,8 +21,8 @@ contract('AssetIssuer', (accounts) => {
   before(async () => {
     PAMEngine.numberFormat = 'String'
     const PAMEngineInstance = await PAMEngine.new()
-    const precision = Number(await PAMEngineInstance.PRECISION())
-    ;({ '10001': this.terms } = await getContractTerms(precision))
+
+    ;({ '10001': this.terms } = await getTerms())
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.deployed()

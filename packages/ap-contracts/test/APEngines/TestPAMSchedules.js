@@ -2,10 +2,9 @@ const fs = require('fs')
 
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const parseTestResults = require('../parser.js').parseTestResults
-const parseContractTerms = require('../parser.js').parseContractTerms
+const { parseTermsFromPath, parseResultsFromPath, fromPrecision, unixToISO } = require('../parser.js')
 
-const PAMTestTerms = './test/contract-templates/pam-test-terms.csv'
+const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
 const PAMTestResultDirectory = './test/contract-templates-results/'
  
 
@@ -19,7 +18,7 @@ const getTestResults = async () => {
   })
 
   let promises = files.map(async (file) => {
-    const result = await parseTestResults(PAMTestResultDirectory + file)
+    const result = await parseResultsFromPath(PAMTestResultDirectory + file)
     let testName = file.split('.')[0].slice(9, 14)
     testResults[testName] = result
   })
@@ -28,18 +27,15 @@ const getTestResults = async () => {
   return testResults
 }
 
-const getContractTerms = (precision) => {
-  return parseContractTerms(PAMTestTerms, precision)
+const getTerms = () => {
+  return parseTermsFromPath(PAMTestTermsPath)
 }
 
 contract('PAMEngine', () => {
 
   before(async () => {    
     this.PAMEngineInstance = await PAMEngine.new()
-    
-    this.PRECISION = Number(await this.PAMEngineInstance.PRECISION())
-    
-    this.testTerms = await getContractTerms(this.PRECISION)
+    this.testTerms = await getTerms()
     this.refTestResults = await getTestResults()
   })
 
@@ -66,12 +62,12 @@ contract('PAMEngine', () => {
       contractState = nextContractState
 
       evaluatedSchedule.push([
-        new Date(contractEvent.scheduledTime * 1000).toISOString(),
+        unixToISO(contractEvent.scheduledTime),
         contractEvent.eventType,
-        Math.round((contractEvent.payoff * 10 ** -this.PRECISION) * 10000000000000) / 10000000000000,
-        Math.round((contractState.nominalValue * 10 ** -this.PRECISION) * 10000000000000) / 10000000000000,
-        Math.round((contractState.nominalRate * 10 ** -this.PRECISION) * 10000000000000) / 10000000000000,
-        Math.round((contractState.nominalAccrued * 10 ** -this.PRECISION) * 10000000000000) / 10000000000000
+        fromPrecision(contractEvent.payoff),
+        fromPrecision(contractState.nominalValue),
+        fromPrecision(contractState.nominalRate),
+        fromPrecision(contractState.nominalAccrued)
       ])
     }
 
