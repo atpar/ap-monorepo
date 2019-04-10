@@ -16,6 +16,10 @@ const unixToISO = (unix) => {
   return new Date(unix * 1000).toISOString()
 }
 
+const toHex = (value) => {
+  return web3Utils.asciiToHex(value); // return web3Utils.toHex(value)
+}
+
 const getIndexOfAttribute = (attribute, value) => {
   return ContractTermsDefinitions[attribute].options.indexOf(value)
 }
@@ -43,14 +47,15 @@ const parseCycleToIPS = (cycle) => {
 const parseRow = (row) => {
   const parsedRow = {}
 
+  parsedRow['contractType'] = 0
   parsedRow['calendar'] = (row[19] === '') ? 0 : getIndexOfAttribute('calendar', row[19])
   parsedRow['contractRole'] = (row[23] === '') ? 0 : getIndexOfAttribute('contractRole', row[23])
-  parsedRow['legalEntityIdRecordCreator'] = 'PartyA'
-  parsedRow['legalEntityIdCounterparty'] = 'PartyB'
+  parsedRow['legalEntityIdRecordCreator'] = toHex('A')
+  parsedRow['legalEntityIdCounterparty'] = toHex('B')
   parsedRow['dayCountConvention'] = (row[16] === '') ? 0 : getIndexOfAttribute('dayCountConvention', row[16])
   parsedRow['businessDayConvention'] = (row[17] === '') ? 0 : getIndexOfAttribute('businessDayConvention', row[17])
   parsedRow['endOfMonthConvention'] = 0 // row[18] === ''? 0 : ContractTermsDefinitions.endOfMonthConvention.options.indexOf(row[18])
-  parsedRow['currency'] = 2 // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
+  parsedRow['currency'] = '0x0000000000000000000000000000000000000000' // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
   parsedRow['scalingEffect'] = 0 // ...
   parsedRow['penaltyType'] = 0 // ...
   parsedRow['feeBasis'] = 0 // ...
@@ -83,7 +88,6 @@ const parseRow = (row) => {
   parsedRow['cycleOfFee'] = parseCycleToIPS('')
 
   parsedRow['lifeCap'] = 0 // ...
-  parsedRow['lifePeriod'] = 0 // ...
   parsedRow['lifeFloor'] = 0 // ...
   parsedRow['periodCap'] = 0 // ...
   parsedRow['periodFloor'] = 0 // ...

@@ -11,34 +11,26 @@ export interface IPS {
   isSet: boolean;
 }
 
-// @ts-ignore:6196
-export enum ContractType { PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC } // required ?
-
-export enum Calendar { NULL, NOCALENDAR, MondayToFriday }
-export enum ContractRole { RPA, RPL, LG, ST, RFL, BUYER, PFL, SELLER, GUARANTOR, OBLIGEE }
-export enum DayCountConvention { 'A/AISDA', 'A/360', 'A/365', '30E/360ISDA', '30E/360', '30/360', 'BUS/252' }
 export enum BusinessDayConvention { NULL, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP }
-export enum Currency { USD, EUR, ETH, ERC20 }
-export enum ScalingEffect { '000', '0N0', '00M', '0NM', 'I00', 'IN0', 'I0M', 'INM' }
-export enum PenaltyType { O, A, N, I }
-export enum FeeBasis { A, N }
-
-// @ts-ignore:6196
-export enum EventType { SD, MD, AD, IED, IP, PR, PP, PY, FP, PRD, TD, IPCI, RR, RRY, SC, CD, DV, MR, IPCB, STD, Child }
+export enum Calendar { NULL, NOCALENDAR, MondayToFriday }
 // @ts-ignore:6196
 export enum ClearingHouse { YES, NO }
-// @ts-ignore:6196
+export enum ContractRole { RPA, RPL, LG, ST, RFL, BUYER, PFL, SELLER, GUARANTOR, OBLIGEE }
 export enum ContractStatus {PF, DL, DQ, DF}
+export enum ContractType { PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC }
 // @ts-ignore:6196
 export enum CyclePointOfInterestPayment { EndOf, BeginningOf }
 // @ts-ignore:6196
 export enum CyclePointOfRateReset { BeginningOf, EndOf }
 // @ts-ignore:6196
 export enum CycleTriggerOfOptionality { IP, PR, RR }
+export enum DayCountConvention { 'A/AISDA', 'A/360', 'A/365', '30E/360ISDA', '30E/360', '30/360', 'BUS/252' }
 // @ts-ignore:6196
 export enum EndOfMonthConvention { SD, EOM }
 // @ts-ignore:6196
 export enum EventLevel { P }
+export enum EventType { SD, MD, AD, IED, IP, PR, PP, PY, FP, PRD, TD, IPCI, RR, RRY, SC, CD, DV, MR, IPCB, STD, Child }
+export enum FeeBasis { A, N }
 // @ts-ignore:6196
 export enum InterestCalculationBase { NT, NTIED, NTL}
 // @ts-ignore:6196
@@ -51,8 +43,10 @@ export enum OptionExecutionType { E, B, A }
 export enum OptionStrikeDriver { FX, IR, PR}
 // @ts-ignore:6196
 export enum OptionType { C, P, CP }
+export enum PenaltyType { O, A, N, I }
 // @ts-ignore:6196
 export enum PrepaymentEffect { N, A, M }
+export enum ScalingEffect { '000', '0N0', '00M', '0NM', 'I00', 'IN0', 'I0M', 'INM' }
 // @ts-ignore:6196
 export enum Seniority { S, J }
 // @ts-ignore:6196
@@ -61,7 +55,7 @@ export enum Unit { BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO }
 export interface ContractEvent {
   scheduledTime: number,
   eventType: EventType,
-  currency: Currency
+  currency: string
   payoff: BigNumber,
   actualEventTime: number
 }
@@ -69,7 +63,7 @@ export interface ContractEvent {
 export interface ProtoEvent { 
   scheduledTime: number, 
   eventType: EventType,
-  currency: Currency,
+  currency: string,
   pofType: EventType,
   stfType: EventType
 }
@@ -99,7 +93,7 @@ export interface ContractTerms {
   dayCountConvention: DayCountConvention,
   businessDayConvention: BusinessDayConvention,
   endOfMonthConvention: EndOfMonthConvention,
-  currency: Currency,
+  currency: string,
   scalingEffect: ScalingEffect,
   penaltyType: PenaltyType,
   feeBasis: FeeBasis,
@@ -129,7 +123,6 @@ export interface ContractTerms {
   cycleOfScalingIndex: IPS,
   cycleOfFee: IPS,
   lifeCap: string,
-  lifePeriod: string,
   lifeFloor: string,
   periodCap: string,
   periodFloor: string

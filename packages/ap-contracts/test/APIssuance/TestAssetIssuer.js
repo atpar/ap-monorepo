@@ -109,9 +109,6 @@ const sign = (typedData, account) => {
 const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
   const verifyingContract = verifyingContractAddress
 
-  // todo: add to solidity ContractTerms struct
-  delete orderData.terms.contractType
-
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
     ContractTermsABI, _toTuple(orderData.terms)
   ))
@@ -153,10 +150,7 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
 
 const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
   const verifyingContract = verifyingContractAddress
-
-  // todo: add to solidity ContractTerms struct
-  delete orderData.terms.contractType
-
+  
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
     ContractTermsABI, _toTuple(orderData.terms)
   ))
@@ -223,9 +217,12 @@ const _toTuple = (obj) => {
   return output
 }
 
-// @ts-ignore 
 const ContractTermsABI = {
   "components": [
+    {
+      "name": "contractType",
+      "type": "uint8"
+    },
     {
       "name": "calendar",
       "type": "uint8"
@@ -236,11 +233,11 @@ const ContractTermsABI = {
     },
     {
       "name": "legalEntityIdRecordCreator",
-      "type": "string"
+      "type": "bytes32"
     },
     {
       "name": "legalEntityIdCounterparty",
-      "type": "string"
+      "type": "bytes32"
     },
     {
       "name": "dayCountConvention",
@@ -256,7 +253,7 @@ const ContractTermsABI = {
     },
     {
       "name": "currency",
-      "type": "uint8"
+      "type": "address"
     },
     {
       "name": "scalingEffect",
@@ -444,10 +441,6 @@ const ContractTermsABI = {
     },
     {
       "name": "lifeCap",
-      "type": "int256"
-    },
-    {
-      "name": "lifePeriod",
       "type": "int256"
     },
     {

@@ -103,9 +103,6 @@ export class Signer {
     // @ts-ignore
     const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
 
-    // todo: add to solidity ContractTerms struct
-    delete orderData.terms.contractType;
-
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)
     ));
@@ -158,9 +155,6 @@ export class Signer {
     const chainId = await this.web3.eth.net.getId();
     // @ts-ignore
     const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
-
-    // todo: add to solidity ContractTerms struct
-    delete orderData.terms.contractType;
 
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)
@@ -312,6 +306,10 @@ export class Signer {
 const ContractTermsABI = {
   "components": [
     {
+      "name": "contractType",
+      "type": "uint8"
+    },
+    {
       "name": "calendar",
       "type": "uint8"
     },
@@ -321,11 +319,11 @@ const ContractTermsABI = {
     },
     {
       "name": "legalEntityIdRecordCreator",
-      "type": "string"
+      "type": "bytes32"
     },
     {
       "name": "legalEntityIdCounterparty",
-      "type": "string"
+      "type": "bytes32"
     },
     {
       "name": "dayCountConvention",
@@ -341,7 +339,7 @@ const ContractTermsABI = {
     },
     {
       "name": "currency",
-      "type": "uint8"
+      "type": "address"
     },
     {
       "name": "scalingEffect",
@@ -532,10 +530,6 @@ const ContractTermsABI = {
       "type": "int256"
     },
     {
-      "name": "lifePeriod",
-      "type": "int256"
-    },
-    {
       "name": "lifeFloor",
       "type": "int256"
     },
@@ -551,5 +545,3 @@ const ContractTermsABI = {
   "name": "terms",
   "type": "tuple"
 }
-
-export default Signer;

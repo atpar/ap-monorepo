@@ -78,13 +78,7 @@
   "currency": {
     "id": "currency",
     "name": "Currency",
-    "type": "enum",
-    "options": [
-      "USD",
-      "EUR",
-      "ETH",
-      "ERC20"
-    ]
+    "type": "text"
   },
   "scalingEffect": {
     "id": "scalingEffect",

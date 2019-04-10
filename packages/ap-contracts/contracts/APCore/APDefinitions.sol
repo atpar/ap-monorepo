@@ -25,18 +25,17 @@ contract APDefinitions {
 	}
 
 	enum EventType {SD, MD, AD, IED, IP, PR, PP, PY, FP, PRD, TD, IPCI, RR, RRY, SC, CD, DV, MR, IPCB, STD, Child}
-	enum Calendar {NoCalendar, MondayToFriday} // Custom: custom implementation of calendar  // Default: NULL
-	enum BusinessDayConvention {SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP} // Default: NULL
+	enum Calendar {NoCalendar, MondayToFriday} // Custom: custom implementation of calendar
+	enum BusinessDayConvention {SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
 	enum ClearingHouse {YES, NO} // required ?
-	enum ContractRole {RPA, RPL, LG, ST, RFL, PFL, BUYER, SELLER, GUARANTOR, OBLIGEE} // required ?
+	enum ContractRole {RPA, RPL, LG, ST, RFL, PFL, BUY, SEL, GUA, OBL} // required ?
 	enum ContractStatus {PF, DL, DQ, DF} // Default: PF
 	enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
-	enum Currency {USD, EUR, ETH, ERC20} // ISO4217 // required ?
 	enum CyclePointOfInterestPayment {EndOf, BeginningOf} // Default: EndOf
 	enum CyclePointOfRateReset {BeginningOf, EndOf} // Default: BeginningOf
 	enum CycleTriggerOfOptionality {IP, PR, RR}
 	enum DayCountConvention {A_AISDA, A_360, A_365, _30E_360ISDA, _30E_360, _30_360, BUS_252} // required ?
-	enum EndOfMonthConvention {SD, EOM} // Default: SD
+	enum EndOfMonthConvention {EOM, SD} // Default: SD
 	enum EventLevel {P} // ?
 	enum FeeBasis {A, N} // Default: Null
 	enum InterestCalculationBase {NT, NTIED, NTL} // Default: NT
@@ -77,7 +76,7 @@ contract APDefinitions {
 		// uint256 epochOffset;
 		uint256 scheduledTime;
 		EventType eventType;
-		Currency currency;
+		address currency;
 		int256 payoff;
 		uint256 actualEventTime;
 	}
@@ -85,20 +84,21 @@ contract APDefinitions {
 	struct ProtoEvent {
 		uint256 scheduledTime;
 		EventType eventType;
-		Currency currency;
+		address currency;
 		EventType pofType;
 		EventType stfType;
 	}
 
 	struct ContractTerms {
+		ContractType contractType;
 		Calendar calendar;
 		ContractRole contractRole;
-		string legalEntityIdRecordCreator;
-		string legalEntityIdCounterparty;
+		bytes32 legalEntityIdRecordCreator;
+		bytes32 legalEntityIdCounterparty;
 		DayCountConvention dayCountConvention;
 		BusinessDayConvention businessDayConvention;
 		EndOfMonthConvention endOfMonthConvention;
-		Currency currency;
+		address currency;
 		ScalingEffect scalingEffect;
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
@@ -132,7 +132,6 @@ contract APDefinitions {
 		IPS cycleOfFee;
 
 		int256 lifeCap;
-		int256 lifePeriod;
 		int256 lifeFloor;
 		int256 periodCap;
 		int256 periodFloor;

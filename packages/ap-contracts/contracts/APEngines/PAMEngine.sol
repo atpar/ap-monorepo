@@ -151,7 +151,7 @@ contract PAMEngine is APCore, IPAMEngine {
 			protoEventSchedule[index] = ProtoEvent(
 				contractTerms.initialExchangeDate, 
 				EventType.IED, 
-				Currency.ETH, 
+				address(0), 
 				EventType.IED, 
 				EventType.IED
 			);
@@ -164,7 +164,7 @@ contract PAMEngine is APCore, IPAMEngine {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.purchaseDate, 
 					EventType.PRD, 
-					Currency.ETH, 
+					address(0), 
 					EventType.PRD, 
 					EventType.PRD
 				);
@@ -192,7 +192,7 @@ contract PAMEngine is APCore, IPAMEngine {
 						protoEventSchedule[index] = ProtoEvent(
 							interestPaymentSchedule[i], 
 							EventType.IPCI, 
-							Currency.ETH, 
+							address(0), 
 							EventType.IPCI, 
 							EventType.IPCI
 						);
@@ -201,7 +201,7 @@ contract PAMEngine is APCore, IPAMEngine {
 						protoEventSchedule[index] = ProtoEvent(
 							interestPaymentSchedule[i], 
 							EventType.IP, 
-							Currency.ETH, 
+							address(0), 
 							EventType.IP, 
 							EventType.IP
 						);
@@ -216,7 +216,7 @@ contract PAMEngine is APCore, IPAMEngine {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.capitalizationEndDate, 
 					EventType.IPCI, 
-					Currency.ETH, 
+					address(0), 
 					EventType.IPCI, 
 					EventType.IPCI
 				);
@@ -241,7 +241,7 @@ contract PAMEngine is APCore, IPAMEngine {
 					protoEventSchedule[index] = ProtoEvent(
 						rateResetSchedule[i], 
 						EventType.RR, 
-						Currency.ETH, 
+						address(0), 
 						EventType.RR, 
 						EventType.RR
 					);
@@ -268,7 +268,7 @@ contract PAMEngine is APCore, IPAMEngine {
 					protoEventSchedule[index] = ProtoEvent(
 						feeSchedule[i], 
 						EventType.FP, 
-						Currency.ETH, 
+						address(0), 
 						EventType.FP, 
 						EventType.FP
 					);
@@ -296,7 +296,7 @@ contract PAMEngine is APCore, IPAMEngine {
 					protoEventSchedule[index] = ProtoEvent(
 						scalingSchedule[i], 
 						EventType.SC, 
-						Currency.ETH, 
+						address(0), 
 						EventType.SC, 
 						EventType.SC
 					);
@@ -311,7 +311,7 @@ contract PAMEngine is APCore, IPAMEngine {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.terminationDate, 
 					EventType.TD, 
-					Currency.ETH, 
+					address(0), 
 					EventType.TD, 
 					EventType.TD
 				);
@@ -324,7 +324,7 @@ contract PAMEngine is APCore, IPAMEngine {
 			protoEventSchedule[index] = ProtoEvent(
 				contractTerms.maturityDate, 
 				EventType.PR, 
-				Currency.ETH, 
+				address(0), 
 				EventType.PR, 
 				EventType.PR
 			);

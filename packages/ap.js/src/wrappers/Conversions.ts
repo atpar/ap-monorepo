@@ -46,7 +46,7 @@ export function toContractEvent (raw: any): ContractEvent {
   return {
     scheduledTime: Number(raw['scheduledTime']),
     eventType: Number(raw['eventType']),
-    currency: Number(raw['currency']),
+    currency: String(raw['currency']),
     payoff: new BigNumber(raw['payoff']),
     actualEventTime: Number(raw['actualEventTime'])
   };
@@ -66,7 +66,7 @@ export function toProtoEvent (raw: any): ProtoEvent {
   return {
     scheduledTime: Number(raw['scheduledTime']), 
     eventType: Number(raw['eventType']),
-    currency: Number(raw['currency']),
+    currency: String(raw['currency']),
     pofType: Number(raw['pofType']),
     stfType: Number(raw['stfType'])
   };
