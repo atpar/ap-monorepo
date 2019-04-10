@@ -25,8 +25,8 @@ contract APDefinitions {
 	}
 
 	enum EventType {SD, MD, AD, IED, IP, PR, PP, PY, FP, PRD, TD, IPCI, RR, RRY, SC, CD, DV, MR, IPCB, STD, Child}
-	enum Calendar {NULL, NoCalendar, MondayToFriday} // Custom: custom implementation of calendar  // Default: NULL
-	enum BusinessDayConvention {NULL, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP} // Default: NULL
+	enum Calendar {NoCalendar, MondayToFriday} // Custom: custom implementation of calendar  // Default: NULL
+	enum BusinessDayConvention {SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP} // Default: NULL
 	enum ClearingHouse {YES, NO} // required ?
 	enum ContractRole {RPA, RPL, LG, ST, RFL, PFL, BUYER, SELLER, GUARANTOR, OBLIGEE} // required ?
 	enum ContractStatus {PF, DL, DQ, DF} // Default: PF
