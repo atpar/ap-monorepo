@@ -1,8 +1,6 @@
 const router = require('express').Router()
-
-const PAMTestTermsAsCSVString = require('../../ap-contracts/test/contract-templates/pam-test-terms.csv').default
-const { parseTermsFromCSVString } = require('../../ap-contracts/test/parser.js')
-
+const { parseTermsFromCSVString } = require('@atpar/ap-contracts/actus-resources/parser')
+const PAMTestTermsAsCSVString = require('@atpar/ap-contracts/actus-resources/test-terms/pam-test-terms-covered.csv').default
 
 router.get('/terms', async (req, res) => {
   try {

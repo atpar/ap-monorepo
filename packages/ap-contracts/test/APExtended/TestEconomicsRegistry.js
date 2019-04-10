@@ -3,8 +3,8 @@ const { shouldFail } = require('openzeppelin-test-helpers');
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const { parseTermsFromPath } = require('../parser.js')
-const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../../actus-resources/parser')
+const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS'
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER'

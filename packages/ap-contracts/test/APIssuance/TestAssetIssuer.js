@@ -7,8 +7,8 @@ const PAMAssetActor = artifacts.require('PAMAssetActor')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
-const { parseTermsFromPath } = require('../parser.js')
-const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../../actus-resources/parser')
+const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
 
 const getTerms = () => parseTermsFromPath(PAMTestTermsPath)
 

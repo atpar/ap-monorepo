@@ -1,7 +1,7 @@
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const { parseTermsFromPath } = require('../parser.js')
-const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
+const { parseTermsFromPath } = require('../../actus-resources/parser')
+const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
 
 const getTerms = () => {
   return parseTermsFromPath(PAMTestTermsPath)

@@ -3,8 +3,8 @@ const fs = require('fs')
 const parse = require('csv-parse')
 const BigNumber = require('bignumber.js')
 
-const ContractEventDefinitions = require('./APDefinitions/ContractEventDefinitions.json')
-const ContractTermsDefinitions = require('./APDefinitions/ContractTermsDefinitions.json')
+const ContractEventDefinitions = require('./definitions/ContractEventDefinitions.json')
+const ContractTermsDefinitions = require('./definitions/ContractTermsDefinitions.json')
 
 const PRECISION = 18
 

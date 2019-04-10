@@ -1,7 +1,6 @@
 const Web3 = require('web3')
 const { AP, Asset } = require('@atpar/ap.js')
-
-const AssetIssuerArtifact = require('../../ap-contracts/build/contracts/AssetIssuer.json')
+const AssetIssuerArtifact = require('@atpar/ap-contracts/build/contracts/AssetIssuer.json')
 
 const state = { 
   web3: null,

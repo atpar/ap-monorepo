@@ -2,10 +2,14 @@ const fs = require('fs')
 
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const { parseTermsFromPath, parseResultsFromPath, fromPrecision, unixToISO } = require('../parser.js')
-
-const PAMTestTermsPath = './test/contract-templates/pam-test-terms.csv'
-const PAMTestResultDirectory = './test/contract-templates-results/'
+const { 
+  parseTermsFromPath, 
+  parseResultsFromPath, 
+  fromPrecision, 
+  unixToISO 
+} = require('../../actus-resources/parser')
+const PAMTestResultDirectory = './actus-resources/test-results/'
+const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
  
 
 const getTestResults = async () => {

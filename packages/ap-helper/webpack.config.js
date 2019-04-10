@@ -17,7 +17,9 @@ module.exports = {
     __dirname: false,
     __filename: false
   },
-  externals: [nodeExternals()],
+  externals: [nodeExternals({
+    whitelist: /pam-test-terms-covered.csv/ // /@atpar\/ap-contracts/
+  })],
   module: {
     rules: [
       {
