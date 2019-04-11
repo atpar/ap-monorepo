@@ -75,6 +75,15 @@
       "CSMP"
     ]
   },
+  "endOfMonthConvention": {
+    "id": "endOfMonthConvention",
+    "name": "End Of Month Convention",
+    "type": "enum",
+    "options": [
+      "EOM",
+      "SD"
+    ]
+  },
   "currency": {
     "id": "currency",
     "name": "Currency",
@@ -218,6 +227,26 @@
   "priceAtPurchaseDate": {
     "id": "priceAtPurchaseDate",
     "name": "Price At Purchase Date",
+    "type": "number"
+  },
+  "lifeCap": {
+    "id": "lifeCap",
+    "name": "Life Cap",
+    "type": "number"
+  },
+  "lifeFloor": {
+    "id": "lifeFloor",
+    "name": "Life Floor",
+    "type": "number"
+  },
+  "periodCap": {
+    "id": "periodCap",
+    "name": "Period Cap",
+    "type": "number"
+  },
+  "periodFloor": {
+    "id": "periodFloor",
+    "name": "Period Floor",
     "type": "number"
   },
   "cycleOfInterestPayment": {
