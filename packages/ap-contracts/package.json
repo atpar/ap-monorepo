@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "bignumber.js": "^7.2.1",
-    "csv-parse": "^3.1.2",
+    "csvtojson": "^2.0.8",
     "eth-sig-util": "2.1.1",
     "openzeppelin-test-helpers": "^0.1.2",
     "truffle-hdwallet-provider": "^1.0.0-web3one.0",

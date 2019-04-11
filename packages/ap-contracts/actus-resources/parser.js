@@ -1,12 +1,13 @@
 const web3Utils = require('web3-utils')
-const fs = require('fs')
-const parse = require('csv-parse')
 const BigNumber = require('bignumber.js')
+const csv = require('csvtojson')
 
 const ContractEventDefinitions = require('./definitions/ContractEventDefinitions.json')
 const ContractTermsDefinitions = require('./definitions/ContractTermsDefinitions.json')
+const CoveredTerms = require('./definitions/covered-terms.json')
 
 const PRECISION = 18
+
 
 const isoToUnix = (date) => {
   return (new Date(date + 'Z')).getTime() / 1000
@@ -16,7 +17,7 @@ const unixToISO = (unix) => {
   return new Date(unix * 1000).toISOString()
 }
 
-const toHex = (value) => {
+const toHex = (value) => {  
   return web3Utils.asciiToHex(value); // return web3Utils.toHex(value)
 }
 
@@ -32,8 +33,12 @@ const fromPrecision = (value) => {
   return Math.round((value * 10 ** -PRECISION) * 10000000000000) / 10000000000000
 }
 
+const capitalize = (str) => {
+  return String(str).charAt(0).toUpperCase() + String(str).slice(1);
+}
+
 const parseCycleToIPS = (cycle) => {
-  if (cycle === '') { return { i: 0, p: 0, s: 0, isSet: false } }
+  if (cycle === '' || !cycle) { return { i: 0, p: 0, s: 0, isSet: false } }
 
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y']
 
@@ -44,107 +49,70 @@ const parseCycleToIPS = (cycle) => {
   return { i: i, p: p, s: s, isSet: true }
 }
 
-const parseRow = (row) => {
-  const parsedRow = {}
+const parseTermsRow = (terms) => {
+  const parsedTerms = {}
 
-  parsedRow['contractType'] = 0
-  parsedRow['calendar'] = (row[19] === '') ? 0 : getIndexOfAttribute('calendar', row[19])
-  parsedRow['contractRole'] = (row[23] === '') ? 0 : getIndexOfAttribute('contractRole', row[23])
-  parsedRow['legalEntityIdRecordCreator'] = toHex('A')
-  parsedRow['legalEntityIdCounterparty'] = toHex('B')
-  parsedRow['dayCountConvention'] = (row[16] === '') ? 0 : getIndexOfAttribute('dayCountConvention', row[16])
-  parsedRow['businessDayConvention'] = (row[17] === '') ? 0 : getIndexOfAttribute('businessDayConvention', row[17])
-  parsedRow['endOfMonthConvention'] = 0 // row[18] === ''? 0 : ContractTermsDefinitions.endOfMonthConvention.options.indexOf(row[18])
-  parsedRow['currency'] = '0x0000000000000000000000000000000000000000' // row[4] === ''? 0 : ContractTermsDefinitions.currency.options.indexOf(row[4])
-  parsedRow['scalingEffect'] = 0 // ...
-  parsedRow['penaltyType'] = 0 // ...
-  parsedRow['feeBasis'] = 0 // ...
+  for (const attribute of CoveredTerms) {
+    const value = terms[capitalize(attribute)]
 
-  parsedRow['statusDate'] = (row[2] === '') ? 0 : isoToUnix(row[2])
-  parsedRow['initialExchangeDate'] = (row[6] === '') ? 0 : isoToUnix(row[6])
-  parsedRow['maturityDate'] = (row[7] === '') ? 0 : isoToUnix(row[7])
-  parsedRow['terminationDate'] = 0 // ...
-  parsedRow['purchaseDate'] = 0 // ...
-  parsedRow['capitalizationEndDate'] = (row[22] === '') ? 0 : isoToUnix(row[22])
-  parsedRow['cycleAnchorDateOfInterestPayment'] = (row[9] === '') ? 0 : isoToUnix(row[9])
-  parsedRow['cycleAnchorDateOfRateReset'] = (row[12] === '') ? 0 : isoToUnix(row[12])
-  parsedRow['cycleAnchorDateOfScalingIndex'] = 0 // ...
-  parsedRow['cycleAnchorDateOfFee'] = 0 // ...
-  parsedRow['notionalPrincipal'] = (row[5] === '') ? 0 : toPrecision(row[5])
-  parsedRow['nominalInterestRate'] = (row[8] === '') ? 0 : toPrecision(row[8])
-  parsedRow['feeAccrued'] = 0 // ...
-  parsedRow['accruedInterest'] = (row[11] === '') ? 0 : toPrecision(row[11])
-  parsedRow['rateMultiplier'] = (row[21] === '') ? 0 : toPrecision(row[21])
-  parsedRow['rateSpread'] = (row[14] === '') ? 0 : toPrecision(row[14])
-  parsedRow['feeRate'] = 0 // ...
-  parsedRow['nextResetRate'] = 0 // ...
-  parsedRow['penaltyRate'] = 0 // ...
-  parsedRow['premiumDiscountAtIED'] = (row[20] === '') ? 0 : toPrecision(row[20])
-  parsedRow['priceAtPurchaseDate'] = 0 // ...
+    if (ContractTermsDefinitions[attribute].type === 'enum') {
+      parsedTerms[attribute] = (value) ? getIndexOfAttribute(attribute, value) : 0
+    } else if (ContractTermsDefinitions[attribute].type === 'text') {
+      parsedTerms[attribute] = toHex((value) ? value : '')
+    } else if (ContractTermsDefinitions[attribute].type === 'number') {
+      parsedTerms[attribute] = (value) ? toPrecision(value) : 0
+    } else if (ContractTermsDefinitions[attribute].type === 'date') {
+      parsedTerms[attribute] = (value) ? isoToUnix(value) : 0
+    } else if (ContractTermsDefinitions[attribute].type === 'cycle') {
+      parsedTerms[attribute] = parseCycleToIPS(value)
+    }
+  }
 
-  parsedRow['cycleOfInterestPayment'] = parseCycleToIPS(row[10])
-  parsedRow['cycleOfRateReset'] = parseCycleToIPS(row[13])
-  parsedRow['cycleOfScalingIndex'] = parseCycleToIPS('')
-  parsedRow['cycleOfFee'] = parseCycleToIPS('')
+  parsedTerms['currency'] = '0x0000000000000000000000000000000000000000'
 
-  parsedRow['lifeCap'] = 0 // ...
-  parsedRow['lifeFloor'] = 0 // ...
-  parsedRow['periodCap'] = 0 // ...
-  parsedRow['periodFloor'] = 0 // ...
-
-  return parsedRow;
+  return parsedTerms;
 }
 
-
-const parseResultsFromPath = (pathToFile) => new Promise((resolve, reject) => {
+const parseResultsFromPath = async (pathToFile) => {  
+  const csvAsJSON = await csv().fromFile(pathToFile)
   const testResults = []
-  let lineCount = 0
 
-  fs.createReadStream(pathToFile)
-  .on('error', (error) => reject(error) )  
-  .pipe(parse({ delimiter: ',' }))
-  .on('data', (row) => {
-    lineCount++
-    if (lineCount === 1) { return }
-    const eventTypeIndex = ContractEventDefinitions.eventType.options.indexOf(row[1])
-    if (eventTypeIndex === 2) { return }
+  for (const object of csvAsJSON) {
+    const eventTypeIndex = ContractEventDefinitions.eventType.options.indexOf(object['Event Type'])
+    if (eventTypeIndex === 2) { continue } // filter out AD events
     testResults.push([
-      new Date(row[0] + 'Z').toISOString(),
+      new Date(object['Event Date'] + 'Z').toISOString(),
       eventTypeIndex.toString(),
-      Number(row[2]),
-      Number(row[3]),
-      Number(row[4]),
-      Number(row[5])
+      Number(object['Event Value']),
+      Number(object['Nominal Value']),
+      Number(object['Nominal Rate']),
+      Number(object['Nominal Accrued'])
     ])
-  })
-  .on('end', () => resolve(testResults))
-})
+  }
 
-const parseTermsFromPath = (pathToFile) => new Promise((resolve, reject) => {
+  return testResults
+}
+
+const parseTermsFromPath = async (pathToFile) => {
+  const csvAsJSON = await csv().fromFile(pathToFile)
   const testTerms = {}
-  let isHeader = true
 
-  fs.createReadStream(pathToFile)
-  .on('error', (error) => reject(error))
-  .pipe(parse({ delimiter: ',' }))
-  .on('data', (row) => {  
-    if (isHeader === true) { isHeader = false; return }
-    testTerms[row[1]] = parseRow(row)
-  })
-  .on('end', () => resolve(testTerms))
-})
+  for (const object of csvAsJSON) {
+    testTerms[object['ContractID']] = parseTermsRow(object)
+  }
 
-const parseTermsFromCSVString = (csv) => new Promise((resolve, reject) => {
+  return testTerms
+}
+
+const parseTermsFromCSVString = async (csvString) => {
+  const csvAsJSON = await csv().fromString(csvString)
   const testTerms = {}
-  let isHeader = true
 
-  parse(csv, { delimiter: ',' })
-  .on('error', (error) => reject(error))
-  .on('data', (row) => {
-    if (isHeader === true) { isHeader = false; return }
-    testTerms[row[1]] = parseRow(row)
-  })
-  .on('end', () => resolve(testTerms))
-})
+  for (const object of csvAsJSON) {
+    testTerms[object['ContractID']] = parseTermsRow(object)
+  }
+
+  return testTerms
+}
 
 module.exports = { parseTermsFromPath, parseTermsFromCSVString, parseResultsFromPath, fromPrecision, unixToISO }
