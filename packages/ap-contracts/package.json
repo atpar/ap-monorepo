@@ -28,18 +28,18 @@
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "dependencies": {
-    "ethlint": "^1.2.3",
-    "openzeppelin-solidity": "^2.1.2",
-    "truffle": "5.0.2"
-  },
-  "devDependencies": {
     "bignumber.js": "^7.2.1",
     "csvtojson": "^2.0.8",
+    "ethlint": "^1.2.3",
+    "openzeppelin-solidity": "^2.1.2",
+    "truffle": "5.0.2",
+    "web3-utils": "1.0.0-beta.46"
+  },
+  "devDependencies": {
     "eth-sig-util": "2.1.1",
     "openzeppelin-test-helpers": "^0.1.2",
     "truffle-hdwallet-provider": "^1.0.0-web3one.0",
-    "web3": "^1.0.0-beta.40",
-    "web3-eth-abi": "^1.0.0-beta.40",
-    "web3-utils": "^1.0.0-beta.40"
+    "web3": "1.0.0-beta.46",
+    "web3-eth-abi": "1.0.0-beta.46"
   }
 }
