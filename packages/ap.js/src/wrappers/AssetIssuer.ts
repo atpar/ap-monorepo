@@ -1,8 +1,8 @@
 import Web3 from 'web3';
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { EventLog } from 'web3-core/types';
 
-import { AssetIssuedEvent } from '../types';
+import { AssetIssuedEvent, OrderData } from '../types';
 import { toAssetIssuedEvent } from './Conversions';
 
 import AssetIssuerArtifact from '../../../ap-contracts/build/contracts/AssetIssuer.json';
@@ -36,6 +36,24 @@ export class AssetIssuer {
     });
   }
 
+  public async fillOrder (orderData: OrderData, txOptions: SendOptions): Promise<void> {
+    const order = {
+      maker: orderData.makerAddress,
+      taker: orderData.takerAddress,
+      actor: orderData.actorAddress,
+      terms: orderData.terms,
+      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
+      takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
+      salt: orderData.salt
+    };
+
+    await this.assetIssuer.methods.fillOrder(
+      order,
+      orderData.signatures.makerSignature,
+      orderData.signatures.takerSignature
+    ).send(txOptions);
+  }
+    
   public static async instantiate (web3: Web3): Promise<AssetIssuer> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore

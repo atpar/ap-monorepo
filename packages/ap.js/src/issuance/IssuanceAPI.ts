@@ -1,8 +1,9 @@
 import Web3 from 'web3';
+import { SendOptions } from 'web3-eth-contract/types';
 
 import { AssetIssuer } from '../wrappers/AssetIssuer';
 import { Signer } from '../utils/Signer';
-import { AssetIssuedEvent } from '../types';
+import { AssetIssuedEvent, OrderData } from '../types';
 
 
 export class IssuanceAPI {
@@ -30,6 +31,17 @@ export class IssuanceAPI {
    */
   public async getAssetIssuances (): Promise<AssetIssuedEvent[]> {
     return this.issuer.getAssetIssuedEvents();
+  }
+
+  /**
+   * issues a new asset from a filled order
+   * @dev registers ownership in the OwnershipRegistry and terms in the EconomicsRegistry
+   * derives a new AssetId from the keccak256 of the maker and taker signatures
+   * @param {OrderData} orderData filled order
+   * @param {SendOptions} txOptions web3 transaction options
+   */
+  public async fillOrder (orderData: OrderData, txOptions?: SendOptions): Promise<void> {
+    this.issuer.fillOrder(orderData, { ...txOptions, from: this.signer.account, gas: 3000000 });
   }
 
   /**
