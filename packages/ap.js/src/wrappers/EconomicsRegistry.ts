@@ -20,14 +20,14 @@ export class EconomicsRegistry {
     terms: ContractTerms,
     state: ContractState,
     actorAddress: string,
-    txOptions?: SendOptions
+    txOptions: SendOptions
   ): Promise<void> {
     await this.economicsRegistry.methods.registerEconomics(
       toHex(assetId), 
       fromContractTerms(terms),
       fromContractState(state),
       actorAddress
-    ).send({ ...txOptions });
+    ).send(txOptions);
   }
 
   public async getTerms (assetId: string): Promise<ContractTerms> {

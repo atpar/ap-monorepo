@@ -20,7 +20,7 @@ export class OwnershipRegistry {
     recordCreatorBeneficiaryAddress: string,
     counterpartyObligorAddress: string,
     counterpartyBeneficiaryAddress: string,
-    txOptions?: SendOptions
+    txOptions: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.registerOwnership(
       toHex(assetId), 
@@ -28,20 +28,20 @@ export class OwnershipRegistry {
       recordCreatorBeneficiaryAddress,
       counterpartyObligorAddress,
       counterpartyBeneficiaryAddress
-    ).send({ ...txOptions });
+    ).send(txOptions);
   }
 
   public async setBeneficiaryForCashflowId (
     assetId: string, 
     cashflowId: number, 
     beneficiaryAddress: string,
-    txOptions?: SendOptions
+    txOptions: SendOptions
   ): Promise<void> {
     await this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
       toHex(assetId),
       cashflowId,
       beneficiaryAddress
-    ).send({ ...txOptions });
+    ).send(txOptions);
   }
 
   public async getOwnership (assetId: string): Promise<AssetOwnership> {
