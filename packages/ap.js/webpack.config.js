@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   entry: {
-    index: path.resolve(__dirname, './dist/esm/ap.js/src/index.js')
+    index: path.resolve(__dirname, './dist/esm/index.js')
   },
   output: {
     path: path.resolve(__dirname, './dist/umd'),

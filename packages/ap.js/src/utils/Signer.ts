@@ -1,8 +1,7 @@
 import Web3 from 'web3';
 import sigUtil from 'eth-sig-util';
 
-// const AssetIssuerArtifact: any = require('../../../ap-contracts/build/contracts/AssetIssuer.json');
-import AssetIssuerArtifact from '../../../ap-contracts/build/contracts/AssetIssuer.json';
+import AssetIssuerArtifact from '@atpar/ap-contracts/build/contracts/AssetIssuer.json';
 
 import { 
   TypedData,

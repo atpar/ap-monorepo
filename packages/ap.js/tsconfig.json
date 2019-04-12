@@ -10,10 +10,7 @@
     "declarationDir": "./dist/typings/",
     "sourceMap": true,
     "baseUrl": "./",
-    "rootDirs": [
-      "./src",
-      "../ap-contracts/build/contracts"
-    ],
+    "rootDirs": ["./src"],
     "typeRoots": ["node_modules/@types"],
     "composite": false,
     "resolveJsonModule": true,

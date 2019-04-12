@@ -6,7 +6,7 @@ import { toHex } from '../utils/Utils';
 import { AssetProgressedEvent, AssetOwnership, ContractTerms } from '../types';
 import { toAssetProgressedEvent, fromContractTerms } from './Conversions';
 
-import PAMAssetActorArtifact from '../../../ap-contracts/build/contracts/PAMAssetActor.json';
+import PAMAssetActorArtifact from '@atpar/ap-contracts/build/contracts/PAMAssetActor.json';
 
 
 export class PAMAssetActor {

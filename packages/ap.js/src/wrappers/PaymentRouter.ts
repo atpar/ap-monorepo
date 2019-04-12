@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
-import PaymentRouterArtifact from '../../../ap-contracts/build/contracts/PaymentRouter.json';
+import PaymentRouterArtifact from '@atpar/ap-contracts/build/contracts/PaymentRouter.json';
 
 
 export class PaymentRouter {

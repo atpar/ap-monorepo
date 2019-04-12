@@ -6,8 +6,8 @@
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
   "main": "./dist/umd/index.js",
-  "module": "./dist/esm/ap.js/src/index.js",
-  "types": "./dist/typings/ap.js/src/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/typings/index.d.ts",
   "files": [
     "dist/",
     "web3-eth-contract-v1.0.0-beta.46.tgz"
@@ -31,6 +31,7 @@
     "web3*/**/web3-eth-contract": "file:./web3-eth-contract-v1.0.0-beta.46.tgz"
   },
   "dependencies": {
+    "@atpar/ap-contracts": "^0.1.0-alpha.5",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
     "bignumber.js": "^8.1.1",

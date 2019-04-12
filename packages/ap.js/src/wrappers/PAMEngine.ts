@@ -11,7 +11,7 @@ import {
   toProtoEventSchedule
 } from './Conversions';
 
-import PAMEngineArtifact from '../../../ap-contracts/build/contracts/PAMEngine.json';
+import PAMEngineArtifact from '@atpar/ap-contracts/build/contracts/PAMEngine.json';
 
 
 export class PAMEngine {
