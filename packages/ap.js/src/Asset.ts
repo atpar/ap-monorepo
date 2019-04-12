@@ -246,16 +246,7 @@ export class Asset {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    const initialContractState = await contractEngine.computeInitialState(terms);
-
-    await ap.ownership.registerOwnership(assetId, ownership, txOptions);
-    await ap.economics.registerEconomics(
-      assetId, 
-      terms, 
-      initialContractState,
-      ap.lifecycle.getActorAddress(),
-      txOptions
-    );
+    await ap.lifecycle.initialize(assetId, ownership, terms, txOptions);
 
     return new Asset(ap, contractEngine, assetId);
   }

@@ -3,7 +3,7 @@ import { SendOptions } from 'web3-eth-contract/types';
 
 import { PAMAssetActor } from '../wrappers/PAMAssetActor';
 import { Signer } from '../utils/Signer';
-import { AssetProgressedEvent } from '../types';
+import { AssetProgressedEvent, AssetOwnership, ContractTerms } from '../types';
 
 export class LifecycleAPI {
 
@@ -20,6 +20,30 @@ export class LifecycleAPI {
    * @returns {string}
    */
   public getActorAddress(): string { return this.actor.getAddress(); }
+
+  /**
+   * initialize an asset
+   * derives the first state from the terms and
+   * stores the ownership in the OwnershipRegistry and the terms in the EconomicsRegistry
+   * @param {string} assetId 
+   * @param {AssetOwnership} ownership
+   * @param {ContractTerms} terms
+   * @param {SendOptions} txOptions
+   * @returns {Promise<void>}
+   */
+  public async initialize (
+    assetId: string, 
+    ownership: AssetOwnership, 
+    terms: ContractTerms,
+    txOptions?: SendOptions
+  ): Promise<void> {
+    await this.actor.initialize(
+      assetId, 
+      ownership,
+      terms, 
+      { ...txOptions, from: this.signer.account, gas: 6000000 }
+    );
+  }
 
   /**
    * progress the state of an asset

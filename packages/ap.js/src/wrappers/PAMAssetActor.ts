@@ -3,8 +3,8 @@ import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { EventLog } from 'web3-core/types';
 
 import { toHex } from '../utils/Utils';
-import { AssetProgressedEvent } from '../types';
-import { toAssetProgressedEvent } from './Conversions';
+import { AssetProgressedEvent, AssetOwnership, ContractTerms } from '../types';
+import { toAssetProgressedEvent, fromContractTerms } from './Conversions';
 
 import PAMAssetActorArtifact from '../../../ap-contracts/build/contracts/PAMAssetActor.json';
 
@@ -18,15 +18,27 @@ export class PAMAssetActor {
 
   public getAddress (): string { return this.pamAssetActor.options.address; }
 
+  public async initialize (
+    assetId: string,
+    ownership: AssetOwnership,
+    terms: ContractTerms,
+    txOptions: SendOptions
+  ): Promise<void> {
+    await this.pamAssetActor.methods.initialize(
+      toHex(assetId),
+      [ ...Object.values(ownership) ],
+      fromContractTerms(terms)
+    ).send(txOptions);
+  }
+
   public async progress (
     assetId: string, 
     timestamp: number, 
-    txOptions?: SendOptions
+    txOptions: SendOptions
   ): Promise<void> {
-    await this.pamAssetActor.methods.progress(toHex(assetId), timestamp).send({ ...txOptions });
+    await this.pamAssetActor.methods.progress(toHex(assetId), timestamp).send(txOptions);
   }
 
-    
   public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
     this.pamAssetActor.events.AssetProgressed().on('data', (event: EventLog) => {
       const assetProgressedEvent = toAssetProgressedEvent(event);
