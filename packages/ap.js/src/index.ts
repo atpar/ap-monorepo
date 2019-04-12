@@ -111,7 +111,19 @@ export class AP {
    * @returns {Promise<string[]>}
    */
   public async getAssetIds (): Promise<string[]> {
-    return this.issuance.getAssetIds();
+    const issuances = await this.issuance.getAssetIssuances();
+    const assetIds = [];
+
+    for (const issuance of issuances) {
+      if (
+        issuance.recordCreatorAddress === this.signer.account ||
+        issuance.counterpartyAddress === this.signer.account
+      ) {
+        assetIds.push(issuance.assetId);
+      }
+    }
+
+    return assetIds;
   }
 
   /**

@@ -8,6 +8,7 @@ import { AssetIssuedEvent } from '../types';
 export class IssuanceAPI {
 
   private issuer: AssetIssuer;
+  // @ts-ignore 
   private signer: Signer;
 
   private constructor (issuer: AssetIssuer, signer: Signer) {
@@ -24,23 +25,11 @@ export class IssuanceAPI {
   }
 
   /**
-   * returns all assetIds of assets which are associated with default account
-   * @returns {Promise<string[]>}
+   * returns all issuances of assets
+   * @returns {Promise<AssetIssuedEvent[]>}
    */
-  public async getAssetIds (): Promise<string[]> {
-    const events = await this.issuer.getAssetIssuedEvents();
-    const assetIds = [];
-    
-    for (const event of events) {
-      if (
-        event.recordCreatorAddress === this.signer.account ||
-        event.counterpartyAddress === this.signer.account
-      ) {
-        assetIds.push(event.assetId);
-      }
-    }
-
-    return assetIds;
+  public async getAssetIssuances (): Promise<AssetIssuedEvent[]> {
+    return this.issuer.getAssetIssuedEvents();
   }
 
   /**
