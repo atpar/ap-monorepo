@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
-// const PaymentRouterArtifact: any = require('../../../ap-contracts/build/contracts/PaymentRouter.json');
 import PaymentRouterArtifact from '../../../ap-contracts/build/contracts/PaymentRouter.json';
 
 

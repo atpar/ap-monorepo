@@ -7,8 +7,6 @@ import { toHex } from '../utils/Utils';
 import { toPaidEvent } from './Conversions';
 import { PaidEvent } from '../types';
 
-
-// const PaymentRegistryArtifact: any = require('../../../ap-contracts/build/contracts/PaymentRegistry.json');
 import PaymentRegistryArtifact from '../../../ap-contracts/build/contracts/PaymentRegistry.json';
 
 

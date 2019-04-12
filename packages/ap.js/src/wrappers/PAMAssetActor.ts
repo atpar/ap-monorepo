@@ -6,7 +6,6 @@ import { toHex } from '../utils/Utils';
 import { AssetProgressedEvent } from '../types';
 import { toAssetProgressedEvent } from './Conversions';
 
-// const PAMAssetActorArtifact: any = require('../../../ap-contracts/build/contracts/PAMAssetActor.json');
 import PAMAssetActorArtifact from '../../../ap-contracts/build/contracts/PAMAssetActor.json';
 
 

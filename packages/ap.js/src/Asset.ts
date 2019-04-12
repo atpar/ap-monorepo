@@ -228,7 +228,8 @@ export class Asset {
   public static async create (
     ap: AP,
     terms: ContractTerms,
-    ownership: AssetOwnership
+    ownership: AssetOwnership,
+    txOptions?: SendOptions
   ): Promise<Asset> {
     const assetId = sha3(
       ownership.recordCreatorObligorAddress, 
@@ -247,12 +248,13 @@ export class Asset {
 
     const initialContractState = await contractEngine.computeInitialState(terms);
 
-    await ap.ownership.registerOwnership(assetId, ownership);
+    await ap.ownership.registerOwnership(assetId, ownership, txOptions);
     await ap.economics.registerEconomics(
       assetId, 
       terms, 
       initialContractState,
-      ap.lifecycle.getActorAddress()
+      ap.lifecycle.getActorAddress(),
+      txOptions
     );
 
     return new Asset(ap, contractEngine, assetId);
@@ -274,17 +276,14 @@ export class Asset {
     if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
 
     let contractEngine;
-    // switch (contractType) {
-    //   case ContractType.PAM:
-    //     contractEngine = await PAM.init(ap.web3);
-    //     break;
-    //   default:
-    //     throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    // }
-    contractEngine = await PAM.init(ap.web3);
+    switch (contractType) {
+      case (ContractType.PAM):
+        contractEngine = await PAM.init(ap.web3);
+        break;
+      default:
+        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
+    }
       
-    
-    
     return new Asset(ap, contractEngine, assetId);
   }
 }

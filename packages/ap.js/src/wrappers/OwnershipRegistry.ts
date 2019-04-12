@@ -4,7 +4,6 @@ import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 import { AssetOwnership } from '../types';
 
-// const OwnershipRegistryArtifact: any = require('../../../ap-contracts/build/contracts/OwnershipRegistry.json');
 import OwnershipRegistryArtifact from '../../../ap-contracts/build/contracts/OwnershipRegistry.json';
 
 

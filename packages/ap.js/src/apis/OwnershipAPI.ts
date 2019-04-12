@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { SendOptions } from 'web3-eth-contract/types';
 
 import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
 import { AssetOwnership } from '../types';
@@ -17,13 +18,15 @@ export class OwnershipAPI {
   /**
    * registers the ownership of a new asset for a given AssetId
    * @dev this requires the users signature (metamask pop-up)
-   * @param assetId 
-   * @param assetOwnership ownership object for a asset
+   * @param {string} assetId 
+   * @param {AssetOwnership} assetOwnership ownership object for a asset
+   * @param {SendOptions} txOptions
    * @returns {Promise<void>}
    */
   public async registerOwnership (
     assetId: string, 
-    assetOwnership: AssetOwnership
+    assetOwnership: AssetOwnership,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.registry.registerOwnership(
       assetId,
@@ -31,7 +34,7 @@ export class OwnershipAPI {
       assetOwnership.recordCreatorBeneficiaryAddress,
       assetOwnership.counterpartyObligorAddress,
       assetOwnership.counterpartyBeneficiaryAddress,
-      { from: this.signer.account, gas: 300000 }
+      { ...txOptions, from: this.signer.account, gas: 300000 }
     );
   }
 

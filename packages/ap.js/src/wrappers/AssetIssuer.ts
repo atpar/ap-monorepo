@@ -5,7 +5,6 @@ import { EventLog } from 'web3-core/types';
 import { AssetIssuedEvent } from '../types';
 import { toAssetIssuedEvent } from './Conversions';
 
-// const AssetIssuerArtifact: any = require('../../../ap-contracts/build/contracts/AssetIssuer.json');
 import AssetIssuerArtifact from '../../../ap-contracts/build/contracts/AssetIssuer.json';
 
 

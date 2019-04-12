@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 
-import { numberToHex, toChecksumAddress, hexToNumber } from '../utils/Utils';
+import { numberToHex, toChecksumAddress, hexToNumber, toHex } from '../utils/Utils';
 import { 
+  ContractTerms,
   ContractState, 
   ContractEvent, 
   ProtoEvent, 
@@ -11,6 +12,98 @@ import {
   PaidEvent
 } from '../types';
 
+
+export function toContractTerms (raw: any): ContractTerms {
+  return {
+    contractType: Number(raw['contractType']),
+    calendar: Number(raw['calendar']),
+    contractRole: Number(raw['contractRole']),
+    legalEntityIdRecordCreator: String(raw['legalEntityIdRecordCreator']),
+    legalEntityIdCounterparty: String(raw['legalEntityIdCounterparty']),
+    dayCountConvention: Number(raw['dayCountConvention']),
+    businessDayConvention: Number(raw['businessDayConvention']),
+    endOfMonthConvention: Number(raw['endOfMonthConvention']),
+    currency: String(raw['currency']),
+    scalingEffect: Number(raw['scalingEffect']),
+    penaltyType: Number(raw['penaltyType']),
+    feeBasis: Number(raw['feeBasis']),
+    statusDate: Number(raw['statusDate']),
+    initialExchangeDate: Number(raw['initialExchangeDate']),
+    maturityDate: Number(raw['maturityDate']),
+    terminationDate: Number(raw['terminationDate']),
+    purchaseDate: Number(raw['purchaseDate']),
+    capitalizationEndDate: Number(raw['capitalizationEndDate']),
+    cycleAnchorDateOfInterestPayment: Number(raw['cycleAnchorDateOfInterestPayment']),
+    cycleAnchorDateOfRateReset: Number(raw['cycleAnchorDateOfRateReset']),
+    cycleAnchorDateOfScalingIndex: Number(raw['cycleAnchorDateOfScalingIndex']),
+    cycleAnchorDateOfFee: Number(raw['cycleAnchorDateOfFee']),
+    notionalPrincipal: String(raw['notionalPrincipal']),
+    nominalInterestRate: String(raw['nominalInterestRate']),
+    feeAccrued: String(raw['feeAccrued']),
+    accruedInterest: String(raw['accruedInterest']),
+    rateMultiplier: String(raw['rateMultiplier']),
+    rateSpread: String(raw['rateSpread']),
+    feeRate: String(raw['feeRate']),
+    nextResetRate: String(raw['nextResetRate']),
+    penaltyRate: String(raw['penaltyRate']),
+    premiumDiscountAtIED: String(raw['premiumDiscountAtIED']),
+    priceAtPurchaseDate: String(raw['priceAtPurchaseDate']),
+    cycleOfInterestPayment: raw['cycleOfInterestPayment'],
+    cycleOfRateReset: raw['cycleOfRateReset'],
+    cycleOfScalingIndex: raw['cycleOfScalingIndex'],
+    cycleOfFee: raw['cycleOfFee'],
+    lifeCap: String(raw['lifeCap']),
+    lifeFloor: String(raw['lifeFloor']),
+    periodCap: String(raw['periodCap']),
+    periodFloor: String(raw['periodFloor'])
+  }
+}
+
+export function fromContractTerms (terms: ContractTerms): object {
+  return {
+    contractType: terms.contractType,
+    calendar: terms.calendar,
+    contractRole: terms.contractRole,
+    legalEntityIdRecordCreator: toHex(terms.legalEntityIdRecordCreator),
+    legalEntityIdCounterparty: toHex(terms.legalEntityIdCounterparty),
+    dayCountConvention: terms.dayCountConvention,
+    businessDayConvention: terms.businessDayConvention,
+    endOfMonthConvention: terms.endOfMonthConvention,
+    currency: terms.currency,
+    scalingEffect: terms.scalingEffect,
+    penaltyType: terms.penaltyType,
+    feeBasis: terms.feeBasis,
+    statusDate: terms.statusDate,
+    initialExchangeDate: terms.initialExchangeDate,
+    maturityDate: terms.maturityDate,
+    terminationDate: terms.terminationDate,
+    purchaseDate: terms.purchaseDate,
+    capitalizationEndDate: terms.capitalizationEndDate,
+    cycleAnchorDateOfInterestPayment: terms.cycleAnchorDateOfInterestPayment,
+    cycleAnchorDateOfRateReset: terms.cycleAnchorDateOfRateReset,
+    cycleAnchorDateOfScalingIndex: terms.cycleAnchorDateOfScalingIndex,
+    cycleAnchorDateOfFee: terms.cycleAnchorDateOfFee,
+    notionalPrincipal: terms.notionalPrincipal,
+    nominalInterestRate: terms.nominalInterestRate, // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
+    feeAccrued: terms.feeAccrued,
+    accruedInterest: terms.accruedInterest,
+    rateMultiplier: terms.rateMultiplier,
+    rateSpread: terms.rateSpread,
+    feeRate: terms.feeRate,
+    nextResetRate: terms.nextResetRate,
+    penaltyRate: terms.penaltyRate,
+    premiumDiscountAtIED: terms.premiumDiscountAtIED,
+    priceAtPurchaseDate: terms.priceAtPurchaseDate,
+    cycleOfInterestPayment: terms.cycleOfInterestPayment,
+    cycleOfRateReset: terms.cycleOfRateReset,
+    cycleOfScalingIndex: terms.cycleOfScalingIndex,
+    cycleOfFee: terms.cycleOfFee,
+    lifeCap: terms.lifeCap,
+    lifeFloor: terms.lifeFloor,
+    periodCap: terms.periodCap,
+    periodFloor: terms.periodFloor
+  }
+}
 
 export function toContractState (raw: any): ContractState {
   return {

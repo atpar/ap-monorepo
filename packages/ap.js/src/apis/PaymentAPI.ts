@@ -1,11 +1,11 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import { SendOptions } from 'web3-eth-contract/types';
 
 import { PaymentRegistry } from "../wrappers/PaymentRegistry";
 import { PaymentRouter } from "../wrappers/PaymentRouter";
 import { Signer } from '../utils/Signer';
-import { SendOptions } from 'web3-eth-contract/types';
-import { PaidEvent } from 'src/types';
+import { PaidEvent } from '../types';
 
 
 export class PaymentAPI {
@@ -32,6 +32,7 @@ export class PaymentAPI {
    * @param {number} eventId 
    * @param {string} tokenAddress 
    * @param {BigNumber} amount
+   * @param {SendOptions} txOptions
    * @return {Promise<void>}
    */
   public async settlePayment (
@@ -61,22 +62,6 @@ export class PaymentAPI {
   public async getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
     return this.registry.getPayoffBalance(assetId, eventId);
   }
-
-  // public async getSettledAmount (
-  //   assetId: string, 
-  //   fromEventId: number, 
-  //   toEventId: number
-  // ): Promise<BigNumber> {
-  //   let amountSettled = new BigNumber(0);
-  //   for (let i = 0; i <= toEventId; i++) {
-  //     const eventId = fromEventId + i;
-  //     amountSettled = amountSettled.plus(
-  //       await this.getPayoffBalance(assetId, eventId)
-  //     );
-  //   }
-
-  //   return amountSettled;
-  // }
 
   /**
    * returns the amount settled from a given event to a given event for the record creator

@@ -2,7 +2,8 @@ import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
-import { 
+import {
+  fromContractTerms,
   toContractState, 
   toContractEvent, 
   fromContractState, 
@@ -10,7 +11,6 @@ import {
   toProtoEventSchedule
 } from './Conversions';
 
-// const PAMEngineArtifact: any = require('../../../ap-contracts/build/contracts/PAMEngine.json');
 import PAMEngineArtifact from '../../../ap-contracts/build/contracts/PAMEngine.json';
 
 
@@ -26,7 +26,7 @@ export class PAMEngine {
   }
 
   public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
-    const response = await this.pamEngine.methods.computeInitialState(terms).call();
+    const response = await this.pamEngine.methods.computeInitialState(fromContractTerms(terms)).call();
     const initialState = toContractState(response);
     return initialState;
   }
@@ -37,7 +37,7 @@ export class PAMEngine {
     timestamp: number
   ): Promise<{nextState: ContractState, events: ContractEvent[]}> {
     const response = await this.pamEngine.methods.computeNextState(
-      terms, 
+      fromContractTerms(terms), 
       fromContractState(state), 
       timestamp
     ).call();
@@ -55,7 +55,7 @@ export class PAMEngine {
     timestamp: number
   ): Promise<{nextState: ContractState, event: ContractEvent}> {
     const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
-      terms,
+      fromContractTerms(terms),
       fromContractState(state),
       fromProtoEvent(protoEvent),
       timestamp
@@ -73,7 +73,7 @@ export class PAMEngine {
     endTimestamp: number
   ): Promise<ProtoEventSchedule> {
     const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
-      terms,
+      fromContractTerms(terms),
       startTimestamp,
       endTimestamp
     ).call();

@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import { SendOptions } from 'web3-eth-contract/types';
 
 import { EconomicsRegistry } from '../wrappers/EconomicsRegistry';
 import { ContractTerms, ContractState } from  '../types';
@@ -19,21 +20,23 @@ export class EconomicsAPI {
    * @dev this requires the users signature (metamask pop-up)
    * @param {string} assetId 
    * @param {ContractTerms} contractTerms 
-   * @param {ContractState} contractState 
+   * @param {ContractState} contractState
+   * @param {SendOptions} txOptions
    * @returns {Promise<void>}
    */
   public async registerEconomics (
     assetId: string, 
     contractTerms: ContractTerms, 
     contractState: ContractState,
-    actorAddress: string
+    actorAddress: string,
+    txOptions?: SendOptions
   ): Promise<void> {
     await this.registry.registerEconomics(
       assetId,
       contractTerms, 
       contractState, 
       actorAddress,
-      { from: this.signer.account, gas: 700000 }
+      { ...txOptions, from: this.signer.account, gas: 700000 }
     );
   }
 
