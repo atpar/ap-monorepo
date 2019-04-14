@@ -28,7 +28,7 @@ export class PaymentRouter {
       eventId,
       tokenAddress,
       toHex(amount)
-    ).send({ ...txOptions });
+    ).send({ ...txOptions });  
   }
 
   public static async instantiate (web3: Web3): Promise<PaymentRouter> {

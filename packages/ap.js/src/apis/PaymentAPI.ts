@@ -49,7 +49,7 @@ export class PaymentAPI {
       eventId, 
       tokenAddress, 
       amount, 
-      { ...txOptions, from: this.signer.account }
+      { ...txOptions, from: this.signer.account, gas: 150000 }
     );
   }
 
