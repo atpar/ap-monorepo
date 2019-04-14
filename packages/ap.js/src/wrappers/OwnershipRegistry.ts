@@ -31,6 +31,28 @@ export class OwnershipRegistry {
     ).send(txOptions);
   }
 
+  public async setRecordCreatorBeneficiary (
+    assetId: string,
+    newBenficiary: string,
+    txOptions: SendOptions
+  ): Promise<void> {
+    await this.ownershipRegistry.methods.setRecordCreatorBeneficiary(
+      toHex(assetId),
+      newBenficiary
+    ).send(txOptions);
+  }
+
+  public async setCounterpartyBeneficiary (
+    assetId: string,
+    newBenficiary: string,
+    txOptions: SendOptions
+  ): Promise<void> {
+    await this.ownershipRegistry.methods.setCounterpartyBeneficiary(
+      toHex(assetId),
+      newBenficiary
+    ).send(txOptions);
+  }
+
   public async setBeneficiaryForCashflowId (
     assetId: string, 
     cashflowId: number, 

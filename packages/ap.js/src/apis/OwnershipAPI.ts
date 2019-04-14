@@ -40,11 +40,49 @@ export class OwnershipAPI {
 
   /**
    * fetches the ownership for a given AssetId
-   * @param assetId 
+   * @param {string} assetId 
    * @returns {Promise<AssetOwnership>} 
    */
   public async getOwnership (assetId: string): Promise<AssetOwnership> {
     return this.registry.getOwnership(assetId); 
+  }
+
+  /**
+   * updates the default benficiary for on the record creator side
+   * @dev only current benficiary is allowed to update the address
+   * @param {string} assetId 
+   * @param {string} newBenficiary 
+   * @param {SendOptions} txOptions 
+   */
+  public async setRecordCreatorBeneficiary (
+    assetId: string, 
+    newBenficiary: string,
+    txOptions?: SendOptions
+  ): Promise<void> {
+    await this.registry.setRecordCreatorBeneficiary(
+      assetId, 
+      newBenficiary, 
+      { ...txOptions, from: this.signer.account, gas: 100000 }
+    );
+  }
+
+  /**
+   * updates the default benficiary for on the counterparty side
+   * @dev only current benficiary is allowed to update the address
+   * @param {string} assetId 
+   * @param {string} newBenficiary 
+   * @param {SendOptions} txOptions 
+   */
+  public async setCounterpartyBeneficiary (
+    assetId: string, 
+    newBenficiary: string,
+    txOptions?: SendOptions
+  ): Promise<void> {
+    await this.registry.setCounterpartyBeneficiary(
+      assetId, 
+      newBenficiary, 
+      { ...txOptions, from: this.signer.account, gas: 100000 }
+    );
   }
 
   /**
