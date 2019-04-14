@@ -4,7 +4,7 @@ import { SignedContractUpdate, OrderData } from './types';
 
 import { Asset } from './Asset';
 import { AssetChannel } from './channel/AssetChannel';
-import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI } from './apis';
+import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI, TokenizationAPI } from './apis';
 import { IssuanceAPI } from './issuance/IssuanceAPI';
 import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
@@ -24,6 +24,7 @@ export class AP {
   public payment: PaymentAPI;
   public lifecycle: LifecycleAPI;
   public issuance: IssuanceAPI;
+  public tokenization: TokenizationAPI;
   
   public signer: Signer;
   public common: Common;
@@ -38,6 +39,7 @@ export class AP {
     payment: PaymentAPI,
     lifecycle: LifecycleAPI,
     issuance: IssuanceAPI,
+    tokenization: TokenizationAPI,
     signer: Signer, 
     common: Common,
     relayer?: Relayer,
@@ -50,6 +52,7 @@ export class AP {
     this.payment = payment;
     this.lifecycle = lifecycle;
     this.issuance = issuance;
+    this.tokenization = tokenization;
 
     this.signer = signer;
     this.common = common;
@@ -150,11 +153,24 @@ export class AP {
     const payment = await PaymentAPI.init(web3, signer);
     const lifecycle = await LifecycleAPI.init(web3, signer);
     const issuance = await IssuanceAPI.init(web3, signer);
+    const tokenization = await TokenizationAPI.init(web3, signer);
     
     const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
     const client = (relayers.channelRelayer) ? Client.init(relayers.channelRelayer) : undefined;
 
-    return new AP(web3, ownership, economics, payment, lifecycle, issuance, signer, common, relayer, client);
+    return new AP(
+      web3, 
+      ownership, 
+      economics, 
+      payment, 
+      lifecycle, 
+      issuance, 
+      tokenization, 
+      signer, 
+      common, 
+      relayer, 
+      client
+    );
   }
 }
 

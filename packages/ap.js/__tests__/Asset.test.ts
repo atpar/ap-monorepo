@@ -170,4 +170,53 @@ describe('testContractClass', () => {
     expect(progressListenerCounter > 0).toBe(true);
     expect(paymentListenerCounter > 0).toBe(true);
   });
+
+  it('should deploy new ClaimsToken contract and set it as the recordCreatorBeneficiary', async () => {
+    const claimsTokenAddress = await assetRC.tokenizeBeneficiary();
+
+    const totalSupply = await apRC.tokenization.getTotalTokenSupply(claimsTokenAddress);
+    const balance = await apRC.tokenization.getTokenBalance(claimsTokenAddress);
+
+    expect(totalSupply.isGreaterThan(0)).toBe(true);
+    expect(totalSupply.isEqualTo(balance)).toBe(true);
+  });
+
+  it('should return the correct amount of available funds', async () => {
+    const assetCP = await Asset.load(apCP, assetRC.assetId);
+    const state: ContractState = await assetCP.getState();
+    const timestamp = Number(state.lastEventTime) + 2678400;
+    const amountOutstandingForObligation = await assetCP.getAmountOutstandingForNextObligation(timestamp);
+
+    await assetCP.settleNextObligation(
+      timestamp, 
+      { from: counterparty, value: amountOutstandingForObligation.abs().toFixed() }
+    );
+
+    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const balance = await apRC.tokenization.getAvailableFunds(recordCreatorBeneficiaryAddress, recordCreator);
+
+    expect(balance.isGreaterThan(0)).toBe(true);
+    expect(balance.isEqualTo(amountOutstandingForObligation)).toBe(true);
+  });
+
+  it('should withdraw available funds', async () => {
+    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const availableFunds = await apRC.tokenization.getAvailableFunds(recordCreatorBeneficiaryAddress, recordCreator);
+    const preBalance = await web3.eth.getBalance(recordCreatorBeneficiaryAddress);
+
+    await apRC.tokenization.withdrawFunds(recordCreatorBeneficiaryAddress);
+
+    const postBalance = await web3.eth.getBalance(recordCreatorBeneficiaryAddress);
+    expect(availableFunds.plus(postBalance).isEqualTo(preBalance));
+  });
+
+  it('should transfer ClaimsTokens', async () => {
+    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const value = new BigNumber(1000);
+    await apRC.tokenization.transferTokens(recordCreatorBeneficiaryAddress, counterparty, value);
+
+    const balance = await apRC.tokenization.getTokenBalance(recordCreatorBeneficiaryAddress, counterparty);
+    
+    expect(balance.isEqualTo(value)).toBe(true);
+  });
 });

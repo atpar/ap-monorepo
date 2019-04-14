@@ -214,6 +214,24 @@ export class Asset {
     await this.ap.lifecycle.progress(this.assetId, timestamp, txOptions);
   }
 
+  public async tokenizeBeneficiary (txOptions?: SendOptions): Promise<string> {
+    const { recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress } = await this.getOwnership();
+    
+    if (![recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress].includes(this.ap.signer.account)) {
+      throw(new Error('EXECUTION_ERROR: The default accounts need to be a beneficiary!'));
+    }
+    
+    const address = await this.ap.tokenization.deployTokenContract(txOptions);
+
+    if (this.ap.signer.account === recordCreatorBeneficiaryAddress) {
+      await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address);
+    } else if (this.ap.signer.account === counterpartyBeneficiaryAddress) {
+      await this.ap.ownership.setCounterpartyBeneficiary(this.assetId, address);
+    }
+
+    return address;
+  }
+
   /**
    * registers the terms, the initial state and the ownership of an asset 
    * and returns a new Asset instance.
