@@ -9,7 +9,6 @@ import { AssetIssuedEvent, OrderData } from '../types';
 export class IssuanceAPI {
 
   private issuer: AssetIssuer;
-  // @ts-ignore 
   private signer: Signer;
 
   private constructor (issuer: AssetIssuer, signer: Signer) {
@@ -45,9 +44,9 @@ export class IssuanceAPI {
   }
 
   /**
-   * return a new instance of the EconomicsAPI class
+   * return a new instance of the IssuanceAPI class
    * @param {Web3} web3 web3 instance
-   * @returns {Promise<Issuer>}
+   * @returns {Promise<IssuanceAPI>}
    */
   public static async init (web3: Web3, signer: Signer): Promise<IssuanceAPI> {
     const issuer = await AssetIssuer.instantiate(web3);

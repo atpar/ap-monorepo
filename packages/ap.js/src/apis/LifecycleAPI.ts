@@ -74,9 +74,9 @@ export class LifecycleAPI {
   }
 
   /**
-   * return a new instance of the EconomicsAPI class
+   * return a new instance of the LifecycleAPI class
    * @param {Web3} web3 web3 instance
-   * @returns {Promise<EconomicsAPI>}
+   * @returns {Promise<LifecycleAPI>}
    */
   public static async init (web3: Web3, signer: Signer): Promise<LifecycleAPI> {
     const actor = await PAMAssetActor.instantiate(web3);
