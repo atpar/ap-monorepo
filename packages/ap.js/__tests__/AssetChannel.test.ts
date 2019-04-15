@@ -14,7 +14,6 @@ describe('testAssetChannelClass', () => {
   let contractTemplatesTyped: any;
 
   let apRC: AP;
-  // @ts-ignore
   let apCP: AP;
 
   let assetChannel: AssetChannel;

@@ -1,4 +1,3 @@
-// type definitions
 import BigNumber from 'bignumber.js'; 
 
 // IPS
@@ -25,7 +24,6 @@ export enum CyclePointOfRateReset { BeginningOf, EndOf }
 // @ts-ignore:6196
 export enum CycleTriggerOfOptionality { IP, PR, RR }
 export enum DayCountConvention { 'A/AISDA', 'A/360', 'A/365', '30E/360ISDA', '30E/360', '30/360', 'BUS/252' }
-// @ts-ignore:6196
 export enum EndOfMonthConvention { SD, EOM }
 // @ts-ignore:6196
 export enum EventLevel { P }
