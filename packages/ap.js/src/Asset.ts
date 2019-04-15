@@ -227,11 +227,20 @@ export class Asset {
     await this.ap.lifecycle.progress(this.assetId, timestamp, txOptions);
   }
 
+  /**
+   * tokenizes beneficiary 
+   * depending on if the default account is the record creator or counterparty beneficiary
+   * @dev deploys new ClaimsToken contract and 
+   * sets contract address as the beneficiary in the OwnershipRegistry
+   * @todo implement for cashflow beneficiaries
+   * @param {SendOptions} txOptions 
+   * @returns {Promise<string>} address of deployed ClaimsToken contract
+   */
   public async tokenizeBeneficiary (txOptions?: SendOptions): Promise<string> {
     const { recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress } = await this.getOwnership();
     
     if (![recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress].includes(this.ap.signer.account)) {
-      throw(new Error('EXECUTION_ERROR: The default accounts need to be a beneficiary!'));
+      throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
     
     const address = await this.ap.tokenization.deployTokenContract(txOptions);
