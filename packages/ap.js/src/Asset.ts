@@ -153,13 +153,26 @@ export class Asset {
    * @returns {Promise<BigNumber>}
    */
   public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
+    const { recordCreatorObligorAddress, counterpartyObligorAddress } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
     for (let i = 0; i < pendingSchedule.length; i++) {
+      const payoff = pendingSchedule[i].event.payoff;
+      
+      // skip counterparty payoffs
+      if (this.ap.signer.account === recordCreatorObligorAddress && payoff.isGreaterThan(0)) {
+        continue;
+      }
+
+      // skip record creator payoffs
+      if (this.ap.signer.account === counterpartyObligorAddress && payoff.isLessThan(0)) {
+        continue;
+      }
+
       const eventId = lastEventId + i + 1;
       const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
-      const duePayoff = pendingSchedule[i].event.payoff.abs();
+      const duePayoff = payoff.abs();
       const outstanding = duePayoff.minus(settledPayoff);
 
       if (outstanding.isGreaterThan(0)) { return outstanding; }

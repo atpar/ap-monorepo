@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
 import { AP, Asset } from '../src';
-import { ContractTerms, ContractState, ContractType, AssetOwnership } from '../src/types';
+import { ContractTerms, ContractType, AssetOwnership } from '../src/types';
 
 
 describe('testContractClass', () => {
@@ -16,6 +16,7 @@ describe('testContractClass', () => {
   let apRC: AP;
   let apCP: AP;
   let assetRC: Asset;
+  let assetCP: Asset;
 
   let progressListenerCounter = 0;
   let paymentListenerCounter = 0;
@@ -30,7 +31,7 @@ describe('testContractClass', () => {
     contractTemplatesTyped = {};
 
     (<any>Object).keys(contractTemplates).map((key: string) => {
-      const typedContractTerms: ContractTerms = (<ContractTerms>(<any>contractTemplates)[key]);
+      const typedContractTerms = (<ContractTerms>(<any>contractTemplates)[key]);
       typedContractTerms.contractType = ContractType.PAM;
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
@@ -47,8 +48,8 @@ describe('testContractClass', () => {
     });
   });
 
-  it('should create a new asset instance', async () => {
-    const terms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
+  it('should create a new Asset instance', async () => {
+    const terms = (<any>contractTemplatesTyped)['10001'];
 
     const ownership: AssetOwnership = { 
       recordCreatorObligorAddress: recordCreator,
@@ -59,29 +60,50 @@ describe('testContractClass', () => {
 
     assetRC = await Asset.create(apRC, terms, ownership);
 
-    const storedOwnership: AssetOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
-    const storedTerms: ContractTerms = await assetRC.getTerms();
+    const storedOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
+    const storedTerms = await assetRC.getTerms();
     
     expect(assetRC instanceof Asset).toBe(true);
     expect(ownership.toString() === storedOwnership.toString()).toBe(true);
     expect(terms.statusDate.toString() === storedTerms.statusDate.toString()).toBe(true);
   });
 
-  it('should load asset from registries for counterparty', async () => {
-    const assetCP = await Asset.load(apCP, assetRC.assetId);
+  it('should load Asset from registries for counterparty', async () => {
+    assetCP = await Asset.load(apCP, assetRC.assetId);
 
-    const storedOwnershipRC: AssetOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
-    const storedTermsRC: ContractTerms = await assetRC.getTerms();
-    const storedOwnershipCP: AssetOwnership = await apCP.ownership.getOwnership(assetCP.assetId);
-    const storedTermsCP: ContractTerms = await assetCP.getTerms();
+    const storedOwnershipRC = await apRC.ownership.getOwnership(assetRC.assetId);
+    const storedTermsRC = await assetRC.getTerms();
+    const storedOwnershipCP = await apCP.ownership.getOwnership(assetCP.assetId);
+    const storedTermsCP = await assetCP.getTerms();
 
     expect(assetCP instanceof Asset).toBe(true);
     expect(storedOwnershipCP.toString() === storedOwnershipRC.toString()).toBe(true);
     expect(storedTermsCP.statusDate === storedTermsRC.statusDate).toBe(true);
   });
 
+  test('amount outstanding for next obligation is equal to the first non zero payoff of the pending schedule', async () => {
+    const terms = await assetCP.getTerms();
+    const timestamp = Number(terms.maturityDate);
+    const pendingSchedule = await assetRC.getPendingSchedule(timestamp);
+
+    let amountRC = new BigNumber(0);
+    let amountCP = new BigNumber(0);
+
+    for (const evaluatedEvent of pendingSchedule) {
+      const payoff = evaluatedEvent.event.payoff;
+      if (payoff.isGreaterThan(0) && amountCP.isEqualTo(0)) {
+        amountCP = payoff.abs();  
+      } else if (payoff.isLessThan(0) && amountRC.isEqualTo(0)) {
+        amountRC = payoff.abs();
+      }
+    }
+
+    expect(amountRC.isEqualTo(await assetRC.getAmountOutstandingForNextObligation(timestamp))).toBe(true);
+    expect(amountCP.isEqualTo(await assetCP.getAmountOutstandingForNextObligation(timestamp))).toBe(true);
+  });
+
   it('should settle payoff for events on behalf of the record creator', async () => {
-    const terms: ContractTerms = await assetRC.getTerms();
+    const terms = await assetRC.getTerms();
     const timestamp = Number(terms.statusDate) + 2678400;
     const pendingSchedule = await assetRC.getPendingSchedule(timestamp);
     const counterpartyOldBalance = new BigNumber(await web3.eth.getBalance(counterparty));
@@ -127,8 +149,7 @@ describe('testContractClass', () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // settle obligations
-    const assetCP = await Asset.load(apCP, assetRC.assetId);
-    const state: ContractState = await assetCP.getState();
+    const state = await assetCP.getState();
     const timestamp = Number(state.lastEventTime) + 2678400;
     const pendingSchedule = await assetCP.getPendingSchedule(timestamp);
     const recordCreatorOldBalance = new BigNumber(await web3.eth.getBalance(recordCreator));
@@ -182,8 +203,7 @@ describe('testContractClass', () => {
   });
 
   it('should return the correct amount of available funds', async () => {
-    const assetCP = await Asset.load(apCP, assetRC.assetId);
-    const state: ContractState = await assetCP.getState();
+    const state = await assetCP.getState();
     const timestamp = Number(state.lastEventTime) + 2678400;
     const amountOutstandingForObligation = await assetCP.getAmountOutstandingForNextObligation(timestamp);
 
