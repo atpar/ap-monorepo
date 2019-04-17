@@ -25,15 +25,19 @@ async function sendEther (receiver) {
 async function fillOrder (orderData) {
   try {
     await state.ap.issuance.fillOrder(orderData).send({ from: await getAccount(), gas: 3000000 })
-  } catch {
-    throw(new Error('TRANSACTION_ERROR: Transaction failed!'))
+  } catch (error) {
+    console.error(error)
+    throw(new Error('TRANSACTION_ERROR: Could not fill order!'))
   }
 }
 
 async function progressAsset (assetId, timestamp) {
-  const asset = await Asset.load(state.ap, assetId)
-
-  asset.progress(timestamp, { from: await getAccount() })
+  try {
+    const asset = await Asset.load(state.ap, assetId)
+    await asset.progress(timestamp)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const hashObject = async (object) => state.web3.utils.keccak256(JSON.stringify(object)) 
