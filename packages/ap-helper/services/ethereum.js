@@ -24,7 +24,7 @@ async function sendEther (receiver) {
 
 async function fillOrder (orderData) {
   try {
-    await state.ap.issuance.fillOrder(orderData)
+    await state.ap.issuance.fillOrder(orderData).send({ from: await getAccount(), gas: 3000000 })
   } catch {
     throw(new Error('TRANSACTION_ERROR: Transaction failed!'))
   }
