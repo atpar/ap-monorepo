@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-helper",
-  "version": "0.1.0-alpha.10",
+  "version": "0.1.0-alpha.11",
   "description": "Helper service for working with ap.js.",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@atpar/ap-contracts": "^0.1.0-alpha.8",
-    "@atpar/ap.js": "^0.1.0-alpha.10",
+    "@atpar/ap.js": "^0.1.0-alpha.11",
     "bignumber.js": "^7.2.1",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",
