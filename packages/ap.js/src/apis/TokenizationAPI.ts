@@ -1,10 +1,10 @@
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract/types';
+import { DeployTransactionResponse } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
 
 import { ClaimsToken } from '../wrappers/ClaimsToken';
 import { Signer } from '../utils/Signer';
-import { } from '../types';
+import { TransactionObject } from '../types';
 
 
 export class TokenizationAPI {
@@ -17,66 +17,48 @@ export class TokenizationAPI {
     this.signer = signer;
   }
 
-  public async getAvailableFunds (
+  public getAvailableFunds (
     claimsTokenAddress: string,
     tokenHolderAddress?: string
   ): Promise<BigNumber> {
     return this.token.availableFunds(
       claimsTokenAddress, 
       (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
-    );
+    ).call(); 
+  };
+
+  public withdrawFunds (claimsTokenAddress: string): TransactionObject {
+    return this.token.withdrawFunds(claimsTokenAddress); // gas: 100000
   }
 
-  public async withdrawFunds (
-    claimsTokenAddress: string,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    return this.token.withdrawFunds(
-      claimsTokenAddress, 
-      { ...txOptions, from: this.signer.account, gas: 100000 }
-    );
-  }
+  public getTotalTokenSupply (claimsTokenAddress: string): Promise<BigNumber> {
+    return this.token.totalSupply(claimsTokenAddress).call(); 
+  };
 
-  public async getTotalTokenSupply (
-    claimsTokenAddress: string
-  ): Promise<BigNumber> {
-    return this.token.totalSupply(claimsTokenAddress);
-  }
-
-  public async getTokenBalance (
-    claimsTokenAddress: string,
+  public getTokenBalance (
+    claimsTokenAddress: string, 
     tokenHolderAddress?: string
   ): Promise<BigNumber> {
     return this.token.balanceOf(
       claimsTokenAddress, 
       (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
-    );
+    ).call();
   }
 
-  public async transferTokens (
+  public transferTokens (
     claimsTokenAddress: string,
     toAddress: string,
-    value: BigNumber,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.token.transfer(
-      claimsTokenAddress, 
-      toAddress, 
-      value, 
-      { ...txOptions, from: this.signer.account, gas: 100000 }
-    );
+    value: BigNumber
+  ): TransactionObject {
+    return this.token.transfer(claimsTokenAddress, toAddress, value); // gas: 100000
   }
 
   /**
    * deploys a new ClaimsToken contract
-   * @param {SendOptions} txOptions web3 transaction options
-   * @returns {string} address of ClaimsToken contract
+   * @returns {DeployTransactionResponse} address of ClaimsToken contract
    */
-  public async deployTokenContract (txOptions?: SendOptions): Promise<string> {
-    return await this.token.deploy(
-      this.signer.account,
-      { ...txOptions, from: this.signer.account, gas: 2000000 }
-    );
+  public deployTokenContract (): DeployTransactionResponse {
+    return this.token.deploy(this.signer.account) // gas: 2000000
   }
 
   /**

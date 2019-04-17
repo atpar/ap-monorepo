@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { ContractTerms, ContractType, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { ContractEngine, PAM } from './engines';
@@ -186,10 +185,10 @@ export class Asset {
    * can be paid partially (has to be specified in the value field in txOptions)
    * @dev this requires the users signature (metamask pop-up)
    * @param {number} timestamp current timestamp
-   * @param {SendOptions} txOptions web3 transaction options
+   * @param  {BigNumber} value amount to settle
    * @returns {Promise<void>}
    */
-  public async settleNextObligation (timestamp: number, txOptions: SendOptions): Promise<void> {
+  public async settleNextObligation (timestamp: number, value: BigNumber): Promise<void> {
     const pendingSchedule = await this.getPendingSchedule(timestamp);
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
@@ -209,8 +208,7 @@ export class Asset {
           eventId, 
           tokenAddress, 
           outstanding,
-          txOptions
-        );
+        ).send({ from: this.ap.signer.account, gas: 150000, value: value.toFixed() });
         break; 
       }
     }
@@ -220,11 +218,12 @@ export class Asset {
    * derives obligations by computing the next state of the asset and 
    * stores the new state if all obligation where fulfilled
    * @param {number} timestamp
-   * @param {SendOptions} txOptions web3 transaction options
    * @return {Promise<void>}
    */
-  public async progress (timestamp: number, txOptions: SendOptions): Promise<void> {
-    await this.ap.lifecycle.progress(this.assetId, timestamp, txOptions);
+  public async progress (timestamp: number): Promise<void> {
+    await this.ap.lifecycle.progress(this.assetId, timestamp).send(
+      { from: this.ap.signer.account, gas:500000 }
+    );
   }
 
   /**
@@ -236,19 +235,25 @@ export class Asset {
    * @param {SendOptions} txOptions 
    * @returns {Promise<string>} address of deployed ClaimsToken contract
    */
-  public async tokenizeBeneficiary (txOptions?: SendOptions): Promise<string> {
+  public async tokenizeBeneficiary (): Promise<string> {
     const { recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress } = await this.getOwnership();
     
     if (![recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress].includes(this.ap.signer.account)) {
       throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
     
-    const address = await this.ap.tokenization.deployTokenContract(txOptions);
+    const { options: { address } } = await this.ap.tokenization.deployTokenContract().send(
+      { from: this.ap.signer.account, gas: 2000000}
+    );    
 
     if (this.ap.signer.account === recordCreatorBeneficiaryAddress) {
-      await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address);
+      await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address).send(
+        { from: this.ap.signer.account, gas: 100000 }
+      );
     } else if (this.ap.signer.account === counterpartyBeneficiaryAddress) {
-      await this.ap.ownership.setCounterpartyBeneficiary(this.assetId, address);
+      await this.ap.ownership.setCounterpartyBeneficiary(this.assetId, address).send(
+        { from: this.ap.signer.account, gas: 100000 }
+      );
     }
 
     return address;
@@ -268,8 +273,7 @@ export class Asset {
   public static async create (
     ap: AP,
     terms: ContractTerms,
-    ownership: AssetOwnership,
-    txOptions?: SendOptions
+    ownership: AssetOwnership
   ): Promise<Asset> {
     const assetId = sha3(
       ownership.recordCreatorObligorAddress, 
@@ -286,7 +290,9 @@ export class Asset {
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
     }
 
-    await ap.lifecycle.initialize(assetId, ownership, terms, txOptions);
+    await ap.lifecycle.initialize(assetId, ownership, terms).send(
+      { from: ap.signer.account, gas: 6000000 }
+    );
 
     return new Asset(ap, contractEngine, assetId);
   }

@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 
-import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
-import { AssetOwnership } from '../types';
+import { AssetOwnership, TransactionObject, CallObject } from '../types';
 
 import OwnershipRegistryArtifact from '@atpar/ap-contracts/build/contracts/OwnershipRegistry.json';
 
@@ -14,83 +14,80 @@ export class OwnershipRegistry {
     this.ownershipRegistry = ownershipRegistryInstance
   }
 
-  public async registerOwnership (
+  public registerOwnership (
     assetId: string,
     recordCreatorObligorAddress: string,
     recordCreatorBeneficiaryAddress: string,
     counterpartyObligorAddress: string,
-    counterpartyBeneficiaryAddress: string,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.ownershipRegistry.methods.registerOwnership(
+    counterpartyBeneficiaryAddress: string
+  ): TransactionObject {
+    return this.ownershipRegistry.methods.registerOwnership(
       toHex(assetId), 
       recordCreatorObligorAddress,
       recordCreatorBeneficiaryAddress,
       counterpartyObligorAddress,
       counterpartyBeneficiaryAddress
-    ).send(txOptions);
-  }
+    );
+  };
 
-  public async setRecordCreatorBeneficiary (
-    assetId: string,
-    newBenficiary: string,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.ownershipRegistry.methods.setRecordCreatorBeneficiary(
+  public setRecordCreatorBeneficiary (assetId: string, newBenficiary: string): TransactionObject { 
+    return this.ownershipRegistry.methods.setRecordCreatorBeneficiary(
       toHex(assetId),
       newBenficiary
-    ).send(txOptions);
-  }
+    );
+  };
 
-  public async setCounterpartyBeneficiary (
-    assetId: string,
-    newBenficiary: string,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.ownershipRegistry.methods.setCounterpartyBeneficiary(
+  public setCounterpartyBeneficiary (assetId: string, newBenficiary: string): TransactionObject {
+    return this.ownershipRegistry.methods.setCounterpartyBeneficiary(
       toHex(assetId),
       newBenficiary
-    ).send(txOptions);
-  }
+    );
+  };
 
-  public async setBeneficiaryForCashflowId (
+  public setBeneficiaryForCashflowId (
     assetId: string, 
     cashflowId: number, 
-    beneficiaryAddress: string,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
+    beneficiaryAddress: string
+  ): TransactionObject {
+    return this.ownershipRegistry.methods.setBeneficiaryForCashflowId(
       toHex(assetId),
       cashflowId,
       beneficiaryAddress
-    ).send(txOptions);
-  }
+    )
+  };
 
-  public async getOwnership (assetId: string): Promise<AssetOwnership> {
-    const { 
-      0: recordCreatorObligorAddress, 
-      1: recordCreatorBeneficiaryAddress, 
-      2: counterpartyObligorAddress, 
-      3: counterpartyBeneficiaryAddress 
-    } : { 
-      0: string, 
-      1: string, 
-      2: string, 
-      3: string 
-    } = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
+  public getOwnership = (assetId: string): CallObject<AssetOwnership> => ({
+    call: async (): Promise<AssetOwnership> => {
+      const { 
+        0: recordCreatorObligorAddress, 
+        1: recordCreatorBeneficiaryAddress, 
+        2: counterpartyObligorAddress, 
+        3: counterpartyBeneficiaryAddress 
+      } : { 
+        0: string, 
+        1: string, 
+        2: string, 
+        3: string 
+      } = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
 
-    return { 
-      recordCreatorObligorAddress, 
-      recordCreatorBeneficiaryAddress, 
-      counterpartyObligorAddress, 
-      counterpartyBeneficiaryAddress 
-    };
-  }
+      return { 
+        recordCreatorObligorAddress, 
+        recordCreatorBeneficiaryAddress, 
+        counterpartyObligorAddress, 
+        counterpartyBeneficiaryAddress 
+      };
+    }
+  });
 
-  public async getCashflowBeneficiary (assetId: string, cashflowId: number): Promise<string> {
-    const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(toHex(assetId), cashflowId).call();
-    return beneficiary;
-  }
+  public getCashflowBeneficiary = (assetId: string, cashflowId: number): CallObject<string> => ({
+    call: async (): Promise<string> => {
+      const beneficiary: string = await this.ownershipRegistry.methods.getCashflowBeneficiary(
+        toHex(assetId), cashflowId
+      ).call();
+
+      return beneficiary;
+    }
+  });
 
   public static async instantiate (web3: Web3): Promise<OwnershipRegistry> {
     const chainId = await web3.eth.net.getId();

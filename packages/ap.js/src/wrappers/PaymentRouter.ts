@@ -1,10 +1,11 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
-import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 
 import PaymentRouterArtifact from '@atpar/ap-contracts/build/contracts/PaymentRouter.json';
+import { TransactionObject } from 'src/types';
 
 
 export class PaymentRouter {
@@ -14,21 +15,20 @@ export class PaymentRouter {
     this.paymentRouter = PaymentRouterInstance
   }
 
-  public async settlePayment (
+  public settlePayment (
     assetId: string, 
     cashflowId: number,
     eventId: number,
     tokenAddress: string,
-    amount: BigNumber,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.paymentRouter.methods.settlePayment(
+    amount: BigNumber
+  ): TransactionObject {
+    return this.paymentRouter.methods.settlePayment(
       toHex(assetId),
       cashflowId,
       eventId,
       tokenAddress,
       toHex(amount)
-    ).send({ ...txOptions });  
+    );  
   }
 
   public static async instantiate (web3: Web3): Promise<PaymentRouter> {

@@ -1,14 +1,14 @@
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { AssetIssuer } from '../wrappers/AssetIssuer';
 import { Signer } from '../utils/Signer';
-import { AssetIssuedEvent, OrderData } from '../types';
+import { AssetIssuedEvent, OrderData, TransactionObject } from '../types';
 
 
 export class IssuanceAPI {
 
   private issuer: AssetIssuer;
+  // @ts-ignore
   private signer: Signer;
 
   private constructor (issuer: AssetIssuer, signer: Signer) {
@@ -28,8 +28,8 @@ export class IssuanceAPI {
    * returns all issuances of assets
    * @returns {Promise<AssetIssuedEvent[]>}
    */
-  public async getAssetIssuances (): Promise<AssetIssuedEvent[]> {
-    return this.issuer.getAssetIssuedEvents();
+  public getAssetIssuances (): Promise<AssetIssuedEvent[]> {
+    return this.issuer.getAssetIssuedEvents().call();
   }
 
   /**
@@ -37,10 +37,10 @@ export class IssuanceAPI {
    * @dev registers ownership in the OwnershipRegistry and terms in the EconomicsRegistry
    * derives a new AssetId from the keccak256 of the maker and taker signatures
    * @param {OrderData} orderData filled order
-   * @param {SendOptions} txOptions web3 transaction options
+   * @returns {TransactionObject}
    */
-  public async fillOrder (orderData: OrderData, txOptions?: SendOptions): Promise<void> {
-    this.issuer.fillOrder(orderData, { ...txOptions, from: this.signer.account, gas: 3000000 });
+  public fillOrder (orderData: OrderData): TransactionObject {
+    return this.issuer.fillOrder(orderData); // gas: 3000000
   }
 
   /**

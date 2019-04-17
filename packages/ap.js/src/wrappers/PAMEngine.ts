@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract/types';
 
-import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent } from '../types';
+import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent, CallObject } from '../types';
 import {
   fromContractTerms,
   toContractState, 
@@ -21,67 +21,77 @@ export class PAMEngine {
     this.pamEngine = pamEngineInstance;
   }
 
-  public async getPrecision (): Promise<number> {
-    return Number(await this.pamEngine.methods.precision().call());
-  }
+  public getPrecision = () => ({
+    call: async (): Promise<number> => {
+      return Number(await this.pamEngine.methods.precision().call());
+    }
+  });
 
-  public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
-    const response = await this.pamEngine.methods.computeInitialState(fromContractTerms(terms)).call();
-    const initialState = toContractState(response);
-    return initialState;
-  }
+  public computeInitialState = (terms: ContractTerms): CallObject<ContractState> => ({
+    call: async ():Promise<ContractState> => {
+      const response = await this.pamEngine.methods.computeInitialState(fromContractTerms(terms)).call();
+      const initialState = toContractState(response);
+      return initialState;
+    }
+  });
 
-  public async computeNextState (
+  public computeNextState = (
     terms: ContractTerms, 
     state: ContractState, 
     timestamp: number
-  ): Promise<{nextState: ContractState, events: ContractEvent[]}> {
-    const response = await this.pamEngine.methods.computeNextState(
-      fromContractTerms(terms), 
-      fromContractState(state), 
-      timestamp
-    ).call();
+  ): CallObject<{nextState: ContractState, events: ContractEvent[]}> => ({
+    call: async (): Promise<{nextState: ContractState, events: ContractEvent[]}> => {
+      const response = await this.pamEngine.methods.computeNextState(
+        fromContractTerms(terms), 
+        fromContractState(state), 
+        timestamp
+      ).call();
     
-    const nextState = toContractState(response[0]);
-    const events: ContractEvent[] = response[1].map((raw: any) => toContractEvent(raw));
+      const nextState = toContractState(response[0]);
+      const events: ContractEvent[] = response[1].map((raw: any) => toContractEvent(raw));
   
-    return { nextState, events };
-  }
+      return { nextState, events };
+    }
+  });
 
-  public async computeNextStateForProtoEvent (
+  public computeNextStateForProtoEvent = (
     terms: ContractTerms, 
     state: ContractState,
     protoEvent: ProtoEvent, 
     timestamp: number
-  ): Promise<{nextState: ContractState, event: ContractEvent}> {
-    const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
-      fromContractTerms(terms),
-      fromContractState(state),
-      fromProtoEvent(protoEvent),
-      timestamp
-    ).call();
+  ): CallObject<{nextState: ContractState, event: ContractEvent}> => ({
+    call: async (): Promise<{nextState: ContractState, event: ContractEvent}> => {
+      const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
+        fromContractTerms(terms),
+        fromContractState(state),
+        fromProtoEvent(protoEvent),
+        timestamp
+      ).call();
     
-    const nextState = toContractState(response[0]);
-    const event = toContractEvent(response[1]);
+      const nextState = toContractState(response[0]);
+      const event = toContractEvent(response[1]);
 
-    return { nextState, event };
-  }
+      return { nextState, event };
+    }
+  });
 
-  public async computeProtoEventScheduleSegment (
+  public computeProtoEventScheduleSegment = (
     terms: ContractTerms, 
     startTimestamp: number, 
     endTimestamp: number
-  ): Promise<ProtoEventSchedule> {
-    const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
-      fromContractTerms(terms),
-      startTimestamp,
-      endTimestamp
-    ).call();
+  ): CallObject<ProtoEventSchedule> => ({
+    call: async (): Promise<ProtoEventSchedule> => {
+      const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
+        fromContractTerms(terms),
+        startTimestamp,
+        endTimestamp
+      ).call();
 
-    const pendingProtoEventSchedule = toProtoEventSchedule(response);
+      const pendingProtoEventSchedule = toProtoEventSchedule(response);
 
-    return pendingProtoEventSchedule;
-  }
+      return pendingProtoEventSchedule;
+    }
+  });
 
   public static async instantiate (web3: Web3): Promise<PAMEngine> {
     const chainId = await web3.eth.net.getId();

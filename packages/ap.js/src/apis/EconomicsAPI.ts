@@ -1,13 +1,13 @@
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { EconomicsRegistry } from '../wrappers/EconomicsRegistry';
-import { ContractTerms, ContractState } from  '../types';
+import { ContractTerms, ContractState, TransactionObject } from  '../types';
 import { Signer } from '../utils/Signer';
 
 export class EconomicsAPI {
 
   private registry: EconomicsRegistry;
+  // @ts-ignore
   private signer: Signer;
 
   private constructor (registry: EconomicsRegistry, signer: Signer) {
@@ -21,32 +21,29 @@ export class EconomicsAPI {
    * @param {string} assetId 
    * @param {ContractTerms} contractTerms 
    * @param {ContractState} contractState
-   * @param {SendOptions} txOptions
-   * @returns {Promise<void>}
+   * @returns {TransactionObject}
    */
-  public async registerEconomics (
+  public registerEconomics (
     assetId: string, 
     contractTerms: ContractTerms, 
     contractState: ContractState,
-    actorAddress: string,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.registry.registerEconomics(
+    actorAddress: string
+  ): TransactionObject {
+    return this.registry.registerEconomics(
       assetId,
       contractTerms, 
       contractState, 
-      actorAddress,
-      { ...txOptions, from: this.signer.account, gas: 700000 }
-    );
+      actorAddress
+    ); // gas: 700000
   }
 
   /**
    * fetches the terms of an asset with given AssetId
    * @param {string} assetId
-   * @returns {Promise<ContractTerms>} ContractTerms
+   * @returns {Promise<ContractTerms>}
    */
-  public async getTerms (assetId: string): Promise<ContractTerms> {
-    return this.registry.getTerms(assetId);
+  public getTerms (assetId: string): Promise<ContractTerms> {
+    return this.registry.getTerms(assetId).call();
   }
 
   /**
@@ -54,8 +51,8 @@ export class EconomicsAPI {
    * @param assetId
    * @returns {Promise<ContractState>}
    */
-  public async getState (assetId: string): Promise<ContractState> {
-    return this.registry.getState(assetId);
+  public getState (assetId: string): Promise<ContractState> {
+    return this.registry.getState(assetId).call();
   }
 
   /**
@@ -63,8 +60,8 @@ export class EconomicsAPI {
    * @param {string} assetId
    * @returns {Promise<number>}
    */
-  public async getEventId (assetId: string): Promise<number> {
-    return this.registry.getEventId(assetId);
+  public getEventId (assetId: string): Promise<number> {
+    return this.registry.getEventId(assetId).call();
   }
 
   /**

@@ -1,7 +1,7 @@
 import Web3 from 'web3';
-import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { Contract } from 'web3-eth-contract/types';
 
-import { ContractTerms, ContractState } from '../types';
+import { ContractTerms, ContractState, TransactionObject, CallObject } from '../types';
 import { toHex } from '../utils/Utils';
 import { toContractState, fromContractTerms, fromContractState, toContractTerms } from './Conversions';
 
@@ -15,39 +15,44 @@ export class EconomicsRegistry {
     this.economicsRegistry = economicsRegistryInstance
   }
 
-  public async registerEconomics (
+  public registerEconomics (
     assetId: string, 
-    terms: ContractTerms,
-    state: ContractState,
-    actorAddress: string,
-    txOptions: SendOptions
-  ): Promise<void> {
-    await this.economicsRegistry.methods.registerEconomics(
+    terms: ContractTerms, 
+    state: ContractState, 
+    actorAddress: string
+  ): TransactionObject {
+    return this.economicsRegistry.methods.registerEconomics(
       toHex(assetId), 
       fromContractTerms(terms),
       fromContractState(state),
       actorAddress
-    ).send(txOptions);
+    );
   }
 
-  public async getTerms (assetId: string): Promise<ContractTerms> {
-    const response = await this.economicsRegistry.methods.getTerms(toHex(assetId)).call();
-    const terms = toContractTerms(response);
-    return terms;
-  }
+  public getTerms = (assetId: string): CallObject<ContractTerms> => ({
+    call: async (): Promise<ContractTerms> => {
+      const response = await this.economicsRegistry.methods.getTerms(toHex(assetId)).call();
+      const terms = toContractTerms(response);
+      return terms;
+    }
+  });
 
-  public async getState (assetId: string): Promise<ContractState> {
-    const response = await this.economicsRegistry.methods.getState(toHex(assetId)).call();
-    const contractState = toContractState(response);
-    return contractState;
-  }
+  public getState = (assetId: string): CallObject<ContractState> => ({
+    call: async (): Promise<ContractState> => {
+      const response = await this.economicsRegistry.methods.getState(toHex(assetId)).call();
+      const contractState = toContractState(response);
+      return contractState;
+    }
+  });
 
-  public async getEventId (assetId: string): Promise<number> {
-    const response = await this.economicsRegistry.methods.getEventId(toHex(assetId)).call();
-    const eventId = Number(response);
-    return eventId;
-  }
-
+  public getEventId = (assetId: string): CallObject<number> => ({
+    call: async (): Promise<number> => {
+      const response = await this.economicsRegistry.methods.getEventId(toHex(assetId)).call();
+      const eventId = Number(response);
+      return eventId;
+    }
+  });
+  
   public static async instantiate (web3: Web3): Promise<EconomicsRegistry> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore

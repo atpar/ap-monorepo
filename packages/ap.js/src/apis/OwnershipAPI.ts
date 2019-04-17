@@ -1,13 +1,13 @@
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
-import { AssetOwnership } from '../types';
+import { AssetOwnership, TransactionObject } from '../types';
 import { Signer } from '../utils/Signer';
 
 export class OwnershipAPI {
 
   private registry: OwnershipRegistry;
+  // @ts-ignore
   private signer: Signer;
 
   private constructor (registry: OwnershipRegistry, signer: Signer) {
@@ -20,22 +20,19 @@ export class OwnershipAPI {
    * @dev this requires the users signature (metamask pop-up)
    * @param {string} assetId 
    * @param {AssetOwnership} assetOwnership ownership object for a asset
-   * @param {SendOptions} txOptions
-   * @returns {Promise<void>}
+   * @returns {TransactionObject}
    */
-  public async registerOwnership (
+  public registerOwnership (
     assetId: string, 
-    assetOwnership: AssetOwnership,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.registry.registerOwnership(
+    assetOwnership: AssetOwnership
+  ): TransactionObject {
+    return this.registry.registerOwnership(
       assetId,
       assetOwnership.recordCreatorObligorAddress,
       assetOwnership.recordCreatorBeneficiaryAddress,
       assetOwnership.counterpartyObligorAddress,
-      assetOwnership.counterpartyBeneficiaryAddress,
-      { ...txOptions, from: this.signer.account, gas: 300000 }
-    );
+      assetOwnership.counterpartyBeneficiaryAddress
+    ); // gas: 300000
   }
 
   /**
@@ -43,8 +40,8 @@ export class OwnershipAPI {
    * @param {string} assetId 
    * @returns {Promise<AssetOwnership>} 
    */
-  public async getOwnership (assetId: string): Promise<AssetOwnership> {
-    return this.registry.getOwnership(assetId); 
+  public getOwnership (assetId: string): Promise<AssetOwnership> {
+    return this.registry.getOwnership(assetId).call(); 
   }
 
   /**
@@ -52,18 +49,16 @@ export class OwnershipAPI {
    * @dev only current benficiary is allowed to update the address
    * @param {string} assetId 
    * @param {string} newBenficiary 
-   * @param {SendOptions} txOptions 
+   * @returns {TransactionObject}
    */
-  public async setRecordCreatorBeneficiary (
+  public setRecordCreatorBeneficiary (
     assetId: string, 
-    newBenficiary: string,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.registry.setRecordCreatorBeneficiary(
+    newBenficiary: string
+  ): TransactionObject {
+    return this.registry.setRecordCreatorBeneficiary(
       assetId, 
-      newBenficiary, 
-      { ...txOptions, from: this.signer.account, gas: 100000 }
-    );
+      newBenficiary
+    ); //gas: 100000
   }
 
   /**
@@ -71,18 +66,16 @@ export class OwnershipAPI {
    * @dev only current benficiary is allowed to update the address
    * @param {string} assetId 
    * @param {string} newBenficiary 
-   * @param {SendOptions} txOptions 
+   * @returns {TransactionObject}
    */
-  public async setCounterpartyBeneficiary (
+  public setCounterpartyBeneficiary (
     assetId: string, 
-    newBenficiary: string,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.registry.setCounterpartyBeneficiary(
+    newBenficiary: string
+  ): TransactionObject {
+    return this.registry.setCounterpartyBeneficiary(
       assetId, 
-      newBenficiary, 
-      { ...txOptions, from: this.signer.account, gas: 100000 }
-    );
+      newBenficiary
+    ); // gas: 100000
   }
 
   /**

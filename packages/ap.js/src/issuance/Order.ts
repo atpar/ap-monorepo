@@ -42,12 +42,12 @@ export class Order {
    * issues a new asset if the order is filled.
    * @param {SendOptions} txOptions web3 transaction options
    */
-  public issueAssetFromOrder (txOptions?: SendOptions): Promise<void> {
+  public async issueAssetFromOrder (txOptions: SendOptions): Promise<void> {
     if (!this.orderData.signatures.makerSignature || !this.orderData.signatures.takerSignature) {
       throw(new Error('EXECUTION_ERROR: Can not issue asset from unfilled order. Signature is missing!'));
     }
 
-    return this.ap.issuance.fillOrder(this.orderData, txOptions);
+    await this.ap.issuance.fillOrder(this.orderData).send(txOptions);
   }
   
   /**

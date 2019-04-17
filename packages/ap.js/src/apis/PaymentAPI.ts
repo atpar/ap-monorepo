@@ -1,11 +1,10 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { PaymentRegistry } from "../wrappers/PaymentRegistry";
 import { PaymentRouter } from "../wrappers/PaymentRouter";
 import { Signer } from '../utils/Signer';
-import { PaidEvent } from '../types';
+import { PaidEvent, TransactionObject } from '../types';
 
 
 export class PaymentAPI {
@@ -32,24 +31,21 @@ export class PaymentAPI {
    * @param {number} eventId 
    * @param {string} tokenAddress 
    * @param {BigNumber} amount
-   * @param {SendOptions} txOptions
-   * @return {Promise<void>}
+   * @return {TransactionObject}
    */
-  public async settlePayment (
+  public settlePayment (
     assetId: string,
     cashflowId: number,
     eventId: number,
     tokenAddress: string,
-    amount: BigNumber,
-    txOptions: SendOptions
-  ): Promise<void> {
+    amount: BigNumber
+  ): TransactionObject {
     return this.router.settlePayment(
       assetId, 
       cashflowId, 
       eventId, 
       tokenAddress, 
-      amount, 
-      { ...txOptions, from: this.signer.account, gas: 150000 }
+      amount
     );
   }
 
@@ -59,8 +55,8 @@ export class PaymentAPI {
    * @param {number} eventId
    * @returns {Promise<BigNumber>}
    */
-  public async getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
-    return this.registry.getPayoffBalance(assetId, eventId);
+  public getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
+    return this.registry.getPayoffBalance(assetId, eventId).call();
   }
 
   /**
@@ -79,7 +75,7 @@ export class PaymentAPI {
     let amountSettled = new BigNumber(0);
     for (let i = 0; i <= toEventId; i++) {
       const eventId = fromEventId + i;
-      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId)
+      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId).call()
       if (Number(cashflowId) < 0) { amountSettled = amountSettled.plus(payoffBalance); }
     }
     return amountSettled;
@@ -101,7 +97,7 @@ export class PaymentAPI {
     let amountSettled = new BigNumber(0);
     for (let i = 0; i <= toEventId; i++) {
       const eventId = fromEventId + i;
-      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId)
+      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId).call()
       if (Number(cashflowId) > 0) { amountSettled = amountSettled.plus(payoffBalance); }
     }
     return amountSettled;

@@ -1,13 +1,13 @@
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract/types';
 
 import { PAMAssetActor } from '../wrappers/PAMAssetActor';
 import { Signer } from '../utils/Signer';
-import { AssetProgressedEvent, AssetOwnership, ContractTerms } from '../types';
+import { AssetProgressedEvent, AssetOwnership, ContractTerms, TransactionObject } from '../types';
 
 export class LifecycleAPI {
 
   private actor: PAMAssetActor;
+  // @ts-ignore 
   private signer: Signer;
 
   private constructor (actor: PAMAssetActor, signer: Signer) {
@@ -28,21 +28,18 @@ export class LifecycleAPI {
    * @param {string} assetId 
    * @param {AssetOwnership} ownership
    * @param {ContractTerms} terms
-   * @param {SendOptions} txOptions
-   * @returns {Promise<void>}
+   * @returns {TransactionObject}
    */
-  public async initialize (
+  public initialize (
     assetId: string, 
     ownership: AssetOwnership, 
-    terms: ContractTerms,
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.actor.initialize(
+    terms: ContractTerms
+  ): TransactionObject {
+    return this.actor.initialize(
       assetId, 
       ownership,
-      terms, 
-      { ...txOptions, from: this.signer.account, gas: 6000000 }
-    );
+      terms
+    ); //  gas: 6000000
   }
 
   /**
@@ -50,19 +47,16 @@ export class LifecycleAPI {
    * all obligation to date have to be fullfilled
    * @param {string} assetId 
    * @param {number} timestamp
-   * @param {SendOptions} txOptions
-   * @returns {Promise<void>}
+   * @returns {TransactionObject}
    */
-  public async progress (
+  public progress (
     assetId: string, 
-    timestamp: number, 
-    txOptions?: SendOptions
-  ): Promise<void> {
-    await this.actor.progress(
+    timestamp: number
+  ): TransactionObject {
+    return this.actor.progress(
       assetId, 
-      timestamp, 
-      { ...txOptions, from: this.signer.account, gas: 500000 }
-    );
+      timestamp
+    ); // gas: 500000
   }
 
   /**

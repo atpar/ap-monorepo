@@ -1,8 +1,8 @@
 import Web3 from 'web3';
-import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { Contract } from 'web3-eth-contract/types';
 import { EventLog } from 'web3-core/types';
 
-import { AssetIssuedEvent, OrderData } from '../types';
+import { AssetIssuedEvent, OrderData, TransactionObject, CallObject } from '../types';
 import { toAssetIssuedEvent } from './Conversions';
 
 import AssetIssuerArtifact from '@atpar/ap-contracts/build/contracts/AssetIssuer.json';
@@ -16,19 +16,21 @@ export class AssetIssuer {
     this.assetIssuer = assetIssuerInstance;
   }
 
-  public async getAssetIssuedEvents (): Promise<AssetIssuedEvent[]> {
-    const events = await this.assetIssuer.getPastEvents('AssetIssued', {
-      filter: {},
-      fromBlock: 0,
-      toBlock: 'latest'
-    });
+  public getAssetIssuedEvents = (): CallObject<AssetIssuedEvent[]> => ({
+    call: async (): Promise<AssetIssuedEvent[]> => {
+      const events = await this.assetIssuer.getPastEvents('AssetIssued', {
+        filter: {},
+        fromBlock: 0,
+        toBlock: 'latest'
+      });
 
-    const assetIssuedEvents: AssetIssuedEvent[] = events.map((event) => {
-      return toAssetIssuedEvent(event);
-    });
+      const assetIssuedEvents: AssetIssuedEvent[] = events.map((event) => {
+        return toAssetIssuedEvent(event);
+      });
 
-    return assetIssuedEvents;
-  }
+      return assetIssuedEvents;
+    }
+  })
 
   public onAssetIssuedEvent (cb: (event: AssetIssuedEvent) => void): void {
     this.assetIssuer.events.AssetIssued().on('data', (event: EventLog) => {
@@ -37,7 +39,7 @@ export class AssetIssuer {
     });
   }
 
-  public async fillOrder (orderData: OrderData, txOptions: SendOptions): Promise<void> {
+  public fillOrder (orderData: OrderData): TransactionObject {
     const order = {
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
@@ -48,11 +50,11 @@ export class AssetIssuer {
       salt: orderData.salt
     };
 
-    await this.assetIssuer.methods.fillOrder(
+    return this.assetIssuer.methods.fillOrder(
       order,
       orderData.signatures.makerSignature,
       orderData.signatures.takerSignature
-    ).send(txOptions);
+    );
   }
     
   public static async instantiate (web3: Web3): Promise<AssetIssuer> {

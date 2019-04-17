@@ -25,7 +25,7 @@ export class PAM implements ContractEngine {
   public async computeInitialState (terms: ContractTerms): Promise<ContractState> {
     const initialState = await this.pamEngine.computeInitialState(
       terms
-    );
+    ).call();
     return initialState;
   }
 
@@ -45,7 +45,7 @@ export class PAM implements ContractEngine {
       terms, 
       state, 
       timestamp
-    );
+    ).call();
     return nextState;
   }
 
@@ -59,7 +59,7 @@ export class PAM implements ContractEngine {
     terms: ContractTerms,
     expectedState: ContractState,
   ): Promise<boolean> {
-    const initialState = await this.pamEngine.computeInitialState(terms);
+    const initialState = await this.pamEngine.computeInitialState(terms).call();
 
     // const extractedStateObject = Object.keys(initialState).filter((key) => (!(/^\d+/).test(key)))
     //   .reduce((obj: any, key: any) => { obj[key] = initialState[key]; return obj }, {})
@@ -85,7 +85,7 @@ export class PAM implements ContractEngine {
       terms, 
       state,
       expectedState.lastEventTime
-    );
+    ).call();
 
     // const extractedContractStateObject = Object.keys(contractState).filter((key) => (!(/^\d+/).test(key)))
     //   .reduce((obj: any, key: any) => { obj[key] = contractState[key]; return obj }, {})
@@ -101,12 +101,12 @@ export class PAM implements ContractEngine {
    * @returns {Promise<EvaluatedEventSchedule>} 
    */
   public async computeEvaluatedInitialSchedule (terms: ContractTerms): Promise<EvaluatedEventSchedule> {
-    const initialContractState: ContractState = await this.pamEngine.computeInitialState(terms);
+    const initialContractState: ContractState = await this.pamEngine.computeInitialState(terms).call();
     const protoEventSchedule: ProtoEventSchedule = await this.pamEngine.computeProtoEventScheduleSegment(
       terms,
       terms.statusDate,
       terms.maturityDate
-    );
+    ).call();
     
     let state = initialContractState;
     const evaluatedInitialSchedule: EvaluatedEventSchedule = [];
@@ -117,7 +117,7 @@ export class PAM implements ContractEngine {
         state,
         protoEvent,
         protoEvent.scheduledTime
-      );
+      ).call();
       
       const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
       state = nextState;
@@ -145,7 +145,7 @@ export class PAM implements ContractEngine {
       terms, 
       currentState.lastEventTime, 
       currentTimestamp
-    );
+    ).call();
 
     let state = currentState;
     const evaluatedPendingSchedule: EvaluatedEventSchedule = [];
@@ -156,7 +156,7 @@ export class PAM implements ContractEngine {
         state,
         protoEvent,
         protoEvent.scheduledTime
-      );
+      ).call();
       
       const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
       state = nextState;      
