@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap.js",
-  "version": "0.1.0-alpha.11",
+  "version": "0.1.0-alpha.14",
   "description": "Typescript Library implementing the ACTUS protocol",
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
