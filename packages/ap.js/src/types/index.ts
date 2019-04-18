@@ -1,3 +1,3 @@
 export * from './ACTUS';
 export * from './AP';
-export * from './typings';
+export * from './Ethereum';
