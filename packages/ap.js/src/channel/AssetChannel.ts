@@ -405,7 +405,7 @@ export class AssetChannel {
     let contractEngine;
     switch (terms.contractType) {
       case ContractType.PAM:
-      contractEngine = await PAM.init(ap.web3);        
+        contractEngine = await PAM.init(ap.web3);        
         break;
       default:
         throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));

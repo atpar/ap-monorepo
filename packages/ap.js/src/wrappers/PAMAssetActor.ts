@@ -23,11 +23,11 @@ export class PAMAssetActor {
     ownership: AssetOwnership,
     terms: ContractTerms
   ): TransactionObject { 
-      return this.pamAssetActor.methods.initialize(
-        toHex(assetId),
-        [ ...Object.values(ownership) ],
-        fromContractTerms(terms)
-      );
+    return this.pamAssetActor.methods.initialize(
+      toHex(assetId),
+      [ ...Object.values(ownership) ],
+      fromContractTerms(terms)
+    );
   };
 
   public progress (assetId: string, timestamp: number): TransactionObject {

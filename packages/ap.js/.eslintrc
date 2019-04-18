@@ -8,8 +8,10 @@
     "sourceType":  "module"
   },
   "rules":  {
+    "eol-last": ["error", "always"],
     "no-floating-promises": true,
-    "@typescript-eslint/indent": false,
+    "@typescript-eslint/indent": ["error", 2],
+    "indent": "off",
     "@typescript-eslint/interface-name-prefix": false,
     "@typescript-eslint/camelcase": false,
     "@typescript-eslint/no-use-before-define": false,

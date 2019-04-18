@@ -54,7 +54,7 @@ export class Signer {
     return this._signTypedData(await this._getContractUpdateAsTypedData(contractUpdate));
   }
 
-    /**
+  /**
    * validates the signatures for a given signed contract update
    * @param {SignedContractUpdate} signedContractUpdate signed contract update to validate
    * @returns {Promise<boolean>} true if signatures are valid
