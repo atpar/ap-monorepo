@@ -31,16 +31,16 @@ export class PaymentRegistry {
   public getPayoff = (
     assetId: string, 
     eventId: number
-  ): CallObject<{cashflowId: string, tokenAddress: string, payoffBalance: BigNumber}> => ({
-    call: async(): Promise<{cashflowId: string, tokenAddress: string, payoffBalance: BigNumber}> => {
+  ): CallObject<{cashflowId: string; tokenAddress: string; payoffBalance: BigNumber}> => ({
+    call: async(): Promise<{cashflowId: string; tokenAddress: string; payoffBalance: BigNumber}> => {
       const { 
         0: cashflowId, 
         1: tokenAddress, 
         2: payoffBalanceAsString
-      } : { 
-        0: string, 
-        1: string, 
-        2: string 
+      }: { 
+        0: string; 
+        1: string; 
+        2: string; 
       } = await this.paymentRegistry.methods.getPayoff(toHex(assetId), eventId).call();
 
       const payoffBalance = new BigNumber(payoffBalanceAsString)
@@ -50,7 +50,7 @@ export class PaymentRegistry {
   });
 
   public onPaidEvent (cb: (event: PaidEvent) => void): void {
-    this.paymentRegistry.events.Paid().on('data', (event: EventLog) => {
+    this.paymentRegistry.events.Paid().on('data', (event: EventLog): void => {
       const paidEvent = toPaidEvent(event);
       cb(paidEvent);
     });

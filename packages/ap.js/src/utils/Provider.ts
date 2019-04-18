@@ -12,7 +12,7 @@ export class SocketProvider implements Provider {
 
   private socket: SocketIOClient.Socket;
   
-  constructor (url: string) {
+  public constructor (url: string) {
     this.socket = io.connect(url);
   }
   
@@ -33,7 +33,7 @@ export class SocketProvider implements Provider {
    * @param {(data: string[]) => any} cb callback function which returns an array of messages
    */
   public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
-    this.socket.on(identifier, (data: string[]) => {
+    this.socket.on(identifier, (data: string[]): void => {
       cb(data);
     });
   }
@@ -46,7 +46,7 @@ export class HTTPProvider implements Provider {
   private sendMessageRoute: string;
   private listenForMessagesRoute: string;
 
-  constructor (host: string, routes: { sendMessageRoute: string, listenForMessagesRoute: string }) {
+  public constructor (host: string, routes: { sendMessageRoute: string; listenForMessagesRoute: string }) {
     this.host = host;
     this.sendMessageRoute = routes.sendMessageRoute;
     this.listenForMessagesRoute = routes.listenForMessagesRoute;
@@ -74,7 +74,7 @@ export class HTTPProvider implements Provider {
    * @param {(data: string[]) => any} cb callback function which returns an array of messages
    */
   public listenForMessages (identifier: string, cb: { (data: string[]): any }): void {
-    setInterval(async () => {
+    setInterval(async (): Promise<void> => {
       try {
         const response = await fetch(this.host + this.listenForMessagesRoute + identifier, {});
         const json = await response.json();

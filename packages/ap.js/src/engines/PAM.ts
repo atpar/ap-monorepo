@@ -119,7 +119,7 @@ export class PAM implements ContractEngine {
         protoEvent.scheduledTime
       ).call();
       
-      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+      const { nextState, event }: { nextState: ContractState; event: ContractEvent } = response;
       state = nextState;
       
       evaluatedInitialSchedule.push({ event, state: nextState });
@@ -158,7 +158,7 @@ export class PAM implements ContractEngine {
         protoEvent.scheduledTime
       ).call();
       
-      const { nextState, event } : { nextState: ContractState, event: ContractEvent } = response;
+      const { nextState, event }: { nextState: ContractState; event: ContractEvent } = response;
       state = nextState;      
       
       evaluatedPendingSchedule.push({ event, state: nextState });
@@ -186,7 +186,9 @@ export class PAM implements ContractEngine {
     );
 
     const events = evaluatedPendingEventSchedule.map(
-      (evaluatedEvent: {event: ContractEvent, state: ContractState}) => { return evaluatedEvent.event; }
+      (evaluatedEvent: {event: ContractEvent; state: ContractState}): ContractEvent => { 
+        return evaluatedEvent.event; 
+      }
     );
 
     return this._getPayOffFromContractEvents(events);
@@ -278,7 +280,7 @@ export class PAM implements ContractEngine {
    */
   private _getPayOffFromContractEvents (events: ContractEvent[]): BigNumber {
     const payOff = events.reduce(
-      (payoffSum: BigNumber, event: ContractEvent) => payoffSum.plus(new BigNumber(event.payoff)), 
+      (payoffSum: BigNumber, event: ContractEvent): BigNumber => payoffSum.plus(new BigNumber(event.payoff)), 
       new BigNumber(0)
     );
   

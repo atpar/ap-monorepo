@@ -63,11 +63,11 @@ export class OwnershipRegistry {
         1: recordCreatorBeneficiaryAddress, 
         2: counterpartyObligorAddress, 
         3: counterpartyBeneficiaryAddress 
-      } : { 
-        0: string, 
-        1: string, 
-        2: string, 
-        3: string 
+      }: { 
+        0: string; 
+        1: string; 
+        2: string; 
+        3: string; 
       } = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
 
       return { 

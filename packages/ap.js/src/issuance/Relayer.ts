@@ -29,8 +29,8 @@ export class Relayer {
    * @param {(orderData: OrderData) => void} cb callback function which returns received OrderData
    */
   public onNewOrder (cb: (orderData: OrderData) => void): void {
-    this.provider.listenForMessages('', (data: object) => {
-      Object.values(data).forEach((orderData: OrderData) => {
+    this.provider.listenForMessages('', (data: object): void => {
+      Object.values(data).forEach((orderData: OrderData): void => {
         cb(orderData);
       });
     });

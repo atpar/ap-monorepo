@@ -233,7 +233,7 @@ export class AssetChannel {
     this.ap.client.registerContractUpdateListener(
       this.ap.signer.account,
       assetId,
-      async (signedContractUpdate: SignedContractUpdate) => {
+      async (signedContractUpdate: SignedContractUpdate): Promise<void> => {
         if (!(await this._validateSignedContractUpdate(signedContractUpdate))) { return; } 
         this._storeSignedContractUpdate(signedContractUpdate);
       }

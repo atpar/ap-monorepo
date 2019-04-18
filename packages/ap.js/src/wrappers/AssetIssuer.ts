@@ -24,7 +24,7 @@ export class AssetIssuer {
         toBlock: 'latest'
       });
 
-      const assetIssuedEvents: AssetIssuedEvent[] = events.map((event) => {
+      const assetIssuedEvents: AssetIssuedEvent[] = events.map((event): AssetIssuedEvent => {
         return toAssetIssuedEvent(event);
       });
 
@@ -33,7 +33,7 @@ export class AssetIssuer {
   })
 
   public onAssetIssuedEvent (cb: (event: AssetIssuedEvent) => void): void {
-    this.assetIssuer.events.AssetIssued().on('data', (event: EventLog) => {
+    this.assetIssuer.events.AssetIssued().on('data', (event: EventLog): void => {
       const assetIssuedEvent = toAssetIssuedEvent(event);
       cb(assetIssuedEvent);
     });

@@ -35,7 +35,7 @@ export class PAMAssetActor {
   }
 
   public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
-    this.pamAssetActor.events.AssetProgressed().on('data', (event: EventLog) => {
+    this.pamAssetActor.events.AssetProgressed().on('data', (event: EventLog): void => {
       const assetProgressedEvent = toAssetProgressedEvent(event);
       cb(assetProgressedEvent);
     });

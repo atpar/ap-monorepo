@@ -19,7 +19,7 @@ export class Signer {
   private web3: Web3;
   public account: string;
 
-  constructor (web3: Web3, account: string) {
+  public constructor (web3: Web3, account: string) {
     this.web3 = web3;
     this.account = account;
   }

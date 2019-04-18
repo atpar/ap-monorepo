@@ -33,8 +33,8 @@ export class Client {
       throw(new Error('INITIALIZATION_ERROR: Listener already setup!')); 
     }
 
-    this.provider.listenForMessages(receiverAddress, (data: object) => {
-      Object.values(data).forEach((obj) => {
+    this.provider.listenForMessages(receiverAddress, (data: object): void => {
+      Object.values(data).forEach((obj): void => {
         const signedContractUpdate: SignedContractUpdate = obj; 
         const assetId = signedContractUpdate.contractUpdate.assetId;
         const contractListener = this.contractUpdateListenerRegistry.get(assetId);

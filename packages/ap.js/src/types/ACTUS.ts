@@ -51,79 +51,79 @@ export enum Seniority { S, J }
 export enum Unit { BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO }
 
 export interface ContractEvent {
-  scheduledTime: number,
-  eventType: EventType,
-  currency: string
-  payoff: BigNumber,
-  actualEventTime: number
+  scheduledTime: number;
+  eventType: EventType;
+  currency: string;
+  payoff: BigNumber;
+  actualEventTime: number;
 }
 
 export interface ProtoEvent { 
-  scheduledTime: number, 
-  eventType: EventType,
-  currency: string,
-  pofType: EventType,
-  stfType: EventType
+  scheduledTime: number; 
+  eventType: EventType;
+  currency: string;
+  pofType: EventType;
+  stfType: EventType;
 }
 
 export interface ContractState {
-  lastEventTime: number,
-  contractStatus: ContractStatus,
-  timeFromLastEvent: BigNumber,
-  nominalValue: BigNumber,
-  nominalAccrued: BigNumber,
-  feeAccrued: BigNumber,
-  nominalRate: BigNumber,
-  interestScalingMultiplier: BigNumber,
-  nominalScalingMultiplier: BigNumber,
-  contractRoleSign: ContractRole
+  lastEventTime: number;
+  contractStatus: ContractStatus;
+  timeFromLastEvent: BigNumber;
+  nominalValue: BigNumber;
+  nominalAccrued: BigNumber;
+  feeAccrued: BigNumber;
+  nominalRate: BigNumber;
+  interestScalingMultiplier: BigNumber;
+  nominalScalingMultiplier: BigNumber;
+  contractRoleSign: ContractRole;
 }
 
-export type ProtoEventSchedule = Array<ProtoEvent>;
-export type EvaluatedEventSchedule = { event: ContractEvent, state: ContractState }[];
+export type ProtoEventSchedule = ProtoEvent[];
+export type EvaluatedEventSchedule = { event: ContractEvent; state: ContractState }[];
 
 export interface ContractTerms {
-  contractType: ContractType,
-  calendar: Calendar,
-  contractRole: ContractRole,
-  legalEntityIdRecordCreator: String,
-  legalEntityIdCounterparty: String,
-  dayCountConvention: DayCountConvention,
-  businessDayConvention: BusinessDayConvention,
-  endOfMonthConvention: EndOfMonthConvention,
-  currency: string,
-  scalingEffect: ScalingEffect,
-  penaltyType: PenaltyType,
-  feeBasis: FeeBasis,
-  statusDate: number,
-  initialExchangeDate: number,
-  maturityDate: number,
-  terminationDate: number,
-  purchaseDate: number,
-  capitalizationEndDate: number,
-  cycleAnchorDateOfInterestPayment: number,
-  cycleAnchorDateOfRateReset: number,
-  cycleAnchorDateOfScalingIndex: number,
-  cycleAnchorDateOfFee: number,
-  notionalPrincipal: string, // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
-  nominalInterestRate: string,
-  feeAccrued: string,
-  accruedInterest: string,
-  rateMultiplier: string,
-  rateSpread: string,
-  feeRate: string,
-  nextResetRate: string,
-  penaltyRate: string,
-  premiumDiscountAtIED: string,
-  priceAtPurchaseDate: string,
-  cycleOfInterestPayment: IPS,
-  cycleOfRateReset: IPS,
-  cycleOfScalingIndex: IPS,
-  cycleOfFee: IPS,
-  lifeCap: string,
-  lifeFloor: string,
-  periodCap: string,
-  periodFloor: string
+  contractType: ContractType;
+  calendar: Calendar;
+  contractRole: ContractRole;
+  legalEntityIdRecordCreator: string;
+  legalEntityIdCounterparty: string;
+  dayCountConvention: DayCountConvention;
+  businessDayConvention: BusinessDayConvention;
+  endOfMonthConvention: EndOfMonthConvention;
+  currency: string;
+  scalingEffect: ScalingEffect;
+  penaltyType: PenaltyType;
+  feeBasis: FeeBasis;
+  statusDate: number;
+  initialExchangeDate: number;
+  maturityDate: number;
+  terminationDate: number;
+  purchaseDate: number;
+  capitalizationEndDate: number;
+  cycleAnchorDateOfInterestPayment: number;
+  cycleAnchorDateOfRateReset: number;
+  cycleAnchorDateOfScalingIndex: number;
+  cycleAnchorDateOfFee: number;
+  notionalPrincipal: string; // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
+  nominalInterestRate: string;
+  feeAccrued: string;
+  accruedInterest: string;
+  rateMultiplier: string;
+  rateSpread: string;
+  feeRate: string;
+  nextResetRate: string;
+  penaltyRate: string;
+  premiumDiscountAtIED: string;
+  priceAtPurchaseDate: string;
+  cycleOfInterestPayment: IPS;
+  cycleOfRateReset: IPS;
+  cycleOfScalingIndex: IPS;
+  cycleOfFee: IPS;
+  lifeCap: string;
+  lifeFloor: string;
+  periodCap: string;
+  periodFloor: string;
 }
 
 // export interface ContractTerms {

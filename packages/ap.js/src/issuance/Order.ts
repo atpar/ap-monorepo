@@ -8,7 +8,7 @@ export class Order {
   private ap: AP;
   public orderData: OrderData;
 
-  constructor (ap: AP, orderData: OrderData) {
+  private constructor (ap: AP, orderData: OrderData) {
     this.ap = ap;
     this.orderData = orderData;
   }

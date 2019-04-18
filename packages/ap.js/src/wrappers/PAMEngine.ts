@@ -21,14 +21,14 @@ export class PAMEngine {
     this.pamEngine = pamEngineInstance;
   }
 
-  public getPrecision = () => ({
+  public getPrecision = (): CallObject<number> => ({
     call: async (): Promise<number> => {
       return Number(await this.pamEngine.methods.precision().call());
     }
   });
 
   public computeInitialState = (terms: ContractTerms): CallObject<ContractState> => ({
-    call: async ():Promise<ContractState> => {
+    call: async (): Promise<ContractState> => {
       const response = await this.pamEngine.methods.computeInitialState(fromContractTerms(terms)).call();
       const initialState = toContractState(response);
       return initialState;
@@ -39,8 +39,8 @@ export class PAMEngine {
     terms: ContractTerms, 
     state: ContractState, 
     timestamp: number
-  ): CallObject<{nextState: ContractState, events: ContractEvent[]}> => ({
-    call: async (): Promise<{nextState: ContractState, events: ContractEvent[]}> => {
+  ): CallObject<{nextState: ContractState; events: ContractEvent[]}> => ({
+    call: async (): Promise<{nextState: ContractState; events: ContractEvent[]}> => {
       const response = await this.pamEngine.methods.computeNextState(
         fromContractTerms(terms), 
         fromContractState(state), 
@@ -48,7 +48,7 @@ export class PAMEngine {
       ).call();
     
       const nextState = toContractState(response[0]);
-      const events: ContractEvent[] = response[1].map((raw: any) => toContractEvent(raw));
+      const events: ContractEvent[] = response[1].map((raw: any): ContractEvent => toContractEvent(raw));
   
       return { nextState, events };
     }
@@ -59,8 +59,8 @@ export class PAMEngine {
     state: ContractState,
     protoEvent: ProtoEvent, 
     timestamp: number
-  ): CallObject<{nextState: ContractState, event: ContractEvent}> => ({
-    call: async (): Promise<{nextState: ContractState, event: ContractEvent}> => {
+  ): CallObject<{nextState: ContractState; event: ContractEvent}> => ({
+    call: async (): Promise<{nextState: ContractState; event: ContractEvent}> => {
       const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
         fromContractTerms(terms),
         fromContractState(state),

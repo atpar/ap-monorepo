@@ -188,7 +188,7 @@ export function toProtoEventSchedule (raw: any): ProtoEventSchedule {
 
 export function toAssetIssuedEvent (raw: any): AssetIssuedEvent {
   return {
-    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
+    assetId: raw['raw']['topics'][1] as string, // see web3 event decoding issue
     recordCreatorAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][2].substring(26))),
     counterpartyAddress: toChecksumAddress(String('0x' + raw['raw']['topics'][3].substring(26)))
   };
@@ -196,14 +196,14 @@ export function toAssetIssuedEvent (raw: any): AssetIssuedEvent {
 
 export function toAssetProgressedEvent (raw: any): AssetProgressedEvent {
   return {
-    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
+    assetId: raw['raw']['topics'][1] as string, // see web3 event decoding issue
     eventId: hexToNumber(String(raw['returnValues']['eventId']))
   };
 }
 
 export function toPaidEvent (raw: any): PaidEvent {
   return {
-    assetId: <string> raw['raw']['topics'][1], // see web3 event decoding issue
+    assetId: raw['raw']['topics'][1] as string, // see web3 event decoding issue
     eventId: hexToNumber(String(raw['returnValues']['eventId'])),
     amount: new BigNumber(String(raw['returnValues']['amount']))
   };
