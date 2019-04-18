@@ -9,6 +9,9 @@
   },
   "rules":  {
     "@typescript-eslint/indent": "false",
-    "@typescript-eslint/interface-name-prefix": "false"
+    "@typescript-eslint/interface-name-prefix": "false",
+    "@typescript-eslint/camelcase": "false",
+    "@typescript-eslint/no-use-before-define": "false",
+    "@typescript-eslint/no-explicit-any": "false"
   }
 }

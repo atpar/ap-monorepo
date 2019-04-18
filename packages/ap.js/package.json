@@ -23,7 +23,8 @@
     "prebuild": "rm -rf dist/ && tsc",
     "build": "webpack",
     "test": "scripts/prune-relayer-database.sh && jest --runInBand --detectOpenHandles --forceExit",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
