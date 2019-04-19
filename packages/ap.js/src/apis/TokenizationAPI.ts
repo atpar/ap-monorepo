@@ -1,19 +1,18 @@
-import Web3 from 'web3';
-import { DeployTransactionResponse } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
+import { DeployTransactionResponse } from 'web3-eth-contract/types';
 
-import { ClaimsToken } from '../wrappers/ClaimsToken';
 import { Signer } from '../utils/Signer';
 import { TransactionObject } from '../types';
+import { ContractsAPI } from './ContractsAPI';
 
 
 export class TokenizationAPI {
 
-  private token: ClaimsToken;
+  private contracts: ContractsAPI;
   private signer: Signer;
 
-  private constructor (token: ClaimsToken, signer: Signer) {
-    this.token = token;
+  public constructor (contracts: ContractsAPI, signer: Signer) {
+    this.contracts = contracts;
     this.signer = signer;
   }
 
@@ -21,25 +20,25 @@ export class TokenizationAPI {
     claimsTokenAddress: string,
     tokenHolderAddress?: string
   ): Promise<BigNumber> {
-    return this.token.availableFunds(
+    return this.contracts.claimsToken.availableFunds(
       claimsTokenAddress, 
       (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
     ).call(); 
   };
 
   public withdrawFunds (claimsTokenAddress: string): TransactionObject {
-    return this.token.withdrawFunds(claimsTokenAddress); // gas: 100000
+    return this.contracts.claimsToken.withdrawFunds(claimsTokenAddress); // gas: 100000
   }
 
   public getTotalTokenSupply (claimsTokenAddress: string): Promise<BigNumber> {
-    return this.token.totalSupply(claimsTokenAddress).call(); 
+    return this.contracts.claimsToken.totalSupply(claimsTokenAddress).call(); 
   };
 
   public getTokenBalance (
     claimsTokenAddress: string, 
     tokenHolderAddress?: string
   ): Promise<BigNumber> {
-    return this.token.balanceOf(
+    return this.contracts.claimsToken.balanceOf(
       claimsTokenAddress, 
       (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
     ).call();
@@ -50,7 +49,7 @@ export class TokenizationAPI {
     toAddress: string,
     value: BigNumber
   ): TransactionObject {
-    return this.token.transfer(claimsTokenAddress, toAddress, value); // gas: 100000
+    return this.contracts.claimsToken.transfer(claimsTokenAddress, toAddress, value); // gas: 100000
   }
 
   /**
@@ -58,17 +57,6 @@ export class TokenizationAPI {
    * @returns {DeployTransactionResponse} address of ClaimsToken contract
    */
   public deployTokenContract (): DeployTransactionResponse {
-    return this.token.deploy(this.signer.account) // gas: 2000000
-  }
-
-  /**
-   * return a new instance of the TokenizationAPI class
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<TokenizationAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<TokenizationAPI> {
-    const token = await ClaimsToken.instantiate(web3);
-    return new TokenizationAPI(token, signer);
+    return this.contracts.claimsToken.deploy(this.signer.account) // gas: 2000000
   }
 }
-  

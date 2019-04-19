@@ -1,4 +1,3 @@
-import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
 import { ContractEngine } from './ContractEngine';
@@ -13,7 +12,7 @@ export class PAM implements ContractEngine {
 
   protected pamEngine: PAMEngine;
 
-  private constructor (pamEngine: PAMEngine) {
+  public constructor (pamEngine: PAMEngine) {
     this.pamEngine = pamEngine;
   }
 
@@ -285,16 +284,5 @@ export class PAM implements ContractEngine {
     );
   
     return payOff;
-  }
-
-  /**
-   * returns a new PAM instance
-   * @param {Web3} web3 Web3 instance
-   * @returns {Promise<PAM>}
-   */
-  public static async init (web3: Web3): Promise<PAM> {
-    const pamEngine = await PAMEngine.instantiate(web3);
-
-    return new PAM(pamEngine);
   }
 }

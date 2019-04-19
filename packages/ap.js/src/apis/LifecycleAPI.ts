@@ -1,25 +1,20 @@
-import Web3 from 'web3';
-
-import { PAMAssetActor } from '../wrappers/PAMAssetActor';
-import { Signer } from '../utils/Signer';
 import { AssetProgressedEvent, AssetOwnership, ContractTerms, TransactionObject } from '../types';
+import { ContractsAPI } from './ContractsAPI';
+
 
 export class LifecycleAPI {
 
-  private actor: PAMAssetActor;
-  // @ts-ignore 
-  private signer: Signer;
+  private contracts: ContractsAPI;
 
-  private constructor (actor: PAMAssetActor, signer: Signer) {
-    this.actor = actor;
-    this.signer = signer;
+  public constructor (contracts: ContractsAPI) {
+    this.contracts = contracts;
   }
 
   /**
    * returns the address of the asset actor
    * @returns {string}
    */
-  public getActorAddress(): string { return this.actor.getAddress(); }
+  public getActorAddress(): string { return this.contracts.assetActor.getAddress(); }
 
   /**
    * initialize an asset
@@ -35,7 +30,7 @@ export class LifecycleAPI {
     ownership: AssetOwnership, 
     terms: ContractTerms
   ): TransactionObject {
-    return this.actor.initialize(
+    return this.contracts.assetActor.initialize(
       assetId, 
       ownership,
       terms
@@ -53,7 +48,7 @@ export class LifecycleAPI {
     assetId: string, 
     timestamp: number
   ): TransactionObject {
-    return this.actor.progress(
+    return this.contracts.assetActor.progress(
       assetId, 
       timestamp
     ); // gas: 500000
@@ -64,16 +59,6 @@ export class LifecycleAPI {
    * @param {(event: AssetProgressedEvent) => void} cb callback function 
    */
   public onProgress (cb: (event: AssetProgressedEvent) => void): void {
-    this.actor.onAssetProgressedEvent(cb);
-  }
-
-  /**
-   * return a new instance of the LifecycleAPI class
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<LifecycleAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<LifecycleAPI> {
-    const actor = await PAMAssetActor.instantiate(web3);
-    return new LifecycleAPI(actor, signer);
+    this.contracts.assetActor.onAssetProgressedEvent(cb);
   }
 }

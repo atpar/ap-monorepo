@@ -1,18 +1,13 @@
-import Web3 from 'web3';
-
-import { OwnershipRegistry } from '../wrappers/OwnershipRegistry';
 import { AssetOwnership, TransactionObject } from '../types';
-import { Signer } from '../utils/Signer';
+import { ContractsAPI } from './ContractsAPI';
+
 
 export class OwnershipAPI {
 
-  private registry: OwnershipRegistry;
-  // @ts-ignore
-  private signer: Signer;
+  private contracts: ContractsAPI;
 
-  private constructor (registry: OwnershipRegistry, signer: Signer) {
-    this.registry = registry;
-    this.signer = signer;
+  public constructor (contracts: ContractsAPI) {
+    this.contracts = contracts;
   }
 
   /**
@@ -26,7 +21,7 @@ export class OwnershipAPI {
     assetId: string, 
     assetOwnership: AssetOwnership
   ): TransactionObject {
-    return this.registry.registerOwnership(
+    return this.contracts.ownershipRegistry.registerOwnership(
       assetId,
       assetOwnership.recordCreatorObligorAddress,
       assetOwnership.recordCreatorBeneficiaryAddress,
@@ -41,7 +36,7 @@ export class OwnershipAPI {
    * @returns {Promise<AssetOwnership>} 
    */
   public getOwnership (assetId: string): Promise<AssetOwnership> {
-    return this.registry.getOwnership(assetId).call(); 
+    return this.contracts.ownershipRegistry.getOwnership(assetId).call(); 
   }
 
   /**
@@ -55,7 +50,7 @@ export class OwnershipAPI {
     assetId: string, 
     newBenficiary: string
   ): TransactionObject {
-    return this.registry.setRecordCreatorBeneficiary(
+    return this.contracts.ownershipRegistry.setRecordCreatorBeneficiary(
       assetId, 
       newBenficiary
     ); //gas: 100000
@@ -72,19 +67,9 @@ export class OwnershipAPI {
     assetId: string, 
     newBenficiary: string
   ): TransactionObject {
-    return this.registry.setCounterpartyBeneficiary(
+    return this.contracts.ownershipRegistry.setCounterpartyBeneficiary(
       assetId, 
       newBenficiary
     ); // gas: 100000
-  }
-
-  /**
-   * returns a new instance of the OwnershipAPI
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<OwnershipAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<OwnershipAPI> {
-    const registry = await OwnershipRegistry.instantiate(web3);
-    return new OwnershipAPI(registry, signer);
   }
 }

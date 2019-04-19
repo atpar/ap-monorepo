@@ -1,19 +1,13 @@
-import Web3 from 'web3';
-
-import { AssetIssuer } from '../wrappers/AssetIssuer';
-import { Signer } from '../utils/Signer';
 import { AssetIssuedEvent, OrderData, TransactionObject } from '../types';
+import { ContractsAPI } from './ContractsAPI';
 
 
 export class IssuanceAPI {
 
-  private issuer: AssetIssuer;
-  // @ts-ignore
-  private signer: Signer;
+  private contracts: ContractsAPI;
 
-  private constructor (issuer: AssetIssuer, signer: Signer) {
-    this.issuer = issuer;
-    this.signer = signer;
+  public constructor (contracts: ContractsAPI) {
+    this.contracts = contracts;
   }
 
   /**
@@ -21,7 +15,7 @@ export class IssuanceAPI {
    * @param {(event: AssetIssuedEvent) => void} cb 
    */
   public onAssetIssued (cb: (event: AssetIssuedEvent) => void): void {
-    this.issuer.onAssetIssuedEvent(cb);
+    this.contracts.assetIssuer.onAssetIssuedEvent(cb);
   }
 
   /**
@@ -29,7 +23,7 @@ export class IssuanceAPI {
    * @returns {Promise<AssetIssuedEvent[]>}
    */
   public getAssetIssuances (): Promise<AssetIssuedEvent[]> {
-    return this.issuer.getAssetIssuedEvents().call();
+    return this.contracts.assetIssuer.getAssetIssuedEvents().call();
   }
 
   /**
@@ -40,17 +34,6 @@ export class IssuanceAPI {
    * @returns {TransactionObject}
    */
   public fillOrder (orderData: OrderData): TransactionObject {
-    return this.issuer.fillOrder(orderData); // gas: 3000000
-  }
-
-  /**
-   * return a new instance of the IssuanceAPI class
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<IssuanceAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<IssuanceAPI> {
-    const issuer = await AssetIssuer.instantiate(web3);
-    return new IssuanceAPI(issuer, signer);
+    return this.contracts.assetIssuer.fillOrder(orderData); // gas: 3000000
   }
 }
-  

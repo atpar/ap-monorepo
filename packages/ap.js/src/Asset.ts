@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 
-import { ContractTerms, ContractType, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
-import { ContractEngine, PAM } from './engines';
+import { ContractTerms, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { AP } from './index';
 import { sha3 } from './utils/Utils';
 
@@ -14,18 +13,13 @@ import { sha3 } from './utils/Utils';
 export class Asset {
   
   private ap: AP;
-  private contractEngine: ContractEngine;
-  
   public assetId: string;
 
   private constructor (
     ap: AP,
-    contractEngine: ContractEngine,
     assetId: string
   ) {
     this.ap = ap;
-    this.contractEngine = contractEngine;
-
     this.assetId = assetId;
   }
 
@@ -58,7 +52,11 @@ export class Asset {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
-    return await this.contractEngine.computeEvaluatedInitialSchedule(await this.getTerms());
+    const terms = await this.getTerms();
+
+    return await this.ap.economics.engine(terms.contractType).computeEvaluatedInitialSchedule(
+      terms
+    );
   }
 
   /**
@@ -68,9 +66,12 @@ export class Asset {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
-    return await this.contractEngine.computeEvaluatedPendingSchedule(
-      await this.getTerms(),
-      await this.getState(),
+    const terms = await this.getTerms();
+    const state = await this.getState();
+
+    return await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
+      terms,
+      state,
       timestamp
     );
   }
@@ -122,9 +123,13 @@ export class Asset {
         lastEventId + 1, 
         lastEventId + numberOfPendingEvents
       );
-      const amountDue = await this.contractEngine.computeDuePayoffForRecordCreator(
-        await this.getTerms(), 
-        await this.getState(), 
+
+      const terms = await this.getTerms();
+      const state = await this.getState();
+
+      const amountDue = await this.ap.economics.engine(terms.contractType).computeDuePayoffForRecordCreator(
+        terms, 
+        state, 
         timestamp
       );
       return amountDue.minus(amountSettled)
@@ -134,9 +139,13 @@ export class Asset {
         lastEventId + 1, 
         lastEventId + numberOfPendingEvents
       );
-      const amountDue = await this.contractEngine.computeDuePayoffForCounterparty(
-        await this.getTerms(), 
-        await this.getState(), 
+
+      const terms = await this.getTerms();
+      const state = await this.getState();
+
+      const amountDue = await this.ap.economics.engine(terms.contractType).computeDuePayoffForCounterparty(
+        terms, 
+        state, 
         timestamp
       );
       return amountDue.minus(amountSettled)
@@ -281,20 +290,11 @@ export class Asset {
       String(Math.floor(Math.random() * 1000000))
     );
 
-    let contractEngine;
-    switch (terms.contractType) {
-      case ContractType.PAM:
-        contractEngine = await PAM.init(ap.web3);
-        break;
-      default:
-        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    }
-
     await ap.lifecycle.initialize(assetId, ownership, terms).send(
       { from: ap.signer.account, gas: 6000000 }
     );
 
-    return new Asset(ap, contractEngine, assetId);
+    return new Asset(ap, assetId);
   }
 
   /**
@@ -311,16 +311,7 @@ export class Asset {
     const { contractType, statusDate } = await ap.economics.getTerms(assetId);
 
     if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
-
-    let contractEngine;
-    switch (contractType) {
-      case (ContractType.PAM):
-        contractEngine = await PAM.init(ap.web3);
-        break;
-      default:
-        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    }
       
-    return new Asset(ap, contractEngine, assetId);
+    return new Asset(ap, assetId);
   }
 }

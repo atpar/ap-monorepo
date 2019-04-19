@@ -8,8 +8,8 @@ import { toAssetIssuedEvent } from './Conversions';
 import AssetIssuerArtifact from '@atpar/ap-contracts/build/contracts/AssetIssuer.json';
 
 
-
 export class AssetIssuer {
+
   private assetIssuer: Contract;
 
   private constructor (assetIssuerInstance: Contract) {

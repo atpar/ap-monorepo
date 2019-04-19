@@ -1,8 +1,6 @@
 import { AP } from '../index'; 
-import { ContractEngine, PAM } from '../engines';
 import * as Assert from './ContractUpdateAssertions';
 import { 
-  ContractType,
   ContractUpdate, 
   ContractState, 
   SignedContractUpdate, 
@@ -20,13 +18,10 @@ import {
 export class AssetChannel {
 
   private ap: AP;
-  private contractEngine: ContractEngine;
-
   private signedContractUpdates: SignedContractUpdate[];
 
   private constructor (
     ap: AP, 
-    contractEngine: ContractEngine,
     signedContractUpdate?: SignedContractUpdate
   ) {
     if (!ap.client) { 
@@ -34,7 +29,6 @@ export class AssetChannel {
     }
 
     this.ap = ap;
-    this.contractEngine = contractEngine;
     this.signedContractUpdates = [];
 
     if (signedContractUpdate) { 
@@ -65,7 +59,8 @@ export class AssetChannel {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getInitialSchedule (): Promise<EvaluatedEventSchedule> {
-    return await this.contractEngine.computeEvaluatedInitialSchedule(this.getContractTerms());
+    const terms = this.getContractTerms();
+    return await this.ap.economics.engine(terms.contractType).computeEvaluatedInitialSchedule(terms);
   }
 
   /**
@@ -75,9 +70,12 @@ export class AssetChannel {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
-    return await this.contractEngine.computeEvaluatedPendingSchedule(
-      this.getContractTerms(),
-      this.getContractState(),
+    const terms = this.getContractTerms();
+    const state = this.getContractState();
+
+    return await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
+      terms,
+      state,
       timestamp
     );
   }
@@ -96,12 +94,12 @@ export class AssetChannel {
     const state = this.getContractState();
 
     if (signedContractUpdate.recordCreatorObligorSignature && signedContractUpdate.counterpartyObligorSignature) {
-      const pendingEventSchedule = await this.contractEngine.computeEvaluatedPendingSchedule(
+      const pendingEventSchedule = await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
         terms, 
         state, 
         timestamp
       );
-      const duePayoff = await this.contractEngine.computeDuePayoff(terms, state, timestamp);
+      const duePayoff = await this.ap.economics.engine(terms.contractType).computeDuePayoff(terms, state, timestamp);
 
       if (pendingEventSchedule.length === 0) { return ChannelState.Idle; }
 
@@ -140,7 +138,7 @@ export class AssetChannel {
    */
   private async _signAndSendInitialContractUpdate (
     assetId: string,
-    terns: ContractTerms,
+    terms: ContractTerms,
     ownership: AssetOwnership,
   ): Promise<void> {
     if (!this.ap.client) { 
@@ -152,12 +150,12 @@ export class AssetChannel {
       )); 
     }
 
-    const initialContractState = await this.contractEngine.computeInitialState(terns);
+    const initialContractState = await this.ap.economics.engine(terms.contractType).computeInitialState(terms);
 
     const contractUpdate = this._constructInitialContractUpdate(
       assetId,
       ownership,
-      terns,
+      terms,
       initialContractState
     );
 
@@ -200,7 +198,7 @@ export class AssetChannel {
     const terms = this.getContractTerms();
     const state = this.getContractState();
 
-    const nextState = await this.contractEngine.computeNextState(terms, state, timestamp);
+    const nextState = await this.ap.economics.engine(terms.contractType).computeNextState(terms, state, timestamp);
 
     const contractUpdate = this._constructNextContractUpdate(terms, nextState, contractUpdateNonce);
     // const contractUpdateHash = JSON.stringify(contractUpdate);
@@ -325,7 +323,7 @@ export class AssetChannel {
       if (previousSignedContractUpdate) { return false; }
       const terms = signedContractUpdate.contractUpdate.contractTerms;
 
-      if (!(await this.contractEngine.validateInitialState(terms, proposedState))) { 
+      if (!(await this.ap.economics.engine(terms.contractType).validateInitialState(terms, proposedState))) { 
         return false; 
       }
     } else {
@@ -342,7 +340,7 @@ export class AssetChannel {
       if (!(Assert.isContractUpdateNonceHigher(signedContractUpdate, previousSignedContractUpdate))) {
         return false;
       }
-      if (!(await this.contractEngine.validateNextState(terms, state, proposedState))) { 
+      if (!(await this.ap.economics.engine(terms.contractType).validateNextState(terms, state, proposedState))) { 
         return false;
       }
     }
@@ -374,11 +372,11 @@ export class AssetChannel {
       return false;
     }
     if (Assert.isInitialSignedContractUpdate(signedContractUpdate)) {
-      if(!this.contractEngine.validateInitialState(terms, proposedState)) { 
+      if(!this.ap.economics.engine(terms.contractType).validateInitialState(terms, proposedState)) { 
         return false; 
       }
     } else {
-      if (!this.contractEngine.validateNextState(terms, state, proposedState)) { 
+      if (!this.ap.economics.engine(terms.contractType).validateNextState(terms, state, proposedState)) { 
         return false; 
       }
     }
@@ -402,16 +400,7 @@ export class AssetChannel {
   ): Promise<AssetChannel> {    
     const assetId = 'PAM' + String(Math.floor(Date.now() / 1000));
 
-    let contractEngine;
-    switch (terms.contractType) {
-      case ContractType.PAM:
-        contractEngine = await PAM.init(ap.web3);        
-        break;
-      default:
-        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    }
-
-    const assetChannel = new AssetChannel(ap, contractEngine);
+    const assetChannel = new AssetChannel(ap);
     await assetChannel._signAndSendInitialContractUpdate(assetId, terms, ownership);
 
     return assetChannel;
@@ -429,24 +418,13 @@ export class AssetChannel {
     ap: AP,
     signedContractUpdate: SignedContractUpdate
   ): Promise<AssetChannel> {
-    const { contractTerms: { contractType }} = signedContractUpdate.contractUpdate;
-    
-    let ContractEngine;
-    switch (contractType) {
-      case ContractType.PAM:
-        ContractEngine = await PAM.init(ap.web3);        
-        break;
-      default:
-        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    }
-
-    const assetChannel = new AssetChannel(ap, ContractEngine);
+    const assetChannel = new AssetChannel(ap);
 
     if (!(await assetChannel._validateSignedContractUpdate(signedContractUpdate))) {
       throw(new Error('EXECUTION_ERROR: invalid signed contract update provided.'));
     }
 
-    return new AssetChannel(ap, ContractEngine, signedContractUpdate);
+    return new AssetChannel(ap, signedContractUpdate);
   }
 
   /**
@@ -460,17 +438,6 @@ export class AssetChannel {
     ap: AP, 
     signedContractUpdate: SignedContractUpdate
   ): Promise<AssetChannel> {
-    const { contractTerms: { contractType } } = signedContractUpdate.contractUpdate;
-    
-    let ContractEngine;
-    switch (contractType) {
-      case ContractType.PAM:
-        ContractEngine = await PAM.init(ap.web3);        
-        break;
-      default:
-        throw(new Error('NOT_IMPLEMENTED_ERROR: unsupported contract type!'));
-    }
-
-    return new AssetChannel(ap, ContractEngine, signedContractUpdate);
+    return new AssetChannel(ap, signedContractUpdate);
   }
 }

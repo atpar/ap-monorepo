@@ -1,25 +1,15 @@
-import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 
-import { PaymentRegistry } from "../wrappers/PaymentRegistry";
-import { PaymentRouter } from "../wrappers/PaymentRouter";
-import { Signer } from '../utils/Signer';
 import { PaidEvent, TransactionObject } from '../types';
+import { ContractsAPI } from './ContractsAPI';
 
 
 export class PaymentAPI {
 
-  // @ts-ignore
-  private registry: PaymentRegistry;
-  // @ts-ignore
-  private router: PaymentRouter;
-  // @ts-ignore
-  private signer: Signer;
+  private contracts: ContractsAPI;
   
-  private constructor (registry: PaymentRegistry, router: PaymentRouter, signer: Signer) {
-    this.registry = registry;
-    this.router = router;
-    this.signer = signer;
+  public constructor (contracts: ContractsAPI) {
+    this. contracts = contracts;
   }
 
   /**
@@ -40,7 +30,7 @@ export class PaymentAPI {
     tokenAddress: string,
     amount: BigNumber
   ): TransactionObject {
-    return this.router.settlePayment(
+    return this.contracts.paymentRouter.settlePayment(
       assetId, 
       cashflowId, 
       eventId, 
@@ -56,7 +46,7 @@ export class PaymentAPI {
    * @returns {Promise<BigNumber>}
    */
   public getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
-    return this.registry.getPayoffBalance(assetId, eventId).call();
+    return this.contracts.paymentRegistry.getPayoffBalance(assetId, eventId).call();
   }
 
   /**
@@ -75,7 +65,11 @@ export class PaymentAPI {
     let amountSettled = new BigNumber(0);
     for (let i = 0; i <= toEventId; i++) {
       const eventId = fromEventId + i;
-      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId).call()
+      const { 
+        cashflowId, 
+        payoffBalance 
+      } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
+
       if (Number(cashflowId) < 0) { amountSettled = amountSettled.plus(payoffBalance); }
     }
     return amountSettled;
@@ -97,7 +91,11 @@ export class PaymentAPI {
     let amountSettled = new BigNumber(0);
     for (let i = 0; i <= toEventId; i++) {
       const eventId = fromEventId + i;
-      const { cashflowId,  payoffBalance } = await this.registry.getPayoff(assetId, eventId).call()
+      const { 
+        cashflowId, 
+        payoffBalance 
+      } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
+      
       if (Number(cashflowId) > 0) { amountSettled = amountSettled.plus(payoffBalance); }
     }
     return amountSettled;
@@ -108,18 +106,6 @@ export class PaymentAPI {
    * @param {(event: PaidEvent) => void} cb callback function 
    */
   public onPayment (cb: (event: PaidEvent) => void): void {
-    this.registry.onPaidEvent(cb);
-  }
-
-  /**
-   * returns a new instance of the PaymentAPI class
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<PaymentAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<PaymentAPI> {
-    const registry = await PaymentRegistry.instantiate(web3);
-    const router = await PaymentRouter.instantiate(web3);
-
-    return new PaymentAPI(registry, router, signer);
+    this.contracts.paymentRegistry.onPaidEvent(cb);
   }
 }

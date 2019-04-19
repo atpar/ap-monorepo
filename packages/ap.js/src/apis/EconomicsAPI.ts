@@ -1,18 +1,24 @@
-import Web3 from 'web3';
+import { ContractTerms, ContractState, TransactionObject, ContractType } from  '../types';
+import { ContractsAPI } from './ContractsAPI';
+import { ContractEngine, PAM } from '../engines';
 
-import { EconomicsRegistry } from '../wrappers/EconomicsRegistry';
-import { ContractTerms, ContractState, TransactionObject } from  '../types';
-import { Signer } from '../utils/Signer';
 
 export class EconomicsAPI {
 
-  private registry: EconomicsRegistry;
-  // @ts-ignore
-  private signer: Signer;
+  private contracts: ContractsAPI;
+  public engines: Map<ContractType, ContractEngine>;
 
-  private constructor (registry: EconomicsRegistry, signer: Signer) {
-    this.registry = registry;
-    this.signer = signer;
+  public constructor (contracts: ContractsAPI) {
+    this.contracts = contracts;
+    this.engines = new Map();
+    
+    this.engines.set(ContractType.PAM, new PAM(contracts.pamEngine));
+  }
+
+  public engine (contractType: ContractType): ContractEngine {
+    const engine = this.engines.get(contractType);
+    if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
+    return engine;
   }
 
   /**
@@ -29,7 +35,7 @@ export class EconomicsAPI {
     contractState: ContractState,
     actorAddress: string
   ): TransactionObject {
-    return this.registry.registerEconomics(
+    return this.contracts.economicsRegistry.registerEconomics(
       assetId,
       contractTerms, 
       contractState, 
@@ -43,7 +49,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractTerms>}
    */
   public getTerms (assetId: string): Promise<ContractTerms> {
-    return this.registry.getTerms(assetId).call();
+    return this.contracts.economicsRegistry.getTerms(assetId).call();
   }
 
   /**
@@ -52,7 +58,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractState>}
    */
   public getState (assetId: string): Promise<ContractState> {
-    return this.registry.getState(assetId).call();
+    return this.contracts.economicsRegistry.getState(assetId).call();
   }
 
   /**
@@ -61,16 +67,6 @@ export class EconomicsAPI {
    * @returns {Promise<number>}
    */
   public getEventId (assetId: string): Promise<number> {
-    return this.registry.getEventId(assetId).call();
-  }
-
-  /**
-   * return a new instance of the EconomicsAPI class
-   * @param {Web3} web3 web3 instance
-   * @returns {Promise<EconomicsAPI>}
-   */
-  public static async init (web3: Web3, signer: Signer): Promise<EconomicsAPI> {
-    const registry = await EconomicsRegistry.instantiate(web3);
-    return new EconomicsAPI(registry, signer);
+    return this.contracts.economicsRegistry.getEventId(assetId).call();
   }
 }

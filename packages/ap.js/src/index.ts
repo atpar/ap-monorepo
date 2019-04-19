@@ -2,17 +2,25 @@ import Web3 from 'web3';
 
 import { SignedContractUpdate, OrderData } from './types';
 
+import * as APTypes from './types';
+
 import { Asset } from './Asset';
 import { AssetChannel } from './channel/AssetChannel';
-import { OwnershipAPI, EconomicsAPI, PaymentAPI, LifecycleAPI, TokenizationAPI } from './apis';
-import { IssuanceAPI } from './issuance/IssuanceAPI';
 import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
 import { Client } from './channel/Client';
 import { Signer } from './utils/Signer';
 import { Common } from './utils/Common';
+import { 
+  OwnershipAPI, 
+  EconomicsAPI, 
+  PaymentAPI, 
+  LifecycleAPI, 
+  TokenizationAPI, 
+  IssuanceAPI, 
+  ContractsAPI 
+} from './apis';
 
-import * as APTypes from './types';
 
 
 export class AP {
@@ -26,6 +34,7 @@ export class AP {
   public issuance: IssuanceAPI;
   public tokenization: TokenizationAPI;
   
+  public contracts: ContractsAPI;
   public signer: Signer;
   public common: Common;
 
@@ -40,6 +49,7 @@ export class AP {
     lifecycle: LifecycleAPI,
     issuance: IssuanceAPI,
     tokenization: TokenizationAPI,
+    contracts: ContractsAPI,
     signer: Signer, 
     common: Common,
     relayer?: Relayer,
@@ -54,6 +64,7 @@ export class AP {
     this.issuance = issuance;
     this.tokenization = tokenization;
 
+    this.contracts = contracts;
     this.signer = signer;
     this.common = common;
 
@@ -145,15 +156,16 @@ export class AP {
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
     }
 
+    const contracts = await ContractsAPI.init(web3);
     const signer = new Signer(web3, defaultAccount);
     const common = new Common(web3);
 
-    const ownership = await OwnershipAPI.init(web3, signer);
-    const economics = await EconomicsAPI.init(web3, signer);
-    const payment = await PaymentAPI.init(web3, signer);
-    const lifecycle = await LifecycleAPI.init(web3, signer);
-    const issuance = await IssuanceAPI.init(web3, signer);
-    const tokenization = await TokenizationAPI.init(web3, signer);
+    const ownership = new OwnershipAPI(contracts);
+    const economics = new EconomicsAPI(contracts);
+    const payment = new PaymentAPI(contracts);
+    const lifecycle = new LifecycleAPI(contracts);
+    const issuance = new IssuanceAPI(contracts);
+    const tokenization = new TokenizationAPI(contracts, signer);
     
     const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
     const client = (relayers.channelRelayer) ? Client.init(relayers.channelRelayer) : undefined;
@@ -165,7 +177,8 @@ export class AP {
       payment, 
       lifecycle, 
       issuance, 
-      tokenization, 
+      tokenization,
+      contracts,
       signer, 
       common, 
       relayer, 
