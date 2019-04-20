@@ -1,6 +1,7 @@
 #!/bin/sh
 
-trap "trap - TERM && kill -- -$$" INT TERM EXIT
+trap "exit" INT TERM
+trap "printf '\nshutdown ...\n' && kill 0" EXIT
 
 echo "running ganache-cli ..."
 
