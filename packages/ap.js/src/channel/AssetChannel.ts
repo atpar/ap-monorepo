@@ -41,7 +41,7 @@ export class AssetChannel {
    * returns the assets terms
    * @returns {ContractTerms}
    */
-  public getContractTerms (): ContractTerms {
+  public getTerms (): ContractTerms {
     return this.getLastSignedContractUpdate().contractUpdate.contractTerms;
   }
 
@@ -50,7 +50,7 @@ export class AssetChannel {
    * (not the last co-signed contract state)
    * @returns {ContractState}
    */
-  public getContractState (): ContractState {
+  public getState (): ContractState {
     return this.getLastSignedContractUpdate().contractUpdate.contractState;
   }
 
@@ -59,7 +59,7 @@ export class AssetChannel {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getInitialSchedule (): Promise<EvaluatedEventSchedule> {
-    const terms = this.getContractTerms();
+    const terms = this.getTerms();
     return await this.ap.economics.engine(terms.contractType).computeEvaluatedInitialSchedule(terms);
   }
 
@@ -70,8 +70,8 @@ export class AssetChannel {
    * @returns {Promise<EvaluatedEventSchedule>}
    */
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
-    const terms = this.getContractTerms();
-    const state = this.getContractState();
+    const terms = this.getTerms();
+    const state = this.getState();
 
     return await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
       terms,
@@ -90,8 +90,8 @@ export class AssetChannel {
   public async getChannelState (timestamp: number): Promise<ChannelState> {
     const account = this.ap.signer.account;
     const signedContractUpdate = this.getLastSignedContractUpdate();
-    const terms = this.getContractTerms();
-    const state = this.getContractState();
+    const terms = this.getTerms();
+    const state = this.getState();
 
     if (signedContractUpdate.recordCreatorObligorSignature && signedContractUpdate.counterpartyObligorSignature) {
       const pendingEventSchedule = await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
@@ -195,8 +195,8 @@ export class AssetChannel {
       contractUpdateNonce += 1;
     }
 
-    const terms = this.getContractTerms();
-    const state = this.getContractState();
+    const terms = this.getTerms();
+    const state = this.getState();
 
     const nextState = await this.ap.economics.engine(terms.contractType).computeNextState(terms, state, timestamp);
 
@@ -356,8 +356,8 @@ export class AssetChannel {
     if (!previousSignedContractUpdate) { return false; }
 
     const proposedState = signedContractUpdate.contractUpdate.contractState;
-    const terms = this.getContractTerms();
-    const state = this.getContractState();
+    const terms = this.getTerms();
+    const state = this.getState();
 
     if (!(Assert.isNewSignedContractUpdate(signedContractUpdate, previousSignedContractUpdate))) {
       return false;
