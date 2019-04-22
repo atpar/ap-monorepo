@@ -1,11 +1,10 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-
 import { Contract } from 'web3-eth-contract/types';
-import { toHex } from '../utils/Utils';
 
 import PaymentRouterArtifact from '@atpar/ap-contracts/build/contracts/PaymentRouter.json';
-import { TransactionObject } from 'src/types';
+import { toHex } from '../utils/Utils';
+import { TransactionObject } from '../types';
 
 
 export class PaymentRouter {
