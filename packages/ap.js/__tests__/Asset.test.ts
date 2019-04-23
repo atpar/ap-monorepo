@@ -195,7 +195,7 @@ describe('testContractClass', () => {
   it('should deploy new ClaimsToken contract and set it as the recordCreatorBeneficiary', async () => {
     const claimsTokenAddress = await assetRC.tokenizeBeneficiary();
     const totalSupply = await apRC.tokenization.getTotalTokenSupply(claimsTokenAddress);
-    const balance = await apRC.tokenization.getTokenBalance(claimsTokenAddress);
+    const balance = await apRC.tokenization.getTokenBalance(claimsTokenAddress, apRC.signer.account);
 
     expect(totalSupply.isGreaterThan(0)).toBe(true);
     expect(totalSupply.isEqualTo(balance)).toBe(true);

@@ -251,7 +251,7 @@ export class Asset {
       throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
     
-    const { options: { address } } = await this.ap.tokenization.deployTokenContract().send(
+    const { options: { address } } = await this.ap.tokenization.deployTokenContract(this.ap.signer.account).send(
       { from: this.ap.signer.account, gas: 2000000}
     );    
 

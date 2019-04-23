@@ -165,7 +165,7 @@ export class AP {
     const payment = new PaymentAPI(contracts);
     const lifecycle = new LifecycleAPI(contracts);
     const issuance = new IssuanceAPI(contracts);
-    const tokenization = new TokenizationAPI(contracts, signer);
+    const tokenization = new TokenizationAPI(contracts);
     
     const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
     const client = (relayers.channelRelayer) ? Client.init(relayers.channelRelayer) : undefined;

@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { DeployTransactionResponse } from 'web3-eth-contract/types';
 
-import { Signer } from '../utils/Signer';
 import { TransactionObject } from '../types';
 import { ContractsAPI } from './ContractsAPI';
 
@@ -9,20 +8,18 @@ import { ContractsAPI } from './ContractsAPI';
 export class TokenizationAPI {
 
   private contracts: ContractsAPI;
-  private signer: Signer;
 
-  public constructor (contracts: ContractsAPI, signer: Signer) {
+  public constructor (contracts: ContractsAPI) {
     this.contracts = contracts;
-    this.signer = signer;
   }
 
   public getAvailableFunds (
     claimsTokenAddress: string,
-    tokenHolderAddress?: string
+    tokenHolderAddress: string
   ): Promise<BigNumber> {
     return this.contracts.claimsToken.availableFunds(
       claimsTokenAddress, 
-      (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
+      tokenHolderAddress
     ).call(); 
   };
 
@@ -36,11 +33,11 @@ export class TokenizationAPI {
 
   public getTokenBalance (
     claimsTokenAddress: string, 
-    tokenHolderAddress?: string
+    tokenHolderAddress: string
   ): Promise<BigNumber> {
     return this.contracts.claimsToken.balanceOf(
       claimsTokenAddress, 
-      (tokenHolderAddress) ? tokenHolderAddress : this.signer.account
+      tokenHolderAddress
     ).call();
   }
 
@@ -49,14 +46,19 @@ export class TokenizationAPI {
     toAddress: string,
     value: BigNumber
   ): TransactionObject {
-    return this.contracts.claimsToken.transfer(claimsTokenAddress, toAddress, value); // gas: 100000
+    return this.contracts.claimsToken.transfer(
+      claimsTokenAddress, 
+      toAddress, 
+      value
+    ); // gas: 100000
   }
 
   /**
    * deploys a new ClaimsToken contract
+   * @param {string} ownerAddress
    * @returns {DeployTransactionResponse} address of ClaimsToken contract
    */
-  public deployTokenContract (): DeployTransactionResponse {
-    return this.contracts.claimsToken.deploy(this.signer.account) // gas: 2000000
+  public deployTokenContract (ownerAddress: string): DeployTransactionResponse {
+    return this.contracts.claimsToken.deploy(ownerAddress) // gas: 2000000
   }
 }
