@@ -11,7 +11,7 @@ import "../APCore/APDefinitions.sol";
 import "../APEngines/IPAMEngine.sol";
 
 
-contract PAMAssetActor is APDefinitions, IAssetActor {
+contract AssetActor is APDefinitions, IAssetActor {
 
 	IOwnershipRegistry ownershipRegistry;
 	IEconomicsRegistry economicsRegistry;
@@ -27,8 +27,8 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
 		IPAMEngine _pamEngine
-	) 
-		public 
+	)
+		public
 	{
 		ownershipRegistry = _ownershipRegistry;
 		economicsRegistry = _economicsRegistry;
@@ -38,8 +38,8 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 	}
 
 	/**
-	 * proceeds with the next state of the asset based on the terms, the last state and 
-	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled 
+	 * proceeds with the next state of the asset based on the terms, the last state and
+	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled
 	 * the actor updates the state of the asset in the EconomicsRegistry
 	 * @param assetId id of the asset
 	 * @param timestamp current timestamp
@@ -48,13 +48,13 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 	function progress(
 		bytes32 assetId,
 		uint256 timestamp
-	) 
+	)
 		external
 		returns (bool)
 	{
 		ContractTerms memory terms = economicsRegistry.getTerms(assetId);
 		ContractState memory state = economicsRegistry.getState(assetId);
-		
+
 		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
 		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
@@ -62,15 +62,15 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 		uint256 eventId = economicsRegistry.getEventId(assetId);
 
 		(
-			ContractState memory nextState, 
+			ContractState memory nextState,
 			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
 		) = pamEngine.computeNextState(terms, state, timestamp);
 
-		
+
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].scheduledTime == uint256(0)) { break; }
 			eventId += 1;
-			uint256 payoff = (pendingEvents[i].payoff < 0) ? 
+			uint256 payoff = (pendingEvents[i].payoff < 0) ?
 				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
 			if (payoff == uint256(0)) { continue; }
 			require(paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff, "OUTSTANDING_PAYMENTS");
@@ -87,7 +87,7 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided terms and sets the initial state, the terms 
+	 * derives the initial state of the asset from the provided terms and sets the initial state, the terms
 	 * together with the ownership of the asset in the EconomicsRegistry and OwnershipRegistry
 	 * @dev can only be called by the whitelisted account
 	 * @param assetId id of the asset
@@ -97,9 +97,9 @@ contract PAMAssetActor is APDefinitions, IAssetActor {
 	 */
 	function initialize(
 		bytes32 assetId,
-		AssetOwnership memory ownership, 
+		AssetOwnership memory ownership,
 		ContractTerms memory terms
-	) 
+	)
 		public
 		returns (bool)
 	{

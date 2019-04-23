@@ -6,7 +6,7 @@ const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const PAMAssetActor = artifacts.require('PAMAssetActor')
+const AssetActor = artifacts.require('AssetActor')
 const PAMEngine = artifacts.require('PAMEngine')
 
 const { parseTermsFromPath } = require('../../actus-resources/parser')
@@ -16,7 +16,7 @@ const getTerms = () => {
   return parseTermsFromPath(PAMTestTermsPath)
 }
 
-contract('PAMAssetActor', (accounts) => {
+contract('AssetActor', (accounts) => {
 
   const recordCreatorObligor = accounts[0]
   const recordCreatorBeneficiary = accounts[1]
@@ -42,7 +42,7 @@ contract('PAMAssetActor', (accounts) => {
       this.OwnershipRegistryInstance.address, 
       this.PaymentRegistryInstance.address
     )
-    this.PAMAssetActorInstance = await PAMAssetActor.new(
+    this.AssetActorInstance = await AssetActor.new(
       this.OwnershipRegistryInstance.address,
       this.EconomicsRegistryInstance.address,
       this.PaymentRegistryInstance.address,
@@ -66,7 +66,7 @@ contract('PAMAssetActor', (accounts) => {
       web3.utils.toHex(assetId),
       this.terms,
       this.state,
-      this.PAMAssetActorInstance.address
+      this.AssetActorInstance.address
     )
   })
 
@@ -95,10 +95,10 @@ contract('PAMAssetActor', (accounts) => {
     )
 
     // progress asset state
-    const { tx: txHash } = await this.PAMAssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp)
+    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp)
 
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
-      txHash, PAMAssetActor, 'AssetProgressed'
+      txHash, AssetActor, 'AssetProgressed'
     )
     const nextState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(assetId))
     const nextLastEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))

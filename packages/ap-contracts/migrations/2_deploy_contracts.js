@@ -6,7 +6,7 @@ const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
-const PAMAssetActor = artifacts.require('PAMAssetActor')
+const AssetActor = artifacts.require('AssetActor')
 
 const AssetIssuer = artifacts.require('AssetIssuer')
 
@@ -38,9 +38,9 @@ module.exports = async (deployer, network, accounts) => {
   )
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
 
-  // Contract Actor
+  // Asset Actor
   await deployer.deploy(
-    PAMAssetActor,
+    AssetActor,
     OwnershipRegistry.address,
     EconomicsRegistry.address,
     PaymentRegistry.address,

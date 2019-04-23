@@ -6,7 +6,7 @@ import {
   OwnershipRegistry, 
   PaymentRegistry, 
   PaymentRouter,
-  PAMAssetActor,
+  AssetActor,
   AssetIssuer,
   ClaimsToken
 } from '../wrappers';
@@ -19,7 +19,7 @@ export class ContractsAPI {
   public ownershipRegistry: OwnershipRegistry;
   public paymentRegistry: PaymentRegistry;
   public paymentRouter: PaymentRouter;
-  public assetActor: PAMAssetActor;
+  public assetActor: AssetActor;
   public assetIssuer: AssetIssuer;
   public claimsToken: ClaimsToken;
 
@@ -29,7 +29,7 @@ export class ContractsAPI {
     ownershipRegistry: OwnershipRegistry,
     paymentRegistry: PaymentRegistry,
     paymentRouter: PaymentRouter,
-    assetActor: PAMAssetActor,
+    assetActor: AssetActor,
     assetIssuer: AssetIssuer,
     claimsToken: ClaimsToken
   ) {
@@ -55,7 +55,7 @@ export class ContractsAPI {
       await OwnershipRegistry.instantiate(web3),
       await PaymentRegistry.instantiate(web3),
       await PaymentRouter.instantiate(web3),
-      await PAMAssetActor.instantiate(web3),
+      await AssetActor.instantiate(web3),
       await AssetIssuer.instantiate(web3),
       await ClaimsToken.instantiate(web3)
     );
