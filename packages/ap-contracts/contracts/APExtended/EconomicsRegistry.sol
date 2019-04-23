@@ -29,7 +29,7 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	 */
 	function getTerms(bytes32 assetId) external view returns (ContractTerms memory) {
 		return economics[assetId].terms;
-	}  
+	}
 
 	/**
 	 * returns the state of a registered asset
@@ -80,24 +80,24 @@ contract EconomicsRegistry is APDefinitions, IEconomicsRegistry {
 	}
 
 	/**
-	 * stores the terms and the initial state of an asset and sets the address of 
+	 * stores the terms and the initial state of an asset and sets the address of
 	 * the actor (address of account which is allowed to update the state)
 	 * @dev can only be called by a whitelisted actor
 	 * @param assetId id of the asset
 	 * @param terms terms of the asset
 	 * @param state initial state of the asset
-	 * @param actor account which is allowed to update the asset state in the future	 
+	 * @param actor account which is allowed to update the asset state in the future
 	 */
 	function registerEconomics(
 		bytes32 assetId,
 		ContractTerms memory terms,
 		ContractState memory state,
 		address actor
-	) 
-		public 
+	)
+		public
 	{
 		require(economics[assetId].assetId == bytes32(0), "ENTRY_ALREADY_EXISTS");
-		
+
 		economics[assetId] = Economics(
 			assetId,
 			terms,

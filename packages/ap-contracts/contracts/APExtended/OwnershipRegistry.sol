@@ -6,7 +6,7 @@ import "./IOwnershipRegistry.sol";
 
 
 contract OwnershipRegistry is IOwnershipRegistry, Ownable {
-	
+
 	struct AssetOwnership {
 		address recordCreatorObligor; // or covenantor
 		address payable recordCreatorBeneficiary;
@@ -28,16 +28,16 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	 * @param counterpartyBeneficiary the address of the owner of counterparty-side payment claims
 	 */
 	function registerOwnership(
-		bytes32 assetId, 
-		address recordCreatorObligor, 
+		bytes32 assetId,
+		address recordCreatorObligor,
 		address payable recordCreatorBeneficiary,
-		address counterpartyObligor, 
+		address counterpartyObligor,
 		address payable counterpartyBeneficiary
-	) 
-		external 
+	)
+		external
 	{
 		require(assetOwnerships[assetId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
-		
+
 		assetOwnerships[assetId] = AssetOwnership(
 			recordCreatorObligor,
 			recordCreatorBeneficiary,
@@ -52,7 +52,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	 * @param newRecordCreatorBeneficiary address of the new beneficiary
 	 */
 	function setRecordCreatorBeneficiary(
-		bytes32 assetId, 
+		bytes32 assetId,
 		address payable newRecordCreatorBeneficiary
 	)
 		external
@@ -69,7 +69,7 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	 * @param newCounterpartyBeneficiary address of the new beneficiary
 	 */
 	function setCounterpartyBeneficiary(
-		bytes32 assetId, 
+		bytes32 assetId,
 		address payable newCounterpartyBeneficiary
 	)
 		external
@@ -87,11 +87,11 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	 * @param beneficiary the address of the owner
 	 */
 	function setBeneficiaryForCashflowId(
-		bytes32 assetId, 
-		int8 cashflowId, 
+		bytes32 assetId,
+		int8 cashflowId,
 		address payable beneficiary
-	) 
-		external 
+	)
+		external
 	{
 		require(cashflowId != 0, "INVALID_CASHFLOWID");
 
@@ -107,16 +107,16 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 
 		cashflowBeneficiaries[assetId][cashflowId] = beneficiary;
 	}
-	
+
 	/**
  	 * retrieve the registered addresses of owners (Creator, Counterparty) of an asset
 	 * @param assetId id of the asset
 	 * @return addresses of all owners of the asset
 	 */
-	function getOwnership(bytes32 assetId) 
-		external 
-		view 
-		returns (address, address payable, address, address payable) 
+	function getOwnership(bytes32 assetId)
+		external
+		view
+		returns (address, address payable, address, address payable)
 	{
 		return (
 			assetOwnerships[assetId].recordCreatorObligor,
@@ -125,17 +125,17 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 			assetOwnerships[assetId].counterpartyBeneficiary
 		);
 	}
-	
+
 	/**
 	 * retrieve the registered address of the owner of specific future claims from an asset
 	 * @param assetId id of the asset
 	 * @param cashflowId the identifier of the specific claims owned by the registerd address
 	 * @return address of the beneficiary corresponding to the given cashflowId
 	 */
-	function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId) 
-		external 
-		view 
-		returns (address payable) 
+	function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
+		external
+		view
+		returns (address payable)
 	{
 		return cashflowBeneficiaries[assetId][cashflowId];
 	}

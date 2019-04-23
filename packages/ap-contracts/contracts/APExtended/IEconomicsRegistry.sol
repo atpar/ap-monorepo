@@ -11,7 +11,7 @@ contract IEconomicsRegistry is APDefinitions {
 	 * @param assetId id of the asset
 	 * @return terms of the asset
 	 */
-	function getTerms(bytes32 assetId) external view returns (ContractTerms memory); 
+	function getTerms(bytes32 assetId) external view returns (ContractTerms memory);
 
 	/**
 	 * returns the state of a registered asset
@@ -52,19 +52,19 @@ contract IEconomicsRegistry is APDefinitions {
 	function setEventId(bytes32 assetId, uint256 eventId) public;
 
 	/**
-	 * stores the terms and the initial state of an asset and sets the address of 
+	 * stores the terms and the initial state of an asset and sets the address of
 	 * the actor (address of account which is allowed to update the state)
 	 * @dev can only be called by a whitelisted actor
 	 * @param assetId id of the asset
 	 * @param terms terms of the asset
 	 * @param state initial state of the asset
-	 * @param actor account which is allowed to update the asset state in the future	 
+	 * @param actor account which is allowed to update the asset state in the future
 	 */
 	function registerEconomics(
 		bytes32 assetId,
 		ContractTerms memory terms,
 		ContractState memory state,
 		address actor
-	) 
+	)
 		public;
 }

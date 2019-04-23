@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../APCore/APDefinitions.sol";
-import "./VerifyOrder.sol"; 
+import "./VerifyOrder.sol";
 import "../APExtended/IAssetActor.sol";
 
 
@@ -18,14 +18,14 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 	 * @param takerSignature signature of the taker of the order
 	 */
 	function fillOrder(
-		Order memory order, 
+		Order memory order,
 		bytes memory makerSignature,
 		bytes memory takerSignature
-	) 
-		public 
+	)
+		public
 	{
 		require(
-			assertOrderSignatures(order, makerSignature, takerSignature), 
+			assertOrderSignatures(order, makerSignature, takerSignature),
 			"INVALID_SIGNATURE: Order signatures are invalid!"
 		);
 
@@ -33,14 +33,14 @@ contract AssetIssuer is APDefinitions, VerifyOrder {
 			abi.encode(makerSignature, takerSignature)
 		);
 		AssetOwnership memory ownership = AssetOwnership(
-			order.maker, 
-			order.maker, 
-			order.taker, 
+			order.maker,
+			order.maker,
+			order.taker,
 			order.taker
 		);
 
 		require(
-			IAssetActor(order.actor).initialize(assetId, ownership, order.terms), 
+			IAssetActor(order.actor).initialize(assetId, ownership, order.terms),
 			"EXECUTION_ERROR: Initialization failed"
 		);
 

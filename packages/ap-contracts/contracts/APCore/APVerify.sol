@@ -42,10 +42,10 @@ contract APVerify {
 		}));
 	}
 
-	function hashStruct(EIP712Domain memory eip712Domain) 
-		internal 
-		pure 
-		returns (bytes32) 
+	function hashStruct(EIP712Domain memory eip712Domain)
+		internal
+		pure
+		returns (bytes32)
 	{
 		return keccak256(abi.encode(
 			EIP712DOMAIN_TYPEHASH,
@@ -74,11 +74,11 @@ contract APVerify {
 	}
 
 	function verifyContractUpdate(
-		ContractUpdate memory contractUpdate, 
-		bytes memory recordCreatorSignature, 
+		ContractUpdate memory contractUpdate,
+		bytes memory recordCreatorSignature,
 		bytes memory counterpartySignature
 	)
-		internal 
+		internal
 		view
 	{
 		bytes32 digest = keccak256(abi.encodePacked(

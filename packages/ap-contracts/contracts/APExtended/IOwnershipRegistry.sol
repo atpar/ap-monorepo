@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 
 
 interface IOwnershipRegistry {
-	
+
 	/**
 	 * registers the addresses of the owners of an asset
 	 * @param assetId id of the asset
@@ -26,7 +26,7 @@ interface IOwnershipRegistry {
 	 * @param newRecordCreatorBeneficiary address of the new beneficiary
 	 */
 	function setRecordCreatorBeneficiary(
-		bytes32 assetId, 
+		bytes32 assetId,
 		address payable newRecordCreatorBeneficiary
 	)
 		external;
@@ -37,7 +37,7 @@ interface IOwnershipRegistry {
 	 * @param newCounterpartyBeneficiary address of the new beneficiary
 	 */
 	function setCounterpartyBeneficiary(
-		bytes32 assetId, 
+		bytes32 assetId,
 		address payable newCounterpartyBeneficiary
 	)
 		external;
@@ -49,10 +49,10 @@ interface IOwnershipRegistry {
 	 * @param beneficiary the address of the owner
 	 */
 	function setBeneficiaryForCashflowId(
-		bytes32 assetId, 
-		int8 cashflowId, 
+		bytes32 assetId,
+		int8 cashflowId,
 		address payable beneficiary
-	) 
+	)
 		external;
 
 	/**
@@ -60,9 +60,9 @@ interface IOwnershipRegistry {
 	 * @param assetId id of the asset
 	 * @return addresses of all owners of the asset
 	 */
-	function getOwnership(bytes32 assetId) 
-		external 
-		view 
+	function getOwnership(bytes32 assetId)
+		external
+		view
 		returns (address, address payable, address, address payable);
 
 	/**
@@ -71,8 +71,8 @@ interface IOwnershipRegistry {
 	 * @param cashflowId the identifier of the specific claims owned by the registerd address
 	 * @return address of the beneficiary corresponding to the given cashflowId
 	 */
-	function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId) 
-		external 
-		view 
+	function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
+		external
+		view
 		returns (address payable);
 }

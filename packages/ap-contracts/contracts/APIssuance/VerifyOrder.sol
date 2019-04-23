@@ -48,10 +48,10 @@ contract VerifyOrder is APDefinitions {
 		}));
 	}
 
-	function hashEIP712Domain(EIP712Domain memory eip712Domain) 
-		internal 
-		pure 
-		returns (bytes32) 
+	function hashEIP712Domain(EIP712Domain memory eip712Domain)
+		internal
+		pure
+		returns (bytes32)
 	{
 		return keccak256(abi.encode(
 			EIP712DOMAIN_TYPEHASH,
@@ -62,7 +62,7 @@ contract VerifyOrder is APDefinitions {
 		));
 	}
 
-  function hashTerms(ContractTerms memory terms) 
+  function hashTerms(ContractTerms memory terms)
     internal
     pure
     returns (bytes32)
@@ -107,7 +107,7 @@ contract VerifyOrder is APDefinitions {
 		bytes memory makerSignature,
 		bytes memory takerSignature
 	)
-		internal 
+		internal
 		view
     returns (bool)
 	{
@@ -125,7 +125,7 @@ contract VerifyOrder is APDefinitions {
 
 		require(ECDSA.recover(makerDigest, makerSignature) == order.maker, "INVALID_ORDER_SIGNATURE: Recovered address is not the maker!");
 		require(ECDSA.recover(takerDigest, takerSignature) == order.taker, "INVALID_ORDER_SIGNATURE: Recovered address is not the taker!");
-    
+
     return true;
 	}
 }

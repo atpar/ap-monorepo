@@ -9,7 +9,7 @@ interface IPaymentRegistry {
 	 * @param _paymentRouter address of the payment router
 	 */
 	function setPaymentRouter(address _paymentRouter) external;
-	
+
 	/**
 	 * register a payment made for servicing a claim from a specific financial asset
 	 * @dev can only be called by the whitelisted payment router
@@ -21,11 +21,11 @@ interface IPaymentRegistry {
 	 */
 	function registerPayment(
 		bytes32 assetId,
-		int8 cashflowId, 
-		uint256 eventId, 
+		int8 cashflowId,
+		uint256 eventId,
 		address token,
 		uint256 _amount
-	) 
+	)
 		external
 		payable;
 
@@ -39,7 +39,7 @@ interface IPaymentRegistry {
 		external
 		view
 		returns (uint256);
-	
+
 	/**
 	 * retrieve the full details of amounts paid for servicing a specific claim
 	 * @param assetId id of the asset to which the claim (i.e. eventId) relates

@@ -6,7 +6,7 @@ import "../APCore/APDefinitions.sol";
 
 /**
  * @title the stateless component for a PAM contract
- * implements the STF and POF of the Actus standard for a PAM contract 
+ * implements the STF and POF of the Actus standard for a PAM contract
  * @dev all numbers except unix timestamp are represented as multiple of 10 ** 18
  * inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
@@ -17,15 +17,15 @@ contract IPAMEngine is APDefinitions {
 	 * @param contractTerms terms of the contract
 	 * @return initial contract state
 	 */
-	function computeInitialState(ContractTerms memory contractTerms) 
-		public 
-		pure 
+	function computeInitialState(ContractTerms memory contractTerms)
+		public
+		pure
 		returns (ContractState memory);
 
 		/**
-	 * computes pending events based on the contract state and 
+	 * computes pending events based on the contract state and
 	 * applys them to the contract state and returns the evaluated events and the new contract state
-	 * @dev evaluates all events between the scheduled time of the last executed event and now 
+	 * @dev evaluates all events between the scheduled time of the last executed event and now
 	 * (such that Led < Tev && now >= Tev)
 	 * @param contractTerms terms of the contract
 	 * @param contractState current state of the contract
@@ -33,8 +33,8 @@ contract IPAMEngine is APDefinitions {
 	 * @return the new contract state and the evaluated events
 	 */
 	function computeNextState(
-		ContractTerms memory contractTerms, 
-		ContractState memory contractState, 
+		ContractTerms memory contractTerms,
+		ContractState memory contractState,
 		uint256 timestamp
 	)
 		public
@@ -42,7 +42,7 @@ contract IPAMEngine is APDefinitions {
 		returns (ContractState memory, ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory);
 
 	/**
-	 * applys a prototype event to the current state of a contract and 
+	 * applys a prototype event to the current state of a contract and
 	 * returns the contrat event and the new contract state
 	 * @param contractTerms terms of the contract
 	 * @param contractState current state of the contract
@@ -51,8 +51,8 @@ contract IPAMEngine is APDefinitions {
 	 * @return the new contract state and the evaluated event
 	 */
 	function computeNextStateForProtoEvent(
-		ContractTerms memory contractTerms, 
-		ContractState memory contractState, 
+		ContractTerms memory contractTerms,
+		ContractState memory contractState,
 		ProtoEvent memory protoEvent,
 		uint256 timestamp
 	)
@@ -68,11 +68,11 @@ contract IPAMEngine is APDefinitions {
 	 * @return event schedule segment
 	 */
 	function computeProtoEventScheduleSegment(
-		ContractTerms memory contractTerms, 
+		ContractTerms memory contractTerms,
 		uint256 segmentStart,
 		uint256 segmentEnd
 	)
-		public 
-		pure 
+		public
+		pure
 		returns (ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory);
 }

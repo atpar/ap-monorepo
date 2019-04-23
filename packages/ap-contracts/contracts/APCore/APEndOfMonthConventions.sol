@@ -5,7 +5,7 @@ contract APEndOfMonthConventions {
 
 	// function endOfMonthShift(EndOfMonthConvention _eomc, uint256 _startTime, IPS _period, uint256 _currentTimestamp)
 	//   internal
-	//   pure 
+	//   pure
 	//   returns(uint256)
 	// {
 

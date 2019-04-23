@@ -9,7 +9,7 @@ import "./APDayCountConventions.sol";
 
 contract APCore is APDefinitions, APDayCountConventions {
 
-	function performanceIndicator(ContractStatus contractStatus) 
+	function performanceIndicator(ContractStatus contractStatus)
 		internal
 		pure
 		returns (int8)
@@ -18,7 +18,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 		return 1;
 	}
 
-	function roleSign(ContractRole contractRole) 
+	function roleSign(ContractRole contractRole)
 		internal
 		pure
 		returns (int8)
@@ -29,7 +29,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 	}
 
 	function signum(int value) internal pure returns (int256) {
-		if (value > 0) { 
+		if (value > 0) {
 			return 1;
 		} else if (value < 0) {
 			return -1;
@@ -46,10 +46,10 @@ contract APCore is APDefinitions, APDayCountConventions {
 	// 	return 0;
 	// }
 
-	function yearFraction(uint256 startTimestamp, uint256 endTimestamp, DayCountConvention ipdc) 
-		internal 
-		pure 
-		returns (int256) 
+	function yearFraction(uint256 startTimestamp, uint256 endTimestamp, DayCountConvention ipdc)
+		internal
+		pure
+		returns (int256)
 	{
 		require(endTimestamp >= startTimestamp, "dateTimeEnd has to be >= dateTimeBegin");
 		if (ipdc == DayCountConvention.A_360) {
@@ -90,12 +90,12 @@ contract APCore is APDefinitions, APDayCountConventions {
 	// }
 
 	function sortProtoEventSchedule(
-		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEventSchedule, 
-		int left, 
+		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEventSchedule,
+		int left,
 		int right
-	) 
-		internal 
-		pure 
+	)
+		internal
+		pure
 	{
 		int i = left;
 		int j = right;
@@ -108,7 +108,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 				(
 					protoEventSchedule[uint(i)], protoEventSchedule[uint(j)]
 				) = (
-					protoEventSchedule[uint(j)], 
+					protoEventSchedule[uint(j)],
 					protoEventSchedule[uint(i)]
 				);
 				i++;
@@ -138,9 +138,9 @@ contract APCore is APDefinitions, APDayCountConventions {
 		pure
 		returns (bool)
 	{
-		if (startTimestamp < timestamp && endTimestamp >= timestamp) { 
-			return true; 
-		} 
+		if (startTimestamp < timestamp && endTimestamp >= timestamp) {
+			return true;
+		}
 		return false;
 	}
 
@@ -171,14 +171,14 @@ contract APCore is APDefinitions, APDayCountConventions {
 	}
 
 	function computeDatesFromCycleSegment(
-		uint256 cycleStart, 
-		uint256 cycleEnd, 
-		IPS memory cycle, 
+		uint256 cycleStart,
+		uint256 cycleEnd,
+		IPS memory cycle,
 		EndOfMonthConvention , // eomc,
 		bool addEndTime,
 		uint256 segmentStart,
 		uint256 segmentEnd
-	) 
+	)
 		internal
 		pure
 		returns (uint256[MAX_CYCLE_SIZE] memory)
@@ -208,16 +208,16 @@ contract APCore is APDefinitions, APDayCountConventions {
 			date = getTimestampPlusPeriod(cycle, date);
 		}
 
-		if (addEndTime == true) { 
+		if (addEndTime == true) {
 			if (isInPeriod(cycleEnd, segmentStart, segmentEnd)) {
 				dates[index] = cycleEnd;
 			}
 		}
 
-		if (index > 0 && isInPeriod(dates[index - 1], segmentStart, segmentEnd)) {		
+		if (index > 0 && isInPeriod(dates[index - 1], segmentStart, segmentEnd)) {
 			if (cycle.s == S.LONG && index > 1 && cycleEnd != date) {
 				dates[index - 1] = dates[index];
-				delete dates[index];			
+				delete dates[index];
 			}
 		}
 

@@ -10,16 +10,16 @@ contract APDefinitions {
 	int256 constant DOUBLE_NULL = INT256_MIN;
 
 	uint256 constant public PRECISION = 18;
- 
+
 	uint256 constant MAX_CYCLE_SIZE = 16;
 	uint256 constant MAX_EVENT_SCHEDULE_SIZE = 64; // 4x MAX_CYCLE_SIZE for IP, RR, FP and SC
 
 	// IPS
 	enum P {D, W, M, Q, H, Y} // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
 	enum S {LONG, SHORT} // S=[+=long stub,- short stub, {} if S empty then - for short stub]
-	struct IPS { 
+	struct IPS {
 		uint256 i; // I=Integer
-		P p; 
+		P p;
 		S s;
 		bool isSet;
 	}
@@ -46,7 +46,7 @@ contract APDefinitions {
 	enum OptionType {C, P, CP} // required ?
 	enum PenaltyType {O, A, N, I} // Default: 0
 	enum PrepaymentEffect {N, A, M} // Default: N
-	enum ScalingEffect {_000, _0N0, _00M, _0NM, I00, IN0, I0M, INM} // Default: _000 
+	enum ScalingEffect {_000, _0N0, _00M, _0NM, I00, IN0, I0M, INM} // Default: _000
 	enum Seniority {S, J} // required ?
 	enum Unit {BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO} // required ?
 

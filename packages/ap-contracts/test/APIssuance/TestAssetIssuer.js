@@ -3,7 +3,7 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
 const PAMEngine = artifacts.require('PAMEngine.sol')
-const PAMAssetActor = artifacts.require('PAMAssetActor')
+const AssetActor = artifacts.require('AssetActor')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
@@ -27,7 +27,7 @@ contract('AssetIssuer', (accounts) => {
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.deployed()
     this.OwnershipRegistryInstance = await OwnershipRegistry.deployed()
-    this.PAMAssetActorInstance = await PAMAssetActor.deployed()
+    this.AssetActorInstance = await AssetActor.deployed()
     this.AssetIssuerInstance = await AssetIssuer.new()
   })
 
@@ -35,7 +35,7 @@ contract('AssetIssuer', (accounts) => {
     const orderData = { 
       makerAddress: recordCreator,
       takerAddress: counterparty,
-      actorAddress: this.PAMAssetActorInstance.address,
+      actorAddress: this.AssetActorInstance.address,
       terms: this.terms,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
       takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
