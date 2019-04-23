@@ -22,7 +22,8 @@
   },
   "scripts": {
     "save-artifacts": "mkdir -p ./artifacts && cp -r ./build/contracts/* ./artifacts/",
-    "lint": "solium -d contracts/"
+    "lint": "solium -d contracts/",
+    "lint:fix": "solium -d contracts/ --fix"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
