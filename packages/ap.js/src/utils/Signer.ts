@@ -63,17 +63,17 @@ export class Signer {
     signedContractUpdate: SignedContractUpdate
   ): Promise<boolean> {
     const typedData = await this._getContractUpdateAsTypedData(signedContractUpdate.contractUpdate);
-    const recordCreatorObligorAddress = signedContractUpdate.contractUpdate.recordCreatorObligorAddress;
-    const counterpartyObligorAddress = signedContractUpdate.contractUpdate.counterpartyObligorAddress;
+    const recordCreatorObligor = signedContractUpdate.contractUpdate.recordCreatorObligor;
+    const counterpartyObligor = signedContractUpdate.contractUpdate.counterpartyObligor;
 
     if (!signedContractUpdate.recordCreatorObligorSignature && !signedContractUpdate.counterpartyObligorSignature) { return false }
     if (signedContractUpdate.recordCreatorObligorSignature) {
-      if (!this._validateSignature(typedData, recordCreatorObligorAddress, signedContractUpdate.recordCreatorObligorSignature)) {
+      if (!this._validateSignature(typedData, recordCreatorObligor, signedContractUpdate.recordCreatorObligorSignature)) {
         return false;
       }
     }
     if (signedContractUpdate.counterpartyObligorSignature) {
-      if (!this._validateSignature(typedData, counterpartyObligorAddress, signedContractUpdate.counterpartyObligorSignature)) {
+      if (!this._validateSignature(typedData, counterpartyObligor, signedContractUpdate.counterpartyObligorSignature)) {
         return false;
       }
     }
@@ -218,8 +218,8 @@ export class Signer {
         ],
         ContractUpdate: [
           { name: 'assetId', type: 'string' },
-          { name: 'recordCreatorObligorAddress', type: 'address' },
-          { name: 'counterpartyObligorAddress', type: 'address' },
+          { name: 'recordCreatorObligor', type: 'address' },
+          { name: 'counterpartyObligor', type: 'address' },
           { name: 'contractAddress', type: 'address' },
           { name: 'contractTermsHash', type: 'string' }, // see: for version > 2.1.1 of eth-sig-util: https://github.com/MetaMask/eth-sig-util/commit/0fbac013cf1da2f7bf7a7383fa18535914d279a9
           { name: 'contractStateHash', type: 'string' },
@@ -229,8 +229,8 @@ export class Signer {
       primaryType: 'ContractUpdate',
       message: {
         assetId: contractUpdate.assetId,
-        recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
-        counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
+        recordCreatorObligor: contractUpdate.recordCreatorObligor,
+        counterpartyObligor: contractUpdate.counterpartyObligor,
         contractAddress: contractUpdate.contractAddress,
         contractTermsHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractTerms)),
         contractStateHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractState)),

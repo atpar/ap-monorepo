@@ -39,10 +39,10 @@ describe('testAssetChannelClass', () => {
 
     const terms = (<any>contractTemplatesTyped)['10001'];
     const ownership = {
-      recordCreatorObligorAddress: recordCreator, 
-      recordCreatorBeneficiaryAddress: recordCreator, 
-      counterpartyObligorAddress: counterparty,
-      counterpartyBeneficiaryAddress: counterparty
+      recordCreatorObligor: recordCreator, 
+      recordCreatorBeneficiary: recordCreator, 
+      counterpartyObligor: counterparty,
+      counterpartyBeneficiary: counterparty
     };
 
     assetChannel = await AssetChannel.create(apRC, terms, ownership);
@@ -63,7 +63,7 @@ describe('testAssetChannelClass', () => {
     ).rejects.toThrow('EXECUTION_ERROR: invalid signed contract update provided.');
   });
 
-  it('should receive at least one new contract on behalf of the counterparty', async () => {
+  it('should receive at least one new asset on behalf of the counterparty', async () => {
     const mockCallback = jest.fn(() => {});
 
     apCP.onNewAssetChannel(mockCallback);

@@ -30,10 +30,12 @@ contract('Settlement', (accounts) => {
     // register Ownership for assetId
     await this.OwnershipRegistryInstance.registerOwnership(
       web3.utils.toHex(assetId), 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
+      {
+        recordCreatorObligor, 
+        recordCreatorBeneficiary, 
+        counterpartyObligor, 
+        counterpartyBeneficiary
+      }
     )
 
     // deploy ClaimsTokenETH

@@ -23,10 +23,7 @@ export class OwnershipAPI {
   ): TransactionObject {
     return this.contracts.ownershipRegistry.registerOwnership(
       assetId,
-      assetOwnership.recordCreatorObligorAddress,
-      assetOwnership.recordCreatorBeneficiaryAddress,
-      assetOwnership.counterpartyObligorAddress,
-      assetOwnership.counterpartyBeneficiaryAddress
+      assetOwnership
     ); // gas: 300000
   }
 

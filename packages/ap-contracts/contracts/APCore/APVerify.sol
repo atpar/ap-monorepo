@@ -15,8 +15,8 @@ contract APVerify {
 
 	struct ContractUpdate {
 		bytes32 assetId;
-		address payable recordCreatorAddress;
-		address payable counterpartyAddress;
+		address payable recordCreator;
+		address payable counterparty;
 		address contractAddress;
 		bytes32 contractTermsHash;
 		bytes32 contractStateHash;
@@ -28,7 +28,7 @@ contract APVerify {
 	);
 
 	bytes32 constant CONTRACTUPDATE_TYPEHASH = keccak256(
-		"ContractUpdate(bytes32 assetId,address recordCreatorAddress,address counterpartyAddress,address contractAddress,bytes32 contractTermsHash,bytes32 contractStateHash,uint256 contractUpdateNonce)"
+		"ContractUpdate(bytes32 assetId,address recordCreator,address counterparty,address contractAddress,bytes32 contractTermsHash,bytes32 contractStateHash,uint256 contractUpdateNonce)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -64,8 +64,8 @@ contract APVerify {
 		return keccak256(abi.encode(
 			CONTRACTUPDATE_TYPEHASH,
 			contractUpdate.assetId,
-			contractUpdate.recordCreatorAddress,
-			contractUpdate.counterpartyAddress,
+			contractUpdate.recordCreator,
+			contractUpdate.counterparty,
 			contractUpdate.contractAddress,
 			contractUpdate.contractTermsHash,
 			contractUpdate.contractStateHash,
@@ -87,7 +87,7 @@ contract APVerify {
 			hashStruct(contractUpdate)
 		));
 
-		require(ECDSA.recover(digest, recordCreatorSignature) == contractUpdate.recordCreatorAddress, "recovered address is not the record creator");
-		require(ECDSA.recover(digest, counterpartySignature) == contractUpdate.counterpartyAddress, "recovered address is not the counterparty");
+		require(ECDSA.recover(digest, recordCreatorSignature) == contractUpdate.recordCreator, "Recovered address is not the record creator");
+		require(ECDSA.recover(digest, counterpartySignature) == contractUpdate.counterparty, "Recovered address is not the counterparty");
 	}
 }

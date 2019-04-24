@@ -105,22 +105,22 @@ export class AssetChannel {
 
       if (
         duePayoff.isLessThanOrEqualTo(0) &&
-        account === signedContractUpdate.contractUpdate.recordCreatorObligorAddress
+        account === signedContractUpdate.contractUpdate.recordCreatorObligor
       ) { return ChannelState.Updatable; }
 
       if (
         duePayoff.isGreaterThanOrEqualTo(0) &&
-        account === signedContractUpdate.contractUpdate.counterpartyObligorAddress
+        account === signedContractUpdate.contractUpdate.counterpartyObligor
       ) { return ChannelState.Updatable; }
     }
 
     if (
-      account === signedContractUpdate.contractUpdate.recordCreatorObligorAddress &&
+      account === signedContractUpdate.contractUpdate.recordCreatorObligor &&
       !signedContractUpdate.recordCreatorObligorSignature
     ) { return ChannelState.Confirmable; }
 
     if (
-      account === signedContractUpdate.contractUpdate.counterpartyObligorAddress &&
+      account === signedContractUpdate.contractUpdate.counterpartyObligor &&
       !signedContractUpdate.counterpartyObligorSignature
     ) { return ChannelState.Confirmable; }
 
@@ -246,8 +246,8 @@ export class AssetChannel {
   ): ContractUpdate {
     return {
       assetId: assetId,
-      recordCreatorObligorAddress: ownership.recordCreatorObligorAddress,
-      counterpartyObligorAddress: ownership.counterpartyObligorAddress,
+      recordCreatorObligor: ownership.recordCreatorObligor,
+      counterpartyObligor: ownership.counterpartyObligor,
       contractAddress: '',
       contractTerms: terms,
       contractState: initialState,
@@ -264,8 +264,8 @@ export class AssetChannel {
 
     return {
       assetId: contractUpdate.assetId,
-      recordCreatorObligorAddress: contractUpdate.recordCreatorObligorAddress,
-      counterpartyObligorAddress: contractUpdate.counterpartyObligorAddress,
+      recordCreatorObligor: contractUpdate.recordCreatorObligor,
+      counterpartyObligor: contractUpdate.counterpartyObligor,
       contractAddress: '',
       contractTerms: terms,
       contractState: nextState,
@@ -282,13 +282,13 @@ export class AssetChannel {
     const signature = await this.ap.signer.signContractUpdate(contractUpdate);
     const signer = this.ap.signer.account;
 
-    if (signer === contractUpdate.recordCreatorObligorAddress) {
+    if (signer === contractUpdate.recordCreatorObligor) {
       signedContractUpdate.recordCreatorObligorSignature = signature;
-    } else if (signer === contractUpdate.counterpartyObligorAddress) {
+    } else if (signer === contractUpdate.counterpartyObligor) {
       signedContractUpdate.counterpartyObligorSignature = signature;
     } else {
       throw(new Error(
-        'EXECUTION_ERROR: Addresses do not match. Address of sender has to be equal to recordCreatorObligorAddress or counterpartyObligorAddress.'
+        'EXECUTION_ERROR: Addresses do not match. Address of sender has to be equal to recordCreatorObligor or counterpartyObligor.'
       ));
     }
 

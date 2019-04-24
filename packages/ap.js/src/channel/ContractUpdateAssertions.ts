@@ -6,10 +6,10 @@ export function areContractUpdateAddressesUnaltered (
 ): boolean {
   return (
     !(
-      previousSignedContractUpdate.contractUpdate.recordCreatorObligorAddress === 
-      signedContractUpdate.contractUpdate.recordCreatorObligorAddress &&
-      previousSignedContractUpdate.contractUpdate.counterpartyObligorAddress === 
-      signedContractUpdate.contractUpdate.counterpartyObligorAddress
+      previousSignedContractUpdate.contractUpdate.recordCreatorObligor === 
+      signedContractUpdate.contractUpdate.recordCreatorObligor &&
+      previousSignedContractUpdate.contractUpdate.counterpartyObligor === 
+      signedContractUpdate.contractUpdate.counterpartyObligor
     )
   );
 }

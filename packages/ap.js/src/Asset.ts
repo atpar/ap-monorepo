@@ -82,18 +82,18 @@ export class Asset {
    * @returns {Promise<BigNumber>}
    */
   public async getTotalPaidOff (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligorAddress, counterpartyObligorAddress } = await this.getOwnership();
+    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
-    if (this.ap.signer.account === recordCreatorObligorAddress) {
+    if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
         this.assetId, 
         0, 
         lastEventId + numberOfPendingEvents
       );
       return amountSettled;
-    } else if (this.ap.signer.account === counterpartyObligorAddress) {
+    } else if (this.ap.signer.account === counterpartyObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForCounterparty(
         this.assetId, 
         0, 
@@ -113,11 +113,11 @@ export class Asset {
    * @returns {Promise<BigNumber>}
    */
   public async getAmountOutstanding (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligorAddress, counterpartyObligorAddress } = await this.getOwnership();
+    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
-    if (this.ap.signer.account === recordCreatorObligorAddress) {
+    if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
         this.assetId, 
         lastEventId + 1, 
@@ -133,7 +133,7 @@ export class Asset {
         timestamp
       );
       return amountDue.minus(amountSettled)
-    } else if (this.ap.signer.account === counterpartyObligorAddress) {
+    } else if (this.ap.signer.account === counterpartyObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForCounterparty(
         this.assetId, 
         lastEventId + 1, 
@@ -161,7 +161,7 @@ export class Asset {
    * @returns {Promise<BigNumber>}
    */
   public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligorAddress, counterpartyObligorAddress } = await this.getOwnership();
+    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
 
@@ -169,12 +169,12 @@ export class Asset {
       const payoff = pendingSchedule[i].event.payoff;
       
       // skip counterparty payoffs
-      if (this.ap.signer.account === recordCreatorObligorAddress && payoff.isGreaterThan(0)) {
+      if (this.ap.signer.account === recordCreatorObligor && payoff.isGreaterThan(0)) {
         continue;
       }
 
       // skip record creator payoffs
-      if (this.ap.signer.account === counterpartyObligorAddress && payoff.isLessThan(0)) {
+      if (this.ap.signer.account === counterpartyObligor && payoff.isLessThan(0)) {
         continue;
       }
 
@@ -245,9 +245,9 @@ export class Asset {
    * @returns {Promise<string>} address of deployed ClaimsToken contract
    */
   public async tokenizeBeneficiary (): Promise<string> {
-    const { recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress } = await this.getOwnership();
+    const { recordCreatorBeneficiary, counterpartyBeneficiary } = await this.getOwnership();
     
-    if (![recordCreatorBeneficiaryAddress, counterpartyBeneficiaryAddress].includes(this.ap.signer.account)) {
+    if (![recordCreatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
       throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
     
@@ -255,11 +255,11 @@ export class Asset {
       { from: this.ap.signer.account, gas: 2000000}
     );    
 
-    if (this.ap.signer.account === recordCreatorBeneficiaryAddress) {
+    if (this.ap.signer.account === recordCreatorBeneficiary) {
       await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address).send(
         { from: this.ap.signer.account, gas: 100000 }
       );
-    } else if (this.ap.signer.account === counterpartyBeneficiaryAddress) {
+    } else if (this.ap.signer.account === counterpartyBeneficiary) {
       await this.ap.ownership.setCounterpartyBeneficiary(this.assetId, address).send(
         { from: this.ap.signer.account, gas: 100000 }
       );
@@ -285,8 +285,8 @@ export class Asset {
     ownership: AssetOwnership
   ): Promise<Asset> {
     const assetId = sha3(
-      ownership.recordCreatorObligorAddress, 
-      ownership.counterpartyObligorAddress, 
+      ownership.recordCreatorObligor, 
+      ownership.counterpartyObligor, 
       String(Math.floor(Math.random() * 1000000))
     );
 

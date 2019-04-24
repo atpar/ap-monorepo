@@ -10,16 +10,16 @@ export enum ChannelState {
 }
 
 export interface AssetOwnership {
-  recordCreatorObligorAddress: string;
-  recordCreatorBeneficiaryAddress: string;
-  counterpartyObligorAddress: string;
-  counterpartyBeneficiaryAddress: string;
+  recordCreatorObligor: string;
+  recordCreatorBeneficiary: string;
+  counterpartyObligor: string;
+  counterpartyBeneficiary: string;
 }
 
 export interface ContractUpdate {
   assetId: string;
-  recordCreatorObligorAddress: string;
-  counterpartyObligorAddress: string;
+  recordCreatorObligor: string;
+  counterpartyObligor: string;
   contractAddress: string;
   contractTerms: ContractTerms;
   contractState: ContractState;
@@ -58,8 +58,8 @@ export interface ContractUpdateAsTypedData extends TypedData {
   primaryType: string;
   message: {
     assetId: string;
-    recordCreatorObligorAddress: string;
-    counterpartyObligorAddress: string;
+    recordCreatorObligor: string;
+    counterpartyObligor: string;
     contractAddress: string;
     contractTermsHash: string;
     contractStateHash: string;

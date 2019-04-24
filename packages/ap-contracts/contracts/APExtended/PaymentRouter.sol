@@ -4,12 +4,13 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
+import "../APCore/APDefinitions.sol";
 import "./IPaymentRouter.sol";
 import "./IOwnershipRegistry.sol";
 import "./IPaymentRegistry.sol";
 
 
-contract PaymentRouter is IPaymentRouter, Ownable {
+contract PaymentRouter is APDefinitions, IPaymentRouter, Ownable {
 
 	IOwnershipRegistry public ownershipRegistry;
 	IPaymentRegistry public paymentRegistry;
@@ -49,28 +50,17 @@ contract PaymentRouter is IPaymentRouter, Ownable {
 
 		uint256 amount;
 		address payable payee = ownershipRegistry.getCashflowBeneficiary(assetId, cashflowId);
-
-		address recordCreatorObligor;
-		address payable recordCreatorBeneficiary;
-		address counterpartyObligor;
-		address payable counterpartyBeneficiary;
-
-		(
-			recordCreatorObligor,
-			recordCreatorBeneficiary,
-			counterpartyObligor,
-			counterpartyBeneficiary
-		) = ownershipRegistry.getOwnership(assetId);
+		AssetOwnership memory ownership = ownershipRegistry.getOwnership(assetId);
 
 		if (cashflowId > 0) {
-			require(msg.sender == counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
+			require(msg.sender == ownership.counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
 			if (payee == address(0)) {
-				payee = recordCreatorBeneficiary;
+				payee = ownership.recordCreatorBeneficiary;
 			}
 		} else {
-			require(msg.sender == recordCreatorObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
+			require(msg.sender == ownership.recordCreatorObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
 			if (payee == address(0)) {
-				payee = counterpartyBeneficiary;
+				payee = ownership.counterpartyBeneficiary;
 			}
 		}
 

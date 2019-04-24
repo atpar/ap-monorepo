@@ -59,16 +59,16 @@ async function saveContractUpdate (signedContractUpdate) {
   let entries = {}
   try { entries = await getAllContractUpdates() } catch (error) {}
 
-  if (entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress]) {
-    entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress] = { ...entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress], ...data }
+  if (entries[signedContractUpdate.contractUpdate.recordCreatorObligor]) {
+    entries[signedContractUpdate.contractUpdate.recordCreatorObligor] = { ...entries[signedContractUpdate.contractUpdate.recordCreatorObligor], ...data }
   } else {
-    entries[signedContractUpdate.contractUpdate.recordCreatorObligorAddress] = { ...data }
+    entries[signedContractUpdate.contractUpdate.recordCreatorObligor] = { ...data }
   }
 
-  if (entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress]) {
-    entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress] = { ...entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress], ...data }
+  if (entries[signedContractUpdate.contractUpdate.counterpartyObligor]) {
+    entries[signedContractUpdate.contractUpdate.counterpartyObligor] = { ...entries[signedContractUpdate.contractUpdate.counterpartyObligor], ...data }
   } else {
-    entries[signedContractUpdate.contractUpdate.counterpartyObligorAddress] = { ...data }
+    entries[signedContractUpdate.contractUpdate.counterpartyObligor] = { ...data }
   }
 
   return new Promise((resolve, reject) => {

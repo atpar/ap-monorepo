@@ -1,24 +1,10 @@
 pragma solidity ^0.5.2;
+pragma experimental ABIEncoderV2;
+
+import "../APCore/APDefinitions.sol";
 
 
-interface IOwnershipRegistry {
-
-	/**
-	 * registers the addresses of the owners of an asset
-	 * @param assetId id of the asset
-	 * @param recordCreatorObligor the address of the owner of creator-side payment obligations
-	 * @param recordCreatorBeneficiary the address of the owner of creator-side payment claims
-	 * @param counterpartyObligor the address of the owner of counterparty-side payment obligations
-	 * @param counterpartyBeneficiary the address of the owner of counterparty-side payment claims
-	 */
-	function registerOwnership(
-		bytes32 assetId,
-		address recordCreatorObligor,
-		address payable recordCreatorBeneficiary,
-		address counterpartyObligor,
-		address payable counterpartyBeneficiary
-	)
-		external;
+contract IOwnershipRegistry is APDefinitions {
 
 	/**
 	 * update the address of the default beneficiary of cashflows going to the record creator
@@ -63,7 +49,7 @@ interface IOwnershipRegistry {
 	function getOwnership(bytes32 assetId)
 		external
 		view
-		returns (address, address payable, address, address payable);
+		returns (AssetOwnership memory);
 
 	/**
 	 * retrieve the registered address of the owner of specific future claims from an asset
@@ -75,4 +61,17 @@ interface IOwnershipRegistry {
 		external
 		view
 		returns (address payable);
+
+	/**
+	 * registers the addresses of the owners of an asset
+	 * owner of creator-side payment obligations, owner of creator-side payment claims
+	 * counterparty-side payment obligations, counterparty-side payment claims
+	 * @param assetId id of the asset
+	 * @param ownership the address of the owner of creator-side payment obligations
+	 */
+	function registerOwnership(
+		bytes32 assetId,
+		AssetOwnership memory ownership
+	)
+		public;
 }

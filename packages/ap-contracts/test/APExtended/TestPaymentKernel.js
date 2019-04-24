@@ -30,10 +30,12 @@ contract('PaymentKernel', (accounts) => {
 
     await this.OwnershipRegistryInstance.registerOwnership(
       web3.utils.toHex(this.assetId), 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
+      {
+        recordCreatorObligor, 
+        recordCreatorBeneficiary, 
+        counterpartyObligor, 
+        counterpartyBeneficiary
+      }
     )
 
     await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(

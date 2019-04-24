@@ -1,50 +1,18 @@
 pragma solidity ^0.5.2;
+pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
+import "../APCore/APDefinitions.sol";
 import "./IOwnershipRegistry.sol";
 
 
-contract OwnershipRegistry is IOwnershipRegistry, Ownable {
-
-	struct AssetOwnership {
-		address recordCreatorObligor; // or covenantor
-		address payable recordCreatorBeneficiary;
-		address counterpartyObligor;
-		address payable counterpartyBeneficiary;
-	}
+contract OwnershipRegistry is APDefinitions, IOwnershipRegistry, Ownable {
 
 	// assetId => AssetOwnership
 	mapping (bytes32 => AssetOwnership) public assetOwnerships;
 	// assetId => cashflowId => Ownership
 	mapping (bytes32 => mapping (int8 => address payable)) cashflowBeneficiaries;
-
-	/**
-	 * registers the addresses of the owners of an asset
-	 * @param assetId id of the asset
-	 * @param recordCreatorObligor the address of the owner of creator-side payment obligations
-	 * @param recordCreatorBeneficiary the address of the owner of creator-side payment claims
-	 * @param counterpartyObligor the address of the owner of counterparty-side payment obligations
-	 * @param counterpartyBeneficiary the address of the owner of counterparty-side payment claims
-	 */
-	function registerOwnership(
-		bytes32 assetId,
-		address recordCreatorObligor,
-		address payable recordCreatorBeneficiary,
-		address counterpartyObligor,
-		address payable counterpartyBeneficiary
-	)
-		external
-	{
-		require(assetOwnerships[assetId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
-
-		assetOwnerships[assetId] = AssetOwnership(
-			recordCreatorObligor,
-			recordCreatorBeneficiary,
-			counterpartyObligor,
-			counterpartyBeneficiary
-		);
-	}
 
 	/**
 	 * update the address of the default beneficiary of cashflows going to the record creator
@@ -116,14 +84,9 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 	function getOwnership(bytes32 assetId)
 		external
 		view
-		returns (address, address payable, address, address payable)
+		returns (AssetOwnership memory)
 	{
-		return (
-			assetOwnerships[assetId].recordCreatorObligor,
-			assetOwnerships[assetId].recordCreatorBeneficiary,
-			assetOwnerships[assetId].counterpartyObligor,
-			assetOwnerships[assetId].counterpartyBeneficiary
-		);
+		return assetOwnerships[assetId];
 	}
 
 	/**
@@ -138,5 +101,23 @@ contract OwnershipRegistry is IOwnershipRegistry, Ownable {
 		returns (address payable)
 	{
 		return cashflowBeneficiaries[assetId][cashflowId];
+	}
+
+	/**
+	 * registers the addresses of the owners of an asset
+	 * owner of creator-side payment obligations, owner of creator-side payment claims
+	 * counterparty-side payment obligations, counterparty-side payment claims
+	 * @param assetId id of the asset
+	 * @param ownership the address of the owner of creator-side payment obligations
+	 */
+	function registerOwnership(
+		bytes32 assetId,
+		AssetOwnership memory ownership
+	)
+		public
+	{
+		require(assetOwnerships[assetId].recordCreatorObligor == address(0), "ENTRY_ALREADY_EXISTS");
+
+		assetOwnerships[assetId] = ownership;
 	}
 }

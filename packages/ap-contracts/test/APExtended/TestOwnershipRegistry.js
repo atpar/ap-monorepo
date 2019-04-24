@@ -23,30 +23,38 @@ contract('OwnershipRegistry', (accounts) => {
   })
 
   it('should register ownership of an asset', async () => {
-    await this.OwnershipRegistryInstance.registerOwnership(
-      web3.utils.toHex(this.assetId), 
+    const ownership = { 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
+    }
+
+    await this.OwnershipRegistryInstance.registerOwnership(
+      web3.utils.toHex(this.assetId), 
+      ownership
     )
 
-    const result = await this.OwnershipRegistryInstance.getOwnership(web3.utils.toHex(this.assetId))
+    const storedOwnership = await this.OwnershipRegistryInstance.getOwnership(web3.utils.toHex(this.assetId))
     
-    assert.equal(result[0], recordCreatorObligor)
-    assert.equal(result[1], recordCreatorBeneficiary)
-    assert.equal(result[2], counterpartyObligor)
-    assert.equal(result[3], counterpartyBeneficiary)
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor)
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary)
+    assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor)
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary)
   })
 
   it('should not register ownership of an already registered asset', async () => {
+    const ownership = { 
+      recordCreatorObligor, 
+      recordCreatorBeneficiary, 
+      counterpartyObligor, 
+      counterpartyBeneficiary
+    }
+
     await shouldFail.reverting.withMessage(
       this.OwnershipRegistryInstance.registerOwnership(
-        web3.utils.toHex(this.assetId), 
-        recordCreatorObligor, 
-        recordCreatorBeneficiary, 
-        counterpartyObligor, 
-        counterpartyBeneficiary
+        web3.utils.toHex(this.assetId),
+        ownership
       ),
       ENTRY_ALREADY_EXISTS
     )

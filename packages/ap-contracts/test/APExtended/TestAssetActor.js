@@ -55,10 +55,12 @@ contract('AssetActor', (accounts) => {
     // register Ownership for assetId
     await this.OwnershipRegistryInstance.registerOwnership(
       web3.utils.toHex(assetId), 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
+      {
+        recordCreatorObligor, 
+        recordCreatorBeneficiary, 
+        counterpartyObligor, 
+        counterpartyBeneficiary
+      }
     )
 
     // register Contract with assetId

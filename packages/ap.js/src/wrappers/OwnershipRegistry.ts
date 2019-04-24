@@ -5,7 +5,7 @@ import { toHex } from '../utils/Utils';
 import { AssetOwnership, TransactionObject, CallObject } from '../types';
 
 import OwnershipRegistryArtifact from '@atpar/ap-contracts/build/contracts/OwnershipRegistry.json';
-
+import { toAssetOwnership } from './Conversions';
 
 export class OwnershipRegistry {
   private ownershipRegistry: Contract;
@@ -16,17 +16,11 @@ export class OwnershipRegistry {
 
   public registerOwnership (
     assetId: string,
-    recordCreatorObligorAddress: string,
-    recordCreatorBeneficiaryAddress: string,
-    counterpartyObligorAddress: string,
-    counterpartyBeneficiaryAddress: string
+    ownership: AssetOwnership
   ): TransactionObject {
     return this.ownershipRegistry.methods.registerOwnership(
       toHex(assetId), 
-      recordCreatorObligorAddress,
-      recordCreatorBeneficiaryAddress,
-      counterpartyObligorAddress,
-      counterpartyBeneficiaryAddress
+      ownership
     );
   };
 
@@ -58,24 +52,9 @@ export class OwnershipRegistry {
 
   public getOwnership = (assetId: string): CallObject<AssetOwnership> => ({
     call: async (): Promise<AssetOwnership> => {
-      const { 
-        0: recordCreatorObligorAddress, 
-        1: recordCreatorBeneficiaryAddress, 
-        2: counterpartyObligorAddress, 
-        3: counterpartyBeneficiaryAddress 
-      }: { 
-        0: string; 
-        1: string; 
-        2: string; 
-        3: string; 
-      } = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
-
-      return { 
-        recordCreatorObligorAddress, 
-        recordCreatorBeneficiaryAddress, 
-        counterpartyObligorAddress, 
-        counterpartyBeneficiaryAddress 
-      };
+      const response = await this.ownershipRegistry.methods.getOwnership(toHex(assetId)).call();
+      const ownership = toAssetOwnership(response);
+      return ownership;
     }
   });
 

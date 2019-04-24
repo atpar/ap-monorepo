@@ -107,10 +107,7 @@ contract AssetActor is APDefinitions, IAssetActor {
 
 		ownershipRegistry.registerOwnership(
 			assetId,
-			ownership.recordCreatorObligor,
-			ownership.recordCreatorBeneficiary,
-			ownership.counterpartyObligor,
-			ownership.counterpartyBeneficiary
+			ownership
 		);
 
 		economicsRegistry.registerEconomics(

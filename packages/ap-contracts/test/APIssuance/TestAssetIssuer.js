@@ -79,10 +79,10 @@ contract('AssetIssuer', (accounts) => {
     const storedOwnership = await this.OwnershipRegistryInstance.getOwnership(assetId)
 
     assert.equal(storedTerms['statusDate'], orderData.terms['statusDate'])
-    assert.equal(storedOwnership[0], recordCreator)
-    assert.equal(storedOwnership[1], recordCreator)
-    assert.equal(storedOwnership[2], counterparty)
-    assert.equal(storedOwnership[3], counterparty)
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreator)
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator)
+    assert.equal(storedOwnership.counterpartyObligor, counterparty)
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty)
 
     await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
       assetId: assetId,

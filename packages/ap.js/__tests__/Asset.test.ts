@@ -52,10 +52,10 @@ describe('testContractClass', () => {
     const terms = (<any>contractTemplatesTyped)['10001'];
 
     const ownership: AssetOwnership = { 
-      recordCreatorObligorAddress: recordCreator,
-      recordCreatorBeneficiaryAddress: recordCreator,
-      counterpartyObligorAddress: counterparty, 
-      counterpartyBeneficiaryAddress: counterparty
+      recordCreatorObligor: recordCreator,
+      recordCreatorBeneficiary: recordCreator,
+      counterpartyObligor: counterparty, 
+      counterpartyBeneficiary: counterparty
     }
 
     assetRC = await Asset.create(apRC, terms, ownership);
@@ -64,7 +64,7 @@ describe('testContractClass', () => {
     const storedTerms = await assetRC.getTerms();
     
     expect(assetRC instanceof Asset).toBe(true);
-    expect(ownership.toString() === storedOwnership.toString()).toBe(true);
+    expect(ownership).toStrictEqual(storedOwnership);
     expect(terms.statusDate.toString() === storedTerms.statusDate.toString()).toBe(true);
   });
 
@@ -77,7 +77,7 @@ describe('testContractClass', () => {
     const storedTermsCP = await assetCP.getTerms();
 
     expect(assetCP instanceof Asset).toBe(true);
-    expect(storedOwnershipCP.toString() === storedOwnershipRC.toString()).toBe(true);
+    expect(storedOwnershipCP).toStrictEqual(storedOwnershipRC);
     expect(storedTermsCP.statusDate === storedTermsRC.statusDate).toBe(true);
   });
 
@@ -211,10 +211,10 @@ describe('testContractClass', () => {
       amountOutstandingForObligation.abs()
     );
 
-    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
 
     const balance = await apRC.tokenization.getAvailableFunds(
-      recordCreatorBeneficiaryAddress, 
+      recordCreatorBeneficiary, 
       recordCreator
     );
 
@@ -223,30 +223,30 @@ describe('testContractClass', () => {
   });
 
   it('should withdraw available funds', async () => {
-    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
     const availableFunds = await apRC.tokenization.getAvailableFunds(
-      recordCreatorBeneficiaryAddress, recordCreator
+      recordCreatorBeneficiary, recordCreator
     );
-    const preBalance = await web3.eth.getBalance(recordCreatorBeneficiaryAddress);
+    const preBalance = await web3.eth.getBalance(recordCreatorBeneficiary);
 
-    await apRC.tokenization.withdrawFunds(recordCreatorBeneficiaryAddress).send(
+    await apRC.tokenization.withdrawFunds(recordCreatorBeneficiary).send(
       { from: recordCreator, gas: 100000 }
     );
 
-    const postBalance = await web3.eth.getBalance(recordCreatorBeneficiaryAddress);
+    const postBalance = await web3.eth.getBalance(recordCreatorBeneficiary);
     expect(availableFunds.plus(postBalance).isEqualTo(preBalance));
   });
 
   it('should transfer ClaimsTokens', async () => {
-    const { recordCreatorBeneficiaryAddress } = await assetRC.getOwnership(); 
+    const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
     const value = new BigNumber(1000);
 
-    await apRC.tokenization.transferTokens(recordCreatorBeneficiaryAddress, counterparty, value).send(
+    await apRC.tokenization.transferTokens(recordCreatorBeneficiary, counterparty, value).send(
       { from: recordCreator, gas: 100000 }
     );
 
     const balance = await apRC.tokenization.getTokenBalance(
-      recordCreatorBeneficiaryAddress, 
+      recordCreatorBeneficiary, 
       counterparty
     );
     

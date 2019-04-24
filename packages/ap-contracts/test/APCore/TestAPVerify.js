@@ -21,8 +21,8 @@ const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId
       ],
       ContractUpdate: [
         { name: 'assetId', type: 'bytes32' },
-        { name: 'recordCreatorAddress', type: 'address' },
-        { name: 'counterpartyAddress', type: 'address' },
+        { name: 'recordCreator', type: 'address' },
+        { name: 'counterparty', type: 'address' },
         { name: 'contractAddress', type: 'address' },
         { name: 'contractTermsHash', type: 'bytes32' },
         { name: 'contractStateHash', type: 'bytes32' },
@@ -32,8 +32,8 @@ const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId
     primaryType: 'ContractUpdate',
     message: {
       assetId: contractUpdate.assetId,
-      recordCreatorAddress: contractUpdate.recordCreatorAddress,
-      counterpartyAddress: contractUpdate.counterpartyAddress,
+      recordCreatorAddress: contractUpdate.recordCreator,
+      counterpartyAddress: contractUpdate.counterparty,
       contractAddress: contractUpdate.contractAddress,
       contractTermsHash: contractUpdate.contractTermsHash,
       contractStateHash: contractUpdate.contractStateHash,
@@ -58,8 +58,8 @@ const signContractUpdate = (typedData, account) => {
 }
 
 contract('APVerify', (accounts) => {
-  const recordCreatorAddress = accounts[0]
-  const counterpartyAddress = accounts[1]
+  const recordCreator = accounts[0]
+  const counterparty = accounts[1]
   
   before(async () => {
     const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
@@ -76,8 +76,8 @@ contract('APVerify', (accounts) => {
     const assetId = 'PAM' + Math.floor(new Date().getTime() / 1000)
     const contractUpdate = {
       assetId: web3.utils.toHex(assetId),
-      recordCreatorAddress: recordCreatorAddress,
-      counterpartyAddress: counterpartyAddress,
+      recordCreator: recordCreator,
+      counterparty: counterparty,
       contractAddress: APVerifyDeployed.options.address,
       contractTermsHash: web3.utils.keccak256(JSON.stringify('contractTerms')),
       contractStateHash: web3.utils.keccak256(JSON.stringify('extractedContractStateObject')),
@@ -90,18 +90,18 @@ contract('APVerify', (accounts) => {
 
     const { result: recordCreatorSignature } = await signContractUpdate(
       typedData,
-      recordCreatorAddress
+      recordCreator
     )
     const { result: counterpartySignature } = await signContractUpdate(
       typedData,
-      counterpartyAddress
+      counterparty
     )
   
     const recoveredAddressRecordCreator = sigUtil.recoverTypedSignature({ data: typedData, sig: recordCreatorSignature})
-    assert.equal(sigUtil.normalize(recordCreatorAddress), recoveredAddressRecordCreator)
+    assert.equal(sigUtil.normalize(recordCreator), recoveredAddressRecordCreator)
     
     const recoveredAddressCounterparty = sigUtil.recoverTypedSignature({ data: typedData, sig: counterpartySignature})
-    assert.equal(sigUtil.normalize(counterpartyAddress), recoveredAddressCounterparty)
+    assert.equal(sigUtil.normalize(counterparty), recoveredAddressCounterparty)
 
     // const response = await APVerifyDeployed.methods.verifyContractUpdate(
     //   contractUpdate,

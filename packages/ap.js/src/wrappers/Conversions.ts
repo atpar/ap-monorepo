@@ -9,9 +9,19 @@ import {
   ProtoEventSchedule, 
   AssetIssuedEvent, 
   AssetProgressedEvent, 
-  PaidEvent
+  PaidEvent,
+  AssetOwnership
 } from '../types';
 
+
+export function toAssetOwnership (raw: any): AssetOwnership {
+  return {
+    recordCreatorObligor: String(raw['recordCreatorObligor']),
+    recordCreatorBeneficiary: String(raw['recordCreatorBeneficiary']),
+    counterpartyObligor: String(raw['counterpartyObligor']),
+    counterpartyBeneficiary: String(raw['counterpartyBeneficiary'])
+  }
+}
 
 export function toContractTerms (raw: any): ContractTerms {
   return {
