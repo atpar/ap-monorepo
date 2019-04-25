@@ -6,7 +6,7 @@ import "./ClaimsToken.sol";
 
 contract ClaimsTokenETHExtension is IClaimsToken, ClaimsToken {
 
-	constructor (address _owner) 
+	constructor(address _owner) 
 		public 
 		ClaimsToken(_owner)
 	{}
@@ -33,6 +33,7 @@ contract ClaimsTokenETHExtension is IClaimsToken, ClaimsToken {
 	{
 		if (msg.value > 0) {
 			_registerFunds(msg.value);
+			emit FundsReceived(msg.sender, msg.value);
 		}
 	}
 }

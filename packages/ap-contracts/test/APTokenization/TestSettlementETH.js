@@ -5,7 +5,7 @@ const PaymentRouter = artifacts.require('PaymentRouter')
 const ClaimsTokenETH = artifacts.require('ClaimsTokenETHExtension')
 
 
-contract('Settlement', (accounts) => {
+contract('SettlementETH', (accounts) => {
 
   const recordCreatorObligor = accounts[0]
   const recordCreatorBeneficiary = accounts[1]

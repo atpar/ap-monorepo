@@ -1,5 +1,7 @@
 export * from './AssetIssuer';
 export * from './ClaimsToken';
+export * from './ClaimsTokenETHExtension';
+export * from './ClaimsTokenERC20Extension';
 export * from './EconomicsRegistry';
 export * from './OwnershipRegistry';
 export * from './AssetActor';

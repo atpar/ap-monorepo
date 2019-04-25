@@ -18,10 +18,8 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 	// claimed but not yet withdrawn funds for a user
 	mapping (address => uint256) public claimedFunds;
 
-	event Deposit(uint256 fundsDeposited);
 
-
-	constructor (address _owner) 
+	constructor(address _owner) 
 		public 
 		ERC20Detailed("ClaimsToken", "CST", 18)
 	{
@@ -100,8 +98,6 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 		internal
 	{
 		receivedFunds = receivedFunds.add(_value);
-		
-		emit Deposit(_value);
 	}
 
 	/**

@@ -53,12 +53,28 @@ export class TokenizationAPI {
     ); // gas: 100000
   }
 
+  public updateFundsReceived (claimsTokenAddress: string): TransactionObject {
+    return this.contracts.claimsTokenERC20Extension.updateFundsReceived(
+      claimsTokenAddress
+    );
+  }
+
   /**
-   * deploys a new ClaimsToken contract
+   * deploys a new ClaimsToken contract for funds in Ether
    * @param {string} ownerAddress
    * @returns {DeployTransactionResponse} address of ClaimsToken contract
    */
-  public deployTokenContract (ownerAddress: string): DeployTransactionResponse {
-    return this.contracts.claimsToken.deploy(ownerAddress) // gas: 2000000
+  public deployETHClaimsToken (ownerAddress: string): DeployTransactionResponse {
+    return this.contracts.claimsTokenETHExtension.deploy(ownerAddress) // gas: 2000000
+  }
+
+  /**
+   * deploys a new ClaimsToken contract for funds in ERC20 tokens
+   * @param {string} ownerAddress
+   * @param {string} fundsToken
+   * @returns {DeployTransactionResponse} address of ClaimsToken contract
+   */
+  public deployERC20ClaimsToken (ownerAddress: string, fundsToken: string): DeployTransactionResponse {
+    return this.contracts.claimsTokenERC20Extension.deploy(ownerAddress, fundsToken) // gas: 2000000
   }
 }

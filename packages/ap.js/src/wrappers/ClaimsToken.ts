@@ -1,9 +1,9 @@
 import Web3 from 'web3';
-import { Contract, DeployTransactionResponse } from 'web3-eth-contract/types';
+import { Contract } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
 
 import { TransactionObject, CallObject } from '../types';
-import ClaimsTokenArtifact from '@atpar/ap-contracts/build/contracts/ClaimsTokenETHExtension.json';
+import ClaimsTokenArtifact from '@atpar/ap-contracts/build/contracts/ClaimsToken.json';
 import { numberToHex } from '../utils/Utils';
 
 
@@ -72,14 +72,6 @@ export class ClaimsToken {
     return claimsTokenInstance.methods.transfer(
       toAddress,
       numberToHex(value)
-    );
-  }
-
-  public deploy (ownerAddress: string): DeployTransactionResponse {  
-    const claimsTokenInstance = this.claimsToken.clone();
-
-    return claimsTokenInstance.deploy(
-      { data: ClaimsTokenArtifact.bytecode, arguments: [ownerAddress] }
     );
   }
 

@@ -210,7 +210,7 @@ export class Asset {
       if (outstanding.isGreaterThan(0)) { 
         const cashflowId = (pendingSchedule[i].event.payoff.isGreaterThan(0))? 
           (Number(pendingSchedule[i].event.eventType) + 1) : -(Number(pendingSchedule[i].event.eventType) + 1);
-        const tokenAddress = '0x0000000000000000000000000000000000000000'; // pendingSchedule[i].event.currency
+        const tokenAddress = pendingSchedule[i].event.currency;
         await this.ap.payment.settlePayment(
           this.assetId, 
           cashflowId, 
@@ -250,10 +250,19 @@ export class Asset {
     if (![recordCreatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
       throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
-    
-    const { options: { address } } = await this.ap.tokenization.deployTokenContract(this.ap.signer.account).send(
-      { from: this.ap.signer.account, gas: 2000000}
-    );    
+
+    const { currency } = await this.getTerms();
+    let address: string = '';
+
+    if (currency === '0x0000000000000000000000000000000000000000') {
+      ({ options: { address } } = await this.ap.tokenization.deployETHClaimsToken(this.ap.signer.account).send(
+        { from: this.ap.signer.account, gas: 2000000}
+      ));
+    } else {
+      ({ options: { address } } = await this.ap.tokenization.deployERC20ClaimsToken(this.ap.signer.account, currency).send(
+        { from: this.ap.signer.account, gas: 2000000}
+      ));
+    }
 
     if (this.ap.signer.account === recordCreatorBeneficiary) {
       await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address).send(
