@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract/types';
 
 import PaymentRouterArtifact from '@atpar/ap-contracts/build/contracts/PaymentRouter.json';
-import { toHex } from '../utils/Utils';
+import { toHex, numberToHex } from '../utils/Utils';
 import { TransactionObject } from '../types';
 
 
@@ -12,6 +12,10 @@ export class PaymentRouter {
 
   private constructor (PaymentRouterInstance: Contract) {
     this.paymentRouter = PaymentRouterInstance
+  }
+
+  public getAddress (): string {
+    return this.paymentRouter.options.address;
   }
 
   public settlePayment (
@@ -26,7 +30,7 @@ export class PaymentRouter {
       cashflowId,
       eventId,
       tokenAddress,
-      toHex(amount)
+      numberToHex(amount)
     );  
   }
 

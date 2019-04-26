@@ -197,7 +197,7 @@ export class Asset {
    * @param  {BigNumber} value amount to settle
    * @returns {Promise<void>}
    */
-  public async settleNextObligation (timestamp: number, value: BigNumber): Promise<void> {
+  public async settleNextObligation (timestamp: number, amount: BigNumber): Promise<void> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
@@ -221,16 +221,18 @@ export class Asset {
       const outstanding = duePayoff.minus(settledPayoff);
 
       if (outstanding.isGreaterThan(0)) { 
+        const tokenAddress = pendingSchedule[i].event.currency;
+        const value = (tokenAddress === '0x0000000000000000000000000000000000000000') ? amount.toFixed() : 0;
         const cashflowId = (pendingSchedule[i].event.payoff.isGreaterThan(0))? 
           (Number(pendingSchedule[i].event.eventType) + 1) : -(Number(pendingSchedule[i].event.eventType) + 1);
-        const tokenAddress = pendingSchedule[i].event.currency;
+
         await this.ap.payment.settlePayment(
           this.assetId, 
           cashflowId, 
           eventId, 
           tokenAddress, 
-          outstanding,
-        ).send({ from: this.ap.signer.account, gas: 150000, value: value.toFixed() });
+          amount,
+        ).send({ from: this.ap.signer.account, gas: 150000, value: value });
         break; 
       }
     }
@@ -244,7 +246,7 @@ export class Asset {
    */
   public async progress (timestamp: number): Promise<void> {
     await this.ap.lifecycle.progress(this.assetId, timestamp).send(
-      { from: this.ap.signer.account, gas:500000 }
+      { from: this.ap.signer.account, gas: 500000 }
     );
   }
 
