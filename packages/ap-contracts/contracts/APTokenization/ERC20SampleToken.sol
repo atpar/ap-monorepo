@@ -10,7 +10,7 @@ contract ERC223ReceivingContract {
 contract ERC20SampleToken is ERC20 {
 
 	uint8 public constant DECIMALS = 18;
-	uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** uint256(DECIMALS));
+	uint256 public constant INITIAL_SUPPLY = 1000000 * (10 ** uint256(DECIMALS));
 
 	
 	constructor () public {
