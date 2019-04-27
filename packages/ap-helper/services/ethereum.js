@@ -36,7 +36,7 @@ async function progressAsset (assetId, timestamp) {
     const asset = await Asset.load(state.ap, assetId)
     await asset.progress(timestamp)
   } catch (error) {
-    console.error(error)
+    console.log(error)
   }
 }
 
