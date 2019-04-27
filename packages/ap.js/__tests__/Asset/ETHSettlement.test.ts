@@ -5,7 +5,7 @@ import { AP, Asset } from '../../src';
 import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
 
 
-describe('testSettlementInETH', () => {
+describe('SettlementInETH', () => {
 
   let web3: Web3;
   let recordCreator: string;

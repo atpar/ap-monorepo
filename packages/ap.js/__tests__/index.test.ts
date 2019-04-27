@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 import { AP } from '../src';
 
-describe('testAPClass', () => {
+describe('APClass', () => {
 
   let web3: Web3;
   let recordCreator: string;

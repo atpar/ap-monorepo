@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { AP, AssetChannel } from '../src';
 import { ContractTerms, ContractType } from '../src/types';
 
-describe('testAssetChannelClass', () => {
+describe('AssetChannelClass', () => {
 
   let web3: Web3;
   let recordCreator: string;

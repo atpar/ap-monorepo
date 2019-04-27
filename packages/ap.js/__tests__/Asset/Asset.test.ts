@@ -4,7 +4,7 @@ import { AP, Asset } from '../../src';
 import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
 
 
-describe('testAssetClass', () => {
+describe('AssetClass', () => {
 
   let web3: Web3;
   let recordCreator: string;

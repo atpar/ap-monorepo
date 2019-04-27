@@ -9,7 +9,7 @@ import { AP, Asset } from '../../src';
 import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
 
 
-describe('testSettlementInERC20', () => {
+describe('SettlementInERC20', () => {
 
   let web3: Web3;
   let recordCreator: string;
@@ -17,7 +17,7 @@ describe('testSettlementInERC20', () => {
   
   let contractTemplatesTyped: any;
 
-  let paymentToken: Contract
+  let paymentToken: Contract;
 
   let apRC: AP;
   let apCP: AP;
@@ -48,7 +48,6 @@ describe('testSettlementInERC20', () => {
     await paymentToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send(
       { from: recordCreator, gas: 2000000 }
     );
-    await paymentToken.methods.transfer(counterparty, 10000).send({ from: recordCreator });
 
     apRC = await AP.init(web3, recordCreator, {});
     apCP = await AP.init(web3, counterparty, {});

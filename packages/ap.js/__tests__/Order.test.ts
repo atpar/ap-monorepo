@@ -4,7 +4,7 @@ import { AP, Order } from '../src';
 import { ContractTerms, ContractType, OrderParams } from '../src/types';
 
 
-describe('testOrderClass', () => {
+describe('OrderClass', () => {
 
   let contractTemplatesTyped: any;
 
