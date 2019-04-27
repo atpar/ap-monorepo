@@ -22,7 +22,7 @@
   "scripts": {
     "prebuild": "rm -rf dist/ && tsc",
     "build": "webpack",
-    "test": "scripts/prune-relayer-database.sh && jest --runInBand --detectOpenHandles --forceExit",
+    "test": "scripts/prune-relayer-database.sh && jest --runInBand --detectOpenHandles --forceExit --verbose",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },
