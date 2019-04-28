@@ -1,15 +1,21 @@
 const Web3 = require('web3')
 const { AP, Asset } = require('@atpar/ap.js')
+const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/build/contracts/ERC20SampleToken.json')
 
 const state = { 
   web3: null,
-  assetIssuer: null,
-  ap: null
+  ap: null,
+  sampleTokenInstance: null
 }
 
 async function initialize () {
   state.web3 = new Web3('ws://127.0.01:8545')
   state.ap = await AP.init(state.web3, await getAccount(), {})
+
+  state.sampleTokenInstance = new state.web3.eth.Contract(ERC20SampleTokenArtifact.abi)
+  const response = await state.sampleTokenInstance.deploy(
+    { data: ERC20SampleTokenArtifact.bytecode }
+  ).send({ from: await getAccount(), gas: 1000000 })
 }
 
 async function sendEther (receiver) {
@@ -20,6 +26,20 @@ async function sendEther (receiver) {
     to: receiver,
     value: '10000000000000000000000'
   })
+}
+
+async function sendSampleToken (receiver) {
+  const account = await getAccount()
+
+  return await state.sampleTokenInstance.methods.transfer(
+    receiver, 
+    '10000000000000000000000'
+  ).send({ from: account })
+}
+
+function getSampleTokenAddress () {
+  if (!state.sampleTokenInstance) { throw(new Error('INITIALIZATION_ERROR: SampleToken contract is not deployed!')) }
+  return state.sampleTokenInstance.options.address
 }
 
 async function fillOrder (orderData) {
@@ -45,4 +65,4 @@ const hashObject = async (object) => state.web3.utils.keccak256(JSON.stringify(o
 const getAccount = async () => (await state.web3.eth.getAccounts())[0]
 
 
-module.exports = { initialize, hashObject, sendEther, fillOrder, progressAsset }
+module.exports = { initialize, hashObject, sendEther, sendSampleToken, getSampleTokenAddress, fillOrder, progressAsset }
