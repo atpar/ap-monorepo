@@ -6,7 +6,7 @@ import { toHex } from '../utils/Utils';
 import { AssetProgressedEvent, AssetOwnership, ContractTerms, TransactionObject } from '../types/index';
 import { toAssetProgressedEvent, fromContractTerms } from './Conversions';
 
-import AssetActorArtifact from '@atpar/ap-contracts/build/contracts/AssetActor.json';
+import AssetActorArtifact from '@atpar/ap-contracts/artifacts/AssetActor.min.json';
 
 
 export class AssetActor {

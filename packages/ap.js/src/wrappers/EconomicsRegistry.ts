@@ -5,7 +5,7 @@ import { ContractTerms, ContractState, TransactionObject, CallObject } from '../
 import { toHex } from '../utils/Utils';
 import { toContractState, fromContractTerms, fromContractState, toContractTerms } from './Conversions';
 
-import EconomicsRegistryArtifact from '@atpar/ap-contracts/build/contracts/EconomicsRegistry.json';
+import EconomicsRegistryArtifact from '@atpar/ap-contracts/artifacts/EconomicsRegistry.min.json';
 
 
 export class EconomicsRegistry {

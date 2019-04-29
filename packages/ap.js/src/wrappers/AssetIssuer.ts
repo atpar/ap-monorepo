@@ -5,7 +5,7 @@ import { EventLog } from 'web3-core/types';
 import { AssetIssuedEvent, OrderData, TransactionObject, CallObject } from '../types';
 import { toAssetIssuedEvent } from './Conversions';
 
-import AssetIssuerArtifact from '@atpar/ap-contracts/build/contracts/AssetIssuer.json';
+import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.json';
 
 
 export class AssetIssuer {

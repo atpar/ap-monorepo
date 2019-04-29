@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import { Contract, DeployTransactionResponse } from 'web3-eth-contract/types';
 
-import ClaimsTokenETHExtensionArtifact from '@atpar/ap-contracts/build/contracts/ClaimsTokenETHExtension.json';
+import ClaimsTokenETHExtensionArtifact from '@atpar/ap-contracts/artifacts/ClaimsTokenETHExtension.min.json';
 
 
 export class ClaimsTokenETHExtension {

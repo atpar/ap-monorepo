@@ -7,7 +7,7 @@ import { toHex } from '../utils/Utils';
 import { toPaidEvent } from './Conversions';
 import { PaidEvent, CallObject } from '../types';
 
-import PaymentRegistryArtifact from '@atpar/ap-contracts/build/contracts/PaymentRegistry.json';
+import PaymentRegistryArtifact from '@atpar/ap-contracts/artifacts/PaymentRegistry.min.json';
 
 
 export class PaymentRegistry {

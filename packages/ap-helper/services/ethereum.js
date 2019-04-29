@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 const { AP, Asset } = require('@atpar/ap.js')
-const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/build/contracts/ERC20SampleToken.json')
+const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json')
 
 const state = { 
   web3: null,

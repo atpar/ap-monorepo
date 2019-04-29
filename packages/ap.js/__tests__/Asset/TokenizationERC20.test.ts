@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract/types';
 
 // @ts-ignore
-import ERC20SampleTokenArtifact from '@atpar/ap-contracts/build/contracts/ERC20SampleToken.json';
+import ERC20SampleTokenArtifact from '@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json';
 
 import { AP, Asset } from '../../src';
 import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';

@@ -4,7 +4,7 @@ import { Contract } from 'web3-eth-contract/types';
 import { toHex } from '../utils/Utils';
 import { AssetOwnership, TransactionObject, CallObject } from '../types';
 
-import OwnershipRegistryArtifact from '@atpar/ap-contracts/build/contracts/OwnershipRegistry.json';
+import OwnershipRegistryArtifact from '@atpar/ap-contracts/artifacts/OwnershipRegistry.min.json';
 import { toAssetOwnership } from './Conversions';
 
 export class OwnershipRegistry {
