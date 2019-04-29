@@ -13,7 +13,7 @@ async function initialize () {
   state.ap = await AP.init(state.web3, await getAccount(), {})
 
   state.sampleTokenInstance = new state.web3.eth.Contract(ERC20SampleTokenArtifact.abi)
-  const response = await state.sampleTokenInstance.deploy(
+  await state.sampleTokenInstance.deploy(
     { data: ERC20SampleTokenArtifact.bytecode }
   ).send({ from: await getAccount(), gas: 1000000 })
 }
@@ -52,11 +52,35 @@ async function fillOrder (orderData) {
 }
 
 async function progressAsset (assetId, timestamp) {
+  if (!assetId || !timestamp) { throw(new Error('AssetId or Timestamp is not defined!')) }
+
+  let asset 
+  
   try {
-    const asset = await Asset.load(state.ap, assetId)
+    asset = await Asset.load(state.ap, assetId)
+  } catch (error) {
+    console.error(error)
+    throw(new Error('AP_ERROR: Unknown AssetId!'))
+  }
+
+  try {
     await asset.progress(timestamp)
   } catch (error) {
-    console.log(error)
+    console.error(error)
+    throw(new Error('TRANSACTION_ERROR: Could not progress asset to specified timestamp!'))
+  }
+}
+
+async function updateClaimsToken (address) {
+  if (!address) { throw(new Error('Address is not defined!')) }
+
+  try {
+    await state.ap.tokenization.updateFundsReceived(
+      address
+    ).send({ from: await getAccount() })
+  } catch (error) {
+    console.error(error)
+    throw(new Error('TRANSACTION_ERROR: Could not update funds received for claims token!'))
   }
 }
 
@@ -65,4 +89,13 @@ const hashObject = async (object) => state.web3.utils.keccak256(JSON.stringify(o
 const getAccount = async () => (await state.web3.eth.getAccounts())[0]
 
 
-module.exports = { initialize, hashObject, sendEther, sendSampleToken, getSampleTokenAddress, fillOrder, progressAsset }
+module.exports = { 
+  initialize, 
+  hashObject, 
+  sendEther, 
+  sendSampleToken, 
+  getSampleTokenAddress, 
+  fillOrder, 
+  progressAsset,
+  updateClaimsToken
+}

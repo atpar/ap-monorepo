@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const progressAsset = require('../services/ethereum').progressAsset
+const { progressAsset } = require('../services/ethereum')
+
 
 router.post('/asset/progress', async (req, res) => {
   const { assetId, timestamp } = req.body

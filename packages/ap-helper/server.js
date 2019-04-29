@@ -17,6 +17,7 @@ app.use('/api', require('./routes/resources'))
 app.use('/api', require('./routes/faucet'))
 app.use('/api', require('./routes/orderbook'))
 app.use('/api', require('./routes/asset'))
+app.use('/api', require('./routes/tokenization'))
 app.use('/api', require('./routes/channel'))
 
 process.on('uncaughtException', (err) => console.log(err))
