@@ -1,5 +1,6 @@
 dist/
 build/
+artifacts/
 Database.json
 Orderbook-Database.json
 Channel-Database.json

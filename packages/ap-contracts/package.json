@@ -9,6 +9,7 @@
   "files": [
     "actus-resources",
     "build/",
+    "artifacts/",
     "contracts/",
     "migrations",
     "truffle-config.js"
@@ -21,7 +22,8 @@
     "access": "restricted"
   },
   "scripts": {
-    "save-artifacts": "mkdir -p ./artifacts && cp -r ./build/contracts/* ./artifacts/",
+    "generate-artifacts": "./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
+    "build": "npm run generate-artifacts",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix"
   },

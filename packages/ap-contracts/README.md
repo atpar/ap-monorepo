@@ -13,6 +13,7 @@ This package contains the ACTUS protocol smart contracts.
 ## Development
 
 ### Requirements
+- jq
 - NPM (6.2.0)
 - install truffle-cli and ganache-cli or run commands with 
 ```sh
