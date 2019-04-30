@@ -21,14 +21,14 @@ Routes payments from the obligor (payer) to the beneficiary (payee) and register
 
 ### Asset Actor
 The Asset Actor acts as the executive of ACTUS protocol. The Asset Actor registers a new asset by storing the owners of the asset in the Ownership Registry and by deriving and storing its initial state in the Economics Registry. 
-It derives the next state of an asset by querying the last state from the Economics Registry and computing the next state from the corresponding ACTUS engine. In the future dispute resolution will be enforced by the Asset Actor as well. 
+It derives the next state of an asset by querying the last state from the Economics Registry and computing the next state via the corresponding ACTUS engine. In the future dispute resolution will be enforced by the Asset Actor as well. 
 There are going to be multiple Asset Actor contracts depending on the protocol. So we might have a special Asset Actor contract for a hybrid (on-chain / off-chain) implementation of ACTUS protocol.
 
 ### AssetIssuer
 An asset can be issued from a co-signed order (order which is signed by the maker and taker) via the Asset Issuer. The Asset Issuer verifies the provided signatures and initiates the issuance by passing the terms and the ownership to the Asset Actor.
 
 ### Tokenization Module (ClaimsToken)
-Every beneficiary in ACTUS protocol can be tokenized by updating the beneficiary address in the Ownership Registry with the address of a new instance of the ClaimsToken contract. The Payment Router automatically routes future payments to the corresponding ClaimsToken contract. The ClaimsToken contract handles the distribution of incoming funds to all ClaimsToken holders. (see EIP-1726 for more information)
+Every beneficiary in ACTUS protocol can be tokenized by updating the beneficiary address in the Ownership Registry with the address of a new instance of the ClaimsToken contract. The Payment Router automatically routes future payments to the corresponding ClaimsToken contract. The ClaimsToken contract handles the distribution of incoming funds to all ClaimsToken holders. (see [EIP-1843](https://github.com/ethereum/EIPs/issues/1843) for more information)
 
 ## Development
 
