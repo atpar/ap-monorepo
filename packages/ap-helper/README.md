@@ -4,8 +4,10 @@ Helper service for working with `ap.js`.
 Contains:
 - orderbook-relayer
 - channel-relayer
-- ether faucet
+- ether and erc20 sample token faucet
 - api for retrieving ACTUS test terms
+- api for progress the state of an asset
+- api for updating ClaimsToken contracts
 
 ## API
 - **Order**
@@ -23,10 +25,22 @@ Contains:
 - **Resources**
 
   `GET /terms` Retrieve ACTUS test terms
+  
+- **Asset**
+
+  `POST /asset/progress` Progress the state of an asset given its assetId and a timestamp
+  
+- **Tokenization**
+
+  `POST /tokenization/updateClaimsToken` Update funds received of a ClaimsToken contract
 
 - **Faucet**
 
-  `POST /faucet` Request Ether for an address
+  `POST /faucet/ether` Request Ether for an address
+  
+  `POST /faucet/sampleToken` Request ERC20 sample tokens for an address
+  
+  `GET /faucet/ether` Retrieve the address of the ERC20 sample token
 
 ## Usage
 Quick start:
