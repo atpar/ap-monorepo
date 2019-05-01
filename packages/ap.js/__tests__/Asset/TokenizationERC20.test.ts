@@ -43,6 +43,7 @@ describe('TokenizationERC20', () => {
       // @ts-ignore
       ERC20SampleTokenArtifact.abi,
     );
+    // @ts-ignore
     await paymentToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send(
       { from: counterparty, gas: 2000000 }
     );

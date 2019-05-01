@@ -16,6 +16,7 @@ export class ClaimsTokenETHExtension {
     const claimsTokenInstance = this.claimsToken.clone();
 
     return claimsTokenInstance.deploy(
+      // @ts-ignore
       { data: ClaimsTokenETHExtensionArtifact.bytecode, arguments: [ownerAddress] }
     );
   }

@@ -24,6 +24,7 @@ export class ClaimsTokenERC20Extension {
     const claimsTokenInstance = this.claimsToken.clone();
 
     return claimsTokenInstance.deploy(
+      // @ts-ignore
       { data: ClaimsTokenERC20ExtensionArtifact.bytecode, arguments: [ownerAddress, fundsToken] }
     );
   }

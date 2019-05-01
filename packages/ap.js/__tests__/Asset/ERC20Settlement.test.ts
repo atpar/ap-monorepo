@@ -45,6 +45,7 @@ describe('SettlementInERC20', () => {
       // @ts-ignore
       ERC20SampleTokenArtifact.abi,
     );
+    // @ts-ignore
     await paymentToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send(
       { from: recordCreator, gas: 2000000 }
     );
