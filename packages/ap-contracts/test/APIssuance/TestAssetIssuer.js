@@ -264,6 +264,10 @@ const ContractTermsABI = {
       "type": "uint8"
     },
     {
+      "name": "contractDealDate",
+      "type": "uint256"
+    },
+    {
       "name": "statusDate",
       "type": "uint256"
     },

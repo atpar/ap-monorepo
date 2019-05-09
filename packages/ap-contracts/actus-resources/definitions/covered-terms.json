@@ -11,6 +11,7 @@
   "scalingEffect",
   "penaltyType",
   "feeBasis",
+  "contractDealDate",
   "statusDate",
   "initialExchangeDate",
   "maturityDate",

@@ -95,6 +95,7 @@ export interface ContractTerms {
   scalingEffect: ScalingEffect;
   penaltyType: PenaltyType;
   feeBasis: FeeBasis;
+  contractDealDate: number,
   statusDate: number;
   initialExchangeDate: number;
   maturityDate: number;
@@ -139,6 +140,7 @@ export interface ContractTerms {
 //   scalingEffect: ScalingEffect,
 //   penaltyType: PenaltyType,
 //   feeBasis: FeeBasis,
+//   contractDealDate: number,
 //   statusDate: number,
 //   initialExchangeDate: number,
 //   maturityDate: number,

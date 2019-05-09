@@ -124,6 +124,11 @@
       "N"
     ]
   },
+  "contractDealDate": {
+    "id": "contractDealDate",
+    "name": "Contract Deal Date",
+    "type": "date"
+  },
   "statusDate": {
     "id": "statusDate",
     "name": "Status Date",

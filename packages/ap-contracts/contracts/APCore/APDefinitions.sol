@@ -103,6 +103,7 @@ contract APDefinitions {
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
 
+		uint256 contractDealDate;
 		uint256 statusDate;
 		uint256 initialExchangeDate;
 		uint256 maturityDate;
@@ -135,9 +136,6 @@ contract APDefinitions {
 		int256 lifeFloor;
 		int256 periodCap;
 		int256 periodFloor;
-
-		// ObjectCodeOfPrepaymentModel objectCodeOfPrepaymentModel;
-		// MarketObjectCodeOfRateReset marketObjectCodeOfRateReset;
 	}
 
 	struct AssetOwnership {
