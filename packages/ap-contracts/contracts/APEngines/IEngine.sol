@@ -10,7 +10,7 @@ import "../APCore/APDefinitions.sol";
  * @dev all numbers except unix timestamp are represented as multiple of 10 ** 18
  * inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
-contract IPAMEngine is APDefinitions {
+contract IEngine is APDefinitions {
 
 	/**
 	 * get the initial contract state
@@ -22,7 +22,7 @@ contract IPAMEngine is APDefinitions {
 		pure
 		returns (ContractState memory);
 
-		/**
+	/**
 	 * computes pending events based on the contract state and
 	 * applys them to the contract state and returns the evaluated events and the new contract state
 	 * @dev evaluates all events between the scheduled time of the last executed event and now

@@ -8,7 +8,7 @@ import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
 import "../APCore/APDefinitions.sol";
-import "../APEngines/IPAMEngine.sol";
+import "../APEngines/IEngine.sol";
 
 
 contract AssetActor is APDefinitions, IAssetActor {
@@ -18,7 +18,7 @@ contract AssetActor is APDefinitions, IAssetActor {
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
-	IPAMEngine pamEngine;
+	IEngine pamEngine;
 
 
 	constructor (
@@ -26,7 +26,7 @@ contract AssetActor is APDefinitions, IAssetActor {
 		IEconomicsRegistry _economicsRegistry,
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
-		IPAMEngine _pamEngine
+		IEngine _pamEngine
 	)
 		public
 	{

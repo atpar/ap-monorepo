@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
 
 import "../APCore/APCore.sol";
 import "../APCore/APFloatMath.sol";
-import "./IPAMEngine.sol";
+import "./IEngine.sol";
 
 
 /**
@@ -14,7 +14,7 @@ import "./IPAMEngine.sol";
  * @dev all numbers except unix timestamp are represented as multiple of 10 ** 18
  * inputs have to be multiplied by 10 ** 18, outputs have to divided by 10 ** 18
  */
-contract PAMEngine is APCore, IPAMEngine {
+contract PAMEngine is APCore, IEngine {
 
 	using SignedSafeMath for int;
 	using APFloatMath for int;
