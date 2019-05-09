@@ -3,15 +3,11 @@ const { shouldFail } = require('openzeppelin-test-helpers');
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const { parseTermsFromPath } = require('../../actus-resources/parser')
-const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
+const { getDefaultTerms } = require('../helper/tests')
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS'
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER'
 
-const getTerms = () => {
-  return parseTermsFromPath(PAMTestTermsPath)
-}
 
 contract('EconomicsRegistry', (accounts) => {
 
@@ -20,7 +16,7 @@ contract('EconomicsRegistry', (accounts) => {
   before(async () => {
     PAMEngine.numberFormat = 'String'
     const PAMEngineInstance = await PAMEngine.new()
-    ;({ '10001': this.terms } = await getTerms())
+    this.terms = await getDefaultTerms()
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.new()

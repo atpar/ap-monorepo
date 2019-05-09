@@ -1,16 +1,12 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
 const PAMEngine = artifacts.require('PAMEngine.sol')
 const AssetActor = artifacts.require('AssetActor')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
-const { parseTermsFromPath } = require('../../actus-resources/parser')
-const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
-
-const getTerms = () => parseTermsFromPath(PAMTestTermsPath)
+const { getDefaultTerms } = require('../helper/tests')
 
 
 contract('AssetIssuer', (accounts) => {
@@ -22,7 +18,7 @@ contract('AssetIssuer', (accounts) => {
     PAMEngine.numberFormat = 'String'
     const PAMEngineInstance = await PAMEngine.new()
 
-    ;({ '10001': this.terms } = await getTerms())
+    this.terms = await getDefaultTerms()
     this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
 
     this.EconomicsRegistryInstance = await EconomicsRegistry.deployed()

@@ -1,45 +1,13 @@
-const fs = require('fs')
-
 const PAMEngine = artifacts.require('PAMEngine.sol')
 
-const { 
-  parseTermsFromPath, 
-  parseResultsFromPath, 
-  fromPrecision, 
-  unixToISO 
-} = require('../../actus-resources/parser')
-const PAMTestResultDirectory = './actus-resources/test-results/'
-const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
- 
+const { getTestCases, getTestResults, toTestEvent } = require('../helper/tests')
 
-const getTestResults = async () => {
-  const files = []
-  const testResults = {}
-
-  fs.readdirSync(PAMTestResultDirectory).forEach(file => {
-    if (file.split('.')[1] !== 'csv') { return }
-    files.push(file)
-  })
-
-  let promises = files.map(async (file) => {
-    const result = await parseResultsFromPath(PAMTestResultDirectory + file)
-    let testName = file.split('.')[0].slice(9, 14)
-    testResults[testName] = result
-  })
-
-  await Promise.all(promises)
-  return testResults
-}
-
-const getTerms = () => {
-  return parseTermsFromPath(PAMTestTermsPath)
-}
 
 contract('PAMEngine', () => {
 
   before(async () => {    
     this.PAMEngineInstance = await PAMEngine.new()
-    this.testTerms = await getTerms()
+    this.testTerms = await getTestCases()
     this.refTestResults = await getTestResults()
   })
 
@@ -65,14 +33,7 @@ contract('PAMEngine', () => {
 
       contractState = nextContractState
 
-      evaluatedSchedule.push([
-        unixToISO(contractEvent.scheduledTime),
-        contractEvent.eventType,
-        fromPrecision(contractEvent.payoff),
-        fromPrecision(contractState.nominalValue),
-        fromPrecision(contractState.nominalRate),
-        fromPrecision(contractState.nominalAccrued)
-      ])
+      evaluatedSchedule.push(toTestEvent(contractEvent, contractState))
     }
 
     return evaluatedSchedule

@@ -9,12 +9,8 @@ const PaymentRouter = artifacts.require('PaymentRouter')
 const AssetActor = artifacts.require('AssetActor')
 const PAMEngine = artifacts.require('PAMEngine')
 
-const { parseTermsFromPath } = require('../../actus-resources/parser')
-const PAMTestTermsPath = './actus-resources/test-terms/pam-test-terms.csv'
+const { getDefaultTerms } = require('../helper/tests')
 
-const getTerms = () => {
-  return parseTermsFromPath(PAMTestTermsPath)
-}
 
 contract('AssetActor', (accounts) => {
 
@@ -31,7 +27,7 @@ contract('AssetActor', (accounts) => {
 
     // compute first state
     this.PAMEngineInstance = await PAMEngine.new()
-    ;({ '10001': this.terms } = await getTerms())
+    this.terms = await getDefaultTerms()
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
     
     // deploy APExtended
@@ -73,15 +69,13 @@ contract('AssetActor', (accounts) => {
   })
 
   it('should process next state', async () => {
-    const currentTimestamp = 1356998400
-
     const { 1: { 0: iedEvent } } = await this.PAMEngineInstance.computeNextState(
       this.terms, 
       this.state, 
-      currentTimestamp
+      this.terms['maturityDate']
     )
+    const eventTime = iedEvent.scheduledTime
     const payoff = new BigNumber(iedEvent.payoff)
-
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
     const lastEventId = Number(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(assetId)))
@@ -97,8 +91,7 @@ contract('AssetActor', (accounts) => {
     )
 
     // progress asset state
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(assetId), currentTimestamp)
-
+    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(assetId), eventTime)
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
     )
@@ -107,7 +100,7 @@ contract('AssetActor', (accounts) => {
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), assetId)
     assert.equal(emittedEventId.toString(), nextLastEventId.toString())
-    assert.equal(nextState.lastEventTime, currentTimestamp)
-    assert.isTrue(nextLastEventId.isEqualTo(lastEventId + 2)) // todo: do it programmatically
+    assert.equal(nextState.lastEventTime, eventTime)
+    assert.isTrue(nextLastEventId.isEqualTo(lastEventId + 2)) // IED + IP, todo: do it programmatically
   })
 })
