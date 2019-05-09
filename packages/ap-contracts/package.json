@@ -23,9 +23,10 @@
   },
   "scripts": {
     "generate-artifacts": "./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
-    "build": "npm run generate-artifacts",
+    "build": "truffle compile && npm run generate-artifacts",
     "lint": "solium -d contracts/",
-    "lint:fix": "solium -d contracts/ --fix"
+    "lint:fix": "solium -d contracts/ --fix",
+    "test": "truffle test"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
