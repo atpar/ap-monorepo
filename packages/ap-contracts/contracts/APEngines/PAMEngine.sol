@@ -32,9 +32,7 @@ contract PAMEngine is APCore, IEngine {
 		pure
 		returns (ContractState memory)
 	{
-		ContractState memory contractState = initializeContractState(contractTerms);
-
-		return (contractState);
+		return initializeContractState(contractTerms);
 	}
 
 	/**
