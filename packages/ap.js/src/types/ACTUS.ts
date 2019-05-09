@@ -59,7 +59,8 @@ export interface ContractEvent {
 }
 
 export interface ProtoEvent { 
-  scheduledTime: number; 
+  scheduledTime: number;
+  scheduledTimeWithEpochOffset: number;
   eventType: EventType;
   currency: string;
   pofType: EventType;

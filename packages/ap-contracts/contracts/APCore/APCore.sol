@@ -38,14 +38,6 @@ contract APCore is APDefinitions, APDayCountConventions {
 		}
 	}
 
-	// function riskFactor()
-	// 	internal
-	// 	pure
-	// 	returns(int8)
-	// {
-	// 	return 0;
-	// }
-
 	function yearFraction(uint256 startTimestamp, uint256 endTimestamp, DayCountConvention ipdc)
 		internal
 		pure
@@ -63,31 +55,31 @@ contract APCore is APDefinitions, APDayCountConventions {
 		}
 	}
 
-	// function getEventTimeOffset(EventType eventType)
-	// 	private
-	// 	pure
-	// 	returns (uint256)
-	// {
-	// 	if (eventType == EventType.IED) { return 20; }
-	// 	if (eventType == EventType.IP) { return 30; }
-	// 	if (eventType == EventType.IPCI) { return 40; }
-	// 	if (eventType == EventType.FP) { return 50; }
-	// 	if (eventType == EventType.DV) { return 60; }
-	// 	if (eventType == EventType.PR) { return 70; }
-	// 	if (eventType == EventType.MR) { return 80; }
-	// 	if (eventType == EventType.RRY) { return 90; }
-	// 	if (eventType == EventType.RR) { return 100; }
-	// 	if (eventType == EventType.SC) { return 110; }
-	// 	if (eventType == EventType.IPCB) { return 120; }
-	// 	if (eventType == EventType.PRD) { return 130; }
-	// 	if (eventType == EventType.TD) { return 140; }
-	// 	if (eventType == EventType.STD) { return 150; }
-	// 	if (eventType == EventType.MD) { return 160; }
-	// 	if (eventType == EventType.SD) { return 900; }
-	// 	if (eventType == EventType.AD) { return 950; }
-	// 	if (eventType == EventType.Child) { return 10; }
-	// 	return 0;
-	// }
+	function getEpochOffset(EventType eventType)
+		internal
+		pure
+		returns (uint256)
+	{
+		if (eventType == EventType.IED) { return 20; }
+		if (eventType == EventType.IP) { return 30; }
+		if (eventType == EventType.IPCI) { return 40; }
+		if (eventType == EventType.FP) { return 50; }
+		if (eventType == EventType.DV) { return 60; }
+		if (eventType == EventType.PR) { return 70; }
+		if (eventType == EventType.MR) { return 80; }
+		if (eventType == EventType.RRY) { return 90; }
+		if (eventType == EventType.RR) { return 100; }
+		if (eventType == EventType.SC) { return 110; }
+		if (eventType == EventType.IPCB) { return 120; }
+		if (eventType == EventType.PRD) { return 130; }
+		if (eventType == EventType.TD) { return 140; }
+		if (eventType == EventType.STD) { return 150; }
+		if (eventType == EventType.MD) { return 160; }
+		if (eventType == EventType.SD) { return 900; }
+		if (eventType == EventType.AD) { return 950; }
+		if (eventType == EventType.Child) { return 10; }
+		return 0;
+	}
 
 	function sortProtoEventSchedule(
 		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEventSchedule,
@@ -99,11 +91,14 @@ contract APCore is APDefinitions, APDayCountConventions {
 	{
 		int i = left;
 		int j = right;
+
 		if (i==j || i == 0 || j == 0) return;
-		uint pivot = protoEventSchedule[uint(left + (right - left) / 2)].scheduledTime;
+
+		uint pivot = protoEventSchedule[uint(left + (right - left) / 2)].scheduledTimeWithEpochOffset;
+
 		while (i <= j) {
-			while (protoEventSchedule[uint(i)].scheduledTime < pivot) i++;
-			while (pivot < protoEventSchedule[uint(j)].scheduledTime) j--;
+			while (protoEventSchedule[uint(i)].scheduledTimeWithEpochOffset < pivot) i++;
+			while (pivot < protoEventSchedule[uint(j)].scheduledTimeWithEpochOffset) j--;
 			if (i <= j) {
 				(
 					protoEventSchedule[uint(i)], protoEventSchedule[uint(j)]
@@ -115,6 +110,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 				j--;
 			}
 		}
+
 		if (left < j)
 			sortProtoEventSchedule(protoEventSchedule, left, j);
 		if (i < right)

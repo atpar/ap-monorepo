@@ -1,6 +1,7 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
 
 import "../APCore/APCore.sol";
@@ -16,6 +17,7 @@ import "./IEngine.sol";
  */
 contract PAMEngine is APCore, IEngine {
 
+	using SafeMath for uint;
 	using SignedSafeMath for int;
 	using APFloatMath for int;
 
@@ -150,6 +152,7 @@ contract PAMEngine is APCore, IEngine {
 		if (isInPeriod(contractTerms.initialExchangeDate, segmentStart, segmentEnd)) {
 			protoEventSchedule[index] = ProtoEvent(
 				contractTerms.initialExchangeDate,
+				contractTerms.initialExchangeDate.add(getEpochOffset(EventType.IED)),
 				EventType.IED,
 				contractTerms.currency,
 				EventType.IED,
@@ -163,6 +166,7 @@ contract PAMEngine is APCore, IEngine {
 			if (isInPeriod(contractTerms.purchaseDate, segmentStart, segmentEnd)) {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.purchaseDate,
+					contractTerms.purchaseDate.add(getEpochOffset(EventType.PRD)),
 					EventType.PRD,
 					contractTerms.currency,
 					EventType.PRD,
@@ -191,6 +195,7 @@ contract PAMEngine is APCore, IEngine {
 					if (contractTerms.capitalizationEndDate != 0 && interestPaymentSchedule[i] <= contractTerms.capitalizationEndDate) {
 						protoEventSchedule[index] = ProtoEvent(
 							interestPaymentSchedule[i],
+							interestPaymentSchedule[i].add(getEpochOffset(EventType.IPCI)),
 							EventType.IPCI,
 							contractTerms.currency,
 							EventType.IPCI,
@@ -200,6 +205,7 @@ contract PAMEngine is APCore, IEngine {
 					} else {
 						protoEventSchedule[index] = ProtoEvent(
 							interestPaymentSchedule[i],
+							interestPaymentSchedule[i].add(getEpochOffset(EventType.IP)),
 							EventType.IP,
 							contractTerms.currency,
 							EventType.IP,
@@ -215,6 +221,7 @@ contract PAMEngine is APCore, IEngine {
 			if (isInPeriod(contractTerms.capitalizationEndDate, segmentStart, segmentEnd)) {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.capitalizationEndDate,
+					contractTerms.capitalizationEndDate.add(getEpochOffset(EventType.IPCI)),
 					EventType.IPCI,
 					contractTerms.currency,
 					EventType.IPCI,
@@ -240,6 +247,7 @@ contract PAMEngine is APCore, IEngine {
 					if (isInPeriod(rateResetSchedule[i], segmentStart, segmentEnd) == false) { continue; }
 					protoEventSchedule[index] = ProtoEvent(
 						rateResetSchedule[i],
+						rateResetSchedule[i].add(getEpochOffset(EventType.RR)),
 						EventType.RR,
 						contractTerms.currency,
 						EventType.RR,
@@ -267,6 +275,7 @@ contract PAMEngine is APCore, IEngine {
 					if (isInPeriod(feeSchedule[i], segmentStart, segmentEnd) == false) { continue; }
 					protoEventSchedule[index] = ProtoEvent(
 						feeSchedule[i],
+						feeSchedule[i].add(getEpochOffset(EventType.FP)),
 						EventType.FP,
 						contractTerms.currency,
 						EventType.FP,
@@ -295,6 +304,7 @@ contract PAMEngine is APCore, IEngine {
 					if (isInPeriod(scalingSchedule[i], segmentStart, segmentEnd) == false) { continue; }
 					protoEventSchedule[index] = ProtoEvent(
 						scalingSchedule[i],
+						scalingSchedule[i].add(getEpochOffset(EventType.SC)),
 						EventType.SC,
 						contractTerms.currency,
 						EventType.SC,
@@ -310,6 +320,7 @@ contract PAMEngine is APCore, IEngine {
 			if (isInPeriod(contractTerms.terminationDate, segmentStart, segmentEnd)) {
 				protoEventSchedule[index] = ProtoEvent(
 					contractTerms.terminationDate,
+					contractTerms.terminationDate.add(getEpochOffset(EventType.TD)),
 					EventType.TD,
 					contractTerms.currency,
 					EventType.TD,
@@ -323,6 +334,7 @@ contract PAMEngine is APCore, IEngine {
 		if (isInPeriod(contractTerms.maturityDate, segmentStart, segmentEnd)) {
 			protoEventSchedule[index] = ProtoEvent(
 				contractTerms.maturityDate,
+				contractTerms.maturityDate.add(getEpochOffset(EventType.PR)),
 				EventType.PR,
 				contractTerms.currency,
 				EventType.PR,

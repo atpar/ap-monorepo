@@ -169,7 +169,8 @@ export function fromContractEvent (event: ContractEvent): object {
 
 export function toProtoEvent (raw: any): ProtoEvent {
   return {
-    scheduledTime: Number(raw['scheduledTime']), 
+    scheduledTime: Number(raw['scheduledTime']),
+    scheduledTimeWithEpochOffset: Number(raw['scheduledTimeWithEpochOffset']),
     eventType: Number(raw['eventType']),
     currency: String(raw['currency']),
     pofType: Number(raw['pofType']),
@@ -180,6 +181,7 @@ export function toProtoEvent (raw: any): ProtoEvent {
 export function fromProtoEvent (protoEvent: ProtoEvent): object {
   return {
     scheduledTime: protoEvent.scheduledTime,
+    scheduledTimeWithEpochOffset: protoEvent.scheduledTimeWithEpochOffset,
     eventType: protoEvent.eventType,
     currency: protoEvent.currency,
     pofType: protoEvent.pofType,

@@ -73,7 +73,6 @@ contract APDefinitions {
 	}
 
 	struct ContractEvent {
-		// uint256 epochOffset;
 		uint256 scheduledTime;
 		EventType eventType;
 		address currency;
@@ -83,6 +82,7 @@ contract APDefinitions {
 
 	struct ProtoEvent {
 		uint256 scheduledTime;
+		uint256 scheduledTimeWithEpochOffset;
 		EventType eventType;
 		address currency;
 		EventType pofType;
