@@ -25,6 +25,7 @@ contract('AssetIssuer', (accounts) => {
     this.OwnershipRegistryInstance = await OwnershipRegistry.deployed()
     this.AssetActorInstance = await AssetActor.deployed()
     this.AssetIssuerInstance = await AssetIssuer.new()
+    // this.AssetActorInstance.registerIssuer(this.AssetIssuerInstance.address)
   })
 
   it('should issue an asset from an order', async () => {

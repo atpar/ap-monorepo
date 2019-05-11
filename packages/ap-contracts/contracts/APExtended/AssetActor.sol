@@ -1,6 +1,8 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+
 import "./IAssetActor.sol";
 import "./IOwnershipRegistry.sol";
 import "./IEconomicsRegistry.sol";
@@ -11,7 +13,7 @@ import "../APCore/APDefinitions.sol";
 import "../APEngines/IEngine.sol";
 
 
-contract AssetActor is APDefinitions, IAssetActor {
+contract AssetActor is APDefinitions, IAssetActor, Ownable {
 
 	IOwnershipRegistry ownershipRegistry;
 	IEconomicsRegistry economicsRegistry;
@@ -20,6 +22,13 @@ contract AssetActor is APDefinitions, IAssetActor {
 
 	IEngine pamEngine;
 
+	mapping(address => bool) public issuers;
+
+
+	modifier onlyRegisteredIssuer {
+		require(issuers[msg.sender], "UNAUTHORIZED_SENDER");
+		_;
+	}
 
 	constructor (
 		IOwnershipRegistry _ownershipRegistry,
@@ -35,6 +44,15 @@ contract AssetActor is APDefinitions, IAssetActor {
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
 		pamEngine = _pamEngine;
+	}
+
+	/**
+	 * whitelists the address of an issuer contract for initializing an asset
+	 * @dev can only be called by the owner of the contract
+	 * @param issuer address of the issuer
+	 */
+	function registerIssuer(address issuer) external onlyOwner {
+		issuers[issuer] = true;
 	}
 
 	/**
@@ -101,6 +119,7 @@ contract AssetActor is APDefinitions, IAssetActor {
 		ContractTerms memory terms
 	)
 		public
+		// onlyRegisteredIssuer
 		returns (bool)
 	{
 		ContractState memory initialState = pamEngine.computeInitialState(terms);

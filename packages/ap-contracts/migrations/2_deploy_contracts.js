@@ -10,15 +10,6 @@ const AssetActor = artifacts.require('AssetActor')
 
 const AssetIssuer = artifacts.require('AssetIssuer')
 
-// const ClaimsTokenETH = artifacts.require('ClaimsTokenETH')
-// const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20')
-// const ClaimsTokenMulti = artifacts.require('ClaimsTokenMulti')
-// const ClaimsTokenETHExtension = artifacts.require('ClaimsTokenETHExtension')
-// const ClaimsTokenERC20Extension = artifacts.require('ClaimsTokenERC20Extension')
-// const ClaimsTokenMultiExtension = artifacts.require('ClaimsTokenMultiExtension')
-// const ERC223SampleToken = artifacts.require('ERC223SampleToken')
-
-
 
 module.exports = async (deployer, network, accounts) => {
 
@@ -36,7 +27,10 @@ module.exports = async (deployer, network, accounts) => {
     OwnershipRegistry.address, 
     PaymentRegistry.address
   )
-  await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)
+  await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)  
+
+  // Exchange
+  await deployer.deploy(AssetIssuer)
 
   // Asset Actor
   await deployer.deploy(
@@ -47,16 +41,5 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRouter.address,
     PAMEngine.address
   )
-
-  // Exchange
-  await deployer.deploy(AssetIssuer)
-
-  // Tokenization / Claims Token
-  // await deployer.deploy(ERC223SampleToken)
-  // await deployer.deploy(ClaimsTokenETH, accounts[0])
-  // await deployer.deploy(ClaimsTokenERC20, accounts[0], ERC223SampleToken.address)
-  // await deployer.deploy(ClaimsTokenMulti, accounts[0], ERC223SampleToken.address)
-  // await deployer.deploy(ClaimsTokenETHExtension, accounts[0])
-  // await deployer.deploy(ClaimsTokenERC20Extension, accounts[0], ERC223SampleToken.address)
-  // await deployer.deploy(ClaimsTokenMultiExtension, accounts[0], ERC223SampleToken.address)
+  // await AssetActorInstance.registerIssuer(AssetIssuer.address)
 }

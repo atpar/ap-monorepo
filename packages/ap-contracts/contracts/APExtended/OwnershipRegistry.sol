@@ -1,13 +1,11 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
-
 import "../APCore/APDefinitions.sol";
 import "./IOwnershipRegistry.sol";
 
 
-contract OwnershipRegistry is APDefinitions, IOwnershipRegistry, Ownable {
+contract OwnershipRegistry is APDefinitions, IOwnershipRegistry {
 
 	// assetId => AssetOwnership
 	mapping (bytes32 => AssetOwnership) public assetOwnerships;

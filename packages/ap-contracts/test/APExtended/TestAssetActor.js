@@ -14,10 +14,11 @@ const { getDefaultTerms } = require('../helper/tests')
 
 contract('AssetActor', (accounts) => {
 
-  const recordCreatorObligor = accounts[0]
-  const recordCreatorBeneficiary = accounts[1]
-  const counterpartyObligor = accounts[2]
-  const counterpartyBeneficiary = accounts[3]
+  const issuer = accounts[0]
+  const recordCreatorObligor = accounts[1]
+  const recordCreatorBeneficiary = accounts[2]
+  const counterpartyObligor = accounts[3]
+  const counterpartyBeneficiary = accounts[4]
 
   const assetId = 'C123'
 
@@ -27,8 +28,15 @@ contract('AssetActor', (accounts) => {
 
     // compute first state
     this.PAMEngineInstance = await PAMEngine.new()
+
     this.terms = await getDefaultTerms()
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
+    this.ownership = {
+      recordCreatorObligor, 
+      recordCreatorBeneficiary, 
+      counterpartyObligor, 
+      counterpartyBeneficiary
+    }
     
     // deploy APExtended
     this.OwnershipRegistryInstance = await OwnershipRegistry.new()
@@ -47,25 +55,27 @@ contract('AssetActor', (accounts) => {
     )
 
     await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
+    // await this.AssetActorInstance.registerIssuer(issuer)
+  })
 
-    // register Ownership for assetId
-    await this.OwnershipRegistryInstance.registerOwnership(
-      web3.utils.toHex(assetId), 
-      {
-        recordCreatorObligor, 
-        recordCreatorBeneficiary, 
-        counterpartyObligor, 
-        counterpartyBeneficiary
-      }
-    )
-
-    // register Contract with assetId
-    await this.EconomicsRegistryInstance.registerEconomics(
+  it('shoudl initialize an asset', async () => {
+    await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
-      this.terms,
-      this.state,
-      this.AssetActorInstance.address
+      this.ownership,
+      this.terms
     )
+
+    const storedTerms = await this.EconomicsRegistryInstance.getTerms(web3.utils.toHex(assetId))
+    const storedState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(assetId))
+    const storedOwnership = await this.OwnershipRegistryInstance.getOwnership(web3.utils.toHex(assetId))
+
+    assert.deepEqual(storedTerms['contractDealDate'], this.terms['contractDealDate'].toString())
+    assert.deepEqual(storedState, this.state)
+
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor)
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary)
+    assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor)
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary)
   })
 
   it('should process next state', async () => {
