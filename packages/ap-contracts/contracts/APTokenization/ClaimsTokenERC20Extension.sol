@@ -10,9 +10,9 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 
 	using SignedSafeMath for int256;
 
-	// token that ClaimsToken takes in custodianship 
+	// token that ClaimsToken takes in custodianship
 	IERC20 public fundsToken;
-	
+
 	// balance of funds token the ClaimsToken currently holds
 	uint256 public fundsTokenBalance;
 
@@ -22,8 +22,8 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 		_;
 	}
 
-	constructor(address _owner, IERC20 _fundsToken) 
-		public 
+	constructor(address _owner, IERC20 _fundsToken)
+		public
 		ClaimsToken(_owner)
 	{
 		require(address(_fundsToken) != address(0));
@@ -34,27 +34,27 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 	/**
 	 * @dev Withdraws available funds for user.
 	 */
-	function withdrawFunds() 
-		external 
-		payable 
+	function withdrawFunds()
+		external
+		payable
 	{
 		require(msg.value == 0, "");
 
 		uint256 withdrawableFunds = _prepareWithdraw();
-		
+
 		require(fundsToken.transfer(msg.sender, withdrawableFunds), "TRANSFER_FAILED");
 
 		_updateFundsTokenBalance();
 	}
 
 	/**
-	 * @dev Updates the current funds token balance 
+	 * @dev Updates the current funds token balance
 	 * and returns the difference of new and previous funds token balances
 	 * @return A int256 representing the difference of the new and previous funds token balance
 	 */
 	function _updateFundsTokenBalance() internal returns (int256) {
 		uint256 prevFundsTokenBalance = fundsTokenBalance;
-		
+
 		fundsTokenBalance = fundsToken.balanceOf(address(this));
 
 		return int256(fundsTokenBalance).sub(int256(prevFundsTokenBalance));
@@ -62,7 +62,7 @@ contract ClaimsTokenERC20Extension is IClaimsToken, ClaimsToken {
 
 	/**
 	 * May be called directly after a deposit is made
-	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new 
+	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new
 	 * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
 	 */
 	function updateFundsReceived() external {

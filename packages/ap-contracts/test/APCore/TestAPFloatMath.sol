@@ -16,7 +16,7 @@ contract TestAPFloatMath {
 	int256 constant INT256_MAX = int256(~((uint256(1) << 255)));
 
   uint256 constant PRECISION = 18;
-  uint256 constant MULTIPLICATOR = 10 ** PRECISION;  
+  uint256 constant MULTIPLICATOR = 10 ** PRECISION;
 
   constructor() public {
     instance = APFloatMath(DeployedAddresses.APFloatMath());
@@ -24,38 +24,38 @@ contract TestAPFloatMath {
 
   function testFloatMult_NO_OVERFLOW() public {
     Assert.equal(
-      int256(5 * int256(MULTIPLICATOR)).floatMult(1 * int256(MULTIPLICATOR)), 
-      5 * int256(MULTIPLICATOR), 
+      int256(5 * int256(MULTIPLICATOR)).floatMult(1 * int256(MULTIPLICATOR)),
+      5 * int256(MULTIPLICATOR),
       "FloatMult multiplicand times Identity should be equal to the multiplicand"
     );
-    
+
     Assert.equal(
-      INT256_MAX.floatMult(1), 
-      (INT256_MAX / int256(MULTIPLICATOR)), 
+      INT256_MAX.floatMult(1),
+      (INT256_MAX / int256(MULTIPLICATOR)),
       "FloatMult INT256_MAX times 1 should be equal to INT256_MAX divided by MULTIPLICATOR"
     );
-    
+
     Assert.equal(
-      int256(1 * int256(uint256(10 ** 58))).floatMult( 1 * int256(MULTIPLICATOR)), 
-      1 * int256(uint256(10 ** 58)), 
+      int256(1 * int256(uint256(10 ** 58))).floatMult(1 * int256(MULTIPLICATOR)),
+      1 * int256(uint256(10 ** 58)),
       "FloatMult 10 ** 58 times Identity should be equal to the 10 ** 58"
     );
 
     Assert.equal(
-      int256(5 * int256(MULTIPLICATOR)).floatMult(-1 * int256(MULTIPLICATOR)), 
-      -5 * int256(MULTIPLICATOR), 
+      int256(5 * int256(MULTIPLICATOR)).floatMult(-1 * int256(MULTIPLICATOR)),
+      -5 * int256(MULTIPLICATOR),
       "FloatMult multiplicand times negative Identity should be equal to the negative multiplicand"
     );
-    
+
     Assert.equal(
-      INT256_MIN.floatMult(1), 
-      (INT256_MIN / int256(MULTIPLICATOR)), 
+      INT256_MIN.floatMult(1),
+      (INT256_MIN / int256(MULTIPLICATOR)),
       "FloatMult INT256_MIN times 1 should be equal to INT256_MIN divided by MULTIPLICATOR"
     );
-    
+
     Assert.equal(
-      int256(-1 * int256(uint256(10 ** 58))).floatMult(1 * int256(MULTIPLICATOR)), 
-      -1 * int256(uint256(10 ** 58)), 
+      int256(-1 * int256(uint256(10 ** 58))).floatMult(1 * int256(MULTIPLICATOR)),
+      -1 * int256(uint256(10 ** 58)),
       "FloatMult -10 ** 58 times Identity should equal -10 ** 58"
     );
   }

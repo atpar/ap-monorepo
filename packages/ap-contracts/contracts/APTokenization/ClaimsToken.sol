@@ -10,7 +10,7 @@ import "./IClaimsToken.sol";
 contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 
 	using SafeMath for uint256;
-	
+
 	// cumulative funds received by this contract
 	uint256 public receivedFunds;
 	// cumulative funds received which were already processed for distribution - by user
@@ -19,8 +19,8 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 	mapping (address => uint256) public claimedFunds;
 
 
-	constructor(address _owner) 
-		public 
+	constructor(address _owner)
+		public
 		ERC20Detailed("ClaimsToken", "CST", 18)
 	{
 		_mint(_owner, 10000 * (10 ** uint256(18)));
@@ -28,9 +28,9 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 		receivedFunds = 0;
 	}
 
-	/** 
+	/**
 	 * @dev Transfer token to a specified address.
-	 * Claims funds for both parties, whereby the amount of tokens withdrawn 
+	 * Claims funds for both parties, whereby the amount of tokens withdrawn
 	 * is inherited by the new token owner.
 	 * @param _to The address to transfer to
 	 * @param _value The amount to be transferred
@@ -44,7 +44,6 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 
 		return super.transfer(_to, _value);
 	}
-
 
 	/**
 	 * @dev Transfer tokens from one address to another.
@@ -68,10 +67,10 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 	 * @dev Get cumulative funds received by ClaimsToken.
 	 * @return A uint256 representing the total funds received by ClaimsToken
 	 */
-	function totalReceivedFunds() 
-		external 
-		view 
-		returns (uint256) 
+	function totalReceivedFunds()
+		external
+		view
+		returns (uint256)
 	{
 		return receivedFunds;
 	}
@@ -84,17 +83,17 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 	function availableFunds(address _forAddress)
 		public
 		view
-		returns (uint256) 
+		returns (uint256)
 	{
 		return _calcUnprocessedFunds(_forAddress).add(claimedFunds[_forAddress]);
 	}
 
 	/**
-	 * @dev Increments cumulative received funds by new received funds. 
+	 * @dev Increments cumulative received funds by new received funds.
 	 * Called when ClaimsToken receives funds.
 	 * @param _value Amount of tokens / Ether received
 	 */
-	function _registerFunds(uint256 _value) 
+	function _registerFunds(uint256 _value)
 		internal
 	{
 		receivedFunds = receivedFunds.add(_value);
@@ -104,10 +103,10 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 	 * @dev Returns payout for a user which can be withdrawn or claimed.
 	 * @param _forAddress Address of ClaimsToken holder
 	 */
-	function _calcUnprocessedFunds(address _forAddress) 
-		internal 
+	function _calcUnprocessedFunds(address _forAddress)
+		internal
 		view
-		returns (uint256) 
+		returns (uint256)
 	{
 		uint256 newReceivedFunds = receivedFunds.sub(processedFunds[_forAddress]);
 		return balanceOf(_forAddress).mul(newReceivedFunds).div(totalSupply());
@@ -126,12 +125,12 @@ contract ClaimsToken is IClaimsToken, ERC20, ERC20Detailed {
 
 	/**
 	 * @dev Sets claimed but not yet withdrawn funds to 0,
-	 * marks total received funds as processed and 
+	 * marks total received funds as processed and
 	 * returns the withdrawable amount for a user.
 	 * @return A uint256 representing the withdrawable funds
 	 */
-	function _prepareWithdraw() 
-		internal 
+	function _prepareWithdraw()
+		internal
 		returns (uint256)
 	{
 		uint256 withdrawableFunds = availableFunds(msg.sender);

@@ -18,7 +18,7 @@ interface IClaimsToken {
 	 * @param fundsWithdrawn contains the amount of funds that were withdrawn
 	 */
 	event FundsWithdrawn(address indexed by, uint256 fundsWithdrawn);
-	
+
 	/**
 	 * @dev Withdraws available funds for user.
 	 */
