@@ -12,7 +12,6 @@
     "name": "Calendar",
     "type": "enum",
     "options": [
-      "NULL",
       "NOCALENDAR",
       "MondayToFriday"
     ]
