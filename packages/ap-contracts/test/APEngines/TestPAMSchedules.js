@@ -69,20 +69,23 @@ contract('PAMEngine', () => {
   })
 
   // requires EOM conventions
-  // it('should yield the expected evaluated contract schedule for test PAM10006', async () => {
-  //   const contractTerms = this.testTerms['10006']
-  //   const evaluatedSchedule = await evaluateEventSchedule(contractTerms)
+  it('should yield the expected evaluated contract schedule for test PAM10006', async () => {
+    const contractTerms = this.testTerms['10006']
+    const evaluatedSchedule = await evaluateEventSchedule(contractTerms)
 
-  //   assert.deepEqual(evaluatedSchedule, this.refTestResults['10006'])
-  // })
+    console.log(evaluatedSchedule)
+    // assert.deepEqual(evaluatedSchedule, this.refTestResults['10006'])
+  })
 
   // requires EOM conventions
-  // it('should yield the expected evaluated contract schedule for test PAM10007', async () => {
-  //   const contractTerms = this.testTerms['10007']
-  //   const evaluatedSchedule = await evaluateEventSchedule(contractTerms)
+  it('should yield the expected evaluated contract schedule for test PAM10007', async () => {
+    const contractTerms = this.testTerms['10007']
+    const evaluatedSchedule = await evaluateEventSchedule(contractTerms)
 
-  //   assert.deepEqual(evaluatedSchedule, this.refTestResults['10007'])
-  // })
+
+    console.log(evaluatedSchedule)
+    // assert.deepEqual(evaluatedSchedule, this.refTestResults['10007'])
+  })
 
   // ...
 

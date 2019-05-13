@@ -5,9 +5,10 @@ import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "./APDefinitions.sol";
 import "./APDayCountConventions.sol";
+import "./APEndOfMonthConventions.sol";
 
 
-contract APCore is APDefinitions, APDayCountConventions {
+contract APCore is APDefinitions, APDayCountConventions, APEndOfMonthConventions {
 
 	function performanceIndicator(ContractStatus contractStatus)
 		internal
@@ -170,7 +171,7 @@ contract APCore is APDefinitions, APDayCountConventions {
 		uint256 cycleStart,
 		uint256 cycleEnd,
 		IPS memory cycle,
-		EndOfMonthConvention , // eomc,
+		EndOfMonthConvention eomc,
 		bool addEndTime,
 		uint256 segmentStart,
 		uint256 segmentEnd
@@ -194,14 +195,21 @@ contract APCore is APDefinitions, APDayCountConventions {
 		}
 
 		// simplified
+
+		EndOfMonthConvention actualEOMC = getEndOfMonthConvention(eomc, cycleStart, cycle);
 		uint256 date = cycleStart;
+
 		while (date < cycleEnd) {
 			if (isInPeriod(date, segmentStart, segmentEnd)) {
 				require(index < (MAX_CYCLE_SIZE - 2), "MAX_CYCLE_SIZE reached");
 				dates[index] = date;
 				index++;
 			}
-			date = getTimestampPlusPeriod(cycle, date);
+			if (actualEOMC == EndOfMonthConvention.EOM) {
+				date = shiftEndOfMonth(getTimestampPlusPeriod(cycle, date));
+			} else {
+				date = shiftSameDay(getTimestampPlusPeriod(cycle, date));
+			}
 		}
 
 		if (addEndTime == true) {
