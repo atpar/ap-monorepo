@@ -58,7 +58,7 @@ contract('AssetActor', (accounts) => {
     // await this.AssetActorInstance.registerIssuer(issuer)
   })
 
-  it('shoudl initialize an asset', async () => {
+  it('should initialize an asset', async () => {
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       this.ownership,
