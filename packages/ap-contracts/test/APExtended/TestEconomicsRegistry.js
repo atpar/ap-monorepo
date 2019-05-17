@@ -1,9 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const EconomicsRegistry = artifacts.require('EconomicsRegistry')
-const PAMEngine = artifacts.require('PAMEngine.sol')
-
 const { getDefaultTerms } = require('../helper/tests')
+const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS'
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER'
@@ -14,13 +12,12 @@ contract('EconomicsRegistry', (accounts) => {
   const actor = accounts[1]
 
   before(async () => {
-    PAMEngine.numberFormat = 'String'
-    const PAMEngineInstance = await PAMEngine.new()
-    this.terms = await getDefaultTerms()
-    this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
+    const instances = await setupTestEnvironment()
+    Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
-    this.EconomicsRegistryInstance = await EconomicsRegistry.new()
     this.assetId = 'C123'
+    this.terms = await getDefaultTerms()
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
   })
 
   it('should register a contract', async () => {

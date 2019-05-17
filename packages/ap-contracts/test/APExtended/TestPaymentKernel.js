@@ -1,8 +1,8 @@
 const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
 const PaymentRegistry = artifacts.require('PaymentRegistry')
-const PaymentRouter = artifacts.require('PaymentRouter')
-const OwnershipRegistry = artifacts.require('OwnershipRegistry')
+
+const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS'
 const UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP = 'UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP'
@@ -19,11 +19,8 @@ contract('PaymentKernel', (accounts) => {
   const cashflowIdBeneficiary = accounts[4]
 
   before(async () => {
-    this.OwnershipRegistryInstance = await OwnershipRegistry.new()
-    this.PaymentRegistryInstance = await PaymentRegistry.new()
-    this.PaymentRouterInstance = await PaymentRouter.new(this.OwnershipRegistryInstance.address, this.PaymentRegistryInstance.address)
-
-    await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
+    const instances = await setupTestEnvironment()
+    Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
     this.assetId = 'C123'
     this.value = 5000

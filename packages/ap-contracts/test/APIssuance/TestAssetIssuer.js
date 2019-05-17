@@ -1,13 +1,9 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol')
-const PAMEngine = artifacts.require('PAMEngine.sol')
-const AssetActor = artifacts.require('AssetActor')
-const EconomicsRegistry = artifacts.require('EconomicsRegistry')
-const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 
 const { getDefaultTerms } = require('../helper/tests')
-
+const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
 
 contract('AssetIssuer', (accounts) => {
 
@@ -15,17 +11,11 @@ contract('AssetIssuer', (accounts) => {
   const counterparty = accounts[1]
 
   before(async () => {
-    PAMEngine.numberFormat = 'String'
-    const PAMEngineInstance = await PAMEngine.new()
+    const instances = await setupTestEnvironment()
+    Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
     this.terms = await getDefaultTerms()
-    this.state = await PAMEngineInstance.computeInitialState(this.terms, {})
-
-    this.EconomicsRegistryInstance = await EconomicsRegistry.deployed()
-    this.OwnershipRegistryInstance = await OwnershipRegistry.deployed()
-    this.AssetActorInstance = await AssetActor.deployed()
-    this.AssetIssuerInstance = await AssetIssuer.new()
-    // this.AssetActorInstance.registerIssuer(this.AssetIssuerInstance.address)
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
   })
 
   it('should issue an asset from an order', async () => {

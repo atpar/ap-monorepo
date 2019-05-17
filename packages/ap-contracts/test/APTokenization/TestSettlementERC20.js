@@ -1,6 +1,4 @@
-const OwnershipRegistry = artifacts.require('OwnershipRegistry')
-const PaymentRegistry = artifacts.require('PaymentRegistry')
-const PaymentRouter = artifacts.require('PaymentRouter')
+const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
 
 const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20Extension')
 const ERC20SampleToken = artifacts.require('ERC20SampleToken')
@@ -22,10 +20,8 @@ contract('SettlementETH', (accounts) => {
   const payoffAmount = 2 * 10  ** 15
 
   before(async () => {
-    this.OwnershipRegistryInstance = await OwnershipRegistry.new()
-    this.PaymentRegistryInstance = await PaymentRegistry.new()
-    this.PaymentRouterInstance = await PaymentRouter.new(this.OwnershipRegistryInstance.address, this.PaymentRegistryInstance.address)
-    await this.PaymentRegistryInstance.setPaymentRouter(this.PaymentRouterInstance.address)
+    const instances = await setupTestEnvironment()
+    Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
     // register Ownership for assetId
     await this.OwnershipRegistryInstance.registerOwnership(
