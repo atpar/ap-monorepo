@@ -12,6 +12,7 @@
     "artifacts/",
     "contracts/",
     "migrations",
+		"test/",
     "truffle-config.js"
   ],
   "repository": {
