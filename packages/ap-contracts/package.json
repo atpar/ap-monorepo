@@ -31,7 +31,7 @@
     "test": "./scripts/test.sh"
   },
   "dependencies": {
-    "actus-solidity": "https://github.com/atpar/actus-solidity.git",
+    "actus-solidity": "^0.1.1",
     "openzeppelin-solidity": "^2.1.2"
   },
   "devDependencies": {
