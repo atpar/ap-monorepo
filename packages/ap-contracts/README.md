@@ -4,11 +4,8 @@ This package contains the ACTUS protocol smart contracts.
 
 ## Smart Contracts
 
-### APCore
-Contains banking-grade financial logic such as ACTUS day-count & end-of-month conventions, ACTUS datatypes and floating point arithmetic used throughout all ACTUS protocol engines. 
-
-### APEngines (PAMEngine, ANNEngine, ...)
-Contains ACTUS state machine engines for each ACTUS contract type. An APEngine implements the state transition & payoff functions and the schedule generation logic for an ACTUS contract type. An APEngine is a stateless smart contract that can be used in various ways (e.g. on-chain or off-chain state derivation).
+### ACTUS-Solidity
+AP-Contracts depends on [actus-solidity](https://github.com/atpar/actus-solidity) and uses ACTUS definitions and ACTUS engines throughout the following smart contracts.
 
 ### Registries
 ACTUS protocol is made up of three global registries:
@@ -33,12 +30,12 @@ Every beneficiary in ACTUS protocol can be tokenized by updating the beneficiary
 ## Development
 
 ### Requirements
-- jq
-- NPM (6.2.0)
-- install truffle-cli and ganache-cli or run commands with 
+- `jq` (only for generating artifacts)
+- `NPM` (6.2.0)
+- `truffle` and `ganache-cli`
 ```sh
-npm install -g truffle # truffle@v5.0.2
-and storingnpm install -g ganache-cli
+npm install -g truffle
+npm install -g ganache-cli
 ```
 
 ### Run
@@ -48,15 +45,8 @@ and storingnpm install -g ganache-cli
 yarn install
 ```
 
-2. start ganache
-```sh
-ganache-cli --defaultBalanceEther 1000000
-```
-
-3. deploy contracts and run tests
+2. deploy contracts and run tests
 ```sh
 # ap-contracts/
-truffle compile
-truffle migrate --network development
-truffle test
+yarn test
 ```
