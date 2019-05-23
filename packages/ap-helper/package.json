@@ -27,6 +27,7 @@
   "dependencies": {
     "@atpar/ap-contracts": "^0.1.0-alpha.22",
     "@atpar/ap.js": "^0.1.0-alpha.22",
+    "actus-solidity": "https://github.com/atpar/actus-solidity.git",
     "bignumber.js": "^7.2.1",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",

@@ -1,5 +1,5 @@
 const PAMEngine = artifacts.require('PAMEngine')
-const APFloatMath = artifacts.require('APFloatMath')
+const FloatMath = artifacts.require('FloatMath')
 
 const OwnershipRegistry = artifacts.require('OwnershipRegistry')
 const EconomicsRegistry = artifacts.require('EconomicsRegistry')
@@ -7,15 +7,14 @@ const PaymentRegistry = artifacts.require('PaymentRegistry')
 const PaymentRouter = artifacts.require('PaymentRouter')
 
 const AssetActor = artifacts.require('AssetActor')
-
 const AssetIssuer = artifacts.require('AssetIssuer')
 
 
 module.exports = async (deployer, network, accounts) => {
 
   // APCore
-  await deployer.deploy(APFloatMath)
-  await deployer.link(APFloatMath, PAMEngine)
+  await deployer.deploy(FloatMath)
+  await deployer.link(FloatMath, PAMEngine)
   await deployer.deploy(PAMEngine)
 
   // APExtended

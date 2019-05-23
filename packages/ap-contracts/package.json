@@ -5,46 +5,41 @@
   "author": "jo-es <escherich.johannes+github@gmail.com>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "UNLICENSED",
-  "main": "truffle-config.js",
   "files": [
-    "actus-resources",
-    "build/",
     "artifacts/",
+    "build/",
     "contracts/",
-    "migrations",
-    "test/",
+    "migrations/",
     "truffle-config.js"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atpar/ap-monorepo.git"
   },
+  "bugs": {
+    "url": "https://github.com/atpar/ap-monorepo/issues"
+  },
   "publishConfig": {
     "access": "restricted"
   },
   "scripts": {
+    "build": "npm run compile && npm run generate-artifacts",
+    "compile": "truffle compile",
     "generate-artifacts": "./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
-    "build": "truffle compile && npm run generate-artifacts",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
-    "test": "truffle test"
-  },
-  "bugs": {
-    "url": "https://github.com/atpar/ap-monorepo/issues"
+    "test": "./scripts/test.sh"
   },
   "dependencies": {
-    "bignumber.js": "^7.2.1",
-    "csvtojson": "^2.0.8",
-    "ethlint": "^1.2.3",
-    "openzeppelin-solidity": "^2.1.2",
-    "truffle": "5.0.2",
-    "web3-utils": "1.0.0-beta.46"
+    "actus-solidity": "https://github.com/atpar/actus-solidity.git",
+    "openzeppelin-solidity": "^2.1.2"
   },
   "devDependencies": {
+    "bignumber.js": "^7.2.1",
     "eth-sig-util": "2.1.1",
+    "ethlint": "^1.2.3",
     "openzeppelin-test-helpers": "^0.1.2",
-    "truffle-hdwallet-provider": "^1.0.0-web3one.0",
-    "web3": "1.0.0-beta.46",
-    "web3-eth-abi": "1.0.0-beta.46"
+    "truffle": "5.0.2",
+    "web3-utils": "1.0.0-beta.46"
   }
 }

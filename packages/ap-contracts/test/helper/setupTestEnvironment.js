@@ -41,4 +41,8 @@ async function setupTestEnvironment () {
   return instances
 }
 
-module.exports = { setupTestEnvironment }
+function getDefaultTerms () {
+  return require('actus-solidity/actus-resources/test-terms/Test-PAM-10001.json');
+}
+
+module.exports = { setupTestEnvironment, getDefaultTerms }
