@@ -12,12 +12,12 @@ const AssetIssuer = artifacts.require('AssetIssuer')
 
 module.exports = async (deployer, network, accounts) => {
 
-  // APCore
+  // ACTUS-Solidity
   await deployer.deploy(FloatMath)
   await deployer.link(FloatMath, PAMEngine)
   await deployer.deploy(PAMEngine)
 
-  // APExtended
+  // Core
   await deployer.deploy(OwnershipRegistry)  
   await deployer.deploy(EconomicsRegistry)
   const PaymentRegistryInstance = await deployer.deploy(PaymentRegistry)
@@ -27,11 +27,8 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRegistry.address
   )
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address)  
-
-  // Exchange
-  await deployer.deploy(AssetIssuer)
-
-  // Asset Actor
+  
+  // Core: Asset Actor
   await deployer.deploy(
     AssetActor,
     OwnershipRegistry.address,
@@ -40,5 +37,9 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRouter.address,
     PAMEngine.address
   )
+
+  // Issuance
+  await deployer.deploy(AssetIssuer)
+
   // await AssetActorInstance.registerIssuer(AssetIssuer.address)
 }

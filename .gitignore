@@ -5,6 +5,8 @@ Database.json
 Orderbook-Database.json
 Channel-Database.json
 
+mnemonic.js
+
 node_modules/
 
 yarn.lock
