@@ -1,20 +1,19 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-const AssetIssuer = artifacts.require('AssetIssuer.sol')
+const AssetIssuer = artifacts.require('AssetIssuer.sol');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment')
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
 contract('AssetIssuer', (accounts) => {
-
-  const recordCreator = accounts[0]
-  const counterparty = accounts[1]
+  const recordCreator = accounts[0];
+  const counterparty = accounts[1];
 
   before(async () => {
-    const instances = await setupTestEnvironment()
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
+    const instances = await setupTestEnvironment();
+    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
-    this.terms = await getDefaultTerms()
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
+    this.terms = await getDefaultTerms();
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
   })
 
   it('should issue an asset from an order', async () => {
@@ -30,13 +29,13 @@ contract('AssetIssuer', (accounts) => {
         takerSignature: null 
       },
       salt: Math.floor(Math.random() * 1000000) 
-    }
+    };
 
-    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address)
-    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address)
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
 
-    orderData.signatures.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator)
-    orderData.signatures.takerSignature = await sign(filledOrderAsTypedData, counterparty)
+    orderData.signatures.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator);
+    orderData.signatures.takerSignature = await sign(filledOrderAsTypedData, counterparty);
 
     const order = {
       maker: orderData.makerAddress,
@@ -46,37 +45,37 @@ contract('AssetIssuer', (accounts) => {
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
       takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
       salt: orderData.salt
-    }
+    };
 
     const { tx: txHash } = await this.AssetIssuerInstance.fillOrder(
       order,
       orderData.signatures.makerSignature,
       orderData.signatures.takerSignature
-    )
+    );
 
     const assetId = web3.utils.keccak256(
       web3.eth.abi.encodeParameters(
         ['bytes', 'bytes'],
         [orderData.signatures.makerSignature, orderData.signatures.takerSignature]
       )
-    )
+    );
 
-    const storedTerms = await this.AssetRegistryInstance.getTerms(assetId)
-    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId)
+    const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
 
-    assert.equal(storedTerms['statusDate'], orderData.terms['statusDate'])
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreator)
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator)
-    assert.equal(storedOwnership.counterpartyObligor, counterparty)
-    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty)
+    assert.equal(storedTerms['statusDate'], orderData.terms['statusDate']);
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    assert.equal(storedOwnership.counterpartyObligor, counterparty);
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
 
     await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
       assetId: assetId,
       recordCreator: recordCreator,
       counterparty: counterparty
-    })
-  })
-})
+    });
+  });
+});
 
 const sign = (typedData, account) => {
   return new Promise((resolve, reject) => {
@@ -88,16 +87,16 @@ const sign = (typedData, account) => {
     }, (error, result) => {
       if (error) { return reject(error) }
       resolve(result.result)
-    })
-  })
-}
+    });
+  });
+};
 
 const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
-  const verifyingContract = verifyingContractAddress
+  const verifyingContract = verifyingContractAddress;
 
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
     ContractTermsABI, _toTuple(orderData.terms)
-  ))
+  ));
 
   const typedData = {
     domain: {
@@ -129,17 +128,17 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
       salt: orderData.salt
     }
-  }
+  };
 
-  return typedData
-}
+  return typedData;
+};
 
 const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
-  const verifyingContract = verifyingContractAddress
+  const verifyingContract = verifyingContractAddress;
   
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
     ContractTermsABI, _toTuple(orderData.terms)
-  ))
+  ));
 
   const typedData = {
     domain: {
@@ -175,33 +174,33 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
       takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
       salt: orderData.salt
     }
-  }
+  };
 
-  return typedData
-}
+  return typedData;
+};
 
 const _toTuple = (obj) => {
-  if (!(obj instanceof Object)) { return [] }
-  var output = []
-  var i = 0
+  if (!(obj instanceof Object)) { return []; }
+  var output = [];
+  var i = 0;
   Object.keys(obj).forEach((k) => {
     if (obj[k] instanceof Object) {
-      output[i] = _toTuple(obj[k])
+      output[i] = _toTuple(obj[k]);
     } else if (obj[k] instanceof Array) {
-      let j1 = 0
-      let temp1 = []
+      let j1 = 0;
+      let temp1 = [];
       obj[k].forEach((ak) => {
-        temp1[j1] = _toTuple(obj[k])
-        j1++
-      })
-      output[i] = temp1
+        temp1[j1] = _toTuple(obj[k]);
+        j1++;
+      });
+      output[i] = temp1;
     } else {
-      output[i] = obj[k]
+      output[i] = obj[k];
     }
-    i++
-  })
-  return output
-}
+    i++;
+  });
+  return output;
+};
 
 const ContractTermsABI = {
   "components": [
@@ -448,4 +447,4 @@ const ContractTermsABI = {
   ],
   "name": "terms",
   "type": "tuple"
-}
+};

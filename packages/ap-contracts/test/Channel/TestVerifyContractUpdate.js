@@ -1,6 +1,6 @@
-const sigUtil = require('eth-sig-util')
+const sigUtil = require('eth-sig-util');
 
-const VerifyContractUpdateArtifact = artifacts.require('VerifyContractUpdate.sol')
+const VerifyContractUpdateArtifact = artifacts.require('VerifyContractUpdate.sol');
 
 
 const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId) => {
@@ -38,8 +38,8 @@ const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId
       contractStateHash: contractUpdate.contractStateHash,
       contractUpdateNonce: contractUpdate.contractUpdateNonce
     }
-  }
-  return typedData
+  };
+  return typedData;
 }
 
 const signContractUpdate = (typedData, account) => {
@@ -50,22 +50,22 @@ const signContractUpdate = (typedData, account) => {
       from: account,
       id: new Date().getSeconds()
     }, (error, result) => {
-      if (error) { return reject(error) }
-      resolve(result)
-    })
-  })
+      if (error) { return reject(error); }
+      resolve(result);
+    });
+  });
 }
 
 contract('VerifyContractUpdate', (accounts) => {
-  const recordCreator = accounts[0]
-  const counterparty = accounts[1]
+  const recordCreator = accounts[0];
+  const counterparty = accounts[1];
   
   before(async () => {
-    this.VerifyContractUpdateInstance = await VerifyContractUpdateArtifact.new()
-  })
+    this.VerifyContractUpdateInstance = await VerifyContractUpdateArtifact.new();
+  });
 
   it('should sign the given typed data correctly and yield the correct recovered addresses', async () => {
-    const assetId = 'PAM' + Math.floor(new Date().getTime() / 1000)
+    const assetId = 'PAM' + Math.floor(new Date().getTime() / 1000);
     const contractUpdate = {
       assetId: web3.utils.toHex(assetId),
       recordCreator: recordCreator,
@@ -74,31 +74,31 @@ contract('VerifyContractUpdate', (accounts) => {
       contractTermsHash: web3.utils.keccak256(JSON.stringify('contractTerms')),
       contractStateHash: web3.utils.keccak256(JSON.stringify('extractedContractStateObject')),
       contractUpdateNonce: 0
-    }
+    };
 
-    const chainId = await web3.eth.net.getId()
-    const verifyingContract = this.VerifyContractUpdateInstance.address
-    const typedData = getContractUpdateAsTypedData(contractUpdate, verifyingContract, chainId)
+    const chainId = await web3.eth.net.getId();
+    const verifyingContract = this.VerifyContractUpdateInstance.address;
+    const typedData = getContractUpdateAsTypedData(contractUpdate, verifyingContract, chainId);
 
     const { result: recordCreatorSignature } = await signContractUpdate(
       typedData,
       recordCreator
-    )
+    );
     const { result: counterpartySignature } = await signContractUpdate(
       typedData,
       counterparty
-    )
+    );
   
-    const recoveredAddressRecordCreator = sigUtil.recoverTypedSignature({ data: typedData, sig: recordCreatorSignature})
-    assert.equal(sigUtil.normalize(recordCreator), recoveredAddressRecordCreator)
+    const recoveredAddressRecordCreator = sigUtil.recoverTypedSignature({ data: typedData, sig: recordCreatorSignature});
+    assert.equal(sigUtil.normalize(recordCreator), recoveredAddressRecordCreator);
     
-    const recoveredAddressCounterparty = sigUtil.recoverTypedSignature({ data: typedData, sig: counterpartySignature})
-    assert.equal(sigUtil.normalize(counterparty), recoveredAddressCounterparty)
+    const recoveredAddressCounterparty = sigUtil.recoverTypedSignature({ data: typedData, sig: counterpartySignature});
+    assert.equal(sigUtil.normalize(counterparty), recoveredAddressCounterparty);
 
     // const response = await this.VerifyContractUpdateInstance.methods.verifyContractUpdate(
     //   contractUpdate,
     //   recordCreatorSignature,
     //   counterpartySignature,
-    // ).call()
-  })
-})
+    // ).call();
+  });
+});
