@@ -2,9 +2,11 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import { Contract } from 'web3-eth-contract/types';
 
-import PaymentRouterArtifact from '@atpar/ap-contracts/artifacts/PaymentRouter.min.json';
 import { toHex, numberToHex } from '../utils/Utils';
 import { TransactionObject } from '../types';
+
+import Deployments from '@atpar/ap-contracts/deployments.json';
+import PaymentRouterArtifact from '@atpar/ap-contracts/artifacts/PaymentRouter.min.json';
 
 
 export class PaymentRouter {
@@ -37,14 +39,14 @@ export class PaymentRouter {
   public static async instantiate (web3: Web3): Promise<PaymentRouter> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!PaymentRouterArtifact.networks[chainId]) { 
+    if (!Deployments[chainId].PaymentRouter) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const PaymentRouterInstance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRouterArtifact.abi,
       // @ts-ignore
-      PaymentRouterArtifact.networks[chainId].address
+      Deployments[chainId].PaymentRouter
     );
 
     return new PaymentRouter(PaymentRouterInstance);

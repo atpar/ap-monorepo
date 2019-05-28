@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { Contract, DeployTransactionResponse } from 'web3-eth-contract/types';
 
 import { TransactionObject} from '../types';
+
 import ClaimsTokenERC20ExtensionArtifact from '@atpar/ap-contracts/artifacts/ClaimsTokenERC20Extension.min.json';
 
 

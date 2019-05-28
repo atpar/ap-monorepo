@@ -7,6 +7,7 @@ import { toHex } from '../utils/Utils';
 import { toPaidEvent } from './Conversions';
 import { PaidEvent, CallObject } from '../types';
 
+import Deployments from '@atpar/ap-contracts/deployments.json';
 import PaymentRegistryArtifact from '@atpar/ap-contracts/artifacts/PaymentRegistry.min.json';
 
 
@@ -59,14 +60,14 @@ export class PaymentRegistry {
   public static async instantiate (web3: Web3): Promise<PaymentRegistry> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!PaymentRegistryArtifact.networks[chainId]) { 
+    if (!Deployments[chainId].PaymentRegistry) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const PaymentRegistryInstance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRegistryArtifact.abi,
       // @ts-ignore
-      PaymentRegistryArtifact.networks[chainId].address
+      Deployments[chainId].PaymentRegistry
     );
 
     return new PaymentRegistry(PaymentRegistryInstance);

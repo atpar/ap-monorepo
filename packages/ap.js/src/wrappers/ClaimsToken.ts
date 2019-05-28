@@ -3,8 +3,9 @@ import { Contract } from 'web3-eth-contract/types';
 import BigNumber from 'bignumber.js';
 
 import { TransactionObject, CallObject } from '../types';
-import ClaimsTokenArtifact from '@atpar/ap-contracts/artifacts/ClaimsToken.min.json';
 import { numberToHex } from '../utils/Utils';
+
+import ClaimsTokenArtifact from '@atpar/ap-contracts/artifacts/ClaimsToken.min.json';
 
 
 export class ClaimsToken {

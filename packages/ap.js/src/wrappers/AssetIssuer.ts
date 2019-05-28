@@ -5,6 +5,7 @@ import { EventLog } from 'web3-core/types';
 import { AssetIssuedEvent, OrderData, TransactionObject, CallObject } from '../types';
 import { toAssetIssuedEvent } from './Conversions';
 
+import Deployments from '@atpar/ap-contracts/deployments.json';
 import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.json';
 
 
@@ -60,14 +61,14 @@ export class AssetIssuer {
   public static async instantiate (web3: Web3): Promise<AssetIssuer> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!AssetIssuerArtifact.networks[chainId]) { 
+    if (!Deployments[chainId].AssetIssuer) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const assetIssuerInstance = new web3.eth.Contract(
       // @ts-ignore
       AssetIssuerArtifact.abi,
       // @ts-ignore
-      AssetIssuerArtifact.networks[chainId].address
+      Deployments[chainId].AssetIssuer
     );
 
     return new AssetIssuer(assetIssuerInstance);

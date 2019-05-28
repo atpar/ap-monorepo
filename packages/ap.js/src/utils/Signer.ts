@@ -1,8 +1,6 @@
 import Web3 from 'web3';
 import sigUtil from 'eth-sig-util';
 
-import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.json';
-
 import { 
   TypedData,
   ContractUpdate, 
@@ -12,6 +10,8 @@ import {
   FilledOrderDataAsTypedData,
   UnfilledOrderDataAsTypedData 
 } from '../types';
+
+import Deployments from '@atpar/ap-contracts/deployments.json';
 
 
 export class Signer {
@@ -100,7 +100,7 @@ export class Signer {
   ): Promise<UnfilledOrderDataAsTypedData> {
     const chainId = await this.web3.eth.net.getId();
     // @ts-ignore
-    const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
+    const verifyingContractAddress = Deployments[chainId].AssetIssuer;
 
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)
@@ -153,7 +153,7 @@ export class Signer {
 
     const chainId = await this.web3.eth.net.getId();
     // @ts-ignore
-    const verifyingContractAddress = AssetIssuerArtifact.networks[chainId].address;
+    const verifyingContractAddress = Deployments[chainId].AssetIssuer;
 
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)

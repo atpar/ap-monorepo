@@ -11,6 +11,7 @@ import {
   toProtoEventSchedule
 } from './Conversions';
 
+import Deployments from '@atpar/ap-contracts/deployments.json';
 import PAMEngineArtifact from '@atpar/ap-contracts/artifacts/PAMEngine.min.json';
 
 
@@ -96,14 +97,14 @@ export class PAMEngine {
   public static async instantiate (web3: Web3): Promise<PAMEngine> {
     const chainId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!PAMEngineArtifact.networks[chainId]) { 
+    if (!Deployments[chainId].PAMEngine) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const pamEngineInstance = new web3.eth.Contract(
       // @ts-ignore
       PAMEngineArtifact.abi,
       // @ts-ignore
-      PAMEngineArtifact.networks[chainId].address
+      Deployments[chainId].PAMEngine
     );
 
     return new PAMEngine(pamEngineInstance);
