@@ -6,22 +6,22 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "./SharedTypes.sol";
 import "./IPaymentRouter.sol";
-import "./IOwnershipRegistry.sol";
+import "./AssetRegistry/IAssetRegistry.sol";
 import "./IPaymentRegistry.sol";
 
 
 contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 
-	IOwnershipRegistry public ownershipRegistry;
+	IAssetRegistry public assetRegistry;
 	IPaymentRegistry public paymentRegistry;
 
 	constructor (
-		IOwnershipRegistry _ownershipRegistry,
+		IAssetRegistry _assetRegistry,
 		IPaymentRegistry _paymentRegistry
 	)
 		public
 	{
-		ownershipRegistry = IOwnershipRegistry(_ownershipRegistry);
+		assetRegistry = IAssetRegistry(_assetRegistry);
 		paymentRegistry = IPaymentRegistry(_paymentRegistry);
 	}
 
@@ -46,19 +46,28 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 		external
 		payable
 	{
-		require(assetId != bytes32(0) && cashflowId != int8(0), "INVALID_CONTRACTID_OR_CASHFLOWID");
+		require(
+			assetId != bytes32(0) && cashflowId != int8(0),
+			"PaymentRouter.settlePayment: INVALID_CONTRACTID_OR_CASHFLOWID"
+		);
 
 		uint256 amount;
-		address payable payee = ownershipRegistry.getCashflowBeneficiary(assetId, cashflowId);
-		AssetOwnership memory ownership = ownershipRegistry.getOwnership(assetId);
+		address payable payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
+		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
 		if (cashflowId > 0) {
-			require(msg.sender == ownership.counterpartyObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
+			require(
+				msg.sender == ownership.counterpartyObligor,
+				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP"
+			);
 			if (payee == address(0)) {
 				payee = ownership.recordCreatorBeneficiary;
 			}
 		} else {
-			require(msg.sender == ownership.recordCreatorObligor, "UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP");
+			require(
+				msg.sender == ownership.recordCreatorObligor,
+				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP"
+			);
 			if (payee == address(0)) {
 				payee = ownership.counterpartyBeneficiary;
 			}
@@ -66,10 +75,16 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 
 		if (token == address(0)) {
 			(bool result, ) = payee.call.value(msg.value)(""); // solium-disable-line 
-			require(result, "TRANSFER_FAILED");
+			require(
+				result,
+				"PaymentRouter.settlePayment: ETH_TRANSFER_FAILED"
+			);
 			amount = msg.value;
 		} else {
-			require(IERC20(token).transferFrom(msg.sender, payee, _amount), "TRANSFER_FAILED");
+			require(
+				IERC20(token).transferFrom(msg.sender, payee, _amount),
+				"PaymentRouter.settlePayment: ERC20_TRANSFER_FAILED"
+			);
 			amount = _amount;
 		}
 

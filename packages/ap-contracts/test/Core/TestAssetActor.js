@@ -36,9 +36,9 @@ contract('AssetActor', (accounts) => {
       this.terms
     )
 
-    const storedTerms = await this.EconomicsRegistryInstance.getTerms(web3.utils.toHex(this.assetId))
-    const storedState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(this.assetId))
-    const storedOwnership = await this.OwnershipRegistryInstance.getOwnership(web3.utils.toHex(this.assetId))
+    const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId))
+    const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId))
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId))
 
     assert.deepEqual(storedTerms['contractDealDate'], this.terms['contractDealDate'].toString())
     assert.deepEqual(storedState, this.state)
@@ -59,7 +59,7 @@ contract('AssetActor', (accounts) => {
     const payoff = new BigNumber(iedEvent.payoff)
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated())
-    const lastEventId = Number(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(this.assetId)))
+    const lastEventId = Number(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)))
 
     // settle obligations
     await this.PaymentRouterInstance.settlePayment(
@@ -76,8 +76,8 @@ contract('AssetActor', (accounts) => {
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
     )
-    const nextState = await this.EconomicsRegistryInstance.getState(web3.utils.toHex(this.assetId))
-    const nextLastEventId = new BigNumber(await this.EconomicsRegistryInstance.getEventId(web3.utils.toHex(this.assetId)))
+    const nextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId))
+    const nextLastEventId = new BigNumber(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)))
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId)
     assert.equal(emittedEventId.toString(), nextLastEventId.toString())

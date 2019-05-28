@@ -2,8 +2,7 @@ import Web3 from 'web3';
 
 import { 
   PAMEngine, 
-  EconomicsRegistry, 
-  OwnershipRegistry, 
+  AssetRegistry,
   PaymentRegistry, 
   PaymentRouter,
   AssetActor,
@@ -17,8 +16,7 @@ import {
 export class ContractsAPI {
 
   public pamEngine: PAMEngine;
-  public economicsRegistry: EconomicsRegistry;
-  public ownershipRegistry: OwnershipRegistry;
+  public assetRegistry: AssetRegistry;
   public paymentRegistry: PaymentRegistry;
   public paymentRouter: PaymentRouter;
   public assetActor: AssetActor;
@@ -30,8 +28,7 @@ export class ContractsAPI {
 
   private constructor (
     pamEngine: PAMEngine,
-    economicsRegistry: EconomicsRegistry,
-    ownershipRegistry: OwnershipRegistry,
+    assetRegistry: AssetRegistry,
     paymentRegistry: PaymentRegistry,
     paymentRouter: PaymentRouter,
     assetActor: AssetActor,
@@ -41,8 +38,7 @@ export class ContractsAPI {
     claimsTokenERC20Extension: ClaimsTokenERC20Extension
   ) {
     this.pamEngine = pamEngine;
-    this.economicsRegistry = economicsRegistry;
-    this.ownershipRegistry = ownershipRegistry;
+    this.assetRegistry = assetRegistry;
     this.paymentRegistry = paymentRegistry;
     this.paymentRouter = paymentRouter;
     this.assetActor = assetActor;
@@ -60,8 +56,7 @@ export class ContractsAPI {
   public static async init (web3: Web3): Promise<ContractsAPI> {
     return new ContractsAPI(
       await PAMEngine.instantiate(web3),
-      await EconomicsRegistry.instantiate(web3),
-      await OwnershipRegistry.instantiate(web3),
+      await AssetRegistry.instantiate(web3),
       await PaymentRegistry.instantiate(web3),
       await PaymentRouter.instantiate(web3),
       await AssetActor.instantiate(web3),
