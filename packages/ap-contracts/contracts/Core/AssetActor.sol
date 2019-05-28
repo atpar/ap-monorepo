@@ -8,16 +8,14 @@ import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
 import "./IAssetActor.sol";
-import "./IOwnershipRegistry.sol";
-import "./IEconomicsRegistry.sol";
+import "./AssetRegistry/IAssetRegistry.sol";
 import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
 
 contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 
-	IOwnershipRegistry ownershipRegistry;
-	IEconomicsRegistry economicsRegistry;
+	IAssetRegistry assetRegistry;
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
@@ -27,21 +25,22 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 
 
 	modifier onlyRegisteredIssuer {
-		require(issuers[msg.sender], "UNAUTHORIZED_SENDER");
+		require(
+			issuers[msg.sender],
+			"AssetActor.onlyRegisteredIssuer: UNAUTHORIZED_SENDER"
+		);
 		_;
 	}
 
 	constructor (
-		IOwnershipRegistry _ownershipRegistry,
-		IEconomicsRegistry _economicsRegistry,
+		IAssetRegistry _assetRegistry,
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
 		IEngine _pamEngine
 	)
 		public
 	{
-		ownershipRegistry = _ownershipRegistry;
-		economicsRegistry = _economicsRegistry;
+		assetRegistry = _assetRegistry;
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
 		pamEngine = _pamEngine;
@@ -71,20 +70,28 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		external
 		returns (bool)
 	{
-		ContractTerms memory terms = economicsRegistry.getTerms(assetId);
-		ContractState memory state = economicsRegistry.getState(assetId);
+		ContractTerms memory terms = assetRegistry.getTerms(assetId);
+		ContractState memory state = assetRegistry.getState(assetId);
 
-		require(terms.statusDate != uint256(0), "ENTRY_DOES_NOT_EXIST");
-		require(state.lastEventTime != uint256(0), "ENTRY_DOES_NOT_EXIST");
-		require(state.contractStatus == ContractStatus.PF, "CONTRACT_NOT_PERFORMANT");
+		require(
+			terms.statusDate != uint256(0),
+			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+		);
+		require(
+			state.lastEventTime != uint256(0),
+			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+		);
+		require(
+			state.contractStatus == ContractStatus.PF,
+			"AssetActor.progress: CONTRACT_NOT_PERFORMANT"
+		);
 
-		uint256 eventId = economicsRegistry.getEventId(assetId);
+		uint256 eventId = assetRegistry.getEventId(assetId);
 
 		(
 			ContractState memory nextState,
 			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
 		) = pamEngine.computeNextState(terms, state, timestamp);
-
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].scheduledTime == uint256(0)) { break; }
@@ -92,13 +99,16 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 			uint256 payoff = (pendingEvents[i].payoff < 0) ?
 				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
 			if (payoff == uint256(0)) { continue; }
-			require(paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff, "OUTSTANDING_PAYMENTS");
+			require(
+				paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff,
+				"AssetActor.progress: OUTSTANDING_PAYMENTS"
+			);
 		}
 
 		// check for non-payment events ...
 
-		economicsRegistry.setState(assetId, nextState);
-		economicsRegistry.setEventId(assetId, eventId);
+		assetRegistry.setState(assetId, nextState);
+		assetRegistry.setEventId(assetId, eventId);
 
 		emit AssetProgressed(assetId, eventId);
 
@@ -125,13 +135,9 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	{
 		ContractState memory initialState = pamEngine.computeInitialState(terms);
 
-		ownershipRegistry.registerOwnership(
+		assetRegistry.registerAsset(
 			assetId,
-			ownership
-		);
-
-		economicsRegistry.registerEconomics(
-			assetId,
+			ownership,
 			terms,
 			initialState,
 			address(this)

@@ -27,7 +27,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 	{
 		require(
 			assertOrderSignatures(order, makerSignature, takerSignature),
-			"INVALID_SIGNATURE: Order signatures are invalid!"
+			"AssetIssuer.fillOrder: INVALID_SIGNATURE"
 		);
 
 		bytes32 assetId = keccak256(
@@ -42,7 +42,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 
 		require(
 			IAssetActor(order.actor).initialize(assetId, ownership, order.terms),
-			"EXECUTION_ERROR: Initialization failed"
+			"AssetIssuer.fillOrder: EXECUTION_ERROR"
 		);
 
 		emit AssetIssued(assetId, order.maker, order.taker);

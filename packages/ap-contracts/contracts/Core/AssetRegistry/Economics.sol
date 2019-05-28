@@ -1,26 +1,16 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
-
-import "./SharedTypes.sol";
-import "./IEconomicsRegistry.sol";
+import "./AssetRegistryStorage.sol";
 
 
-contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
-
-	struct Economics {
-		bytes32 assetId;
-		ContractTerms terms;
-		ContractState state;
-		uint256 eventId;
-		address actor;
-	}
-
-	mapping (bytes32 => Economics) public economics;
+contract Economics is AssetRegistryStorage {
 
 	modifier onlyDesignatedActor(bytes32 assetId) {
-		require(economics[assetId].actor == msg.sender, "UNAUTHORIZED_SENDER");
+		require(
+			assets[assetId].actor == msg.sender,
+			"AssetRegistry.onlyDesignatedActor: UNAUTHORIZED_SENDER"
+		);
 		_;
 	}
 
@@ -30,7 +20,7 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @return terms of the asset
 	 */
 	function getTerms(bytes32 assetId) external view returns (ContractTerms memory) {
-		return economics[assetId].terms;
+		return assets[assetId].terms;
 	}
 
 	/**
@@ -39,7 +29,7 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @return state of the asset
 	 */
 	function getState(bytes32 assetId) external view returns (ContractState memory) {
-		return economics[assetId].state;
+		return assets[assetId].state;
 	}
 
 	/**
@@ -48,7 +38,7 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @return last event id
 	 */
 	function getEventId(bytes32 assetId) external view returns (uint256) {
-		return economics[assetId].eventId;
+		return assets[assetId].eventId;
 	}
 
 	/**
@@ -58,7 +48,7 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @param state next state of the asset
 	 */
 	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
-		economics[assetId].state = state;
+		assets[assetId].state = state;
 	}
 
 	/**
@@ -68,7 +58,7 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @param terms new terms of the asset
 	 */
 	function setTerms(bytes32 assetId, ContractTerms memory terms) public onlyDesignatedActor (assetId) {
-		economics[assetId].terms = terms;
+		assets[assetId].terms = terms;
 	}
 
 	/**
@@ -78,34 +68,6 @@ contract EconomicsRegistry is SharedTypes, Definitions, IEconomicsRegistry {
 	 * @param eventId the last event id
 	 */
 	function setEventId(bytes32 assetId, uint256 eventId) public onlyDesignatedActor (assetId) {
-		economics[assetId].eventId = eventId;
-	}
-
-	/**
-	 * stores the terms and the initial state of an asset and sets the address of
-	 * the actor (address of account which is allowed to update the state)
-	 * @dev can only be called by a whitelisted actor
-	 * @param assetId id of the asset
-	 * @param terms terms of the asset
-	 * @param state initial state of the asset
-	 * @param actor account which is allowed to update the asset state in the future
-	 */
-	function registerEconomics(
-		bytes32 assetId,
-		ContractTerms memory terms,
-		ContractState memory state,
-		address actor
-	)
-		public
-	{
-		require(economics[assetId].assetId == bytes32(0), "ENTRY_ALREADY_EXISTS");
-
-		economics[assetId] = Economics(
-			assetId,
-			terms,
-			state,
-			0,
-			actor
-		);
+		assets[assetId].eventId = eventId;
 	}
 }

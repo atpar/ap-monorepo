@@ -10,22 +10,22 @@ export class OwnershipAPI {
     this.contracts = contracts;
   }
 
-  /**
-   * registers the ownership of a new asset for a given AssetId
-   * @dev this requires the users signature (metamask pop-up)
-   * @param {string} assetId 
-   * @param {AssetOwnership} assetOwnership ownership object for a asset
-   * @returns {TransactionObject}
-   */
-  public registerOwnership (
-    assetId: string, 
-    assetOwnership: AssetOwnership
-  ): TransactionObject {
-    return this.contracts.ownershipRegistry.registerOwnership(
-      assetId,
-      assetOwnership
-    ); // gas: 300000
-  }
+  // /**
+  //  * registers the ownership of a new asset for a given AssetId
+  //  * @dev this requires the users signature (metamask pop-up)
+  //  * @param {string} assetId 
+  //  * @param {AssetOwnership} assetOwnership ownership object for a asset
+  //  * @returns {TransactionObject}
+  //  */
+  // public registerOwnership (
+  //   assetId: string, 
+  //   assetOwnership: AssetOwnership
+  // ): TransactionObject {
+  //   return this.contracts.assetRegistry.registerOwnership(
+  //     assetId,
+  //     assetOwnership
+  //   ); // gas: 300000
+  // }
 
   /**
    * fetches the ownership for a given AssetId
@@ -33,7 +33,7 @@ export class OwnershipAPI {
    * @returns {Promise<AssetOwnership>} 
    */
   public getOwnership (assetId: string): Promise<AssetOwnership> {
-    return this.contracts.ownershipRegistry.getOwnership(assetId).call(); 
+    return this.contracts.assetRegistry.getOwnership(assetId).call(); 
   }
 
   /**
@@ -47,7 +47,7 @@ export class OwnershipAPI {
     assetId: string, 
     newBenficiary: string
   ): TransactionObject {
-    return this.contracts.ownershipRegistry.setRecordCreatorBeneficiary(
+    return this.contracts.assetRegistry.setRecordCreatorBeneficiary(
       assetId, 
       newBenficiary
     ); //gas: 100000
@@ -64,7 +64,7 @@ export class OwnershipAPI {
     assetId: string, 
     newBenficiary: string
   ): TransactionObject {
-    return this.contracts.ownershipRegistry.setCounterpartyBeneficiary(
+    return this.contracts.assetRegistry.setCounterpartyBeneficiary(
       assetId, 
       newBenficiary
     ); // gas: 100000

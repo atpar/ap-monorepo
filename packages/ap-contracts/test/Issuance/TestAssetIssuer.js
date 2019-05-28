@@ -61,8 +61,8 @@ contract('AssetIssuer', (accounts) => {
       )
     )
 
-    const storedTerms = await this.EconomicsRegistryInstance.getTerms(assetId)
-    const storedOwnership = await this.OwnershipRegistryInstance.getOwnership(assetId)
+    const storedTerms = await this.AssetRegistryInstance.getTerms(assetId)
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId)
 
     assert.equal(storedTerms['statusDate'], orderData.terms['statusDate'])
     assert.equal(storedOwnership.recordCreatorObligor, recordCreator)

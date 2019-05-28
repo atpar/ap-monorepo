@@ -123,8 +123,8 @@ contract VerifyOrder is Definitions {
 			hashFilledOrder(order)
 		));
 
-		require(ECDSA.recover(makerDigest, makerSignature) == order.maker, "INVALID_ORDER_SIGNATURE: Recovered address is not the maker!");
-		require(ECDSA.recover(takerDigest, takerSignature) == order.taker, "INVALID_ORDER_SIGNATURE: Recovered address is not the taker!");
+		if (ECDSA.recover(makerDigest, makerSignature) != order.maker) { return false; }
+		if (ECDSA.recover(takerDigest, takerSignature) != order.taker) { return false; }
 
     return true;
 	}

@@ -1,4 +1,4 @@
-import { ContractTerms, ContractState, TransactionObject, ContractType } from  '../types';
+import { ContractTerms, ContractState, ContractType } from  '../types';
 import { ContractsAPI } from './ContractsAPI';
 import { ContractEngine, PAM } from '../engines';
 
@@ -21,27 +21,27 @@ export class EconomicsAPI {
     return engine;
   }
 
-  /**
-   * registers the terms and the state of a new asset
-   * @dev this requires the users signature (metamask pop-up)
-   * @param {string} assetId 
-   * @param {ContractTerms} contractTerms 
-   * @param {ContractState} contractState
-   * @returns {TransactionObject}
-   */
-  public registerEconomics (
-    assetId: string, 
-    contractTerms: ContractTerms, 
-    contractState: ContractState,
-    actorAddress: string
-  ): TransactionObject {
-    return this.contracts.economicsRegistry.registerEconomics(
-      assetId,
-      contractTerms, 
-      contractState, 
-      actorAddress
-    ); // gas: 700000
-  }
+  // /**
+  //  * registers the terms and the state of a new asset
+  //  * @dev this requires the users signature (metamask pop-up)
+  //  * @param {string} assetId 
+  //  * @param {ContractTerms} contractTerms 
+  //  * @param {ContractState} contractState
+  //  * @returns {TransactionObject}
+  //  */
+  // public registerEconomics (
+  //   assetId: string, 
+  //   contractTerms: ContractTerms, 
+  //   contractState: ContractState,
+  //   actorAddress: string
+  // ): TransactionObject {
+  //   return this.contracts.assetRegistry.registerEconomics(
+  //     assetId,
+  //     contractTerms, 
+  //     contractState, 
+  //     actorAddress
+  //   ); // gas: 700000
+  // }
 
   /**
    * fetches the terms of an asset with given AssetId
@@ -49,7 +49,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractTerms>}
    */
   public getTerms (assetId: string): Promise<ContractTerms> {
-    return this.contracts.economicsRegistry.getTerms(assetId).call();
+    return this.contracts.assetRegistry.getTerms(assetId).call();
   }
 
   /**
@@ -58,7 +58,7 @@ export class EconomicsAPI {
    * @returns {Promise<ContractState>}
    */
   public getState (assetId: string): Promise<ContractState> {
-    return this.contracts.economicsRegistry.getState(assetId).call();
+    return this.contracts.assetRegistry.getState(assetId).call();
   }
 
   /**
@@ -67,6 +67,6 @@ export class EconomicsAPI {
    * @returns {Promise<number>}
    */
   public getEventId (assetId: string): Promise<number> {
-    return this.contracts.economicsRegistry.getEventId(assetId).call();
+    return this.contracts.assetRegistry.getEventId(assetId).call();
   }
 }

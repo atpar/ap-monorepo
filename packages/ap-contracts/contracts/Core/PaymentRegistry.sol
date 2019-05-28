@@ -23,7 +23,10 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 
 
 	modifier onlyPaymentRouter {
-		require(msg.sender == paymentRouter, "UNAUTHORIZED_SENDER");
+		require(
+			msg.sender == paymentRouter,
+			"PaymentRegistry.onlyPaymentRouter: UNAUTHORIZED_SENDER"
+		);
 		_;
 	}
 

@@ -1,4 +1,4 @@
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment')
 
 const ClaimsTokenETH = artifacts.require('ClaimsTokenETHExtension')
 
@@ -23,15 +23,22 @@ contract('SettlementETH', (accounts) => {
     const instances = await setupTestEnvironment()
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
+    this.terms = await getDefaultTerms()
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
+    this.ownership = { 
+      recordCreatorObligor, 
+      recordCreatorBeneficiary, 
+      counterpartyObligor, 
+      counterpartyBeneficiary
+    }
+    
     // register Ownership for assetId
-    await this.OwnershipRegistryInstance.registerOwnership(
+    await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(assetId), 
-      {
-        recordCreatorObligor, 
-        recordCreatorBeneficiary, 
-        counterpartyObligor, 
-        counterpartyBeneficiary
-      }
+      this.ownership,
+      this.terms,
+      this.state,
+      '0x0000000000000000000000000000000000000000'
     )
 
     // deploy ClaimsTokenETH
@@ -43,7 +50,7 @@ contract('SettlementETH', (accounts) => {
     await this.ClaimsTokenETHInstance.transfer(ownerD, this.totalSupply.divn(4), { from: ownerA })
 
     // set ClaimsTokenETH as beneficiary for CashflowId
-    await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
+    await this.AssetRegistryInstance.setBeneficiaryForCashflowId(
       web3.utils.toHex(assetId), 
       cashflowId, 
       this.ClaimsTokenETHInstance.address,

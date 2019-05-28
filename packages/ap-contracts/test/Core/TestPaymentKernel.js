@@ -2,7 +2,7 @@ const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
 const PaymentRegistry = artifacts.require('PaymentRegistry')
 
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment')
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment')
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS'
 const UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP = 'UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP'
@@ -23,19 +23,25 @@ contract('PaymentKernel', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance])
 
     this.assetId = 'C123'
+    this.terms = await getDefaultTerms()
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {})
     this.value = 5000
-
-    await this.OwnershipRegistryInstance.registerOwnership(
+    this.ownership = {
+      recordCreatorObligor, 
+      recordCreatorBeneficiary, 
+      counterpartyObligor, 
+      counterpartyBeneficiary
+    }
+    
+    await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId), 
-      {
-        recordCreatorObligor, 
-        recordCreatorBeneficiary, 
-        counterpartyObligor, 
-        counterpartyBeneficiary
-      }
+      this.ownership,
+      this.terms,
+      this.state,
+      '0x0000000000000000000000000000000000000000'
     )
 
-    await this.OwnershipRegistryInstance.setBeneficiaryForCashflowId(
+    await this.AssetRegistryInstance.setBeneficiaryForCashflowId(
       web3.utils.toHex(this.assetId),
       5,
       cashflowIdBeneficiary,
@@ -118,7 +124,7 @@ contract('PaymentKernel', (accounts) => {
         5000,
         { value: this.value }
       ),
-      INVALID_CONTRACTID_OR_CASHFLOWID
+      'PaymentRouter.settlePayment: ' + INVALID_CONTRACTID_OR_CASHFLOWID
     )
 
     await shouldFail.reverting.withMessage(
@@ -130,7 +136,7 @@ contract('PaymentKernel', (accounts) => {
         5000,
         { value: this.value }
       ),
-      INVALID_CONTRACTID_OR_CASHFLOWID
+      'PaymentRouter.settlePayment: ' + INVALID_CONTRACTID_OR_CASHFLOWID
     )
   })
 
@@ -144,7 +150,7 @@ contract('PaymentKernel', (accounts) => {
         5000,
         { value: this.value }
       ),
-      UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
     )
   })
 
@@ -158,7 +164,7 @@ contract('PaymentKernel', (accounts) => {
         5000,
         { from: counterpartyBeneficiary, value: this.value }
       ),
-      UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
     )
   })
 
@@ -172,7 +178,7 @@ contract('PaymentKernel', (accounts) => {
         5000,
         { from: recordCreatorObligor, value: this.value }
       ),
-      UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
     )
   })
 })
