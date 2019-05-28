@@ -1,6 +1,6 @@
 const sigUtil = require('eth-sig-util')
 
-const VerifyArtifact = artifacts.require('Verify.sol')
+const VerifyContractUpdateArtifact = artifacts.require('VerifyContractUpdate.sol')
 
 
 const getContractUpdateAsTypedData = (contractUpdate, verifyingContract, chainId) => {
@@ -56,12 +56,12 @@ const signContractUpdate = (typedData, account) => {
   })
 }
 
-contract('Verify', (accounts) => {
+contract('VerifyContractUpdate', (accounts) => {
   const recordCreator = accounts[0]
   const counterparty = accounts[1]
   
   before(async () => {
-    this.VerifyInstance = await VerifyArtifact.new()
+    this.VerifyContractUpdateInstance = await VerifyContractUpdateArtifact.new()
   })
 
   it('should sign the given typed data correctly and yield the correct recovered addresses', async () => {
@@ -70,14 +70,14 @@ contract('Verify', (accounts) => {
       assetId: web3.utils.toHex(assetId),
       recordCreator: recordCreator,
       counterparty: counterparty,
-      contractAddress: this.VerifyInstance.address,
+      contractAddress: this.VerifyContractUpdateInstance.address,
       contractTermsHash: web3.utils.keccak256(JSON.stringify('contractTerms')),
       contractStateHash: web3.utils.keccak256(JSON.stringify('extractedContractStateObject')),
       contractUpdateNonce: 0
     }
 
     const chainId = await web3.eth.net.getId()
-    const verifyingContract = this.VerifyInstance.address
+    const verifyingContract = this.VerifyContractUpdateInstance.address
     const typedData = getContractUpdateAsTypedData(contractUpdate, verifyingContract, chainId)
 
     const { result: recordCreatorSignature } = await signContractUpdate(
@@ -95,7 +95,7 @@ contract('Verify', (accounts) => {
     const recoveredAddressCounterparty = sigUtil.recoverTypedSignature({ data: typedData, sig: counterpartySignature})
     assert.equal(sigUtil.normalize(counterparty), recoveredAddressCounterparty)
 
-    // const response = await this.VerifyInstance.methods.verifyContractUpdate(
+    // const response = await this.VerifyContractUpdateInstance.methods.verifyContractUpdate(
     //   contractUpdate,
     //   recordCreatorSignature,
     //   counterpartySignature,

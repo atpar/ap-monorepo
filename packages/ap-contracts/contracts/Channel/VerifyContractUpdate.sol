@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 
-contract Verify {
+contract VerifyContractUpdate {
 
 	struct EIP712Domain {
 		string  name;
