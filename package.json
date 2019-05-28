@@ -8,7 +8,7 @@
 		"start": "./scripts/start.sh",
 		"publish": "lerna run build && lerna publish",
 		"build": "lerna run build",
-		"test": "lerna run test"
+		"test": "npm run start & (sleep 10 && lerna run test)"
   },
   "publishConfig": {
     "access": "restricted"

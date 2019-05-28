@@ -16,7 +16,7 @@ then
 	echo "compiling contracts ..."
 	(
 		cd packages/ap-contracts
-		truffle compile | 1>/dev/null
+		truffle compile --all | 1>/dev/null
 	)
 fi
 
