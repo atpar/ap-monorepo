@@ -3,9 +3,6 @@
 AP.js is a typescript library for interacting with the ACTUS protocol smart contracts. 
 It allows developers to create and manage ACTUS assets.
 
-## Overview
-
-
 ## Usage
 
 ```sh
@@ -24,25 +21,8 @@ const ap = await AP.init(
 );
 ```
 
-### Asset
-`Asset` enables you to create and manage the lifecycle of an ACTUS asset.
-
-Creating a new Asset
-```ts
-const terms: ContractTerms = { ... };
-const ownership: AssetOwnership = { ... };
-
-const asset = await Asset.create(ap, CONTRACT_TERMS, CONTRACT_OWNERSHIP);
-```
-Loading a Asset given its AssetId from the on-chain registries
-```ts
-const asset = await Asset.load(ap, ASSET_ID);
-```
-
-
 ### Order
-
-Creating a new Order
+`Order` is a wrapper around the Issuance API for creating orders and issuing assets from a co-signed orders.
 ```ts
 const orderParams: OrderParams = {
   makerAddress: MAKER_ADDRESS,
@@ -59,6 +39,21 @@ ap.onNewOrder((order) => { ... });
 Signing and sending an order to an order-relayer (as a maker or taker)
 ```ts
 await order.signAndSendOrder();
+```
+
+### Asset
+`Asset` is a wrapper around AP.js APIs to make the creation and the lifecycle management of an ACTUS asset easier.
+
+Creating a new Asset
+```ts
+const terms: ContractTerms = { ... };
+const ownership: AssetOwnership = { ... };
+
+const asset = await Asset.create(ap, CONTRACT_TERMS, CONTRACT_OWNERSHIP);
+```
+Loading a Asset given its AssetId from the on-chain registries
+```ts
+const asset = await Asset.load(ap, ASSET_ID);
 ```
 
 ### Asset Channel
@@ -87,6 +82,17 @@ A `ChannelState` describes the action required by the user at a given point in t
 ```js
 const channelState = await assetChannel.getChannelState(TIMESTAMP);
 ```
+
+## API Overview
+| API             | Description                                                                                                                         |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| ContractsAPI    | wrapper around the ACTUS Protocol smart contracts                                                                                   |
+| EconomicsAPI    | interact with actus-solidity engines - retrieve terms, state and the current EventId of a registered asset                          |
+| IssuanceAPI     | issue an ACTUS asset by filling a co-signed order - listen for new issued assets and retrieve the assetIds of all issued assets     |
+| LifecycleAPI    | initialize a new asset (registering terms, initial state and ownership) - progress the state of an registered asset                 |
+| OwnershipAPI    | retrieve the ownership of an asset - update the address of beneficiaries                                                            |
+| PaymentAPI      | settle an obligation - retrieve the amount settled for a given timeframe                                                            |
+| TokenizationAPI | tokenize an asset by deploying a new ClaimsToken smart contract - interact with ClaimsToken smart contract (withdrawing funds etc.) |
 
 ## Development
 
