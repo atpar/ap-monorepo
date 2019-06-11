@@ -5,10 +5,10 @@
     "lerna": "^3.13.0"
   },
 	"scripts": {
-		"start": "./scripts/start.sh",
-		"publish": "lerna run build && lerna publish",
-		"build": "lerna run build",
-		"test": "npm run start & (sleep 10 && lerna run test)"
+    "start": "./scripts/start.sh",
+    "publish": "lerna run build && lerna publish",
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "publishConfig": {
     "access": "restricted"
