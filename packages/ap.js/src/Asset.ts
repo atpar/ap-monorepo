@@ -246,7 +246,7 @@ export class Asset {
    */
   public async progress (timestamp: number): Promise<void> {
     await this.ap.lifecycle.progress(this.assetId, timestamp).send(
-      { from: this.ap.signer.account, gas: 500000 }
+      { from: this.ap.signer.account, gas: 750000 }
     );
   }
 
