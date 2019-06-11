@@ -15,7 +15,7 @@ shutdown_ganache() {
 if ! nc -z localhost 8545 
 then
   echo "Starting new ganache-cli instance."
-  ganache-cli -p "$ganache_port" -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" 1>/dev/null &
+  npx --quiet ganache-cli -p "$ganache_port" -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" 1>/dev/null &
   ganache_pid=$!
 fi
 

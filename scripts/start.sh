@@ -6,7 +6,7 @@ trap "printf '\nshutdown ...\n' && kill 0" EXIT
 echo "running ganache-cli ..."
 
 { 
-	ganache-cli -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
+	npx --quiet ganache-cli -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
 } 1>/dev/null &
 
 sleep 1
@@ -16,7 +16,7 @@ then
 	echo "compiling contracts ..."
 	(
 		cd packages/ap-contracts
-		truffle compile --all | 1>/dev/null
+		npx --quiet truffle compile --all | 1>/dev/null
 	)
 fi
 
@@ -24,7 +24,7 @@ echo "migrating contracts ..."
 
 (
 	cd packages/ap-contracts
-	truffle migrate --reset --network development | 1>/dev/null
+	npx --quiet truffle migrate --reset --network development | 1>/dev/null
 )
 
 echo "clearing databases ..."
