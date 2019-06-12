@@ -4,7 +4,7 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 const AssetActor = artifacts.require('AssetActor');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
-const { mineBlock, getLatestBlockTimestamp } = require('../helper/blockchain');
+const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {
@@ -13,6 +13,8 @@ contract('AssetActor', (accounts) => {
   const recordCreatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
   const counterpartyBeneficiary = accounts[4];
+
+  let snapshot;
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -27,6 +29,12 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
+
+    snapshot = await createSnapshot()
+  });
+
+  after(async () => {
+    await revertToSnapshot(snapshot);
   });
 
   it('should initialize an asset', async () => {
