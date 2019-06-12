@@ -12,6 +12,7 @@
     "operator-whitespace": "off",
     "lbrace": "off",
     "no-experimental": "off",
-    "mixedcase": "off"
+    "mixedcase": "off",
+    "security/no-block-members": "off"
   }
 }
