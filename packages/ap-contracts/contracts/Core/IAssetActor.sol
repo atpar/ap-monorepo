@@ -12,15 +12,13 @@ contract IAssetActor is SharedTypes, Definitions {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
-	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled
+	 * the status of all obligations, that are due. If all obligations are fullfilled
 	 * the actor updates the state of the asset in the EconomicsRegistry
 	 * @param assetId id of the asset
-	 * @param timestamp current timestamp
 	 * @return true if state was updated
 	 */
 	function progress(
-		bytes32 assetId,
-		uint256 timestamp
+		bytes32 assetId
 	)
 		external
 		returns (bool);

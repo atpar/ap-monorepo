@@ -1,13 +1,12 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-const AssetActor = artifacts.require('AssetActor');
+const DemoAssetActor = artifacts.require('DemoAssetActor');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
-const { mineBlock, getLatestBlockTimestamp } = require('../helper/blockchain');
 
 
-contract('AssetActor', (accounts) => {
+contract('DemoAssetActor', (accounts) => {
   const issuer = accounts[0];
   const recordCreatorObligor = accounts[1];
   const recordCreatorBeneficiary = accounts[2];
@@ -30,7 +29,7 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should initialize an asset', async () => {
-    await this.AssetActorInstance.initialize(
+    await this.DemoAssetActorInstance.initialize(
       web3.utils.toHex(this.assetId),
       this.ownership,
       this.terms
@@ -72,10 +71,9 @@ contract('AssetActor', (accounts) => {
     );
 
     // progress asset state
-    await mineBlock(eventTime);
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash } = await this.DemoAssetActorInstance.progress(web3.utils.toHex(this.assetId), eventTime);
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'AssetProgressed'
+      txHash, DemoAssetActor, 'AssetProgressed'
     );
     const nextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const nextLastEventId = new BigNumber(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)));

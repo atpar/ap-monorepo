@@ -7,13 +7,17 @@ import "actus-solidity/contracts/Core/Definitions.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
-import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
 import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
 
-contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
+interface IDemoAssetActor {
+	event AssetProgressed(bytes32 indexed assetId, uint256 eventId);
+}
+
+
+contract DemoAssetActor is SharedTypes, Definitions, IDemoAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IPaymentRegistry paymentRegistry;
@@ -57,13 +61,15 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
-	 * the status of all obligations, that are due. If all obligations are fullfilled
+	 * the status of all obligations, that are due to the specified timestamp. If all obligations are fullfilled
 	 * the actor updates the state of the asset in the EconomicsRegistry
 	 * @param assetId id of the asset
+	 * @param timestamp current timestamp
 	 * @return true if state was updated
 	 */
 	function progress(
-		bytes32 assetId
+		bytes32 assetId,
+		uint256 timestamp
 	)
 		external
 		returns (bool)
@@ -89,7 +95,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		(
 			ContractState memory nextState,
 			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
-		) = pamEngine.computeNextState(terms, state, block.timestamp);
+		) = pamEngine.computeNextState(terms, state, timestamp);
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].scheduledTime == uint256(0)) { break; }

@@ -6,6 +6,7 @@ const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
 
 const AssetActor = artifacts.require('AssetActor');
+const DemoAssetActor = artifacts.require('DemoAssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 
 
@@ -29,6 +30,13 @@ module.exports = async (deployer, network, accounts) => {
   // Core: Asset Actor
   await deployer.deploy(
     AssetActor,
+    AssetRegistry.address,
+    PaymentRegistry.address,
+    PaymentRouter.address,
+    PAMEngine.address
+  );
+  await deployer.deploy(
+    DemoAssetActor,
     AssetRegistry.address,
     PaymentRegistry.address,
     PaymentRouter.address,
