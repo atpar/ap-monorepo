@@ -41,16 +41,13 @@ export class LifecycleAPI {
    * progress the state of an asset
    * all obligation to date have to be fullfilled
    * @param {string} assetId 
-   * @param {number} timestamp
    * @returns {TransactionObject}
    */
   public progress (
-    assetId: string, 
-    timestamp: number
+    assetId: string
   ): TransactionObject {
     return this.contracts.assetActor.progress(
-      assetId, 
-      timestamp
+      assetId
     ); // gas: 500000
   }
 

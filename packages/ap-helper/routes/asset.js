@@ -3,12 +3,12 @@ const { progressAsset } = require('../services/ethereum')
 
 
 router.post('/asset/progress', async (req, res) => {
-  const { assetId, timestamp } = req.body
+  const { assetId } = req.body
   
-  if (!assetId || !timestamp) { return res.status(400).end() }
+  if (!assetId) { return res.status(400).end() }
   
   try {
-    await progressAsset(assetId, timestamp)
+    await progressAsset(assetId)
   } catch (error) {
     console.error(error)
     return res.status(500).end()

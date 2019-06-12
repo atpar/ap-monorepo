@@ -51,10 +51,10 @@ async function fillOrder (orderData) {
   }
 }
 
-async function progressAsset (assetId, timestamp) {
-  if (!assetId || !timestamp) { throw(new Error('AssetId or Timestamp is not defined!')) }
+async function progressAsset (assetId) {
+  if (!assetId) { throw(new Error('AssetId is not defined!')) }
 
-  let asset 
+  let asset
   
   try {
     asset = await Asset.load(state.ap, assetId)
@@ -64,7 +64,7 @@ async function progressAsset (assetId, timestamp) {
   }
 
   try {
-    await asset.progress(timestamp)
+    await asset.progress()
   } catch (error) {
     console.error(error)
     throw(new Error('TRANSACTION_ERROR: Could not progress asset to specified timestamp!'))

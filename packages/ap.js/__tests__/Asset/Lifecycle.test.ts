@@ -8,6 +8,8 @@ import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
 describe('Lifecycle', () => {
 
   let web3: Web3;
+  let snapshot: string;
+
   let recordCreator: string;
   let counterparty: string;
   
@@ -22,6 +24,10 @@ describe('Lifecycle', () => {
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
+
+    // @ts-ignore
+    snapshot = await web3.currentProvider.send('evm_snapshot', []);    
+
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
@@ -55,6 +61,11 @@ describe('Lifecycle', () => {
     assetCP = await Asset.load(apCP, assetRC.assetId);
   });
 
+  afterAll(async () => {
+    // @ts-ignore
+    await web3.currentProvider.send('evm_revert', [snapshot]);    
+  });
+
   it('should settle payoff for events on behalf of the record creator and progress to the next state', async () => {
     // settle obligations
     const terms = await assetRC.getTerms();
@@ -79,7 +90,10 @@ describe('Lifecycle', () => {
     const numberOfPendingEvents = (await assetRC.getPendingSchedule(timestamp)).length;
     const oldEventId = await apRC.economics.getEventId(assetRC.assetId);
 
-    await assetRC.progress(timestamp);
+    // @ts-ignore
+    await web3.currentProvider.send('evm_mine', [timestamp]);
+
+    await assetRC.progress();
     
     const newEventId = await apRC.economics.getEventId(assetRC.assetId);
 
@@ -115,7 +129,10 @@ describe('Lifecycle', () => {
     const numberOfPendingEvents = pendingSchedule.length;
     const oldEventId = await apCP.economics.getEventId(assetCP.assetId);
 
-    await assetCP.progress(timestamp);
+    // @ts-ignore
+    await web3.currentProvider.send('evm_mine', [timestamp]);
+
+    await assetCP.progress();
     
     const newEventId = await apCP.economics.getEventId(assetCP.assetId);
 

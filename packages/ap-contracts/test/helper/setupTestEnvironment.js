@@ -3,7 +3,6 @@ const AssetRegistry = artifacts.require('AssetRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
 const AssetActor = artifacts.require('AssetActor');
-const DemoAssetActor = artifacts.require('DemoAssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 
 
@@ -23,12 +22,6 @@ async function setupTestEnvironment () {
     instances.AssetRegistryInstance.address, 
     instances.PaymentRegistryInstance.address
   );
-  instances.DemoAssetActorInstance = await DemoAssetActor.new(
-    instances.AssetRegistryInstance.address,
-    instances.PaymentRegistryInstance.address,
-    instances.PaymentRouterInstance.address,
-    instances.PAMEngineInstance.address
-  );
   instances.AssetActorInstance = await AssetActor.new(
     instances.AssetRegistryInstance.address,
     instances.PaymentRegistryInstance.address,
@@ -41,7 +34,6 @@ async function setupTestEnvironment () {
 
   await instances.PaymentRegistryInstance.setPaymentRouter(instances.PaymentRouterInstance.address);
   
-  await instances.DemoAssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
   await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
 
   return instances;

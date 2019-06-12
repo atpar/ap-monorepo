@@ -241,11 +241,10 @@ export class Asset {
   /**
    * derives obligations by computing the next state of the asset and 
    * stores the new state if all obligation where fulfilled
-   * @param {number} timestamp
    * @return {Promise<void>}
    */
-  public async progress (timestamp: number): Promise<void> {
-    await this.ap.lifecycle.progress(this.assetId, timestamp).send(
+  public async progress (): Promise<void> {
+    await this.ap.lifecycle.progress(this.assetId).send(
       { from: this.ap.signer.account, gas: 750000 }
     );
   }
