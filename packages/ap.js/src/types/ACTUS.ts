@@ -51,7 +51,7 @@ export enum Seniority { S, J }
 export enum Unit { BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO }
 
 export interface ContractEvent {
-  scheduledTime: number;
+  eventTime: number;
   eventType: EventType;
   currency: string;
   payoff: BigNumber;
@@ -59,8 +59,9 @@ export interface ContractEvent {
 }
 
 export interface ProtoEvent { 
-  scheduledTime: number;
-  scheduledTimeWithEpochOffset: number;
+  eventTime: number;
+  eventTimeWithEpochOffset: number;
+  scheduleTime: number,
   eventType: EventType;
   currency: string;
   pofType: EventType;

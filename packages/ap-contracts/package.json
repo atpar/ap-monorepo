@@ -37,7 +37,7 @@
     "test": "./scripts/test.sh"
   },
   "dependencies": {
-    "actus-solidity": "0.1.2",
+    "actus-solidity": "0.2.0-beta.1",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.9"
   },

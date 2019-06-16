@@ -149,7 +149,7 @@ export function fromContractState (state: ContractState): object {
 
 export function toContractEvent (raw: any): ContractEvent {
   return {
-    scheduledTime: Number(raw['scheduledTime']),
+    eventTime: Number(raw['eventTime']),
     eventType: Number(raw['eventType']),
     currency: String(raw['currency']),
     payoff: new BigNumber(raw['payoff']),
@@ -159,7 +159,7 @@ export function toContractEvent (raw: any): ContractEvent {
 
 export function fromContractEvent (event: ContractEvent): object {
   return {
-    scheduledTime: event.scheduledTime,
+    eventTime: event.eventTime,
     eventType: event.eventType,
     currency: event.currency,
     payoff: numberToHex(event.payoff),
@@ -169,8 +169,9 @@ export function fromContractEvent (event: ContractEvent): object {
 
 export function toProtoEvent (raw: any): ProtoEvent {
   return {
-    scheduledTime: Number(raw['scheduledTime']),
-    scheduledTimeWithEpochOffset: Number(raw['scheduledTimeWithEpochOffset']),
+    eventTime: Number(raw['eventTime']),
+    eventTimeWithEpochOffset: Number(raw['eventTimeWithEpochOffset']),
+    scheduleTime: Number(raw['scheduleTime']),
     eventType: Number(raw['eventType']),
     currency: String(raw['currency']),
     pofType: Number(raw['pofType']),
@@ -180,8 +181,9 @@ export function toProtoEvent (raw: any): ProtoEvent {
 
 export function fromProtoEvent (protoEvent: ProtoEvent): object {
   return {
-    scheduledTime: protoEvent.scheduledTime,
-    scheduledTimeWithEpochOffset: protoEvent.scheduledTimeWithEpochOffset,
+    eventTime: protoEvent.eventTime,
+    eventTimeWithEpochOffset: protoEvent.eventTimeWithEpochOffset,
+    scheduleTime: protoEvent.scheduleTime,
     eventType: protoEvent.eventType,
     currency: protoEvent.currency,
     pofType: protoEvent.pofType,
@@ -193,7 +195,7 @@ export function toProtoEventSchedule (raw: any): ProtoEventSchedule {
   const protoEventSchedule: ProtoEventSchedule = [];
   
   for (const element of raw) {
-    if (Number(element['scheduledTime']) === 0) { break; }
+    if (Number(element['eventTime']) === 0) { break; }
     protoEventSchedule.push(toProtoEvent(element));
   }
 

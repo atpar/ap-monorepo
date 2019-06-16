@@ -115,7 +115,7 @@ export class PAM implements ContractEngine {
         terms,
         state,
         protoEvent,
-        protoEvent.scheduledTime
+        protoEvent.scheduleTime
       ).call();
       
       const { nextState, event }: { nextState: ContractState; event: ContractEvent } = response;
@@ -154,7 +154,7 @@ export class PAM implements ContractEngine {
         terms,
         state,
         protoEvent,
-        protoEvent.scheduledTime
+        protoEvent.scheduleTime
       ).call();
       
       const { nextState, event }: { nextState: ContractState; event: ContractEvent } = response;

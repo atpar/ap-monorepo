@@ -63,7 +63,7 @@ contract('AssetActor', (accounts) => {
       this.state, 
       this.terms['maturityDate']
     );
-    const eventTime = iedEvent.scheduledTime;
+    const eventTime = iedEvent.eventTime;
     const payoff = new BigNumber(iedEvent.payoff);
     const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1;
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());

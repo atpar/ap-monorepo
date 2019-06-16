@@ -92,7 +92,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		) = pamEngine.computeNextState(terms, state, block.timestamp);
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (pendingEvents[i].scheduledTime == uint256(0)) { break; }
+			if (pendingEvents[i].eventTime == uint256(0)) { break; }
 			eventId += 1;
 			uint256 payoff = (pendingEvents[i].payoff < 0) ?
 				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
