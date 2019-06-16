@@ -5,9 +5,10 @@
     "lerna": "^3.13.0"
   },
 	"scripts": {
-    "start": "./scripts/start.sh",
-    "publish": "lerna run build && lerna publish",
     "build": "lerna run build",
+    "link-packages": "lerna link",
+    "publish": "lerna run build && lerna publish",
+    "start": "./scripts/start.sh",
     "test": "lerna run test"
   },
   "publishConfig": {
