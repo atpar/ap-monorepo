@@ -9,7 +9,7 @@ mnemonic.js
 
 node_modules/
 
-yarn.lock
+# yarn only
 package-lock.json
 
 lerna-debug.log
