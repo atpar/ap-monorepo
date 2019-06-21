@@ -1,6 +1,5 @@
 import { AP } from "../";
 import { OrderData, OrderParams } from "../types";
-import { SendOptions } from "web3-eth-contract/types";
 
 
 export class Order {
@@ -40,14 +39,13 @@ export class Order {
   
   /**
    * issues a new asset if the order is filled.
-   * @param {SendOptions} txOptions web3 transaction options
    */
-  public async issueAssetFromOrder (txOptions: SendOptions): Promise<void> {
+  public async issueAssetFromOrder (): Promise<void> {
     if (!this.orderData.signatures.makerSignature || !this.orderData.signatures.takerSignature) {
       throw(new Error('EXECUTION_ERROR: Can not issue asset from unfilled order. Signature is missing!'));
     }
 
-    await this.ap.issuance.fillOrder(this.orderData).send(txOptions);
+    await this.ap.issuance.fillOrder(this.orderData).send({ from: this.ap.signer.account, gas: 5000000 });
   }
   
   /**
