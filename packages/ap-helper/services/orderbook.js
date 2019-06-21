@@ -1,51 +1,17 @@
-const router = require('express').Router()
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 
 const adapter = new FileSync('Orderbook-Database.json')
 const db = low(adapter)
 
-const { fillOrder } = require('../services/ethereum')
-
 
 db.defaults({ orders: [] }).write()
-
-router.post('/orders', async (req, res) => {
-  const orderData = req.body.order
-  
-  if (!assertOrderData(orderData)) { return res.status(400).end() }
-  
-  // check if unfilled or filled order
-  if (orderData['signatures']['makerSignature'] && orderData['signatures']['takerSignature']) {
-    try { await fillOrder(orderData) } catch (error) { 
-      console.error(error)
-      return res.status(500).end()
-    }
-    console.log('ORDERBOOK: Filled order.')
-    if (removeUnfilledOrder(orderData)) { console.error() }
-  } else {
-    try { saveUnfilledOrder(orderData) } catch (error) {
-      console.error('ORDERBOOK: Could not store unfilled order.', error)
-      return res.status(500).end()
-    }
-    console.log('ORDERBOOK: Stored unfilled order.')
-  }
-
-  res.status(200).end()
-})
-
-router.get('/orders', async (req, res) => {
-  const orders = getUnfilledOrders()
-
-  res.status(200).send(JSON.stringify(orders))
-  res.end()
-})
 
 function getUnfilledOrders () {
   return db.get('orders').map('order').value()
 }
 
-function saveUnfilledOrder (order) {
+function storeUnfilledOrder (order) {
   const id = order['signatures']['makerSignature']
 
   if (db.get('orders').find({ id }).value()) {
@@ -61,6 +27,14 @@ function removeUnfilledOrder (order) {
   db.get('orders').remove({ id }).write()
 }
 
+function isFilledOrder (orderData) {
+  if (orderData['signatures']['makerSignature'] && orderData['signatures']['takerSignature']) {
+    return true
+  }
+
+  return false
+}
+
 function assertOrderData (orderData) {
   if (!orderData) { return false }
   if (!orderData['makerAddress'] || !orderData['actorAddress']) { return  false }
@@ -70,8 +44,15 @@ function assertOrderData (orderData) {
   if (!orderData['salt']) { return false}
   if (!orderData['takerAddress'] !== !orderData['signatures']['takerSignature']) { return false }
   if (!orderData['signatures']['makerSignature']) { return false }
+  
   return true
 }
 
 
-module.exports = router
+module.exports = { 
+  assertOrderData,
+  getUnfilledOrders,
+  isFilledOrder,
+  storeUnfilledOrder,
+  removeUnfilledOrder
+}
