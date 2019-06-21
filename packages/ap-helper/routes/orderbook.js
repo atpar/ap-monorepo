@@ -1,8 +1,14 @@
 const router = require('express').Router()
-const fs = require('fs')
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+
+const adapter = new FileSync('Orderbook-Database.json')
+const db = low(adapter)
 
 const { fillOrder } = require('../services/ethereum')
-const PATH_TO_DATABASE = './Orderbook-Database.json'
+
+
+db.defaults({ orders: [] }).write()
 
 router.post('/orders', async (req, res) => {
   const orderData = req.body.order
@@ -16,10 +22,10 @@ router.post('/orders', async (req, res) => {
       return res.status(500).end()
     }
     console.log('ORDERBOOK: Filled order.')
-    try { await removeUnfilledOrder(orderData) } catch (error) { console.error(error) }
+    if (removeUnfilledOrder(orderData)) { console.error() }
   } else {
-    try { await saveUnfilledOrder(orderData) } catch (error) {
-      console.error(error)
+    try { saveUnfilledOrder(orderData) } catch (error) {
+      console.error('ORDERBOOK: Could not store unfilled order.', error)
       return res.status(500).end()
     }
     console.log('ORDERBOOK: Stored unfilled order.')
@@ -29,65 +35,30 @@ router.post('/orders', async (req, res) => {
 })
 
 router.get('/orders', async (req, res) => {
-  try { orders = await getUnfilledOrders() } catch (error) {
-    if (
-      String(error).includes('Error: Error: ENOENT: no such file or directory') ||
-      String(error).includes('SyntaxError: Unexpected end of JSON input')
-    ) {
-      return res.status(404).end()
-    } else {
-      return res.status(500).end()
-    }
-  }
+  const orders = getUnfilledOrders()
 
   res.status(200).send(JSON.stringify(orders))
   res.end()
 })
 
-async function getUnfilledOrders () {
-  return new Promise((resolve, reject) => {
-    fs.readFile(PATH_TO_DATABASE, (error, result) => {
-      try {
-        if (error) { throw new Error(error) }
-        const json = JSON.parse(result.toString('utf8'))
-        if (json == null) { throw new Error() }
-        resolve(json)
-      } catch (error) { return reject(error) }
-    })
-  })
+function getUnfilledOrders () {
+  return db.get('orders').map('order').value()
 }
 
-async function saveUnfilledOrder (order) {
-  const identifier = order['signatures']['makerSignature']
-  const data = { [identifier]: order }
+function saveUnfilledOrder (order) {
+  const id = order['signatures']['makerSignature']
 
-  // catch if file does not exist
-  let entries = {}
-  try { entries = await getUnfilledOrders() } catch (error) {}
+  if (db.get('orders').find({ id }).value()) {
+    throw(new Error('Unfilled order already exists!'))
+  }
 
-  if (entries[identifier]) { throw(new Error('Unfilled order already exists!')) }
-
-  entries = { ...entries, ...data }
-
-  return new Promise((resolve, reject) => {
-    fs.writeFile(PATH_TO_DATABASE, JSON.stringify(entries, null, 2), 'utf8', (error) => {
-      if (error) { return reject(error) }
-      resolve()
-    })
-  })
+  db.get('orders').push({ id, order }).write()
 }
 
-async function removeUnfilledOrder (order) {
-  const identifier = order['signatures']['makerSignature']
-  const entries = await getUnfilledOrders()
-  delete entries[identifier]
+function removeUnfilledOrder (order) {
+  const id = order['signatures']['makerSignature']
 
-  return new Promise((resolve, reject) => {
-    fs.writeFile(PATH_TO_DATABASE, JSON.stringify(entries, null, 2), 'utf8', (error) => {
-      if (error) { return reject(error) }
-      resolve()
-    })
-  })
+  db.get('orders').remove({ id }).write()
 }
 
 function assertOrderData (orderData) {
