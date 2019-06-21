@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 
 import { OrderData } from './types';
-
 import * as APTypes from './types';
 
 import { Asset } from './Asset';
@@ -18,7 +17,6 @@ import {
   IssuanceAPI, 
   ContractsAPI 
 } from './apis';
-
 
 
 export class AP {
