@@ -1,14 +1,12 @@
 import Web3 from 'web3';
 
-import { SignedContractUpdate, OrderData } from './types';
+import { OrderData } from './types';
 
 import * as APTypes from './types';
 
 import { Asset } from './Asset';
-import { AssetChannel } from './channel/AssetChannel';
 import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
-import { Client } from './channel/Client';
 import { Signer } from './utils/Signer';
 import { Common } from './utils/Common';
 import { 
@@ -39,7 +37,6 @@ export class AP {
   public common: Common;
 
   public relayer: Relayer | null;
-  public client: Client | null;
 
   constructor (
     web3: Web3, 
@@ -53,7 +50,6 @@ export class AP {
     signer: Signer, 
     common: Common,
     relayer?: Relayer,
-    client?: Client
   ) {
     this.web3 = web3;
     
@@ -69,22 +65,6 @@ export class AP {
     this.common = common;
 
     this.relayer = relayer ? relayer : null;
-    this.client = client ? client : null;
-  }
-
-  /**
-   * polls for new uninstantiated AssetChannels
-   * @param {(assetChannel: AssetChannel) => void} cb callback function to be called 
-   * upon receiving a signed contract update of an uninstantiated AssetChannel
-   */
-  public onNewAssetChannel (cb: (assetChannel: AssetChannel) => void): void {
-    if (!this.client) { throw('FEATURE_NOT_AVAILABLE: Client is not enabled!'); }
-    this.client.onNewContractUpdate(this.signer.account, async (signedContractUpdate: SignedContractUpdate) => {
-      try {
-        const assetChannel = await AssetChannel.fromSignedContractUpdate(this, signedContractUpdate);
-        cb(assetChannel);
-      } catch (error) { return; }
-    });
   }
 
   /**
@@ -168,7 +148,6 @@ export class AP {
     const tokenization = new TokenizationAPI(contracts);
     
     const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
-    const client = (relayers.channelRelayer) ? Client.init(relayers.channelRelayer) : undefined;
 
     return new AP(
       web3, 
@@ -181,13 +160,11 @@ export class AP {
       contracts,
       signer, 
       common, 
-      relayer, 
-      client
+      relayer,
     );
   }
 }
 
 export { Asset };
-export { AssetChannel };
 export { Order };
 export { APTypes };

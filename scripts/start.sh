@@ -31,7 +31,6 @@ echo "clearing databases ..."
 
 (
 	cd packages/ap-helper
-	echo "" > Channel-Database.json
 	echo "" > Orderbook-Database.json
 )
 
