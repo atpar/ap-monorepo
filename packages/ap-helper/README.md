@@ -3,7 +3,6 @@
 Helper service for working with `ap.js`. 
 Contains:
 - orderbook-relayer
-- channel-relayer
 - ether and erc20 sample token faucet
 - api for retrieving ACTUS test terms
 - api for progress the state of an asset
@@ -15,12 +14,6 @@ Contains:
   `POST /orders` Post an unfilled or filled order to the orderbook
 
   `GET /orders` Retrieve unfilled orders from the orderbook
-
-- **Channel**
-
-  `POST /contracts` Retrieve contract updates for an address
-
-  `GET /contracts` Post a contract update
 
 - **Resources**
 
@@ -53,7 +46,6 @@ node ./node_modules/@atpar/ap-helper
 To clear the orderbook and channel message database:
 ```sh
 echo "" > ./node_modules/@atpar/ap-helper/Orderbook-Database.json
-echo "" > ./node_modules/@atpar/ap-helper/Channel-Database.json
 ```
 
 ## Development

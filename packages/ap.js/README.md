@@ -1,6 +1,6 @@
 # AP.js
 
-AP.js is a typescript library for interacting with the ACTUS protocol smart contracts. 
+AP.js is a typescript library for interacting with the ACTUS Protocol smart contracts. 
 It allows developers to create and manage ACTUS assets.
 
 ## Usage
@@ -10,19 +10,19 @@ yarn add @atpar/ap.js
 ```
 
 ### Setup
-Initializing the ACTUS protocol library.
+Initializing the ACTUS Protocol library.
 ```ts
 import { AP, Asset, Order } from './ap.js';
 
 const ap = await AP.init(
   web3, 
   DEFAULT_ACCOUNT, 
-  { orderRelayer?: ORDER_RELAYER_URL, channelRelayer? :CHANNEL_RELAYER_URL }
+  { orderRelayer?: ORDER_RELAYER_URL } // optional, required when utilizing the IssuanceAPI
 );
 ```
 
 ### Order
-`Order` is a wrapper around the Issuance API for creating orders and issuing assets from a co-signed orders.
+`Order` is a wrapper around the `IssuanceAPI` for creating orders and issuing assets from a co-signed orders.
 ```ts
 const orderParams: OrderParams = {
   makerAddress: MAKER_ADDRESS,
@@ -32,29 +32,88 @@ const orderParams: OrderParams = {
 
 const order = Order.create(ap, orderParams);
 ```
-Receiving orders from the orderbook of an order-relayer
+
+Instantiate an `Order` from `OrderData`.
+```ts
+const orderData: OrderData = {
+  makerAddress: MAKER_ADDRESS;
+  takerAddress: null; // depending on if order was filled by taker
+  actorAddress: ACTOR_ADDRESS;
+  terms: CONTRACT_TERMS;
+  makerCreditEnhancementAddress: MAKER_CREDIT_ENHANCEMENT_ADDRESS;
+  takerCreditEnhancementAddress: null; // depending on if order was filled by taker
+  salt: SALT;
+  signatures: {
+    makerSignature: null; // depending on if order was signed by maker
+    takerSignature: null; // depending on if order was signed by taker
+  };
+};
+
+const order = Order.load(ap, orderData);
+```
+
+Receiving orders from the orderbook of an order-relayer.
 ```ts
 ap.onNewOrder((order) => { ... });    
 ```
-Signing and sending an order to an order-relayer (as a maker or taker)
+
+Signing and sending an order to an order-relayer (as a maker or taker).
 ```ts
 await order.signAndSendOrder();
 ```
 
-### Asset
-`Asset` is a wrapper around AP.js APIs to make the creation and the lifecycle management of an ACTUS asset easier.
-
-Creating a new Asset
+Issue a new asset from an co-signed order (requires both signatures).
 ```ts
-const terms: ContractTerms = { ... };
-const ownership: AssetOwnership = { ... };
-
-const asset = await Asset.create(ap, CONTRACT_TERMS, CONTRACT_OWNERSHIP);
+await order.issueAssetFromOrder();
 ```
-Loading a Asset given its AssetId from the on-chain registries
+
+### Asset
+`Asset` is a wrapper around `AP.js` APIs to make the creation and the lifecycle management of an ACTUS asset easier.
+
+Creating a new Asset.
+```ts
+const asset = await Asset.create(ap, CONTRACT_TERMS, ASSET_OWNERSHIP);
+```
+
+Loading a `Asset` given its AssetId from the on-chain registries.
 ```ts
 const asset = await Asset.load(ap, ASSET_ID);
 ```
+
+Retrieve information of the asset such as the terms, the state or the ownership.
+```ts
+const terms = await asset.getTerms();
+```
+
+Expected Schedule vs. Pending schedule:
+Every ACTUS asset has a planned (expected) schedule 
+which is derived from the asset terms. During the lifecycle of an asset unexpected events
+such as penalty payments or rate resets can occur. The pending schedule accounts for such unexpected events 
+by factoring in the current state of the asset.
+```ts
+const expectedSchedule = await asset.getExpectedSchedule();
+const pendingSchedule = await asset.getPendingSchedule();
+```
+
+Settlement of obligations: The next obligation is the most immediate obligation which is not yet paid off.
+```ts
+const amount = await getAmountOutstandingForNextObligation(TIMESTAMP);
+await asset.settleNextObligation(TIMESTAMP, amount); // can also be partially paid off
+```
+
+Progressing the state of the asset. If all obligations in of the pending schedule are paid off, 
+the state of the asset can be updated.
+```ts
+await asset.progress(); // progresses the state to the current block timestamp
+```
+
+Tokenizing the one of the beneficiaries of the asset. 
+Tokenizes the beneficary (respective to the default accounts ownership of the asset) 
+by deploying a new ClaimsToken smart contract.
+```ts
+const claimsTokenAddress = await asset.tokenizeBeneficiary();
+```
+
 
 ## API Overview
 | API             | Description                                                                                                                         |
