@@ -10,7 +10,7 @@ const state = {
 
 async function initialize () {
   state.web3 = new Web3('ws://127.0.01:8545')
-  state.ap = await AP.init(state.web3, await getAccount(), {})
+  state.ap = await AP.init(state.web3, await getAccount())
 
   state.sampleTokenInstance = new state.web3.eth.Contract(ERC20SampleTokenArtifact.abi)
   await state.sampleTokenInstance.deploy(

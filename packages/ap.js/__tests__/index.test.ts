@@ -15,7 +15,7 @@ describe('APClass', () => {
   });
 
   it('should initialize ap.js', async () => {
-    ap = await AP.init(web3, recordCreator, {});
+    ap = await AP.init(web3, recordCreator);
     expect(ap instanceof AP).toBe(true);
   });
 });

@@ -32,8 +32,8 @@ describe('OrderClass', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    apRC = await AP.init(web3, recordCreator, { orderRelayer: 'http://localhost:9000' });
-    apCP = await AP.init(web3, counterparty, { orderRelayer: 'http://localhost:9000' });
+    apRC = await AP.init(web3, recordCreator, 'http://localhost:9000');
+    apCP = await AP.init(web3, counterparty, 'http://localhost:9000');
 
     apCP.onNewAssetIssued(async () => {
       receivedNewAsset = true;

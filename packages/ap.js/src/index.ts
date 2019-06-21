@@ -122,13 +122,13 @@ export class AP {
    * returns a new AP instance
    * @param {Web3} web3 Web3 instance
    * @param {string} defaultAccount default account for signing contract updates and transactions
-   * @param {{orderRelayer?: string, channelRelayer?: string}} relayers the urls for the orderRelayer and the channelRelayer
+   * @param {string?} orderRelayer the url for the orderRelayer (optional)
    * @returns {Promise<AP>} 
    */
   public static async init (
     web3: Web3, 
     defaultAccount: string, 
-    relayers: {orderRelayer?: string, channelRelayer?: string}
+    orderRelayer?: string
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
@@ -145,7 +145,7 @@ export class AP {
     const issuance = new IssuanceAPI(contracts);
     const tokenization = new TokenizationAPI(contracts);
     
-    const relayer = (relayers.orderRelayer) ? Relayer.init(relayers.orderRelayer) : undefined;
+    const relayer = (orderRelayer) ? Relayer.init(orderRelayer) : undefined;
 
     return new AP(
       web3, 

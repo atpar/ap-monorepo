@@ -32,8 +32,8 @@ describe('AssetClass', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    apRC = await AP.init(web3, recordCreator, {});
-    apCP = await AP.init(web3, counterparty, {});
+    apRC = await AP.init(web3, recordCreator);
+    apCP = await AP.init(web3, counterparty);
   });
 
   it('should create a new Asset instance', async () => {

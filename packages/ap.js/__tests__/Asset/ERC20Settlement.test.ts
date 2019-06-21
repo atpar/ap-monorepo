@@ -50,8 +50,8 @@ describe('SettlementInERC20', () => {
       { from: recordCreator, gas: 2000000 }
     );
 
-    apRC = await AP.init(web3, recordCreator, {});
-    apCP = await AP.init(web3, counterparty, {});
+    apRC = await AP.init(web3, recordCreator);
+    apCP = await AP.init(web3, counterparty);
 
     apRC.payment.onPayment(() => {
       paymentListenerCounter++;

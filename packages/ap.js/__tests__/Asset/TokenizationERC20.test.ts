@@ -48,8 +48,8 @@ describe('TokenizationERC20', () => {
       { from: counterparty, gas: 2000000 }
     );
 
-    apRC = await AP.init(web3, recordCreator, {});
-    apCP = await AP.init(web3, counterparty, {});
+    apRC = await AP.init(web3, recordCreator);
+    apCP = await AP.init(web3, counterparty);
 
     const terms = (<any>contractTemplatesTyped)['10001'];
     terms.currency = paymentToken.options.address;

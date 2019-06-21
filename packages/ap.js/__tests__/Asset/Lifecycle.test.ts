@@ -41,8 +41,8 @@ describe('Lifecycle', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    apRC = await AP.init(web3, recordCreator, {});
-    apCP = await AP.init(web3, counterparty, {});
+    apRC = await AP.init(web3, recordCreator);
+    apCP = await AP.init(web3, counterparty);
 
     apRC.lifecycle.onProgress(() => {
       progressListenerCounter++;
