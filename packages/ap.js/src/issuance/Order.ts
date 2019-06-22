@@ -1,5 +1,5 @@
 import { AP } from "../";
-import { OrderData, OrderParams } from "../types";
+import { OrderData, OrderParams, isOrderData } from "../types";
 
 
 export class Order {
@@ -55,6 +55,8 @@ export class Order {
    * @returns {Order}
    */
   public static load (ap: AP, orderData: OrderData): Order {
+    if (!isOrderData(orderData)) { throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); }
+
     return new Order(ap, orderData);
   }
 

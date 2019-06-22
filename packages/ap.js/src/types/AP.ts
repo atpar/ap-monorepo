@@ -144,3 +144,23 @@ export interface PaidEvent {
   eventId: number;
   amount: BigNumber;
 }
+
+export function isOrderData (obj: any): obj is OrderData {
+  if (obj.makerAddress === null) { return false; }
+  if (obj.terms === null) { return false; }
+  if (obj.makerCreditEnhancementAddress === null) { return false; }
+
+  if (obj.takerAddress === undefined) { return false; }
+  if (obj.takerCreditEnhancementAddress === undefined) { return false; }
+
+  if (obj.actorAddress === null) { return false; }
+  if (obj.salt === null) { return false; }
+
+  if (
+    obj.signatures === null || 
+    obj.signatures.makerSignature === undefined || 
+    obj.signatures.takerSignature === undefined
+  ) { return false; }
+
+  return true;
+}
