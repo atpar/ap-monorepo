@@ -101,16 +101,16 @@ export class AssetRegistry {
   });
   
   public static async instantiate (web3: Web3): Promise<AssetRegistry> {
-    const chainId = await web3.eth.net.getId();
+    const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[chainId].AssetRegistry) { 
+    if (!Deployments[netId] || !Deployments[netId].AssetRegistry) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const assetRegistryInstance = new web3.eth.Contract(
       //@ts-ignore
       AssetRegistryArtifact.abi,
       //@ts-ignore
-      Deployments[chainId].AssetRegistry
+      Deployments[netId].AssetRegistry
     );
 
     return new AssetRegistry(assetRegistryInstance);

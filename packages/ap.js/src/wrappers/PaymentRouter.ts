@@ -37,16 +37,16 @@ export class PaymentRouter {
   }
 
   public static async instantiate (web3: Web3): Promise<PaymentRouter> {
-    const chainId = await web3.eth.net.getId();
+    const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[chainId].PaymentRouter) { 
+    if (!Deployments[netId] || !Deployments[netId].PaymentRouter) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const PaymentRouterInstance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRouterArtifact.abi,
       // @ts-ignore
-      Deployments[chainId].PaymentRouter
+      Deployments[netId].PaymentRouter
     );
 
     return new PaymentRouter(PaymentRouterInstance);
