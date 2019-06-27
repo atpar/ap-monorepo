@@ -78,6 +78,18 @@ export class AP {
   }
 
   /**
+   * returns orders from the orderbook of the relayer
+   * @returns {Promise<Order>}
+   */
+  public async getOrders (): Promise<Order[]> {
+    if (!this.relayer) { throw('FEATURE_NOT_AVAILABLE: Relayer is not enabled!'); }
+    const orderData = await this.relayer.getOrders();
+    return Object.values(orderData).map((orderData: OrderData) => {
+      return Order.load(this, orderData);
+    });
+  }
+
+  /**
    * look for new issued assets in which the default account is involved
    * @param {(asset: Asset) => void} cb callback function to be called
    * after a new asset in which the default account is involved is issued

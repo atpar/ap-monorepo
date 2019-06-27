@@ -21,7 +21,16 @@ export class Relayer {
     if (!(await this.provider.sendMessage(message))) { 
       throw(new Error('EXECUTION_ERROR: Could not send order'));
     }
-  } 
+  }
+
+  /**
+   * returns orders from the orderbook of the relayer
+   * @returns {Promise<OrderData[>]}
+   */
+  public async getOrders (): Promise<OrderData[]> {
+    const data = await this.provider.receiveMessage('');
+    return data as OrderData[];
+  }
 
   /**
    * registers a listener which calls the provided callback 

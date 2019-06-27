@@ -53,7 +53,13 @@ describe('OrderClass', () => {
     await order.signAndSendOrder();
   });
 
-  it('should receive an unfilled order on behalf of the counterparty', async () => {
+  it('should retrieve an unfilled order on behalf of the counterparty', async () => {
+    const orders = await apCP.getOrders();
+
+    expect(orders[0].orderData.makerAddress).toBe(recordCreator);
+  });
+
+  it('should receive an unfilled order on behalf of the counterparty via listener', async () => {
     const mockCallback = jest.fn(() => {});
 
     apCP.onNewOrder(mockCallback);
@@ -76,7 +82,7 @@ describe('OrderClass', () => {
     await new Promise(resolve => setTimeout(resolve, 2500)); // poll frequency set to 2s
   });
 
-  it('should receive a new issued asset', async () => {
+  it('should receive a new issued asset via listener', async () => {
     expect(receivedNewAsset).toBe(true);
   });
 
