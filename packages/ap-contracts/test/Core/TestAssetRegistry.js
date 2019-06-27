@@ -42,9 +42,28 @@ contract('AssetRegistry', (accounts) => {
       actor
     );
 
+    const terms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const state = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     
+    function parseTerms (array) {
+      return array.map((value) => {
+        switch (typeof value) {
+          case 'object':
+            return (Array.isArray(value)) ? parseTerms(value) : parseTerms(Object.values(value));
+          case 'number':
+            return value.toString();
+          case 'boolean':
+            return value;
+          case 'string':
+            return (web3.utils.isHexStrict(value) && value.length < 42) ? web3.utils.hexToNumberString(value) : value;
+          default:
+            return value;
+        }
+      });
+    }
+
+    assert.deepEqual(parseTerms(terms), parseTerms(Object.values(this.terms)))
     assert.deepEqual(state, this.state);
     assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);

@@ -34,12 +34,11 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 			"AssetRegistry.registerAsset: ENTRY_ALREADY_EXISTS"
 		);
 
-		assets[assetId] = Asset(
+		setAsset(
 			assetId,
 			ownership,
 			terms,
 			state,
-			0,
 			actor
 		);
 	}

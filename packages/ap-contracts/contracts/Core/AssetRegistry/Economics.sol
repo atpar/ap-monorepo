@@ -20,7 +20,7 @@ contract Economics is AssetRegistryStorage {
 	 * @return terms of the asset
 	 */
 	function getTerms(bytes32 assetId) external view returns (ContractTerms memory) {
-		return assets[assetId].terms;
+		return decodeAndGetTerms(assetId);
 	}
 
 	/**
@@ -29,7 +29,7 @@ contract Economics is AssetRegistryStorage {
 	 * @return state of the asset
 	 */
 	function getState(bytes32 assetId) external view returns (ContractState memory) {
-		return assets[assetId].state;
+		return decodeAndGetState(assetId);
 	}
 
 	/**
@@ -42,23 +42,23 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * sets next state of a registered asset
-	 * @dev can only be updated by the assets actor
-	 * @param assetId id of the asset
-	 * @param state next state of the asset
-	 */
-	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
-		assets[assetId].state = state;
-	}
-
-	/**
 	 * sets new terms for a registered asset
 	 * @dev can only be updated by the assets actor
 	 * @param assetId id of the asset
 	 * @param terms new terms of the asset
 	 */
 	function setTerms(bytes32 assetId, ContractTerms memory terms) public onlyDesignatedActor (assetId) {
-		assets[assetId].terms = terms;
+		encodeAndSetTerms(assetId, terms);
+	}
+
+	/**
+	 * sets next state of a registered asset
+	 * @dev can only be updated by the assets actor
+	 * @param assetId id of the asset
+	 * @param state next state of the asset
+	 */
+	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
+		encodeAndSetState(assetId, state);
 	}
 
 	/**
