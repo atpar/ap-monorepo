@@ -47,7 +47,7 @@
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",
-    "truffle": "5.0.2",
+    "truffle": "^5.0.2",
     "web3-utils": "1.0.0-beta.46"
   }
 }
