@@ -1,5 +1,6 @@
 import { AssetIssuedEvent, OrderData, TransactionObject } from '../types';
 import { ContractsAPI } from './ContractsAPI';
+import { EventOptions } from 'web3-eth-contract/types';
 
 
 export class IssuanceAPI {
@@ -20,10 +21,15 @@ export class IssuanceAPI {
 
   /**
    * returns all issuances of assets
+   * @param {EventOptions?} options to filter for issuances
    * @returns {Promise<AssetIssuedEvent[]>}
    */
-  public getAssetIssuances (): Promise<AssetIssuedEvent[]> {
-    return this.contracts.assetIssuer.getAssetIssuedEvents().call();
+  public getAssetIssuances (options?: EventOptions): Promise<AssetIssuedEvent[]> {
+    return this.contracts.assetIssuer.getAssetIssuedEvents(options || {
+      filter: {},
+      fromBlock: 0,
+      toBlock: 'latest'
+    }).call();
   }
 
   /**

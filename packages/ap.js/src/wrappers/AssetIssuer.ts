@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { Contract } from 'web3-eth-contract/types';
+import { Contract, EventOptions } from 'web3-eth-contract/types';
 import { EventLog } from 'web3-core/types';
 
 import { AssetIssuedEvent, OrderData, TransactionObject, CallObject } from '../types';
@@ -17,13 +17,9 @@ export class AssetIssuer {
     this.assetIssuer = assetIssuerInstance;
   }
 
-  public getAssetIssuedEvents = (): CallObject<AssetIssuedEvent[]> => ({
+  public getAssetIssuedEvents = (options: EventOptions): CallObject<AssetIssuedEvent[]> => ({
     call: async (): Promise<AssetIssuedEvent[]> => {
-      const events = await this.assetIssuer.getPastEvents('AssetIssued', {
-        filter: {},
-        fromBlock: 0,
-        toBlock: 'latest'
-      });
+      const events = await this.assetIssuer.getPastEvents('AssetIssued', options);
 
       const assetIssuedEvents: AssetIssuedEvent[] = events.map((event): AssetIssuedEvent => {
         return toAssetIssuedEvent(event);
