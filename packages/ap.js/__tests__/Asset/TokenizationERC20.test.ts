@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import fetch from 'cross-fetch';
 import { Contract } from 'web3-eth-contract/types';
 
 // @ts-ignore

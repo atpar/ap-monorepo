@@ -13,15 +13,11 @@ export class Order {
   }
 
   /**
-   * signs and send the order to the order relayer
+   * signs the order either as the maker (creating an unfilled order) or as the taker (filling an order)
    * @dev this requires the users signature (metamask pop-up)
    * @returns {Promise<void>}
    */
-  public async signAndSendOrder (): Promise<void> {
-    if (!this.ap.relayer)  {
-      throw(new Error('FEATURE_NOT_AVAILABLE: Relayer is not enabled!')); 
-    }
-
+  public async signOrder (): Promise<void> {
     if (this.orderData.makerAddress === this.ap.signer.account) {
       this.orderData.signatures.makerSignature = await this.ap.signer.signOrderAsMaker(this.orderData);
     } else if (this.orderData.takerAddress === null) {
@@ -33,8 +29,6 @@ export class Order {
         'EXECUTION_ERROR: makerAddress does not match or takerAddress is already set.'
       ));
     }
-
-    await this.ap.relayer.sendOrder(this.orderData);
   }
   
   /**
@@ -46,6 +40,14 @@ export class Order {
     }
 
     await this.ap.issuance.fillOrder(this.orderData).send({ from: this.ap.signer.account, gas: 5000000 });
+  }
+
+  /**
+   * serializes the order as orderData which can be deserialized again via load()
+   * @returns {OrderData}
+   */
+  public serializeOrder (): OrderData {
+    return this.orderData;
   }
   
   /**

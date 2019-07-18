@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import fetch from 'cross-fetch';
 
 import { AP, Asset } from '../../src';
 import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';

@@ -1,7 +1,8 @@
 import Web3 from 'web3';
+import fetch from 'cross-fetch';
 
 import { AP, Order } from '../src';
-import { ContractTerms, ContractType, OrderParams } from '../src/types';
+import { ContractTerms, ContractType, OrderParams, OrderData } from '../src/types';
 
 
 describe('OrderClass', () => {
@@ -14,7 +15,9 @@ describe('OrderClass', () => {
   let recordCreator: string;
   let counterparty: string;
 
+  let orderData: OrderData;
   let receivedNewAsset: boolean = false;
+
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -32,8 +35,8 @@ describe('OrderClass', () => {
       (<any>contractTemplatesTyped)[key] = typedContractTerms;
     });
 
-    apRC = await AP.init(web3, recordCreator, 'http://localhost:9000');
-    apCP = await AP.init(web3, counterparty, 'http://localhost:9000');
+    apRC = await AP.init(web3, recordCreator);
+    apCP = await AP.init(web3, counterparty);
 
     apCP.onNewAssetIssued(async () => {
       receivedNewAsset = true;
@@ -50,34 +53,21 @@ describe('OrderClass', () => {
     }
 
     const order = Order.create(apRC, orderParams);
-    await order.signAndSendOrder();
+    await order.signOrder();
+
+    orderData = order.serializeOrder();
   });
 
-  it('should retrieve an unfilled order on behalf of the counterparty', async () => {
-    const orders = await apCP.getOrders();
+  it('should verify and sign order on behalf of the counterparty', async () => {
+    const order = Order.load(apCP, orderData);
 
-    expect(orders[0].orderData.makerAddress).toBe(recordCreator);
+    await order.signOrder();
   });
 
-  it('should receive an unfilled order on behalf of the counterparty via listener', async () => {
-    const mockCallback = jest.fn(() => {});
+  it('should fill co-signed order', async () => {
+    const order = Order.load(apRC, orderData);
 
-    apCP.onNewOrder(mockCallback);
-
-    await new Promise(resolve => setTimeout(resolve, 2500)); // poll frequency set to 2s
-
-    expect(mockCallback.mock.calls.length).toBe(1);
-  });
-
-  it('should confirm and fill order on behalf of the counterparty', async () => {
-    let sentOrder = false;
-    
-    apCP.onNewOrder(async (order: Order) => { 
-      if (!sentOrder) {
-        await order.signAndSendOrder();
-        sentOrder = true;
-      }
-    });
+    await order.issueAssetFromOrder();
 
     await new Promise(resolve => setTimeout(resolve, 2500)); // poll frequency set to 2s
   });

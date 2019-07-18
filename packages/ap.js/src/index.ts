@@ -1,10 +1,8 @@
 import Web3 from 'web3';
 
-import { OrderData } from './types';
 import * as APTypes from './types';
 
 import { Asset } from './Asset';
-import { Relayer } from './issuance/Relayer';
 import { Order } from './issuance/Order';
 import { Signer } from './utils/Signer';
 import { Common } from './utils/Common';
@@ -34,8 +32,6 @@ export class AP {
   public signer: Signer;
   public common: Common;
 
-  public relayer: Relayer | null;
-
   constructor (
     web3: Web3, 
     ownership: OwnershipAPI, 
@@ -45,9 +41,8 @@ export class AP {
     issuance: IssuanceAPI,
     tokenization: TokenizationAPI,
     contracts: ContractsAPI,
-    signer: Signer, 
-    common: Common,
-    relayer?: Relayer,
+    signer: Signer,
+    common: Common
   ) {
     this.web3 = web3;
     
@@ -61,32 +56,6 @@ export class AP {
     this.contracts = contracts;
     this.signer = signer;
     this.common = common;
-
-    this.relayer = relayer ? relayer : null;
-  }
-
-  /**
-   * polls for new unfilled orders from the order relayer
-   * @param {(order: Order) => void} cb callback function to be called
-   * upon receiving a new unfilled order from the orderbook of the relayer
-   */
-  public onNewOrder (cb: (order: Order) => void): void {
-    if (!this.relayer) { throw('FEATURE_NOT_AVAILABLE: Relayer is not enabled!'); }
-    this.relayer.onNewOrder((orderData: OrderData) => {
-      cb(Order.load(this, orderData));
-    });
-  }
-
-  /**
-   * returns orders from the orderbook of the relayer
-   * @returns {Promise<Order>}
-   */
-  public async getOrders (): Promise<Order[]> {
-    if (!this.relayer) { throw('FEATURE_NOT_AVAILABLE: Relayer is not enabled!'); }
-    const orderData = await this.relayer.getOrders();
-    return Object.values(orderData).map((orderData: OrderData) => {
-      return Order.load(this, orderData);
-    });
   }
 
   /**
@@ -134,13 +103,11 @@ export class AP {
    * returns a new AP instance
    * @param {Web3} web3 Web3 instance
    * @param {string} defaultAccount default account for signing contract updates and transactions
-   * @param {string?} orderRelayer the url for the orderRelayer (optional)
    * @returns {Promise<AP>} 
    */
   public static async init (
     web3: Web3, 
-    defaultAccount: string, 
-    orderRelayer?: string
+    defaultAccount: string
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
@@ -156,8 +123,6 @@ export class AP {
     const lifecycle = new LifecycleAPI(contracts);
     const issuance = new IssuanceAPI(contracts);
     const tokenization = new TokenizationAPI(contracts);
-    
-    const relayer = (orderRelayer) ? Relayer.init(orderRelayer) : undefined;
 
     return new AP(
       web3, 
@@ -169,8 +134,7 @@ export class AP {
       tokenization,
       contracts,
       signer, 
-      common, 
-      relayer,
+      common
     );
   }
 }
