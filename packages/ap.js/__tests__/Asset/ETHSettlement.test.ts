@@ -1,9 +1,11 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import fetch from 'cross-fetch';
 
 import { AP, Asset } from '../../src';
-import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
+import { AssetOwnership, ContractTerms } from '../../src/types';
+
+// @ts-ignore
+import DefaultTerms from '../DefaultTerms.json';
 
 
 describe('SettlementInETH', () => {
@@ -11,8 +13,6 @@ describe('SettlementInETH', () => {
   let web3: Web3;
   let recordCreator: string;
   let counterparty: string;
-  
-  let contractTemplatesTyped: any;
 
   let apRC: AP;
   let apCP: AP;
@@ -26,16 +26,6 @@ describe('SettlementInETH', () => {
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
-    const response = await fetch('http://localhost:9000' + '/api/terms', {});
-    const contractTemplates = await response.json();
-    contractTemplatesTyped = {};
-
-    (<any>Object).keys(contractTemplates).map((key: string) => {
-      const typedContractTerms = (<ContractTerms>(<any>contractTemplates)[key]);
-      typedContractTerms.contractType = ContractType.PAM;
-      (<any>contractTemplatesTyped)[key] = typedContractTerms;
-    });
-
     apRC = await AP.init(web3, recordCreator);
     apCP = await AP.init(web3, counterparty);
 
@@ -43,7 +33,7 @@ describe('SettlementInETH', () => {
       paymentListenerCounter++;
     });
 
-    const terms = (<any>contractTemplatesTyped)['10001'];
+    const terms: ContractTerms = DefaultTerms;
 
     const ownership: AssetOwnership = { 
       recordCreatorObligor: recordCreator,

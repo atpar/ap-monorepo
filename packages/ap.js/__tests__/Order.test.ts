@@ -1,13 +1,13 @@
 import Web3 from 'web3';
-import fetch from 'cross-fetch';
 
 import { AP, Order } from '../src';
-import { ContractTerms, ContractType, OrderParams, OrderData } from '../src/types';
+import { ContractTerms, OrderParams, OrderData } from '../src/types';
+
+// @ts-ignore
+import DefaultTerms from './DefaultTerms.json';
 
 
 describe('OrderClass', () => {
-
-  let contractTemplatesTyped: any;
 
   let web3: Web3;
   let apRC: AP;
@@ -25,26 +25,16 @@ describe('OrderClass', () => {
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
-    const response = await fetch('http://localhost:9000' + '/api/terms', {});
-    const contractTemplates = await response.json();
-    contractTemplatesTyped = {};
-
-    (<any>Object).keys(contractTemplates).map((key: string) => {
-      const typedContractTerms: ContractTerms = (<ContractTerms>(<any>contractTemplates)[key]);
-      typedContractTerms.contractType = ContractType.PAM;
-      (<any>contractTemplatesTyped)[key] = typedContractTerms;
-    });
-
     apRC = await AP.init(web3, recordCreator);
     apCP = await AP.init(web3, counterparty);
 
-    apCP.onNewAssetIssued(async () => {
-      receivedNewAsset = true;
+    apCP.onNewAssetIssued(async () => { 
+      receivedNewAsset = true; 
     });
   });
 
   it('should create a order instance', async () => {
-    const terms: ContractTerms = (<any>contractTemplatesTyped)['10001'];
+    const terms: ContractTerms = DefaultTerms;
 
     const orderParams: OrderParams = {
       makerAddress: recordCreator,

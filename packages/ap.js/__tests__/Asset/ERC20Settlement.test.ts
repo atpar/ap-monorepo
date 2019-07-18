@@ -1,13 +1,14 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import fetch from 'cross-fetch';
 import { Contract } from 'web3-eth-contract/types';
+ 
+import { AP, Asset } from '../../src';
+import { AssetOwnership, ContractTerms } from '../../src/types';
 
 // @ts-ignore
 import ERC20SampleTokenArtifact from '@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json';
- 
-import { AP, Asset } from '../../src';
-import { ContractTerms, ContractType, AssetOwnership } from '../../src/types';
+// @ts-ignore
+import DefaultTerms from '../DefaultTerms.json';
 
 
 describe('SettlementInERC20', () => {
@@ -15,8 +16,6 @@ describe('SettlementInERC20', () => {
   let web3: Web3;
   let recordCreator: string;
   let counterparty: string;
-  
-  let contractTemplatesTyped: any;
 
   let paymentToken: Contract;
 
@@ -31,16 +30,6 @@ describe('SettlementInERC20', () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
-
-    const response = await fetch('http://localhost:9000' + '/api/terms', {});
-    const contractTemplates = await response.json();
-    contractTemplatesTyped = {};
-
-    (<any>Object).keys(contractTemplates).map((key: string) => {
-      const typedContractTerms = (<ContractTerms>(<any>contractTemplates)[key]);
-      typedContractTerms.contractType = ContractType.PAM;
-      (<any>contractTemplatesTyped)[key] = typedContractTerms;
-    });
 
     paymentToken = new web3.eth.Contract(
       // @ts-ignore
@@ -58,7 +47,7 @@ describe('SettlementInERC20', () => {
       paymentListenerCounter++;
     });
 
-    const terms = (<any>contractTemplatesTyped)['10001'];
+    const terms: ContractTerms = DefaultTerms;
     terms.currency = paymentToken.options.address;
 
     const ownership: AssetOwnership = { 
