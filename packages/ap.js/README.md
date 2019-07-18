@@ -16,8 +16,7 @@ import { AP, Asset, Order } from './ap.js';
 
 const ap = await AP.init(
   web3, 
-  DEFAULT_ACCOUNT, 
-  { orderRelayer?: ORDER_RELAYER_URL } // optional, required when utilizing the IssuanceAPI
+  DEFAULT_ACCOUNT
 );
 ```
 
@@ -31,6 +30,11 @@ const orderParams: OrderParams = {
 };
 
 const order = Order.create(ap, orderParams);
+```
+
+Serializing an `Order` as `OrderData`
+```ts
+const orderData: OrderData = Order.serializeOrder();
 ```
 
 Instantiate an `Order` from `OrderData`.
@@ -52,14 +56,9 @@ const orderData: OrderData = {
 const order = Order.load(ap, orderData);
 ```
 
-Receiving orders from the orderbook of an order-relayer.
-```ts
-ap.onNewOrder((order) => { ... });    
-```
-
 Signing and sending an order to an order-relayer (as a maker or taker).
 ```ts
-await order.signAndSendOrder();
+await order.signOrder();
 ```
 
 Issue a new asset from an co-signed order (requires both signatures).
