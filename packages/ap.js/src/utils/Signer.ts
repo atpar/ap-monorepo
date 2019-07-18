@@ -45,13 +45,38 @@ export class Signer {
   }
 
   /**
-   * signs a given contract update with the provided account and returns the signature
-   * EIP712 compliant (tries both eth_signTypedData_v3 and eth_signTypedData)
-   * @param {ContractUpdate} contractUpdate contract update to sign
-   * @returns {string}
+   * validates the signatures of OrderData
+   * @param {OrderData} orderData orderData containing signature to validate
+   * @returns {Promise<boolean>} true if signatures are valid
    */
-  public async signContractUpdate (contractUpdate: ContractUpdate): Promise<string> {    
-    return this._signTypedData(await this._getContractUpdateAsTypedData(contractUpdate));
+  public async validateOrderDataSignatures (
+    orderData: OrderData
+  ): Promise<boolean> {
+    if (!orderData.signatures.makerSignature) { return false; }
+
+    const unfilledOrderDataTypedData = await this._getUnfilledOrderDataAsTypedData(orderData);
+    const isValid = this._validateOrderDataSignature(
+      unfilledOrderDataTypedData, 
+      orderData.makerAddress, 
+      orderData.signatures.makerSignature
+    );
+
+    if (!isValid) { return false; }
+
+    if (orderData.signatures.takerSignature) {
+      if (!orderData.takerAddress) { throw(new Error('EXECUTION_ERROR: takerAddress is undefined.')); }
+
+      const filledOrderDataTypedData = await this._getFilledOrderDataAsTypedData(orderData);
+      const isValid = this._validateOrderDataSignature(
+        filledOrderDataTypedData, 
+        orderData.takerAddress, 
+        orderData.signatures.takerSignature
+      );
+
+      if (!isValid) { return false; }
+    }
+
+    return true;
   }
 
   /**
@@ -82,6 +107,21 @@ export class Signer {
 
   private _validateSignature (
     typedData: ContractUpdateAsTypedData, 
+    address: string, 
+    signature: string
+  ): boolean {
+    try {
+      const recoveredAddress = sigUtil.recoverTypedSignature({
+        data: typedData,
+        sig: signature
+      });
+      if (sigUtil.normalize(address) !== recoveredAddress) { return false; }
+    } catch (error) { return false; }
+    return true;
+  }
+
+  private _validateOrderDataSignature (
+    typedData: UnfilledOrderDataAsTypedData | FilledOrderDataAsTypedData, 
     address: string, 
     signature: string
   ): boolean {

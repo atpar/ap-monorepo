@@ -57,7 +57,13 @@ export class Order {
    * @returns {Order}
    */
   public static load (ap: AP, orderData: OrderData): Order {
-    if (!isOrderData(orderData)) { throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); }
+    if (!isOrderData(orderData)) { 
+      throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); 
+    }
+
+    if (!ap.signer.validateOrderDataSignatures(orderData)) {
+      throw(new Error('EXECUTION_ERROR: Signatures are invalid.'));
+    }
 
     return new Order(ap, orderData);
   }
