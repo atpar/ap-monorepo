@@ -3,9 +3,6 @@ import sigUtil from 'eth-sig-util';
 
 import { 
   TypedData,
-  ContractUpdate, 
-  SignedContractUpdate, 
-  ContractUpdateAsTypedData, 
   OrderData, 
   FilledOrderDataAsTypedData,
   UnfilledOrderDataAsTypedData 
@@ -76,47 +73,6 @@ export class Signer {
       if (!isValid) { return false; }
     }
 
-    return true;
-  }
-
-  /**
-   * validates the signatures for a given signed contract update
-   * @param {SignedContractUpdate} signedContractUpdate signed contract update to validate
-   * @returns {Promise<boolean>} true if signatures are valid
-   */
-  public async validateContractUpdateSignatures (
-    signedContractUpdate: SignedContractUpdate
-  ): Promise<boolean> {
-    const typedData = await this._getContractUpdateAsTypedData(signedContractUpdate.contractUpdate);
-    const recordCreatorObligor = signedContractUpdate.contractUpdate.recordCreatorObligor;
-    const counterpartyObligor = signedContractUpdate.contractUpdate.counterpartyObligor;
-
-    if (!signedContractUpdate.recordCreatorObligorSignature && !signedContractUpdate.counterpartyObligorSignature) { return false }
-    if (signedContractUpdate.recordCreatorObligorSignature) {
-      if (!this._validateSignature(typedData, recordCreatorObligor, signedContractUpdate.recordCreatorObligorSignature)) {
-        return false;
-      }
-    }
-    if (signedContractUpdate.counterpartyObligorSignature) {
-      if (!this._validateSignature(typedData, counterpartyObligor, signedContractUpdate.counterpartyObligorSignature)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private _validateSignature (
-    typedData: ContractUpdateAsTypedData, 
-    address: string, 
-    signature: string
-  ): boolean {
-    try {
-      const recoveredAddress = sigUtil.recoverTypedSignature({
-        data: typedData,
-        sig: signature
-      });
-      if (sigUtil.normalize(address) !== recoveredAddress) { return false; }
-    } catch (error) { return false; }
     return true;
   }
 
@@ -235,48 +191,6 @@ export class Signer {
       }
     };
 
-    return typedData;
-  }
-
-  private async _getContractUpdateAsTypedData (
-    contractUpdate: ContractUpdate
-  ): Promise<ContractUpdateAsTypedData> {
-    // const chainId = await this.web3.eth.net.getId();
-    const typedData: ContractUpdateAsTypedData = {
-      domain: {
-        name: 'actus-protocol',
-        version: '1',
-        chainId: 0,
-        verifyingContract: contractUpdate.contractAddress
-      },
-      types: {
-        EIP712Domain: [
-          { name: 'name', type: 'string' },
-          { name: 'version', type: 'string' },
-          { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' }
-        ],
-        ContractUpdate: [
-          { name: 'assetId', type: 'string' },
-          { name: 'recordCreatorObligor', type: 'address' },
-          { name: 'counterpartyObligor', type: 'address' },
-          { name: 'contractAddress', type: 'address' },
-          { name: 'contractTermsHash', type: 'string' }, // see: for version > 2.1.1 of eth-sig-util: https://github.com/MetaMask/eth-sig-util/commit/0fbac013cf1da2f7bf7a7383fa18535914d279a9
-          { name: 'contractStateHash', type: 'string' },
-          { name: 'contractUpdateNonce', type: 'uint256' }
-        ]
-      },
-      primaryType: 'ContractUpdate',
-      message: {
-        assetId: contractUpdate.assetId,
-        recordCreatorObligor: contractUpdate.recordCreatorObligor,
-        counterpartyObligor: contractUpdate.counterpartyObligor,
-        contractAddress: contractUpdate.contractAddress,
-        contractTermsHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractTerms)),
-        contractStateHash: this.web3.utils.keccak256(JSON.stringify(contractUpdate.contractState)),
-        contractUpdateNonce: contractUpdate.contractUpdateNonce
-      }
-    };
     return typedData;
   }
 

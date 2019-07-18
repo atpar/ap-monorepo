@@ -1,4 +1,4 @@
-import { ContractState, ContractTerms } from './ACTUS';
+import { ContractTerms } from './ACTUS';
 import BigNumber from 'bignumber.js';
 
 export enum ChannelState {
@@ -16,22 +16,6 @@ export interface AssetOwnership {
   counterpartyBeneficiary: string;
 }
 
-export interface ContractUpdate {
-  assetId: string;
-  recordCreatorObligor: string;
-  counterpartyObligor: string;
-  contractAddress: string;
-  contractTerms: ContractTerms;
-  contractState: ContractState;
-  contractUpdateNonce: number;
-}
-
-export interface SignedContractUpdate {
-  contractUpdate: ContractUpdate;
-  recordCreatorObligorSignature: string;
-  counterpartyObligorSignature: string;
-}
-
 export interface TypedData {
   domain: {
     name: string;
@@ -42,29 +26,6 @@ export interface TypedData {
   types: object;
   primaryType: string;
   message: object;
-}
-
-export interface ContractUpdateAsTypedData extends TypedData {
-  domain: {
-    name: string;
-    version: string;
-    chainId: number;
-    verifyingContract: string;
-  };
-  types: {
-    EIP712Domain: { name: string; type: string }[];
-    ContractUpdate: { name: string; type: string }[];
-  };
-  primaryType: string;
-  message: {
-    assetId: string;
-    recordCreatorObligor: string;
-    counterpartyObligor: string;
-    contractAddress: string;
-    contractTermsHash: string;
-    contractStateHash: string;
-    contractUpdateNonce: number;
-  };
 }
 
 export interface OrderParams {
