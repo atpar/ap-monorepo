@@ -54,14 +54,14 @@ export class Order {
    * instantiates a new Order instance with the provided orderData
    * @param {AP} ap AP instance
    * @param {OrderData} orderData
-   * @returns {Order}
+   * @returns {Promise<Order>}
    */
-  public static load (ap: AP, orderData: OrderData): Order {
+  public static async load (ap: AP, orderData: OrderData): Promise<Order> {
     if (!isOrderData(orderData)) { 
       throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); 
     }
 
-    if (!ap.signer.validateOrderDataSignatures(orderData)) {
+    if (! (await ap.signer.validateOrderDataSignatures(orderData))) {
       throw(new Error('EXECUTION_ERROR: Signatures are invalid.'));
     }
 
