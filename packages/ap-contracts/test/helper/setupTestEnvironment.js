@@ -1,4 +1,5 @@
 const PAMEngine = artifacts.require('PAMEngine');
+const ANNEngine = artifacts.require('ANNEngine');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
@@ -15,6 +16,7 @@ async function setupTestEnvironment () {
 
   // deploy ACTUS Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
+  instances.ANNEngineInstance = await ANNEngine.new();
   
   // deploy Core
   instances.AssetRegistryInstance = await AssetRegistry.new();
@@ -47,7 +49,7 @@ async function setupTestEnvironment () {
 }
 
 function getDefaultTerms () {
-  return require('actus-solidity/actus-resources/test-terms/Test-PAM-10001.json');
+  return require('actus-solidity/test/helper/tests').getDefaultTestTerms('PAM');
 }
 
 module.exports = { setupTestEnvironment, getDefaultTerms };

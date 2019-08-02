@@ -37,12 +37,13 @@
     "test": "./scripts/test.sh"
   },
   "dependencies": {
-    "actus-solidity": "0.2.0-beta.1",
+    "actus-solidity": "0.2.0",
     "funds-distribution-token": "0.1.2",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.9"
   },
   "devDependencies": {
+    "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
     "eth-sig-util": "2.1.1",
     "ethlint": "^1.2.3",

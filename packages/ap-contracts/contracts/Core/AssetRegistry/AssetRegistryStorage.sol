@@ -54,8 +54,8 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 
 		if (enums != bytes32(0)) assets[assetId].packedTermsState[1] = enums;
 
-		if (terms.legalEntityIdRecordCreator != bytes32(0)) assets[assetId].packedTermsState[2] = terms.legalEntityIdRecordCreator;
-		if (terms.legalEntityIdCounterparty != bytes32(0)) assets[assetId].packedTermsState[3] = terms.legalEntityIdCounterparty;
+		if (terms.creatorID != bytes32(0)) assets[assetId].packedTermsState[2] = terms.creatorID;
+		if (terms.counterpartyID != bytes32(0)) assets[assetId].packedTermsState[3] = terms.counterpartyID;
 
 		if (terms.currency != address(0)) assets[assetId].packedTermsState[4] = bytes32(uint256(terms.currency) << 96);
 
@@ -70,52 +70,61 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (terms.cycleAnchorDateOfRateReset != uint256(0)) assets[assetId].packedTermsState[13] = bytes32(terms.cycleAnchorDateOfRateReset);
 		if (terms.cycleAnchorDateOfScalingIndex != uint256(0)) assets[assetId].packedTermsState[14] = bytes32(terms.cycleAnchorDateOfScalingIndex);
 		if (terms.cycleAnchorDateOfFee != uint256(0)) assets[assetId].packedTermsState[15] = bytes32(terms.cycleAnchorDateOfFee);
+		if (terms.cycleAnchorDateOfPrincipalRedemption != uint256(0)) assets[assetId].packedTermsState[16] = bytes32(terms.cycleAnchorDateOfPrincipalRedemption);
 
-		if (terms.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[16] = bytes32(terms.notionalPrincipal);
-		if (terms.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[17] = bytes32(terms.nominalInterestRate);
-		if (terms.feeAccrued != int256(0)) assets[assetId].packedTermsState[18] = bytes32(terms.feeAccrued);
-		if (terms.accruedInterest != int256(0)) assets[assetId].packedTermsState[19] = bytes32(terms.accruedInterest);
-		if (terms.rateMultiplier != int256(0)) assets[assetId].packedTermsState[20] = bytes32(terms.rateMultiplier);
-		if (terms.rateSpread != int256(0)) assets[assetId].packedTermsState[21] = bytes32(terms.rateSpread);
-		if (terms.feeRate != int256(0)) assets[assetId].packedTermsState[22] = bytes32(terms.feeRate);
-		if (terms.nextResetRate != int256(0)) assets[assetId].packedTermsState[23] = bytes32(terms.nextResetRate);
-		if (terms.penaltyRate != int256(0)) assets[assetId].packedTermsState[24] = bytes32(terms.penaltyRate);
-		if (terms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[25] = bytes32(terms.premiumDiscountAtIED);
-		if (terms.priceAtPurchaseDate != int256(0)) assets[assetId].packedTermsState[26] = bytes32(terms.priceAtPurchaseDate);
+		if (terms.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[17] = bytes32(terms.notionalPrincipal);
+		if (terms.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[18] = bytes32(terms.nominalInterestRate);
+		if (terms.feeAccrued != int256(0)) assets[assetId].packedTermsState[19] = bytes32(terms.feeAccrued);
+		if (terms.accruedInterest != int256(0)) assets[assetId].packedTermsState[20] = bytes32(terms.accruedInterest);
+		if (terms.rateMultiplier != int256(0)) assets[assetId].packedTermsState[21] = bytes32(terms.rateMultiplier);
+		if (terms.rateSpread != int256(0)) assets[assetId].packedTermsState[22] = bytes32(terms.rateSpread);
+		if (terms.feeRate != int256(0)) assets[assetId].packedTermsState[23] = bytes32(terms.feeRate);
+		if (terms.nextResetRate != int256(0)) assets[assetId].packedTermsState[24] = bytes32(terms.nextResetRate);
+		if (terms.penaltyRate != int256(0)) assets[assetId].packedTermsState[25] = bytes32(terms.penaltyRate);
+		if (terms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[26] = bytes32(terms.premiumDiscountAtIED);
+		if (terms.priceAtPurchaseDate != int256(0)) assets[assetId].packedTermsState[27] = bytes32(terms.priceAtPurchaseDate);
+		if (terms.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[28] = bytes32(terms.nextPrincipalRedemptionPayment);
 
 		if (terms.cycleOfInterestPayment.isSet) {
-			assets[assetId].packedTermsState[27] =
+			assets[assetId].packedTermsState[29] =
 				bytes32(uint256(terms.cycleOfInterestPayment.i)) << 24 |
 				bytes32(uint256(terms.cycleOfInterestPayment.p)) << 16 |
 				bytes32(uint256(terms.cycleOfInterestPayment.s)) << 8 |
 				bytes32(uint256(1));
 		}
 		if (terms.cycleOfRateReset.isSet) {
-			assets[assetId].packedTermsState[28] =
+			assets[assetId].packedTermsState[30] =
 				bytes32(uint256(terms.cycleOfRateReset.i)) << 24 |
 				bytes32(uint256(terms.cycleOfRateReset.p)) << 16 |
 				bytes32(uint256(terms.cycleOfRateReset.s)) << 8 |
 				bytes32(uint256(1));
 		}
 		if (terms.cycleOfScalingIndex.isSet) {
-			assets[assetId].packedTermsState[29] =
+			assets[assetId].packedTermsState[31] =
 				bytes32(uint256(terms.cycleOfScalingIndex.i)) << 24 |
 				bytes32(uint256(terms.cycleOfScalingIndex.p)) << 16 |
 				bytes32(uint256(terms.cycleOfScalingIndex.s)) << 8 |
 				bytes32(uint256(1));
 		}
 		if (terms.cycleOfFee.isSet) {
-			assets[assetId].packedTermsState[30] =
+			assets[assetId].packedTermsState[32] =
 				bytes32(uint256(terms.cycleOfFee.i)) << 24 |
 				bytes32(uint256(terms.cycleOfFee.p)) << 16 |
 				bytes32(uint256(terms.cycleOfFee.s)) << 8 |
 				bytes32(uint256(1));
 		}
+		if (terms.cycleOfPrincipalRedemption.isSet) {
+			assets[assetId].packedTermsState[33] =
+				bytes32(uint256(terms.cycleOfPrincipalRedemption.i)) << 24 |
+				bytes32(uint256(terms.cycleOfPrincipalRedemption.p)) << 16 |
+				bytes32(uint256(terms.cycleOfPrincipalRedemption.s)) << 8 |
+				bytes32(uint256(1));
+		}
 
-		if (terms.lifeCap != int256(0)) assets[assetId].packedTermsState[31] = bytes32(terms.lifeCap);
-		if (terms.lifeFloor != int256(0)) assets[assetId].packedTermsState[32] = bytes32(terms.lifeFloor);
-		if (terms.periodCap != int256(0)) assets[assetId].packedTermsState[33] = bytes32(terms.periodCap);
-		if (terms.periodFloor != int256(0)) assets[assetId].packedTermsState[34] = bytes32(terms.periodFloor);
+		if (terms.lifeCap != int256(0)) assets[assetId].packedTermsState[34] = bytes32(terms.lifeCap);
+		if (terms.lifeFloor != int256(0)) assets[assetId].packedTermsState[35] = bytes32(terms.lifeFloor);
+		if (terms.periodCap != int256(0)) assets[assetId].packedTermsState[36] = bytes32(terms.periodCap);
+		if (terms.periodFloor != int256(0)) assets[assetId].packedTermsState[37] = bytes32(terms.periodFloor);
 	}
 
 	function encodeAndSetState(bytes32 assetId, ContractState memory state) internal {
@@ -134,6 +143,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (state.nominalRate != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.nominalRate);
 		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.interestScalingMultiplier);
 		if (state.nominalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.nominalScalingMultiplier);
+		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.nextPrincipalRedemptionPayment);
 	}
 
 	function decodeAndGetTerms(bytes32 assetId) internal view returns (ContractTerms memory) {
@@ -161,7 +171,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			uint256(assets[assetId].packedTermsState[13]),
 			uint256(assets[assetId].packedTermsState[14]),
 			uint256(assets[assetId].packedTermsState[15]),
-			int256(assets[assetId].packedTermsState[16]),
+			uint256(assets[assetId].packedTermsState[16]),
 			int256(assets[assetId].packedTermsState[17]),
 			int256(assets[assetId].packedTermsState[18]),
 			int256(assets[assetId].packedTermsState[19]),
@@ -172,18 +182,8 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			int256(assets[assetId].packedTermsState[24]),
 			int256(assets[assetId].packedTermsState[25]),
 			int256(assets[assetId].packedTermsState[26]),
-			IPS(
-				uint256(assets[assetId].packedTermsState[27] >> 24),
-				P(uint8(uint256(assets[assetId].packedTermsState[27] >> 16))),
-				S(uint8(uint256(assets[assetId].packedTermsState[27] >> 8))),
-				(assets[assetId].packedTermsState[27] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-			),
-			IPS(
-				uint256(assets[assetId].packedTermsState[28] >> 24),
-				P(uint8(uint256(assets[assetId].packedTermsState[28] >> 16))),
-				S(uint8(uint256(assets[assetId].packedTermsState[28] >> 8))),
-				(assets[assetId].packedTermsState[28] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-			),
+			int256(assets[assetId].packedTermsState[27]),
+			int256(assets[assetId].packedTermsState[28]),
 			IPS(
 				uint256(assets[assetId].packedTermsState[29] >> 24),
 				P(uint8(uint256(assets[assetId].packedTermsState[29] >> 16))),
@@ -196,10 +196,28 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 				S(uint8(uint256(assets[assetId].packedTermsState[30] >> 8))),
 				(assets[assetId].packedTermsState[30] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
 			),
-			int256(assets[assetId].packedTermsState[31]),
-			int256(assets[assetId].packedTermsState[32]),
-			int256(assets[assetId].packedTermsState[33]),
-			int256(assets[assetId].packedTermsState[34])
+			IPS(
+				uint256(assets[assetId].packedTermsState[31] >> 24),
+				P(uint8(uint256(assets[assetId].packedTermsState[31] >> 16))),
+				S(uint8(uint256(assets[assetId].packedTermsState[31] >> 8))),
+				(assets[assetId].packedTermsState[31] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+			),
+			IPS(
+				uint256(assets[assetId].packedTermsState[32] >> 24),
+				P(uint8(uint256(assets[assetId].packedTermsState[32] >> 16))),
+				S(uint8(uint256(assets[assetId].packedTermsState[32] >> 8))),
+				(assets[assetId].packedTermsState[32] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+			),
+			IPS(
+				uint256(assets[assetId].packedTermsState[33] >> 24),
+				P(uint8(uint256(assets[assetId].packedTermsState[33] >> 16))),
+				S(uint8(uint256(assets[assetId].packedTermsState[33] >> 8))),
+				(assets[assetId].packedTermsState[33] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+			),
+			int256(assets[assetId].packedTermsState[34]),
+			int256(assets[assetId].packedTermsState[35]),
+			int256(assets[assetId].packedTermsState[36]),
+			int256(assets[assetId].packedTermsState[37])
 		);
 	}
 
@@ -214,6 +232,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			int256(assets[assetId].packedTermsState[107]),
 			int256(assets[assetId].packedTermsState[108]),
 			int256(assets[assetId].packedTermsState[109]),
+			int256(assets[assetId].packedTermsState[110]),
 			ContractRole(uint8(uint256(assets[assetId].packedTermsState[102] >> 240)))
 		);
 	}

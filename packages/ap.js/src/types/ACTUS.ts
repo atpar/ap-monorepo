@@ -27,7 +27,7 @@ export enum DayCountConvention { 'A/AISDA', 'A/360', 'A/365', '30E/360ISDA', '30
 export enum EndOfMonthConvention { SD, EOM }
 // @ts-ignore:6196
 export enum EventLevel { P }
-export enum EventType { SD, MD, AD, IED, IP, PR, PP, PY, FP, PRD, TD, IPCI, RR, RRY, SC, CD, DV, MR, IPCB, STD, Child }
+export enum EventType { AD, CD, DV, XD, FP, IED, IPCB, IPCI, IP, MR, MD, PY, PD, PRF, PP, PR, PRD, RRF, RR, SC, STD, TD }
 export enum FeeBasis { A, N }
 // @ts-ignore:6196
 export enum InterestCalculationBase { NT, NTIED, NTL}
@@ -78,6 +78,7 @@ export interface ContractState {
   nominalRate: BigNumber;
   interestScalingMultiplier: BigNumber;
   nominalScalingMultiplier: BigNumber;
+  nextPrincipalRedemptionPayment: BigNumber;
   contractRoleSign: ContractRole;
 }
 
@@ -88,8 +89,8 @@ export interface ContractTerms {
   contractType: ContractType;
   calendar: Calendar;
   contractRole: ContractRole;
-  legalEntityIdRecordCreator: string;
-  legalEntityIdCounterparty: string;
+  creatorID: string;
+  counterpartyID: string;
   dayCountConvention: DayCountConvention;
   businessDayConvention: BusinessDayConvention;
   endOfMonthConvention: EndOfMonthConvention;
@@ -108,6 +109,7 @@ export interface ContractTerms {
   cycleAnchorDateOfRateReset: number;
   cycleAnchorDateOfScalingIndex: number;
   cycleAnchorDateOfFee: number;
+  cycleAnchorDateOfPrincipalRedemption: number;
   notionalPrincipal: string; // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
   nominalInterestRate: string;
   feeAccrued: string;
@@ -119,57 +121,14 @@ export interface ContractTerms {
   penaltyRate: string;
   premiumDiscountAtIED: string;
   priceAtPurchaseDate: string;
+  nextPrincipalRedemptionPayment: string;
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
   cycleOfScalingIndex: IPS;
   cycleOfFee: IPS;
+  cycleOfPrincipalRedemption: IPS;
   lifeCap: string;
   lifeFloor: string;
   periodCap: string;
   periodFloor: string;
 }
-
-// export interface ContractTerms {
-//   contractType: ContractType,
-//   calendar: Calendar,
-//   contractRole: ContractRole,
-//   legalEntityIdRecordCreator: String,
-//   legalEntityIdCounterparty: String,
-//   dayCountConvention: DayCountConvention,
-//   businessDayConvention: BusinessDayConvention,
-//   endOfMonthConvention: EndOfMonthConvention,
-//   currency: string,
-//   scalingEffect: ScalingEffect,
-//   penaltyType: PenaltyType,
-//   feeBasis: FeeBasis,
-//   contractDealDate: number,
-//   statusDate: number,
-//   initialExchangeDate: number,
-//   maturityDate: number,
-//   terminationDate: number,
-//   purchaseDate: number,
-//   capitalizationEndDate: number,
-//   cycleAnchorDateOfInterestPayment: number,
-//   cycleAnchorDateOfRateReset: number,
-//   cycleAnchorDateOfScalingIndex: number,
-//   cycleAnchorDateOfFee: number,
-//   notionalPrincipal: string, // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
-//   nominalInterestRate: string,
-//   feeAccrued: string,
-//   accruedInterest: string,
-//   rateMultiplier: string,
-//   rateSpread: string,
-//   feeRate: string,
-//   nextResetRate: string,
-//   penaltyRate: string,
-//   premiumDiscountAtIED: string,
-//   priceAtPurchaseDate: string,
-//   cycleOfInterestPayment: IPS,
-//   cycleOfRateReset: IPS,
-//   cycleOfScalingIndex: IPS,
-//   cycleOfFee: IPS,
-//   lifeCap: string,
-//   lifeFloor: string,
-//   periodCap: string,
-//   periodFloor: string
-// }

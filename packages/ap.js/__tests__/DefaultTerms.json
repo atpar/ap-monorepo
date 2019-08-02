@@ -2,8 +2,8 @@
 	"contractType": 0,
 	"calendar": 0,
 	"contractRole": 0,
-	"legalEntityIdRecordCreator": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"legalEntityIdCounterparty": "0x0000000000000000000000000000000000000000000000000000000000000000",
+	"creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+	"counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"dayCountConvention": 2,
 	"businessDayConvention": 0,
 	"endOfMonthConvention": 0,
@@ -22,6 +22,7 @@
 	"cycleAnchorDateOfRateReset": 0,
 	"cycleAnchorDateOfScalingIndex": 0,
 	"cycleAnchorDateOfFee": 0,
+	"cycleAnchorDateOfPrincipalRedemption": 0,
 	"notionalPrincipal": "0xa2a15d09519be00000",
 	"nominalInterestRate": "0x16345785d8a0000",
 	"feeAccrued": "0",
@@ -33,6 +34,7 @@
 	"penaltyRate": "0",
 	"premiumDiscountAtIED": "0",
 	"priceAtPurchaseDate": "0",
+	"nextPrincipalRedemptionPayment": "0",
 	"cycleOfInterestPayment": {
 			"i": 1,
 			"p": 2,
@@ -56,6 +58,12 @@
 			"p": 0,
 			"s": 0,
 			"isSet": false
+	},
+	"cycleOfPrincipalRedemption": {
+		"i": 0,
+		"p": 0,
+		"s": 0,
+		"isSet": false
 	},
 	"lifeCap": "0",
 	"lifeFloor": "0",

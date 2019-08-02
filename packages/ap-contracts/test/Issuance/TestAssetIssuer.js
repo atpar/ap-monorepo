@@ -217,11 +217,11 @@ const ContractTermsABI = {
       "type": "uint8"
     },
     {
-      "name": "legalEntityIdRecordCreator",
+      "name": "creatorID",
       "type": "bytes32"
     },
     {
-      "name": "legalEntityIdCounterparty",
+      "name": "counterpartyID",
       "type": "bytes32"
     },
     {
@@ -297,6 +297,10 @@ const ContractTermsABI = {
       "type": "uint256"
     },
     {
+      "name": "cycleAnchorDateOfPrincipalRedemption",
+      "type": "uint256"
+    },
+    {
       "name": "notionalPrincipal",
       "type": "int256"
     },
@@ -338,6 +342,10 @@ const ContractTermsABI = {
     },
     {
       "name": "priceAtPurchaseDate",
+      "type": "int256"
+    },
+    {
+      "name": "nextPrincipalRedemptionPayment",
       "type": "int256"
     },
     {
@@ -426,6 +434,28 @@ const ContractTermsABI = {
         }
       ],
       "name": "cycleOfFee",
+      "type": "tuple"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "s",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "cycleOfPrincipalRedemption",
       "type": "tuple"
     },
     {

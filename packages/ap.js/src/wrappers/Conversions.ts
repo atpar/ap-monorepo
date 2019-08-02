@@ -28,8 +28,8 @@ export function toContractTerms (raw: any): ContractTerms {
     contractType: Number(raw['contractType']),
     calendar: Number(raw['calendar']),
     contractRole: Number(raw['contractRole']),
-    legalEntityIdRecordCreator: String(raw['legalEntityIdRecordCreator']),
-    legalEntityIdCounterparty: String(raw['legalEntityIdCounterparty']),
+    creatorID: String(raw['creatorID']),
+    counterpartyID: String(raw['counterpartyID']),
     dayCountConvention: Number(raw['dayCountConvention']),
     businessDayConvention: Number(raw['businessDayConvention']),
     endOfMonthConvention: Number(raw['endOfMonthConvention']),
@@ -48,6 +48,7 @@ export function toContractTerms (raw: any): ContractTerms {
     cycleAnchorDateOfRateReset: Number(raw['cycleAnchorDateOfRateReset']),
     cycleAnchorDateOfScalingIndex: Number(raw['cycleAnchorDateOfScalingIndex']),
     cycleAnchorDateOfFee: Number(raw['cycleAnchorDateOfFee']),
+    cycleAnchorDateOfPrincipalRedemption: Number(raw['cycleAnchorDateOfPrincipalRedemption']),
     notionalPrincipal: String(raw['notionalPrincipal']),
     nominalInterestRate: String(raw['nominalInterestRate']),
     feeAccrued: String(raw['feeAccrued']),
@@ -59,9 +60,11 @@ export function toContractTerms (raw: any): ContractTerms {
     penaltyRate: String(raw['penaltyRate']),
     premiumDiscountAtIED: String(raw['premiumDiscountAtIED']),
     priceAtPurchaseDate: String(raw['priceAtPurchaseDate']),
+    nextPrincipalRedemptionPayment: String(raw['nextPrincipalRedemptionPayment']),
     cycleOfInterestPayment: raw['cycleOfInterestPayment'],
     cycleOfRateReset: raw['cycleOfRateReset'],
     cycleOfScalingIndex: raw['cycleOfScalingIndex'],
+    cycleOfPrincipalRedemption: raw['cycleOfPrincipalRedemption'],
     cycleOfFee: raw['cycleOfFee'],
     lifeCap: String(raw['lifeCap']),
     lifeFloor: String(raw['lifeFloor']),
@@ -75,8 +78,8 @@ export function fromContractTerms (terms: ContractTerms): object {
     contractType: terms.contractType,
     calendar: terms.calendar,
     contractRole: terms.contractRole,
-    legalEntityIdRecordCreator: toHex(terms.legalEntityIdRecordCreator),
-    legalEntityIdCounterparty: toHex(terms.legalEntityIdCounterparty),
+    creatorID: toHex(terms.creatorID),
+    counterpartyID: toHex(terms.counterpartyID),
     dayCountConvention: terms.dayCountConvention,
     businessDayConvention: terms.businessDayConvention,
     endOfMonthConvention: terms.endOfMonthConvention,
@@ -95,6 +98,7 @@ export function fromContractTerms (terms: ContractTerms): object {
     cycleAnchorDateOfRateReset: terms.cycleAnchorDateOfRateReset,
     cycleAnchorDateOfScalingIndex: terms.cycleAnchorDateOfScalingIndex,
     cycleAnchorDateOfFee: terms.cycleAnchorDateOfFee,
+    cycleAnchorDateOfPrincipalRedemption: terms.cycleAnchorDateOfPrincipalRedemption,
     notionalPrincipal: terms.notionalPrincipal,
     nominalInterestRate: terms.nominalInterestRate, // BigNumber: see https://github.com/ethereum/web3.js/issues/2077 
     feeAccrued: terms.feeAccrued,
@@ -106,10 +110,12 @@ export function fromContractTerms (terms: ContractTerms): object {
     penaltyRate: terms.penaltyRate,
     premiumDiscountAtIED: terms.premiumDiscountAtIED,
     priceAtPurchaseDate: terms.priceAtPurchaseDate,
+    nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
     cycleOfInterestPayment: terms.cycleOfInterestPayment,
     cycleOfRateReset: terms.cycleOfRateReset,
     cycleOfScalingIndex: terms.cycleOfScalingIndex,
     cycleOfFee: terms.cycleOfFee,
+    cycleOfPrincipalRedemption: terms.cycleOfPrincipalRedemption,
     lifeCap: terms.lifeCap,
     lifeFloor: terms.lifeFloor,
     periodCap: terms.periodCap,
@@ -128,6 +134,7 @@ export function toContractState (raw: any): ContractState {
     nominalRate: new BigNumber(raw['nominalRate']),
     interestScalingMultiplier: new BigNumber(raw['interestScalingMultiplier']),
     nominalScalingMultiplier: new BigNumber(raw['nominalScalingMultiplier']),
+    nextPrincipalRedemptionPayment: new BigNumber(raw['nextPrincipalRedemptionPayment']),
     contractRoleSign: Number(raw['contractRoleSign'])
   };
 }
@@ -143,6 +150,7 @@ export function fromContractState (state: ContractState): object {
     nominalRate: numberToHex(state.nominalRate),
     interestScalingMultiplier: numberToHex(state.interestScalingMultiplier),
     nominalScalingMultiplier: numberToHex(state.nominalScalingMultiplier),
+    nextPrincipalRedemptionPayment: numberToHex(state.nextPrincipalRedemptionPayment),
     contractRoleSign: state.contractRoleSign
   };
 }
