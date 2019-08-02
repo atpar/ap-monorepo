@@ -11,14 +11,14 @@
     "TokenizationFactory": "0x1B3B145d4234Cd48EA33ABdD333F6E62767960A2"
   },
   "5": {
-    "ANNEngine": "",
-    "AssetActor": "",
-    "AssetIssuer": "",
-    "AssetRegistry": "",
-    "PAMEngine": "",
-    "PaymentRegistry": "",
-    "PaymentRouter": "",
-    "SignedMath": "",
-    "TokenizationFactory": ""
+    "ANNEngine": "0x99953d8Ab9449e59710ed7e9B8DB9313011Cfa6D",
+    "AssetActor": "0x72eB2e9B524C1C56931f63c62EAf344F946113eC",
+    "AssetIssuer": "0xe38AeBA132ED798D0B3035b3E4955588df4cEfEA",
+    "AssetRegistry": "0xCf4a0f842CCC0F274DF2A8063ffFB9900FBc5333",
+    "PAMEngine": "0x5a75677b7714769625addf6507333EC377bc01bd",
+    "PaymentRegistry": "0x6800EaE29679008112d836d9E794d5fC784c291e",
+    "PaymentRouter": "0xbE7601adDc98810B213603eCdb58f50b7fAFF3A9",
+    "SignedMath": "0x9F6ad591542a842BD679Bf54c9fCa2dA284dFa99",
+    "TokenizationFactory": "0x9bd2c9DBA7aF3CA673BA744c2538cfAA1f8F8927"
   }
 }

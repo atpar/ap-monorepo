@@ -10,7 +10,8 @@ module.exports = {
     goerli: {
       provider: () =>
         new HDWalletProvider(require('./mnemonic.js'), 'https://goerli.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0'),
-      network_id: '5' 
+      network_id: '5',
+      gas: 5000000
     },
     kovan: {
       provider: () =>
