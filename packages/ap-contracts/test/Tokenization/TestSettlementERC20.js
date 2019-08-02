@@ -1,7 +1,10 @@
+const BigNumber = require('bignumber.js');
+
+const FDT_ERC20Extension = artifacts.require('FDT_ERC20Extension');
+const ERC20SampleToken = artifacts.require('ERC20SampleToken');
+
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
-const ClaimsTokenERC20 = artifacts.require('ClaimsTokenERC20Extension');
-const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 
 contract('SettlementETH', (accounts) => {
   const recordCreatorObligor = accounts[0];
@@ -13,6 +16,8 @@ contract('SettlementETH', (accounts) => {
   const ownerB = '0x0000000000000000000000000000000000000001';
   const ownerC = '0x0000000000000000000000000000000000000002';
   const ownerD = '0x0000000000000000000000000000000000000003';
+
+  const mintedTokensPerOwner = (new BigNumber(2500 * 10 ** 18)).toFixed();
   
   const assetId = 'C123';
   const cashflowId = 5;
@@ -44,26 +49,31 @@ contract('SettlementETH', (accounts) => {
     this.PaymentTokenInstance = await ERC20SampleToken.new();
     await this.PaymentTokenInstance.transfer(counterpartyObligor, payoffAmount);
 
-    // deploy ClaimsTokenERC20
-    this.ClaimsTokenERC20Instance = await ClaimsTokenERC20.new(ownerA, this.PaymentTokenInstance.address);
-    this.totalSupply = await this.ClaimsTokenERC20Instance.totalSupply();
+    // deploy FDT_ERC20Extension
+    this.FDT_ERC20ExtensionInstance = await FDT_ERC20Extension.new(
+      'FundsDistributionToken',
+      'FDT',
+      this.PaymentTokenInstance.address
+    );
 
-    await this.ClaimsTokenERC20Instance.transfer(ownerB, this.totalSupply.divn(4), { from: ownerA });
-    await this.ClaimsTokenERC20Instance.transfer(ownerC, this.totalSupply.divn(4), { from: ownerA });
-    await this.ClaimsTokenERC20Instance.transfer(ownerD, this.totalSupply.divn(4), { from: ownerA });
+    // mint FD-Tokens for each owner
+    this.FDT_ERC20ExtensionInstance.mint(ownerA, mintedTokensPerOwner);
+    this.FDT_ERC20ExtensionInstance.mint(ownerB, mintedTokensPerOwner);
+    this.FDT_ERC20ExtensionInstance.mint(ownerC, mintedTokensPerOwner);
+    this.FDT_ERC20ExtensionInstance.mint(ownerD, mintedTokensPerOwner);
 
-    // set ClaimsTokenERC20 as beneficiary for CashflowId
+    // set FDT_ERC20Extension as beneficiary for CashflowId
     await this.AssetRegistryInstance.setBeneficiaryForCashflowId(
       web3.utils.toHex(assetId),
       cashflowId,
-      this.ClaimsTokenERC20Instance.address,
+      this.FDT_ERC20ExtensionInstance.address,
       { from: recordCreatorBeneficiary }
     );
   });
 
-  it('should increment <totalReceivedFunds> after settling payoff in tokens', async () => {
-    const preBalanceOfClaimsTokenERC20 = (await this.PaymentTokenInstance.balanceOf(
-      this.ClaimsTokenERC20Instance.address
+  it('should increment ERC20 balance of FDT after settling payoff in tokens', async () => {
+    const preBalanceOfFDT_ERC20Extension = (await this.PaymentTokenInstance.balanceOf(
+      this.FDT_ERC20ExtensionInstance.address
     )).toString();
 
     await this.PaymentTokenInstance.approve(
@@ -81,14 +91,12 @@ contract('SettlementETH', (accounts) => {
       { from: counterpartyObligor }
     );
 
-    await this.ClaimsTokenERC20Instance.updateFundsReceived();
+    await this.FDT_ERC20ExtensionInstance.updateFundsReceived();
 
-    const postBalanceOfClaimsTokenERC20 = (await this.PaymentTokenInstance.balanceOf(
-      this.ClaimsTokenERC20Instance.address
+    const postBalanceOfFDT_ERC20Extension = (await this.PaymentTokenInstance.balanceOf(
+      this.FDT_ERC20ExtensionInstance.address
     )).toString();
-    const totalReceivedFunds = (await this.ClaimsTokenERC20Instance.totalReceivedFunds()).toString();
 
-    assert.equal(postBalanceOfClaimsTokenERC20, totalReceivedFunds);
-    assert.equal(Number(preBalanceOfClaimsTokenERC20) + payoffAmount, postBalanceOfClaimsTokenERC20);
+    assert.equal(Number(preBalanceOfFDT_ERC20Extension) + payoffAmount, postBalanceOfFDT_ERC20Extension);
   });
 });

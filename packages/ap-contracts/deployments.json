@@ -6,7 +6,8 @@
     "FloatMath": "0xCA386B0fD4f446aA61957f87d0A1630042255b37",
     "PAMEngine": "0x1725b9c802415a25202B3Da4A33E0631f44BBbf2",
     "PaymentRegistry": "0x0b893858a41C8518c1b7Eb769b34Ed9466c3C0eD",
-    "PaymentRouter": "0xC2Be15A598b3F80f781cbd8f3227d5E9559b0899"
+    "PaymentRouter": "0xC2Be15A598b3F80f781cbd8f3227d5E9559b0899",
+    "TokenizationFactory": "0x54aF1553Ea0D564E1B45FFe3EB1Bca85F0703331"
   },
   "5": {
     "AssetActor": "0xac8195B6CaaDC13fdDb9B1dBc7945dC6Ebf7220a",
@@ -15,6 +16,7 @@
     "FloatMath": "0x6bdf1CD7dEc317642686469720bED7803F774E81",
     "PAMEngine": "0x48b4Df1Ebc4eB0999e017E94e8db4b6799f1A85f",
     "PaymentRegistry": "0x200eb48FfB99087A496CE968b18EBBCEff629A50",
-    "PaymentRouter": "0x6F8C80EB1E72Ba4DC38CC178ac6e31c40ddC2ab0"
+    "PaymentRouter": "0x6F8C80EB1E72Ba4DC38CC178ac6e31c40ddC2ab0",
+    "TokenizationFactory": ""
   }
 }

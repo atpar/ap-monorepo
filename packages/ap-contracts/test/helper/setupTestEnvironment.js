@@ -4,6 +4,7 @@ const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const TokenizationFactory = artifacts.require('TokenizationFactory');
 
 
 async function setupTestEnvironment () {
@@ -12,10 +13,10 @@ async function setupTestEnvironment () {
   PAMEngine.numberFormat = 'String';
   PaymentRouter.numberFormat = 'String';
 
-  // deploy APCore
+  // deploy ACTUS Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
   
-  // deploy APExtended
+  // deploy Core
   instances.AssetRegistryInstance = await AssetRegistry.new();
   instances.PaymentRegistryInstance = await PaymentRegistry.new();
   instances.PaymentRouterInstance = await PaymentRouter.new(
@@ -29,11 +30,17 @@ async function setupTestEnvironment () {
     instances.PAMEngineInstance.address
   );
 
-  // deploy APIssuance
+  // deploy Issuance
   instances.AssetIssuerInstance = await AssetIssuer.new();
 
+  // deploy Tokenization
+  instances.TokenizationFactoryInstance = await TokenizationFactory.new(
+    instances.AssetRegistryInstance.address,
+    instances.PaymentRouterInstance.address
+  );
+
   await instances.PaymentRegistryInstance.setPaymentRouter(instances.PaymentRouterInstance.address);
-  
+
   await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
 
   return instances;

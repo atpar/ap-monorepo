@@ -6,7 +6,7 @@ trap "printf '\nshutdown ...\n' && kill 0" EXIT
 echo "• running ganache-cli"
 
 { 
-	npx --quiet ganache-cli -i 1994 -t "2009-01-03T18:15:05" -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
+	npx --quiet ganache-cli@v6.5.0 -i 1994 -t "2009-01-03T18:15:05" -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace"
 } 1>/dev/null &
 
 sleep 1

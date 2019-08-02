@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { DeployTransactionResponse } from 'web3-eth-contract/types';
 
 import { TransactionObject } from '../types';
 import { ContractsAPI } from './ContractsAPI';
@@ -13,29 +12,29 @@ export class TokenizationAPI {
     this.contracts = contracts;
   }
 
-  public getAvailableFunds (
+  public getWithdrawableFunds (
     claimsTokenAddress: string,
     tokenHolderAddress: string
   ): Promise<BigNumber> {
-    return this.contracts.claimsToken.availableFunds(
+    return this.contracts.fundsDistributionToken.withdrawableFundsOf(
       claimsTokenAddress, 
       tokenHolderAddress
     ).call(); 
   };
 
   public withdrawFunds (claimsTokenAddress: string): TransactionObject {
-    return this.contracts.claimsToken.withdrawFunds(claimsTokenAddress); // gas: 100000
+    return this.contracts.fundsDistributionToken.withdrawFunds(claimsTokenAddress); // gas: 100000
   }
 
   public getTotalTokenSupply (claimsTokenAddress: string): Promise<BigNumber> {
-    return this.contracts.claimsToken.totalSupply(claimsTokenAddress).call(); 
+    return this.contracts.fundsDistributionToken.totalSupply(claimsTokenAddress).call(); 
   };
 
   public getTokenBalance (
     claimsTokenAddress: string, 
     tokenHolderAddress: string
   ): Promise<BigNumber> {
-    return this.contracts.claimsToken.balanceOf(
+    return this.contracts.fundsDistributionToken.balanceOf(
       claimsTokenAddress, 
       tokenHolderAddress
     ).call();
@@ -46,7 +45,7 @@ export class TokenizationAPI {
     toAddress: string,
     value: BigNumber
   ): TransactionObject {
-    return this.contracts.claimsToken.transfer(
+    return this.contracts.fundsDistributionToken.transfer(
       claimsTokenAddress, 
       toAddress, 
       value
@@ -54,27 +53,49 @@ export class TokenizationAPI {
   }
 
   public updateFundsReceived (claimsTokenAddress: string): TransactionObject {
-    return this.contracts.claimsTokenERC20Extension.updateFundsReceived(
+    return this.contracts.fundsDistributionTokenERC20Extension.updateFundsReceived(
       claimsTokenAddress
     );
   }
 
   /**
-   * deploys a new ClaimsToken contract for funds in Ether
-   * @param {string} ownerAddress
-   * @returns {DeployTransactionResponse} address of ClaimsToken contract
+   * deploys a new FDT contract for funds in Ether
+   * @param {string} name name of the FDT
+   * @param {string} symbol ticker symbol of the FDT
+   * @param {BigNumber} initialSupply initial FD-Token supply
+   * @returns {DeployTransactionResponse} address of FDT contract
    */
-  public deployETHClaimsToken (ownerAddress: string): DeployTransactionResponse {
-    return this.contracts.claimsTokenETHExtension.deploy(ownerAddress) // gas: 2000000
+  public createETHDistributor (
+    name: string, 
+    symbol: string, 
+    initialSupply: BigNumber
+  ): TransactionObject {
+    return this.contracts.tokenizationFactory.createETHDistributor(
+      name,
+      symbol,
+      initialSupply
+    ); // gas: 2000000
   }
 
   /**
-   * deploys a new ClaimsToken contract for funds in ERC20 tokens
-   * @param {string} ownerAddress
-   * @param {string} fundsToken
-   * @returns {DeployTransactionResponse} address of ClaimsToken contract
+   * deploys a new FDT contract for funds in ERC20 tokens
+   * @param {string} name name of the FDT
+   * @param {string} symbol ticker symbol of the FDT
+   * @param {BigNumber} initialSupply initial FD-Token supply
+   * @param {string} fundsToken address of token to be distributed
+   * @returns {DeployTransactionResponse} address of FDT contract
    */
-  public deployERC20ClaimsToken (ownerAddress: string, fundsToken: string): DeployTransactionResponse {
-    return this.contracts.claimsTokenERC20Extension.deploy(ownerAddress, fundsToken) // gas: 2000000
+  public createERC20Distributor (
+    name: string, 
+    symbol: string, 
+    initialSupply: BigNumber, 
+    fundsToken: string
+  ): TransactionObject {
+    return this.contracts.tokenizationFactory.createERC20Distributor(
+      name, 
+      symbol, 
+      initialSupply, 
+      fundsToken
+    ); // gas: 2000000
   }
 }

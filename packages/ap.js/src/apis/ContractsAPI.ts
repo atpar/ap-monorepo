@@ -7,9 +7,10 @@ import {
   PaymentRouter,
   AssetActor,
   AssetIssuer,
-  ClaimsToken,
-  ClaimsTokenETHExtension,
-  ClaimsTokenERC20Extension
+  TokenizationFactory,
+  FundsDistributionToken,
+  FDT_ETHExtension,
+  FDT_ERC20Extension
 } from '../wrappers';
 
 
@@ -21,10 +22,11 @@ export class ContractsAPI {
   public paymentRouter: PaymentRouter;
   public assetActor: AssetActor;
   public assetIssuer: AssetIssuer;
+  public tokenizationFactory: TokenizationFactory;
 
-  public claimsToken: ClaimsToken;
-  public claimsTokenETHExtension: ClaimsTokenETHExtension;
-  public claimsTokenERC20Extension: ClaimsTokenERC20Extension;
+  public fundsDistributionToken: FundsDistributionToken;
+  public fundsDistributionTokenETHExtension: FDT_ETHExtension;
+  public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
   private constructor (
     pamEngine: PAMEngine,
@@ -33,9 +35,10 @@ export class ContractsAPI {
     paymentRouter: PaymentRouter,
     assetActor: AssetActor,
     assetIssuer: AssetIssuer,
-    claimsToken: ClaimsToken,
-    claimsTokenETHExtension: ClaimsTokenETHExtension,
-    claimsTokenERC20Extension: ClaimsTokenERC20Extension
+    tokenizationFactory: TokenizationFactory,
+    fundsDistributionToken: FundsDistributionToken,
+    fundsDistributionTokenETHExtension: FDT_ETHExtension,
+    fundsDistributionTokenERC20Extension: FDT_ERC20Extension
   ) {
     this.pamEngine = pamEngine;
     this.assetRegistry = assetRegistry;
@@ -43,9 +46,10 @@ export class ContractsAPI {
     this.paymentRouter = paymentRouter;
     this.assetActor = assetActor;
     this.assetIssuer = assetIssuer;
-    this.claimsToken = claimsToken;
-    this.claimsTokenETHExtension = claimsTokenETHExtension;
-    this.claimsTokenERC20Extension = claimsTokenERC20Extension;
+    this.tokenizationFactory = tokenizationFactory;
+    this.fundsDistributionToken = fundsDistributionToken;
+    this.fundsDistributionTokenETHExtension = fundsDistributionTokenETHExtension;
+    this.fundsDistributionTokenERC20Extension = fundsDistributionTokenERC20Extension;
   }
 
   /**
@@ -61,9 +65,10 @@ export class ContractsAPI {
       await PaymentRouter.instantiate(web3),
       await AssetActor.instantiate(web3),
       await AssetIssuer.instantiate(web3),
-      await ClaimsToken.instantiate(web3),
-      await ClaimsTokenETHExtension.instantiate(web3),
-      await ClaimsTokenERC20Extension.instantiate(web3)
+      await TokenizationFactory.instantiate(web3),
+      await FundsDistributionToken.instantiate(web3),
+      await FDT_ETHExtension.instantiate(web3),
+      await FDT_ERC20Extension.instantiate(web3)
     );
   }
 }

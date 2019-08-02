@@ -252,13 +252,15 @@ export class Asset {
   /**
    * tokenizes beneficiary 
    * depending on if the default account is the record creator or counterparty beneficiary
-   * @dev deploys new ClaimsToken contract and 
+   * @dev deploys new FundsDistributionToken contract and 
    * sets contract address as the beneficiary in the OwnershipRegistry
    * @todo implement for cashflow beneficiaries
+   * @param {string} name name of the FDT
+   * @param {string} symbol symbol of the FDT
    * @param {SendOptions} txOptions 
-   * @returns {Promise<string>} address of deployed ClaimsToken contract
+   * @returns {Promise<string>} address of deployed FDT contract
    */
-  public async tokenizeBeneficiary (): Promise<string> {
+  public async tokenizeBeneficiary (name: string, symbol: string, initialSupply: BigNumber): Promise<string> {
     const { recordCreatorBeneficiary, counterpartyBeneficiary } = await this.getOwnership();
     
     if (![recordCreatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
@@ -269,13 +271,15 @@ export class Asset {
     let address: string = '';
 
     if (currency === '0x0000000000000000000000000000000000000000') {
-      ({ options: { address } } = await this.ap.tokenization.deployETHClaimsToken(this.ap.signer.account).send(
+      const tx = await this.ap.tokenization.createETHDistributor(name, symbol, initialSupply).send(
         { from: this.ap.signer.account, gas: 2000000}
-      ));
+      );
+      address = tx.events.DeployedDistributor.returnValues.distributor;
     } else {
-      ({ options: { address } } = await this.ap.tokenization.deployERC20ClaimsToken(this.ap.signer.account, currency).send(
+      const tx = await this.ap.tokenization.createERC20Distributor(name, symbol, initialSupply, currency).send(
         { from: this.ap.signer.account, gas: 2000000}
-      ));
+      );
+      address = tx.events.DeployedDistributor.returnValues.distributor;
     }
 
     if (this.ap.signer.account === recordCreatorBeneficiary) {

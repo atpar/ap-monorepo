@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@atpar/ap-contracts@^0.1.0-alpha.25":
-  version "0.1.0-alpha.25-demo"
-  resolved "https://registry.yarnpkg.com/@atpar/ap-contracts/-/ap-contracts-0.1.0-alpha.25-demo.tgz#419d2d64170fdf352b10d345107b257f83216303"
-  integrity sha512-07pocXHh+pfvsmfjdg/G2GQAqseiIDz/2AZh8Jh/touUkvvhL0uo8OxdTQjBbTmRs6uwaieic0rk4+OwRXEhnQ==
+"@atpar/ap-contracts@^0.1.0-alpha.26":
+  version "0.1.0-alpha.26-demo"
+  resolved "https://registry.yarnpkg.com/@atpar/ap-contracts/-/ap-contracts-0.1.0-alpha.26-demo.tgz#a6fafc89640fd1b281912632a21e7e958a6b84f1"
+  integrity sha512-q1FY00rsBY+yF8d4v0AnnNEnGrRtZa10JwrW+UPNBVt09edgj89h/Rc/0i6c9f884+Cx52HyaOvddTLx5REZaw==
   dependencies:
     actus-solidity "0.2.0-beta.1"
     openzeppelin-solidity "^2.1.2"

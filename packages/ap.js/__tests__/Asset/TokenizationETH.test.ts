@@ -19,6 +19,8 @@ describe('TokenizationETH', () => {
   let assetRC: Asset;
   let assetCP: Asset;
 
+  const dustDeviation = 1;
+
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
     recordCreator = (await web3.eth.getAccounts())[0];
@@ -40,16 +42,20 @@ describe('TokenizationETH', () => {
     assetCP = await Asset.load(apCP, assetRC.assetId);
   });
 
-  it('should deploy new ClaimsToken contract and set it as the recordCreatorBeneficiary', async () => {
-    const claimsTokenAddress = await assetRC.tokenizeBeneficiary();
-    const totalSupply = await apRC.tokenization.getTotalTokenSupply(claimsTokenAddress);
-    const balance = await apRC.tokenization.getTokenBalance(claimsTokenAddress, apRC.signer.account);
+  it('should tokenize recordCreatorBeneficiary', async () => {
+    const fdtAddress = await assetRC.tokenizeBeneficiary(
+      'FundsDistributionToken',
+      'FDT',
+      new BigNumber("1000000000000000000000")
+    );
+    const totalSupply = await apRC.tokenization.getTotalTokenSupply(fdtAddress);
+    const balance = await apRC.tokenization.getTokenBalance(fdtAddress, apRC.signer.account);
 
     expect(totalSupply.isGreaterThan(0)).toBe(true);
     expect(totalSupply.isEqualTo(balance)).toBe(true);
   });
 
-  it('should return the correct amount of available funds', async () => {
+  it('should return the correct amount of withdrawable funds', async () => {
     const state = await assetCP.getState();
     const timestamp = Number(state.lastEventTime) + 5256000;
     const amountOutstandingForObligation = await assetCP.getAmountOutstandingForNextObligation(timestamp);
@@ -61,18 +67,18 @@ describe('TokenizationETH', () => {
 
     const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
 
-    const balance = await apRC.tokenization.getAvailableFunds(
+    const balance = await apRC.tokenization.getWithdrawableFunds(
       recordCreatorBeneficiary, 
       recordCreator
     );
 
     expect(balance.isGreaterThan(0)).toBe(true);
-    expect(balance.isEqualTo(amountOutstandingForObligation)).toBe(true);
+    expect(balance.isEqualTo(amountOutstandingForObligation.minus(dustDeviation))).toBe(true);
   });
 
   it('should withdraw available funds', async () => {
     const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
-    const availableFunds = await apRC.tokenization.getAvailableFunds(
+    const withdrawableFunds = await apRC.tokenization.getWithdrawableFunds(
       recordCreatorBeneficiary, recordCreator
     );
     const preBalance = await web3.eth.getBalance(recordCreatorBeneficiary);
@@ -82,10 +88,10 @@ describe('TokenizationETH', () => {
     );
 
     const postBalance = await web3.eth.getBalance(recordCreatorBeneficiary);
-    expect(availableFunds.plus(postBalance).isEqualTo(preBalance));
+    expect(withdrawableFunds.plus(postBalance).isEqualTo(preBalance));
   });
 
-  it('should transfer ClaimsTokens', async () => {
+  it('should transfer FD-Tokens', async () => {
     const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
     const value = new BigNumber(1000);
 

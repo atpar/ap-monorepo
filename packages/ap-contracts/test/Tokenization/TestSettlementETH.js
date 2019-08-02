@@ -1,6 +1,8 @@
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const BigNumber = require('bignumber.js');
 
-const ClaimsTokenETH = artifacts.require('ClaimsTokenETHExtension');
+const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
+
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
 
 contract('SettlementETH', (accounts) => {
@@ -14,6 +16,8 @@ contract('SettlementETH', (accounts) => {
   const ownerC = '0x0000000000000000000000000000000000000002';
   const ownerD = '0x0000000000000000000000000000000000000003';
   
+  const mintedTokensPerOwner = (new BigNumber(2500 * 10 ** 18)).toFixed();
+
   const assetId = 'C123';
   const cashflowId = 5;
   const payoffAmount = 2 * 10  ** 15;
@@ -40,25 +44,29 @@ contract('SettlementETH', (accounts) => {
       '0x0000000000000000000000000000000000000000'
     );
 
-    // deploy ClaimsTokenETH
-    this.ClaimsTokenETHInstance = await ClaimsTokenETH.new(ownerA);
-    this.totalSupply = await this.ClaimsTokenETHInstance.totalSupply();
+    // deploy FDT_ETHExtension
+    this.FDT_ETHExtensionInstance = await FDT_ETHExtension.new(
+      'FundsDistributionToken',
+      'FDT'
+    );
+    
+    // mint FD-Tokens for each owner
+    this.FDT_ETHExtensionInstance.mint(ownerA, mintedTokensPerOwner);
+    this.FDT_ETHExtensionInstance.mint(ownerB, mintedTokensPerOwner);
+    this.FDT_ETHExtensionInstance.mint(ownerC, mintedTokensPerOwner);
+    this.FDT_ETHExtensionInstance.mint(ownerD, mintedTokensPerOwner);
 
-    await this.ClaimsTokenETHInstance.transfer(ownerB, this.totalSupply.divn(4), { from: ownerA });
-    await this.ClaimsTokenETHInstance.transfer(ownerC, this.totalSupply.divn(4), { from: ownerA });
-    await this.ClaimsTokenETHInstance.transfer(ownerD, this.totalSupply.divn(4), { from: ownerA });
-
-    // set ClaimsTokenETH as beneficiary for CashflowId
+    // set FDT_ETHExtension as beneficiary for CashflowId
     await this.AssetRegistryInstance.setBeneficiaryForCashflowId(
       web3.utils.toHex(assetId), 
       cashflowId, 
-      this.ClaimsTokenETHInstance.address,
+      this.FDT_ETHExtensionInstance.address,
       { from: recordCreatorBeneficiary }
     );
   });
 
-  it('should increment <totalReceivedFunds> after settling payoff in ether', async () => {
-    const preBalanceOfClaimsTokenETH = await web3.eth.getBalance(this.ClaimsTokenETHInstance.address);
+  it('should increment Ether balance of FDT after settling payoff in ether', async () => {
+    const preBalanceOfFDT_ETHExtension = await web3.eth.getBalance(this.FDT_ETHExtensionInstance.address);
 
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId), 
@@ -69,10 +77,8 @@ contract('SettlementETH', (accounts) => {
       { from: counterpartyObligor, value: payoffAmount }
     );
 
-    const postBalanceOfClaimsTokenETH = await web3.eth.getBalance(this.ClaimsTokenETHInstance.address);
-    const totalReceivedFunds = (await this.ClaimsTokenETHInstance.totalReceivedFunds()).toString();
+    const postBalanceOfFDT_ETHExtension = await web3.eth.getBalance(this.FDT_ETHExtensionInstance.address);
 
-    assert.equal(postBalanceOfClaimsTokenETH, totalReceivedFunds);
-    assert.equal(Number(preBalanceOfClaimsTokenETH) + payoffAmount, postBalanceOfClaimsTokenETH);
+    assert.equal(Number(preBalanceOfFDT_ETHExtension) + payoffAmount, postBalanceOfFDT_ETHExtension);
   });
 });
