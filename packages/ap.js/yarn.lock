@@ -2,12 +2,13 @@
 # yarn lockfile v1
 
 
-"@atpar/ap-contracts@^0.1.0-alpha.26":
-  version "0.1.0-alpha.26-demo"
-  resolved "https://registry.yarnpkg.com/@atpar/ap-contracts/-/ap-contracts-0.1.0-alpha.26-demo.tgz#a6fafc89640fd1b281912632a21e7e958a6b84f1"
-  integrity sha512-q1FY00rsBY+yF8d4v0AnnNEnGrRtZa10JwrW+UPNBVt09edgj89h/Rc/0i6c9f884+Cx52HyaOvddTLx5REZaw==
+"@atpar/ap-contracts@^0.1.0-alpha.28":
+  version "0.1.0-alpha.28-demo"
+  resolved "https://registry.yarnpkg.com/@atpar/ap-contracts/-/ap-contracts-0.1.0-alpha.28-demo.tgz#cb112a2516a2c91c3b951c252536a89a0bccfa90"
+  integrity sha512-DPZnJSufMieMW2k+44x9m2get9oidAXJxwGtFbgXxZyNBuBfn6XHwIS/zs6U8kAReGe7MYMRHDF/Ie+5x6GUJw==
   dependencies:
-    actus-solidity "0.2.0-beta.1"
+    actus-solidity "0.2.0"
+    funds-distribution-token "0.1.2"
     openzeppelin-solidity "^2.1.2"
     truffle-hdwallet-provider "^1.0.9"
 
@@ -312,10 +313,10 @@ acorn@^6.0.1, acorn@^6.0.7, acorn@^6.2.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.2.0.tgz#67f0da2fc339d6cfb5d6fb244fd449f33cd8bbe3"
   integrity sha512-8oe72N3WPMjA+2zVG71Ia0nXZ8DpQH+QyyHO+p06jT8eg8FGG3FbcUIi8KziHlAfheJQZeoqbvq1mQSQHXKYLw==
 
-actus-solidity@0.2.0-beta.1:
-  version "0.2.0-beta.1"
-  resolved "https://registry.yarnpkg.com/actus-solidity/-/actus-solidity-0.2.0-beta.1.tgz#6baef64719be3be2c1ec76144df64e153e1ab114"
-  integrity sha512-NRHYHp/nl7NOYU8t3SzLWm/HdFOwCpEcWFMKy6HvubXrdbXzdVwPJDCKa8Fp4Zts1kKQB6D2h6EzPD7j0GyYpg==
+actus-solidity@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/actus-solidity/-/actus-solidity-0.2.0.tgz#5e24579aa0d01d1cb264aabb195c7db2fb6d8255"
+  integrity sha512-F9QZmtDuJfLbZrTN8Hamx1zKj8Mjpa+Lt1o3q2vuM4r60oJwJtLbn/BRDeSK2a7KRhv/3L1WKu+gJSS7axNgWw==
 
 aes-js@3.0.0:
   version "3.0.0"
@@ -2992,6 +2993,13 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+funds-distribution-token@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/funds-distribution-token/-/funds-distribution-token-0.1.2.tgz#aae3a35ddfc47f994d004db8aec964e95a8b68bb"
+  integrity sha512-kVmPldECMbXtHEUhXX2U7hkvtnWJkS2D2/oR2P4UkL7n0BaygRwXcD81kjcWmyaV587fLodL9NdW6CPGY/5BDg==
+  dependencies:
+    openzeppelin-solidity "^2.3.0"
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -5381,7 +5389,7 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-openzeppelin-solidity@^2.1.2:
+openzeppelin-solidity@^2.1.2, openzeppelin-solidity@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-2.3.0.tgz#1ab7b4cc3782a5472ed61eb740c56a8bfdd74119"
   integrity sha512-QYeiPLvB1oSbDt6lDQvvpx7k8ODczvE474hb2kLXZBPKMsxKT1WxTCHBYrCU7kS7hfAku4DcJ0jqOyL+jvjwQw==

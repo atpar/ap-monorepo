@@ -5,12 +5,12 @@ This package contains the ACTUS Protocol smart contracts.
 ## Smart Contracts
 
 ### ACTUS-Solidity
-AP-Contracts depends on [actus-solidity](https://github.com/atpar/actus-solidity) and uses ACTUS definitions and ACTUS engines throughout the following smart contracts.
+AP-Contracts depends on [`actus-solidity`](https://github.com/atpar/actus-solidity) and uses ACTUS definitions and ACTUS engines throughout the following smart contracts.
 
 ### Registries
 ACTUS Protocol is made up of two global registries:
 - Asset Registry (stores the addresses of the obligors and beneficiaries and the terms and the current state of assets)
-- Payment Registry (stores payment metadata for obligations)
+- Payment Registry (stores payment metadata for settling obligations)
 
 ### Payment Router
 Routes payments from the obligor (payer) to the beneficiary (payee) and registers the amount paid for each obligation in the Payment Registry.
@@ -23,8 +23,8 @@ There are going to be multiple Asset Actor contracts depending on the protocol. 
 ### AssetIssuer
 An asset can be issued from a co-signed order (order which is signed by the maker and taker) via the Asset Issuer. The Asset Issuer verifies the provided signatures and initiates the issuance by passing the terms and the ownership to the Asset Actor.
 
-### Tokenization Module (ClaimsToken)
-Every beneficiary in ACTUS Protocol can be tokenized by updating the beneficiary address in the Ownership Registry with the address of a new instance of the ClaimsToken contract. The Payment Router automatically routes future payments to the corresponding ClaimsToken contract. The ClaimsToken contract handles the distribution of incoming funds to all ClaimsToken holders. (see [EIP-1843](https://github.com/ethereum/EIPs/issues/1843) for more information)
+### Tokenization Module (Funds Distribution Token)
+Every beneficiary in ACTUS Protocol can be tokenized by updating the beneficiary address in the Ownership Registry with the address of a new instance of the FDT contract. The Payment Router automatically routes future payments to the corresponding FDT contract. The FDT contract handles the distribution of incoming funds to all FD-Token holders. (see [EIP-2222](https://github.com/atpar/funds-distribution-token) for more information)
 
 ## Development
 
