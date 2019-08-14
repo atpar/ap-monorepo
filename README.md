@@ -9,7 +9,7 @@ Monorepo containing all packages related to the ACTUS Protocol.
 
 ## Packages
 
-| Package                                                                                 | Version                                                           | Description                                                                |
-|-----------------------------------------------------------------------------------------|-------------------------------------------------------------------|----------------------------------------------------------------------------|
-|[`ap-contracts`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap-contracts) | ![npm (scoped)](https://img.shields.io/npm/v/@atpar/ap-contracts) | Contains the ACTUS Protocol smart contracts                                |
-|[`ap.js`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap.js)               | ![npm (scoped)](https://img.shields.io/npm/v/@atpar/ap.js)        | Typescript library for interacting with the ACTUS Protocol smart contracts |
+| Package                                                                                 | Version                                                                                                                                           | Description                                                                |
+|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+|[`ap-contracts`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap-contracts) | [![npm (scoped)](https://img.shields.io/npm/v/@atpar/ap-contracts)](https://www.npmjs.com/package/@atpar/ap-contracts "View this project on npm") | Contains the ACTUS Protocol smart contracts                                |
+|[`ap.js`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap.js)               | [![npm (scoped)](https://img.shields.io/npm/v/@atpar/ap.js)](https://www.npmjs.com/package/@atpar/ap.js "View this project on npm")               | Typescript library for interacting with the ACTUS Protocol smart contracts |
