@@ -16,7 +16,7 @@ then
 	echo "• compiling contracts"
 	(
 		cd packages/ap-contracts
-		npx --quiet truffle compile --all | 1>/dev/null
+		npx --quiet truffle@v5.0.28 compile --all | 1>/dev/null
 	)
 fi
 
@@ -24,7 +24,7 @@ echo "• migrating contracts"
 
 (
 	cd packages/ap-contracts
-	npx --quiet truffle migrate --reset --network development | 1>/dev/null
+	npx --quiet truffle@v5.0.28 migrate --reset --network development | 1>/dev/null
 )
 
 echo "✓ ready"
