@@ -20,15 +20,15 @@ contract('AssetIssuer', (accounts) => {
     const orderData = { 
       makerAddress: recordCreator,
       takerAddress: counterparty,
-      actorAddress: this.AssetActorInstance.address,
+      actorAddress: this.DemoAssetActorInstance.address,
       terms: this.terms,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
       takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
       signatures: { 
         makerSignature: null,
-        takerSignature: null 
+        takerSignature: null
       },
-      salt: Math.floor(Math.random() * 1000000) 
+      salt: Math.floor(Math.random() * 1000000)
     };
 
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);

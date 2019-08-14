@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
-import "../Core/IAssetActor.sol";
+import "../Core/IDemoAssetActor.sol";
 
 import "./VerifyOrder.sol";
 
@@ -41,7 +41,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 		);
 
 		require(
-			IAssetActor(order.actor).initialize(assetId, ownership, order.terms),
+			IDemoAssetActor(order.actor).initialize(assetId, ownership, order.terms),
 			"AssetIssuer.fillOrder: EXECUTION_ERROR"
 		);
 

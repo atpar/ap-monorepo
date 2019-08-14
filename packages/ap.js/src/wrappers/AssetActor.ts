@@ -7,7 +7,7 @@ import { AssetProgressedEvent, AssetOwnership, ContractTerms, TransactionObject 
 import { toAssetProgressedEvent, fromContractTerms } from './Conversions';
 
 import Deployments from '@atpar/ap-contracts/deployments.json';
-import AssetActorArtifact from '@atpar/ap-contracts/artifacts/AssetActor.min.json';
+import AssetActorArtifact from '@atpar/ap-contracts/artifacts/DemoAssetActor.min.json';
 
 
 export class AssetActor {
@@ -31,8 +31,8 @@ export class AssetActor {
     );
   };
 
-  public progress (assetId: string): TransactionObject {
-    return this.assetActor.methods.progress(toHex(assetId));
+  public progress (assetId: string, timestamp: number): TransactionObject {
+    return this.assetActor.methods.progress(toHex(assetId), timestamp);
   }
 
   public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
@@ -45,14 +45,14 @@ export class AssetActor {
   public static async instantiate (web3: Web3): Promise<AssetActor> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].AssetActor) { 
+    if (!Deployments[netId] || !Deployments[netId].DemoAssetActor) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const assetActorInstance = new web3.eth.Contract(
       // @ts-ignore
       AssetActorArtifact.abi,
       // @ts-ignore
-      Deployments[netId].AssetActor
+      Deployments[netId].DemoAssetActor
     );
 
     return new AssetActor(assetActorInstance);

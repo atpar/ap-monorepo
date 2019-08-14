@@ -6,7 +6,7 @@ const AssetRegistry = artifacts.require('AssetRegistry');
 const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
 
-const AssetActor = artifacts.require('AssetActor');
+const DemoAssetActor = artifacts.require('DemoAssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
@@ -31,9 +31,9 @@ module.exports = async (deployer, network, accounts) => {
   );
   await PaymentRegistryInstance.setPaymentRouter(PaymentRouter.address);
   
-  // Core: Asset Actor
+  // Core: Demo Asset Actor
   await deployer.deploy(
-    AssetActor,
+    DemoAssetActor,
     AssetRegistry.address,
     PaymentRegistry.address,
     PaymentRouter.address,
@@ -50,5 +50,5 @@ module.exports = async (deployer, network, accounts) => {
     PaymentRouter.address
   );
 
-  // await AssetActorInstance.registerIssuer(AssetIssuer.address);
+  // await DemoAssetActorInstance.registerIssuer(AssetIssuer.address);
 };
