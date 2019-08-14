@@ -5,7 +5,6 @@ set -o errexit
 trap shutdown_ganache EXIT
 
 shutdown_ganache() {
-	echo $ganache_pid
   if [ -n "$ganache_pid" ] && ps -p $ganache_pid > /dev/null; then
     kill -9 $ganache_pid
   fi
