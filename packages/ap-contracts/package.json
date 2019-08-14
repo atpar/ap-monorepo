@@ -25,8 +25,8 @@
   },
   "scripts": {
     "build": "npm run compile && npm run generate-artifacts",
-    "compile": "truffle compile",
-    "generate-artifacts": "./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
+    "compile": "truffle compile --all",
+    "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
     "migrate:goerli": "truffle migrate --network goerli",

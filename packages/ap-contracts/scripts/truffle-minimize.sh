@@ -20,9 +20,9 @@ fi
 for i in "$1"/*.json; do
 	m=$2/$(basename "${i%%.json}.min.json")
 	# [ -e $m ] && continue
-	echo "Minimizing truffle json artifact: $i"
-	echo "Original size:  $(wc -c "$i")"
+	# echo "Minimizing truffle json artifact: $i"
+	# echo "Original size:  $(wc -c "$i")"
 	jq 'del(.ast,.legacyAST,.source,.deployedSourceMap,.userdoc,.deployedBytecode,.sourceMap,.sourcePath,.schemaVersion,.networks,.devdoc)' $i > $m
-	echo "Minimized size: $(wc -c "$m")"
+	# echo "Minimized size: $(wc -c "$m")"
 done
 

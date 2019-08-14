@@ -5,11 +5,12 @@
     "lerna": "^3.13.0"
   },
 	"scripts": {
+    "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "link-packages": "lerna link",
     "publish": "lerna run build && lerna publish",
     "start": "./scripts/start.sh",
-    "test": "lerna run test"
+    "test": "./scripts/test.sh"
   },
   "publishConfig": {
     "access": "restricted"
