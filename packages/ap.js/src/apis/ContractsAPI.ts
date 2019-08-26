@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 
 import { 
+  ANNEngine,
   PAMEngine, 
   AssetRegistry,
   PaymentRegistry, 
@@ -16,6 +17,7 @@ import {
 
 export class ContractsAPI {
 
+  public annEngine: ANNEngine;
   public pamEngine: PAMEngine;
   public assetRegistry: AssetRegistry;
   public paymentRegistry: PaymentRegistry;
@@ -29,6 +31,7 @@ export class ContractsAPI {
   public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
   private constructor (
+    annEngine: ANNEngine,
     pamEngine: PAMEngine,
     assetRegistry: AssetRegistry,
     paymentRegistry: PaymentRegistry,
@@ -40,6 +43,7 @@ export class ContractsAPI {
     fundsDistributionTokenETHExtension: FDT_ETHExtension,
     fundsDistributionTokenERC20Extension: FDT_ERC20Extension
   ) {
+    this.annEngine = annEngine;
     this.pamEngine = pamEngine;
     this.assetRegistry = assetRegistry;
     this.paymentRegistry = paymentRegistry;
@@ -59,6 +63,7 @@ export class ContractsAPI {
    */
   public static async init (web3: Web3): Promise<ContractsAPI> {
     return new ContractsAPI(
+      await ANNEngine.instantiate(web3),
       await PAMEngine.instantiate(web3),
       await AssetRegistry.instantiate(web3),
       await PaymentRegistry.instantiate(web3),
