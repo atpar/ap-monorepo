@@ -22,7 +22,7 @@
   "scripts": {
     "prebuild": "rm -rf dist/ && tsc",
     "build": "webpack",
-    "test": "jest --runInBand --detectOpenHandles --forceExit --verbose",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --verbose --colors",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },
