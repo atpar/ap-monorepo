@@ -30,4 +30,4 @@ sleep 1
 	npx --quiet truffle@v5.0.28 migrate --reset --network development | 1>/dev/null
 )
 
-lerna run test
+lerna run test --stream --no-prefix

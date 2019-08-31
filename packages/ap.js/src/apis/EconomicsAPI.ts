@@ -1,6 +1,6 @@
 import { ContractTerms, ContractState, ContractType } from  '../types';
 import { ContractsAPI } from './ContractsAPI';
-import { ContractEngine, PAM } from '../engines';
+import { ContractEngine, PAM, ANN } from '../engines';
 
 
 export class EconomicsAPI {
@@ -13,6 +13,7 @@ export class EconomicsAPI {
     this.engines = new Map();
     
     this.engines.set(ContractType.PAM, new PAM(contracts.pamEngine));
+    this.engines.set(ContractType.ANN, new ANN(contracts.annEngine));
   }
 
   public engine (contractType: ContractType): ContractEngine {
@@ -20,28 +21,6 @@ export class EconomicsAPI {
     if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
     return engine;
   }
-
-  // /**
-  //  * registers the terms and the state of a new asset
-  //  * @dev this requires the users signature (metamask pop-up)
-  //  * @param {string} assetId 
-  //  * @param {ContractTerms} contractTerms 
-  //  * @param {ContractState} contractState
-  //  * @returns {TransactionObject}
-  //  */
-  // public registerEconomics (
-  //   assetId: string, 
-  //   contractTerms: ContractTerms, 
-  //   contractState: ContractState,
-  //   actorAddress: string
-  // ): TransactionObject {
-  //   return this.contracts.assetRegistry.registerEconomics(
-  //     assetId,
-  //     contractTerms, 
-  //     contractState, 
-  //     actorAddress
-  //   ); // gas: 700000
-  // }
 
   /**
    * fetches the terms of an asset with given AssetId
