@@ -79,7 +79,7 @@ export class Order {
       ...orderParams,
       takerAddress: null,
       takerCreditEnhancementAddress: null,
-      actorAddress: ap.lifecycle.getActorAddress(),
+      actorAddress: ap.contracts.assetActor.instance.options.address,
       signatures: {
         makerSignature: null,
         takerSignature: null

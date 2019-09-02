@@ -9,11 +9,10 @@ import FundsDistributionTokenArtifact from '@atpar/ap-contracts/artifacts/FundsD
 
 
 export class FundsDistributionToken {
+  public instance: Contract;
 
-  private fundsDistributionToken: Contract;
-
-  private constructor (fundsDistributionTokenInstance: Contract) {
-    this.fundsDistributionToken = fundsDistributionTokenInstance;
+  private constructor (instance: Contract) {
+    this.instance = instance;
   }
 
   public withdrawableFundsOf = (
@@ -21,28 +20,28 @@ export class FundsDistributionToken {
     tokenHolderAddress: string
   ): CallObject<BigNumber> => ({
     call: async (): Promise<BigNumber> => {
-      const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
-      fundsDistributionTokenInstance.options.address = claimsTokenAddress;
+      const instance = this.instance.clone();
+      instance.options.address = claimsTokenAddress;
 
-      const response = await fundsDistributionTokenInstance.methods.withdrawableFundsOf(tokenHolderAddress).call();
+      const response = await instance.methods.withdrawableFundsOf(tokenHolderAddress).call();
 
       return new BigNumber(response);
     }
   });
 
   public withdrawFunds (claimsTokenAddress: string): TransactionObject {
-    const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
-    fundsDistributionTokenInstance.options.address = claimsTokenAddress;
+    const instance = this.instance.clone();
+    instance.options.address = claimsTokenAddress;
 
-    return fundsDistributionTokenInstance.methods.withdrawFunds();
+    return instance.methods.withdrawFunds();
   }
 
   public totalSupply = (claimsTokenAddress: string): CallObject<BigNumber> => ({
     call: async (): Promise<BigNumber> => {
-      const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
-      fundsDistributionTokenInstance.options.address = claimsTokenAddress;
+      const instance = this.instance.clone();
+      instance.options.address = claimsTokenAddress;
 
-      const response = await fundsDistributionTokenInstance.methods.totalSupply().call();
+      const response = await instance.methods.totalSupply().call();
 
       return new BigNumber(response);
     }
@@ -53,10 +52,10 @@ export class FundsDistributionToken {
     tokenHolderAddress: string
   ): CallObject<BigNumber> => ({
     call: async (): Promise<BigNumber> => {
-      const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
-      fundsDistributionTokenInstance.options.address = claimsTokenAddress;
+      const instance = this.instance.clone();
+      instance.options.address = claimsTokenAddress;
 
-      const response = await fundsDistributionTokenInstance.methods.balanceOf(tokenHolderAddress).call();
+      const response = await instance.methods.balanceOf(tokenHolderAddress).call();
 
       return new BigNumber(response);
     }
@@ -67,21 +66,21 @@ export class FundsDistributionToken {
     toAddress: string, 
     value: BigNumber
   ): TransactionObject {
-    const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
-    fundsDistributionTokenInstance.options.address = claimsTokenAddress;
+    const instance = this.instance.clone();
+    instance.options.address = claimsTokenAddress;
 
-    return fundsDistributionTokenInstance.methods.transfer(
+    return instance.methods.transfer(
       toAddress,
       numberToHex(value)
     );
   }
 
   public static async instantiate (web3: Web3): Promise<FundsDistributionToken> {
-    const fundsDistributionTokenInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       FundsDistributionTokenArtifact.abi,
     );
 
-    return new FundsDistributionToken(fundsDistributionTokenInstance);
+    return new FundsDistributionToken(instance);
   }
 }

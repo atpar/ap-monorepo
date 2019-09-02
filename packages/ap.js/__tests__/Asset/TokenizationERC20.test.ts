@@ -77,7 +77,7 @@ describe('TokenizationERC20', () => {
     const { recordCreatorBeneficiary } = await assetRC.getOwnership(); 
 
     await paymentToken.methods.approve(
-      apCP.contracts.paymentRouter.getAddress(), 
+      apCP.contracts.paymentRouter.instance.options.address, 
       amountOutstandingForObligation.abs().toFixed()
     ).send({ from: counterparty });
 

@@ -10,14 +10,10 @@ import PaymentRouterArtifact from '@atpar/ap-contracts/artifacts/PaymentRouter.m
 
 
 export class PaymentRouter {
-  private paymentRouter: Contract;
+  public instance: Contract;
 
-  private constructor (PaymentRouterInstance: Contract) {
-    this.paymentRouter = PaymentRouterInstance
-  }
-
-  public getAddress (): string {
-    return this.paymentRouter.options.address;
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
 
   public settlePayment (
@@ -27,7 +23,7 @@ export class PaymentRouter {
     tokenAddress: string,
     amount: BigNumber
   ): TransactionObject {
-    return this.paymentRouter.methods.settlePayment(
+    return this.instance.methods.settlePayment(
       toHex(assetId),
       cashflowId,
       eventId,
@@ -42,13 +38,13 @@ export class PaymentRouter {
     if (!Deployments[netId] || !Deployments[netId].PaymentRouter) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const PaymentRouterInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRouterArtifact.abi,
       // @ts-ignore
       Deployments[netId].PaymentRouter
     );
 
-    return new PaymentRouter(PaymentRouterInstance);
+    return new PaymentRouter(instance);
   }
 }

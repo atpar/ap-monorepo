@@ -11,20 +11,18 @@ import AssetActorArtifact from '@atpar/ap-contracts/artifacts/AssetActor.min.jso
 
 
 export class AssetActor {
-  private assetActor: Contract;
+  public instance: Contract;
 
-  private constructor (assetActorInstance: Contract) {
-    this.assetActor = assetActorInstance
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
-
-  public getAddress (): string { return this.assetActor.options.address; }
 
   public initialize (
     assetId: string,
     ownership: AssetOwnership,
     terms: ContractTerms
   ): TransactionObject { 
-    return this.assetActor.methods.initialize(
+    return this.instance.methods.initialize(
       toHex(assetId),
       [ ...Object.values(ownership) ],
       fromContractTerms(terms)
@@ -32,11 +30,11 @@ export class AssetActor {
   };
 
   public progress (assetId: string): TransactionObject {
-    return this.assetActor.methods.progress(toHex(assetId));
+    return this.instance.methods.progress(toHex(assetId));
   }
 
   public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
-    this.assetActor.events.AssetProgressed().on('data', (event: EventLog): void => {
+    this.instance.events.AssetProgressed().on('data', (event: EventLog): void => {
       const assetProgressedEvent = toAssetProgressedEvent(event);
       cb(assetProgressedEvent);
     });
@@ -48,13 +46,13 @@ export class AssetActor {
     if (!Deployments[netId] || !Deployments[netId].AssetActor) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const assetActorInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       AssetActorArtifact.abi,
       // @ts-ignore
       Deployments[netId].AssetActor
     );
 
-    return new AssetActor(assetActorInstance);
+    return new AssetActor(instance);
   }
 }

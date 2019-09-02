@@ -11,12 +11,6 @@ export class LifecycleAPI {
   }
 
   /**
-   * returns the address of the asset actor
-   * @returns {string}
-   */
-  public getActorAddress(): string { return this.contracts.assetActor.getAddress(); }
-
-  /**
    * initialize an asset
    * derives the first state from the terms and
    * stores the ownership in the OwnershipRegistry and the terms in the EconomicsRegistry

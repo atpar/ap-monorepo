@@ -16,21 +16,21 @@ import PAMEngineArtifact from '@atpar/ap-contracts/artifacts/PAMEngine.min.json'
 
 
 export class PAMEngine {
-  private pamEngine: Contract;
+  public instance: Contract;
 
-  private constructor (pamEngineInstance: Contract) {    
-    this.pamEngine = pamEngineInstance;
+  private constructor (instance: Contract) {    
+    this.instance = instance;
   }
 
   public getPrecision = (): CallObject<number> => ({
     call: async (): Promise<number> => {
-      return Number(await this.pamEngine.methods.precision().call());
+      return Number(await this.instance.methods.precision().call());
     }
   });
 
   public computeInitialState = (terms: ContractTerms): CallObject<ContractState> => ({
     call: async (): Promise<ContractState> => {
-      const response = await this.pamEngine.methods.computeInitialState(fromContractTerms(terms)).call();
+      const response = await this.instance.methods.computeInitialState(fromContractTerms(terms)).call();
       const initialState = toContractState(response);
       return initialState;
     }
@@ -42,7 +42,7 @@ export class PAMEngine {
     timestamp: number
   ): CallObject<{nextState: ContractState; events: ContractEvent[]}> => ({
     call: async (): Promise<{nextState: ContractState; events: ContractEvent[]}> => {
-      const response = await this.pamEngine.methods.computeNextState(
+      const response = await this.instance.methods.computeNextState(
         fromContractTerms(terms), 
         fromContractState(state), 
         timestamp
@@ -62,7 +62,7 @@ export class PAMEngine {
     timestamp: number
   ): CallObject<{nextState: ContractState; event: ContractEvent}> => ({
     call: async (): Promise<{nextState: ContractState; event: ContractEvent}> => {
-      const response = await this.pamEngine.methods.computeNextStateForProtoEvent(
+      const response = await this.instance.methods.computeNextStateForProtoEvent(
         fromContractTerms(terms),
         fromContractState(state),
         fromProtoEvent(protoEvent),
@@ -82,7 +82,7 @@ export class PAMEngine {
     endTimestamp: number
   ): CallObject<ProtoEventSchedule> => ({
     call: async (): Promise<ProtoEventSchedule> => {
-      const response: ProtoEventSchedule = await this.pamEngine.methods.computeProtoEventScheduleSegment(
+      const response: ProtoEventSchedule = await this.instance.methods.computeProtoEventScheduleSegment(
         fromContractTerms(terms),
         startTimestamp,
         endTimestamp
@@ -100,13 +100,13 @@ export class PAMEngine {
     if (!Deployments[netId] || !Deployments[netId].PAMEngine) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const pamEngineInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       PAMEngineArtifact.abi,
       // @ts-ignore
       Deployments[netId].PAMEngine
     );
 
-    return new PAMEngine(pamEngineInstance);
+    return new PAMEngine(instance);
   }
 }

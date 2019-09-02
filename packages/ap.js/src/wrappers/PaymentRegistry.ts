@@ -12,15 +12,15 @@ import PaymentRegistryArtifact from '@atpar/ap-contracts/artifacts/PaymentRegist
 
 
 export class PaymentRegistry {
-  private paymentRegistry: Contract;
+  public instance: Contract;
 
-  private constructor (PaymentRegistryInstance: Contract) {
-    this.paymentRegistry = PaymentRegistryInstance
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
 
   public getPayoffBalance = (assetId: string, eventId: number): CallObject<BigNumber> => ({
     call: async (): Promise<BigNumber> => {
-      const payoffBalanceAsString: string = await this.paymentRegistry.methods.getPayoffBalance(
+      const payoffBalanceAsString: string = await this.instance.methods.getPayoffBalance(
         toHex(assetId),
         eventId
       ).call();
@@ -42,7 +42,7 @@ export class PaymentRegistry {
         0: string; 
         1: string; 
         2: string; 
-      } = await this.paymentRegistry.methods.getPayoff(toHex(assetId), eventId).call();
+      } = await this.instance.methods.getPayoff(toHex(assetId), eventId).call();
 
       const payoffBalance = new BigNumber(payoffBalanceAsString)
 
@@ -51,7 +51,7 @@ export class PaymentRegistry {
   });
 
   public onPaidEvent (cb: (event: PaidEvent) => void): void {
-    this.paymentRegistry.events.Paid().on('data', (event: EventLog): void => {
+    this.instance.events.Paid().on('data', (event: EventLog): void => {
       const paidEvent = toPaidEvent(event);
       cb(paidEvent);
     });
@@ -63,13 +63,13 @@ export class PaymentRegistry {
     if (!Deployments[netId] || !Deployments[netId].PaymentRegistry) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const PaymentRegistryInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRegistryArtifact.abi,
       // @ts-ignore
       Deployments[netId].PaymentRegistry
     );
 
-    return new PaymentRegistry(PaymentRegistryInstance);
+    return new PaymentRegistry(instance);
   }
 }

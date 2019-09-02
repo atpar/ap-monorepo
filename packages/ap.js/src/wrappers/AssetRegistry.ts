@@ -10,10 +10,10 @@ import AssetRegistryArtifact from '@atpar/ap-contracts/artifacts/AssetRegistry.m
 
 
 export class AssetRegistry {
-  private assetRegistry: Contract;
+  public instance: Contract;
 
-  private constructor (assetRegistryInstance: Contract) {
-    this.assetRegistry = assetRegistryInstance
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
 
   public registerAsset (
@@ -23,7 +23,7 @@ export class AssetRegistry {
     state: ContractState, 
     actorAddress: string
   ): TransactionObject {
-    return this.assetRegistry.methods.registerAsset(
+    return this.instance.methods.registerAsset(
       toHex(assetId),
       ownership,
       fromContractTerms(terms),
@@ -34,7 +34,7 @@ export class AssetRegistry {
 
   public getTerms = (assetId: string): CallObject<ContractTerms> => ({
     call: async (): Promise<ContractTerms> => {
-      const response = await this.assetRegistry.methods.getTerms(toHex(assetId)).call();
+      const response = await this.instance.methods.getTerms(toHex(assetId)).call();
       const terms = toContractTerms(response);
       return terms;
     }
@@ -42,7 +42,7 @@ export class AssetRegistry {
 
   public getState = (assetId: string): CallObject<ContractState> => ({
     call: async (): Promise<ContractState> => {
-      const response = await this.assetRegistry.methods.getState(toHex(assetId)).call();
+      const response = await this.instance.methods.getState(toHex(assetId)).call();
       const contractState = toContractState(response);
       return contractState;
     }
@@ -50,21 +50,21 @@ export class AssetRegistry {
 
   public getEventId = (assetId: string): CallObject<number> => ({
     call: async (): Promise<number> => {
-      const response = await this.assetRegistry.methods.getEventId(toHex(assetId)).call();
+      const response = await this.instance.methods.getEventId(toHex(assetId)).call();
       const eventId = Number(response);
       return eventId;
     }
   });
 
   public setRecordCreatorBeneficiary (assetId: string, newBenficiary: string): TransactionObject { 
-    return this.assetRegistry.methods.setRecordCreatorBeneficiary(
+    return this.instance.methods.setRecordCreatorBeneficiary(
       toHex(assetId),
       newBenficiary
     );
   };
 
   public setCounterpartyBeneficiary (assetId: string, newBenficiary: string): TransactionObject {
-    return this.assetRegistry.methods.setCounterpartyBeneficiary(
+    return this.instance.methods.setCounterpartyBeneficiary(
       toHex(assetId),
       newBenficiary
     );
@@ -75,7 +75,7 @@ export class AssetRegistry {
     cashflowId: number, 
     beneficiaryAddress: string
   ): TransactionObject {
-    return this.assetRegistry.methods.setBeneficiaryForCashflowId(
+    return this.instance.methods.setBeneficiaryForCashflowId(
       toHex(assetId),
       cashflowId,
       beneficiaryAddress
@@ -84,7 +84,7 @@ export class AssetRegistry {
 
   public getOwnership = (assetId: string): CallObject<AssetOwnership> => ({
     call: async (): Promise<AssetOwnership> => {
-      const response = await this.assetRegistry.methods.getOwnership(toHex(assetId)).call();
+      const response = await this.instance.methods.getOwnership(toHex(assetId)).call();
       const ownership = toAssetOwnership(response);
       return ownership;
     }
@@ -92,7 +92,7 @@ export class AssetRegistry {
 
   public getCashflowBeneficiary = (assetId: string, cashflowId: number): CallObject<string> => ({
     call: async (): Promise<string> => {
-      const beneficiary: string = await this.assetRegistry.methods.getCashflowBeneficiary(
+      const beneficiary: string = await this.instance.methods.getCashflowBeneficiary(
         toHex(assetId), cashflowId
       ).call();
 
@@ -106,13 +106,13 @@ export class AssetRegistry {
     if (!Deployments[netId] || !Deployments[netId].AssetRegistry) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const assetRegistryInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       //@ts-ignore
       AssetRegistryArtifact.abi,
       //@ts-ignore
       Deployments[netId].AssetRegistry
     );
 
-    return new AssetRegistry(assetRegistryInstance);
+    return new AssetRegistry(instance);
   }
 }

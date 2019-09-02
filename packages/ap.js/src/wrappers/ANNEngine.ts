@@ -16,21 +16,21 @@ import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json'
 
 
 export class ANNEngine {
-  private annEngine: Contract;
+  public instance: Contract;
 
-  private constructor (annEngineInstance: Contract) {    
-    this.annEngine = annEngineInstance;
+  private constructor (instance: Contract) {    
+    this.instance = instance;
   }
 
   public getPrecision = (): CallObject<number> => ({
     call: async (): Promise<number> => {
-      return Number(await this.annEngine.methods.precision().call());
+      return Number(await this.instance.methods.precision().call());
     }
   });
 
   public computeInitialState = (terms: ContractTerms): CallObject<ContractState> => ({
     call: async (): Promise<ContractState> => {
-      const response = await this.annEngine.methods.computeInitialState(fromContractTerms(terms)).call();
+      const response = await this.instance.methods.computeInitialState(fromContractTerms(terms)).call();
       const initialState = toContractState(response);
       return initialState;
     }
@@ -42,7 +42,7 @@ export class ANNEngine {
     timestamp: number
   ): CallObject<{nextState: ContractState; events: ContractEvent[]}> => ({
     call: async (): Promise<{nextState: ContractState; events: ContractEvent[]}> => {
-      const response = await this.annEngine.methods.computeNextState(
+      const response = await this.instance.methods.computeNextState(
         fromContractTerms(terms), 
         fromContractState(state), 
         timestamp
@@ -62,7 +62,7 @@ export class ANNEngine {
     timestamp: number
   ): CallObject<{nextState: ContractState; event: ContractEvent}> => ({
     call: async (): Promise<{nextState: ContractState; event: ContractEvent}> => {
-      const response = await this.annEngine.methods.computeNextStateForProtoEvent(
+      const response = await this.instance.methods.computeNextStateForProtoEvent(
         fromContractTerms(terms),
         fromContractState(state),
         fromProtoEvent(protoEvent),
@@ -82,7 +82,7 @@ export class ANNEngine {
     endTimestamp: number
   ): CallObject<ProtoEventSchedule> => ({
     call: async (): Promise<ProtoEventSchedule> => {
-      const response: ProtoEventSchedule = await this.annEngine.methods.computeProtoEventScheduleSegment(
+      const response: ProtoEventSchedule = await this.instance.methods.computeProtoEventScheduleSegment(
         fromContractTerms(terms),
         startTimestamp,
         endTimestamp
@@ -100,13 +100,13 @@ export class ANNEngine {
     if (!Deployments[netId] || !Deployments[netId].ANNEngine) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const annEngineInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       ANNEngineArtifact.abi,
       // @ts-ignore
       Deployments[netId].ANNEngine
     );
 
-    return new ANNEngine(annEngineInstance);
+    return new ANNEngine(instance);
   }
 }
