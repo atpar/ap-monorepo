@@ -1,7 +1,7 @@
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
 module.exports = {
-  networks: {
+  networks: { 
     development: {
       host: "127.0.0.1",
       port: 8545,
@@ -28,6 +28,13 @@ module.exports = {
         new HDWalletProvider(require('./mnemonic.js'), 'https://ropsten.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0'),
       network_id: '3'
     },
+  },
+  mocha: {
+    reporter: 'eth-gas-reporter',
+    reporterOptions : {
+      currency: 'USD',
+      excludeContracts: ['Migrations']
+    }
   },
   compilers: {
     solc: {
