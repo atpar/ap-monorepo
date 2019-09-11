@@ -19,8 +19,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
-	IEngine pamEngine;
-
+  address[2] engineAddresses;
 	mapping(address => bool) public issuers;
 
 
@@ -36,14 +35,14 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		IAssetRegistry _assetRegistry,
 		IPaymentRegistry _paymentRegistry,
 		IPaymentRouter _paymentRouter,
-		IEngine _pamEngine
+    address[2] memory  _engineAddresses
 	)
 		public
 	{
 		assetRegistry = _assetRegistry;
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
-		pamEngine = _pamEngine;
+    engineAddresses = _engineAddresses;
 	}
 
 	/**
@@ -89,7 +88,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		(
 			ContractState memory nextState,
 			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
-		) = pamEngine.computeNextState(terms, state, block.timestamp);
+		) = IEngine(engineAddresses[uint256(terms.contractType)]).computeNextState(terms, state, block.timestamp);
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].eventTime == uint256(0)) { break; }
@@ -131,7 +130,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		// onlyRegisteredIssuer
 		returns (bool)
 	{
-		ContractState memory initialState = pamEngine.computeInitialState(terms);
+		ContractState memory initialState = IEngine(engineAddresses[uint256(terms.contractType)]).computeInitialState(terms);
 
 		assetRegistry.registerAsset(
 			assetId,

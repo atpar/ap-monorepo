@@ -37,7 +37,10 @@ module.exports = async (deployer, network, accounts) => {
     AssetRegistry.address,
     PaymentRegistry.address,
     PaymentRouter.address,
-    PAMEngine.address
+    [
+      PAMEngine.address,
+      ANNEngine.address
+    ]
   );
 
   // Issuance

@@ -29,7 +29,10 @@ async function setupTestEnvironment () {
     instances.AssetRegistryInstance.address,
     instances.PaymentRegistryInstance.address,
     instances.PaymentRouterInstance.address,
-    instances.PAMEngineInstance.address
+    [
+      instances.PAMEngineInstance.address,
+      instances.ANNEngineInstance.address
+    ]
   );
 
   // deploy Issuance
