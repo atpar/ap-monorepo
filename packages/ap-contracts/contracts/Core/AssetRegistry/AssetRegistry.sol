@@ -25,6 +25,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 		AssetOwnership memory ownership,
 		ContractTerms memory terms,
 		ContractState memory state,
+    address engine,
 		address actor
 	)
 		public
@@ -39,6 +40,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 			ownership,
 			terms,
 			state,
+      engine,
 			actor
 		);
 	}

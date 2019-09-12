@@ -19,7 +19,6 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	IPaymentRegistry paymentRegistry;
 	IPaymentRouter paymentRouter;
 
-  address[2] engineAddresses;
 	mapping(address => bool) public issuers;
 
 
@@ -34,15 +33,13 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	constructor (
 		IAssetRegistry _assetRegistry,
 		IPaymentRegistry _paymentRegistry,
-		IPaymentRouter _paymentRouter,
-    address[2] memory  _engineAddresses
+		IPaymentRouter _paymentRouter
 	)
 		public
 	{
 		assetRegistry = _assetRegistry;
 		paymentRegistry = _paymentRegistry;
 		paymentRouter = _paymentRouter;
-    engineAddresses = _engineAddresses;
 	}
 
 	/**
@@ -84,11 +81,12 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		);
 
 		uint256 eventId = assetRegistry.getEventId(assetId);
+    address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		(
 			ContractState memory nextState,
 			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
-		) = IEngine(engineAddresses[uint256(terms.contractType)]).computeNextState(terms, state, block.timestamp);
+		) = IEngine(engineAddress).computeNextState(terms, state, block.timestamp);
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingEvents[i].eventTime == uint256(0)) { break; }
@@ -119,24 +117,27 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param terms terms of the asset
+   * @param engineAddress address of the ACTUS engine used for the spec. ContractType
 	 * @return true on success
 	 */
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		ContractTerms memory terms
+		ContractTerms memory terms,
+    address engineAddress
 	)
 		public
 		// onlyRegisteredIssuer
 		returns (bool)
 	{
-		ContractState memory initialState = IEngine(engineAddresses[uint256(terms.contractType)]).computeInitialState(terms);
+		ContractState memory initialState = IEngine(engineAddress).computeInitialState(terms);
 
 		assetRegistry.registerAsset(
 			assetId,
 			ownership,
 			terms,
 			initialState,
+      engineAddress,
 			address(this)
 		);
 

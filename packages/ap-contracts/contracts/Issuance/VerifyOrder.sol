@@ -18,6 +18,7 @@ contract VerifyOrder is Definitions {
   struct Order {
     address payable maker;
     address payable taker;
+    address engine;
     address actor;
     ContractTerms terms;
     address makerCreditEnhancement;
@@ -30,11 +31,11 @@ contract VerifyOrder is Definitions {
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address engine,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address taker,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address taker,address engine,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -78,6 +79,7 @@ contract VerifyOrder is Definitions {
 		return keccak256(abi.encode(
 			UNFILLED_ORDER_TYPEHASH,
 			order.maker,
+      order.engine,
 			order.actor,
 			hashTerms(order.terms),
       order.makerCreditEnhancement,
@@ -94,6 +96,7 @@ contract VerifyOrder is Definitions {
 			FILLED_ORDER_TYPEHASH,
 			order.maker,
 			order.taker,
+      order.engine,
 			order.actor,
 			hashTerms(order.terms),
       order.makerCreditEnhancement,

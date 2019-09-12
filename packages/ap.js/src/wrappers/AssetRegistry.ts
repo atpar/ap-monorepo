@@ -48,6 +48,14 @@ export class AssetRegistry {
     }
   });
 
+  public getEngineAddress = (assetId: string): CallObject<string> => ({
+    call: async (): Promise<string> => {
+      const response = await this.instance.methods.getEngineAddress(toHex(assetId)).call();
+      const engineAddress = String(response);
+      return engineAddress;
+    }
+  });
+
   public getEventId = (assetId: string): CallObject<number> => ({
     call: async (): Promise<number> => {
       const response = await this.instance.methods.getEventId(toHex(assetId)).call();

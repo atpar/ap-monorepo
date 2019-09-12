@@ -32,6 +32,15 @@ contract Economics is AssetRegistryStorage {
 		return decodeAndGetState(assetId);
 	}
 
+  /**
+	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
+	 * @param assetId id of the asset
+	 * @return address of the ACTUS engine
+	 */
+	function getEngineAddress(bytes32 assetId) external view returns (address) {
+		return assets[assetId].engine;
+	}
+
 	/**
 	 * returns the last event id of a registered asset
 	 * @param assetId id of the asset

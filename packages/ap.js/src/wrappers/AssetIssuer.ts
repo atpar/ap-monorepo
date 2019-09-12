@@ -39,6 +39,7 @@ export class AssetIssuer {
     const order = {
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
+      engine: orderData.engineAddress,
       actor: orderData.actorAddress,
       terms: orderData.terms,
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
