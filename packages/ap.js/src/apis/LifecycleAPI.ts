@@ -17,17 +17,20 @@ export class LifecycleAPI {
    * @param {string} assetId 
    * @param {AssetOwnership} ownership
    * @param {ContractTerms} terms
+   * @param {string} engineAddress
    * @returns {TransactionObject}
    */
   public initialize (
     assetId: string, 
     ownership: AssetOwnership, 
-    terms: ContractTerms
+    terms: ContractTerms,
+    engineAddress: string,
   ): TransactionObject {
     return this.contracts.assetActor.initialize(
       assetId, 
       ownership,
-      terms
+      terms,
+      engineAddress
     ); //  gas: 6000000
   }
 

@@ -118,6 +118,7 @@ export class Signer {
         ],
         Order: [
           { name: 'maker', type: 'address' },
+          { name: 'engine', type: 'address' },
           { name: 'actor', type: 'address' },
           { name: 'contractTermsHash', type: 'bytes32' },
           { name: 'makerCreditEnhancement', type: 'address' },
@@ -127,6 +128,7 @@ export class Signer {
       primaryType: 'Order',
       message: {
         maker: orderData.makerAddress,
+        engine: orderData.engineAddress,
         actor: orderData.actorAddress,
         contractTermsHash: contractTermsHash,
         makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
@@ -172,6 +174,7 @@ export class Signer {
         Order: [
           { name: 'maker', type: 'address' },
           { name: 'taker', type: 'address' },
+          { name: 'engine', type: 'address' },
           { name: 'actor', type: 'address' },
           { name: 'contractTermsHash', type: 'bytes32' },
           { name: 'makerCreditEnhancement', type: 'address' },
@@ -183,6 +186,7 @@ export class Signer {
       message: {
         maker: orderData.makerAddress,
         taker: orderData.takerAddress,
+        engine: orderData.engineAddress,
         actor: orderData.actorAddress,
         contractTermsHash: contractTermsHash,
         makerCreditEnhancement: orderData.makerCreditEnhancementAddress,

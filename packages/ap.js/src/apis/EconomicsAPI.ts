@@ -16,6 +16,11 @@ export class EconomicsAPI {
     this.engines.set(ContractType.ANN, new ANN(contracts.annEngine));
   }
 
+  /**
+   * returns the ContractEngine by ContractType 
+   * @param {ContractType} contractType
+   * @returns {ContractEngine}
+   */
   public engine (contractType: ContractType): ContractEngine {
     const engine = this.engines.get(contractType);
     if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
@@ -38,6 +43,15 @@ export class EconomicsAPI {
    */
   public getState (assetId: string): Promise<ContractState> {
     return this.contracts.assetRegistry.getState(assetId).call();
+  }
+
+  /**
+   * fetches the address of the ACTUS engine of an asset with a given AssetId
+   * @param assetId
+   * @returns {Promise<string>}
+   */
+  public getEngineAddress (assetId: string): Promise<string> {
+    return this.contracts.assetRegistry.getEngineAddress(assetId).call();
   }
 
   /**

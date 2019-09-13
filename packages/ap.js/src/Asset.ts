@@ -317,7 +317,9 @@ export class Asset {
       String(Math.floor(Math.random() * 1000000))
     );
 
-    await ap.lifecycle.initialize(assetId, ownership, terms).send(
+    const engineAddress = ap.contracts.engineContract(terms.contractType).instance.options.address;
+
+    await ap.lifecycle.initialize(assetId, ownership, terms, engineAddress).send(
       { from: ap.signer.account, gas: 6000000 }
     );
 
@@ -337,7 +339,7 @@ export class Asset {
     // @ts-ignore
     const { contractType, statusDate } = await ap.economics.getTerms(assetId);
 
-    if (statusDate == 0) { throw('NOT_FOUND_ERROR: no contract found for given AssetId!'); }
+    if (statusDate == 0) { throw('NOT_FOUND_ERROR: No contract found for given AssetId!'); }
       
     return new Asset(ap, assetId);
   }

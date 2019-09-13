@@ -41,7 +41,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 		);
 
 		require(
-			IAssetActor(order.actor).initialize(assetId, ownership, order.terms),
+			IAssetActor(order.actor).initialize(assetId, ownership, order.terms, order.engine),
 			"AssetIssuer.fillOrder: EXECUTION_ERROR"
 		);
 

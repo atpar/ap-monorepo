@@ -76,6 +76,13 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function getState(bytes32 assetId) external view returns (ContractState memory);
 
+  /**
+	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
+	 * @param assetId id of the asset
+	 * @return address of the engine of the asset
+	 */
+	function getEngineAddress(bytes32 assetId) external view returns (address);
+
 	/**
 	 * returns the last event id of a registered asset
 	 * @param assetId id of the asset
@@ -123,6 +130,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 		AssetOwnership memory ownership,
 		ContractTerms memory terms,
 		ContractState memory state,
+    address engine,
 		address actor
 	)
 		public;

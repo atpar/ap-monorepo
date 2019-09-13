@@ -14,6 +14,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		mapping (int8 => address payable) cashflowBeneficiaries;
 		mapping (uint8 => bytes32) packedTermsState;
 		uint256 eventId;
+    address engine;
 		address actor;
 	}
 
@@ -21,23 +22,25 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 
 
 	function setAsset(
-		bytes32 assetId,
-		AssetOwnership memory ownership,
+		bytes32 _assetId,
+		AssetOwnership memory _ownership,
 		ContractTerms memory terms,
 		ContractState memory state,
-		address actor
+    address _engine,
+		address _actor
 	)
 		internal
 	{
-		assets[assetId] = Asset({
-			assetId: assetId,
-			ownership: ownership,
+		assets[_assetId] = Asset({
+			assetId: _assetId,
+			ownership: _ownership,
 			eventId: 0,
-			actor: actor
+      engine: _engine,
+			actor: _actor
 		});
 
-		encodeAndSetTerms(assetId, terms);
-		encodeAndSetState(assetId, state);
+		encodeAndSetTerms(_assetId, terms);
+		encodeAndSetState(_assetId, state);
 	}
 
 	function encodeAndSetTerms(bytes32 assetId, ContractTerms memory terms) internal {

@@ -20,6 +20,7 @@ contract('AssetIssuer', (accounts) => {
     const orderData = { 
       makerAddress: recordCreator,
       takerAddress: counterparty,
+      engineAddress: this.PAMEngineInstance.address,
       actorAddress: this.AssetActorInstance.address,
       terms: this.terms,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
@@ -40,6 +41,7 @@ contract('AssetIssuer', (accounts) => {
     const order = {
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
+      engine: orderData.engineAddress,
       actor: orderData.actorAddress,
       terms: orderData.terms,
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
@@ -62,8 +64,10 @@ contract('AssetIssuer', (accounts) => {
 
     const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
 
     assert.equal(storedTerms['statusDate'], orderData.terms['statusDate']);
+    assert.equal(storedEngineAddress, orderData.engineAddress);
     assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
@@ -114,6 +118,7 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
       ],
       Order: [
         { name: 'maker', type: 'address' },
+        { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
         { name: 'contractTermsHash', type: 'bytes32' },
         { name: 'makerCreditEnhancement', type: 'address' },
@@ -123,6 +128,7 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
     primaryType: 'Order',
     message: {
       maker: orderData.makerAddress,
+      engine: orderData.engineAddress,
       actor: orderData.actorAddress,
       contractTermsHash: contractTermsHash,
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
@@ -157,6 +163,7 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
       Order: [
         { name: 'maker', type: 'address' },
         { name: 'taker', type: 'address' },
+        { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
         { name: 'contractTermsHash', type: 'bytes32' },
         { name: 'makerCreditEnhancement', type: 'address' },
@@ -168,6 +175,7 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
     message: {
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
+      engine: orderData.engineAddress,
       actor: orderData.actorAddress,
       contractTermsHash: contractTermsHash,
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
