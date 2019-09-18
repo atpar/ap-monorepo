@@ -41,17 +41,17 @@ export class TokenizationFactory {
     );
   };
 
-  public static async instantiate (web3: Web3): Promise<TokenizationFactory> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<TokenizationFactory> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].TokenizationFactory) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].TokenizationFactory)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const instance = new web3.eth.Contract(
       // @ts-ignore
       TokenizationFactoryArtifact.abi,
       // @ts-ignore
-      Deployments[netId].TokenizationFactory
+      customAddress || Deployments[netId].TokenizationFactory
     );
 
     return new TokenizationFactory(instance);

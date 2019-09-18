@@ -40,17 +40,17 @@ export class AssetActor {
     });
   }
 
-  public static async instantiate (web3: Web3): Promise<AssetActor> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<AssetActor> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].AssetActor) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].AssetActor)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const instance = new web3.eth.Contract(
       // @ts-ignore
       AssetActorArtifact.abi,
       // @ts-ignore
-      Deployments[netId].AssetActor
+      customAddress || Deployments[netId].AssetActor
     );
 
     return new AssetActor(instance);

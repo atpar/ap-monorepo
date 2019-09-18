@@ -57,17 +57,17 @@ export class PaymentRegistry {
     });
   }
 
-  public static async instantiate (web3: Web3): Promise<PaymentRegistry> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<PaymentRegistry> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].PaymentRegistry) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].PaymentRegistry)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const instance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRegistryArtifact.abi,
       // @ts-ignore
-      Deployments[netId].PaymentRegistry
+      customAddress || Deployments[netId].PaymentRegistry
     );
 
     return new PaymentRegistry(instance);

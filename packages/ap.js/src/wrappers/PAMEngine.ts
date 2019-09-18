@@ -94,17 +94,17 @@ export class PAMEngine {
     }
   });
 
-  public static async instantiate (web3: Web3): Promise<PAMEngine> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<PAMEngine> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].PAMEngine) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].PAMEngine)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const instance = new web3.eth.Contract(
       // @ts-ignore
       PAMEngineArtifact.abi,
       // @ts-ignore
-      Deployments[netId].PAMEngine
+      customAddress || Deployments[netId].PAMEngine
     );
 
     return new PAMEngine(instance);

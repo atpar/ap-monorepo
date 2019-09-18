@@ -9,6 +9,18 @@ export enum ChannelState {
   Receivable
 }
 
+export interface AddressBook {
+  ANNEngine: string;
+  AssetActor: string;
+  AssetIssuer: string;
+  AssetRegistry: string;
+  PAMEngine: string;
+  PaymentRouter: string;
+  PaymentRegistry: string;
+  SignedMath: string;
+  TokenizationFactory: string;
+}
+
 export interface AssetOwnership {
   recordCreatorObligor: string;
   recordCreatorBeneficiary: string;

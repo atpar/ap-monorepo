@@ -94,17 +94,17 @@ export class ANNEngine {
     }
   });
 
-  public static async instantiate (web3: Web3): Promise<ANNEngine> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<ANNEngine> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].ANNEngine) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].ANNEngine)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
     const instance = new web3.eth.Contract(
       // @ts-ignore
       ANNEngineArtifact.abi,
       // @ts-ignore
-      Deployments[netId].ANNEngine
+      customAddress || Deployments[netId].ANNEngine
     );
 
     return new ANNEngine(instance);
