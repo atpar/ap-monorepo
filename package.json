@@ -8,7 +8,7 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "link-packages": "lerna link",
-    "publish": "lerna run build && lerna publish",
+    "publish": "lerna run build && lerna publish --exact --dist-tag latest",
     "start": "./scripts/start.sh",
     "test": "./scripts/test.sh"
   },
