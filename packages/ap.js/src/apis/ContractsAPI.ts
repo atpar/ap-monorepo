@@ -1,6 +1,9 @@
 import Web3 from 'web3';
-import { AddressBook } from '../types';
+
+import { AddressBook, ContractType } from '../types';
+
 import { 
+  IEngine,
   ANNEngine,
   PAMEngine, 
   AssetRegistry,
@@ -30,6 +33,9 @@ export class ContractsAPI {
   public fundsDistributionTokenETHExtension: FDT_ETHExtension;
   public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
+  private engineContracts: Map<ContractType, IEngine>;
+
+
   private constructor (
     annEngine: ANNEngine,
     pamEngine: PAMEngine,
@@ -54,6 +60,21 @@ export class ContractsAPI {
     this.fundsDistributionToken = fundsDistributionToken;
     this.fundsDistributionTokenETHExtension = fundsDistributionTokenETHExtension;
     this.fundsDistributionTokenERC20Extension = fundsDistributionTokenERC20Extension;
+
+    this.engineContracts = new Map();
+    this.engineContracts.set(ContractType.ANN, this.annEngine);
+    this.engineContracts.set(ContractType.PAM, this.pamEngine);
+  }
+
+  /**
+   * returns ACTUS engine contract by ContractType
+   * @param {ContractType} contractType
+   * @returns {IEngine}
+   */
+  public engineContract (contractType: ContractType): IEngine {
+    const engine = this.engineContracts.get(contractType);
+    if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
+    return engine;
   }
 
   /**

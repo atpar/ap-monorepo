@@ -20,12 +20,14 @@ export class AssetActor {
   public initialize (
     assetId: string,
     ownership: AssetOwnership,
-    terms: ContractTerms
+    terms: ContractTerms,
+    engineAddress: string
   ): TransactionObject { 
     return this.instance.methods.initialize(
       toHex(assetId),
       [ ...Object.values(ownership) ],
-      fromContractTerms(terms)
+      fromContractTerms(terms),
+      engineAddress
     );
   };
 

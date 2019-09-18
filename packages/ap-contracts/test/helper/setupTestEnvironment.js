@@ -28,11 +28,7 @@ async function setupTestEnvironment () {
   instances.AssetActorInstance = await AssetActor.new(
     instances.AssetRegistryInstance.address,
     instances.PaymentRegistryInstance.address,
-    instances.PaymentRouterInstance.address,
-    [
-      instances.PAMEngineInstance.address,
-      instances.ANNEngineInstance.address
-    ]
+    instances.PaymentRouterInstance.address
   );
 
   // deploy Issuance
