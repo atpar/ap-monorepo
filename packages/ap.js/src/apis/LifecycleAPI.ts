@@ -11,29 +11,26 @@ export class LifecycleAPI {
   }
 
   /**
-   * returns the address of the asset actor
-   * @returns {string}
-   */
-  public getActorAddress(): string { return this.contracts.assetActor.getAddress(); }
-
-  /**
    * initialize an asset
    * derives the first state from the terms and
    * stores the ownership in the OwnershipRegistry and the terms in the EconomicsRegistry
    * @param {string} assetId 
    * @param {AssetOwnership} ownership
    * @param {ContractTerms} terms
+   * @param {string} engineAddress
    * @returns {TransactionObject}
    */
   public initialize (
     assetId: string, 
     ownership: AssetOwnership, 
-    terms: ContractTerms
+    terms: ContractTerms,
+    engineAddress: string,
   ): TransactionObject {
     return this.contracts.assetActor.initialize(
       assetId, 
       ownership,
-      terms
+      terms,
+      engineAddress
     ); //  gas: 6000000
   }
 

@@ -10,16 +10,15 @@ import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.j
 
 
 export class AssetIssuer {
+  public instance: Contract;
 
-  private assetIssuer: Contract;
-
-  private constructor (assetIssuerInstance: Contract) {
-    this.assetIssuer = assetIssuerInstance;
+  private constructor (instance: Contract) {
+    this.instance = instance;
   }
 
   public getAssetIssuedEvents = (options: EventOptions): CallObject<AssetIssuedEvent[]> => ({
     call: async (): Promise<AssetIssuedEvent[]> => {
-      const events = await this.assetIssuer.getPastEvents('AssetIssued', options);
+      const events = await this.instance.getPastEvents('AssetIssued', options);
 
       const assetIssuedEvents: AssetIssuedEvent[] = events.map((event): AssetIssuedEvent => {
         return toAssetIssuedEvent(event);
@@ -30,7 +29,7 @@ export class AssetIssuer {
   })
 
   public onAssetIssuedEvent (cb: (event: AssetIssuedEvent) => void): void {
-    this.assetIssuer.events.AssetIssued().on('data', (event: EventLog): void => {
+    this.instance.events.AssetIssued().on('data', (event: EventLog): void => {
       const assetIssuedEvent = toAssetIssuedEvent(event);
       cb(assetIssuedEvent);
     });
@@ -40,6 +39,7 @@ export class AssetIssuer {
     const order = {
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
+      engine: orderData.engineAddress,
       actor: orderData.actorAddress,
       terms: orderData.terms,
       makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
@@ -47,26 +47,26 @@ export class AssetIssuer {
       salt: orderData.salt
     };
 
-    return this.assetIssuer.methods.fillOrder(
+    return this.instance.methods.fillOrder(
       order,
       orderData.signatures.makerSignature,
       orderData.signatures.takerSignature
     );
   }
     
-  public static async instantiate (web3: Web3): Promise<AssetIssuer> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<AssetIssuer> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].AssetIssuer) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].AssetIssuer)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const assetIssuerInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       AssetIssuerArtifact.abi,
       // @ts-ignore
-      Deployments[netId].AssetIssuer
+      customAddress || Deployments[netId].AssetIssuer
     );
 
-    return new AssetIssuer(assetIssuerInstance);
+    return new AssetIssuer(instance);
   }
 }

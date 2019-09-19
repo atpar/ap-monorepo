@@ -9,6 +9,18 @@ export enum ChannelState {
   Receivable
 }
 
+export interface AddressBook {
+  ANNEngine: string;
+  AssetActor: string;
+  AssetIssuer: string;
+  AssetRegistry: string;
+  PAMEngine: string;
+  PaymentRouter: string;
+  PaymentRegistry: string;
+  SignedMath: string;
+  TokenizationFactory: string;
+}
+
 export interface AssetOwnership {
   recordCreatorObligor: string;
   recordCreatorBeneficiary: string;
@@ -37,6 +49,7 @@ export interface OrderParams {
 export interface OrderData extends OrderParams {
   takerAddress: string | null;
   takerCreditEnhancementAddress: string | null;
+  engineAddress: string;
   actorAddress: string;
   salt: number;
   signatures: {
@@ -59,6 +72,7 @@ export interface UnfilledOrderDataAsTypedData extends TypedData {
   primaryType: string;
   message: {
     maker: string;
+    engine: string;
     actor: string;
     contractTermsHash: string;
     makerCreditEnhancement: string;
@@ -81,6 +95,7 @@ export interface FilledOrderDataAsTypedData extends TypedData {
   message: {
     maker: string;
     taker: string;
+    engine: string;
     actor: string;
     contractTermsHash: string;
     makerCreditEnhancement: string;
@@ -114,6 +129,7 @@ export function isOrderData (obj: any): obj is OrderData {
   if (obj.takerAddress === undefined) { return false; }
   if (obj.takerCreditEnhancementAddress === undefined) { return false; }
 
+  if (obj.engineAddress === null) { return false; }
   if (obj.actorAddress === null) { return false; }
   if (obj.salt === null) { return false; }
 

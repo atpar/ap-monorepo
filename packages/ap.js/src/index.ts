@@ -103,17 +103,19 @@ export class AP {
    * returns a new AP instance
    * @param {Web3} web3 Web3 instance
    * @param {string} defaultAccount default account for signing contract updates and transactions
+   * @param {AddressBook?} object containing custom addresses for ap-contracts (overwrites default addresses)
    * @returns {Promise<AP>} 
    */
   public static async init (
     web3: Web3, 
-    defaultAccount: string
+    defaultAccount: string,
+    addressBook?: APTypes.AddressBook
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
       throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
     }
 
-    const contracts = await ContractsAPI.init(web3);
+    const contracts = await ContractsAPI.init(web3, addressBook);
     const signer = new Signer(web3, defaultAccount);
     const common = new Common(web3);
 

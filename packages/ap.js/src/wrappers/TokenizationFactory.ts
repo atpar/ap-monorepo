@@ -9,10 +9,10 @@ import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/Tokenizat
 
 
 export class TokenizationFactory {
-  private factory: Contract;
+  public instance: Contract;
 
-  private constructor (tokenizationFactoryInstance: Contract) {
-    this.factory = tokenizationFactoryInstance;
+  private constructor (instance: Contract) {
+    this.instance = instance;
   }
 
   public createETHDistributor (
@@ -20,7 +20,7 @@ export class TokenizationFactory {
     symbol: string,
     initialSupply: BigNumber
   ): TransactionObject { 
-    return this.factory.methods.createETHDistributor(
+    return this.instance.methods.createETHDistributor(
       name,
       symbol,
       initialSupply.toFixed(),
@@ -33,7 +33,7 @@ export class TokenizationFactory {
     initialSupply: BigNumber,
     token: string
   ): TransactionObject { 
-    return this.factory.methods.createERC20Distributor(
+    return this.instance.methods.createERC20Distributor(
       name,
       symbol,
       initialSupply.toFixed(),
@@ -41,19 +41,19 @@ export class TokenizationFactory {
     );
   };
 
-  public static async instantiate (web3: Web3): Promise<TokenizationFactory> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<TokenizationFactory> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].TokenizationFactory) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].TokenizationFactory)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const tokenizationFactoryInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       TokenizationFactoryArtifact.abi,
       // @ts-ignore
-      Deployments[netId].TokenizationFactory
+      customAddress || Deployments[netId].TokenizationFactory
     );
 
-    return new TokenizationFactory(tokenizationFactoryInstance);
+    return new TokenizationFactory(instance);
   }
 }

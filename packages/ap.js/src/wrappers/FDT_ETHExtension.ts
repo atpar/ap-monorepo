@@ -5,28 +5,27 @@ import FDT_ETHExtensionArtifact from '@atpar/ap-contracts/artifacts/FDT_ETHExten
 
 
 export class FDT_ETHExtension {
+  public instance: Contract;
 
-  private fundsDistributionToken: Contract;
-
-  private constructor (fundsDistributionTokenInstance: Contract) {
-    this.fundsDistributionToken = fundsDistributionTokenInstance;
+  private constructor (instance: Contract) {
+    this.instance = instance;
   }
 
   public deploy (ownerAddress: string): DeployTransactionResponse {  
-    const fundsDistributionTokenInstance = this.fundsDistributionToken.clone();
+    const instance = this.instance.clone();
 
-    return fundsDistributionTokenInstance.deploy(
+    return instance.deploy(
       // @ts-ignore
       { data: FDT_ETHExtensionArtifact.bytecode, arguments: [ownerAddress] }
     );
   }
 
   public static async instantiate (web3: Web3): Promise<FDT_ETHExtension> {
-    const fundsDistributionTokenInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       FDT_ETHExtensionArtifact.abi,
     );
 
-    return new FDT_ETHExtension(fundsDistributionTokenInstance);
+    return new FDT_ETHExtension(instance);
   }
 }

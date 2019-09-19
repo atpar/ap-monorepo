@@ -32,15 +32,18 @@ contract('DemoAssetActor', (accounts) => {
     await this.DemoAssetActorInstance.initialize(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      this.terms
+      this.terms,
+      this.PAMEngineInstance.address
     );
 
     const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
 
     assert.deepEqual(storedTerms['contractDealDate'], this.terms['contractDealDate'].toString());
     assert.deepEqual(storedState, this.state);
+    assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
 
     assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);

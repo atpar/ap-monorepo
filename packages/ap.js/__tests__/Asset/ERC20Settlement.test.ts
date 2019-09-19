@@ -98,7 +98,7 @@ describe('SettlementInERC20', () => {
         expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
 
         await paymentToken.methods.approve(
-          apRC.contracts.paymentRouter.getAddress(), 
+          apRC.contracts.paymentRouter.instance.options.address, 
           payoff.abs().toFixed()
         ).send({ from: recordCreator });
 
@@ -130,7 +130,7 @@ describe('SettlementInERC20', () => {
         expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
 
         await paymentToken.methods.approve(
-          apRC.contracts.paymentRouter.getAddress(), 
+          apRC.contracts.paymentRouter.instance.options.address, 
           payoff.abs().toFixed()
         ).send({ from: counterparty });
 

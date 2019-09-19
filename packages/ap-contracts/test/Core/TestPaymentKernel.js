@@ -37,6 +37,7 @@ contract('PaymentKernel', (accounts) => {
       this.ownership,
       this.terms,
       this.state,
+      this.PAMEngineInstance.address,
       '0x0000000000000000000000000000000000000000'
     );
 

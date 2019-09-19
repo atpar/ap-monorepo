@@ -39,13 +39,15 @@ contract('AssetRegistry', (accounts) => {
       this.ownership,
       this.terms,
       this.state,
+      this.PAMEngineInstance.address,
       actor
     );
 
-    const terms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
-    const state = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
+    const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
-    
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
+
     function parseTerms (array) {
       return array.map((value) => {
         switch (typeof value) {
@@ -63,8 +65,9 @@ contract('AssetRegistry', (accounts) => {
       });
     }
 
-    assert.deepEqual(parseTerms(terms), parseTerms(Object.values(this.terms)))
-    assert.deepEqual(state, this.state);
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.terms)))
+    assert.deepEqual(storedState, this.state);
+    assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
     assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
@@ -78,6 +81,7 @@ contract('AssetRegistry', (accounts) => {
         this.ownership,
         this.terms,
         this.state,
+        this.PAMEngineInstance.address,
         actor
       ),
       'AssetRegistry.registerAsset: ' + ENTRY_ALREADY_EXISTS

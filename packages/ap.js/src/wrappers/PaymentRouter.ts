@@ -10,14 +10,10 @@ import PaymentRouterArtifact from '@atpar/ap-contracts/artifacts/PaymentRouter.m
 
 
 export class PaymentRouter {
-  private paymentRouter: Contract;
+  public instance: Contract;
 
-  private constructor (PaymentRouterInstance: Contract) {
-    this.paymentRouter = PaymentRouterInstance
-  }
-
-  public getAddress (): string {
-    return this.paymentRouter.options.address;
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
 
   public settlePayment (
@@ -27,7 +23,7 @@ export class PaymentRouter {
     tokenAddress: string,
     amount: BigNumber
   ): TransactionObject {
-    return this.paymentRouter.methods.settlePayment(
+    return this.instance.methods.settlePayment(
       toHex(assetId),
       cashflowId,
       eventId,
@@ -36,19 +32,19 @@ export class PaymentRouter {
     );  
   }
 
-  public static async instantiate (web3: Web3): Promise<PaymentRouter> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<PaymentRouter> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].PaymentRouter) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].PaymentRouter)) { 
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const PaymentRouterInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       PaymentRouterArtifact.abi,
       // @ts-ignore
-      Deployments[netId].PaymentRouter
+      customAddress || Deployments[netId].PaymentRouter
     );
 
-    return new PaymentRouter(PaymentRouterInstance);
+    return new PaymentRouter(instance);
   }
 }

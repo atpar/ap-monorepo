@@ -11,50 +11,50 @@ import AssetActorArtifact from '@atpar/ap-contracts/artifacts/DemoAssetActor.min
 
 
 export class AssetActor {
-  private assetActor: Contract;
+  public instance: Contract;
 
-  private constructor (assetActorInstance: Contract) {
-    this.assetActor = assetActorInstance
+  private constructor (instance: Contract) {
+    this.instance = instance
   }
-
-  public getAddress (): string { return this.assetActor.options.address; }
 
   public initialize (
     assetId: string,
     ownership: AssetOwnership,
-    terms: ContractTerms
+    terms: ContractTerms,
+    engineAddress: string
   ): TransactionObject { 
-    return this.assetActor.methods.initialize(
+    return this.instance.methods.initialize(
       toHex(assetId),
       [ ...Object.values(ownership) ],
-      fromContractTerms(terms)
+      fromContractTerms(terms),
+      engineAddress
     );
   };
 
   public progress (assetId: string, timestamp: number): TransactionObject {
-    return this.assetActor.methods.progress(toHex(assetId), timestamp);
+    return this.instance.methods.progress(toHex(assetId), timestamp);
   }
 
   public onAssetProgressedEvent (cb: (event: AssetProgressedEvent) => void): void {
-    this.assetActor.events.AssetProgressed().on('data', (event: EventLog): void => {
+    this.instance.events.AssetProgressed().on('data', (event: EventLog): void => {
       const assetProgressedEvent = toAssetProgressedEvent(event);
       cb(assetProgressedEvent);
     });
   }
 
-  public static async instantiate (web3: Web3): Promise<AssetActor> {
+  public static async instantiate (web3: Web3, customAddress?: string): Promise<AssetActor> {
     const netId = await web3.eth.net.getId();
     // @ts-ignore
-    if (!Deployments[netId] || !Deployments[netId].DemoAssetActor) { 
+    if (!customAddress && (!Deployments[netId] || !Deployments[netId].DemoAssetActor)) {
       throw(new Error('INITIALIZATION_ERROR: Contract not deployed on Network!'));
     }
-    const assetActorInstance = new web3.eth.Contract(
+    const instance = new web3.eth.Contract(
       // @ts-ignore
       AssetActorArtifact.abi,
       // @ts-ignore
-      Deployments[netId].DemoAssetActor
+      customAddress || Deployments[netId].DemoAssetActor
     );
 
-    return new AssetActor(assetActorInstance);
+    return new AssetActor(instance);
   }
 }

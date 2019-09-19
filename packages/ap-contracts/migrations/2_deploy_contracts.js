@@ -36,8 +36,7 @@ module.exports = async (deployer, network, accounts) => {
     DemoAssetActor,
     AssetRegistry.address,
     PaymentRegistry.address,
-    PaymentRouter.address,
-    PAMEngine.address
+    PaymentRouter.address
   );
 
   // Issuance
