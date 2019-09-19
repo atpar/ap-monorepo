@@ -38,7 +38,7 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    await this.AssetActorInstance.initialize(
+    await this.DemoAssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       terms,
@@ -70,7 +70,7 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    await this.AssetActorInstance.initialize(
+    await this.DemoAssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       terms,
