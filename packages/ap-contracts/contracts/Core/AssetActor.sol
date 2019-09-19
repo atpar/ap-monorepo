@@ -81,7 +81,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		);
 
 		uint256 eventId = assetRegistry.getEventId(assetId);
-    address engineAddress = assetRegistry.getEngineAddress(assetId);
+		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		(
 			ContractState memory nextState,
@@ -117,14 +117,14 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param terms terms of the asset
-   * @param engineAddress address of the ACTUS engine used for the spec. ContractType
+	 * @param engineAddress address of the ACTUS engine used for the spec. ContractType
 	 * @return true on success
 	 */
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		ContractTerms memory terms,
-    address engineAddress
+		address engineAddress
 	)
 		public
 		// onlyRegisteredIssuer
@@ -137,7 +137,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 			ownership,
 			terms,
 			initialState,
-      engineAddress,
+			engineAddress,
 			address(this)
 		);
 
