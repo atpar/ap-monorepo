@@ -1,11 +1,6 @@
-const BigNumber = require('bignumber.js');
-const { expectEvent } = require('openzeppelin-test-helpers');
-
-const AssetActor = artifacts.require('AssetActor');
-
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
 const { getTestCases } = require('actus-solidity/test/helper/tests');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
+const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {
