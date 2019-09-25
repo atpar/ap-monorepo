@@ -1,4 +1,7 @@
+import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract/types';
+
+import IEngineArtifact from '@atpar/ap-contracts/artifacts/IEngine.min.json';
 
 import { ContractTerms, ContractState, ContractEvent, ProtoEventSchedule, ProtoEvent, CallObject } from '../types';
 import {
@@ -89,4 +92,21 @@ export class IEngine {
       return pendingProtoEventSchedule;
     }
   });
+
+  public instantiateAt (address: string): IEngine {
+    const instance = this.instance.clone();
+
+    instance.options.address = address;
+
+    return new IEngine(instance);
+  }
+
+  public static async instantiate (web3: Web3): Promise<IEngine> {
+    const instance = new web3.eth.Contract(
+      // @ts-ignore
+      IEngineArtifact.abi,
+    );
+
+    return new IEngine(instance);
+  }
 }

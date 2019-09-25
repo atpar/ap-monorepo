@@ -6,14 +6,10 @@ import { ContractEngine, PAM, ANN } from '../engines';
 export class EconomicsAPI {
 
   private contracts: ContractsAPI;
-  public engines: Map<ContractType, ContractEngine>;
+
 
   public constructor (contracts: ContractsAPI) {
     this.contracts = contracts;
-    this.engines = new Map();
-    
-    this.engines.set(ContractType.PAM, new PAM(contracts.pamEngine));
-    this.engines.set(ContractType.ANN, new ANN(contracts.annEngine));
   }
 
   /**
@@ -21,10 +17,18 @@ export class EconomicsAPI {
    * @param {ContractType} contractType
    * @returns {ContractEngine}
    */
-  public engine (contractType: ContractType): ContractEngine {
-    const engine = this.engines.get(contractType);
-    if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
-    return engine;
+  public engine (contractType: ContractType, address?: string): ContractEngine {
+    switch (contractType) {
+      case ContractType.PAM: {
+        return (address) ? new PAM(this.contracts.engineContract(address)) : new PAM(this.contracts.pamEngine);
+      }
+      case ContractType.ANN: {
+        return (address) ? new ANN(this.contracts.engineContract(address)) : new ANN(this.contracts.annEngine);
+      }
+      default: {
+        throw new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!');
+      }
+    }
   }
 
   /**

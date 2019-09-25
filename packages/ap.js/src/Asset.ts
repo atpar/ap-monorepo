@@ -40,6 +40,22 @@ export class Asset {
   }
 
   /**
+   * returns the address of the ACTUS engine used for the asset
+   * @returns {Promise<string>}
+   */
+  public async getEngineAddress (): Promise<string> {
+    return this.ap.economics.getEngineAddress(this.assetId);
+  }
+
+  /**
+   * returns the last EventId of the asset
+   * @returns {Promise<number>}
+   */
+  public async getEventId (): Promise<number> {
+    return this.ap.economics.getEventId(this.assetId);
+  }
+
+  /**
    * returns the current ownership of the asset
    * @returns {Promise<AssetOwnership>}
    */
@@ -53,10 +69,12 @@ export class Asset {
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
     const terms = await this.getTerms();
+    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
 
-    return await this.ap.economics.engine(terms.contractType).computeEvaluatedInitialSchedule(
-      terms
-    );
+    return await this.ap.economics.engine(
+      terms.contractType, 
+      engineAddress
+    ).computeEvaluatedInitialSchedule(terms);
   }
 
   /**
@@ -68,8 +86,12 @@ export class Asset {
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
     const terms = await this.getTerms();
     const state = await this.getState();
+    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
 
-    return await this.ap.economics.engine(terms.contractType).computeEvaluatedPendingSchedule(
+    return await this.ap.economics.engine(
+      terms.contractType, 
+      engineAddress
+    ).computeEvaluatedPendingSchedule(
       terms,
       state,
       timestamp
@@ -116,6 +138,7 @@ export class Asset {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
     const lastEventId = await this.ap.economics.getEventId(this.assetId);
+    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
 
     if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
@@ -127,7 +150,10 @@ export class Asset {
       const terms = await this.getTerms();
       const state = await this.getState();
 
-      const amountDue = await this.ap.economics.engine(terms.contractType).computeDuePayoffForRecordCreator(
+      const amountDue = await this.ap.economics.engine(
+        terms.contractType, 
+        engineAddress
+      ).computeDuePayoffForRecordCreator(
         terms, 
         state, 
         timestamp
@@ -143,7 +169,10 @@ export class Asset {
       const terms = await this.getTerms();
       const state = await this.getState();
 
-      const amountDue = await this.ap.economics.engine(terms.contractType).computeDuePayoffForCounterparty(
+      const amountDue = await this.ap.economics.engine(
+        terms.contractType,
+        engineAddress
+      ).computeDuePayoffForCounterparty(
         terms, 
         state, 
         timestamp
