@@ -69,7 +69,7 @@ export class Asset {
    */
   public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
     const terms = await this.getTerms();
-    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
+    const engineAddress = await this.getEngineAddress();
 
     return await this.ap.economics.engine(
       terms.contractType, 
@@ -86,7 +86,7 @@ export class Asset {
   public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
     const terms = await this.getTerms();
     const state = await this.getState();
-    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
+    const engineAddress = await this.getEngineAddress();
 
     return await this.ap.economics.engine(
       terms.contractType, 
@@ -106,7 +106,7 @@ export class Asset {
   public async getTotalPaidOff (timestamp: number): Promise<BigNumber> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
-    const lastEventId = await this.ap.economics.getEventId(this.assetId);
+    const lastEventId = await this.getEventId();
 
     if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
@@ -137,8 +137,8 @@ export class Asset {
   public async getAmountOutstanding (timestamp: number): Promise<BigNumber> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
-    const lastEventId = await this.ap.economics.getEventId(this.assetId);
-    const engineAddress = await this.ap.economics.getEngineAddress(this.assetId);
+    const lastEventId = await this.getEventId();
+    const engineAddress = await this.getEngineAddress();
 
     if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
@@ -192,7 +192,7 @@ export class Asset {
   public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
-    const lastEventId = await this.ap.economics.getEventId(this.assetId);
+    const lastEventId = await this.getEventId();
 
     for (let i = 0; i < pendingSchedule.length; i++) {
       const payoff = pendingSchedule[i].event.payoff;
@@ -229,7 +229,7 @@ export class Asset {
   public async settleNextObligation (timestamp: number, amount: BigNumber): Promise<void> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
-    const lastEventId = await this.ap.economics.getEventId(this.assetId);
+    const lastEventId = await this.getEventId();
 
     for (let i = 0; i < pendingSchedule.length; i++) {
       const payoff = pendingSchedule[i].event.payoff;
