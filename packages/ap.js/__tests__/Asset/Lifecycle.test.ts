@@ -70,11 +70,11 @@ describe('Lifecycle', () => {
 
     // progress to the next state
     const numberOfPendingEvents = (await assetRC.getPendingSchedule(timestamp)).length;
-    const oldEventId = await apRC.economics.getEventId(assetRC.assetId);
+    const oldEventId = await assetRC.getEventId();
 
     await assetRC.progress(timestamp);
     
-    const newEventId = await apRC.economics.getEventId(assetRC.assetId);
+    const newEventId = await assetRC.getEventId();
 
     expect((await assetRC.getState()).lastEventTime === Number(terms.initialExchangeDate)).toBe(true);
     expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
@@ -106,11 +106,11 @@ describe('Lifecycle', () => {
 
     // progress to next state
     const numberOfPendingEvents = pendingSchedule.length;
-    const oldEventId = await apCP.economics.getEventId(assetCP.assetId);
+    const oldEventId = await assetCP.getEventId();
 
     await assetCP.progress(timestamp);
     
-    const newEventId = await apCP.economics.getEventId(assetCP.assetId);
+    const newEventId = await assetCP.getEventId();
 
     expect((await assetCP.getState()).lastEventTime === lastEventTime).toBe(true);
     expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);

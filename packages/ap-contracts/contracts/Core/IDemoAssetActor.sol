@@ -38,7 +38,7 @@ contract IDemoAssetActor is SharedTypes, Definitions {
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		ContractTerms memory terms,
-    address engine
+		address engine
 	)
 		public
 		returns (bool);

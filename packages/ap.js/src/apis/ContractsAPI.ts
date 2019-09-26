@@ -28,15 +28,15 @@ export class ContractsAPI {
   public assetActor: AssetActor;
   public assetIssuer: AssetIssuer;
   public tokenizationFactory: TokenizationFactory;
-
   public fundsDistributionToken: FundsDistributionToken;
   public fundsDistributionTokenETHExtension: FDT_ETHExtension;
   public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
-  private engineContracts: Map<ContractType, IEngine>;
+  private engine: IEngine;
 
 
   private constructor (
+    engine: IEngine,
     annEngine: ANNEngine,
     pamEngine: PAMEngine,
     assetRegistry: AssetRegistry,
@@ -49,6 +49,7 @@ export class ContractsAPI {
     fundsDistributionTokenETHExtension: FDT_ETHExtension,
     fundsDistributionTokenERC20Extension: FDT_ERC20Extension
   ) {
+    this.engine = engine;
     this.annEngine = annEngine;
     this.pamEngine = pamEngine;
     this.assetRegistry = assetRegistry;
@@ -60,21 +61,23 @@ export class ContractsAPI {
     this.fundsDistributionToken = fundsDistributionToken;
     this.fundsDistributionTokenETHExtension = fundsDistributionTokenETHExtension;
     this.fundsDistributionTokenERC20Extension = fundsDistributionTokenERC20Extension;
-
-    this.engineContracts = new Map();
-    this.engineContracts.set(ContractType.ANN, this.annEngine);
-    this.engineContracts.set(ContractType.PAM, this.pamEngine);
   }
 
   /**
    * returns ACTUS engine contract by ContractType
-   * @param {ContractType} contractType
+   * @param {ContractType | string} contractTypeOrAddress ContractType or address of the engine 
    * @returns {IEngine}
    */
-  public engineContract (contractType: ContractType): IEngine {
-    const engine = this.engineContracts.get(contractType);
-    if (!engine) { throw(new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!')); }
-    return engine;
+  public engineContract (contractTypeOrAddress: ContractType | string): IEngine {
+    if (typeof contractTypeOrAddress === 'string') {
+      return this.engine.instantiateAt(contractTypeOrAddress);  
+    }
+
+    switch (contractTypeOrAddress) {
+      case ContractType.PAM: return this.pamEngine;
+      case ContractType.ANN: return this.annEngine;
+      default: throw new Error('NOT_IMPLEMENTED_ERROR: Unsupported contract type!');
+    }
   }
 
   /**
@@ -85,6 +88,7 @@ export class ContractsAPI {
    */
   public static async init (web3: Web3, addressBook?: AddressBook): Promise<ContractsAPI> {
     return new ContractsAPI(
+      await IEngine.instantiate(web3),
       await ANNEngine.instantiate(web3, (addressBook) ? addressBook.ANNEngine : undefined),
       await PAMEngine.instantiate(web3, (addressBook) ? addressBook.PAMEngine : undefined),
       await AssetRegistry.instantiate(web3, (addressBook) ? addressBook.AssetRegistry : undefined),

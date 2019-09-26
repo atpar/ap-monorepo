@@ -17,7 +17,7 @@
     "url": "git+https://github.com/atpar/ap-monorepo.git"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "prebuild": "rm -rf dist/ && tsc",
