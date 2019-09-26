@@ -23,10 +23,12 @@ describe('APClass', () => {
   });
 
   it('should initialize ap.js with a custom addressbook', async () => {
+    const netId = await web3.eth.net.getId();
     // @ts-ignore
-    const addressbook = Deployments[await web3.eth.net.getId()];
+    const addressBook = { ...Deployments[netId], AssetActor: Deployments[netId].DemoAssetActor };
+    delete addressBook.DemoAssetActor;
 
-    const ap = await AP.init(web3, recordCreator, addressbook);
+    const ap = await AP.init(web3, recordCreator, addressBook);
 
     expect(ap instanceof AP).toBe(true);
   });

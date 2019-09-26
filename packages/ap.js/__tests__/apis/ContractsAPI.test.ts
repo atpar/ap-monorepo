@@ -20,8 +20,10 @@ describe('ContractsAPI', () => {
   });
 
   it('should instantiate ContractsAPI', async () => {
+    const netId = await web3.eth.net.getId();
     // @ts-ignore
-    const addressBook = Deployments[await web3.eth.net.getId()];
+    const addressBook = { ...Deployments[netId], AssetActor: Deployments[netId].DemoAssetActor };
+    delete addressBook.DemoAssetActor;
 
     const contractsAPI = await ContractsAPI.init(web3);
 
@@ -43,7 +45,8 @@ describe('ContractsAPI', () => {
   });
 
   it('should instantiate ContractsAPI with a custom addressbook', async () => {
-    const customAddressBook = Deployments[5];
+    const customAddressBook = { ...Deployments[5], AssetActor: Deployments[5].DemoAssetActor };
+    delete customAddressBook.DemoAssetActor;
 
     const contractsAPI = await ContractsAPI.init(web3, customAddressBook);
 
