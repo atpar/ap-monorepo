@@ -42,31 +42,6 @@ contract('TokenizationFactory', (accounts) => {
     );
   });
 
-  it('should tokenize default beneficiary - ETH', async () => {
-    const tx = await this.TokenizationFactoryInstance.createETHDistributor(
-      'FundsDistributionToken',
-      'FDT',
-      initialSupply, 
-      { from: recordCreatorBeneficiary }
-    );
-
-    const FDT_ETHExtensionInstance = await FDT_ETHExtension.at(
-      tx.logs[0].args.distributor
-    );
-
-    await this.AssetRegistryInstance.setRecordCreatorBeneficiary(
-      web3.utils.toHex(assetId),
-      FDT_ETHExtensionInstance.address,
-      { from: recordCreatorBeneficiary }
-    );
-
-    const storedRecordCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
-    const balanceOfRecordCreatoBeneficiary = (await FDT_ETHExtensionInstance.balanceOf(recordCreatorBeneficiary)).toString();
-
-    assert.equal(storedRecordCreatorBeneficiary.recordCreatorBeneficiary, FDT_ETHExtensionInstance.address);
-    assert.equal(balanceOfRecordCreatoBeneficiary, initialSupply);
-  });
-
   it('should tokenize default beneficiary - ERC20', async () => {
     const tx = await this.TokenizationFactoryInstance.createERC20Distributor(
       'FundsDistributionToken',

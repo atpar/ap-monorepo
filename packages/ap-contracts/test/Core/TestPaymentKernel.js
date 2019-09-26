@@ -1,12 +1,12 @@
 const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
 const PaymentRegistry = artifacts.require('PaymentRegistry');
+const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
-const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
-const UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP = 'UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP';
-const INVALID_CONTRACTID_OR_CASHFLOWID = 'INVALID_CONTRACTID_OR_CASHFLOWID';
+const UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP = 'UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP';
+const INVALID_FUNCTION_PARAMETERS = 'INVALID_FUNCTION_PARAMETERS';
 
 
 contract('PaymentKernel', (accounts) => {
@@ -47,18 +47,33 @@ contract('PaymentKernel', (accounts) => {
       cashflowIdBeneficiary,
       { from: recordCreatorBeneficiary }
     );
+
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await ERC20SampleToken.new();
+    await this.PaymentTokenInstance.transfer(counterpartyObligor, 100000);
+
+    // set allowance for Payment Router
+    await this.PaymentTokenInstance.approve(
+      this.PaymentRouterInstance.address, 
+      100000
+    );
+    await this.PaymentTokenInstance.approve(
+      this.PaymentRouterInstance.address, 
+      100000, 
+      { from: counterpartyObligor }
+    );
   });
 
   it('should settle and register a payment', async () => {
-    const preBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary);
+    const preBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary);
 
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       -3,
       1,
-      '0x0000000000000000000000000000000000000000',
+      this.PaymentTokenInstance.address,
       5000,
-      { value: this.value }
+      { from: recordCreatorObligor }
     );
     
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
@@ -66,7 +81,7 @@ contract('PaymentKernel', (accounts) => {
     const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId);
     const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 1); // eventId)
 
-    const postBalanceOfBeneficiary = await web3.eth.getBalance(counterpartyBeneficiary);
+    const postBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary);
 
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -76,15 +91,15 @@ contract('PaymentKernel', (accounts) => {
   });
 
   it('should settle and register a payment routed to a beneficiary corresponding to a CashflowId', async () => {
-    const preBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary);
+    const preBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(cashflowIdBeneficiary);
 
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       5,
       2,
-      '0x0000000000000000000000000000000000000000',
+      this.PaymentTokenInstance.address,
       5000,
-      { from: counterpartyObligor, value: this.value }
+      { from: counterpartyObligor }
     );
     
     const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
@@ -92,7 +107,7 @@ contract('PaymentKernel', (accounts) => {
     const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId);
     const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2);
 
-    const postBalanceOfBeneficiary = await web3.eth.getBalance(cashflowIdBeneficiary);
+    const postBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(cashflowIdBeneficiary);
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.isTrue(payoffBalanceFromEvent.toString() === payoffBalance.toString());
@@ -100,43 +115,53 @@ contract('PaymentKernel', (accounts) => {
     assert.equal(Number(preBalanceOfBeneficiary) + this.value, postBalanceOfBeneficiary);
   });
 
-  // it('should not overwrite an existing payment entry', async () => {
-  //   await shouldFail.reverting.withMessage(
-  //     this.PaymentRouterInstance.settlePayment(
-  //       web3.utils.toHex(this.assetId), 
-  //       -3,
-  //       0,
-  //       '0x0000000000000000000000000000000000000000',
-  //       5000,
-  //       { value: this.value }
-  //     ),
-  //     ENTRY_ALREADY_EXISTS
-  //   );
-  // });
-
   it('should revert for an invalid AssetId and an invalid CashflowId', async () => {
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(''), 
         -3,
-        0,
-        '0x0000000000000000000000000000000000000000',
+        1,
+        this.PaymentTokenInstance.address,
         5000,
-        { value: this.value }
+        { from: recordCreatorObligor }
       ),
-      'PaymentRouter.settlePayment: ' + INVALID_CONTRACTID_OR_CASHFLOWID
+      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
     );
 
     await shouldFail.reverting.withMessage(
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         0,
+        1,
+        this.PaymentTokenInstance.address,
+        5000,
+        { from: recordCreatorObligor }
+      ),
+      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
+    );
+
+    await shouldFail.reverting.withMessage(
+      this.PaymentRouterInstance.settlePayment(
+        web3.utils.toHex(this.assetId), 
+        -3,
         0,
+        this.PaymentTokenInstance.address,
+        5000,
+        { from: recordCreatorObligor }
+      ),
+      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
+    );
+
+    await shouldFail.reverting.withMessage(
+      this.PaymentRouterInstance.settlePayment(
+        web3.utils.toHex(this.assetId), 
+        -3,
+        1,
         '0x0000000000000000000000000000000000000000',
         5000,
-        { value: this.value }
+        { from: recordCreatorObligor }
       ),
-      'PaymentRouter.settlePayment: ' + INVALID_CONTRACTID_OR_CASHFLOWID
+      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
     );
   });
 
@@ -145,12 +170,12 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex('C567'), 
         -3,
-        0,
-        '0x0000000000000000000000000000000000000000',
+        1,
+        this.PaymentTokenInstance.address,
         5000,
-        { value: this.value }
+        { from: recordCreatorObligor }
       ),
-      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP
     );
   });
 
@@ -159,12 +184,12 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         3,
-        0,
-        '0x0000000000000000000000000000000000000000',
+        1,
+        this.PaymentTokenInstance.address,
         5000,
-        { from: counterpartyBeneficiary, value: this.value }
+        { from: counterpartyBeneficiary}
       ),
-      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP
     );
   });
 
@@ -174,11 +199,11 @@ contract('PaymentKernel', (accounts) => {
         web3.utils.toHex(this.assetId), 
         5,
         1,
-        '0x0000000000000000000000000000000000000000',
+        this.PaymentTokenInstance.address,
         5000,
-        { from: recordCreatorObligor, value: this.value }
+        { from: recordCreatorObligor }
       ),
-      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP
+      'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP
     );
   });
 });

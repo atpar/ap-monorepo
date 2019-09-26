@@ -8,5 +8,4 @@ export * from './PaymentRegistry';
 export * from './PaymentRouter';
 export * from './TokenizationFactory';
 export * from './FundsDistributionToken';
-export * from './FDT_ETHExtension';
 export * from './FDT_ERC20Extension';

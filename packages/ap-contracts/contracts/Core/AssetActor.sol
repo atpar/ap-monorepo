@@ -130,6 +130,11 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		// onlyRegisteredIssuer
 		returns (bool)
 	{
+		require(
+			assetId != bytes32(0) && engineAddress != address(0),
+			"AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
+		);
+
 		ContractState memory initialState = IEngine(engineAddress).computeInitialState(terms);
 
 		assetRegistry.registerAsset(

@@ -15,18 +15,6 @@ export class TokenizationFactory {
     this.instance = instance;
   }
 
-  public createETHDistributor (
-    name: string,
-    symbol: string,
-    initialSupply: BigNumber
-  ): TransactionObject { 
-    return this.instance.methods.createETHDistributor(
-      name,
-      symbol,
-      initialSupply.toFixed(),
-    );
-  };
-
   public createERC20Distributor (
     name: string,
     symbol: string,

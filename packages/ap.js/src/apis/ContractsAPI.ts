@@ -13,7 +13,6 @@ import {
   AssetIssuer,
   TokenizationFactory,
   FundsDistributionToken,
-  FDT_ETHExtension,
   FDT_ERC20Extension
 } from '../wrappers';
 
@@ -29,7 +28,6 @@ export class ContractsAPI {
   public assetIssuer: AssetIssuer;
   public tokenizationFactory: TokenizationFactory;
   public fundsDistributionToken: FundsDistributionToken;
-  public fundsDistributionTokenETHExtension: FDT_ETHExtension;
   public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
   private engine: IEngine;
@@ -46,7 +44,6 @@ export class ContractsAPI {
     assetIssuer: AssetIssuer,
     tokenizationFactory: TokenizationFactory,
     fundsDistributionToken: FundsDistributionToken,
-    fundsDistributionTokenETHExtension: FDT_ETHExtension,
     fundsDistributionTokenERC20Extension: FDT_ERC20Extension
   ) {
     this.engine = engine;
@@ -58,8 +55,7 @@ export class ContractsAPI {
     this.assetActor = assetActor;
     this.assetIssuer = assetIssuer;
     this.tokenizationFactory = tokenizationFactory;
-    this.fundsDistributionToken = fundsDistributionToken;
-    this.fundsDistributionTokenETHExtension = fundsDistributionTokenETHExtension;
+    this.fundsDistributionToken = fundsDistributionToken,
     this.fundsDistributionTokenERC20Extension = fundsDistributionTokenERC20Extension;
   }
 
@@ -98,7 +94,6 @@ export class ContractsAPI {
       await AssetIssuer.instantiate(web3, (addressBook) ? addressBook.AssetIssuer : undefined),
       await TokenizationFactory.instantiate(web3, (addressBook) ? addressBook.TokenizationFactory : undefined),
       await FundsDistributionToken.instantiate(web3),
-      await FDT_ETHExtension.instantiate(web3),
       await FDT_ERC20Extension.instantiate(web3)
     );
   }
