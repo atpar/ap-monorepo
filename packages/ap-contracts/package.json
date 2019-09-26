@@ -21,7 +21,7 @@
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "build": "npm run compile && npm run generate-artifacts",

@@ -13,6 +13,6 @@
     "test": "./scripts/test.sh"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }
