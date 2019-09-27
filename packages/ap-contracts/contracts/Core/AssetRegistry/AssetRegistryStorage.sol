@@ -41,6 +41,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 
 		encodeAndSetTerms(_assetId, terms);
 		encodeAndSetState(_assetId, state);
+		encodeAndSetFinalizedState(_assetId, state);
 	}
 
 	function encodeAndSetTerms(bytes32 assetId, ContractTerms memory terms) internal {
@@ -149,6 +150,25 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.nextPrincipalRedemptionPayment);
 	}
 
+	function encodeAndSetFinalizedState(bytes32 assetId, ContractState memory state) internal {
+		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[111] = bytes32(state.lastEventTime);
+
+		bytes32 enums =
+			bytes32(uint256(uint8(state.contractStatus))) << 248 |
+			bytes32(uint256(uint8(state.contractRoleSign))) << 240;
+
+		if (enums != bytes32(0)) assets[assetId].packedTermsState[112] = enums;
+
+		if (state.timeFromLastEvent != int256(0)) assets[assetId].packedTermsState[113] = bytes32(state.timeFromLastEvent);
+		if (state.nominalValue != int256(0)) assets[assetId].packedTermsState[114] = bytes32(state.nominalValue);
+		if (state.nominalAccrued != int256(0)) assets[assetId].packedTermsState[115] = bytes32(state.nominalAccrued);
+		if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[116] = bytes32(state.feeAccrued);
+		if (state.nominalRate != int256(0)) assets[assetId].packedTermsState[117] = bytes32(state.nominalRate);
+		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[118] = bytes32(state.interestScalingMultiplier);
+		if (state.nominalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[119] = bytes32(state.nominalScalingMultiplier);
+		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[120] = bytes32(state.nextPrincipalRedemptionPayment);
+	}
+
 	function decodeAndGetTerms(bytes32 assetId) internal view returns (ContractTerms memory) {
 		return ContractTerms(
 			ContractType(uint8(uint256(assets[assetId].packedTermsState[1] >> 248))),
@@ -237,6 +257,22 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			int256(assets[assetId].packedTermsState[109]),
 			int256(assets[assetId].packedTermsState[110]),
 			ContractRole(uint8(uint256(assets[assetId].packedTermsState[102] >> 240)))
+		);
+	}
+
+	function decodeAndGetFinalizedState(bytes32 assetId) internal view returns (ContractState memory) {
+		return ContractState(
+			uint256(assets[assetId].packedTermsState[111]),
+			ContractStatus(uint8(uint256(assets[assetId].packedTermsState[112] >> 248))),
+			int256(assets[assetId].packedTermsState[113]),
+			int256(assets[assetId].packedTermsState[114]),
+			int256(assets[assetId].packedTermsState[115]),
+			int256(assets[assetId].packedTermsState[116]),
+			int256(assets[assetId].packedTermsState[117]),
+			int256(assets[assetId].packedTermsState[118]),
+			int256(assets[assetId].packedTermsState[119]),
+			int256(assets[assetId].packedTermsState[120]),
+			ContractRole(uint8(uint256(assets[assetId].packedTermsState[112] >> 240)))
 		);
 	}
 }

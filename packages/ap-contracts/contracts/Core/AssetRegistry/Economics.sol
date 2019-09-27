@@ -32,6 +32,15 @@ contract Economics is AssetRegistryStorage {
 		return decodeAndGetState(assetId);
 	}
 
+	/**
+	 * returns the finalized state of a registered asset
+	 * @param assetId id of the asset
+	 * @return state of the asset
+	 */
+	function getFinalizedState(bytes32 assetId) external view returns (ContractState memory) {
+		return decodeAndGetFinalizedState(assetId);
+	}
+
   /**
 	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
 	 * @param assetId id of the asset
@@ -68,6 +77,16 @@ contract Economics is AssetRegistryStorage {
 	 */
 	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
 		encodeAndSetState(assetId, state);
+	}
+
+	/**
+	 * sets next finalized state of a registered asset
+	 * @dev can only be updated by the assets actor
+	 * @param assetId id of the asset
+	 * @param state next state of the asset
+	 */
+	function setFinalizedState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
+		encodeAndSetFinalizedState(assetId, state);
 	}
 
 	/**

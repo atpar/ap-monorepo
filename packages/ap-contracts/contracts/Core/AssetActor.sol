@@ -65,7 +65,7 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		returns (bool)
 	{
 		ContractTerms memory terms = assetRegistry.getTerms(assetId);
-		ContractState memory state = assetRegistry.getState(assetId);
+		ContractState memory state = assetRegistry.getFinalizedState(assetId);
 
 		require(
 			terms.statusDate != uint256(0),
@@ -75,35 +75,55 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 			state.lastEventTime != uint256(0),
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
-		require(
-			state.contractStatus == ContractStatus.PF,
-			"AssetActor.progress: CONTRACT_NOT_PERFORMANT"
-		);
 
 		uint256 eventId = assetRegistry.getEventId(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
-		(
-			ContractState memory nextState,
-			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
-		) = IEngine(engineAddress).computeNextState(terms, state, block.timestamp);
+		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEvents = IEngine(engineAddress).computeProtoEventScheduleSegment(
+			terms,
+			shiftEventTime(state.lastEventTime, terms.businessDayConvention, terms.calendar),
+			block.timestamp
+		);
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (pendingEvents[i].eventTime == uint256(0)) { break; }
+			if (pendingProtoEvents[i].eventTime == uint256(0)) { break; }
+
 			eventId += 1;
-			uint256 payoff = (pendingEvents[i].payoff < 0) ?
-				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
-			if (payoff == uint256(0)) { continue; }
-			require(
-				paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff,
-				"AssetActor.progress: OUTSTANDING_PAYMENTS"
+			(
+				state,
+				ContractEvent memory pendingEvent
+			) = IEngine(engineAddress).computeNextStateForProtoEvent(
+				terms,
+				state,
+				pendingProtoEvents[i],
 			);
+			uint256 payoff = (pendingEvent.payoff < 0) ?
+				uint256(pendingEvent.payoff * -1) : uint256(pendingEvent.payoff);
+
+			if (
+				paymentRegistry.getPayoffBalance(assetId, eventId) < payoff 
+				&& state.contractStatus === ContractStatus.PF
+			) {
+				assetRegistry.setFinalizedState(assetId, state);
+				assetRegistry.setEventId(assetId, eventId);
+
+				(state, ) = IEngine(engineAddress).computeNextStateForProtoEvent(
+					terms,
+					nextState,
+					createProtoEvent(
+						EventType.PD,
+						block.timestamp,
+						terms,
+						EventType.PD,
+						EventType.PD
+					);,
+				);	
+			}
 		}
 
 		// check for non-payment events ...
 
-		assetRegistry.setState(assetId, nextState);
-		assetRegistry.setEventId(assetId, eventId);
+		assetRegistry.setState(assetId, state);
 
 		emit AssetProgressed(assetId, eventId);
 
