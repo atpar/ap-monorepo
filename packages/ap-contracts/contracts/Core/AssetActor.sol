@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-import "actus-solidity/contracts/Core/Definitions.sol";
+import "actus-solidity/contracts/Core/Core.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
@@ -13,7 +13,7 @@ import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
 
-contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
+contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IPaymentRegistry paymentRegistry;
@@ -76,7 +76,6 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
 
-		uint256 eventId = assetRegistry.getEventId(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEvents = IEngine(engineAddress).computeProtoEventScheduleSegment(
@@ -88,44 +87,50 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingProtoEvents[i].eventTime == uint256(0)) { break; }
 
-			eventId += 1;
+			bytes32 eventId = keccak256(
+				abi.encode(
+					pendingProtoEvents[i].eventType,
+					pendingProtoEvents[i].eventTimeWithEpochOffset
+				)
+			);
+
+			ContractEvent memory pendingEvent;
 			(
 				state,
-				ContractEvent memory pendingEvent
+				pendingEvent
 			) = IEngine(engineAddress).computeNextStateForProtoEvent(
 				terms,
 				state,
 				pendingProtoEvents[i],
+				block.timestamp
 			);
 			uint256 payoff = (pendingEvent.payoff < 0) ?
 				uint256(pendingEvent.payoff * -1) : uint256(pendingEvent.payoff);
 
 			if (
-				paymentRegistry.getPayoffBalance(assetId, eventId) < payoff 
-				&& state.contractStatus === ContractStatus.PF
+				paymentRegistry.getPayoffBalance(assetId, eventId) < payoff
+				&& state.contractStatus == ContractStatus.PF
 			) {
 				assetRegistry.setFinalizedState(assetId, state);
-				assetRegistry.setEventId(assetId, eventId);
 
 				(state, ) = IEngine(engineAddress).computeNextStateForProtoEvent(
 					terms,
-					nextState,
+					state,
 					createProtoEvent(
-						EventType.PD,
-						block.timestamp,
+						EventType.DEL,
+						pendingProtoEvents[i].scheduleTime,
 						terms,
-						EventType.PD,
-						EventType.PD
-					);,
-				);	
+						EventType.DEL,
+						EventType.DEL
+					),
+					block.timestamp
+				);
 			}
 		}
 
-		// check for non-payment events ...
-
 		assetRegistry.setState(assetId, state);
 
-		emit AssetProgressed(assetId, eventId);
+		emit AssetProgressed(assetId);
 
 		return(true);
 	}

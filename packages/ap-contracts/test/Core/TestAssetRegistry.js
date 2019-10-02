@@ -88,7 +88,7 @@ contract('AssetRegistry', (accounts) => {
     );
   });
 
-  it('should let the actor overwrite and update the terms, state and the eventId of an asset', async () => {
+  it('should let the actor overwrite and update the terms, state of an asset', async () => {
     await this.AssetRegistryInstance.setTerms(
       web3.utils.toHex(this.assetId), 
       this.terms,
@@ -100,15 +100,9 @@ contract('AssetRegistry', (accounts) => {
       this.state,
       { from: actor }
     );
-
-    await this.AssetRegistryInstance.setEventId(
-      web3.utils.toHex(this.assetId), 
-      1,
-      { from: actor }
-    );
   });
 
-  it('should not let an unauthorized account overwrite and update the terms, state and the eventId of an asset', async () => {
+  it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
     await shouldFail.reverting.withMessage(
       this.AssetRegistryInstance.setTerms(
         web3.utils.toHex(this.assetId), 
@@ -121,14 +115,6 @@ contract('AssetRegistry', (accounts) => {
       this.AssetRegistryInstance.setState(
         web3.utils.toHex(this.assetId), 
         this.state,
-      ),
-      'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
-    );
-
-    await shouldFail.reverting.withMessage(
-      this.AssetRegistryInstance.setEventId(
-        web3.utils.toHex(this.assetId), 
-        1,
       ),
       'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
     );

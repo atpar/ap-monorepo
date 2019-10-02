@@ -51,15 +51,6 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * returns the last event id of a registered asset
-	 * @param assetId id of the asset
-	 * @return last event id
-	 */
-	function getEventId(bytes32 assetId) external view returns (uint256) {
-		return assets[assetId].eventId;
-	}
-
-	/**
 	 * sets new terms for a registered asset
 	 * @dev can only be updated by the assets actor
 	 * @param assetId id of the asset
@@ -87,15 +78,5 @@ contract Economics is AssetRegistryStorage {
 	 */
 	function setFinalizedState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
 		encodeAndSetFinalizedState(assetId, state);
-	}
-
-	/**
-	 * sets the last event id for a registered asset
-	 * @dev can only be updated by the assets actor
-	 * @param assetId id of the asset
-	 * @param eventId the last event id
-	 */
-	function setEventId(bytes32 assetId, uint256 eventId) public onlyDesignatedActor (assetId) {
-		assets[assetId].eventId = eventId;
 	}
 }

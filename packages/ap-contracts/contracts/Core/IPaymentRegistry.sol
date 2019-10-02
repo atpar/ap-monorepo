@@ -22,7 +22,7 @@ interface IPaymentRegistry {
 	function registerPayment(
 		bytes32 assetId,
 		int8 cashflowId,
-		uint256 eventId,
+		bytes32 eventId,
 		address token,
 		uint256 _amount
 	)
@@ -35,7 +35,7 @@ interface IPaymentRegistry {
 	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
 	 * @return current balance paid off for the given claim
 	 */
-	function getPayoffBalance(bytes32 assetId, uint256 eventId)
+	function getPayoffBalance(bytes32 assetId, bytes32 eventId)
 		external
 		view
 		returns (uint256);
@@ -46,7 +46,7 @@ interface IPaymentRegistry {
 	 * @param eventId id of the specific contractual event for which the total balance paid should be retrieved
 	 * @return cashflowId, address of the token used to payoff the claim, current balance of the claim
 	 */
-	function getPayoff(bytes32 assetId, uint256 eventId)
+	function getPayoff(bytes32 assetId, bytes32 eventId)
 		external
 		view
 		returns (int8, address, uint256);

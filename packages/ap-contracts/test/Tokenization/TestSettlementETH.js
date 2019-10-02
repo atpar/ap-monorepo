@@ -72,7 +72,7 @@ contract('SettlementETH', (accounts) => {
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId), 
       cashflowId,
-      0,
+      '0x0000000000000000000000000000000000000000',
       '0x0000000000000000000000000000000000000000',
       payoffAmount,
       { from: counterpartyObligor, value: payoffAmount }

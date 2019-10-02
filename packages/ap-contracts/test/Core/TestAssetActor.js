@@ -4,7 +4,12 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 const AssetActor = artifacts.require('AssetActor');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
+const { 
+  createSnapshot, 
+  revertToSnapshot, 
+  mineBlock,
+  getLatestBlockTimestamp
+} = require('../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {
@@ -15,6 +20,7 @@ contract('AssetActor', (accounts) => {
   const counterpartyBeneficiary = accounts[4];
 
   let snapshot;
+  let snapshot_asset;
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -29,8 +35,8 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-
-    snapshot = await createSnapshot()
+    
+    snapshot = await createSnapshot();
   });
 
   after(async () => {
@@ -58,25 +64,34 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
+
+    snapshot_asset = await createSnapshot();
   });
 
-  it('should process next state', async () => {
-    const { 1: { 0: iedEvent } } = await this.PAMEngineInstance.computeNextState(
-      this.terms, 
-      this.state, 
+  it('should process next state with contract status equal to PF', async () => {
+    const protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
+      this.terms,
+      this.terms['contractDealDate'],
       this.terms['maturityDate']
     );
-    const eventTime = iedEvent.eventTime;
-    const payoff = new BigNumber(iedEvent.payoff);
-    const cashflowId = (payoff.isGreaterThan(0)) ? Number(iedEvent.eventType) + 1 : (Number(iedEvent.eventType) + 1) * -1;
+    const { 1: event } = await this.PAMEngineInstance.computeNextStateForProtoEvent(
+      this.terms, 
+      this.state, 
+      protoEventSchedule[0],
+      await getLatestBlockTimestamp()
+    );
+
+    const eventTime = event.eventTime;
+    const payoff = new BigNumber(event.payoff);
+    const cashflowId = (payoff.isGreaterThan(0)) ? Number(event.eventType) + 1 : (Number(event.eventType) + 1) * -1;
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
-    const lastEventId = Number(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)));
+    const eventId = web3.utils.soliditySha3(event.eventType, protoEventSchedule[0].eventTimeWithEpochOffset);
 
     // settle obligations
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId),
       cashflowId,
-      lastEventId + 1,
+      eventId,
       '0x0000000000000000000000000000000000000000',
       value,
       { from: recordCreatorObligor, value: value }
@@ -85,15 +100,60 @@ contract('AssetActor', (accounts) => {
     // progress asset state
     await mineBlock(eventTime);
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
-    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
     );
-    const nextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const nextLastEventId = new BigNumber(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)));
+
+    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
+      this.terms,
+      this.state,
+      eventTime
+    );
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
-    assert.equal(emittedEventId.toString(), nextLastEventId.toString());
-    assert.equal(nextState.lastEventTime, eventTime);
-    assert.isTrue(nextLastEventId.isEqualTo(lastEventId + 2)); // IED + IP, todo: do it programmatically
+    assert.equal(storedNextState.lastEventTime, eventTime);
+    assert.deepEqual(storedNextState, projectedNextState);
+
+    await revertToSnapshot(snapshot_asset);
+  });
+
+  it('should process next state with contract status equal to DL', async () => {
+    const protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
+      this.terms,
+      this.terms['contractDealDate'],
+      this.terms['maturityDate']
+    );
+    const { 1: event } = await this.PAMEngineInstance.computeNextStateForProtoEvent(
+      this.terms, 
+      this.state, 
+      protoEventSchedule[0],
+      await getLatestBlockTimestamp()
+    );
+
+    const eventTime = event.eventTime;
+
+    // progress asset state
+    await mineBlock(eventTime);
+    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
+      txHash, AssetActor, 'AssetProgressed'
+    );
+
+    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    let { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
+      this.terms,
+      this.state,
+      eventTime
+    );
+
+    projectedNextState[1] = projectedNextState[0]; // nonPerformingDate
+    projectedNextState[10] = '1'; // contractStatus
+
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(storedNextState.lastEventTime, eventTime);
+    assert.deepEqual(storedNextState, projectedNextState);
+
+    await revertToSnapshot(snapshot_asset);
   });
 });

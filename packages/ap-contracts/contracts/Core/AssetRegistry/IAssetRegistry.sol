@@ -76,19 +76,19 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function getState(bytes32 assetId) external view returns (ContractState memory);
 
+	/**
+	 * returns the state of a registered asset
+	 * @param assetId id of the asset
+	 * @return state of the asset
+	 */
+	function getFinalizedState(bytes32 assetId) external view returns (ContractState memory);
+
   /**
 	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
 	 * @param assetId id of the asset
 	 * @return address of the engine of the asset
 	 */
 	function getEngineAddress(bytes32 assetId) external view returns (address);
-
-	/**
-	 * returns the last event id of a registered asset
-	 * @param assetId id of the asset
-	 * @return last event id
-	 */
-	function getEventId(bytes32 assetId) external view returns (uint256);
 
 	/**
 	 * sets next state of a registered asset
@@ -99,20 +99,20 @@ contract IAssetRegistry is AssetRegistryStorage {
 	function setState(bytes32 assetId, ContractState memory state) public;
 
 	/**
+	 * sets next finalized state of a registered asset
+	 * @dev can only be updated by the assets actor
+	 * @param assetId id of the asset
+	 * @param state next state of the asset
+	 */
+	function setFinalizedState(bytes32 assetId, ContractState memory state) public;
+
+	/**
 	 * sets new terms for a registered asset
 	 * @dev can only be updated by the assets actor
 	 * @param assetId id of the asset
 	 * @param terms new terms of the asset
 	 */
 	function setTerms(bytes32 assetId, ContractTerms memory terms) public;
-
-	/**
-	 * sets the last event id for a registered asset
-	 * @dev can only be updated by the assets actor
-	 * @param assetId id of the asset
-	 * @param eventId the last event id
-	 */
-	function setEventId(bytes32 assetId, uint256 eventId) public;
 
 	/**
 	 * Stores the addresses of the owners (owner of creator-side payment obligations,
