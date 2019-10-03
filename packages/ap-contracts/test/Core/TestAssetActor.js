@@ -27,7 +27,7 @@ contract('AssetActor', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.assetId = 'C123';
-    this.terms = await getDefaultTerms();
+    this.terms = { ...await getDefaultTerms(), gracePeriod: { i: 1, p: 2 }, delinquencyPeriod: { i: 1, p: 3 } };
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
     this.ownership = {
       recordCreatorObligor, 
@@ -78,7 +78,7 @@ contract('AssetActor', (accounts) => {
       this.terms, 
       this.state, 
       protoEventSchedule[0],
-      await getLatestBlockTimestamp()
+      protoEventSchedule[0].eventTime
     );
 
     const eventTime = event.eventTime;
@@ -116,13 +116,10 @@ contract('AssetActor', (accounts) => {
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
+    snapshot_asset = await createSnapshot();
   });
 
   it('should process next state with contract status equal to DL', async () => {
-    // initialize gracePeriod and delinquencyPeriod
-    this.terms['gracePeriod'] = { i: 1, p: 3 }; // 1M grace period
-    this.terms['delinquencyPeriod'] = { i: 1, p: 4 }; // 1Q delinquency period
-
     // compute event schedule
     const protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.terms,
@@ -130,11 +127,11 @@ contract('AssetActor', (accounts) => {
       this.terms['maturityDate']
     );
 
-    // fix target block time (block time to which to simulate state progression)
-    const eventTime = protoEventSchedule[0].eventTime; // progress to within gracePeriod
+    const eventTime = protoEventSchedule[0].eventTime;
 
     // progress asset state
-    await mineBlock(eventTime); // simulate blockchain to target block time
+    await mineBlock(eventTime);
+
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
@@ -142,13 +139,18 @@ contract('AssetActor', (accounts) => {
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
-    let { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
+    const { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
       this.terms,
       this.state,
       eventTime
     );
-    projectedNextState[1] = projectedNextState[0]; // nonPerformingDate = eventTime of first event
-    projectedNextState[10] = '1'; // contractStatus
+    
+    // nonPerformingDate = eventTime of first event
+    projectedNextState.nonPerformingDate = protoEventSchedule[0].eventTime;
+    projectedNextState[1] = protoEventSchedule[0].eventTime;
+    // contractStatus = DL
+    projectedNextState.contractStatus = '1';
+    projectedNextState[10] = '1';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -156,13 +158,10 @@ contract('AssetActor', (accounts) => {
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
+    snapshot_asset = await createSnapshot();
   });
 
   it('should process next state with contract status equal to DQ', async () => {
-    // initialize gracePeriod and delinquencyPeriod
-    this.terms['gracePeriod'] = { i: 1, p: 0 }; // 1M grace period
-    this.terms['delinquencyPeriod'] = { i: 1, p: 4 }; // 1Q delinquency period
-
     // compute event schedule
     const protoEventSchedule = await this.PAMEngineInstance.computeProtoEventScheduleSegment(
       this.terms,
@@ -170,11 +169,11 @@ contract('AssetActor', (accounts) => {
       this.terms['maturityDate']
     );
 
-    // fix target block time (block time to which to simulate state progression)
-    const eventTime = protoEventSchedule[2].eventTime; // progress to post gracePeriod
+    const eventTime = protoEventSchedule[2].eventTime;
 
     // progress asset state
-    await mineBlock(eventTime); // simulate blockchain to target block time
+    await mineBlock(eventTime);
+
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
@@ -182,13 +181,21 @@ contract('AssetActor', (accounts) => {
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
-    let { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
+    const { 0: projectedNextState } = await this.PAMEngineInstance.computeNextState(
       this.terms,
       this.state,
       eventTime
     );
-    projectedNextState[1] = this.terms['initialExchangeDate']; // nonPerformingDate = initialExchangeDate
-    projectedNextState[10] = '2'; // contractStatus = delinquent
+
+    // nonPerformingDate = eventTime of first event
+    projectedNextState.nonPerformingDate = protoEventSchedule[0].eventTime;
+    projectedNextState[1] = protoEventSchedule[0].eventTime;
+    // contractStatus = DQ
+    projectedNextState.contractStatus = '2';
+    projectedNextState[10] = '2';
+
+    console.log(eventTime);
+    console.log(storedNextState);
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
