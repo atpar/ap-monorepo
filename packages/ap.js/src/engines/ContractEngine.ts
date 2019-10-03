@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { ContractState, ContractTerms, EvaluatedEventSchedule } from '../types';
+import { ContractState, ContractTerms, EvaluatedEventSchedule, ProtoEventSchedule } from '../types';
 
 
 export interface ContractEngine {
@@ -25,6 +25,16 @@ export interface ContractEngine {
     state: ContractState, 
     expectedState: ContractState
   ): Promise<boolean>;
+
+  computeInitialProtoEventSchedule (
+    terms: ContractTerms
+  ): Promise<ProtoEventSchedule>;
+
+  computePendingProtoEventSchedule (
+    terms: ContractTerms, 
+    currentState: ContractState, 
+    currentTimestamp: number
+  ): Promise<ProtoEventSchedule>;
   
   computeEvaluatedInitialSchedule (
     terms: ContractTerms

@@ -9,6 +9,11 @@ export interface IPS {
   s: S;
   isSet: boolean;
 }
+export interface IP { 
+  i: number; // I=Integer
+  p: P;
+  isSet: boolean;
+}
 
 export enum BusinessDayConvention { NULL, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP }
 export enum Calendar { NULL, NOCALENDAR, MondayToFriday }
@@ -70,7 +75,7 @@ export interface ProtoEvent {
 
 export interface ContractState {
   lastEventTime: number;
-  contractStatus: ContractStatus;
+  nonPerformingDate: number,
   timeFromLastEvent: BigNumber;
   nominalValue: BigNumber;
   nominalAccrued: BigNumber;
@@ -79,6 +84,7 @@ export interface ContractState {
   interestScalingMultiplier: BigNumber;
   nominalScalingMultiplier: BigNumber;
   nextPrincipalRedemptionPayment: BigNumber;
+  contractStatus: ContractStatus;
   contractRoleSign: ContractRole;
 }
 
@@ -127,6 +133,8 @@ export interface ContractTerms {
   cycleOfScalingIndex: IPS;
   cycleOfFee: IPS;
   cycleOfPrincipalRedemption: IPS;
+  gracePeriod: IP,
+  delinquencyPeriod: IP,
   lifeCap: string;
   lifeFloor: string;
   periodCap: string;

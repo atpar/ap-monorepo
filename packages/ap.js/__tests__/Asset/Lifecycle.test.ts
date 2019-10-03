@@ -78,18 +78,18 @@ describe('Lifecycle', () => {
     }
 
     // progress to the next state
-    const numberOfPendingEvents = (await assetRC.getPendingSchedule(timestamp)).length;
-    const oldEventId = await assetRC.getEventId();
+    // const numberOfPendingEvents = (await assetRC.getPendingSchedule(timestamp)).length;
+    // const oldEventId = await assetRC.getEventId();
 
     // @ts-ignore
     await web3.currentProvider.send('evm_mine', [timestamp]);
 
     await assetRC.progress();
     
-    const newEventId = await assetRC.getEventId();
+    // const newEventId = await assetRC.getEventId();
 
     expect((await assetRC.getState()).lastEventTime === Number(terms.initialExchangeDate)).toBe(true);
-    expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
+    // expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
   });
 
   it('should settle payoff for events on behalf of the counterparty and progress to the next state', async () => {
@@ -117,18 +117,18 @@ describe('Lifecycle', () => {
     }
 
     // progress to next state
-    const numberOfPendingEvents = pendingSchedule.length;
-    const oldEventId = await assetCP.getEventId();
+    // const numberOfPendingEvents = pendingSchedule.length;
+    // const oldEventId = await assetCP.getEventId();
 
     // @ts-ignore
     await web3.currentProvider.send('evm_mine', [timestamp]);
 
     await assetCP.progress();
     
-    const newEventId = await assetCP.getEventId();
+    // const newEventId = await assetCP.getEventId();
 
     expect((await assetCP.getState()).lastEventTime === lastEventTime).toBe(true);
-    expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
+    // expect(newEventId === oldEventId + numberOfPendingEvents).toBe(true);
   });
 
   it('should have called the progress listener more than once', () => {

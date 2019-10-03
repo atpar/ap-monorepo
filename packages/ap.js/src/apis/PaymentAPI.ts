@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
 
-import { PaidEvent, TransactionObject } from '../types';
+import { PaidEvent, TransactionObject, EvaluatedEventSchedule } from '../types';
 import { ContractsAPI } from './ContractsAPI';
+import { computeEventId } from '../utils/Utils';
 
 
 export class PaymentAPI {
@@ -18,7 +19,7 @@ export class PaymentAPI {
    * @dev this requires the users signature (metamask pop-up)
    * @param {string} assetId 
    * @param {number} cashflowId 
-   * @param {number} eventId 
+   * @param {string} eventId 
    * @param {string} tokenAddress 
    * @param {BigNumber} amount
    * @return {TransactionObject}
@@ -26,7 +27,7 @@ export class PaymentAPI {
   public settlePayment (
     assetId: string,
     cashflowId: number,
-    eventId: number,
+    eventId: string,
     tokenAddress: string,
     amount: BigNumber
   ): TransactionObject {
@@ -42,62 +43,60 @@ export class PaymentAPI {
   /**
    * return the paid off amount for a given event
    * @param {string} assetId 
-   * @param {number} eventId
+   * @param {string} eventId
    * @returns {Promise<BigNumber>}
    */
-  public getPayoffBalance (assetId: string, eventId: number): Promise<BigNumber> {
+  public getPayoffBalance (assetId: string, eventId: string): Promise<BigNumber> {
     return this.contracts.paymentRegistry.getPayoffBalance(assetId, eventId).call();
   }
 
   /**
-   * returns the amount settled from a given event to a given event for the record creator
-   * to return the total amount settled fromEventId would be 1 and toEventId would be the last eventId
+   * returns the amount settled for a given evaluated schedule for the record creator
    * @param {string} assetId 
-   * @param {number} fromEventId 
-   * @param {number} toEventId 
+   * @param {EvaluatedEventSchedule} schedule
    * @returns {Promise<BigNumber>}
    */
   public async getSettledAmountForRecordCreator (
-    assetId: string, 
-    fromEventId: number, 
-    toEventId: number
+    assetId: string,
+    schedule: EvaluatedEventSchedule,
   ): Promise<BigNumber> {
     let amountSettled = new BigNumber(0);
-    for (let i = 0; i <= toEventId; i++) {
-      const eventId = fromEventId + i;
-      const { 
-        cashflowId, 
-        payoffBalance 
-      } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
 
-      if (Number(cashflowId) < 0) { amountSettled = amountSettled.plus(payoffBalance); }
+    for (let i = 0; i < schedule.length; i++) {
+      const { event } = schedule[i];
+      const eventId = computeEventId(event);
+
+      if (event.payoff.isLessThan(0)) {
+        const { payoffBalance } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
+        amountSettled = amountSettled.plus(payoffBalance);
+      }
     }
+
     return amountSettled;
   }
 
   /**
-   * returns the amount settled from a given event to a given event for the counterparty
-   * to return the total amount settled fromEventId would be 1 and toEventId would be the last eventId
+   * returns the amount settled for a given evaluated schedule for the counter party
    * @param {string} assetId 
-   * @param {number} fromEventId 
-   * @param {number} toEventId 
+   * @param {EvaluatedEventSchedule} schedule
    * @returns {Promise<BigNumber>}
    */
   public async getSettledAmountForCounterparty (
-    assetId: string, 
-    fromEventId: number, 
-    toEventId: number
+    assetId: string,
+    schedule: EvaluatedEventSchedule,
   ): Promise<BigNumber> {
     let amountSettled = new BigNumber(0);
-    for (let i = 0; i <= toEventId; i++) {
-      const eventId = fromEventId + i;
-      const { 
-        cashflowId, 
-        payoffBalance 
-      } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
-      
-      if (Number(cashflowId) > 0) { amountSettled = amountSettled.plus(payoffBalance); }
+
+    for (let i = 0; i < schedule.length; i++) {
+      const { event } = schedule[i];
+      const eventId = computeEventId(event);
+
+      if (event.payoff.isGreaterThan(0)) { 
+        const { payoffBalance } = await this.contracts.paymentRegistry.getPayoff(assetId, eventId).call();
+        amountSettled = amountSettled.plus(payoffBalance);  
+      }
     }
+
     return amountSettled;
   }
 

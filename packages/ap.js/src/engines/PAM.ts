@@ -95,6 +95,43 @@ export class PAM implements ContractEngine {
   }
 
   /**
+   * computes the entire proto event schedule based on the contract terms
+   * @param {ContractTerms} terms
+   * @returns {Promise<ProtoEventSchedule>} 
+   */
+  public async computeInitialProtoEventSchedule (terms: ContractTerms): Promise<ProtoEventSchedule> {
+    const protoEventSchedule: ProtoEventSchedule = await this.pamEngine.computeProtoEventScheduleSegment(
+      terms,
+      terms.statusDate,
+      terms.maturityDate
+    ).call();
+
+    return protoEventSchedule;
+  }
+
+    /**
+   * computes the proto event schedule for all pending events (between lastEventTime and now)
+   * from the terms and the provided current state of the contract 
+   * @param {ContractTerms} terms
+   * @param {ContractState} currentState current state of the contract
+   * @param {number} currentTimestamp current timestamp
+   * @returns {Promise<ProtoEventSchedule>} pending proto event schedule
+   */
+  public async computePendingProtoEventSchedule (
+    terms: ContractTerms,
+    currentState: ContractState,
+    currentTimestamp: number
+  ): Promise<ProtoEventSchedule> {
+    const protoEventSchedule = await this.pamEngine.computeProtoEventScheduleSegment(
+      terms, 
+      currentState.lastEventTime, 
+      currentTimestamp
+    ).call();
+
+    return protoEventSchedule;
+  }
+
+  /**
    * computes the entire evaluated schedule based on the contract terms
    * @param {ContractTerms} terms
    * @returns {Promise<EvaluatedEventSchedule>} 

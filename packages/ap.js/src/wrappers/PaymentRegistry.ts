@@ -18,7 +18,7 @@ export class PaymentRegistry {
     this.instance = instance
   }
 
-  public getPayoffBalance = (assetId: string, eventId: number): CallObject<BigNumber> => ({
+  public getPayoffBalance = (assetId: string, eventId: string): CallObject<BigNumber> => ({
     call: async (): Promise<BigNumber> => {
       const payoffBalanceAsString: string = await this.instance.methods.getPayoffBalance(
         toHex(assetId),
@@ -31,7 +31,7 @@ export class PaymentRegistry {
 
   public getPayoff = (
     assetId: string, 
-    eventId: number
+    eventId: string
   ): CallObject<{cashflowId: string; tokenAddress: string; payoffBalance: BigNumber}> => ({
     call: async(): Promise<{cashflowId: string; tokenAddress: string; payoffBalance: BigNumber}> => {
       const { 
