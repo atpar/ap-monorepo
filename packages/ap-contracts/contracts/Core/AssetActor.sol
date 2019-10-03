@@ -65,7 +65,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		returns (bool)
 	{
 		ContractTerms memory terms = assetRegistry.getTerms(assetId);
-		ContractState memory state = assetRegistry.getFinalizedState(assetId);
+		ContractState memory state = assetRegistry.getState(assetId);
+
+		if (state.contractStatus != ContractStatus.PF) {
+			state = assetRegistry.getFinalizedState(assetId);
+		}
 
 		require(
 			terms.statusDate != uint256(0),
