@@ -27,7 +27,11 @@ contract('AssetActor', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.assetId = 'C123';
-    this.terms = { ...await getDefaultTerms(), gracePeriod: { i: 1, p: 2 }, delinquencyPeriod: { i: 1, p: 3 } };
+    this.terms = { 
+      ...await getDefaultTerms(),
+      gracePeriod: { i: 1, p: 2, isSet: true },
+      delinquencyPeriod: { i: 1, p: 3, isSet: true }
+    };
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
     this.ownership = {
       recordCreatorObligor, 
@@ -172,7 +176,7 @@ contract('AssetActor', (accounts) => {
     const eventTime = protoEventSchedule[2].eventTime;
 
     // progress asset state
-    await mineBlock(eventTime);
+    await mineBlock(Number(eventTime) + 1);
 
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
@@ -193,9 +197,6 @@ contract('AssetActor', (accounts) => {
     // contractStatus = DQ
     projectedNextState.contractStatus = '2';
     projectedNextState[10] = '2';
-
-    console.log(eventTime);
-    console.log(storedNextState);
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);

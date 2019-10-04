@@ -82,7 +82,7 @@ accepts@~1.3.7:
 
 "actus-solidity@git://github.com/atpar/actus-solidity.git#feature/AP-28-contract-status":
   version "0.2.1"
-  resolved "git://github.com/atpar/actus-solidity.git#79191a3b143b7de18552a27697fce15086d889b9"
+  resolved "git://github.com/atpar/actus-solidity.git#fe546433dc42f7dd476dfc383e3df7fb5cf19969"
 
 aes-js@3.0.0:
   version "3.0.0"
