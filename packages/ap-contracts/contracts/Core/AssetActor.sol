@@ -88,6 +88,9 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			block.timestamp
 		);
 
+		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
+		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
+
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingProtoEvents[i].eventTime == uint256(0)) { break; }
 
