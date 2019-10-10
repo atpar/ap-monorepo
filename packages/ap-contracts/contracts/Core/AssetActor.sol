@@ -66,21 +66,16 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	{
 		ContractTerms memory terms = assetRegistry.getTerms(assetId);
 		ContractState memory state = assetRegistry.getState(assetId);
+		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		if (state.contractStatus != ContractStatus.PF) {
 			state = assetRegistry.getFinalizedState(assetId);
 		}
 
 		require(
-			terms.statusDate != uint256(0),
+			terms.statusDate != uint256(0) && state.lastEventTime != uint256(0) && engineAddress != address(0),
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
-		require(
-			state.lastEventTime != uint256(0),
-			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
-		);
-
-		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEvents = IEngine(engineAddress).computeProtoEventScheduleSegment(
 			terms,
@@ -92,7 +87,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (pendingProtoEvents[i].eventTime == uint256(0)) { break; }
+			if (pendingProtoEvents[i].eventTime == uint256(0)) break;
 
 			bytes32 eventId = keccak256(
 				abi.encode(
