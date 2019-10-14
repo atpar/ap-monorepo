@@ -37,7 +37,7 @@
     "test": "./scripts/test.sh"
   },
   "dependencies": {
-    "actus-solidity": "git://github.com/atpar/actus-solidity.git#feature/AP-28-contract-status",
+    "actus-solidity": "git://github.com/atpar/actus-solidity.git#feature/AP-48-guarantee",
     "funds-distribution-token": "0.1.2",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.9"

@@ -86,6 +86,23 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
 		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
 
+		bytes memory object = terms.contractStructure.contractReference.object;
+		bytes32 underlyingAssetId;
+		assembly {
+			underlyingAssetId := mload(add(add(object, 0x20), 40))
+		}
+
+		if (underlyingAssetId != bytes32(0)) {
+			ContractState memory underlyingState = assetRegistry.getState(underlyingAssetId);
+
+			require(
+				underlyingState.lastEventTime != uint256(0),
+				"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+			);
+
+			// insert XD event and remove FP events after XD
+		}
+
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingProtoEvents[i].eventTime == uint256(0)) break;
 
