@@ -86,12 +86,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
 		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
 
-		bytes memory object = terms.contractStructure.contractReference.object;
-		bytes32 underlyingAssetId;
-		assembly {
-			underlyingAssetId := mload(add(add(object, 0x20), 40))
-		}
-
+		// CE
+		bytes32 underlyingAssetId = terms.contractStructure.contractReference.object;
 		if (underlyingAssetId != bytes32(0)) {
 			ContractState memory underlyingState = assetRegistry.getState(underlyingAssetId);
 
@@ -100,7 +96,20 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 			);
 
-			// insert XD event and remove FP events after XD
+			if (underlyingState.contractStatus == ContractStatus.DF && underlyingState.nonPerformingDate != uint256(0)) {
+				ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEvents;
+				protoEvents[0] = createProtoEvent(
+					EventType.XD,
+					underlyingState.nonPerformingDate,
+					terms,
+					EventType.XD,
+					EventType.XD
+				);
+				pendingProtoEvents = IEngine(engineAddress).applyProtoEventsToProtoEventSchedule(
+					pendingProtoEvents,
+					protoEvents
+				);
+			}
 		}
 
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {

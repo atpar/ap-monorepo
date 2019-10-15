@@ -55,6 +55,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
 			bytes32(uint256(uint8(terms.penaltyType))) << 192 |
 			bytes32(uint256(uint8(terms.feeBasis))) << 184;
+			bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176;
 
 		if (enums != bytes32(0)) assets[assetId].packedTermsState[1] = enums;
 
@@ -142,6 +143,15 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (terms.lifeFloor != int256(0)) assets[assetId].packedTermsState[37] = bytes32(terms.lifeFloor);
 		if (terms.periodCap != int256(0)) assets[assetId].packedTermsState[38] = bytes32(terms.periodCap);
 		if (terms.periodFloor != int256(0)) assets[assetId].packedTermsState[39] = bytes32(terms.periodFloor);
+
+		if (terms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[40] = bytes32(terms.coverageOfCreditEnhancement);
+
+		if (terms.contractStructure.contractReference.object != bytes32(0)) {
+			assets[assetId].packedTermsState[41] = bytes32(terms.contractStructure.contractReference.object);
+			assets[assetId].packedTermsState[42] =
+				bytes32(uint256(terms.contractStructure.contractReference.contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractStructure.contractReference.contractReferenceRole)) << 8;
+		}
 	}
 
 	function encodeAndSetState(bytes32 assetId, ContractState memory state) internal {
@@ -198,6 +208,14 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			ScalingEffect(uint8(uint256(assets[assetId].packedTermsState[1] >> 200))),
 			PenaltyType(uint8(uint256(assets[assetId].packedTermsState[1] >> 192))),
 			FeeBasis(uint8(uint256(assets[assetId].packedTermsState[1] >> 184))),
+			ContractStatus(uint8(uint256(assets[assetId].packedTermsState[1] >> 176))),
+			ContractStructure(
+				ContractReference(
+					assets[assetId].packedTermsState[41],
+					ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[42] >> 16))),
+					ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[42] >> 8)))
+				)
+			),
 			uint256(assets[assetId].packedTermsState[5]),
 			uint256(assets[assetId].packedTermsState[6]),
 			uint256(assets[assetId].packedTermsState[7]),
@@ -222,6 +240,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			int256(assets[assetId].packedTermsState[26]),
 			int256(assets[assetId].packedTermsState[27]),
 			int256(assets[assetId].packedTermsState[28]),
+			int256(assets[assetId].packedTermsState[40]),
 			IPS(
 				uint256(assets[assetId].packedTermsState[29] >> 24),
 				P(uint8(uint256(assets[assetId].packedTermsState[29] >> 16))),
