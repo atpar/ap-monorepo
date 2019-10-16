@@ -82,7 +82,7 @@ accepts@~1.3.7:
 
 "actus-solidity@git://github.com/atpar/actus-solidity.git#feature/AP-48-guarantee":
   version "0.2.1"
-  resolved "git://github.com/atpar/actus-solidity.git#18bbc389ef1d6401046f196bfbda2f867837b38a"
+  resolved "git://github.com/atpar/actus-solidity.git#03933bb5f28a6f13e40c118e2a176b111c120770"
 
 aes-js@3.0.0:
   version "3.0.0"

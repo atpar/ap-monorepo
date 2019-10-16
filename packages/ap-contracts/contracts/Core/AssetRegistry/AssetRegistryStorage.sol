@@ -54,7 +54,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
 			bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
 			bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-			bytes32(uint256(uint8(terms.feeBasis))) << 184;
+			bytes32(uint256(uint8(terms.feeBasis))) << 184 |
 			bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176;
 
 		if (enums != bytes32(0)) assets[assetId].packedTermsState[1] = enums;
