@@ -8,17 +8,17 @@ import {
   UnfilledOrderDataAsTypedData 
 } from '../types';
 
-import Deployments from '@atpar/ap-contracts/deployments.json';
-
 
 export class Signer {
   
   private web3: Web3;
   public account: string;
+  private verifyingContractAddress: string;
 
-  public constructor (web3: Web3, account: string) {
+  public constructor (web3: Web3, account: string, verifyingContractAddress: string) {
     this.web3 = web3;
     this.account = account;
+    this.verifyingContractAddress = verifyingContractAddress;
   }
 
   /**
@@ -28,7 +28,7 @@ export class Signer {
    * @returns {string}
    */
   public async signOrderAsMaker (orderData: OrderData): Promise<string> {
-    return this._signTypedData(await this._getUnfilledOrderDataAsTypedData(orderData));
+    return this._signTypedData(this._getUnfilledOrderDataAsTypedData(orderData));
   }
 
   /**
@@ -38,7 +38,7 @@ export class Signer {
    * @returns {string}
    */
   public async signOrderAsTaker (orderData: OrderData): Promise<string> {
-    return this._signTypedData(await this._getFilledOrderDataAsTypedData(orderData));
+    return this._signTypedData(this._getFilledOrderDataAsTypedData(orderData));
   }
 
   /**
@@ -46,12 +46,12 @@ export class Signer {
    * @param {OrderData} orderData orderData containing signature to validate
    * @returns {Promise<boolean>} true if signatures are valid
    */
-  public async validateOrderDataSignatures (
+  public validateOrderDataSignatures (
     orderData: OrderData
-  ): Promise<boolean> {
+  ): boolean {
     if (!orderData.signatures.makerSignature) { return false; }
 
-    const unfilledOrderDataTypedData = await this._getUnfilledOrderDataAsTypedData(orderData);
+    const unfilledOrderDataTypedData = this._getUnfilledOrderDataAsTypedData(orderData);
     const isValid = this._validateOrderDataSignature(
       unfilledOrderDataTypedData, 
       orderData.makerAddress, 
@@ -63,7 +63,7 @@ export class Signer {
     if (orderData.signatures.takerSignature) {
       if (!orderData.takerAddress) { throw(new Error('EXECUTION_ERROR: takerAddress is undefined.')); }
 
-      const filledOrderDataTypedData = await this._getFilledOrderDataAsTypedData(orderData);
+      const filledOrderDataTypedData = this._getFilledOrderDataAsTypedData(orderData);
       const isValid = this._validateOrderDataSignature(
         filledOrderDataTypedData, 
         orderData.takerAddress, 
@@ -91,13 +91,9 @@ export class Signer {
     return true;
   }
 
-  private async _getUnfilledOrderDataAsTypedData (
+  private _getUnfilledOrderDataAsTypedData (
     orderData: OrderData
-  ): Promise<UnfilledOrderDataAsTypedData> {
-    const chainId = await this.web3.eth.net.getId();
-    // @ts-ignore
-    const verifyingContractAddress = Deployments[chainId].AssetIssuer;
-
+  ): UnfilledOrderDataAsTypedData {
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)
     ));
@@ -107,7 +103,7 @@ export class Signer {
         name: 'ACTUS Protocol',
         version: '1',
         chainId: 0,
-        verifyingContract: verifyingContractAddress
+        verifyingContract: this.verifyingContractAddress
       },
       types: {
         EIP712Domain: [
@@ -139,19 +135,15 @@ export class Signer {
     return typedData;
   }
 
-  private async _getFilledOrderDataAsTypedData (
+  private _getFilledOrderDataAsTypedData (
     orderData: OrderData
-  ): Promise<FilledOrderDataAsTypedData> {
+  ): FilledOrderDataAsTypedData {
     if (!orderData.takerAddress) { 
       throw(new Error('EXECUTION_ERROR: takerAddress is not set!')); 
     }
     if (!orderData.takerCreditEnhancementAddress) { 
       throw(new Error('EXECUTION_ERROR: takerCreditEnhancementAddress is not set!')); 
     }
-
-    const chainId = await this.web3.eth.net.getId();
-    // @ts-ignore
-    const verifyingContractAddress = Deployments[chainId].AssetIssuer;
 
     const contractTermsHash = this.web3.utils.keccak256(this.web3.eth.abi.encodeParameter(
       ContractTermsABI, this._toTuple(orderData.terms)
@@ -162,7 +154,7 @@ export class Signer {
         name: 'ACTUS Protocol',
         version: '1',
         chainId: 0,
-        verifyingContract: verifyingContractAddress
+        verifyingContract: this.verifyingContractAddress
       },
       types: {
         EIP712Domain: [

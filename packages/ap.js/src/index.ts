@@ -116,8 +116,6 @@ export class AP {
     }
 
     const contracts = await ContractsAPI.init(web3, addressBook);
-    const signer = new Signer(web3, defaultAccount);
-    const common = new Common(web3);
 
     const ownership = new OwnershipAPI(contracts);
     const economics = new EconomicsAPI(contracts);
@@ -125,6 +123,13 @@ export class AP {
     const lifecycle = new LifecycleAPI(contracts);
     const issuance = new IssuanceAPI(contracts);
     const tokenization = new TokenizationAPI(contracts);
+
+    const common = new Common(web3);
+    const signer = new Signer(
+      web3, 
+      defaultAccount, 
+      contracts.assetIssuer.instance.options.address
+    );
 
     return new AP(
       web3, 
