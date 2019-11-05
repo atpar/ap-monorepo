@@ -1,9 +1,12 @@
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import { Contract } from 'web3-eth-contract/types';
 
 import { AP, Asset } from '../../src';
 import { AssetOwnership, ContractTerms } from '../../src/types';
 
+// @ts-ignore
+import ERC20SampleTokenArtifact from '@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json';
 // @ts-ignore
 import DefaultTerms from '../DefaultTerms.json';
 
@@ -15,6 +18,8 @@ describe('Lifecycle', () => {
 
   let recordCreator: string;
   let counterparty: string;
+
+  let paymentToken: Contract;
 
   let apRC: AP;
   let apCP: AP;
@@ -32,6 +37,20 @@ describe('Lifecycle', () => {
     recordCreator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
+    paymentToken = new web3.eth.Contract(
+      // @ts-ignore
+      ERC20SampleTokenArtifact.abi,
+    );
+    // @ts-ignore
+    await paymentToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send(
+      { from: recordCreator, gas: 2000000 }
+    );
+
+    await paymentToken.methods.transfer(
+      counterparty,
+      '5000000000000000000000'
+    ).send({ from: recordCreator });
+
     apRC = await AP.init(web3, recordCreator);
     apCP = await AP.init(web3, counterparty);
 
@@ -40,6 +59,7 @@ describe('Lifecycle', () => {
     });
 
     const terms: ContractTerms = DefaultTerms;
+    terms.currency = paymentToken.options.address;
 
     const ownership: AssetOwnership = { 
       recordCreatorObligor: recordCreator,
@@ -71,6 +91,11 @@ describe('Lifecycle', () => {
       if (payoff.isLessThan(0)) {
         const amountOutstandingForObligation = await assetRC.getAmountOutstandingForNextObligation(timestamp);
         expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
+
+        await paymentToken.methods.approve(
+          apRC.contracts.paymentRouter.instance.options.address, 
+          payoff.abs().toFixed()
+        ).send({ from: recordCreator });
 
         await assetRC.settleNextObligation(timestamp, payoff.abs());
         totalPaid = totalPaid.plus(payoff.abs());
@@ -109,6 +134,11 @@ describe('Lifecycle', () => {
       if (payoff.isGreaterThan(0)) {
         const amountOutstandingForObligation = await assetCP.getAmountOutstandingForNextObligation(timestamp);
         expect(amountOutstandingForObligation.toFixed() === payoff.abs().toFixed()).toBe(true);
+
+        await paymentToken.methods.approve(
+          apRC.contracts.paymentRouter.instance.options.address, 
+          payoff.abs().toFixed()
+        ).send({ from: counterparty });
 
         await assetCP.settleNextObligation(timestamp, payoff.abs());
         totalPaid = totalPaid.plus(payoff.abs());

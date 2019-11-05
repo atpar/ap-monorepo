@@ -251,7 +251,6 @@ export class Asset {
 
       if (outstanding.isGreaterThan(0)) { 
         const tokenAddress = pendingSchedule[i].event.currency;
-        const value = (tokenAddress === '0x0000000000000000000000000000000000000000') ? amount.toFixed() : 0;
         const cashflowId = (pendingSchedule[i].event.payoff.isGreaterThan(0))? 
           (Number(pendingSchedule[i].event.eventType) + 1) : -(Number(pendingSchedule[i].event.eventType) + 1);
 
@@ -261,7 +260,7 @@ export class Asset {
           eventId, 
           tokenAddress, 
           amount,
-        ).send({ from: this.ap.signer.account, gas: 150000, value: value });
+        ).send({ from: this.ap.signer.account, gas: 150000 });
         break; 
       }
     }
@@ -297,19 +296,15 @@ export class Asset {
     }
 
     const { currency } = await this.getTerms();
-    let address: string = '';
 
-    if (currency === '0x0000000000000000000000000000000000000000') {
-      const tx = await this.ap.tokenization.createETHDistributor(name, symbol, initialSupply).send(
-        { from: this.ap.signer.account, gas: 2000000}
-      );
-      address = tx.events.DeployedDistributor.returnValues.distributor;
-    } else {
-      const tx = await this.ap.tokenization.createERC20Distributor(name, symbol, initialSupply, currency).send(
-        { from: this.ap.signer.account, gas: 2000000}
-      );
-      address = tx.events.DeployedDistributor.returnValues.distributor;
+    if (currency === '0x0000000000000000000000000000000000000000') { 
+      throw new Error('EXECUTION_ERROR: Invalid address for currency attribute');
     }
+    
+    const tx = await this.ap.tokenization.createERC20Distributor(name, symbol, initialSupply, currency).send(
+      { from: this.ap.signer.account, gas: 2000000}
+    );
+    const address = tx.events.DeployedDistributor.returnValues.distributor;
 
     if (this.ap.signer.account === recordCreatorBeneficiary) {
       await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address).send(

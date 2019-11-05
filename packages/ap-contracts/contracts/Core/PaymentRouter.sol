@@ -33,7 +33,7 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 	 * @param assetId id of the asset which the payment relates to
 	 * @param cashflowId id of the claim ((EventType + 1) * direction of the payment)
 	 * @param eventId id of the event (order in the event schedule)
-	 * @param token address of the token to pay (0x0 if paid in Ether)
+	 * @param token address of the token to pay
 	 * @param _amount payment amount
 	 */
 	function settlePayment(
@@ -47,18 +47,17 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 		payable
 	{
 		require(
-			assetId != bytes32(0) && cashflowId != int8(0),
-			"PaymentRouter.settlePayment: INVALID_CONTRACTID_OR_CASHFLOWID"
+			assetId != bytes32(0) && cashflowId != int8(0) && eventId != uint256(0) && token != address(0),
+			"PaymentRouter.settlePayment: INVALID_FUNCTION_PARAMETERS"
 		);
 
-		uint256 amount;
 		address payable payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
 		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
 		if (cashflowId > 0) {
 			require(
 				msg.sender == ownership.counterpartyObligor,
-				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP"
+				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP"
 			);
 			if (payee == address(0)) {
 				payee = ownership.recordCreatorBeneficiary;
@@ -66,34 +65,24 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 		} else {
 			require(
 				msg.sender == ownership.recordCreatorObligor,
-				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_CONTRACTOWNERSHIP"
+				"PaymentRouter.settlePayment: UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP"
 			);
 			if (payee == address(0)) {
 				payee = ownership.counterpartyBeneficiary;
 			}
 		}
 
-		if (token == address(0)) {
-			(bool result, ) = payee.call.value(msg.value)(""); // solium-disable-line 
-			require(
-				result,
-				"PaymentRouter.settlePayment: ETH_TRANSFER_FAILED"
-			);
-			amount = msg.value;
-		} else {
-			require(
-				IERC20(token).transferFrom(msg.sender, payee, _amount),
-				"PaymentRouter.settlePayment: ERC20_TRANSFER_FAILED"
-			);
-			amount = _amount;
-		}
+		require(
+			IERC20(token).transferFrom(msg.sender, payee, _amount),
+			"PaymentRouter.settlePayment: TRANSFER_FAILED"
+		);
 
 		paymentRegistry.registerPayment(
 			assetId,
 			cashflowId,
 			eventId,
 			token,
-			amount
+			_amount
 		);
 	}
 }

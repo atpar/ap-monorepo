@@ -6,7 +6,7 @@ const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
 
-contract('SettlementETH', (accounts) => {
+contract('SettlementERC20', (accounts) => {
   const recordCreatorObligor = accounts[0];
   const recordCreatorBeneficiary = accounts[1];
   const counterpartyObligor = accounts[2];
@@ -86,7 +86,7 @@ contract('SettlementETH', (accounts) => {
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId), 
       cashflowId,
-      0,
+      1,
       this.PaymentTokenInstance.address,
       payoffAmount,
       { from: counterpartyObligor }

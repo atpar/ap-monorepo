@@ -59,25 +59,6 @@ export class TokenizationAPI {
   }
 
   /**
-   * deploys a new FDT contract for funds in Ether
-   * @param {string} name name of the FDT
-   * @param {string} symbol ticker symbol of the FDT
-   * @param {BigNumber} initialSupply initial FD-Token supply
-   * @returns {DeployTransactionResponse} address of FDT contract
-   */
-  public createETHDistributor (
-    name: string, 
-    symbol: string, 
-    initialSupply: BigNumber
-  ): TransactionObject {
-    return this.contracts.tokenizationFactory.createETHDistributor(
-      name,
-      symbol,
-      initialSupply
-    ); // gas: 2000000
-  }
-
-  /**
    * deploys a new FDT contract for funds in ERC20 tokens
    * @param {string} name name of the FDT
    * @param {string} symbol ticker symbol of the FDT

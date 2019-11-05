@@ -26,6 +26,11 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 		public
 	{
 		require(
+			makerSignature.length != 0 && takerSignature.length != 0,
+			"AssetIssuer.fillOrder: INVALID_FUNCTION_PARAMETERS"
+		);
+
+		require(
 			assertOrderSignatures(order, makerSignature, takerSignature),
 			"AssetIssuer.fillOrder: INVALID_SIGNATURE"
 		);
@@ -41,7 +46,12 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 		);
 
 		require(
-			IAssetActor(order.actor).initialize(assetId, ownership, order.terms, order.engine),
+			IAssetActor(order.actor).initialize(
+				assetId,
+				ownership,
+				order.terms,
+				order.engine
+			),
 			"AssetIssuer.fillOrder: EXECUTION_ERROR"
 		);
 

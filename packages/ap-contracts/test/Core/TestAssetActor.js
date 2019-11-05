@@ -2,6 +2,7 @@ const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
 const AssetActor = artifacts.require('AssetActor');
+const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
@@ -29,6 +30,9 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
+
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await ERC20SampleToken.new({ from: recordCreatorObligor });
 
     snapshot = await createSnapshot()
   });
@@ -72,14 +76,21 @@ contract('AssetActor', (accounts) => {
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
     const lastEventId = Number(await this.AssetRegistryInstance.getEventId(web3.utils.toHex(this.assetId)));
 
+    // set allowance for Payment Router
+    await this.PaymentTokenInstance.approve(
+      this.PaymentRouterInstance.address, 
+      value,
+      { from: recordCreatorObligor }
+    );
+
     // settle obligations
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId),
       cashflowId,
       lastEventId + 1,
-      '0x0000000000000000000000000000000000000000',
+      this.PaymentTokenInstance.address,
       value,
-      { from: recordCreatorObligor, value: value }
+      { from: recordCreatorObligor }
     );
 
     // progress asset state
