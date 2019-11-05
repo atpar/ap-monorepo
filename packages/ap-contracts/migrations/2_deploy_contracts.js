@@ -1,5 +1,6 @@
 const ANNEngine = artifacts.require('ANNEngine');
 const PAMEngine = artifacts.require('PAMEngine');
+const CEGEngine = artifacts.require('CEGEngine');
 const SignedMath = artifacts.require('SignedMath');
 
 const AssetRegistry = artifacts.require('AssetRegistry');
@@ -20,6 +21,8 @@ module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(PAMEngine);
   await deployer.link(SignedMath, ANNEngine);
   await deployer.deploy(ANNEngine);
+  await deployer.link(SignedMath, CEGEngine);
+  await deployer.deploy(CEGEngine);
 
   // Core
   await deployer.deploy(AssetRegistry);

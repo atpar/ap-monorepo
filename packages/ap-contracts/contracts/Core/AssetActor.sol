@@ -86,6 +86,42 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
 		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
 
+		// CE
+		bytes32 underlyingAssetId = terms.contractStructure.contractReference.object;
+		if (underlyingAssetId != bytes32(0)) {
+			ContractState memory underlyingState = assetRegistry.getState(underlyingAssetId);
+			ContractTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+
+			require(
+				underlyingState.lastEventTime != uint256(0),
+				"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+			);
+
+			if (underlyingState.contractStatus == terms.creditEventTypeCovered) {
+				uint256 scheduleTime;
+				if (underlyingState.contractStatus == ContractStatus.DL) {
+					scheduleTime = underlyingState.nonPerformingDate;
+				} else if (underlyingState.contractStatus == ContractStatus.DQ) {
+					scheduleTime = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
+				} else if (underlyingState.contractStatus == ContractStatus.DF) {
+					scheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
+				}
+
+				ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory protoEvents;
+				protoEvents[0] = createProtoEvent(
+					EventType.XD,
+					scheduleTime,
+					terms,
+					EventType.XD,
+					EventType.XD
+				);
+				pendingProtoEvents = IEngine(engineAddress).applyProtoEventsToProtoEventSchedule(
+					pendingProtoEvents,
+					protoEvents
+				);
+			}
+		}
+
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (pendingProtoEvents[i].eventTime == uint256(0)) break;
 
