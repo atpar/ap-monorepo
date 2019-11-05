@@ -83,9 +83,6 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			block.timestamp
 		);
 
-		// apply Payment Delay right away to pendingProtoEvents if contractPerformance != PF
-		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
-
 		// CE
 		bytes32 underlyingAssetId = terms.contractStructure.object;
 		if (underlyingAssetId != bytes32(0)) {
@@ -115,10 +112,6 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 					EventType.XD,
 					EventType.XD
 				);
-				// pendingProtoEvents = IEngine(engineAddress).applyProtoEventsToProtoEventSchedule(
-				// 	pendingProtoEvents,
-				// 	protoEvents
-				// );
 			}
 		}
 

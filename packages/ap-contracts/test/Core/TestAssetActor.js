@@ -33,7 +33,7 @@ contract('AssetActor', (accounts) => {
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
     this.ownership = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 

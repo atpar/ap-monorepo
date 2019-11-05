@@ -23,7 +23,7 @@ contract('PaymentKernel', (accounts) => {
 
     this.assetId = 'C123';
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
     this.value = 5000;
     this.ownership = {
       recordCreatorObligor, 

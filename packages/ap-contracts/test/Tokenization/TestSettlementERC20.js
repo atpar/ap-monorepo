@@ -28,7 +28,7 @@ contract('SettlementERC20', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
     this.ownership = { 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 

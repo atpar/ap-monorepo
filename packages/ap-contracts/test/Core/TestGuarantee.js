@@ -32,7 +32,7 @@ contract('AssetActor', (accounts) => {
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
-    this.state_underlying = await this.PAMEngineInstance.computeInitialState(this.terms_underlying, {});
+    this.state_underlying = await this.PAMEngineInstance.computeInitialState(this.terms_underlying);
     this.ownership_underlying = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -56,7 +56,7 @@ contract('AssetActor', (accounts) => {
         } 
       }
     };
-    this.state_ce = await this.PAMEngineInstance.computeInitialState(this.terms_ce, {});
+    this.state_ce = await this.PAMEngineInstance.computeInitialState(this.terms_ce);
     this.ownership_ce = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 

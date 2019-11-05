@@ -24,7 +24,7 @@ contract('AssetRegistry', (accounts) => {
 
     this.assetId = 'C123';
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
     this.ownership = { 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 

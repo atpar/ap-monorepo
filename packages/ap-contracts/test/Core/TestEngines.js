@@ -31,7 +31,7 @@ contract('AssetActor', (accounts) => {
   it('should initialize Asset with ContractType PAM', async () => {
     const assetId = 'PAM123';
     const terms = (await getTestCases('PAM'))['10001']['terms'];
-    const state = await this.PAMEngineInstance.computeInitialState(terms, {});
+    const state = await this.PAMEngineInstance.computeInitialState(terms);
     const ownership = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -63,7 +63,7 @@ contract('AssetActor', (accounts) => {
   it('should initialize Asset with ContractType ANN', async () => {
     const assetId = 'ANN123';
     const terms = (await getTestCases('ANN'))['20001']['terms'];
-    const state = await this.ANNEngineInstance.computeInitialState(terms, {});
+    const state = await this.ANNEngineInstance.computeInitialState(terms);
     const ownership = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 

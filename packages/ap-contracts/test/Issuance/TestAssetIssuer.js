@@ -13,7 +13,7 @@ contract('AssetIssuer', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
   })
 
   it('should issue an asset from an order', async () => {
