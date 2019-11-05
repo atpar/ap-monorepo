@@ -47,7 +47,7 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 		payable
 	{
 		require(
-			assetId != bytes32(0) && cashflowId != int8(0) && eventId != uint256(0) && token != address(0),
+			assetId != bytes32(0) && cashflowId != int8(0) && eventId != bytes32(0) && token != address(0),
 			"PaymentRouter.settlePayment: INVALID_FUNCTION_PARAMETERS"
 		);
 

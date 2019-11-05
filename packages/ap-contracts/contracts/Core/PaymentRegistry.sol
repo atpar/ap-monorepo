@@ -60,7 +60,7 @@ contract PaymentRegistry is IPaymentRegistry, Ownable {
 		onlyPaymentRouter
 	{
 		require(
-			assetId != bytes32(0) && cashflowId != int8(0) && eventId != uint256(0) && token != address(0),
+			assetId != bytes32(0) && cashflowId != int8(0) && eventId != bytes32(0) && token != address(0),
 			"PaymentRegistry.registerPayment: INVALID_FUNCTION_PARAMETERS"
 		);
 

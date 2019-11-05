@@ -68,7 +68,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		ContractState memory state = assetRegistry.getState(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
-		if (state.contractStatus != ContractStatus.PF) {
+		if (state.contractPerformance != ContractPerformance.PF) {
 			state = assetRegistry.getFinalizedState(assetId);
 		}
 
@@ -83,11 +83,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			block.timestamp
 		);
 
-		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
+		// apply Payment Delay right away to pendingProtoEvents if contractPerformance != PF
 		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
 
 		// CE
-		bytes32 underlyingAssetId = terms.contractStructure.contractReference.object;
+		bytes32 underlyingAssetId = terms.contractStructure.object;
 		if (underlyingAssetId != bytes32(0)) {
 			ContractState memory underlyingState = assetRegistry.getState(underlyingAssetId);
 			ContractTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
@@ -97,13 +97,13 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 			);
 
-			if (underlyingState.contractStatus == terms.creditEventTypeCovered) {
+			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
 				uint256 scheduleTime;
-				if (underlyingState.contractStatus == ContractStatus.DL) {
+				if (underlyingState.contractPerformance == ContractPerformance.DL) {
 					scheduleTime = underlyingState.nonPerformingDate;
-				} else if (underlyingState.contractStatus == ContractStatus.DQ) {
+				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
 					scheduleTime = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
-				} else if (underlyingState.contractStatus == ContractStatus.DF) {
+				} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
 					scheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
 				}
 
@@ -115,10 +115,10 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 					EventType.XD,
 					EventType.XD
 				);
-				pendingProtoEvents = IEngine(engineAddress).applyProtoEventsToProtoEventSchedule(
-					pendingProtoEvents,
-					protoEvents
-				);
+				// pendingProtoEvents = IEngine(engineAddress).applyProtoEventsToProtoEventSchedule(
+				// 	pendingProtoEvents,
+				// 	protoEvents
+				// );
 			}
 		}
 
@@ -147,7 +147,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 			if (
 				paymentRegistry.getPayoffBalance(assetId, eventId) < payoff
-				&& state.contractStatus == ContractStatus.PF
+				&& state.contractPerformance == ContractPerformance.PF
 			) {
 				assetRegistry.setFinalizedState(assetId, state);
 

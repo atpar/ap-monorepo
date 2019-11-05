@@ -146,11 +146,11 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 
 		if (terms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[40] = bytes32(terms.coverageOfCreditEnhancement);
 
-		if (terms.contractStructure.contractReference.object != bytes32(0)) {
-			assets[assetId].packedTermsState[41] = bytes32(terms.contractStructure.contractReference.object);
+		if (terms.contractStructure.object != bytes32(0)) {
+			assets[assetId].packedTermsState[41] = bytes32(terms.contractStructure.object);
 			assets[assetId].packedTermsState[42] =
-				bytes32(uint256(terms.contractStructure.contractReference.contractReferenceType)) << 16 |
-				bytes32(uint256(terms.contractStructure.contractReference.contractReferenceRole)) << 8;
+				bytes32(uint256(terms.contractStructure.contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractStructure.contractReferenceRole)) << 8;
 		}
 	}
 
@@ -158,40 +158,36 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[101] = bytes32(state.lastEventTime);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[102] = bytes32(state.nonPerformingDate);
 
-		if (state.timeFromLastEvent != int256(0)) assets[assetId].packedTermsState[103] = bytes32(state.timeFromLastEvent);
-		if (state.nominalValue != int256(0)) assets[assetId].packedTermsState[104] = bytes32(state.nominalValue);
-		if (state.nominalAccrued != int256(0)) assets[assetId].packedTermsState[105] = bytes32(state.nominalAccrued);
-		if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[106] = bytes32(state.feeAccrued);
-		if (state.nominalRate != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.nominalRate);
-		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.interestScalingMultiplier);
-		if (state.nominalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.nominalScalingMultiplier);
-		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.nextPrincipalRedemptionPayment);
+		if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[103] = bytes32(state.notionalPrincipal);
+		if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[104] = bytes32(state.accruedInterest);
+		if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[105] = bytes32(state.feeAccrued);
+		if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[106] = bytes32(state.nominalInterestRate);
+		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.interestScalingMultiplier);
+		if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.notionalScalingMultiplier);
+		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.nextPrincipalRedemptionPayment);
 
 		bytes32 enums =
-			bytes32(uint256(uint8(state.contractStatus))) << 248 |
-			bytes32(uint256(uint8(state.contractRoleSign))) << 240;
+			bytes32(uint256(uint8(state.contractPerformance))) << 248;
 
-		if (enums != bytes32(0)) assets[assetId].packedTermsState[111] = enums;
+		if (enums != bytes32(0)) assets[assetId].packedTermsState[110] = enums;
 	}
 
 	function encodeAndSetFinalizedState(bytes32 assetId, ContractState memory state) internal {
 		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[151] = bytes32(state.lastEventTime);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[152] = bytes32(state.nonPerformingDate);
 
-		if (state.timeFromLastEvent != int256(0)) assets[assetId].packedTermsState[153] = bytes32(state.timeFromLastEvent);
-		if (state.nominalValue != int256(0)) assets[assetId].packedTermsState[154] = bytes32(state.nominalValue);
-		if (state.nominalAccrued != int256(0)) assets[assetId].packedTermsState[155] = bytes32(state.nominalAccrued);
-		if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[156] = bytes32(state.feeAccrued);
-		if (state.nominalRate != int256(0)) assets[assetId].packedTermsState[157] = bytes32(state.nominalRate);
-		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[158] = bytes32(state.interestScalingMultiplier);
-		if (state.nominalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[159] = bytes32(state.nominalScalingMultiplier);
-		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[160] = bytes32(state.nextPrincipalRedemptionPayment);
+		if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[153] = bytes32(state.notionalPrincipal);
+		if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[154] = bytes32(state.accruedInterest);
+		if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[155] = bytes32(state.feeAccrued);
+		if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[156] = bytes32(state.nominalInterestRate);
+		if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[157] = bytes32(state.interestScalingMultiplier);
+		if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[158] = bytes32(state.notionalScalingMultiplier);
+		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[159] = bytes32(state.nextPrincipalRedemptionPayment);
 
 		bytes32 enums =
-			bytes32(uint256(uint8(state.contractStatus))) << 248 |
-			bytes32(uint256(uint8(state.contractRoleSign))) << 240;
+			bytes32(uint256(uint8(state.contractPerformance))) << 248;
 
-		if (enums != bytes32(0)) assets[assetId].packedTermsState[161] = enums;
+		if (enums != bytes32(0)) assets[assetId].packedTermsState[160] = enums;
 	}
 
 	function decodeAndGetTerms(bytes32 assetId) internal view returns (ContractTerms memory) {
@@ -208,13 +204,12 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			ScalingEffect(uint8(uint256(assets[assetId].packedTermsState[1] >> 200))),
 			PenaltyType(uint8(uint256(assets[assetId].packedTermsState[1] >> 192))),
 			FeeBasis(uint8(uint256(assets[assetId].packedTermsState[1] >> 184))),
-			ContractStatus(uint8(uint256(assets[assetId].packedTermsState[1] >> 176))),
+			ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[1] >> 176))),
 			ContractStructure(
-				ContractReference(
-					assets[assetId].packedTermsState[41],
-					ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[42] >> 16))),
-					ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[42] >> 8)))
-				)
+				assets[assetId].packedTermsState[41],
+				ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[42] >> 16))),
+				ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[42] >> 8)))
+			
 			),
 			uint256(assets[assetId].packedTermsState[5]),
 			uint256(assets[assetId].packedTermsState[6]),
@@ -292,16 +287,14 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		return ContractState(
 			uint256(assets[assetId].packedTermsState[101]),
 			uint256(assets[assetId].packedTermsState[102]),
+			ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[110] >> 248))),
 			int256(assets[assetId].packedTermsState[103]),
 			int256(assets[assetId].packedTermsState[104]),
 			int256(assets[assetId].packedTermsState[105]),
 			int256(assets[assetId].packedTermsState[106]),
 			int256(assets[assetId].packedTermsState[107]),
 			int256(assets[assetId].packedTermsState[108]),
-			int256(assets[assetId].packedTermsState[109]),
-			int256(assets[assetId].packedTermsState[110]),
-			ContractStatus(uint8(uint256(assets[assetId].packedTermsState[111] >> 248))),
-			ContractRole(uint8(uint256(assets[assetId].packedTermsState[111] >> 240)))
+			int256(assets[assetId].packedTermsState[109])
 		);
 	}
 
@@ -309,16 +302,14 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		return ContractState(
 			uint256(assets[assetId].packedTermsState[151]),
 			uint256(assets[assetId].packedTermsState[152]),
+			ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[160] >> 248))),
 			int256(assets[assetId].packedTermsState[153]),
 			int256(assets[assetId].packedTermsState[154]),
 			int256(assets[assetId].packedTermsState[155]),
 			int256(assets[assetId].packedTermsState[156]),
 			int256(assets[assetId].packedTermsState[157]),
 			int256(assets[assetId].packedTermsState[158]),
-			int256(assets[assetId].packedTermsState[159]),
-			int256(assets[assetId].packedTermsState[160]),
-			ContractStatus(uint8(uint256(assets[assetId].packedTermsState[161] >> 248))),
-			ContractRole(uint8(uint256(assets[assetId].packedTermsState[161] >> 240)))
+			int256(assets[assetId].packedTermsState[159])
 		);
 	}
 }
