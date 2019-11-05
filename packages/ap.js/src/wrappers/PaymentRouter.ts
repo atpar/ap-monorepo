@@ -19,7 +19,7 @@ export class PaymentRouter {
   public settlePayment (
     assetId: string, 
     cashflowId: number,
-    eventId: number,
+    eventId: string,
     tokenAddress: string,
     amount: BigNumber
   ): TransactionObject {

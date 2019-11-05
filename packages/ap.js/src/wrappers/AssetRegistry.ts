@@ -48,19 +48,19 @@ export class AssetRegistry {
     }
   });
 
+  public getFinalizedState = (assetId: string): CallObject<ContractState> => ({
+    call: async (): Promise<ContractState> => {
+      const response = await this.instance.methods.getFinalizedState(toHex(assetId)).call();
+      const contractState = toContractState(response);
+      return contractState;
+    }
+  });
+
   public getEngineAddress = (assetId: string): CallObject<string> => ({
     call: async (): Promise<string> => {
       const response = await this.instance.methods.getEngineAddress(toHex(assetId)).call();
       const engineAddress = String(response);
       return engineAddress;
-    }
-  });
-
-  public getEventId = (assetId: string): CallObject<number> => ({
-    call: async (): Promise<number> => {
-      const response = await this.instance.methods.getEventId(toHex(assetId)).call();
-      const eventId = Number(response);
-      return eventId;
     }
   });
 

@@ -65,6 +65,16 @@
 		"s": 0,
 		"isSet": false
 	},
+	"gracePeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+	},
+	"delinquencyPeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+	},
 	"lifeCap": "0",
 	"lifeFloor": "0",
 	"periodCap": "0",

@@ -86,7 +86,7 @@ contract('SettlementERC20', (accounts) => {
     await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(assetId), 
       cashflowId,
-      1,
+      '0x0000000000000000000000000000000000000000',
       this.PaymentTokenInstance.address,
       payoffAmount,
       { from: counterpartyObligor }

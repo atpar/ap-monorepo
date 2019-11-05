@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 
-import { numberToHex, toChecksumAddress, hexToNumber, toHex } from '../utils/Utils';
+import { numberToHex, toChecksumAddress, toHex } from '../utils/Utils';
 import { 
   ContractTerms,
   ContractState, 
@@ -66,6 +66,8 @@ export function toContractTerms (raw: any): ContractTerms {
     cycleOfScalingIndex: raw['cycleOfScalingIndex'],
     cycleOfPrincipalRedemption: raw['cycleOfPrincipalRedemption'],
     cycleOfFee: raw['cycleOfFee'],
+    gracePeriod: raw['gracePeriod'],
+    delinquencyPeriod: raw['delinquencyPeriod'],
     lifeCap: String(raw['lifeCap']),
     lifeFloor: String(raw['lifeFloor']),
     periodCap: String(raw['periodCap']),
@@ -116,6 +118,8 @@ export function fromContractTerms (terms: ContractTerms): object {
     cycleOfScalingIndex: terms.cycleOfScalingIndex,
     cycleOfFee: terms.cycleOfFee,
     cycleOfPrincipalRedemption: terms.cycleOfPrincipalRedemption,
+    gracePeriod: terms.gracePeriod,
+    delinquencyPeriod: terms.delinquencyPeriod,
     lifeCap: terms.lifeCap,
     lifeFloor: terms.lifeFloor,
     periodCap: terms.periodCap,
@@ -126,7 +130,7 @@ export function fromContractTerms (terms: ContractTerms): object {
 export function toContractState (raw: any): ContractState {
   return {
     lastEventTime: Number(raw['lastEventTime']),
-    contractStatus: Number(raw['contractStatus']),
+    nonPerformingDate: Number(raw['nonPerformingDate']),
     timeFromLastEvent: new BigNumber(raw['timeFromLastEvent']),
     nominalValue: new BigNumber(raw['nominalValue']),
     nominalAccrued: new BigNumber(raw['nominalAccrued']),
@@ -135,6 +139,7 @@ export function toContractState (raw: any): ContractState {
     interestScalingMultiplier: new BigNumber(raw['interestScalingMultiplier']),
     nominalScalingMultiplier: new BigNumber(raw['nominalScalingMultiplier']),
     nextPrincipalRedemptionPayment: new BigNumber(raw['nextPrincipalRedemptionPayment']),
+    contractStatus: Number(raw['contractStatus']),
     contractRoleSign: Number(raw['contractRoleSign'])
   };
 }
@@ -142,7 +147,7 @@ export function toContractState (raw: any): ContractState {
 export function fromContractState (state: ContractState): object {
   return {
     lastEventTime: state.lastEventTime,
-    contractStatus: state.contractStatus,
+    nonPerformingDate: state.nonPerformingDate,
     timeFromLastEvent: numberToHex(state.timeFromLastEvent),
     nominalValue: numberToHex(state.nominalValue),
     nominalAccrued: numberToHex(state.nominalAccrued),
@@ -151,6 +156,7 @@ export function fromContractState (state: ContractState): object {
     interestScalingMultiplier: numberToHex(state.interestScalingMultiplier),
     nominalScalingMultiplier: numberToHex(state.nominalScalingMultiplier),
     nextPrincipalRedemptionPayment: numberToHex(state.nextPrincipalRedemptionPayment),
+    contractStatus: state.contractStatus,
     contractRoleSign: state.contractRoleSign
   };
 }
@@ -220,15 +226,14 @@ export function toAssetIssuedEvent (raw: any): AssetIssuedEvent {
 
 export function toAssetProgressedEvent (raw: any): AssetProgressedEvent {
   return {
-    assetId: raw['raw']['topics'][1] as string, // see web3 event decoding issue
-    eventId: hexToNumber(String(raw['returnValues']['eventId']))
+    assetId: raw['raw']['topics'][1] as string // see web3 event decoding issue
   };
 }
 
 export function toPaidEvent (raw: any): PaidEvent {
   return {
     assetId: raw['raw']['topics'][1] as string, // see web3 event decoding issue
-    eventId: hexToNumber(String(raw['returnValues']['eventId'])),
+    eventId: raw['returnValues']['eventId'] as string,
     amount: new BigNumber(String(raw['returnValues']['amount']))
   };
 }

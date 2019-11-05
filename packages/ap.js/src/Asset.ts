@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 
 import { ContractTerms, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { AP } from './index';
-import { sha3 } from './utils/Utils';
+import { sha3, computeEventId } from './utils/Utils';
 
 
 /**
@@ -40,19 +40,19 @@ export class Asset {
   }
 
   /**
+   * returns the finalized state of the asset
+   * @returns {Promise<ContractState>}
+   */
+  public async getFinalizedState (): Promise<ContractState> { 
+    return this.ap.economics.getFinalizedState(this.assetId); 
+  }
+
+  /**
    * returns the address of the ACTUS engine used for the asset
    * @returns {Promise<string>}
    */
   public async getEngineAddress (): Promise<string> {
     return this.ap.economics.getEngineAddress(this.assetId);
-  }
-
-  /**
-   * returns the last EventId of the asset
-   * @returns {Promise<number>}
-   */
-  public async getEventId (): Promise<number> {
-    return this.ap.economics.getEventId(this.assetId);
   }
 
   /**
@@ -99,35 +99,6 @@ export class Asset {
   }
 
   /**
-   * returns the total amount paid off to date (sum of all processed events + paid off pendings events)
-   * @param {number} timestamp current timestamp
-   * @returns {Promise<BigNumber>}
-   */
-  public async getTotalPaidOff (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
-    const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
-    const lastEventId = await this.getEventId();
-
-    if (this.ap.signer.account === recordCreatorObligor) {
-      const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
-        this.assetId, 
-        0, 
-        lastEventId + numberOfPendingEvents
-      );
-      return amountSettled;
-    } else if (this.ap.signer.account === counterpartyObligor) {
-      const amountSettled = await this.ap.payment.getSettledAmountForCounterparty(
-        this.assetId, 
-        0, 
-        lastEventId + numberOfPendingEvents
-      );
-      return amountSettled;
-    }
-
-    return new BigNumber(0);
-  }
-
-  /**
    * returns the amount due to date
    * absolute value of the sum of only positive or only negative payoffs of all pending events 
    * (depending on the accounts role)
@@ -136,15 +107,13 @@ export class Asset {
    */
   public async getAmountOutstanding (timestamp: number): Promise<BigNumber> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
-    const numberOfPendingEvents: number = (await this.getPendingSchedule(timestamp)).length;
-    const lastEventId = await this.getEventId();
+    const pendingSchedule = await this.getPendingSchedule(timestamp);
     const engineAddress = await this.getEngineAddress();
 
     if (this.ap.signer.account === recordCreatorObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
         this.assetId, 
-        lastEventId + 1, 
-        lastEventId + numberOfPendingEvents
+        pendingSchedule
       );
 
       const terms = await this.getTerms();
@@ -162,8 +131,7 @@ export class Asset {
     } else if (this.ap.signer.account === counterpartyObligor) {
       const amountSettled = await this.ap.payment.getSettledAmountForCounterparty(
         this.assetId, 
-        lastEventId + 1, 
-        lastEventId + numberOfPendingEvents
+        pendingSchedule
       );
 
       const terms = await this.getTerms();
@@ -192,24 +160,23 @@ export class Asset {
   public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
-    const lastEventId = await this.getEventId();
 
     for (let i = 0; i < pendingSchedule.length; i++) {
-      const payoff = pendingSchedule[i].event.payoff;
+      const { event } = pendingSchedule[i];
       
       // skip counterparty payoffs
-      if (this.ap.signer.account === recordCreatorObligor && payoff.isGreaterThan(0)) {
+      if (this.ap.signer.account === recordCreatorObligor && event.payoff.isGreaterThan(0)) {
         continue;
       }
 
       // skip record creator payoffs
-      if (this.ap.signer.account === counterpartyObligor && payoff.isLessThan(0)) {
+      if (this.ap.signer.account === counterpartyObligor && event.payoff.isLessThan(0)) {
         continue;
       }
 
-      const eventId = lastEventId + i + 1;
+      const eventId = computeEventId(event);
       const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
-      const duePayoff = payoff.abs();
+      const duePayoff = event.payoff.abs();
       const outstanding = duePayoff.minus(settledPayoff);
 
       if (outstanding.isGreaterThan(0)) { return outstanding; }
@@ -229,30 +196,29 @@ export class Asset {
   public async settleNextObligation (timestamp: number, amount: BigNumber): Promise<void> {
     const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
     const pendingSchedule = await this.getPendingSchedule(timestamp);
-    const lastEventId = await this.getEventId();
 
     for (let i = 0; i < pendingSchedule.length; i++) {
-      const payoff = pendingSchedule[i].event.payoff;
+      const { event } = pendingSchedule[i];
 
       // skip counterparty payoffs
-      if (this.ap.signer.account === recordCreatorObligor && payoff.isGreaterThan(0)) {
+      if (this.ap.signer.account === recordCreatorObligor && event.payoff.isGreaterThan(0)) {
         continue;
       }
 
       // skip record creator payoffs
-      if (this.ap.signer.account === counterpartyObligor && payoff.isLessThan(0)) {
+      if (this.ap.signer.account === counterpartyObligor && event.payoff.isLessThan(0)) {
         continue;
       }
 
-      const eventId = lastEventId + i + 1;
+      const eventId = computeEventId(event)
       const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
-      const duePayoff = payoff.abs();
+      const duePayoff = event.payoff.abs();
       const outstanding = duePayoff.minus(settledPayoff);
 
       if (outstanding.isGreaterThan(0)) { 
         const tokenAddress = pendingSchedule[i].event.currency;
-        const cashflowId = (pendingSchedule[i].event.payoff.isGreaterThan(0))? 
-          (Number(pendingSchedule[i].event.eventType) + 1) : -(Number(pendingSchedule[i].event.eventType) + 1);
+        const cashflowId = (event.payoff.isGreaterThan(0))? 
+          (Number(event.eventType) + 1) : -(Number(event.eventType) + 1);
 
         await this.ap.payment.settlePayment(
           this.assetId, 
@@ -304,6 +270,7 @@ export class Asset {
     const tx = await this.ap.tokenization.createERC20Distributor(name, symbol, initialSupply, currency).send(
       { from: this.ap.signer.account, gas: 2000000}
     );
+    // @ts-ignore
     const address = tx.events.DeployedDistributor.returnValues.distributor;
 
     if (this.ap.signer.account === recordCreatorBeneficiary) {

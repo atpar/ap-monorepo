@@ -39,7 +39,7 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 	function settlePayment(
 		bytes32 assetId,
 		int8 cashflowId,
-		uint256 eventId,
+		bytes32 eventId,
 		address token,
 		uint256 _amount
 	)

@@ -50,20 +50,20 @@ export class EconomicsAPI {
   }
 
   /**
+   * fetches the finalized state of an asset with a given AssetId
+   * @param assetId
+   * @returns {Promise<ContractState>}
+   */
+  public getFinalizedState (assetId: string): Promise<ContractState> {
+    return this.contracts.assetRegistry.getFinalizedState(assetId).call();
+  }
+
+  /**
    * fetches the address of the ACTUS engine of an asset with a given AssetId
    * @param assetId
    * @returns {Promise<string>}
    */
   public getEngineAddress (assetId: string): Promise<string> {
     return this.contracts.assetRegistry.getEngineAddress(assetId).call();
-  }
-
-  /**
-   * fetches the last event id of an asset with a given AssetId
-   * @param {string} assetId
-   * @returns {Promise<number>}
-   */
-  public getEventId (assetId: string): Promise<number> {
-    return this.contracts.assetRegistry.getEventId(assetId).call();
   }
 }

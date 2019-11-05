@@ -467,6 +467,42 @@ const ContractTermsABI = {
       "type": "tuple"
     },
     {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "gracePeriod",
+      "type": "tuple"
+    },
+    {
+      "components": [
+        {
+          "name": "i",
+          "type": "uint256"
+        },
+        {
+          "name": "p",
+          "type": "uint8"
+        },
+        {
+          "name": "isSet",
+          "type": "bool"
+        }
+      ],
+      "name": "delinquencyPeriod",
+      "type": "tuple"
+    },
+    {
       "name": "lifeCap",
       "type": "int256"
     },

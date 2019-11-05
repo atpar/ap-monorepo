@@ -67,19 +67,21 @@ contract('PaymentKernel', (accounts) => {
   it('should settle and register a payment', async () => {
     const preBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary);
 
+    const eventId = web3.utils.soliditySha3(3, 2222); // arbitrary eventId
+
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       -3,
-      1,
+      eventId,
       this.PaymentTokenInstance.address,
       5000,
       { from: recordCreatorObligor }
     );
     
-    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
 
-    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId);
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 1); // eventId)
+    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, eventId);
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), eventId); // eventId)
 
     const postBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary);
 
@@ -92,20 +94,22 @@ contract('PaymentKernel', (accounts) => {
 
   it('should settle and register a payment routed to a beneficiary corresponding to a CashflowId', async () => {
     const preBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(cashflowIdBeneficiary);
+    
+    const eventId = web3.utils.soliditySha3(5, 3333); // arbitrary eventId
 
     const { tx: txHash } = await this.PaymentRouterInstance.settlePayment(
       web3.utils.toHex(this.assetId), 
       5,
-      2,
+      eventId,
       this.PaymentTokenInstance.address,
       5000,
       { from: counterpartyObligor }
     );
     
-    const { args: { 0: emittedAssetId, 1: emittedEventId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
     
-    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, emittedEventId);
-    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), 2);
+    const payoffBalanceFromEvent = await this.PaymentRegistryInstance.getPayoffBalance(emittedAssetId, eventId);
+    const payoffBalance = await this.PaymentRegistryInstance.getPayoffBalance(web3.utils.toHex(this.assetId), eventId);
 
     const postBalanceOfBeneficiary = await this.PaymentTokenInstance.balanceOf(cashflowIdBeneficiary);
 
@@ -120,44 +124,20 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(''), 
         -3,
-        1,
-        this.PaymentTokenInstance.address,
-        5000,
-        { from: recordCreatorObligor }
-      ),
-      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
-    );
-
-    await shouldFail.reverting.withMessage(
-      this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.assetId), 
-        0,
-        1,
-        this.PaymentTokenInstance.address,
-        5000,
-        { from: recordCreatorObligor }
-      ),
-      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
-    );
-
-    await shouldFail.reverting.withMessage(
-      this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.assetId), 
-        -3,
-        0,
-        this.PaymentTokenInstance.address,
-        5000,
-        { from: recordCreatorObligor }
-      ),
-      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
-    );
-
-    await shouldFail.reverting.withMessage(
-      this.PaymentRouterInstance.settlePayment(
-        web3.utils.toHex(this.assetId), 
-        -3,
-        1,
         '0x0000000000000000000000000000000000000000',
+        this.PaymentTokenInstance.address,
+        5000,
+        { from: recordCreatorObligor }
+      ),
+      'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
+    );
+
+    await shouldFail.reverting.withMessage(
+      this.PaymentRouterInstance.settlePayment(
+        web3.utils.toHex(this.assetId), 
+        0,
+        '0x0000000000000000000000000000000000000000',
+        this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }
       ),
@@ -170,7 +150,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex('C567'), 
         -3,
-        1,
+        '0x0000000000000000000000000000000000000000',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }
@@ -184,7 +164,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         3,
-        1,
+        '0x0000000000000000000000000000000000000000',
         this.PaymentTokenInstance.address,
         5000,
         { from: counterpartyBeneficiary}
@@ -198,7 +178,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         5,
-        1,
+        '0x0000000000000000000000000000000000000000',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }

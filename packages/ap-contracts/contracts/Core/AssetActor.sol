@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-import "actus-solidity/contracts/Core/Definitions.sol";
+import "actus-solidity/contracts/Core/Core.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
@@ -13,7 +13,7 @@ import "./IPaymentRegistry.sol";
 import "./IPaymentRouter.sol";
 
 
-contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
+contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IPaymentRegistry paymentRegistry;
@@ -66,46 +66,73 @@ contract AssetActor is SharedTypes, Definitions, IAssetActor, Ownable {
 	{
 		ContractTerms memory terms = assetRegistry.getTerms(assetId);
 		ContractState memory state = assetRegistry.getState(assetId);
-
-		require(
-			terms.statusDate != uint256(0),
-			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
-		);
-		require(
-			state.lastEventTime != uint256(0),
-			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
-		);
-		require(
-			state.contractStatus == ContractStatus.PF,
-			"AssetActor.progress: CONTRACT_NOT_PERFORMANT"
-		);
-
-		uint256 eventId = assetRegistry.getEventId(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
-		(
-			ContractState memory nextState,
-			ContractEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingEvents
-		) = IEngine(engineAddress).computeNextState(terms, state, block.timestamp);
-
-		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (pendingEvents[i].eventTime == uint256(0)) { break; }
-			eventId += 1;
-			uint256 payoff = (pendingEvents[i].payoff < 0) ?
-				uint256(pendingEvents[i].payoff * -1) : uint256(pendingEvents[i].payoff);
-			if (payoff == uint256(0)) { continue; }
-			require(
-				paymentRegistry.getPayoffBalance(assetId, eventId) >= payoff,
-				"AssetActor.progress: OUTSTANDING_PAYMENTS"
-			);
+		if (state.contractStatus != ContractStatus.PF) {
+			state = assetRegistry.getFinalizedState(assetId);
 		}
 
-		// check for non-payment events ...
+		require(
+			terms.statusDate != uint256(0) && state.lastEventTime != uint256(0) && engineAddress != address(0),
+			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+		);
 
-		assetRegistry.setState(assetId, nextState);
-		assetRegistry.setEventId(assetId, eventId);
+		ProtoEvent[MAX_EVENT_SCHEDULE_SIZE] memory pendingProtoEvents = IEngine(engineAddress).computeProtoEventScheduleSegment(
+			terms,
+			shiftEventTime(state.lastEventTime, terms.businessDayConvention, terms.calendar),
+			block.timestamp
+		);
 
-		emit AssetProgressed(assetId, eventId);
+		// apply Payment Delay right away to pendingProtoEvents if contractStatus != PF
+		// (scheduleTime of Payment Delay === pendingProtoEvents[0].scheduleTime
+
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (pendingProtoEvents[i].eventTime == uint256(0)) break;
+
+			bytes32 eventId = keccak256(
+				abi.encode(
+					pendingProtoEvents[i].eventType,
+					pendingProtoEvents[i].eventTimeWithEpochOffset
+				)
+			);
+
+			ContractEvent memory pendingEvent;
+			(
+				state,
+				pendingEvent
+			) = IEngine(engineAddress).computeNextStateForProtoEvent(
+				terms,
+				state,
+				pendingProtoEvents[i],
+				block.timestamp
+			);
+			uint256 payoff = (pendingEvent.payoff < 0) ?
+				uint256(pendingEvent.payoff * -1) : uint256(pendingEvent.payoff);
+
+			if (
+				paymentRegistry.getPayoffBalance(assetId, eventId) < payoff
+				&& state.contractStatus == ContractStatus.PF
+			) {
+				assetRegistry.setFinalizedState(assetId, state);
+
+				(state, ) = IEngine(engineAddress).computeNextStateForProtoEvent(
+					terms,
+					state,
+					createProtoEvent(
+						EventType.DEL,
+						pendingProtoEvents[i].scheduleTime,
+						terms,
+						EventType.DEL,
+						EventType.DEL
+					),
+					block.timestamp
+				);
+			}
+		}
+
+		assetRegistry.setState(assetId, state);
+
+		emit AssetProgressed(assetId);
 
 		return(true);
 	}
