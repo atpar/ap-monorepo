@@ -80,9 +80,9 @@ accepts@~1.3.7:
   version "0.0.0"
   resolved "https://github.com/actusfrf/actus-dictionary.git#8753f7ac69147e8f89020eaf7e965396242a585a"
 
-"actus-solidity@git://github.com/atpar/actus-solidity.git#feature/AP-28-contract-status":
+"actus-solidity@git://github.com/atpar/actus-solidity.git#MS1":
   version "0.2.1"
-  resolved "git://github.com/atpar/actus-solidity.git#fe546433dc42f7dd476dfc383e3df7fb5cf19969"
+  resolved "git://github.com/atpar/actus-solidity.git#0e2782fed5cc984060c9d55c0719ec55fd945a6d"
 
 aes-js@3.0.0:
   version "3.0.0"
