@@ -124,7 +124,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(''), 
         -3,
-        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000001',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }
@@ -136,7 +136,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         0,
-        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000001',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }
@@ -150,7 +150,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex('C567'), 
         -3,
-        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000001',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }
@@ -164,7 +164,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         3,
-        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000001',
         this.PaymentTokenInstance.address,
         5000,
         { from: counterpartyBeneficiary}
@@ -178,7 +178,7 @@ contract('PaymentKernel', (accounts) => {
       this.PaymentRouterInstance.settlePayment(
         web3.utils.toHex(this.assetId), 
         5,
-        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000001',
         this.PaymentTokenInstance.address,
         5000,
         { from: recordCreatorObligor }

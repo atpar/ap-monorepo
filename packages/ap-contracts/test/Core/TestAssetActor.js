@@ -163,9 +163,9 @@ contract('AssetActor', (accounts) => {
     // nonPerformingDate = eventTime of first event
     projectedNextState.nonPerformingDate = protoEventSchedule[0].eventTime;
     projectedNextState[1] = protoEventSchedule[0].eventTime;
-    // contractStatus = DL
-    projectedNextState.contractStatus = '1';
-    projectedNextState[10] = '1';
+    // contractPerformance = DL
+    projectedNextState.contractPerformance = '1';
+    projectedNextState[2] = '1';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -205,9 +205,9 @@ contract('AssetActor', (accounts) => {
     // nonPerformingDate = eventTime of first event
     projectedNextState.nonPerformingDate = protoEventSchedule[0].eventTime;
     projectedNextState[1] = protoEventSchedule[0].eventTime;
-    // contractStatus = DQ
-    projectedNextState.contractStatus = '2';
-    projectedNextState[10] = '2';
+    // contractPerformance = DQ
+    projectedNextState.contractPerformance = '2';
+    projectedNextState[2] = '2';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);

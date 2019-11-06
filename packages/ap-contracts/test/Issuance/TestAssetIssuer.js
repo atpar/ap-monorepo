@@ -261,6 +261,28 @@ const ContractTermsABI = {
       "type": "uint8"
     },
     {
+      "name": "creditEventTypeCovered",
+      "type": "uint8"
+    },
+    {
+      "components": [
+        {
+          "name": "object",
+          "type": "bytes32"
+        },
+        {
+          "name": "contractReferenceType",
+          "type": "uint8"
+        },
+        {
+          "name": "contractReferenceRole",
+          "type": "uint8"
+        }
+      ],
+      "name": "contractStructure",
+      "type": "tuple"
+    },
+    {
       "name": "contractDealDate",
       "type": "uint256"
     },
@@ -354,6 +376,10 @@ const ContractTermsABI = {
     },
     {
       "name": "nextPrincipalRedemptionPayment",
+      "type": "int256"
+    },
+    {
+      "name": "coverageOfCreditEnhancement",
       "type": "int256"
     },
     {
@@ -519,6 +545,6 @@ const ContractTermsABI = {
       "type": "int256"
     }
   ],
-  "name": "terms",
+  "name": "contractTerms",
   "type": "tuple"
 };

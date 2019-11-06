@@ -108,9 +108,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				protoEvents[0] = createProtoEvent(
 					EventType.XD,
 					scheduleTime,
-					terms,
-					EventType.XD,
-					EventType.XD
+					terms
 				);
 			}
 		}
@@ -150,9 +148,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 					createProtoEvent(
 						EventType.DEL,
 						pendingProtoEvents[i].scheduleTime,
-						terms,
-						EventType.DEL,
-						EventType.DEL
+						terms
 					),
 					block.timestamp
 				);
