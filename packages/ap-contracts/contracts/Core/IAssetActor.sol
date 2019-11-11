@@ -36,6 +36,7 @@ contract IAssetActor is Definitions, SharedTypes {
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		Terms memory terms,
+		ProtoEventSchedules memory protoEventSchedules,
 		address engine
 	)
 		public

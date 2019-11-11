@@ -90,20 +90,20 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function getEngineAddress(bytes32 assetId) external view returns (address);
 
-	/**
-	 * returns the stored ProtoEvent schedule for all non-cyclic events of a registered asset
-	 * @param assetId id of the asset
-	 * @return ProtoEvent schedule of the asset
-	 */
-	function getCyclicSchedule(bytes32 assetId) external view returns (bytes32[] memory);
+	// /**
+	//  * returns the stored ProtoEvent schedule for all non-cyclic events of a registered asset
+	//  * @param assetId id of the asset
+	//  * @return ProtoEvent schedule of the asset
+	//  */
+	// function getCyclicSchedule(bytes32 assetId) external view returns (bytes32[] memory);
 
-	/**
-	 * returns the stored ProtoEvent schedule for a given cyclic event of a registered asset
-	 * @param assetId id of the asset
-	 * @param eventType event type to return the cyclic ProtoEvent schedule for
-	 * @return ProtoEvent schedule of the asset
-	 */
-	function getNonCyclicSchedule(bytes32 assetId, EventType eventType) external view returns (bytes32[] memory);
+	// /**
+	//  * returns the stored ProtoEvent schedule for a given cyclic event of a registered asset
+	//  * @param assetId id of the asset
+	//  * @param eventType event type to return the cyclic ProtoEvent schedule for
+	//  * @return ProtoEvent schedule of the asset
+	//  */
+	// function getNonCyclicSchedule(bytes32 assetId, EventType eventType) external view returns (bytes32[] memory);
 
 	/**
 	 * returns the next ProtoEvent of the non-cyclic ProtoEvent schedule

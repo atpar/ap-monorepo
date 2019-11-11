@@ -1,6 +1,6 @@
 const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
-const CEGEngine = artifacts.require('CEGEngine');
+// const CEGEngine = artifacts.require('CEGEngine');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const PaymentRegistry = artifacts.require('PaymentRegistry');
 const PaymentRouter = artifacts.require('PaymentRouter');
@@ -18,7 +18,7 @@ async function setupTestEnvironment () {
   // deploy ACTUS Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
   instances.ANNEngineInstance = await ANNEngine.new();
-  instances.CEGEngineInstance = await CEGEngine.new();
+  // instances.CEGEngineInstance = await CEGEngine.new();
   
   // deploy Core
   instances.AssetRegistryInstance = await AssetRegistry.new();

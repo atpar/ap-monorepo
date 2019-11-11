@@ -50,6 +50,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder {
 				assetId,
 				ownership,
 				order.terms,
+				order.protoEventSchedules,
 				order.engine
 			),
 			"AssetIssuer.fillOrder: EXECUTION_ERROR"
