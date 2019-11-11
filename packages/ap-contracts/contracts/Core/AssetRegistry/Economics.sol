@@ -19,7 +19,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @return terms of the asset
 	 */
-	function getTerms(bytes32 assetId) external view returns (ContractTerms memory) {
+	function getTerms(bytes32 assetId) external view returns (Terms memory) {
 		return decodeAndGetTerms(assetId);
 	}
 
@@ -28,7 +28,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @return state of the asset
 	 */
-	function getState(bytes32 assetId) external view returns (ContractState memory) {
+	function getState(bytes32 assetId) external view returns (State memory) {
 		return decodeAndGetState(assetId);
 	}
 
@@ -37,8 +37,23 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @return state of the asset
 	 */
-	function getFinalizedState(bytes32 assetId) external view returns (ContractState memory) {
+	function getFinalizedState(bytes32 assetId) external view returns (State memory) {
 		return decodeAndGetFinalizedState(assetId);
+	}
+
+	/**
+	 * @param assetId id of the asset
+	 */
+	function getNextNonCyclicProtoEvent(bytes32 assetId) external view returns (bytes32) {
+		return decodeAndGetNextNonCyclicProtoEvent(assetId);
+	}
+
+	/**
+	 * @param assetId id of the asset
+	 * @param eventType event type
+	 */
+	function getNextCyclicProtoEvent(bytes32 assetId, EventType eventType) external view returns (bytes32) {
+		return decodeAndGetNextCyclicProtoEvent(assetId, eventType);
 	}
 
   /**
@@ -56,7 +71,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @param terms new terms of the asset
 	 */
-	function setTerms(bytes32 assetId, ContractTerms memory terms) public onlyDesignatedActor (assetId) {
+	function setTerms(bytes32 assetId, Terms memory terms) public onlyDesignatedActor (assetId) {
 		encodeAndSetTerms(assetId, terms);
 	}
 
@@ -66,7 +81,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @param state next state of the asset
 	 */
-	function setState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
+	function setState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
 		encodeAndSetState(assetId, state);
 	}
 
@@ -76,7 +91,21 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @param state next state of the asset
 	 */
-	function setFinalizedState(bytes32 assetId, ContractState memory state) public onlyDesignatedActor (assetId) {
+	function setFinalizedState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
 		encodeAndSetFinalizedState(assetId, state);
+	}
+
+	/**
+	 * @param assetId id of the asset
+	 * @param protoEventSchedules all ProtoEvent schedules
+	 */
+	function setProtoEventSchedules(
+		bytes32 assetId,
+		ProtoEventSchedules memory protoEventSchedules
+	)
+		public
+		onlyDesignatedActor (assetId)
+	{
+		encodeAndSetProtoEventSchedules(assetId, protoEventSchedules);
 	}
 }

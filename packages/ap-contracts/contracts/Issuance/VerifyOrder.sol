@@ -4,9 +4,10 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 import "actus-solidity/contracts/Core/Definitions.sol";
+import "../Core/SharedTypes.sol";
 
 
-contract VerifyOrder is Definitions {
+contract VerifyOrder is Definitions, SharedTypes {
 
 	struct EIP712Domain {
 		string  name;
@@ -20,7 +21,8 @@ contract VerifyOrder is Definitions {
     address payable taker;
     address engine;
     address actor;
-    ContractTerms terms;
+    Terms terms;
+		ProtoEventSchedules protoEventSchedules;
     address makerCreditEnhancement;
     address takerCreditEnhancement;
     uint256 salt;
@@ -31,11 +33,11 @@ contract VerifyOrder is Definitions {
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address engine,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address engine,address actor,bytes32 termsHash,address makerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address taker,address engine,address actor,bytes32 contractTermsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address taker,address engine,address actor,bytes32 termsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -63,7 +65,7 @@ contract VerifyOrder is Definitions {
 		));
 	}
 
-  function hashTerms(ContractTerms memory terms)
+  function hashTerms(Terms memory terms)
     internal
     pure
     returns (bytes32)

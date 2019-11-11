@@ -6,7 +6,7 @@ import "actus-solidity/contracts/Core/Definitions.sol";
 import "./SharedTypes.sol";
 
 
-contract IAssetActor is SharedTypes, Definitions {
+contract IAssetActor is Definitions, SharedTypes {
 
 	event AssetProgressed(bytes32 indexed assetId);
 
@@ -35,7 +35,7 @@ contract IAssetActor is SharedTypes, Definitions {
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		ContractTerms memory terms,
+		Terms memory terms,
 		address engine
 	)
 		public

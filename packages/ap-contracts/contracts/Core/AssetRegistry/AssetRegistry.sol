@@ -18,13 +18,16 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 	 * @param ownership ownership of the asset
 	 * @param terms terms of the asset
 	 * @param state initial state of the asset
+	 * @param protoEventSchedules ProtoEvent schedules of the asset
+	 * @param engine ACTUS Engine of the asset
 	 * @param actor account which is allowed to update the asset state
 	 */
 	function registerAsset(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		ContractTerms memory terms,
-		ContractState memory state,
+		Terms memory terms,
+		State memory state,
+		ProtoEventSchedules memory protoEventSchedules,
     address engine,
 		address actor
 	)
@@ -40,6 +43,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 			ownership,
 			terms,
 			state,
+			protoEventSchedules,
       engine,
 			actor
 		);

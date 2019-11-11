@@ -6,13 +6,15 @@ import "actus-solidity/contracts/Core/Definitions.sol";
 import "../SharedTypes.sol";
 
 
-contract AssetRegistryStorage is SharedTypes, Definitions {
+contract AssetRegistryStorage is Definitions, SharedTypes {
 
 	struct Asset {
 		bytes32 assetId;
 		AssetOwnership ownership;
 		mapping (int8 => address payable) cashflowBeneficiaries;
 		mapping (uint8 => bytes32) packedTermsState;
+		bytes32[] nonCyclicProtoEventSchedule;
+		mapping (uint8 => bytes32[]) cyclicProtoEventSchedules;
 		uint256 eventId;
     address engine;
 		address actor;
@@ -24,8 +26,9 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 	function setAsset(
 		bytes32 _assetId,
 		AssetOwnership memory _ownership,
-		ContractTerms memory terms,
-		ContractState memory state,
+		Terms memory terms,
+		State memory state,
+		ProtoEventSchedules memory protoEventSchedules,
     address _engine,
 		address _actor
 	)
@@ -35,6 +38,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			assetId: _assetId,
 			ownership: _ownership,
 			eventId: 0,
+			nonCyclicProtoEventSchedule: new bytes32[](0),
       engine: _engine,
 			actor: _actor
 		});
@@ -42,9 +46,10 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		encodeAndSetTerms(_assetId, terms);
 		encodeAndSetState(_assetId, state);
 		encodeAndSetFinalizedState(_assetId, state);
+		encodeAndSetProtoEventSchedules(_assetId, protoEventSchedules);
 	}
 
-	function encodeAndSetTerms(bytes32 assetId, ContractTerms memory terms) internal {
+	function encodeAndSetTerms(bytes32 assetId, Terms memory terms) internal {
 		bytes32 enums =
 			bytes32(uint256(uint8(terms.contractType))) << 248 |
 			bytes32(uint256(uint8(terms.calendar))) << 240 |
@@ -154,7 +159,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		}
 	}
 
-	function encodeAndSetState(bytes32 assetId, ContractState memory state) internal {
+	function encodeAndSetState(bytes32 assetId, State memory state) internal {
 		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[101] = bytes32(state.lastEventTime);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[102] = bytes32(state.nonPerformingDate);
 
@@ -172,7 +177,7 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (enums != bytes32(0)) assets[assetId].packedTermsState[110] = enums;
 	}
 
-	function encodeAndSetFinalizedState(bytes32 assetId, ContractState memory state) internal {
+	function encodeAndSetFinalizedState(bytes32 assetId, State memory state) internal {
 		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[151] = bytes32(state.lastEventTime);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[152] = bytes32(state.nonPerformingDate);
 
@@ -190,8 +195,33 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		if (enums != bytes32(0)) assets[assetId].packedTermsState[160] = enums;
 	}
 
-	function decodeAndGetTerms(bytes32 assetId) internal view returns (ContractTerms memory) {
-		return ContractTerms(
+	function encodeAndSetProtoEventSchedules(bytes32 assetId, ProtoEventSchedules memory protoEventSchedules)
+		internal
+	{
+		assets[assetId].nonCyclicProtoEventSchedule = protoEventSchedules.nonCyclicProtoEventSchedule;
+
+		if (protoEventSchedules.cyclicIPProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.IP)] = protoEventSchedules.cyclicIPProtoEventSchedule;
+		}
+		if (protoEventSchedules.cyclicPRProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.PR)] = protoEventSchedules.cyclicPRProtoEventSchedule;
+		}
+		if (protoEventSchedules.cyclicRRProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.RR)] = protoEventSchedules.cyclicRRProtoEventSchedule;
+		}
+		if (protoEventSchedules.cyclicPYProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.PY)] = protoEventSchedules.cyclicPYProtoEventSchedule;
+		}
+		if (protoEventSchedules.cyclicSCProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.SC)] = protoEventSchedules.cyclicSCProtoEventSchedule;
+		}
+		if (protoEventSchedules.cyclicFPProtoEventSchedule[0] != bytes32(0)) {
+			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.FP)] = protoEventSchedules.cyclicFPProtoEventSchedule;
+		}
+	}
+
+	function decodeAndGetTerms(bytes32 assetId) internal view returns (Terms memory) {
+		return Terms(
 			ContractType(uint8(uint256(assets[assetId].packedTermsState[1] >> 248))),
 			Calendar(uint8(uint256(assets[assetId].packedTermsState[1] >> 240))),
 			ContractRole(uint8(uint256(assets[assetId].packedTermsState[1] >> 232))),
@@ -283,8 +313,8 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		);
 	}
 
-	function decodeAndGetState(bytes32 assetId) internal view returns (ContractState memory) {
-		return ContractState(
+	function decodeAndGetState(bytes32 assetId) internal view returns (State memory) {
+		return State(
 			uint256(assets[assetId].packedTermsState[101]),
 			uint256(assets[assetId].packedTermsState[102]),
 			ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[110] >> 248))),
@@ -298,8 +328,8 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 		);
 	}
 
-	function decodeAndGetFinalizedState(bytes32 assetId) internal view returns (ContractState memory) {
-		return ContractState(
+	function decodeAndGetFinalizedState(bytes32 assetId) internal view returns (State memory) {
+		return State(
 			uint256(assets[assetId].packedTermsState[151]),
 			uint256(assets[assetId].packedTermsState[152]),
 			ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[160] >> 248))),
@@ -311,5 +341,29 @@ contract AssetRegistryStorage is SharedTypes, Definitions {
 			int256(assets[assetId].packedTermsState[158]),
 			int256(assets[assetId].packedTermsState[159])
 		);
+	}
+
+	function decodeAndGetNextNonCyclicProtoEvent(bytes32 assetId)
+		internal
+		view
+		returns (bytes32)
+	{
+		if (assets[assetId].nonCyclicProtoEventSchedule.length == 0) {
+			return bytes32(0);
+		}
+
+		return assets[assetId].nonCyclicProtoEventSchedule[assets[assetId].nonCyclicProtoEventSchedule.length - 1];
+	}
+
+	function decodeAndGetNextCyclicProtoEvent(bytes32 assetId, EventType eventType)
+		internal
+		view
+		returns (bytes32)
+	{
+		if (assets[assetId].cyclicProtoEventSchedules[uint8(eventType)].length == 0) {
+			return bytes32(0);
+		}
+
+		return assets[assetId].cyclicProtoEventSchedules[uint8(eventType)][assets[assetId].cyclicProtoEventSchedules[uint8(eventType)].length - 1];
 	}
 }
