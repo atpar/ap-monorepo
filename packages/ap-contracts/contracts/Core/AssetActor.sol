@@ -95,7 +95,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 		assetRegistry.setState(assetId, state);
 
-		emit AssetProgressed(assetId);
+		emit AssetProgressed(assetId, eventId);
 
 		return(true);
 	}
@@ -151,7 +151,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 assetId,
 		Terms memory terms
 	)
-		internal
+		public
 		view
 		returns (bytes32)
 	{
@@ -165,7 +165,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 nextIPProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.IP);
 		(EventType eventType, uint256 scheduleTime) = decodeProtoEvent(nextIPProtoEvent);
 		if (
-			nextScheduleTime > scheduleTime
+			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
 			nextProtoEvent = nextIPProtoEvent;
@@ -177,7 +177,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 nextPRProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.PR);
 		(eventType, scheduleTime) = decodeProtoEvent(nextPRProtoEvent);
 		if (
-			nextScheduleTime > scheduleTime
+			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
 			nextProtoEvent = nextPRProtoEvent;
@@ -189,7 +189,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 nextSCProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.SC);
 		(eventType, scheduleTime) = decodeProtoEvent(nextSCProtoEvent);
 		if (
-			nextScheduleTime > scheduleTime
+			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
 			nextProtoEvent = nextSCProtoEvent;
@@ -201,7 +201,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 nextRRProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.RR);
 		(eventType, scheduleTime) = decodeProtoEvent(nextRRProtoEvent);
 		if (
-			nextScheduleTime > scheduleTime
+			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
 			nextProtoEvent = nextRRProtoEvent;
@@ -213,7 +213,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 nextPYProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.PY);
 		(eventType, scheduleTime) = decodeProtoEvent(nextPYProtoEvent);
 		if (
-			nextScheduleTime > scheduleTime
+			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
 			nextProtoEvent = nextPYProtoEvent;

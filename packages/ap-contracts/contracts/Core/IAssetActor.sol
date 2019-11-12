@@ -8,7 +8,7 @@ import "./SharedTypes.sol";
 
 contract IAssetActor is Definitions, SharedTypes {
 
-	event AssetProgressed(bytes32 indexed assetId);
+	event AssetProgressed(bytes32 indexed assetId, bytes32 eventId);
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and

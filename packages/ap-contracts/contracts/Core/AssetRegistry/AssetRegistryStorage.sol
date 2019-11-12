@@ -204,11 +204,10 @@ contract AssetRegistryStorage is Definitions, SharedTypes {
 	function encodeAndSetProtoEventSchedules(bytes32 assetId, ProtoEventSchedules memory protoEventSchedules)
 		internal
 	{
-		uint8 indexNon = 100;
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (protoEventSchedules.nonCyclicProtoEventSchedule[i] == bytes32(0)) break;
-			assets[assetId].protoEventSchedules[indexNon].protoEventSchedule[i] = protoEventSchedules.nonCyclicProtoEventSchedule[i];
-			assets[assetId].protoEventSchedules[indexNon].numberOfProtoEvents = i;
+			assets[assetId].protoEventSchedules[NON_CYCLIC_INDEX].protoEventSchedule[i] = protoEventSchedules.nonCyclicProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[NON_CYCLIC_INDEX].numberOfProtoEvents = i;
 		}
 
 		uint8 indexIP = uint8(EventType.IP);
