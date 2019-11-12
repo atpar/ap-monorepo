@@ -8,13 +8,20 @@ import "../SharedTypes.sol";
 
 contract AssetRegistryStorage is Definitions, SharedTypes {
 
+	uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
+
+	struct ProtoEventSchedule {
+		mapping(uint256 => bytes32) protoEventSchedule;
+		uint256 nextProtoEventIndex;
+		uint256 numberOfProtoEvents;
+	}
+
 	struct Asset {
 		bytes32 assetId;
 		AssetOwnership ownership;
 		mapping (int8 => address payable) cashflowBeneficiaries;
 		mapping (uint8 => bytes32) packedTermsState;
-		bytes32[] nonCyclicProtoEventSchedule;
-		mapping (uint8 => bytes32[]) cyclicProtoEventSchedules;
+		mapping (uint8 => ProtoEventSchedule) protoEventSchedules;
 		uint256 eventId;
     address engine;
 		address actor;
@@ -38,7 +45,6 @@ contract AssetRegistryStorage is Definitions, SharedTypes {
 			assetId: _assetId,
 			ownership: _ownership,
 			eventId: 0,
-			nonCyclicProtoEventSchedule: new bytes32[](0),
       engine: _engine,
 			actor: _actor
 		});
@@ -198,25 +204,53 @@ contract AssetRegistryStorage is Definitions, SharedTypes {
 	function encodeAndSetProtoEventSchedules(bytes32 assetId, ProtoEventSchedules memory protoEventSchedules)
 		internal
 	{
-		assets[assetId].nonCyclicProtoEventSchedule = protoEventSchedules.nonCyclicProtoEventSchedule;
+		uint8 indexNon = 100;
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.nonCyclicProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexNon].protoEventSchedule[i] = protoEventSchedules.nonCyclicProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexNon].numberOfProtoEvents = i;
+		}
 
-		if (protoEventSchedules.cyclicIPProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.IP)] = protoEventSchedules.cyclicIPProtoEventSchedule;
+		uint8 indexIP = uint8(EventType.IP);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicIPProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexIP].protoEventSchedule[i] = protoEventSchedules.cyclicIPProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexIP].numberOfProtoEvents = i;
 		}
-		if (protoEventSchedules.cyclicPRProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.PR)] = protoEventSchedules.cyclicPRProtoEventSchedule;
+
+		uint8 indexPR = uint8(EventType.PR);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicPRProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexPR].protoEventSchedule[i] = protoEventSchedules.cyclicPRProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexPR].numberOfProtoEvents = i;
 		}
-		if (protoEventSchedules.cyclicRRProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.RR)] = protoEventSchedules.cyclicRRProtoEventSchedule;
+
+		uint8 indexRR = uint8(EventType.RR);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicRRProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexRR].protoEventSchedule[i] = protoEventSchedules.cyclicRRProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexRR].numberOfProtoEvents = i;
 		}
-		if (protoEventSchedules.cyclicPYProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.PY)] = protoEventSchedules.cyclicPYProtoEventSchedule;
+
+		uint8 indexPY = uint8(EventType.PY);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicPYProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexPY].protoEventSchedule[i] = protoEventSchedules.cyclicPYProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexPY].numberOfProtoEvents = i;
 		}
-		if (protoEventSchedules.cyclicSCProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.SC)] = protoEventSchedules.cyclicSCProtoEventSchedule;
+
+		uint8 indexSC = uint8(EventType.SC);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicSCProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexSC].protoEventSchedule[i] = protoEventSchedules.cyclicSCProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexSC].numberOfProtoEvents = i;
 		}
-		if (protoEventSchedules.cyclicFPProtoEventSchedule[0] != bytes32(0)) {
-			assets[assetId].cyclicProtoEventSchedules[uint8(EventType.FP)] = protoEventSchedules.cyclicFPProtoEventSchedule;
+
+		uint8 indexFP = uint8(EventType.FP);
+		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+			if (protoEventSchedules.cyclicFPProtoEventSchedule[i] == bytes32(0)) break;
+			assets[assetId].protoEventSchedules[indexFP].protoEventSchedule[i] = protoEventSchedules.cyclicFPProtoEventSchedule[i];
+			assets[assetId].protoEventSchedules[indexFP].numberOfProtoEvents = i;
 		}
 	}
 
@@ -239,7 +273,6 @@ contract AssetRegistryStorage is Definitions, SharedTypes {
 				assets[assetId].packedTermsState[41],
 				ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[42] >> 16))),
 				ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[42] >> 8)))
-			
 			),
 			uint256(assets[assetId].packedTermsState[5]),
 			uint256(assets[assetId].packedTermsState[6]),
@@ -341,29 +374,5 @@ contract AssetRegistryStorage is Definitions, SharedTypes {
 			int256(assets[assetId].packedTermsState[158]),
 			int256(assets[assetId].packedTermsState[159])
 		);
-	}
-
-	function decodeAndGetNextNonCyclicProtoEvent(bytes32 assetId)
-		internal
-		view
-		returns (bytes32)
-	{
-		if (assets[assetId].nonCyclicProtoEventSchedule.length == 0) {
-			return bytes32(0);
-		}
-
-		return assets[assetId].nonCyclicProtoEventSchedule[assets[assetId].nonCyclicProtoEventSchedule.length - 1];
-	}
-
-	function decodeAndGetNextCyclicProtoEvent(bytes32 assetId, EventType eventType)
-		internal
-		view
-		returns (bytes32)
-	{
-		if (assets[assetId].cyclicProtoEventSchedules[uint8(eventType)].length == 0) {
-			return bytes32(0);
-		}
-
-		return assets[assetId].cyclicProtoEventSchedules[uint8(eventType)][assets[assetId].cyclicProtoEventSchedules[uint8(eventType)].length - 1];
 	}
 }

@@ -74,6 +74,11 @@ contract('AssetActor', (accounts) => {
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
+    const storedNextNonCyclicProtoEvent = await this.AssetRegistryInstance.getNextNonCyclicProtoEvent(web3.utils.toHex(this.assetId));
+    const storedNextCyclicProtoEvent = await this.AssetRegistryInstance.getNextCyclicProtoEvent(web3.utils.toHex(this.assetId), 8);
+
+    console.log(storedNextNonCyclicProtoEvent);
+    console.log(storedNextCyclicProtoEvent);
 
     assert.deepEqual(storedTerms['contractDealDate'], this.terms['contractDealDate'].toString());
     assert.deepEqual(storedState, this.state);

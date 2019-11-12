@@ -90,21 +90,6 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function getEngineAddress(bytes32 assetId) external view returns (address);
 
-	// /**
-	//  * returns the stored ProtoEvent schedule for all non-cyclic events of a registered asset
-	//  * @param assetId id of the asset
-	//  * @return ProtoEvent schedule of the asset
-	//  */
-	// function getCyclicSchedule(bytes32 assetId) external view returns (bytes32[] memory);
-
-	// /**
-	//  * returns the stored ProtoEvent schedule for a given cyclic event of a registered asset
-	//  * @param assetId id of the asset
-	//  * @param eventType event type to return the cyclic ProtoEvent schedule for
-	//  * @return ProtoEvent schedule of the asset
-	//  */
-	// function getNonCyclicSchedule(bytes32 assetId, EventType eventType) external view returns (bytes32[] memory);
-
 	/**
 	 * returns the next ProtoEvent of the non-cyclic ProtoEvent schedule
 	 * @param assetId id of the asset
@@ -119,6 +104,18 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 * @return next ProtoEvent of the non-cyclic ProtoEvent schedule
 	 */
 	function getNextCyclicProtoEvent(bytes32 assetId, EventType eventType) external view returns (bytes32);
+
+	function getNonCyclicProtoEventAtIndex(bytes32 assetId, uint256 index) external view returns (bytes32);
+
+	function getCyclicProtoEventAtIndex(bytes32 assetId, EventType eventType, uint256 index) external view returns (bytes32);
+
+	function getNonCyclicProtoEventScheduleLength(bytes32 assetId) external view returns (uint256);
+
+	function getCyclicProtoEventScheduleLength(bytes32 assetId, EventType eventType) external view returns (uint256);
+
+	function getNonCyclicProtoEventScheduleIndex(bytes32 assetId) external view returns (uint256);
+
+	function getCyclicProtoEventScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256);
 
 	/**
 	 * sets next state of a registered asset
@@ -149,6 +146,10 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 * @param protoEventSchedules all ProtoEvent schedules
 	 */
 	function setProtoEventSchedules(bytes32 assetId, ProtoEventSchedules memory protoEventSchedules) public;
+
+	function setNonCyclicProtoEventIndex(bytes32 assetId, uint256 nextIndex) public;
+
+	function setCyclicProtoEventIndex(bytes32 assetId, EventType eventType, uint256 nextIndex) public;
 
 	/**
 	 * Stores the addresses of the owners (owner of creator-side payment obligations,
