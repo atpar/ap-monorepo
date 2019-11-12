@@ -35,16 +35,6 @@ contract('AssetActor', (accounts) => {
     return web3.utils.soliditySha3(eventType, Number(scheduleTime) + Number(epochOffset));
   }
 
-  // const getProtoEventSchedule = () => {
-  //   const protoEventSchedule = [];
-    
-  //   Object.values(this.protoEventSchedules).map((protoEvents) => {
-  //     protoEventSchedule.push(...protoEvents);
-  //   });
-
-  //   return sortProtoEvents(removeNullProtoEvents(protoEventSchedule));
-  // }
-
   before(async () => {
     const instances = await setupTestEnvironment();
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
