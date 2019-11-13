@@ -38,10 +38,21 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
+    const protoEventSchedules = {
+      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 11),
+    };
+
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       terms,
+      protoEventSchedules,
       this.PAMEngineInstance.address
     );
 
@@ -50,6 +61,82 @@ contract('AssetActor', (accounts) => {
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(assetId));
 
+    const storedNonCyclicProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        i
+      );
+
+      storedNonCyclicProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicIPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        8,
+        i
+      );
+      
+      storedCyclicIPProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicPRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        15,
+        i
+      );
+      
+      storedCyclicPRProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicSCProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        19,
+        i
+      );
+      
+      storedCyclicSCProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicRRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        18,
+        i
+      );
+      
+      storedCyclicRRProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicFPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        4,
+        i
+      );
+      
+      storedCyclicFPProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicPYProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        11,
+        i
+      );
+      
+      storedCyclicPYProtoEventSchedule.push(protoEvent);
+    }
+    
     assert.deepEqual(storedTerms['contractDealDate'], terms['contractDealDate'].toString());
     assert.deepEqual(storedState, state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
@@ -58,6 +145,14 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
+
+    assert.deepEqual(storedNonCyclicProtoEventSchedule, protoEventSchedules.nonCyclicProtoEventSchedule);
+    assert.deepEqual(storedCyclicIPProtoEventSchedule, protoEventSchedules.cyclicIPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPRProtoEventSchedule, protoEventSchedules.cyclicPRProtoEventSchedule);
+    assert.deepEqual(storedCyclicSCProtoEventSchedule, protoEventSchedules.cyclicSCProtoEventSchedule);
+    assert.deepEqual(storedCyclicRRProtoEventSchedule, protoEventSchedules.cyclicRRProtoEventSchedule);
+    assert.deepEqual(storedCyclicFPProtoEventSchedule, protoEventSchedules.cyclicFPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPYProtoEventSchedule, protoEventSchedules.cyclicPYProtoEventSchedule);
   });
 
   it('should initialize Asset with ContractType ANN', async () => {
@@ -70,10 +165,21 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
+    const protoEventSchedules = {
+      nonCyclicProtoEventSchedule: await this.ANNEngineInstance.computeNonCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 11),
+    };
+
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       terms,
+      protoEventSchedules,
       this.ANNEngineInstance.address
     );
 
@@ -81,6 +187,82 @@ contract('AssetActor', (accounts) => {
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(assetId));
+
+    const storedNonCyclicProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        i
+      );
+
+      storedNonCyclicProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicIPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        8,
+        i
+      );
+      
+      storedCyclicIPProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicPRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        15,
+        i
+      );
+      
+      storedCyclicPRProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicSCProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        19,
+        i
+      );
+      
+      storedCyclicSCProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicRRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        18,
+        i
+      );
+      
+      storedCyclicRRProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicFPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        4,
+        i
+      );
+      
+      storedCyclicFPProtoEventSchedule.push(protoEvent);
+    }
+
+    const storedCyclicPYProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        11,
+        i
+      );
+      
+      storedCyclicPYProtoEventSchedule.push(protoEvent);
+    }
 
     assert.deepEqual(storedTerms['contractDealDate'], terms['contractDealDate'].toString());
     assert.deepEqual(storedState, state);
@@ -90,5 +272,13 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);  
+
+    assert.deepEqual(storedNonCyclicProtoEventSchedule, protoEventSchedules.nonCyclicProtoEventSchedule);
+    assert.deepEqual(storedCyclicIPProtoEventSchedule, protoEventSchedules.cyclicIPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPRProtoEventSchedule, protoEventSchedules.cyclicPRProtoEventSchedule);
+    assert.deepEqual(storedCyclicSCProtoEventSchedule, protoEventSchedules.cyclicSCProtoEventSchedule);
+    assert.deepEqual(storedCyclicRRProtoEventSchedule, protoEventSchedules.cyclicRRProtoEventSchedule);
+    assert.deepEqual(storedCyclicFPProtoEventSchedule, protoEventSchedules.cyclicFPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPYProtoEventSchedule, protoEventSchedules.cyclicPYProtoEventSchedule);
   });
 });
