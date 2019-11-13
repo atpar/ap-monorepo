@@ -33,11 +33,11 @@ contract VerifyOrder is Definitions, SharedTypes {
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address engine,address actor,bytes32 termsHash,address makerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address engine,address actor,bytes32 termsHash,bytes32 protoEventSchedulesHash,address makerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(address maker,address taker,address engine,address actor,bytes32 termsHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
+		"Order(address maker,address taker,address engine,address actor,bytes32 termsHash,bytes32 protoEventSchedulesHash,address makerCreditEnhancement,address takerCreditEnhancement,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -73,6 +73,14 @@ contract VerifyOrder is Definitions, SharedTypes {
     return keccak256(abi.encode(terms));
   }
 
+	function hashProtoEventSchedules(ProtoEventSchedules memory protoEventSchedules)
+		internal
+		pure
+		returns (bytes32)
+	{
+		return keccak256(abi.encode(protoEventSchedules));
+	}
+
 	function hashUnfilledOrder(Order memory order)
 		internal
 		pure
@@ -84,6 +92,7 @@ contract VerifyOrder is Definitions, SharedTypes {
       order.engine,
 			order.actor,
 			hashTerms(order.terms),
+			hashProtoEventSchedules(order.protoEventSchedules),
       order.makerCreditEnhancement,
 			order.salt
 		));
@@ -101,6 +110,7 @@ contract VerifyOrder is Definitions, SharedTypes {
       order.engine,
 			order.actor,
 			hashTerms(order.terms),
+			hashProtoEventSchedules(order.protoEventSchedules),
       order.makerCreditEnhancement,
       order.takerCreditEnhancement,
 			order.salt
