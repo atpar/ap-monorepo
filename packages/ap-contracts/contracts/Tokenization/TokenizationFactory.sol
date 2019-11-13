@@ -11,17 +11,14 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 contract TokenizationFactory {
 
 	IAssetRegistry assetRegistry;
-	address paymentRouter;
 
 
 	event DeployedDistributor(address distributor, address creator);
 
 	constructor(
-		IAssetRegistry _assetRegistry,
-		address _paymentRouter
+		IAssetRegistry _assetRegistry
 	) public {
 		assetRegistry = _assetRegistry;
-		paymentRouter = _paymentRouter;
 	}
 
 	function createERC20Distributor(

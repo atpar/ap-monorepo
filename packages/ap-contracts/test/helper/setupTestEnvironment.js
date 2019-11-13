@@ -2,8 +2,6 @@ const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
 // const CEGEngine = artifacts.require('CEGEngine');
 const AssetRegistry = artifacts.require('AssetRegistry')
-const PaymentRegistry = artifacts.require('PaymentRegistry');
-const PaymentRouter = artifacts.require('PaymentRouter');
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const TokenizationFactory = artifacts.require('TokenizationFactory');
@@ -13,7 +11,6 @@ async function setupTestEnvironment () {
   const instances = {};
 
   PAMEngine.numberFormat = 'String';
-  PaymentRouter.numberFormat = 'String';
 
   // deploy ACTUS Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
@@ -22,15 +19,8 @@ async function setupTestEnvironment () {
   
   // deploy Core
   instances.AssetRegistryInstance = await AssetRegistry.new();
-  instances.PaymentRegistryInstance = await PaymentRegistry.new();
-  instances.PaymentRouterInstance = await PaymentRouter.new(
-    instances.AssetRegistryInstance.address, 
-    instances.PaymentRegistryInstance.address
-  );
   instances.AssetActorInstance = await AssetActor.new(
-    instances.AssetRegistryInstance.address,
-    instances.PaymentRegistryInstance.address,
-    instances.PaymentRouterInstance.address
+    instances.AssetRegistryInstance.address
   );
 
   // deploy Issuance
@@ -38,11 +28,8 @@ async function setupTestEnvironment () {
 
   // deploy Tokenization
   instances.TokenizationFactoryInstance = await TokenizationFactory.new(
-    instances.AssetRegistryInstance.address,
-    instances.PaymentRouterInstance.address
+    instances.AssetRegistryInstance.address
   );
-
-  await instances.PaymentRegistryInstance.setPaymentRouter(instances.PaymentRouterInstance.address);
 
   await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
 
