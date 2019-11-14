@@ -26,7 +26,7 @@ contract('AssetIssuer', (accounts) => {
       cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-  })
+  });
 
   it('should issue an asset from an order', async () => {
     const orderData = { 
@@ -36,8 +36,7 @@ contract('AssetIssuer', (accounts) => {
       actorAddress: this.AssetActorInstance.address,
       terms: this.lifecycleTerms,
       protoEventSchedules: this.protoEventSchedules,
-      makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
-      takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
+      
       signatures: { 
         makerSignature: null,
         takerSignature: null 
@@ -58,8 +57,7 @@ contract('AssetIssuer', (accounts) => {
       actor: orderData.actorAddress,
       terms: orderData.terms,
       protoEventSchedules: orderData.protoEventSchedules,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
-      takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
+      enhancements: [],
       salt: orderData.salt
     };
 
@@ -236,23 +234,29 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
         { name: 'verifyingContract', type: 'address' }
       ],
       Order: [
+        { name: 'termsHash', type: 'bytes32' },
+        { name: 'lifecycleTermsHash', type: 'bytes32' },
+        { name: 'protoEventSchedulesHash', type: 'bytes32' },
+        { name: 'expirationDate', type: 'uint256' },
         { name: 'maker', type: 'address' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
-        { name: 'termsHash', type: 'bytes32' },
-        { name: 'protoEventSchedulesHash', type: 'bytes32' },
-        { name: 'makerCreditEnhancement', type: 'address' },
+        { name: 'issuer', type: 'address' },
+        { name: 'unfilledEnhancementOrderHashes', type: 'bytes32[2]' },
         { name: 'salt', type: 'uint256' }
       ]
     },
     primaryType: 'Order',
     message: {
+      termsHash: contractTermsHash,
+      lifecycleTermsHash: lifecycleTermsHash,
+      protoEventSchedulesHash: protoEventSchedulesHash,
+      expirationDate: orderData.expirationDate,
       maker: orderData.makerAddress,
       engine: orderData.engineAddress,
       actor: orderData.actorAddress,
-      termsHash: contractTermsHash,
-      protoEventSchedulesHash: protoEventSchedulesHash,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
+      issuer: orderData.issuer,
+      unfilledEnhancementOrderHashes: unfilledEnhancementOrderHashes,
       salt: orderData.salt
     }
   };
@@ -263,7 +267,7 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
 const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
   const verifyingContract = verifyingContractAddress;
   
-  const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+  const termsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
     LifecycleTermsABI, _toTuple(orderData.terms)
   ));
   
@@ -303,33 +307,163 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
         { name: 'verifyingContract', type: 'address' }
       ],
       Order: [
+        { name: 'termsHash', type: 'bytes32' },
+        { name: 'lifecycleTermsHash', type: 'bytes32' },
+        { name: 'protoEventSchedulesHash', type: 'bytes32' },
+        { name: 'expirationDate', type: 'uint256' },
         { name: 'maker', type: 'address' },
         { name: 'taker', type: 'address' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
-        { name: 'termsHash', type: 'bytes32' },
-        { name: 'protoEventSchedulesHash', type: 'bytes32' },
-        { name: 'makerCreditEnhancement', type: 'address' },
-        { name: 'takerCreditEnhancement', type: 'address' },
+        { name: 'issuer', type: 'address' },
+        { name: 'filledEnhancementOrderHashes', type: 'bytes32[2]' },
         { name: 'salt', type: 'uint256' }
       ]
     },
     primaryType: 'Order',
     message: {
+      termsHash: termsHash,
+      lifecycleTermsHash: lifecycleTermsHash,
+      protoEventSchedulesHash: protoEventSchedulesHash,
+      expirationDate: expirationDate,
       maker: orderData.makerAddress,
       taker: orderData.takerAddress,
       engine: orderData.engineAddress,
       actor: orderData.actorAddress,
-      termsHash: contractTermsHash,
-      protoEventSchedulesHash: protoEventSchedulesHash,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
-      takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
+      issuer: orderData.issuerAddress,
+      filledEnhancementOrderHashes: filledEnhancementOrderHashes,
       salt: orderData.salt
     }
   };
 
   return typedData;
 };
+
+const getUnfilledEnhancementOrderAsTypedData = (enhancementOrderData) => {
+  const verifyingContract = verifyingContractAddress;
+  
+  const termsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+    LifecycleTermsABI, _toTuple(orderData.terms)
+  ));
+  
+  const protoEventSchedulesHash = web3.utils.keccak256(web3.eth.abi.encodeParameters(
+    [
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]',
+      'bytes32[64]',
+      'bytes32[64]'
+    ], 
+    [
+      enhancementOrderData.protoEventSchedules.nonCyclicProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicIPProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicPRProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicRRProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicPYProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicSCProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicFPProtoEventSchedule
+    ]
+  ));
+
+  const typedData = {
+    domain: {
+      name: 'ACTUS Protocol',
+      version: '1',
+      chainId: 0,
+      verifyingContract: verifyingContract
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' }
+      ],
+      Order: [
+        { name: 'termsHash', type: 'bytes32' },
+        { name: 'lifecycleTermsHash', type: 'bytes32' },
+        { name: 'protoEventSchedulesHash', type: 'bytes32' },
+        { name: 'salt', type: 'uint256' }
+      ]
+    },
+    primaryType: 'EnhancementOrder',
+    message: {
+      termsHash: termsHash,
+      lifecycleTermsHash: lifecycleTermsHash,
+      protoEventSchedulesHash: protoEventSchedulesHash,
+      salt: orderData.salt
+    }
+  };
+
+  return typedData;
+}
+
+const getFilledEnhancementOrderAsTypedData = (enhancementOrderData) => {
+  const verifyingContract = verifyingContractAddress;
+  
+  const termsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+    LifecycleTermsABI, _toTuple(orderData.terms)
+  ));
+  
+  const protoEventSchedulesHash = web3.utils.keccak256(web3.eth.abi.encodeParameters(
+    [
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]', 
+      'bytes32[64]',
+      'bytes32[64]',
+      'bytes32[64]'
+    ], 
+    [
+      enhancementOrderData.protoEventSchedules.nonCyclicProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicIPProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicPRProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicRRProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicPYProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicSCProtoEventSchedule,
+      enhancementOrderData.protoEventSchedules.cyclicFPProtoEventSchedule
+    ]
+  ));
+
+  const typedData = {
+    domain: {
+      name: 'ACTUS Protocol',
+      version: '1',
+      chainId: 0,
+      verifyingContract: verifyingContract
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' }
+      ],
+      Order: [
+        { name: 'termsHash', type: 'bytes32' },
+        { name: 'lifecycleTermsHash', type: 'bytes32' },
+        { name: 'protoEventSchedulesHash', type: 'bytes32' },
+        { name: 'maker', type: 'address' },
+        { name: 'taker', type: 'address' },
+        { name: 'salt', type: 'uint256' }
+      ]
+    },
+    primaryType: 'EnhancementOrder',
+    message: {
+      termsHash: termsHash,
+      lifecycleTermsHash: lifecycleTermsHash,
+      protoEventSchedulesHash: protoEventSchedulesHash,
+      maker: orderData.makerAddress,
+      taker: orderData.takerAddress,
+      salt: orderData.salt
+    }
+  };
+
+  return typedData;
+}
 
 const _toTuple = (obj) => {
   if (!(obj instanceof Object)) { return []; }
