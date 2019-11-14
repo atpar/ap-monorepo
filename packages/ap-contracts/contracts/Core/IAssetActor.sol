@@ -33,7 +33,7 @@ contract IAssetActor is Definitions, SharedTypes {
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		Terms memory terms,
+		LifecycleTerms memory terms,
 		ProtoEventSchedules memory protoEventSchedules,
 		address engine
 	)

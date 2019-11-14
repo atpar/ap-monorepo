@@ -25,7 +25,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 	function registerAsset(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		Terms memory terms,
+		LifecycleTerms memory terms,
 		State memory state,
 		ProtoEventSchedules memory protoEventSchedules,
     address engine,

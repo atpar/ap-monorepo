@@ -19,7 +19,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @return terms of the asset
 	 */
-	function getTerms(bytes32 assetId) external view returns (Terms memory) {
+	function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory) {
 		return decodeAndGetTerms(assetId);
 	}
 
@@ -100,7 +100,7 @@ contract Economics is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @param terms new terms of the asset
 	 */
-	function setTerms(bytes32 assetId, Terms memory terms) public onlyDesignatedActor (assetId) {
+	function setTerms(bytes32 assetId, LifecycleTerms memory terms) public onlyDesignatedActor (assetId) {
 		encodeAndSetTerms(assetId, terms);
 	}
 

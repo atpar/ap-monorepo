@@ -1,4 +1,5 @@
 const BigNumber = require('bignumber.js');
+const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
@@ -23,7 +24,9 @@ contract('TokenizationFactory', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
+    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
+    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -31,20 +34,20 @@ contract('TokenizationFactory', (accounts) => {
       counterpartyBeneficiary
     };
     this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 11),
+      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
 
     // register Ownership for assetId
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(assetId), 
       this.ownership,
-      this.terms,
+      this.lifecycleTerms,
       this.state,
       this.protoEventSchedules,
       this.PAMEngineInstance.address,

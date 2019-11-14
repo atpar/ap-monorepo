@@ -21,7 +21,7 @@ contract VerifyOrder is Definitions, SharedTypes {
     address payable taker;
     address engine;
     address actor;
-    Terms terms;
+    LifecycleTerms terms;
 		ProtoEventSchedules protoEventSchedules;
     address makerCreditEnhancement;
     address takerCreditEnhancement;
@@ -65,7 +65,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		));
 	}
 
-  function hashTerms(Terms memory terms)
+  function hashTerms(LifecycleTerms memory terms)
     internal
     pure
     returns (bytes32)

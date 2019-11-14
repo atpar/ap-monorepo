@@ -67,7 +67,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @return terms of the asset
 	 */
-	function getTerms(bytes32 assetId) external view returns (Terms memory);
+	function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory);
 
 	/**
 	 * returns the state of a registered asset
@@ -139,7 +139,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 * @param assetId id of the asset
 	 * @param terms new terms of the asset
 	 */
-	function setTerms(bytes32 assetId, Terms memory terms) public;
+	function setTerms(bytes32 assetId, LifecycleTerms memory terms) public;
 
 	/**
 	 * @param assetId id of the asset
@@ -167,7 +167,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 	function registerAsset(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		Terms memory terms,
+		LifecycleTerms memory terms,
 		State memory state,
 		ProtoEventSchedules memory protoEventSchedules,
     address engine,

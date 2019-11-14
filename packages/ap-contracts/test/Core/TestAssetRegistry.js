@@ -1,4 +1,5 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
+const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
@@ -24,7 +25,9 @@ contract('AssetRegistry', (accounts) => {
 
     this.assetId = 'C123';
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
+    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
+    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
@@ -32,13 +35,13 @@ contract('AssetRegistry', (accounts) => {
       counterpartyBeneficiary
     };
     this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 11),
+      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
   });
 
@@ -46,7 +49,7 @@ contract('AssetRegistry', (accounts) => {
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      this.terms,
+      this.lifecycleTerms,
       this.state,
       this.protoEventSchedules,
       this.PAMEngineInstance.address,
@@ -151,7 +154,7 @@ contract('AssetRegistry', (accounts) => {
       });
     }
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.terms)))
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.lifecycleTerms)));
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
     assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
@@ -173,7 +176,7 @@ contract('AssetRegistry', (accounts) => {
       this.AssetRegistryInstance.registerAsset(
         web3.utils.toHex(this.assetId),
         this.ownership,
-        this.terms,
+        this.lifecycleTerms,
         this.state,
         this.protoEventSchedules,
         this.PAMEngineInstance.address,
@@ -186,7 +189,7 @@ contract('AssetRegistry', (accounts) => {
   it('should let the actor overwrite and update the terms, state of an asset', async () => {
     await this.AssetRegistryInstance.setTerms(
       web3.utils.toHex(this.assetId), 
-      this.terms,
+      this.lifecycleTerms,
       { from: actor }
     );
 
@@ -201,7 +204,7 @@ contract('AssetRegistry', (accounts) => {
     await shouldFail.reverting.withMessage(
       this.AssetRegistryInstance.setTerms(
         web3.utils.toHex(this.assetId), 
-        this.terms,
+        this.lifecycleTerms,
       ),
       'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
     );

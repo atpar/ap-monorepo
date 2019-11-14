@@ -1,4 +1,5 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
+const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol');
 
@@ -13,15 +14,17 @@ contract('AssetIssuer', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.terms = await getDefaultTerms();
+    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
+    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
     this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 11),
+      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
   })
 
@@ -31,7 +34,7 @@ contract('AssetIssuer', (accounts) => {
       takerAddress: counterparty,
       engineAddress: this.PAMEngineInstance.address,
       actorAddress: this.AssetActorInstance.address,
-      terms: this.terms,
+      terms: this.lifecycleTerms,
       protoEventSchedules: this.protoEventSchedules,
       makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
       takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
@@ -153,7 +156,7 @@ contract('AssetIssuer', (accounts) => {
       storedCyclicPYProtoEventSchedule.push(protoEvent);
     }
 
-    assert.equal(storedTerms['statusDate'], orderData.terms['statusDate']);
+    assert.equal(storedTerms['initialExchangeDate'], orderData.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress, orderData.engineAddress);
     assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
@@ -194,7 +197,7 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
   const verifyingContract = verifyingContractAddress;
 
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
-    ContractTermsABI, _toTuple(orderData.terms)
+    LifecycleTermsABI, _toTuple(orderData.terms)
   ));
 
   const protoEventSchedulesHash = web3.utils.keccak256(web3.eth.abi.encodeParameters(
@@ -261,7 +264,7 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
   const verifyingContract = verifyingContractAddress;
   
   const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
-    ContractTermsABI, _toTuple(orderData.terms)
+    LifecycleTermsABI, _toTuple(orderData.terms)
   ));
   
   const protoEventSchedulesHash = web3.utils.keccak256(web3.eth.abi.encodeParameters(
@@ -351,12 +354,8 @@ const _toTuple = (obj) => {
   return output;
 };
 
-const ContractTermsABI = {
+const LifecycleTermsABI = {
   "components": [
-    {
-      "name": "contractType",
-      "type": "uint8"
-    },
     {
       "name": "calendar",
       "type": "uint8"
@@ -364,14 +363,6 @@ const ContractTermsABI = {
     {
       "name": "contractRole",
       "type": "uint8"
-    },
-    {
-      "name": "creatorID",
-      "type": "bytes32"
-    },
-    {
-      "name": "counterpartyID",
-      "type": "bytes32"
     },
     {
       "name": "dayCountConvention",
@@ -424,10 +415,6 @@ const ContractTermsABI = {
       "type": "tuple"
     },
     {
-      "name": "contractDealDate",
-      "type": "uint256"
-    },
-    {
       "name": "statusDate",
       "type": "uint256"
     },
@@ -448,27 +435,7 @@ const ContractTermsABI = {
       "type": "uint256"
     },
     {
-      "name": "capitalizationEndDate",
-      "type": "uint256"
-    },
-    {
       "name": "cycleAnchorDateOfInterestPayment",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfRateReset",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfScalingIndex",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfFee",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfPrincipalRedemption",
       "type": "uint256"
     },
     {
@@ -485,10 +452,6 @@ const ContractTermsABI = {
     },
     {
       "name": "accruedInterest",
-      "type": "int256"
-    },
-    {
-      "name": "rateMultiplier",
       "type": "int256"
     },
     {
@@ -522,116 +485,6 @@ const ContractTermsABI = {
     {
       "name": "coverageOfCreditEnhancement",
       "type": "int256"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfInterestPayment",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfRateReset",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfScalingIndex",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfFee",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfPrincipalRedemption",
-      "type": "tuple"
     },
     {
       "components": [
@@ -686,6 +539,6 @@ const ContractTermsABI = {
       "type": "int256"
     }
   ],
-  "name": "contractTerms",
+  "name": "terms",
   "type": "tuple"
 };

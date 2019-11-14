@@ -1,10 +1,11 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
+const { getTestCases } = require('actus-solidity/test/helper/tests');
+const { parseTermsToGeneratingTerms, parseTermsToLifecycleTerms } = require('actus-solidity/test/helper/parser');
 
 const AssetActor = artifacts.require('AssetActor');
 
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
-const { getTestCases } = require('actus-solidity/test/helper/tests');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
 
 
@@ -31,6 +32,8 @@ contract('AssetActor', (accounts) => {
   it('should initialize Asset with ContractType PAM', async () => {
     const assetId = 'PAM123';
     const terms = (await getTestCases('PAM'))['10001']['terms'];
+    const generatingTerms = parseTermsToGeneratingTerms(terms);
+    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
     const state = await this.PAMEngineInstance.computeInitialState(terms);
     const ownership = {
       recordCreatorObligor, 
@@ -39,19 +42,19 @@ contract('AssetActor', (accounts) => {
       counterpartyBeneficiary
     };
     const protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 11),
+      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
-      terms,
+      lifecycleTerms,
       protoEventSchedules,
       this.PAMEngineInstance.address
     );
@@ -137,7 +140,7 @@ contract('AssetActor', (accounts) => {
       storedCyclicPYProtoEventSchedule.push(protoEvent);
     }
     
-    assert.deepEqual(storedTerms['contractDealDate'], terms['contractDealDate'].toString());
+    assert.deepEqual(storedTerms['initialExchangeDate'], lifecycleTerms['initialExchangeDate'].toString());
     assert.deepEqual(storedState, state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
 
@@ -158,6 +161,8 @@ contract('AssetActor', (accounts) => {
   it('should initialize Asset with ContractType ANN', async () => {
     const assetId = 'ANN123';
     const terms = (await getTestCases('ANN'))['20001']['terms'];
+    const generatingTerms = parseTermsToGeneratingTerms(terms);
+    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
     const state = await this.ANNEngineInstance.computeInitialState(terms);
     const ownership = {
       recordCreatorObligor, 
@@ -166,19 +171,19 @@ contract('AssetActor', (accounts) => {
       counterpartyBeneficiary
     };
     const protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.ANNEngineInstance.computeNonCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(terms, terms.contractDealDate, terms.maturityDate, 11),
+      nonCyclicProtoEventSchedule: await this.ANNEngineInstance.computeNonCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
+      cyclicIPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
+      cyclicPRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
+      cyclicSCProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
+      cyclicRRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
+      cyclicFPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
+      cyclicPYProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
-      terms,
+      lifecycleTerms,
       protoEventSchedules,
       this.ANNEngineInstance.address
     );
@@ -264,7 +269,7 @@ contract('AssetActor', (accounts) => {
       storedCyclicPYProtoEventSchedule.push(protoEvent);
     }
 
-    assert.deepEqual(storedTerms['contractDealDate'], terms['contractDealDate'].toString());
+    assert.deepEqual(storedTerms['initialExchangeDate'], lifecycleTerms['initialExchangeDate'].toString());
     assert.deepEqual(storedState, state);
     assert.deepEqual(storedEngineAddress, this.ANNEngineInstance.address);
 

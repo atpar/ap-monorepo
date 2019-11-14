@@ -52,7 +52,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	function progress(bytes32 assetId)
 		public
 	{
-		Terms memory terms = assetRegistry.getTerms(assetId);
+		LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
 		State memory state = assetRegistry.getState(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
@@ -100,7 +100,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		Terms memory terms,
+		LifecycleTerms memory terms,
 		ProtoEventSchedules memory protoEventSchedules,
 		address engineAddress
 	)
@@ -136,7 +136,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 */
 	function getNextProtoEvent(
 		bytes32 assetId,
-		Terms memory terms
+		LifecycleTerms memory terms
 	)
 		public
 		view
@@ -212,7 +212,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 underlyingAssetId = terms.contractStructure.object;
 		if (underlyingAssetId != bytes32(0)) {
 			State memory underlyingState = assetRegistry.getState(underlyingAssetId);
-			Terms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+			LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
 
 			require(
 				underlyingState.lastEventTime != uint256(0),
