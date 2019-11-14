@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
-const { decodeProtoEvent, removeNullProtoEvents, sortProtoEvents } = require('actus-solidity/test/helper/schedule');
+// const { decodeProtoEvent, removeNullProtoEvents, sortProtoEvents } = require('actus-solidity/test/helper/schedule');
 
 const AssetActor = artifacts.require('AssetActor');
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
@@ -9,13 +9,12 @@ const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEn
 const { 
   createSnapshot, 
   revertToSnapshot, 
-  mineBlock,
-  getLatestBlockTimestamp
+  mineBlock
 } = require('../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {
-  const issuer = accounts[0];
+
   const recordCreatorObligor = accounts[1];
   const recordCreatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
@@ -28,12 +27,12 @@ contract('AssetActor', (accounts) => {
     return await this.PAMEngineInstance.computeEventTimeForProtoEvent(protoEvent, terms);
   }
 
-  const computeEventId = async (protoEvent, terms) => {
-    const  { eventType, scheduleTime } = decodeProtoEvent(protoEvent);
-    const epochOffset = await this.PAMEngineInstance.getEpochOffset(eventType);
+  // const computeEventId = async (protoEvent, terms) => {
+  //   const  { eventType, scheduleTime } = decodeProtoEvent(protoEvent);
+  //   const epochOffset = await this.PAMEngineInstance.getEpochOffset(eventType);
 
-    return web3.utils.soliditySha3(eventType, Number(scheduleTime) + Number(epochOffset));
-  }
+  //   return web3.utils.soliditySha3(eventType, Number(scheduleTime) + Number(epochOffset));
+  // }
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -65,6 +64,8 @@ contract('AssetActor', (accounts) => {
 
     // deploy test ERC20 token
     this.PaymentTokenInstance = await ERC20SampleToken.new({ from: recordCreatorObligor });
+
+    this.terms.currency = this.PaymentTokenInstance.address;
 
     snapshot = await createSnapshot();
   });
@@ -125,7 +126,6 @@ contract('AssetActor', (accounts) => {
 
   it('should process next state with contract status equal to PF', async () => {
     const protoEvent = await this.AssetActorInstance.getNextProtoEvent(web3.utils.toHex(this.assetId), this.terms);
-    const { eventType } = decodeProtoEvent(protoEvent);
     const eventTime = await getEventTime(protoEvent, this.terms);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForProtoEvent(
@@ -135,30 +135,21 @@ contract('AssetActor', (accounts) => {
       eventTime
     ));
 
-    const cashflowId = (payoff.isGreaterThan(0)) ? Number(eventType) + 1 : (Number(eventType) + 1) * -1;
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
-    const eventId = await computeEventId(protoEvent, this.terms);
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.approve(
-      this.PaymentRouterInstance.address, 
+      this.AssetActorInstance.address, 
       value,
       { from: recordCreatorObligor }
     );
 
-    // settle obligations
-    await this.PaymentRouterInstance.settlePayment(
-      web3.utils.toHex(this.assetId),
-      cashflowId,
-      eventId,
-      this.PaymentTokenInstance.address,
-      value,
-      { from: recordCreatorObligor }
-    );
-
-    // // progress asset state
+    // settle and progress asset state
     await mineBlock(eventTime);
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash } = await this.AssetActorInstance.progress(
+      web3.utils.toHex(this.assetId), 
+      { from: recordCreatorObligor }
+    );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
     );

@@ -7,17 +7,14 @@ import "actus-solidity/contracts/Core/Core.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
+import "./PaymentRouter.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
-import "./IPaymentRegistry.sol";
-import "./IPaymentRouter.sol";
 
 
 contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
-	IPaymentRegistry paymentRegistry;
-	IPaymentRouter paymentRouter;
 
 	mapping(address => bool) public issuers;
 
@@ -30,16 +27,10 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		_;
 	}
 
-	constructor (
-		IAssetRegistry _assetRegistry,
-		IPaymentRegistry _paymentRegistry,
-		IPaymentRouter _paymentRouter
-	)
+	constructor (IAssetRegistry _assetRegistry)
 		public
 	{
 		assetRegistry = _assetRegistry;
-		paymentRegistry = _paymentRegistry;
-		paymentRouter = _paymentRouter;
 	}
 
 	/**
@@ -60,7 +51,6 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 */
 	function progress(bytes32 assetId)
 		public
-		returns(bool)
 	{
 		Terms memory terms = assetRegistry.getTerms(assetId);
 		State memory state = assetRegistry.getState(assetId);
@@ -78,9 +68,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		int256 payoff = IEngine(engineAddress).computePayoffForProtoEvent(terms, state, protoEvent, block.timestamp);
 		state = IEngine(engineAddress).computeStateForProtoEvent(terms, state, protoEvent, block.timestamp);
 
-		// evaluate fulfillment of obligaitons
 		if (
-			paymentRegistry.getPayoffBalance(assetId, eventId) < ((payoff < 0) ? uint256(payoff * -1) : uint256(payoff))
+			(settlePayoffForProtoEvent(assetId, protoEvent, payoff, terms.currency) == false)
 			&& state.contractPerformance == ContractPerformance.PF
 		) {
 			assetRegistry.setFinalizedState(assetId, state);
@@ -96,8 +85,6 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		assetRegistry.setState(assetId, state);
 
 		emit AssetProgressed(assetId, eventId);
-
-		return(true);
 	}
 
 	/**
@@ -138,7 +125,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			address(this)
 		);
 
-		return(true);
+		return true;
 	}
 
 	/**
@@ -246,5 +233,58 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		}
 
 		return nextProtoEvent;
+	}
+
+	/**
+	 * routes a payment to the designated beneficiary and
+	 * registers that the payment was made in the payment registry
+	 * @dev checks if an owner of the specified cashflowId is set,
+	 * if not it sends funds to the default beneficiary
+	 * @param assetId id of the asset which the payment relates to
+	 * @param protoEvent protoEvent to settle the payoff for
+	 * @param payoff payoff of the ProtoEvent
+	 * @param token address of the token to transfer
+	 */
+	function settlePayoffForProtoEvent(
+		bytes32 assetId,
+		bytes32 protoEvent,
+		int256 payoff,
+		address token
+	)
+		internal
+		returns (bool)
+	{
+		require(
+			assetId != bytes32(0) && protoEvent != bytes32(0) && token != address(0),
+			"AssetActor.settlePayoffForProtoEvent: INVALID_FUNCTION_PARAMETERS"
+		);
+
+		if (payoff == 0) {
+			return true;
+		}
+
+		(EventType eventType, ) = decodeProtoEvent(protoEvent);
+		int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
+		address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
+		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
+		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
+
+		if (payoff > 0) {
+			if (msg.sender != ownership.counterpartyObligor) {
+				return false;
+			}
+			if (payee == address(0)) {
+				payee = ownership.recordCreatorBeneficiary;
+			}
+		} else {
+			if (msg.sender != ownership.recordCreatorObligor) {
+				return false;
+			}
+			if (payee == address(0)) {
+				payee = ownership.counterpartyBeneficiary;
+			}
+		}
+
+		return IERC20(token).transferFrom(msg.sender, payee, amount);
 	}
 }
