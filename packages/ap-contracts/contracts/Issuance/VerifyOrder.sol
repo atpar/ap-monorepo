@@ -36,7 +36,6 @@ contract VerifyOrder is Definitions, SharedTypes {
     address taker;
     address engine;
     address actor;
-		address issuer;
 		EnhancementOrder enhancementOrder_1;
 		EnhancementOrder enhancementOrder_2;
 		bytes makerSignature;
@@ -62,11 +61,11 @@ contract VerifyOrder is Definitions, SharedTypes {
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address engine,address actor,address issuer,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address taker,address engine,address actor,address issuer,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address taker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -169,7 +168,6 @@ contract VerifyOrder is Definitions, SharedTypes {
 			order.maker,
       order.engine,
 			order.actor,
-			order.issuer,
 			hashDraftEnhancementOrder(order.enhancementOrder_1),
 			hashDraftEnhancementOrder(order.enhancementOrder_2),
 			order.salt
@@ -191,7 +189,6 @@ contract VerifyOrder is Definitions, SharedTypes {
 			order.taker,
       order.engine,
 			order.actor,
-			order.issuer,
 			hashDraftEnhancementOrder(order.enhancementOrder_1),
 			hashDraftEnhancementOrder(order.enhancementOrder_2),
 			order.salt
@@ -216,14 +213,14 @@ contract VerifyOrder is Definitions, SharedTypes {
 			DOMAIN_SEPARATOR,
 			hashUnfilledOrder(order)
 		));
-		// bytes32 takerOrderDigest = keccak256(abi.encodePacked(
-		// 	"\x19\x01",
-		// 	DOMAIN_SEPARATOR,
-		// 	hashFilledOrder(order)
-		// ));
+		bytes32 takerOrderDigest = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashFilledOrder(order)
+		));
 
 		if (ECDSA.recover(makerOrderDigest, order.makerSignature) != order.maker) { return false; }
-		// if (ECDSA.recover(takerOrderDigest, order.takerSignature) != order.taker) { return false; }
+		if (ECDSA.recover(takerOrderDigest, order.takerSignature) != order.taker) { return false; }
 
 		// // verify signature of first Enhancement Order
 		// bytes32 makerEnhancementOrderDigest_1 = keccak256(abi.encodePacked(

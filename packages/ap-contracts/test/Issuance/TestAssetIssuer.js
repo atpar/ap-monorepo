@@ -41,7 +41,6 @@ contract('AssetIssuer', (accounts) => {
       taker: counterparty,
       engine: this.PAMEngineInstance.address,
       actor: this.AssetActorInstance.address,
-      issuer: this.AssetIssuerInstance.address,
       enhancementOrder_1: {
         termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
         terms: this.lifecycleTerms,
@@ -88,108 +87,108 @@ contract('AssetIssuer', (accounts) => {
 
     const { tx: txHash } = await this.AssetIssuerInstance.issueFromOrder(orderData);
 
-  //   const assetId = getAssetIdFromOrderData(orderData);
+    const assetId = getAssetIdFromOrderData(orderData);
 
-  //   const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
-  //   const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
-  //   const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
     
-  //   const storedNonCyclicProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       i
-  //     );
+    const storedNonCyclicProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        i
+      );
 
-  //     storedNonCyclicProtoEventSchedule.push(protoEvent);
-  //   }
+      storedNonCyclicProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicIPProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       8,
-  //       i
-  //     );
+    const storedCyclicIPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        8,
+        i
+      );
       
-  //     storedCyclicIPProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicIPProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicPRProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       15,
-  //       i
-  //     );
+    const storedCyclicPRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        15,
+        i
+      );
       
-  //     storedCyclicPRProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicPRProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicSCProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       19,
-  //       i
-  //     );
+    const storedCyclicSCProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        19,
+        i
+      );
       
-  //     storedCyclicSCProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicSCProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicRRProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       18,
-  //       i
-  //     );
+    const storedCyclicRRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        18,
+        i
+      );
       
-  //     storedCyclicRRProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicRRProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicFPProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       4,
-  //       i
-  //     );
+    const storedCyclicFPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        4,
+        i
+      );
       
-  //     storedCyclicFPProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicFPProtoEventSchedule.push(protoEvent);
+    }
 
-  //   const storedCyclicPYProtoEventSchedule = [];
-  //   for (let i = 0; i < 64; i++) {
-  //     const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-  //       web3.utils.toHex(assetId),
-  //       11,
-  //       i
-  //     );
+    const storedCyclicPYProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        11,
+        i
+      );
       
-  //     storedCyclicPYProtoEventSchedule.push(protoEvent);
-  //   }
+      storedCyclicPYProtoEventSchedule.push(protoEvent);
+    }
 
-  //   assert.equal(storedTerms['initialExchangeDate'], orderData.terms['initialExchangeDate']);
-  //   assert.equal(storedEngineAddress, orderData.engineAddress);
-  //   assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
-  //   assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
-  //   assert.equal(storedOwnership.counterpartyObligor, counterparty);
-  //   assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
+    assert.equal(storedTerms['initialExchangeDate'], orderData.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress, orderData.engine);
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    assert.equal(storedOwnership.counterpartyObligor, counterparty);
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
 
-  //   assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicPRProtoEventSchedule, this.protoEventSchedules.cyclicPRProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicSCProtoEventSchedule, this.protoEventSchedules.cyclicSCProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicRRProtoEventSchedule, this.protoEventSchedules.cyclicRRProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicFPProtoEventSchedule, this.protoEventSchedules.cyclicFPProtoEventSchedule);
-  //   assert.deepEqual(storedCyclicPYProtoEventSchedule, this.protoEventSchedules.cyclicPYProtoEventSchedule);
+    assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
+    assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPRProtoEventSchedule, this.protoEventSchedules.cyclicPRProtoEventSchedule);
+    assert.deepEqual(storedCyclicSCProtoEventSchedule, this.protoEventSchedules.cyclicSCProtoEventSchedule);
+    assert.deepEqual(storedCyclicRRProtoEventSchedule, this.protoEventSchedules.cyclicRRProtoEventSchedule);
+    assert.deepEqual(storedCyclicFPProtoEventSchedule, this.protoEventSchedules.cyclicFPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPYProtoEventSchedule, this.protoEventSchedules.cyclicPYProtoEventSchedule);
 
-  //   await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
-  //     assetId: assetId,
-  //     recordCreator: recordCreator,
-  //     counterparty: counterparty
-  //   });
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+      assetId: assetId,
+      recordCreator: recordCreator,
+      counterparty: counterparty
+    });
   });
 });
 
@@ -211,7 +210,7 @@ const getAssetIdFromOrderData = (orderData) => {
   return web3.utils.keccak256(
     web3.eth.abi.encodeParameters(
       ['bytes', 'bytes'],
-      [orderData.signatures.makerSignature, orderData.signatures.takerSignature]
+      [orderData.makerSignature, orderData.takerSignature]
     )
   );
 };
@@ -244,7 +243,6 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
         { name: 'maker', type: 'address' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
-        { name: 'issuer', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
         { name: 'enhancementOrderHash_2', type: 'bytes32' },
         { name: 'salt', type: 'uint256' }
@@ -259,7 +257,6 @@ const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) =>
       maker: orderData.maker,
       engine: orderData.engine,
       actor: orderData.actor,
-      issuer: orderData.issuer,
       enhancementOrderHash_1: enhancementOrderHash_1,
       enhancementOrderHash_2: enhancementOrderHash_2,
       salt: orderData.salt
@@ -299,7 +296,6 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
         { name: 'taker', type: 'address' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
-        { name: 'issuer', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
         { name: 'enhancementOrderHash_2', type: 'bytes32' },
         { name: 'salt', type: 'uint256' }
@@ -307,7 +303,7 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
     },
     primaryType: 'Order',
     message: {
-      termsHash,
+      termsHash: orderData.termsHash,
       lifecycleTermsHash: termsHash,
       protoEventSchedulesHash,
       expirationDate: orderData.expirationDate,
@@ -315,7 +311,6 @@ const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
       taker: orderData.taker,
       engine: orderData.engine,
       actor: orderData.actor,
-      issuer: orderData.issuer,
       enhancementOrderHash_1: enhancementOrderHash_1,
       enhancementOrderHash_2: enhancementOrderHash_2,
       salt: orderData.salt
