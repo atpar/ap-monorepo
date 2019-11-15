@@ -46,7 +46,6 @@
     "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
     "eth-gas-reporter": "^0.2.11",
-    "eth-sig-util": "2.1.1",
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",

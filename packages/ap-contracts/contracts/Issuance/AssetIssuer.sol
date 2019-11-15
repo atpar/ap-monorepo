@@ -34,13 +34,13 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 			"AssetIssuer.issueFromOrder: Could not issue asset"
 		);
 
-		if (order.enhancements[0].termsHash != bytes32(0)) {
+		if (order.enhancementOrder_1.termsHash != bytes32(0)) {
 			require(
 				issueAsset(
-					keccak256(abi.encode(order.enhancements[0].makerSignature, order.enhancements[0].takerSignature)),
-					AssetOwnership(order.enhancements[0].maker, order.enhancements[0].maker, order.enhancements[0].taker, order.enhancements[0].taker),
-					order.enhancements[0].terms,
-					order.enhancements[0].protoEventSchedules,
+					keccak256(abi.encode(order.enhancementOrder_1.makerSignature, order.enhancementOrder_1.takerSignature)),
+					AssetOwnership(order.enhancementOrder_1.maker, order.enhancementOrder_1.maker, order.enhancementOrder_1.taker, order.enhancementOrder_1.taker),
+					order.enhancementOrder_1.terms,
+					order.enhancementOrder_1.protoEventSchedules,
 					order.actor,
 					order.engine
 				),
@@ -48,13 +48,13 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 			);
 		}
 
-		if (order.enhancements[1].termsHash != bytes32(0)) {
+		if (order.enhancementOrder_2.termsHash != bytes32(0)) {
 			require(
 				issueAsset(
-					keccak256(abi.encode(order.enhancements[1].makerSignature, order.enhancements[1].takerSignature)),
-					AssetOwnership(order.enhancements[1].maker, order.enhancements[1].maker, order.enhancements[1].taker, order.enhancements[1].taker),
-					order.enhancements[1].terms,
-					order.enhancements[1].protoEventSchedules,
+					keccak256(abi.encode(order.enhancementOrder_2.makerSignature, order.enhancementOrder_2.takerSignature)),
+					AssetOwnership(order.enhancementOrder_2.maker, order.enhancementOrder_2.maker, order.enhancementOrder_2.taker, order.enhancementOrder_2.taker),
+					order.enhancementOrder_2.terms,
+					order.enhancementOrder_2.protoEventSchedules,
 					order.actor,
 					order.engine
 				),

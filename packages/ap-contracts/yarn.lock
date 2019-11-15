@@ -1537,10 +1537,10 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
-eth-sig-util@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.1.1.tgz#4459ee4dd59091754b50410c9ca6c70fb339f59f"
-  integrity sha512-B9VA2WCuf+dp0UbWlzsCXWcryZe1H9PixrNmG+tQDBpyTiIbDvf2w8jUb1BNPbxFXeWHUcr2I6pmg+MkdA4Ovg==
+eth-sig-util@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.5.0.tgz#1018cf8bef2fe275ecbd526cf3248757b0880053"
+  integrity sha512-ahApxr+e1cls/GwcFSGsgRLrMqG6D6cBnK9CRHhx97O/s9ow+URIxbPvov8jfE70ZnNBdHMircoSCpi1b4QHjA==
   dependencies:
     buffer "^5.2.1"
     elliptic "^6.4.0"
