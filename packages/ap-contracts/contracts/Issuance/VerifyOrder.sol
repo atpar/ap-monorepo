@@ -22,6 +22,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		ProtoEventSchedules protoEventSchedules;
 		address maker;
     address taker;
+		address engine;
 		bytes makerSignature;
 		bytes takerSignature;
 		uint256 salt;
@@ -49,15 +50,15 @@ contract VerifyOrder is Definitions, SharedTypes {
 
 	// signed by the maker of the Order which includes the Enhancement Order
 	bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,address taker,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,address taker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
@@ -119,6 +120,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			enhancementOrder.termsHash,
 			hashTerms(enhancementOrder.terms),
 			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
+			enhancementOrder.engine,
 			enhancementOrder.salt
 		));
 	}
@@ -134,6 +136,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			hashTerms(enhancementOrder.terms),
 			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
 			enhancementOrder.maker,
+			enhancementOrder.engine,
 			enhancementOrder.salt
 		));
 	}
@@ -144,12 +147,13 @@ contract VerifyOrder is Definitions, SharedTypes {
 		returns (bytes32)
 	{
 		return keccak256(abi.encode(
-			UNFILLED_ENHANCEMENT_ORDER_TYPEHASH,
+			FILLED_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
 			hashTerms(enhancementOrder.terms),
 			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
 			enhancementOrder.maker,
 			enhancementOrder.taker,
+			enhancementOrder.engine,
 			enhancementOrder.salt
 		));
 	}
@@ -222,35 +226,35 @@ contract VerifyOrder is Definitions, SharedTypes {
 		if (ECDSA.recover(makerOrderDigest, order.makerSignature) != order.maker) { return false; }
 		if (ECDSA.recover(takerOrderDigest, order.takerSignature) != order.taker) { return false; }
 
-		// // verify signature of first Enhancement Order
-		// bytes32 makerEnhancementOrderDigest_1 = keccak256(abi.encodePacked(
-		// 	"\x19\x01",
-		// 	DOMAIN_SEPARATOR,
-		// 	hashUnfilledEnhancementOrder(order.enhancements[0])
-		// ));
-		// bytes32 takerEnhancementOrderDigest_1 = keccak256(abi.encodePacked(
-		// 	"\x19\x01",
-		// 	DOMAIN_SEPARATOR,
-		// 	hashFilledEnhancementOrder(order.enhancements[0])
-		// ));
+		// verify signature of first Enhancement Order
+		bytes32 makerEnhancementOrderDigest_1 = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashUnfilledEnhancementOrder(order.enhancementOrder_1)
+		));
+		bytes32 takerEnhancementOrderDigest_1 = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashFilledEnhancementOrder(order.enhancementOrder_1)
+		));
 
-		// if (ECDSA.recover(makerEnhancementOrderDigest_1, order.enhancements[0].makerSignature) != order.enhancements[0].maker) { return false; }
-		// if (ECDSA.recover(takerEnhancementOrderDigest_1, order.enhancements[0].takerSignature) != order.enhancements[0].taker) { return false; }
+		if (ECDSA.recover(makerEnhancementOrderDigest_1, order.enhancementOrder_1.makerSignature) != order.enhancementOrder_1.maker) { return false; }
+		if (ECDSA.recover(takerEnhancementOrderDigest_1, order.enhancementOrder_1.takerSignature) != order.enhancementOrder_1.taker) { return false; }
 
 		// // verify signature of second Enhancement Order
-		// bytes32 makerEnhancementOrderDigest_2 = keccak256(abi.encodePacked(
-		// 	"\x19\x01",
-		// 	DOMAIN_SEPARATOR,
-		// 	hashUnfilledEnhancementOrder(order.enhancements[1])
-		// ));
-		// bytes32 takerEnhancementOrderDigest_2 = keccak256(abi.encodePacked(
-		// 	"\x19\x01",
-		// 	DOMAIN_SEPARATOR,
-		// 	hashFilledEnhancementOrder(order.enhancements[1])
-		// ));
+		bytes32 makerEnhancementOrderDigest_2 = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashUnfilledEnhancementOrder(order.enhancementOrder_2)
+		));
+		bytes32 takerEnhancementOrderDigest_2 = keccak256(abi.encodePacked(
+			"\x19\x01",
+			DOMAIN_SEPARATOR,
+			hashFilledEnhancementOrder(order.enhancementOrder_2)
+		));
 
-		// if (ECDSA.recover(makerEnhancementOrderDigest_2, order.enhancements[1].makerSignature) != order.enhancements[1].maker) { return false; }
-		// if (ECDSA.recover(takerEnhancementOrderDigest_2, order.enhancements[1].takerSignature) != order.enhancements[1].taker) { return false; }
+		if (ECDSA.recover(makerEnhancementOrderDigest_2, order.enhancementOrder_2.makerSignature) != order.enhancementOrder_2.maker) { return false; }
+		if (ECDSA.recover(takerEnhancementOrderDigest_2, order.enhancementOrder_2.takerSignature) != order.enhancementOrder_2.taker) { return false; }
 
     return true;
 	}

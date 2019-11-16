@@ -11,6 +11,8 @@ const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEn
 contract('AssetIssuer', (accounts) => {
   const recordCreator = accounts[0];
   const counterparty = accounts[1];
+  const guarantor = accounts[2];
+  const guarantor_2 = accounts[3];
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -33,7 +35,7 @@ contract('AssetIssuer', (accounts) => {
 
   it('should issue an asset from an order (without enhancement orders)', async () => {
     const orderData = { 
-      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000001',
       terms: this.lifecycleTerms,
       protoEventSchedules: this.protoEventSchedules,
       expirationDate: '11100000000',
@@ -47,6 +49,7 @@ contract('AssetIssuer', (accounts) => {
         protoEventSchedules: this.protoEventSchedules,
         maker: '0x0000000000000000000000000000000000000000',
         taker: '0x0000000000000000000000000000000000000000',
+        engine: '0x0000000000000000000000000000000000000000',
         makerSignature: '0x0',
         takerSignature: '0x0',
         salt: 0
@@ -57,6 +60,7 @@ contract('AssetIssuer', (accounts) => {
         protoEventSchedules: this.protoEventSchedules,
         maker: '0x0000000000000000000000000000000000000000',
         taker: '0x0000000000000000000000000000000000000000',
+        engine: '0x0000000000000000000000000000000000000000',
         makerSignature: '0x0',
         takerSignature: '0x0',
         salt: 0
@@ -190,6 +194,207 @@ contract('AssetIssuer', (accounts) => {
       counterparty: counterparty
     });
   });
+
+  it('should issue an asset from an order (with enhancement orders)', async () => {
+    const orderData = { 
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      terms: this.lifecycleTerms,
+      protoEventSchedules: this.protoEventSchedules,
+      expirationDate: '11100000000',
+      maker: recordCreator,
+      taker: counterparty,
+      engine: this.PAMEngineInstance.address,
+      actor: this.AssetActorInstance.address,
+      enhancementOrder_1: {
+        termsHash: '0x0000000000000000000000000000000000000000000000000000000000000002',
+        terms: this.lifecycleTerms,
+        protoEventSchedules: this.protoEventSchedules,
+        maker: counterparty,
+        taker: guarantor,
+        engine: this.PAMEngineInstance.address,
+        makerSignature: null,
+        takerSignature: null,
+        salt: Math.floor(Math.random() * 1000000)
+      },
+      enhancementOrder_2: {
+        termsHash: '0x0000000000000000000000000000000000000000000000000000000000000003',
+        terms: this.lifecycleTerms,
+        protoEventSchedules: this.protoEventSchedules,
+        maker: counterparty,
+        taker: guarantor_2,
+        engine: this.PAMEngineInstance.address,
+        makerSignature: null,
+        takerSignature: null,
+        salt: Math.floor(Math.random() * 1000000)
+      },
+      makerSignature: null,
+      takerSignature: null,
+      salt: Math.floor(Math.random() * 1000000)
+    };
+    
+    // sign order
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator);
+    orderData.takerSignature = await sign(filledOrderAsTypedData, counterparty);
+  
+    // sign enhancement order 1
+    const unfilledEnhancementOrderAsTypedData_1 = getUnfilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_1, this.AssetIssuerInstance.address);
+    const filledEnhancementOrderAsTypedData_1 = getFilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_1, this.AssetIssuerInstance.address);
+    orderData.enhancementOrder_1.makerSignature = await sign(unfilledEnhancementOrderAsTypedData_1, counterparty);
+    orderData.enhancementOrder_1.takerSignature = await sign(filledEnhancementOrderAsTypedData_1, guarantor);
+  
+    // sign enhancement order 2
+    const unfilledEnhancementOrderAsTypedData_2 = getUnfilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_2, this.AssetIssuerInstance.address);
+    const filledEnhancementOrderAsTypedData_2 = getFilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_2, this.AssetIssuerInstance.address);
+    orderData.enhancementOrder_2.makerSignature = await sign(unfilledEnhancementOrderAsTypedData_2, counterparty);
+    orderData.enhancementOrder_2.takerSignature = await sign(filledEnhancementOrderAsTypedData_2, guarantor_2);
+  
+  
+    const { tx: txHash } = await this.AssetIssuerInstance.issueFromOrder(orderData);
+  
+    const assetId = getAssetIdFromOrderData(orderData);
+  
+    const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    
+    const storedNonCyclicProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        i
+      );
+  
+      storedNonCyclicProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicIPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        8,
+        i
+      );
+      
+      storedCyclicIPProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicPRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        15,
+        i
+      );
+      
+      storedCyclicPRProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicSCProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        19,
+        i
+      );
+      
+      storedCyclicSCProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicRRProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        18,
+        i
+      );
+      
+      storedCyclicRRProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicFPProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        4,
+        i
+      );
+      
+      storedCyclicFPProtoEventSchedule.push(protoEvent);
+    }
+  
+    const storedCyclicPYProtoEventSchedule = [];
+    for (let i = 0; i < 64; i++) {
+      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
+        web3.utils.toHex(assetId),
+        11,
+        i
+      );
+      
+      storedCyclicPYProtoEventSchedule.push(protoEvent);
+    }
+  
+    assert.equal(storedTerms['initialExchangeDate'], orderData.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress, orderData.engine);
+    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
+    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    assert.equal(storedOwnership.counterpartyObligor, counterparty);
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
+  
+    assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
+    assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPRProtoEventSchedule, this.protoEventSchedules.cyclicPRProtoEventSchedule);
+    assert.deepEqual(storedCyclicSCProtoEventSchedule, this.protoEventSchedules.cyclicSCProtoEventSchedule);
+    assert.deepEqual(storedCyclicRRProtoEventSchedule, this.protoEventSchedules.cyclicRRProtoEventSchedule);
+    assert.deepEqual(storedCyclicFPProtoEventSchedule, this.protoEventSchedules.cyclicFPProtoEventSchedule);
+    assert.deepEqual(storedCyclicPYProtoEventSchedule, this.protoEventSchedules.cyclicPYProtoEventSchedule);
+  
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+      assetId: assetId,
+      recordCreator: recordCreator,
+      counterparty: counterparty
+    });
+
+    // enhancementOrder_1
+    const assetId_1 = getAssetIdFromOrderData(orderData.enhancementOrder_1);
+    const storedTerms_1 = await this.AssetRegistryInstance.getTerms(assetId_1);
+    const storedOwnership_1 = await this.AssetRegistryInstance.getOwnership(assetId_1);
+    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngineAddress(assetId_1);
+
+    assert.equal(storedTerms_1['initialExchangeDate'], orderData.enhancementOrder_1.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress_1, orderData.engine); // todo
+    assert.equal(storedOwnership_1.recordCreatorObligor, counterparty);
+    assert.equal(storedOwnership_1.recordCreatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_1.counterpartyObligor, guarantor);
+    assert.equal(storedOwnership_1.counterpartyBeneficiary, guarantor);
+
+    // await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+    //   assetId: assetId_1,
+    //   recordCreator: counterparty,
+    //   counterparty: guarantor
+    // });
+
+    // enhancementOrder_2
+    const assetId_2 = getAssetIdFromOrderData(orderData.enhancementOrder_2);
+    const storedTerms_2 = await this.AssetRegistryInstance.getTerms(assetId_2);
+    const storedOwnership_2 = await this.AssetRegistryInstance.getOwnership(assetId_2);
+    const storedEngineAddress_2 = await this.AssetRegistryInstance.getEngineAddress(assetId_2);
+
+    assert.equal(storedTerms_2['initialExchangeDate'], orderData.enhancementOrder_2.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress_2, orderData.engine); // todo
+    assert.equal(storedOwnership_2.recordCreatorObligor, counterparty);
+    assert.equal(storedOwnership_2.recordCreatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_2.counterpartyObligor, guarantor_2);
+    assert.equal(storedOwnership_2.counterpartyBeneficiary, guarantor_2);
+
+    // await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+    //   assetId: assetId_2,
+    //   recordCreator: counterparty,
+    //   counterparty: guarantor_2
+    // });
+  });
+
 });
 
 const sign = (typedData, account) => {
@@ -339,18 +544,22 @@ const getUnfilledEnhancementOrderDataAsTypedData = (enhancementOrderData, verify
         { name: 'chainId', type: 'uint256' },
         { name: 'verifyingContract', type: 'address' }
       ],
-      Order: [
+      EnhancementOrder: [
         { name: 'termsHash', type: 'bytes32' },
         { name: 'lifecycleTermsHash', type: 'bytes32' },
         { name: 'protoEventSchedulesHash', type: 'bytes32' },
+        { name: 'maker', type: 'address' },
+        { name: 'engine', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
     },
     primaryType: 'EnhancementOrder',
     message: {
-      termsHash,
+      termsHash: enhancementOrderData.termsHash,
       lifecycleTermsHash: termsHash,
       protoEventSchedulesHash: protoEventSchedulesHash,
+      maker: enhancementOrderData.maker,
+      engine: enhancementOrderData.engine,
       salt: enhancementOrderData.salt
     }
   };
@@ -377,22 +586,24 @@ const getFilledEnhancementOrderDataAsTypedData = (enhancementOrderData, verifyin
         { name: 'chainId', type: 'uint256' },
         { name: 'verifyingContract', type: 'address' }
       ],
-      Order: [
+      EnhancementOrder: [
         { name: 'termsHash', type: 'bytes32' },
         { name: 'lifecycleTermsHash', type: 'bytes32' },
         { name: 'protoEventSchedulesHash', type: 'bytes32' },
         { name: 'maker', type: 'address' },
         { name: 'taker', type: 'address' },
+        { name: 'engine', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
     },
     primaryType: 'EnhancementOrder',
     message: {
-      termsHash: termsHash,
+      termsHash: enhancementOrderData.termsHash,
       lifecycleTermsHash: termsHash,
       protoEventSchedulesHash: protoEventSchedulesHash,
       maker: enhancementOrderData.maker,
       taker: enhancementOrderData.taker,
+      engine: enhancementOrderData.engine,
       salt: enhancementOrderData.salt
     }
   };
@@ -402,20 +613,21 @@ const getFilledEnhancementOrderDataAsTypedData = (enhancementOrderData, verifyin
 
 const getDraftEnhancementOrderHash = (enhancementOrder) => {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3.utils.keccak256(
-    "EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 salt)"
+    "EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address engine,uint256 salt)"
   );
   const lifecycleTermsHash = getTermsHash(enhancementOrder.terms);
   const protoEventSchedulesHash = getProtoEventSchedulesHash(enhancementOrder.protoEventSchedules);
 
   return web3.utils.keccak256(web3.eth.abi.encodeParameters(
     [
-      'bytes32', 'bytes32', 'bytes32', 'bytes32', 'uint256'
+      'bytes32', 'bytes32', 'bytes32', 'bytes32', 'address', 'uint256'
     ],
     [
       DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
       enhancementOrder.termsHash,
       lifecycleTermsHash,
       protoEventSchedulesHash,
+      enhancementOrder.engine,
       enhancementOrder.salt
     ]
   ));

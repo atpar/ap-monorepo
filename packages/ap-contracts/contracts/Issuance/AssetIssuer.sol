@@ -42,7 +42,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 					order.enhancementOrder_1.terms,
 					order.enhancementOrder_1.protoEventSchedules,
 					order.actor,
-					order.engine
+					order.enhancementOrder_1.engine
 				),
 				"AssetIssuer.issueFromOrder: Could not issue enhancement"
 			);
@@ -56,14 +56,14 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 					order.enhancementOrder_2.terms,
 					order.enhancementOrder_2.protoEventSchedules,
 					order.actor,
-					order.engine
+					order.enhancementOrder_2.engine
 				),
 				"AssetIssuer.issueFromOrder: Could not issue enhancement"
 			);
 		}
 	}
 
-	function issueFromDraft(AssetDraft memory draft) 
+	function issueFromDraft(AssetDraft memory draft)
 		public
 	{
 		require(
