@@ -27,14 +27,14 @@ contract IAssetActor is Definitions, SharedTypes {
 	 * @dev can only be called by the whitelisted account
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
-	 * @param terms terms of the asset
+	 * @param productId id of the financial product to use
+	 * @param engine address of the actus engine
 	 * @return true on success
 	 */
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		LifecycleTerms memory terms,
-		ProtoEventSchedules memory protoEventSchedules,
+		bytes32 productId,
 		address engine
 	)
 		public

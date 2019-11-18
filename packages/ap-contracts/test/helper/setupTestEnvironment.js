@@ -4,6 +4,7 @@ const ANNEngine = artifacts.require('ANNEngine');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const ProductRegistry = artifacts.require('ProductRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 
 
@@ -18,9 +19,13 @@ async function setupTestEnvironment () {
   // instances.CEGEngineInstance = await CEGEngine.new();
   
   // deploy Core
-  instances.AssetRegistryInstance = await AssetRegistry.new();
+  instances.ProductRegistryInstance = await ProductRegistry.new();
+  instances.AssetRegistryInstance = await AssetRegistry.new(
+    instances.ProductRegistryInstance.address
+  );
   instances.AssetActorInstance = await AssetActor.new(
-    instances.AssetRegistryInstance.address
+    instances.AssetRegistryInstance.address,
+    instances.ProductRegistryInstance.address
   );
 
   // deploy Issuance

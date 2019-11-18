@@ -9,6 +9,11 @@ import "./Ownership.sol";
 
 contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Ownership {
 
+	constructor(IProductRegistry _productRegistry)
+		public
+		AssetRegistryStorage(_productRegistry)
+	{}
+
 	/**
 	 * Stores the addresses of the owners (owner of creator-side payment obligations,
 	 * owner of creator-side payment claims), terms and the initial state of an asset
@@ -16,18 +21,16 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 	 * @dev the terms and state can only be called by a whitelisted actor
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
-	 * @param terms terms of the asset
+	 * @param productId id of the financial product to use
 	 * @param state initial state of the asset
-	 * @param protoEventSchedules ProtoEvent schedules of the asset
 	 * @param engine ACTUS Engine of the asset
 	 * @param actor account which is allowed to update the asset state
 	 */
 	function registerAsset(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		LifecycleTerms memory terms,
+		bytes32 productId,
 		State memory state,
-		ProtoEventSchedules memory protoEventSchedules,
     address engine,
 		address actor
 	)
@@ -41,9 +44,8 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 		setAsset(
 			assetId,
 			ownership,
-			terms,
+			productId,
 			state,
-			protoEventSchedules,
       engine,
 			actor
 		);

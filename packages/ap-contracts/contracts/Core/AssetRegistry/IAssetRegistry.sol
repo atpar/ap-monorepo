@@ -105,13 +105,13 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function getNextCyclicProtoEvent(bytes32 assetId, EventType eventType) external view returns (bytes32);
 
-	function getNonCyclicProtoEventAtIndex(bytes32 assetId, uint256 index) external view returns (bytes32);
+	// function getNonCyclicProtoEventAtIndex(bytes32 assetId, uint256 index) external view returns (bytes32);
 
-	function getCyclicProtoEventAtIndex(bytes32 assetId, EventType eventType, uint256 index) external view returns (bytes32);
+	// function getCyclicProtoEventAtIndex(bytes32 assetId, EventType eventType, uint256 index) external view returns (bytes32);
 
-	function getNonCyclicProtoEventScheduleLength(bytes32 assetId) external view returns (uint256);
+	// function getNonCyclicProtoEventScheduleLength(bytes32 assetId) external view returns (uint256);
 
-	function getCyclicProtoEventScheduleLength(bytes32 assetId, EventType eventType) external view returns (uint256);
+	// function getCyclicProtoEventScheduleLength(bytes32 assetId, EventType eventType) external view returns (uint256);
 
 	function getNonCyclicProtoEventScheduleIndex(bytes32 assetId) external view returns (uint256);
 
@@ -133,20 +133,6 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 */
 	function setFinalizedState(bytes32 assetId, State memory state) public;
 
-	/**
-	 * sets new terms for a registered asset
-	 * @dev can only be updated by the assets actor
-	 * @param assetId id of the asset
-	 * @param terms new terms of the asset
-	 */
-	function setTerms(bytes32 assetId, LifecycleTerms memory terms) public;
-
-	/**
-	 * @param assetId id of the asset
-	 * @param protoEventSchedules all ProtoEvent schedules
-	 */
-	function setProtoEventSchedules(bytes32 assetId, ProtoEventSchedules memory protoEventSchedules) public;
-
 	function setNonCyclicProtoEventIndex(bytes32 assetId, uint256 nextIndex) public;
 
 	function setCyclicProtoEventIndex(bytes32 assetId, EventType eventType, uint256 nextIndex) public;
@@ -158,18 +144,16 @@ contract IAssetRegistry is AssetRegistryStorage {
 	 * @dev the terms and state can only be called by a whitelisted actor
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
-	 * @param terms terms of the asset
+	 * @param productId id of the financial product to use
 	 * @param state initial state of the asset
-	 * @param protoEventSchedules ProtoEvent schedules of the asset
 	 * @param engine ACTUS Engine of the asset
 	 * @param actor account which is allowed to update the asset state
 	 */
 	function registerAsset(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		LifecycleTerms memory terms,
+		bytes32 productId,
 		State memory state,
-		ProtoEventSchedules memory protoEventSchedules,
     address engine,
 		address actor
 	)

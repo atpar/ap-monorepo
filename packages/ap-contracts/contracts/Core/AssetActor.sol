@@ -10,11 +10,13 @@ import "./SharedTypes.sol";
 import "./PaymentRouter.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
+import "./ProductRegistry/IProductRegistry.sol";
 
 
 contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
+	IProductRegistry productRegistry;
 
 	mapping(address => bool) public issuers;
 
@@ -27,10 +29,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		_;
 	}
 
-	constructor (IAssetRegistry _assetRegistry)
+	constructor (IAssetRegistry _assetRegistry, IProductRegistry _productRegistry)
 		public
 	{
 		assetRegistry = _assetRegistry;
+		productRegistry = _productRegistry;
 	}
 
 	/**
@@ -93,15 +96,14 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 * @dev can only be called by the whitelisted account
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
-	 * @param terms terms of the asset
+	 * @param productId id of the financial product to use
 	 * @param engineAddress address of the ACTUS engine used for the spec. ContractType
 	 * @return true on success
 	 */
 	function initialize(
 		bytes32 assetId,
 		AssetOwnership memory ownership,
-		LifecycleTerms memory terms,
-		ProtoEventSchedules memory protoEventSchedules,
+		bytes32 productId,
 		address engineAddress
 	)
 		public
@@ -113,14 +115,13 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
 		);
 
-		State memory initialState = IEngine(engineAddress).computeInitialState(terms);
+		State memory initialState = IEngine(engineAddress).computeInitialState(productRegistry.getProductTerms(productId));
 
 		assetRegistry.registerAsset(
 			assetId,
 			ownership,
-			terms,
+			productId,
 			initialState,
-			protoEventSchedules,
 			engineAddress,
 			address(this)
 		);
