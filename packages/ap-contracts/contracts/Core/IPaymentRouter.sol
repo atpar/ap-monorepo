@@ -21,6 +21,5 @@ interface IPaymentRouter {
 		address token,
 		uint256 _amount
 	)
-		external
-		payable;
+		external;
 }

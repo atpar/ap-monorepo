@@ -44,14 +44,13 @@ contract PaymentRouter is SharedTypes, IPaymentRouter, Ownable {
 		uint256 _amount
 	)
 		external
-		payable
 	{
 		require(
 			assetId != bytes32(0) && cashflowId != int8(0) && eventId != bytes32(0) && token != address(0),
 			"PaymentRouter.settlePayment: INVALID_FUNCTION_PARAMETERS"
 		);
 
-		address payable payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
+		address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
 		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
 		if (cashflowId > 0) {

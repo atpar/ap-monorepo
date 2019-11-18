@@ -7,9 +7,9 @@ contract SharedTypes is Definitions {
 
 	struct AssetOwnership {
 		address recordCreatorObligor;
-		address payable recordCreatorBeneficiary;
+		address recordCreatorBeneficiary;
 		address counterpartyObligor;
-		address payable counterpartyBeneficiary;
+		address counterpartyBeneficiary;
 	}
 
 	struct ProtoEventSchedules {
