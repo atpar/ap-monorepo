@@ -42,14 +42,14 @@ contract('TokenizationFactory', (accounts) => {
       cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
+    this.productId = 'Test Product';
 
     // register Ownership for assetId
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(assetId), 
       this.ownership,
-      this.lifecycleTerms,
+      web3.utils.toHex(this.productId),
       this.state,
-      this.protoEventSchedules,
       this.PAMEngineInstance.address,
       '0x0000000000000000000000000000000000000000'
     );

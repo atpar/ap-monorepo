@@ -18,8 +18,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 
 	struct EnhancementOrder {
 		bytes32 termsHash;
-		LifecycleTerms terms;
-		ProtoEventSchedules protoEventSchedules;
+		bytes32 productId;
 		address maker;
     address taker;
 		address engine;
@@ -30,8 +29,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 
   struct Order {
 		bytes32 termsHash;
-    LifecycleTerms terms;
-		ProtoEventSchedules protoEventSchedules;
+    bytes32 productId;
 		uint256 expirationDate;
     address maker;
     address taker;
@@ -50,23 +48,23 @@ contract VerifyOrder is Definitions, SharedTypes {
 
 	// signed by the maker of the Order which includes the Enhancement Order
 	bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address maker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,address maker,address taker,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address maker,address taker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 productId,uint256 expirationDate,address maker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 lifecycleTermsHash,bytes32 protoEventSchedulesHash,uint256 expirationDate,address maker,address taker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 productId,uint256 expirationDate,address maker,address taker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -118,8 +116,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(
 			DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
-			hashTerms(enhancementOrder.terms),
-			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
+			enhancementOrder.productId,
 			enhancementOrder.engine,
 			enhancementOrder.salt
 		));
@@ -133,8 +130,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(
 			UNFILLED_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
-			hashTerms(enhancementOrder.terms),
-			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
+			enhancementOrder.productId,
 			enhancementOrder.maker,
 			enhancementOrder.engine,
 			enhancementOrder.salt
@@ -149,8 +145,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(
 			FILLED_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
-			hashTerms(enhancementOrder.terms),
-			hashProtoEventSchedules(enhancementOrder.protoEventSchedules),
+			enhancementOrder.productId,
 			enhancementOrder.maker,
 			enhancementOrder.taker,
 			enhancementOrder.engine,
@@ -166,8 +161,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(
 			UNFILLED_ORDER_TYPEHASH,
 			order.termsHash,
-			hashTerms(order.terms),
-			hashProtoEventSchedules(order.protoEventSchedules),
+			order.productId,
 			order.expirationDate,
 			order.maker,
       order.engine,
@@ -186,8 +180,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(
 			FILLED_ORDER_TYPEHASH,
 			order.termsHash,
-			hashTerms(order.terms),
-			hashProtoEventSchedules(order.protoEventSchedules),
+			order.productId,
 			order.expirationDate,
 			order.maker,
 			order.taker,

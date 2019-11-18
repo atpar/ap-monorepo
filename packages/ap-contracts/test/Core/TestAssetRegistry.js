@@ -43,15 +43,18 @@ contract('AssetRegistry', (accounts) => {
       cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
+    this.productId = 'Test Product';
+
+    // register product
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.terms, this.protoEventSchedules);
   });
 
   it('should register an asset', async () => {
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      this.lifecycleTerms,
+      web3.utils.toHex(this.productId),
       this.state,
-      this.protoEventSchedules,
       this.PAMEngineInstance.address,
       actor
     );
@@ -60,82 +63,6 @@ contract('AssetRegistry', (accounts) => {
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
-    
-    const storedNonCyclicProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        i
-      );
-
-      storedNonCyclicProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicIPProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        8,
-        i
-      );
-      
-      storedCyclicIPProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicPRProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        15,
-        i
-      );
-      
-      storedCyclicPRProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicSCProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        19,
-        i
-      );
-      
-      storedCyclicSCProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicRRProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        18,
-        i
-      );
-      
-      storedCyclicRRProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicFPProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        4,
-        i
-      );
-      
-      storedCyclicFPProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicPYProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        11,
-        i
-      );
-      
-      storedCyclicPYProtoEventSchedule.push(protoEvent);
-    }
 
     function parseTerms (array) {
       return array.map((value) => {
@@ -161,14 +88,6 @@ contract('AssetRegistry', (accounts) => {
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
-
-    assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
-    assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
-    assert.deepEqual(storedCyclicPRProtoEventSchedule, this.protoEventSchedules.cyclicPRProtoEventSchedule);
-    assert.deepEqual(storedCyclicSCProtoEventSchedule, this.protoEventSchedules.cyclicSCProtoEventSchedule);
-    assert.deepEqual(storedCyclicRRProtoEventSchedule, this.protoEventSchedules.cyclicRRProtoEventSchedule);
-    assert.deepEqual(storedCyclicFPProtoEventSchedule, this.protoEventSchedules.cyclicFPProtoEventSchedule);
-    assert.deepEqual(storedCyclicPYProtoEventSchedule, this.protoEventSchedules.cyclicPYProtoEventSchedule);
   });
 
   it('should not overwrite an existing asset', async () => {
@@ -176,9 +95,8 @@ contract('AssetRegistry', (accounts) => {
       this.AssetRegistryInstance.registerAsset(
         web3.utils.toHex(this.assetId),
         this.ownership,
-        this.lifecycleTerms,
+        web3.utils.toHex(this.productId),
         this.state,
-        this.protoEventSchedules,
         this.PAMEngineInstance.address,
         actor
       ),
@@ -187,11 +105,11 @@ contract('AssetRegistry', (accounts) => {
   });
 
   it('should let the actor overwrite and update the terms, state of an asset', async () => {
-    await this.AssetRegistryInstance.setTerms(
-      web3.utils.toHex(this.assetId), 
-      this.lifecycleTerms,
-      { from: actor }
-    );
+    // await this.AssetRegistryInstance.setTerms(
+    //   web3.utils.toHex(this.assetId), 
+    //   this.lifecycleTerms,
+    //   { from: actor }
+    // );
 
     await this.AssetRegistryInstance.setState(
       web3.utils.toHex(this.assetId), 
@@ -201,13 +119,13 @@ contract('AssetRegistry', (accounts) => {
   });
 
   it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
-    await shouldFail.reverting.withMessage(
-      this.AssetRegistryInstance.setTerms(
-        web3.utils.toHex(this.assetId), 
-        this.lifecycleTerms,
-      ),
-      'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
-    );
+    // await shouldFail.reverting.withMessage(
+    //   this.AssetRegistryInstance.setTerms(
+    //     web3.utils.toHex(this.assetId), 
+    //     this.lifecycleTerms,
+    //   ),
+    //   'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
+    // );
 
     await shouldFail.reverting.withMessage(
       this.AssetRegistryInstance.setState(

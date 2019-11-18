@@ -74,6 +74,10 @@ contract('AssetActor', (accounts) => {
       cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
 
+    this.productId = 'Test Product';
+
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.terms, this.protoEventSchedules);
+
     snapshot = await createSnapshot();
   });
 
@@ -85,8 +89,7 @@ contract('AssetActor', (accounts) => {
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      this.lifecycleTerms,
-      this.protoEventSchedules,
+      web3.utils.toHex(this.productId),
       this.PAMEngineInstance.address
     );
 
@@ -94,27 +97,6 @@ contract('AssetActor', (accounts) => {
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
-    
-    const storedNonCyclicProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getNonCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        i
-      );
-
-      storedNonCyclicProtoEventSchedule.push(protoEvent);
-    }
-
-    const storedCyclicIPProtoEventSchedule = [];
-    for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.AssetRegistryInstance.getCyclicProtoEventAtIndex(
-        web3.utils.toHex(this.assetId),
-        8,
-        i
-      );
-      
-      storedCyclicIPProtoEventSchedule.push(protoEvent);
-    }
 
     assert.deepEqual(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate'].toString());
     assert.deepEqual(storedState, this.state);
@@ -124,9 +106,6 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
-
-    assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
-    assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
 
     snapshot_asset = await createSnapshot();
   });
