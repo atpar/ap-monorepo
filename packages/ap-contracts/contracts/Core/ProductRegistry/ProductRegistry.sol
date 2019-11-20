@@ -7,17 +7,17 @@ import "./ProductRegistryStorage.sol";
 
 contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 
-  function getProductTerms(
-    bytes32 productId
-  )
-    external
-    view
-    returns (ProductTerms memory)
-  {
-    return (decodeAndGetTerms(productId));
-  }
+	function getProductTerms(
+		bytes32 productId
+	)
+		external
+		view
+		returns (ProductTerms memory)
+	{
+		return (decodeAndGetTerms(productId));
+	}
 
-  function getNonCyclicEventAtIndex(bytes32 productId, uint256 index) external view returns (bytes32) {
+	function getNonCyclicEventAtIndex(bytes32 productId, uint256 index) external view returns (bytes32) {
 		return products[productId].protoSchedules[NON_CYCLIC_INDEX].protoSchedule[index];
 	}
 
@@ -33,18 +33,18 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 		return products[productId].protoSchedules[uint8(eventType)].numberOfEvents;
 	}
 
-  function registerProduct(
-    bytes32 productId,
-    ProductTerms memory terms,
-    Schedules memory protoSchedules
-  )
-    public
-  {
-    require(
+	function registerProduct(
+		bytes32 productId,
+		ProductTerms memory terms,
+		Schedules memory protoSchedules
+	)
+		public
+	{
+		require(
 			products[productId].isSet == false,
 			"ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS"
 		);
 
-    setProduct(productId, terms, protoSchedules);
-  }
+		setProduct(productId, terms, protoSchedules);
+	}
 }

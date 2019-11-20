@@ -21,28 +21,28 @@ contract VerifyOrder is Definitions, SharedTypes {
 		bytes32 productId;
 		CustomTerms customTerms;
 		address maker;
-    address taker;
+		address taker;
 		address engine;
 		bytes makerSignature;
 		bytes takerSignature;
 		uint256 salt;
 	}
 
-  struct Order {
+	struct Order {
 		bytes32 termsHash;
-    bytes32 productId;
+		bytes32 productId;
 		CustomTerms customTerms;
 		uint256 expirationDate;
-    address maker;
-    address taker;
-    address engine;
-    address actor;
+		address maker;
+		address taker;
+		address engine;
+		address actor;
 		EnhancementOrder enhancementOrder_1;
 		EnhancementOrder enhancementOrder_2;
 		bytes makerSignature;
 		bytes takerSignature;
-    uint256 salt;
-  }
+		uint256 salt;
+	}
 
 	bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256(
 		"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
@@ -94,13 +94,13 @@ contract VerifyOrder is Definitions, SharedTypes {
 		));
 	}
 
-  function hashCustomTerms(CustomTerms memory terms)
-    internal
-    pure
-    returns (bytes32)
-  {
-    return keccak256(abi.encode(terms));
-  }
+	function hashCustomTerms(CustomTerms memory terms)
+		internal
+		pure
+		returns (bytes32)
+	{
+		return keccak256(abi.encode(terms));
+	}
 
 	function hashSchedules(Schedules memory protoSchedules)
 		internal
@@ -170,7 +170,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			hashCustomTerms(order.customTerms),
 			order.expirationDate,
 			order.maker,
-      order.engine,
+			order.engine,
 			order.actor,
 			hashDraftEnhancementOrder(order.enhancementOrder_1),
 			hashDraftEnhancementOrder(order.enhancementOrder_2),
@@ -191,7 +191,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			order.expirationDate,
 			order.maker,
 			order.taker,
-      order.engine,
+			order.engine,
 			order.actor,
 			hashDraftEnhancementOrder(order.enhancementOrder_1),
 			hashDraftEnhancementOrder(order.enhancementOrder_2),
@@ -209,7 +209,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 	function assertOrderSignatures(Order memory order)
 		internal
 		view
-    returns (bool)
+		returns (bool)
 	{
 		// verify signatures of Order
 		bytes32 makerOrderDigest = keccak256(abi.encodePacked(
@@ -256,6 +256,6 @@ contract VerifyOrder is Definitions, SharedTypes {
 		if (ECDSA.recover(makerEnhancementOrderDigest_2, order.enhancementOrder_2.makerSignature) != order.enhancementOrder_2.maker) { return false; }
 		if (ECDSA.recover(takerEnhancementOrderDigest_2, order.enhancementOrder_2.takerSignature) != order.enhancementOrder_2.taker) { return false; }
 
-    return true;
+		return true;
 	}
 }

@@ -95,7 +95,7 @@ contract Economics is AssetRegistryStorage {
 		return assets[assetId].nextEventIndex[uint8(eventType)];
 	}
 
-  /**
+	/**
 	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
 	 * @param assetId id of the asset
 	 * @return address of the ACTUS engine

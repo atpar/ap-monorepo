@@ -33,7 +33,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 		bytes32 productId,
 		CustomTerms memory customTerms,
 		State memory state,
-    address engine,
+		address engine,
 		address actor
 	)
 		public
@@ -49,7 +49,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 			productId,
 			customTerms,
 			state,
-      engine,
+			engine,
 			actor
 		);
 	}

@@ -8,29 +8,29 @@ import "../SharedTypes.sol";
 
 contract ProductRegistryStorage is Definitions, SharedTypes {
 
-  struct Product {
+	struct Product {
 		mapping (uint256 => bytes32) packedTerms;
-    mapping (uint8 => Schedule) protoSchedules;
-    bool isSet;
-  }
+		mapping (uint8 => Schedule) protoSchedules;
+		bool isSet;
+	}
 
-  mapping (bytes32 => Product) products;
+	mapping (bytes32 => Product) products;
 
 
-  function setProduct(
-    bytes32 productId,
-    ProductTerms memory terms,
-    Schedules memory protoSchedules
-  )
-    internal
-  {
-    products[productId] = Product({ isSet: true });
+	function setProduct(
+		bytes32 productId,
+		ProductTerms memory terms,
+		Schedules memory protoSchedules
+	)
+		internal
+	{
+		products[productId] = Product({ isSet: true });
 
-    encodeAndSetTerms(productId, terms);
-    encodeAndSetSchedules(productId, protoSchedules);
-  }
+		encodeAndSetTerms(productId, terms);
+		encodeAndSetSchedules(productId, protoSchedules);
+	}
 
-  function encodeAndSetTerms(bytes32 productId, ProductTerms memory terms) internal {
+	function encodeAndSetTerms(bytes32 productId, ProductTerms memory terms) internal {
 		bytes32 enums =
 			bytes32(uint256(uint8(terms.calendar))) << 240 |
 			bytes32(uint256(uint8(terms.contractRole))) << 232 |
@@ -87,7 +87,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		}
 	}
 
-  function encodeAndSetSchedules(bytes32 productId, Schedules memory protoSchedules)
+	function encodeAndSetSchedules(bytes32 productId, Schedules memory protoSchedules)
 		internal
 	{
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
@@ -139,7 +139,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		}
 	}
 
-  function decodeAndGetTerms(bytes32 productId) internal view returns (ProductTerms memory) {
+	function decodeAndGetTerms(bytes32 productId) internal view returns (ProductTerms memory) {
 		return ProductTerms(
 			Calendar(uint8(uint256(products[productId].packedTerms[1] >> 240))),
 			ContractRole(uint8(uint256(products[productId].packedTerms[1] >> 232))),

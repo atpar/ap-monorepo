@@ -18,7 +18,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 		mapping(uint8 => uint256) nextEventIndex;
 		mapping (uint8 => bytes32) packedTermsState;
 		uint256 eventId;
-    address engine;
+		address engine;
 		address actor;
 	}
 
@@ -37,7 +37,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 		bytes32 _productId,
 		CustomTerms memory customTerms,
 		State memory state,
-    address _engine,
+		address _engine,
 		address _actor
 	)
 		internal
@@ -47,7 +47,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 			ownership: _ownership,
 			productId: _productId,
 			eventId: 0,
-      engine: _engine,
+			engine: _engine,
 			actor: _actor
 		});
 
