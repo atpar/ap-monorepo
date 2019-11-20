@@ -10,8 +10,8 @@
 
 
 // contract('PaymentKernel', (accounts) => {
-//   const recordCreatorObligor = accounts[0];
-//   const recordCreatorBeneficiary = accounts[1];
+//   const creatorObligor = accounts[0];
+//   const creatorBeneficiary = accounts[1];
 //   const counterpartyObligor = accounts[2];
 //   const counterpartyBeneficiary = accounts[3];
   
@@ -26,8 +26,8 @@
 //     this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
 //     this.value = 5000;
 //     this.ownership = {
-//       recordCreatorObligor, 
-//       recordCreatorBeneficiary, 
+//       creatorObligor, 
+//       creatorBeneficiary, 
 //       counterpartyObligor, 
 //       counterpartyBeneficiary
 //     };
@@ -55,7 +55,7 @@
 //       web3.utils.toHex(this.assetId),
 //       5,
 //       cashflowIdBeneficiary,
-//       { from: recordCreatorBeneficiary }
+//       { from: creatorBeneficiary }
 //     );
 
 //     // deploy test ERC20 token
@@ -85,7 +85,7 @@
 //       eventId,
 //       this.PaymentTokenInstance.address,
 //       5000,
-//       { from: recordCreatorObligor }
+//       { from: creatorObligor }
 //     );
     
 //     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(txHash, PaymentRegistry, 'Paid');
@@ -137,7 +137,7 @@
 //         '0x0000000000000000000000000000000000000001',
 //         this.PaymentTokenInstance.address,
 //         5000,
-//         { from: recordCreatorObligor }
+//         { from: creatorObligor }
 //       ),
 //       'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
 //     );
@@ -149,7 +149,7 @@
 //         '0x0000000000000000000000000000000000000001',
 //         this.PaymentTokenInstance.address,
 //         5000,
-//         { from: recordCreatorObligor }
+//         { from: creatorObligor }
 //       ),
 //       'PaymentRouter.settlePayment: ' + INVALID_FUNCTION_PARAMETERS
 //     );
@@ -163,7 +163,7 @@
 //         '0x0000000000000000000000000000000000000001',
 //         this.PaymentTokenInstance.address,
 //         5000,
-//         { from: recordCreatorObligor }
+//         { from: creatorObligor }
 //       ),
 //       'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP
 //     );
@@ -191,7 +191,7 @@
 //         '0x0000000000000000000000000000000000000001',
 //         this.PaymentTokenInstance.address,
 //         5000,
-//         { from: recordCreatorObligor }
+//         { from: creatorObligor }
 //       ),
 //       'PaymentRouter.settlePayment: ' + UNAUTHORIZED_SENDER_OR_UNKNOWN_OWNERSHIP
 //     );

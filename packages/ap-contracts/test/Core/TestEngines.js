@@ -11,8 +11,8 @@ const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/block
 
 contract('AssetActor', (accounts) => {
   // const issuer = accounts[0];
-  const recordCreatorObligor = accounts[1];
-  const recordCreatorBeneficiary = accounts[2];
+  const creatorObligor = accounts[1];
+  const creatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
   const counterpartyBeneficiary = accounts[4];
 
@@ -38,8 +38,8 @@ contract('AssetActor', (accounts) => {
     const customTerms = parseTermsToCustomTerms(terms);
     const state = await this.PAMEngineInstance.computeInitialState(lifecycleTerms);
     const ownership = {
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
@@ -78,8 +78,8 @@ contract('AssetActor', (accounts) => {
     const customTerms = parseTermsToCustomTerms(terms);
     const state = await this.ANNEngineInstance.computeInitialState(lifecycleTerms);
     const ownership = {
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };

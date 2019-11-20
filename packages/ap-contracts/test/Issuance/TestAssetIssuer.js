@@ -12,7 +12,7 @@ const {
 } = require('../helper/setupTestEnvironment');
 
 contract('AssetIssuer', (accounts) => {
-  const recordCreator = accounts[0];
+  const creator = accounts[0];
   const counterparty = accounts[1];
   const guarantor = accounts[2];
   const guarantor_2 = accounts[3];
@@ -50,7 +50,7 @@ contract('AssetIssuer', (accounts) => {
       productId: web3.utils.toHex(this.productId),
       expirationDate: '11100000000',
       customTerms: this.customTerms,
-      maker: recordCreator,
+      maker: creator,
       taker: counterparty,
       engine: this.PAMEngineInstance.address,
       actor: this.AssetActorInstance.address,
@@ -84,7 +84,7 @@ contract('AssetIssuer', (accounts) => {
     // sign order
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
-    orderData.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator);
+    orderData.makerSignature = await sign(unfilledOrderAsTypedData, creator);
     orderData.takerSignature = await sign(filledOrderAsTypedData, counterparty);
 
     // issue asset
@@ -97,14 +97,14 @@ contract('AssetIssuer', (accounts) => {
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
     
     assert.equal(storedEngineAddress, orderData.engine);
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    assert.equal(storedOwnership.creatorObligor, creator);
+    assert.equal(storedOwnership.creatorBeneficiary, creator);
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
 
     await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
       assetId: assetId,
-      recordCreator: recordCreator,
+      creator: creator,
       counterparty: counterparty
     });
   });
@@ -115,7 +115,7 @@ contract('AssetIssuer', (accounts) => {
       productId: web3.utils.toHex(this.productId),
       customTerms: this.customTerms,
       expirationDate: '11100000000',
-      maker: recordCreator,
+      maker: creator,
       taker: counterparty,
       engine: this.PAMEngineInstance.address,
       actor: this.AssetActorInstance.address,
@@ -149,7 +149,7 @@ contract('AssetIssuer', (accounts) => {
     // sign order
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
-    orderData.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator);
+    orderData.makerSignature = await sign(unfilledOrderAsTypedData, creator);
     orderData.takerSignature = await sign(filledOrderAsTypedData, counterparty);
   
     // sign enhancement order 1
@@ -175,14 +175,14 @@ contract('AssetIssuer', (accounts) => {
   
     // assert.equal(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress, orderData.engine);
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    assert.equal(storedOwnership.creatorObligor, creator);
+    assert.equal(storedOwnership.creatorBeneficiary, creator);
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
   
     await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
       assetId: assetId,
-      recordCreator: recordCreator,
+      creator: creator,
       counterparty: counterparty
     });
 
@@ -194,14 +194,14 @@ contract('AssetIssuer', (accounts) => {
 
     // assert.equal(storedTerms_1['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress_1, orderData.engine); // todo
-    assert.equal(storedOwnership_1.recordCreatorObligor, counterparty);
-    assert.equal(storedOwnership_1.recordCreatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_1.creatorObligor, counterparty);
+    assert.equal(storedOwnership_1.creatorBeneficiary, counterparty);
     assert.equal(storedOwnership_1.counterpartyObligor, guarantor);
     assert.equal(storedOwnership_1.counterpartyBeneficiary, guarantor);
 
     // await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
     //   assetId: assetId_1,
-    //   recordCreator: counterparty,
+    //   creator: counterparty,
     //   counterparty: guarantor
     // });
 
@@ -213,14 +213,14 @@ contract('AssetIssuer', (accounts) => {
 
     // assert.equal(storedTerms_2['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress_2, orderData.engine); // todo
-    assert.equal(storedOwnership_2.recordCreatorObligor, counterparty);
-    assert.equal(storedOwnership_2.recordCreatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_2.creatorObligor, counterparty);
+    assert.equal(storedOwnership_2.creatorBeneficiary, counterparty);
     assert.equal(storedOwnership_2.counterpartyObligor, guarantor_2);
     assert.equal(storedOwnership_2.counterpartyBeneficiary, guarantor_2);
 
     // await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
     //   assetId: assetId_2,
-    //   recordCreator: counterparty,
+    //   creator: counterparty,
     //   counterparty: guarantor_2
     // });
   });

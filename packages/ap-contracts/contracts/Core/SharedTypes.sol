@@ -13,8 +13,8 @@ contract SharedTypes is Definitions {
 	}
 
 	struct AssetOwnership {
-		address recordCreatorObligor;
-		address recordCreatorBeneficiary;
+		address creatorObligor;
+		address creatorBeneficiary;
 		address counterpartyObligor;
 		address counterpartyBeneficiary;
 	}

@@ -9,24 +9,24 @@ contract Ownership is AssetRegistryStorage {
 	/**
 	 * update the address of the default beneficiary of cashflows going to the creator
 	 * @param assetId id of the asset
-	 * @param newRecordCreatorBeneficiary address of the new beneficiary
+	 * @param newCreatorBeneficiary address of the new beneficiary
 	 */
-	function setRecordCreatorBeneficiary(
+	function setCreatorBeneficiary(
 		bytes32 assetId,
-		address newRecordCreatorBeneficiary
+		address newCreatorBeneficiary
 	)
 		external
 	{
 		require(
-			assets[assetId].ownership.recordCreatorBeneficiary != address(0),
-			"AssetRegistry.setRecordCreatorBeneficiary: ENTRY_DOES_NOT_EXIST"
+			assets[assetId].ownership.creatorBeneficiary != address(0),
+			"AssetRegistry.setCreatorBeneficiary: ENTRY_DOES_NOT_EXIST"
 		);
 		require(
-			msg.sender == assets[assetId].ownership.recordCreatorBeneficiary,
-			"AssetRegistry.setRecordCreatorBeneficiary: UNAUTHORIZED_SENDER"
+			msg.sender == assets[assetId].ownership.creatorBeneficiary,
+			"AssetRegistry.setCreatorBeneficiary: UNAUTHORIZED_SENDER"
 		);
 
-		assets[assetId].ownership.recordCreatorBeneficiary = newRecordCreatorBeneficiary;
+		assets[assetId].ownership.creatorBeneficiary = newCreatorBeneficiary;
 	}
 
 	/**
@@ -73,7 +73,7 @@ contract Ownership is AssetRegistryStorage {
 		if (assets[assetId].cashflowBeneficiaries[cashflowId] == address(0)) {
 			if (cashflowId > 0) {
 				require(
-					msg.sender == assets[assetId].ownership.recordCreatorBeneficiary,
+					msg.sender == assets[assetId].ownership.creatorBeneficiary,
 					"AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
 				);
 			} else {

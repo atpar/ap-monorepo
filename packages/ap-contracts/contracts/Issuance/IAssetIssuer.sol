@@ -8,7 +8,7 @@ import "./VerifyOrder.sol";
 
 contract IAssetIssuer is SharedTypes, VerifyOrder {
 
-	event AssetIssued(bytes32 indexed assetId, address indexed recordCreator, address indexed counterparty);
+	event AssetIssued(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
 
 	struct AssetDraft {
 		bytes32 termsHash;

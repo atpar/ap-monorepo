@@ -106,7 +106,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 			"AssetIssuer.issueAsset: EXECUTION_ERROR"
 		);
 
-		emit AssetIssued(assetId, ownership.recordCreatorObligor, ownership.counterpartyObligor);
+		emit AssetIssued(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
 
 		return true;
 	}

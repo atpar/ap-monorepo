@@ -17,8 +17,8 @@ const {
 
 contract('AssetActor', (accounts) => {
 
-  const recordCreatorObligor = accounts[1];
-  const recordCreatorBeneficiary = accounts[2];
+  const creatorObligor = accounts[1];
+  const creatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
   const counterpartyBeneficiary = accounts[4];
 
@@ -40,14 +40,14 @@ contract('AssetActor', (accounts) => {
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
     this.ownership = {
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await ERC20SampleToken.new({ from: recordCreatorObligor });
+    this.PaymentTokenInstance = await ERC20SampleToken.new({ from: creatorObligor });
     
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
@@ -99,8 +99,8 @@ contract('AssetActor', (accounts) => {
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
 
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
+    assert.equal(storedOwnership.creatorObligor, creatorObligor);
+    assert.equal(storedOwnership.creatorBeneficiary, creatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
 
@@ -124,14 +124,14 @@ contract('AssetActor', (accounts) => {
     await this.PaymentTokenInstance.approve(
       this.AssetActorInstance.address, 
       value,
-      { from: recordCreatorObligor }
+      { from: creatorObligor }
     );
 
     // settle and progress asset state
     await mineBlock(eventTime);
     const { tx: txHash } = await this.AssetActorInstance.progress(
       web3.utils.toHex(this.assetId), 
-      { from: recordCreatorObligor }
+      { from: creatorObligor }
     );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'

@@ -13,8 +13,8 @@ const {
 
 
 contract('TokenizationFactory', (accounts) => {
-  const recordCreatorObligor = accounts[0];
-  const recordCreatorBeneficiary = accounts[1];
+  const creatorObligor = accounts[0];
+  const creatorBeneficiary = accounts[1];
   const counterpartyObligor = accounts[2];
   const counterpartyBeneficiary = accounts[3];
 
@@ -35,8 +35,8 @@ contract('TokenizationFactory', (accounts) => {
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
@@ -69,23 +69,23 @@ contract('TokenizationFactory', (accounts) => {
       'FDT',
       initialSupply,
       "0x0000000000000000000000000000000000000001",
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
 
     const FDT_ERC20ExtensionInstance = await FDT_ETHExtension.at(
       tx.logs[0].args.distributor
     );
 
-    await this.AssetRegistryInstance.setRecordCreatorBeneficiary(
+    await this.AssetRegistryInstance.setCreatorBeneficiary(
       web3.utils.toHex(assetId),
       FDT_ERC20ExtensionInstance.address,
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
 
-    const storedRecordCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
-    const balanceOfRecordCreatoBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(recordCreatorBeneficiary)).toString();
+    const storedCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
+    const balanceOfRecordCreatoBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(creatorBeneficiary)).toString();
 
-    assert.equal(storedRecordCreatorBeneficiary.recordCreatorBeneficiary, FDT_ERC20ExtensionInstance.address);
+    assert.equal(storedCreatorBeneficiary.creatorBeneficiary, FDT_ERC20ExtensionInstance.address);
     assert.equal(balanceOfRecordCreatoBeneficiary, initialSupply);
   });
 });

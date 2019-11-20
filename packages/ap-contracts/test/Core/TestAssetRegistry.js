@@ -16,8 +16,8 @@ const INVALID_CASHFLOWID = 'INVALID_CASHFLOWID';
 contract('AssetRegistry', (accounts) => {
   const actor = accounts[1];
 
-  const recordCreatorObligor = accounts[2];
-  const recordCreatorBeneficiary = accounts[3];
+  const creatorObligor = accounts[2];
+  const creatorBeneficiary = accounts[3];
   const counterpartyObligor = accounts[4];
   const counterpartyBeneficiary = accounts[5];
   
@@ -40,8 +40,8 @@ contract('AssetRegistry', (accounts) => {
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
@@ -96,8 +96,8 @@ contract('AssetRegistry', (accounts) => {
     assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.lifecycleTerms)));
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
+    assert.equal(storedOwnership.creatorObligor, creatorObligor);
+    assert.equal(storedOwnership.creatorBeneficiary, creatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
   });
@@ -142,7 +142,7 @@ contract('AssetRegistry', (accounts) => {
       web3.utils.toHex(this.assetId), 
       cashflowIdA, 
       cashflowIdBeneficiary,
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
     
     const resultA = await this.AssetRegistryInstance.getCashflowBeneficiary(
@@ -189,7 +189,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdA, 
         cashflowIdBeneficiary,
-        { from: recordCreatorObligor }
+        { from: creatorObligor }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -231,7 +231,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
-        { from: recordCreatorObligor }
+        { from: creatorObligor }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -241,7 +241,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
-        { from: recordCreatorBeneficiary }
+        { from: creatorBeneficiary }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -255,7 +255,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowId, 
         cashflowIdBeneficiary,
-        { from: recordCreatorBeneficiary }
+        { from: creatorBeneficiary }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + INVALID_CASHFLOWID
     );

@@ -6,7 +6,7 @@ import "./AssetRegistryStorage.sol";
 
 contract IAssetRegistry is AssetRegistryStorage {
 
-	function setRecordCreatorBeneficiary(bytes32 assetId, address newRecordCreatorBeneficiary) external;
+	function setCreatorBeneficiary(bytes32 assetId, address newCreatorBeneficiary) external;
 
 	function setCounterpartyBeneficiary(bytes32 assetId, address newCounterpartyBeneficiary) external;
 

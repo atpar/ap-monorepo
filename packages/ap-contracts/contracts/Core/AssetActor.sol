@@ -284,10 +284,10 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				return false;
 			}
 			if (payee == address(0)) {
-				payee = ownership.recordCreatorBeneficiary;
+				payee = ownership.creatorBeneficiary;
 			}
 		} else {
-			if (msg.sender != ownership.recordCreatorObligor) {
+			if (msg.sender != ownership.creatorObligor) {
 				return false;
 			}
 			if (payee == address(0)) {

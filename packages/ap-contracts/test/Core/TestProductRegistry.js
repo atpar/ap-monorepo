@@ -10,8 +10,8 @@ const {
 
 
 contract('ProductRegistry', (accounts) => {
-  const recordCreatorObligor = accounts[2];
-  const recordCreatorBeneficiary = accounts[3];
+  const creatorObligor = accounts[2];
+  const creatorBeneficiary = accounts[3];
   const counterpartyObligor = accounts[4];
   const counterpartyBeneficiary = accounts[5];
 
@@ -30,8 +30,8 @@ contract('ProductRegistry', (accounts) => {
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
+      creatorObligor, 
+      creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
