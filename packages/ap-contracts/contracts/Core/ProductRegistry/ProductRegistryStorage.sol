@@ -10,7 +10,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 
 	struct Product {
 		mapping (uint256 => bytes32) packedTerms;
-		mapping (uint8 => Schedule) productSchedules;
+		mapping (uint8 => ProductSchedule) productSchedules;
 		bool isSet;
 	}
 

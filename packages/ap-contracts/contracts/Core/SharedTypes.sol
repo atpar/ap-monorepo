@@ -7,7 +7,7 @@ contract SharedTypes is Definitions {
 
 	uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 
-	struct Schedule {
+	struct ProductSchedule {
 		mapping(uint256 => bytes32) productSchedule;
 		uint256 numberOfEvents;
 	}
