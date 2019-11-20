@@ -13,7 +13,7 @@ contract Ownership is AssetRegistryStorage {
 	 */
 	function setRecordCreatorBeneficiary(
 		bytes32 assetId,
-		address payable newRecordCreatorBeneficiary
+		address newRecordCreatorBeneficiary
 	)
 		external
 	{
@@ -36,7 +36,7 @@ contract Ownership is AssetRegistryStorage {
 	 */
 	function setCounterpartyBeneficiary(
 		bytes32 assetId,
-		address payable newCounterpartyBeneficiary
+		address newCounterpartyBeneficiary
 	)
 		external
 	{
@@ -61,7 +61,7 @@ contract Ownership is AssetRegistryStorage {
 	function setBeneficiaryForCashflowId(
 		bytes32 assetId,
 		int8 cashflowId,
-		address payable beneficiary
+		address beneficiary
 	)
 		external
 	{
@@ -114,7 +114,7 @@ contract Ownership is AssetRegistryStorage {
 	function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
 		external
 		view
-		returns (address payable)
+		returns (address)
 	{
 		return assets[assetId].cashflowBeneficiaries[cashflowId];
 	}

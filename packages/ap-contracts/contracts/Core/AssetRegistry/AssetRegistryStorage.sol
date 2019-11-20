@@ -13,7 +13,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 	struct Asset {
 		bytes32 assetId;
 		AssetOwnership ownership;
-		mapping (int8 => address payable) cashflowBeneficiaries;
+		mapping (int8 => address) cashflowBeneficiaries;
 		bytes32 productId;
 		mapping(uint8 => uint256) nextEventIndex;
 		mapping (uint8 => bytes32) packedTermsState;
