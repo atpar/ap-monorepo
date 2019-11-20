@@ -15,7 +15,7 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * returns the terms of a registered asset
+	 * returns the terms of an asset
 	 * @param assetId id of the asset
 	 * @return terms of the asset
 	 */
@@ -27,7 +27,7 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * returns the state of a registered asset
+	 * returns the state of an asset
 	 * @param assetId id of the asset
 	 * @return state of the asset
 	 */
@@ -36,7 +36,7 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * returns the finalized state of a registered asset
+	 * returns the state of an asset
 	 * @param assetId id of the asset
 	 * @return state of the asset
 	 */
@@ -44,6 +44,30 @@ contract Economics is AssetRegistryStorage {
 		return decodeAndGetFinalizedState(assetId);
 	}
 
+	/**
+	 * returns the address of a the ACTUS engine corresponding to the ContractType of an asset
+	 * @param assetId id of the asset
+	 * @return address of the engine of the asset
+	 */
+	function getEngineAddress(bytes32 assetId) external view returns (address) {
+		return assets[assetId].engine;
+	}
+
+	/**
+	 * returns the anchor date of an asset
+	 * @param assetId id of the asset
+	 * @return Anchor date
+	 */
+	function getAnchorDate(bytes32 assetId) external view returns (uint256) {
+		CustomTerms memory terms = decodeAndGetTerms(assetId);
+		return terms.anchorDate;
+	}
+
+	/**
+	 * returns the next event of the non-cyclic event schedule of an asset
+	 * @param assetId id of the asset
+	 * @return next event of the non-cyclic schedule
+	 */
 	function getNextNonCyclicEvent(bytes32 assetId) external view returns (bytes32) {
 		if (productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) == 0) {
 			return bytes32(0);
@@ -65,6 +89,12 @@ contract Economics is AssetRegistryStorage {
 		);
 	}
 
+	/**
+	 * returns the next event of a cyclic event schedule of an asset
+	 * @param assetId id of the asset
+	 * @param eventType event type of the cyclic schedule
+	 * @return next event of the non-cyclic event schedule
+	 */
 	function getNextCyclicEvent(bytes32 assetId, EventType eventType) external view returns (bytes32) {
 		if (productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) == 0) {
 			return bytes32(0);
@@ -87,35 +117,27 @@ contract Economics is AssetRegistryStorage {
 		);
 	}
 
+	/**
+	 * returns the index of the last processed event for a non-cyclic schedule of an asset
+	 * @param assetId id of the asset
+	 * @return Index
+	 */
 	function getNonCyclicScheduleIndex(bytes32 assetId) external view returns (uint256) {
 		return assets[assetId].nextEventIndex[NON_CYCLIC_INDEX];
 	}
 
+	/**
+	 * returns the index of the last processed event for a non-cyclic schedule of an asset
+	 * @param assetId id of the asset
+	 * @param eventType event type of the cyclic schedule
+	 * @return Index
+	 */
 	function getCyclicScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256) {
 		return assets[assetId].nextEventIndex[uint8(eventType)];
 	}
 
 	/**
-	 * returns the address of a the ACTUS engine corresponding to the ContractType of a registered asset
-	 * @param assetId id of the asset
-	 * @return address of the ACTUS engine
-	 */
-	function getEngineAddress(bytes32 assetId) external view returns (address) {
-		return assets[assetId].engine;
-	}
-
-	/**
-	 * return the anchorDate from which to derive the actual scheduleTimes for the event schedules
-	 * @param assetId id of the asset
-	 * @return anchorDate
-	 */
-	function getAnchorDate(bytes32 assetId) external view returns (uint256) {
-		CustomTerms memory terms = decodeAndGetTerms(assetId);
-		return terms.anchorDate;
-	}
-
-	/**
-	 * sets next state of a registered asset
+	 * sets next state of an asset
 	 * @dev can only be updated by the assets actor
 	 * @param assetId id of the asset
 	 * @param state next state of the asset
@@ -125,7 +147,7 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * sets next finalized state of a registered asset
+	 * sets next finalized state of an asset
 	 * @dev can only be updated by the assets actor
 	 * @param assetId id of the asset
 	 * @param state next state of the asset
@@ -134,6 +156,11 @@ contract Economics is AssetRegistryStorage {
 		encodeAndSetFinalizedState(assetId, state);
 	}
 
+	/**
+	 * sets the index of a non-cyclic schedule of an asset
+	 * @param assetId id of the asset
+	 * @param nextIndex the new index
+	 */
 	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public onlyDesignatedActor (assetId) {
 		require(
 			productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) > nextIndex,
@@ -143,6 +170,12 @@ contract Economics is AssetRegistryStorage {
 		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
 	}
 
+	/**
+	 * sets the index of a cyclic schedule of an asset
+	 * @param assetId id of the asset
+	 * @param eventType event type of the cyclic schedule
+	 * @param nextIndex the new index
+	 */
 	function setCyclicEventIndex(
 		bytes32 assetId,
 		EventType eventType,

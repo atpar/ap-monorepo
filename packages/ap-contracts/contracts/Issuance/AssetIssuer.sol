@@ -10,8 +10,8 @@ import "./VerifyOrder.sol";
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 
 	/**
-	 * issues an asset from an order which was signed by the maker and taker
-	 * @dev verifies both signatures and calls the init code defined in the actor contract
+	 * issues an asset from an order which was signed by a maker and taker
+	 * @dev verifies both signatures and initializes by calling the specified asset actor
 	 * @param order order for which to issue the asset
 	 */
 	function issueFromOrder(Order memory order)
@@ -63,6 +63,11 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		}
 	}
 
+	/**
+	 * issues an asset from an asset draft
+	 * @dev no signature verification
+	 * @param draft asset draft which to issue an asset from
+	 */
 	function issueFromDraft(AssetDraft memory draft)
 		public
 	{
@@ -87,7 +92,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		address actor,
 		address engine
 	)
-		public
+		internal
 		returns (bool)
 	{
 		require(

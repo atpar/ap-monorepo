@@ -7,7 +7,7 @@ import "./AssetRegistryStorage.sol";
 contract Ownership is AssetRegistryStorage {
 
 	/**
-	 * update the address of the default beneficiary of cashflows going to the record creator
+	 * update the address of the default beneficiary of cashflows going to the creator
 	 * @param assetId id of the asset
 	 * @param newRecordCreatorBeneficiary address of the new beneficiary
 	 */
@@ -30,7 +30,7 @@ contract Ownership is AssetRegistryStorage {
 	}
 
 	/**
-	 * update the address of the default beneficiary of cashflows going to the counter party
+	 * update the address of the default beneficiary of cashflows going to the counterparty
 	 * @param assetId id of the asset
 	 * @param newCounterpartyBeneficiary address of the new beneficiary
 	 */
@@ -93,7 +93,7 @@ contract Ownership is AssetRegistryStorage {
 	}
 
 	/**
- 	 * retrieve the registered addresses of owners (Creator, Counterparty) of an asset
+ 	 * retrieve the registered addresses of owners (creator, counterparty) of an asset
 	 * @param assetId id of the asset
 	 * @return addresses of all owners of the asset
 	 */

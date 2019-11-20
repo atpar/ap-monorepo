@@ -2,12 +2,12 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "actus-solidity/contracts/Core/Core.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
-import "./PaymentRouter.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
 import "./ProductRegistry/IProductRegistry.sol";
@@ -47,8 +47,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
-	 * the status of all obligations, that are due. If all obligations are fullfilled
-	 * the actor updates the state of the asset in the EconomicsRegistry
+	 * the status of all obligations, that are due. If all obligations are fulfilled
+	 * the actor updates the state of the asset in the AssetRegistry
 	 * @param assetId id of the asset
 	 * @return true if state was updated
 	 */
@@ -91,8 +91,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided terms and sets the initial state, the terms
-	 * together with the ownership of the asset in the EconomicsRegistry and OwnershipRegistry
+	 * derives the initial state of the asset from the provided custom terms and sets the initial state, the terms
+	 * together with the ownership of the asset in the AssetRegistry
 	 * @dev can only be called by the whitelisted account
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
@@ -148,10 +148,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 * @param terms terms of the asset
 	 * @return event
 	 */
-	function getNextEvent(
-		bytes32 assetId,
-		LifecycleTerms memory terms
-	)
+	function getNextEvent(bytes32 assetId, LifecycleTerms memory terms)
 		public
 		view
 		returns (bytes32)
@@ -250,8 +247,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * routes a payment to the designated beneficiary and
-	 * registers that the payment was made in the payment registry
+	 * routes a payment to the designated beneficiary
 	 * @dev checks if an owner of the specified cashflowId is set,
 	 * if not it sends funds to the default beneficiary
 	 * @param assetId id of the asset which the payment relates to

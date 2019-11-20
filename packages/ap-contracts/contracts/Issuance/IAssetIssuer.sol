@@ -20,11 +20,7 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
 		address actor;
 	}
 
-	/**
-	 * issues an asset from an order which was signed by the maker and taker
-	 * @dev verifies both signatures and calls the init code defined in the actor contract
-	 * @param order order for which to issue the asset
-	 */
+
 	function issueFromOrder(Order memory order) public;
 
 	function issueFromDraft(AssetDraft memory draft) public;
