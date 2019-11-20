@@ -10,7 +10,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 
   struct Product {
 		mapping (uint256 => bytes32) packedTerms;
-    mapping (uint8 => ProtoEventSchedule) protoEventSchedules;
+    mapping (uint8 => Schedule) protoSchedules;
     bool isSet;
   }
 
@@ -19,18 +19,18 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 
   function setProduct(
     bytes32 productId,
-    LifecycleTerms memory terms,
-    ProtoEventSchedules memory protoEventSchedules
+    ProductTerms memory terms,
+    Schedules memory protoSchedules
   )
     internal
   {
     products[productId] = Product({ isSet: true });
 
     encodeAndSetTerms(productId, terms);
-    encodeAndSetProtoEventSchedules(productId, protoEventSchedules);
+    encodeAndSetSchedules(productId, protoSchedules);
   }
 
-  function encodeAndSetTerms(bytes32 productId, LifecycleTerms memory terms) internal {
+  function encodeAndSetTerms(bytes32 productId, ProductTerms memory terms) internal {
 		bytes32 enums =
 			// bytes32(uint256(uint8(terms.contractType))) << 248 |
 			bytes32(uint256(uint8(terms.calendar))) << 240 |
@@ -51,20 +51,20 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		if (terms.currency != address(0)) products[productId].packedTerms[4] = bytes32(uint256(terms.currency) << 96);
 
 		// if (terms.contractDealDate != uint256(0)) products[productId].packedTerms[5] = bytes32(terms.contractDealDate);
-		if (terms.statusDate != uint256(0)) products[productId].packedTerms[6] = bytes32(terms.statusDate);
-		if (terms.initialExchangeDate != uint256(0)) products[productId].packedTerms[7] = bytes32(terms.initialExchangeDate);
-		if (terms.maturityDate != uint256(0)) products[productId].packedTerms[8] = bytes32(terms.maturityDate);
-		if (terms.terminationDate != uint256(0)) products[productId].packedTerms[9] = bytes32(terms.terminationDate);
-		if (terms.purchaseDate != uint256(0)) products[productId].packedTerms[10] = bytes32(terms.purchaseDate);
+		if (terms.statusDateOffset != uint256(0)) products[productId].packedTerms[6] = bytes32(terms.statusDateOffset);
+		// if (terms.initialExchangeDate != uint256(0)) products[productId].packedTerms[7] = bytes32(terms.initialExchangeDate);
+		if (terms.maturityDateOffset != uint256(0)) products[productId].packedTerms[8] = bytes32(terms.maturityDateOffset);
+		// if (terms.terminationDate != uint256(0)) products[productId].packedTerms[9] = bytes32(terms.terminationDate);
+		// if (terms.purchaseDate != uint256(0)) products[productId].packedTerms[10] = bytes32(terms.purchaseDate);
 		// if (terms.capitalizationEndDate != uint256(0)) products[productId].packedTerms[11] = bytes32(terms.capitalizationEndDate);
-		if (terms.cycleAnchorDateOfInterestPayment != uint256(0)) products[productId].packedTerms[12] = bytes32(terms.cycleAnchorDateOfInterestPayment);
+		// if (terms.cycleAnchorDateOfInterestPayment != uint256(0)) products[productId].packedTerms[12] = bytes32(terms.cycleAnchorDateOfInterestPayment);
 		// if (terms.cycleAnchorDateOfRateReset != uint256(0)) products[productId].packedTerms[13] = bytes32(terms.cycleAnchorDateOfRateReset);
 		// if (terms.cycleAnchorDateOfScalingIndex != uint256(0)) products[productId].packedTerms[14] = bytes32(terms.cycleAnchorDateOfScalingIndex);
 		// if (terms.cycleAnchorDateOfFee != uint256(0)) products[productId].packedTerms[15] = bytes32(terms.cycleAnchorDateOfFee);
 		// if (terms.cycleAnchorDateOfPrincipalRedemption != uint256(0)) products[productId].packedTerms[16] = bytes32(terms.cycleAnchorDateOfPrincipalRedemption);
 
-		if (terms.notionalPrincipal != int256(0)) products[productId].packedTerms[17] = bytes32(terms.notionalPrincipal);
-		if (terms.nominalInterestRate != int256(0)) products[productId].packedTerms[18] = bytes32(terms.nominalInterestRate);
+		// if (terms.notionalPrincipal != int256(0)) products[productId].packedTerms[17] = bytes32(terms.notionalPrincipal);
+		// if (terms.nominalInterestRate != int256(0)) products[productId].packedTerms[18] = bytes32(terms.nominalInterestRate);
 		if (terms.feeAccrued != int256(0)) products[productId].packedTerms[19] = bytes32(terms.feeAccrued);
 		if (terms.accruedInterest != int256(0)) products[productId].packedTerms[20] = bytes32(terms.accruedInterest);
 		// if (terms.rateMultiplier != int256(0)) products[productId].packedTerms[21] = bytes32(terms.rateMultiplier);
@@ -140,60 +140,60 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		}
 	}
 
-  function encodeAndSetProtoEventSchedules(bytes32 productId, ProtoEventSchedules memory protoEventSchedules)
+  function encodeAndSetSchedules(bytes32 productId, Schedules memory protoSchedules)
 		internal
 	{
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.nonCyclicProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[NON_CYCLIC_INDEX].protoEventSchedule[i] = protoEventSchedules.nonCyclicProtoEventSchedule[i];
-			products[productId].protoEventSchedules[NON_CYCLIC_INDEX].numberOfProtoEvents = i;
+			if (protoSchedules.nonCyclicSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[NON_CYCLIC_INDEX].protoSchedule[i] = protoSchedules.nonCyclicSchedule[i];
+			products[productId].protoSchedules[NON_CYCLIC_INDEX].numberOfEvents = i;
 		}
 
 		uint8 indexIP = uint8(EventType.IP);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicIPProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexIP].protoEventSchedule[i] = protoEventSchedules.cyclicIPProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexIP].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicIPSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexIP].protoSchedule[i] = protoSchedules.cyclicIPSchedule[i];
+			products[productId].protoSchedules[indexIP].numberOfEvents = i;
 		}
 
 		uint8 indexPR = uint8(EventType.PR);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicPRProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexPR].protoEventSchedule[i] = protoEventSchedules.cyclicPRProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexPR].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicPRSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexPR].protoSchedule[i] = protoSchedules.cyclicPRSchedule[i];
+			products[productId].protoSchedules[indexPR].numberOfEvents = i;
 		}
 
 		uint8 indexRR = uint8(EventType.RR);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicRRProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexRR].protoEventSchedule[i] = protoEventSchedules.cyclicRRProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexRR].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicRRSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexRR].protoSchedule[i] = protoSchedules.cyclicRRSchedule[i];
+			products[productId].protoSchedules[indexRR].numberOfEvents = i;
 		}
 
 		uint8 indexPY = uint8(EventType.PY);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicPYProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexPY].protoEventSchedule[i] = protoEventSchedules.cyclicPYProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexPY].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicPYSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexPY].protoSchedule[i] = protoSchedules.cyclicPYSchedule[i];
+			products[productId].protoSchedules[indexPY].numberOfEvents = i;
 		}
 
 		uint8 indexSC = uint8(EventType.SC);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicSCProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexSC].protoEventSchedule[i] = protoEventSchedules.cyclicSCProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexSC].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicSCSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexSC].protoSchedule[i] = protoSchedules.cyclicSCSchedule[i];
+			products[productId].protoSchedules[indexSC].numberOfEvents = i;
 		}
 
 		uint8 indexFP = uint8(EventType.FP);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
-			if (protoEventSchedules.cyclicFPProtoEventSchedule[i] == bytes32(0)) break;
-			products[productId].protoEventSchedules[indexFP].protoEventSchedule[i] = protoEventSchedules.cyclicFPProtoEventSchedule[i];
-			products[productId].protoEventSchedules[indexFP].numberOfProtoEvents = i;
+			if (protoSchedules.cyclicFPSchedule[i] == bytes32(0)) break;
+			products[productId].protoSchedules[indexFP].protoSchedule[i] = protoSchedules.cyclicFPSchedule[i];
+			products[productId].protoSchedules[indexFP].numberOfEvents = i;
 		}
 	}
 
-  function decodeAndGetTerms(bytes32 productId) internal view returns (LifecycleTerms memory) {
-		return LifecycleTerms(
+  function decodeAndGetTerms(bytes32 productId) internal view returns (ProductTerms memory) {
+		return ProductTerms(
 			// ContractType(uint8(uint256(products[productId].packedTerms[1] >> 248))),
 			Calendar(uint8(uint256(products[productId].packedTerms[1] >> 240))),
 			ContractRole(uint8(uint256(products[productId].packedTerms[1] >> 232))),
@@ -214,18 +214,18 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 			),
 			// uint256(products[productId].packedTerms[5]),
 			uint256(products[productId].packedTerms[6]),
-			uint256(products[productId].packedTerms[7]),
+			// uint256(products[productId].packedTerms[7]),
 			uint256(products[productId].packedTerms[8]),
-			uint256(products[productId].packedTerms[9]),
-			uint256(products[productId].packedTerms[10]),
+			// uint256(products[productId].packedTerms[9]),
+			// uint256(products[productId].packedTerms[10]),
 			// uint256(products[productId].packedTerms[11]),
-			uint256(products[productId].packedTerms[12]),
+			// uint256(products[productId].packedTerms[12]),
 			// uint256(products[productId].packedTerms[13]),
 			// uint256(products[productId].packedTerms[14]),
 			// uint256(products[productId].packedTerms[15]),
 			// uint256(products[productId].packedTerms[16]),
-			int256(products[productId].packedTerms[17]),
-			int256(products[productId].packedTerms[18]),
+			// int256(products[productId].packedTerms[17]),
+			// int256(products[productId].packedTerms[18]),
 			int256(products[productId].packedTerms[19]),
 			int256(products[productId].packedTerms[20]),
 			// int256(products[productId].packedTerms[21]),

@@ -19,6 +19,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 	struct EnhancementOrder {
 		bytes32 termsHash;
 		bytes32 productId;
+		CustomTerms customTerms;
 		address maker;
     address taker;
 		address engine;
@@ -30,6 +31,7 @@ contract VerifyOrder is Definitions, SharedTypes {
   struct Order {
 		bytes32 termsHash;
     bytes32 productId;
+		CustomTerms customTerms;
 		uint256 expirationDate;
     address maker;
     address taker;
@@ -48,23 +50,23 @@ contract VerifyOrder is Definitions, SharedTypes {
 
 	// signed by the maker of the Order which includes the Enhancement Order
 	bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address maker,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address maker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-		"EnhancementOrder(bytes32 termsHash,bytes32 productId,address maker,address taker,address engine,uint256 salt)"
+		"EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address maker,address taker,address engine,uint256 salt)"
 	);
 
 	bytes32 constant UNFILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 productId,uint256 expirationDate,address maker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,uint256 expirationDate,address maker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 constant FILLED_ORDER_TYPEHASH = keccak256(
-		"Order(bytes32 termsHash,bytes32 productId,uint256 expirationDate,address maker,address taker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+		"Order(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,uint256 expirationDate,address maker,address taker,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
 	);
 
 	bytes32 DOMAIN_SEPARATOR;
@@ -92,7 +94,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 		));
 	}
 
-  function hashTerms(LifecycleTerms memory terms)
+  function hashCustomTerms(CustomTerms memory terms)
     internal
     pure
     returns (bytes32)
@@ -100,12 +102,12 @@ contract VerifyOrder is Definitions, SharedTypes {
     return keccak256(abi.encode(terms));
   }
 
-	function hashProtoEventSchedules(ProtoEventSchedules memory protoEventSchedules)
+	function hashSchedules(Schedules memory protoSchedules)
 		internal
 		pure
 		returns (bytes32)
 	{
-		return keccak256(abi.encode(protoEventSchedules));
+		return keccak256(abi.encode(protoSchedules));
 	}
 
 	function hashDraftEnhancementOrder(EnhancementOrder memory enhancementOrder)
@@ -117,6 +119,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
 			enhancementOrder.productId,
+			hashCustomTerms(enhancementOrder.customTerms),
 			enhancementOrder.engine,
 			enhancementOrder.salt
 		));
@@ -131,6 +134,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			UNFILLED_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
 			enhancementOrder.productId,
+			hashCustomTerms(enhancementOrder.customTerms),
 			enhancementOrder.maker,
 			enhancementOrder.engine,
 			enhancementOrder.salt
@@ -146,6 +150,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			FILLED_ENHANCEMENT_ORDER_TYPEHASH,
 			enhancementOrder.termsHash,
 			enhancementOrder.productId,
+			hashCustomTerms(enhancementOrder.customTerms),
 			enhancementOrder.maker,
 			enhancementOrder.taker,
 			enhancementOrder.engine,
@@ -162,6 +167,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			UNFILLED_ORDER_TYPEHASH,
 			order.termsHash,
 			order.productId,
+			hashCustomTerms(order.customTerms),
 			order.expirationDate,
 			order.maker,
       order.engine,
@@ -181,6 +187,7 @@ contract VerifyOrder is Definitions, SharedTypes {
 			FILLED_ORDER_TYPEHASH,
 			order.termsHash,
 			order.productId,
+			hashCustomTerms(order.customTerms),
 			order.expirationDate,
 			order.maker,
 			order.taker,

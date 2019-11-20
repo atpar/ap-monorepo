@@ -31,14 +31,14 @@
 //       counterpartyObligor, 
 //       counterpartyBeneficiary
 //     };
-//     this.protoEventSchedules = {
-//       nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
-//       cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
-//       cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
-//       cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 19),
-//       cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 18),
-//       cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 4),
-//       cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 11),
+//     this.protoSchedules = {
+//       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
+//       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
+//       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
+//       cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 19),
+//       cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 18),
+//       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 4),
+//       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 11),
 //     };
 
 //     await this.AssetRegistryInstance.registerAsset(
@@ -46,7 +46,7 @@
 //       this.ownership,
 //       this.terms,
 //       this.state,
-//       this.protoEventSchedules,
+//       this.protoSchedules,
 //       this.PAMEngineInstance.address,
 //       '0x0000000000000000000000000000000000000000'
 //     );

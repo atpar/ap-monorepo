@@ -22,6 +22,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param productId id of the financial product to use
+	 * @param customTerms asset specific terms
 	 * @param state initial state of the asset
 	 * @param engine ACTUS Engine of the asset
 	 * @param actor account which is allowed to update the asset state
@@ -30,6 +31,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		bytes32 productId,
+		CustomTerms memory customTerms,
 		State memory state,
     address engine,
 		address actor
@@ -45,6 +47,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
 			assetId,
 			ownership,
 			productId,
+			customTerms,
 			state,
       engine,
 			actor

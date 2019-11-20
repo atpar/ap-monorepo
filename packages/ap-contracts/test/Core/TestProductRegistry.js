@@ -1,6 +1,12 @@
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { 
+  setupTestEnvironment,
+  getDefaultTerms,
+  convertDatesToOffsets,
+  parseTermsToProductTerms,
+  parseTermsToCustomTerms
+} = require('../helper/setupTestEnvironment');
 
 
 contract('ProductRegistry', (accounts) => {
@@ -15,8 +21,13 @@ contract('ProductRegistry', (accounts) => {
 
     this.assetId = 'C123';
     this.terms = await getDefaultTerms();
+
+    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
+    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
+    this.productTerms = parseTermsToProductTerms(this.terms);
+    this.customTerms = parseTermsToCustomTerms(this.terms);
+
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
       recordCreatorObligor, 
@@ -24,95 +35,95 @@ contract('ProductRegistry', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
+    this.protoSchedules = {
+      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
     this.productId = 'Test Product';
   });
 
   it('should register an asset', async () => {
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.terms, this.protoEventSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.protoSchedules);
 
-    const storedNonCyclicProtoEventSchedule = [];
+    const storedNonCyclicSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getNonCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getNonCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         i
       );
 
-      storedNonCyclicProtoEventSchedule.push(protoEvent);
+      storedNonCyclicSchedule.push(_event);
     }
 
-    const storedCyclicIPProtoEventSchedule = [];
+    const storedCyclicIPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         8,
         i
       );
       
-      storedCyclicIPProtoEventSchedule.push(protoEvent);
+      storedCyclicIPSchedule.push(_event);
     }
 
-    const storedCyclicPRProtoEventSchedule = [];
+    const storedCyclicPRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         15,
         i
       );
       
-      storedCyclicPRProtoEventSchedule.push(protoEvent);
+      storedCyclicPRSchedule.push(_event);
     }
 
-    const storedCyclicSCProtoEventSchedule = [];
+    const storedCyclicSCSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         19,
         i
       );
       
-      storedCyclicSCProtoEventSchedule.push(protoEvent);
+      storedCyclicSCSchedule.push(_event);
     }
 
-    const storedCyclicRRProtoEventSchedule = [];
+    const storedCyclicRRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         18,
         i
       );
       
-      storedCyclicRRProtoEventSchedule.push(protoEvent);
+      storedCyclicRRSchedule.push(_event);
     }
 
-    const storedCyclicFPProtoEventSchedule = [];
+    const storedCyclicFPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         4,
         i
       );
       
-      storedCyclicFPProtoEventSchedule.push(protoEvent);
+      storedCyclicFPSchedule.push(_event);
     }
 
-    const storedCyclicPYProtoEventSchedule = [];
+    const storedCyclicPYSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const protoEvent = await this.ProductRegistryInstance.getCyclicProtoEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
         web3.utils.toHex(this.productId),
         11,
         i
       );
       
-      storedCyclicPYProtoEventSchedule.push(protoEvent);
+      storedCyclicPYSchedule.push(_event);
     }
 
     const storedTerms = await this.ProductRegistryInstance.getProductTerms(web3.utils.toHex(this.productId));
@@ -134,14 +145,14 @@ contract('ProductRegistry', (accounts) => {
       });
     }
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.lifecycleTerms)));
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.productTerms)));
 
-    assert.deepEqual(storedNonCyclicProtoEventSchedule, this.protoEventSchedules.nonCyclicProtoEventSchedule);
-    assert.deepEqual(storedCyclicIPProtoEventSchedule, this.protoEventSchedules.cyclicIPProtoEventSchedule);
-    assert.deepEqual(storedCyclicPRProtoEventSchedule, this.protoEventSchedules.cyclicPRProtoEventSchedule);
-    assert.deepEqual(storedCyclicSCProtoEventSchedule, this.protoEventSchedules.cyclicSCProtoEventSchedule);
-    assert.deepEqual(storedCyclicRRProtoEventSchedule, this.protoEventSchedules.cyclicRRProtoEventSchedule);
-    assert.deepEqual(storedCyclicFPProtoEventSchedule, this.protoEventSchedules.cyclicFPProtoEventSchedule);
-    assert.deepEqual(storedCyclicPYProtoEventSchedule, this.protoEventSchedules.cyclicPYProtoEventSchedule);
+    assert.deepEqual(storedNonCyclicSchedule, this.protoSchedules.nonCyclicSchedule);
+    assert.deepEqual(storedCyclicIPSchedule, this.protoSchedules.cyclicIPSchedule);
+    assert.deepEqual(storedCyclicPRSchedule, this.protoSchedules.cyclicPRSchedule);
+    assert.deepEqual(storedCyclicSCSchedule, this.protoSchedules.cyclicSCSchedule);
+    assert.deepEqual(storedCyclicRRSchedule, this.protoSchedules.cyclicRRSchedule);
+    assert.deepEqual(storedCyclicFPSchedule, this.protoSchedules.cyclicFPSchedule);
+    assert.deepEqual(storedCyclicPYSchedule, this.protoSchedules.cyclicPYSchedule);
   });
 });

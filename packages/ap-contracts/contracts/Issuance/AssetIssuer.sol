@@ -27,6 +27,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 				keccak256(abi.encode(order.makerSignature, order.takerSignature)),
 				AssetOwnership(order.maker, order.maker, order.taker, order.taker),
 				order.productId,
+				order.customTerms,
 				order.actor,
 				order.engine
 			),
@@ -39,6 +40,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 					keccak256(abi.encode(order.enhancementOrder_1.makerSignature, order.enhancementOrder_1.takerSignature)),
 					AssetOwnership(order.enhancementOrder_1.maker, order.enhancementOrder_1.maker, order.enhancementOrder_1.taker, order.enhancementOrder_1.taker),
 					order.enhancementOrder_1.productId,
+					order.enhancementOrder_1.customTerms,
 					order.actor,
 					order.enhancementOrder_1.engine
 				),
@@ -52,6 +54,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 					keccak256(abi.encode(order.enhancementOrder_2.makerSignature, order.enhancementOrder_2.takerSignature)),
 					AssetOwnership(order.enhancementOrder_2.maker, order.enhancementOrder_2.maker, order.enhancementOrder_2.taker, order.enhancementOrder_2.taker),
 					order.enhancementOrder_2.productId,
+					order.enhancementOrder_2.customTerms,
 					order.actor,
 					order.enhancementOrder_2.engine
 				),
@@ -68,6 +71,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 				keccak256(abi.encode(draft)),
 				AssetOwnership(draft.creator, draft.creator, draft.counterparty, draft.counterparty),
 				draft.productId,
+				draft.customTerms,
 				draft.actor,
 				draft.engine
 			),
@@ -79,6 +83,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		bytes32 productId,
+		CustomTerms memory customTerms,
 		address actor,
 		address engine
 	)
@@ -90,6 +95,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 				assetId,
 				ownership,
 				productId,
+				customTerms,
 				engine
 			),
 			"AssetIssuer.issueAsset: EXECUTION_ERROR"

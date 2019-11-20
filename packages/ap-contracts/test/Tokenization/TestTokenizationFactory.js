@@ -1,10 +1,15 @@
 const BigNumber = require('bignumber.js');
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const TokenizationFactory = artifacts.require('TokenizationFactory');
 const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const {
+  setupTestEnvironment,
+  getDefaultTerms,
+  convertDatesToOffsets,
+  parseTermsToProductTerms,
+  parseTermsToCustomTerms
+} = require('../helper/setupTestEnvironment');
 
 
 contract('TokenizationFactory', (accounts) => {
@@ -16,16 +21,18 @@ contract('TokenizationFactory', (accounts) => {
   const initialSupply = (new BigNumber(10000 * 10 ** 18)).toFixed();
   
   const assetId = 'C123';
-  const cashflowId = 5;
-  const payoffAmount = 2 * 10  ** 15;
 
   beforeEach(async () => {
     const instances = await setupTestEnvironment();
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.terms = await getDefaultTerms();
+    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
+    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
+    this.productTerms = parseTermsToProductTerms(this.terms);
+    this.customTerms = parseTermsToCustomTerms(this.terms);
+
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     this.ownership = { 
       recordCreatorObligor, 
@@ -33,14 +40,14 @@ contract('TokenizationFactory', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
+    this.protoSchedules = {
+      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
     this.productId = 'Test Product';
 
@@ -49,6 +56,7 @@ contract('TokenizationFactory', (accounts) => {
       web3.utils.toHex(assetId), 
       this.ownership,
       web3.utils.toHex(this.productId),
+      this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
       '0x0000000000000000000000000000000000000000'

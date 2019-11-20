@@ -20,7 +20,10 @@ contract Economics is AssetRegistryStorage {
 	 * @return terms of the asset
 	 */
 	function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory) {
-		return productRegistry.getProductTerms(assets[assetId].productId);
+		return deriveLifecycleTerms(
+			productRegistry.getProductTerms(assets[assetId].productId),
+			decodeAndGetTerms(assetId)
+		);
 	}
 
 	/**
@@ -41,35 +44,55 @@ contract Economics is AssetRegistryStorage {
 		return decodeAndGetFinalizedState(assetId);
 	}
 
-	function getNextNonCyclicProtoEvent(bytes32 assetId) external view returns (bytes32) {
-		if (productRegistry.getNonCyclicProtoEventScheduleLength(assets[assetId].productId) == 0) {
+	function getNextNonCyclicEvent(bytes32 assetId) external view returns (bytes32) {
+		if (productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) == 0) {
 			return bytes32(0);
 		}
 
-		return productRegistry.getNonCyclicProtoEventAtIndex(
+		CustomTerms memory terms = decodeAndGetTerms(assetId);
+
+		bytes32 _event = productRegistry.getNonCyclicEventAtIndex(
 			assets[assetId].productId,
-			assets[assetId].nextProtoEventIndex[NON_CYCLIC_INDEX]
+			assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]
+		);
+
+		// shift scheduleTime
+		(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(_event);
+
+		return encodeEvent(
+			eventType,
+			scheduleTimeOffset + terms.anchorDate
 		);
 	}
 
-	function getNextCyclicProtoEvent(bytes32 assetId, EventType eventType) external view returns (bytes32) {
-		if (productRegistry.getCyclicProtoEventScheduleLength(assets[assetId].productId, eventType) == 0) {
+	function getNextCyclicEvent(bytes32 assetId, EventType eventType) external view returns (bytes32) {
+		if (productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) == 0) {
 			return bytes32(0);
 		}
 
-		return productRegistry.getCyclicProtoEventAtIndex(
+		CustomTerms memory terms = decodeAndGetTerms(assetId);
+
+		bytes32 _event = productRegistry.getCyclicEventAtIndex(
 			assets[assetId].productId,
 			eventType,
-			assets[assetId].nextProtoEventIndex[uint8(eventType)]
+			assets[assetId].nextEventIndex[uint8(eventType)]
+		);
+
+		// shift scheduleTime
+		(, uint256 scheduleTimeOffset) = decodeEvent(_event);
+
+		return encodeEvent(
+			eventType,
+			scheduleTimeOffset + terms.anchorDate
 		);
 	}
 
-	function getNonCyclicProtoEventScheduleIndex(bytes32 assetId) external view returns (uint256) {
-		return assets[assetId].nextProtoEventIndex[NON_CYCLIC_INDEX];
+	function getNonCyclicScheduleIndex(bytes32 assetId) external view returns (uint256) {
+		return assets[assetId].nextEventIndex[NON_CYCLIC_INDEX];
 	}
 
-	function getCyclicProtoEventScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256) {
-		return assets[assetId].nextProtoEventIndex[uint8(eventType)];
+	function getCyclicScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256) {
+		return assets[assetId].nextEventIndex[uint8(eventType)];
 	}
 
   /**
@@ -79,6 +102,16 @@ contract Economics is AssetRegistryStorage {
 	 */
 	function getEngineAddress(bytes32 assetId) external view returns (address) {
 		return assets[assetId].engine;
+	}
+
+	/**
+	 * return the anchorDate from which to derive the actual scheduleTimes for the event schedules
+	 * @param assetId id of the asset
+	 * @return anchorDate
+	 */
+	function getAnchorDate(bytes32 assetId) external view returns (uint256) {
+		CustomTerms memory terms = decodeAndGetTerms(assetId);
+		return terms.anchorDate;
 	}
 
 	/**
@@ -101,16 +134,16 @@ contract Economics is AssetRegistryStorage {
 		encodeAndSetFinalizedState(assetId, state);
 	}
 
-	function setNonCyclicProtoEventIndex(bytes32 assetId, uint256 nextIndex) public onlyDesignatedActor (assetId) {
+	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public onlyDesignatedActor (assetId) {
 		require(
-			productRegistry.getNonCyclicProtoEventScheduleLength(assets[assetId].productId) > nextIndex,
-			"AssetRegistry.setNonCyclicProtoEventIndex: OUT_OF_BOUNDS"
+			productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) > nextIndex,
+			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
 		);
 
-		assets[assetId].nextProtoEventIndex[NON_CYCLIC_INDEX]++;
+		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
 	}
 
-	function setCyclicProtoEventIndex(
+	function setCyclicEventIndex(
 		bytes32 assetId,
 		EventType eventType,
 		uint256 nextIndex
@@ -119,10 +152,10 @@ contract Economics is AssetRegistryStorage {
 		onlyDesignatedActor (assetId)
 	{
 		require(
-			productRegistry.getCyclicProtoEventScheduleLength(assets[assetId].productId, eventType) > nextIndex,
-			"AssetRegistry.setNonCyclicProtoEventIndex: OUT_OF_BOUNDS"
+			productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) > nextIndex,
+			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
 		);
 
-		assets[assetId].nextProtoEventIndex[NON_CYCLIC_INDEX]++;
+		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
 	}
 }

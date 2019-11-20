@@ -1,7 +1,8 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
-// const { decodeProtoEvent, removeNullProtoEvents, sortProtoEvents } = require('actus-solidity/test/helper/schedule');
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
+
+const { convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../helper/setupTestEnvironment');
 
 const AssetActor = artifacts.require('AssetActor');
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
@@ -24,16 +25,9 @@ contract('AssetActor', (accounts) => {
   let snapshot;
   let snapshot_asset;
   
-  const getEventTime = async (protoEvent, lifecycleTerms) => {
-    return await this.PAMEngineInstance.computeEventTimeForProtoEvent(protoEvent, lifecycleTerms);
+  const getEventTime = async (_event, lifecycleTerms) => {
+    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms));
   }
-
-  // const computeEventId = async (protoEvent, terms) => {
-  //   const  { eventType, scheduleTime } = decodeProtoEvent(protoEvent);
-  //   const epochOffset = await this.PAMEngineInstance.getEpochOffset(eventType);
-
-  //   return web3.utils.soliditySha3(eventType, Number(scheduleTime) + Number(epochOffset));
-  // }
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -58,25 +52,27 @@ contract('AssetActor', (accounts) => {
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
     
-    // derive LifecycleTerms and GeneratingTerms
+    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = parseTermsToGeneratingTerms(this.terms);
+    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
+    this.productTerms = parseTermsToProductTerms(this.terms);
+    this.customTerms = parseTermsToCustomTerms(this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     
-    this.protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
+    this.protoSchedules = {
+      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
 
     this.productId = 'Test Product';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.terms, this.protoEventSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.protoSchedules);
 
     snapshot = await createSnapshot();
   });
@@ -90,15 +86,16 @@ contract('AssetActor', (accounts) => {
       web3.utils.toHex(this.assetId),
       this.ownership,
       web3.utils.toHex(this.productId),
+      this.customTerms,
       this.PAMEngineInstance.address
     );
 
-    const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
+    // const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
 
-    assert.deepEqual(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate'].toString());
+    // assert.deepEqual(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate'].toString());
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
 
@@ -111,13 +108,13 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to PF', async () => {
-    const protoEvent = await this.AssetActorInstance.getNextProtoEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
-    const eventTime = await getEventTime(protoEvent, this.lifecycleTerms);
+    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
+    const eventTime = await getEventTime(_event, this.lifecycleTerms);
 
-    const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForProtoEvent(
+    const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
       this.lifecycleTerms, 
       this.state, 
-      protoEvent,
+      _event,
       eventTime
     ));
 
@@ -141,10 +138,10 @@ contract('AssetActor', (accounts) => {
     );
 
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const projectedNextState = await this.PAMEngineInstance.computeStateForProtoEvent(
+    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
       this.lifecycleTerms,
       this.state,
-      protoEvent,
+      _event,
       eventTime
     );
 
@@ -157,8 +154,8 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to DL', async () => {
-    const protoEvent = await this.AssetActorInstance.getNextProtoEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
-    const eventTime = await getEventTime(protoEvent, this.lifecycleTerms);
+    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
+    const eventTime = await getEventTime(_event, this.lifecycleTerms);
 
     // progress asset state
     await mineBlock(eventTime);
@@ -170,19 +167,19 @@ contract('AssetActor', (accounts) => {
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
-    const projectedNextState = await this.PAMEngineInstance.computeStateForProtoEvent(
+    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
       this.lifecycleTerms,
       this.state,
-      protoEvent,
+      _event,
       eventTime
     );
     
     // nonPerformingDate = eventTime of first event
-    projectedNextState.nonPerformingDate = eventTime;
-    projectedNextState[1] = eventTime;
+    projectedNextState.nonPerformingDate = String(eventTime);
+    projectedNextState[1] = String(eventTime);
     // contractPerformance = DL
     projectedNextState.contractPerformance = '1';
-    projectedNextState[2] = '1';
+    projectedNextState[3] = '1';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -194,8 +191,8 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to DQ', async () => {
-    const protoEvent = await this.AssetActorInstance.getNextProtoEvent(web3.utils.toHex(this.assetId), this.terms);
-    const eventTime = await getEventTime(protoEvent, this.terms);
+    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.terms);
+    const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state to after deliquency period
     await mineBlock(Number(eventTime) + 3000000);
@@ -207,19 +204,19 @@ contract('AssetActor', (accounts) => {
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
-    const projectedNextState = await this.PAMEngineInstance.computeStateForProtoEvent(
+    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
       this.lifecycleTerms,
       this.state,
-      protoEvent,
+      _event,
       eventTime
     );
 
     // nonPerformingDate = eventTime of first event
-    projectedNextState.nonPerformingDate = eventTime;
-    projectedNextState[1] = eventTime;
+    projectedNextState.nonPerformingDate = String(eventTime);
+    projectedNextState[1] = String(eventTime);
     // contractPerformance = DQ
     projectedNextState.contractPerformance = '2';
-    projectedNextState[2] = '2';
+    projectedNextState[3] = '2';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);

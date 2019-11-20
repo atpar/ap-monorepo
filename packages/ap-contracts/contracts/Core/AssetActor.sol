@@ -64,30 +64,30 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
 
-		bytes32 protoEvent = getNextProtoEvent(assetId, terms);
-		(EventType eventType, uint256 scheduleTime) = decodeProtoEvent(protoEvent);
+		bytes32 _event = getNextEvent(assetId, terms);
+		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 		bytes32 eventId = keccak256(abi.encode(eventType, scheduleTime + getEpochOffset(eventType)));
 
-		int256 payoff = IEngine(engineAddress).computePayoffForProtoEvent(terms, state, protoEvent, block.timestamp);
-		state = IEngine(engineAddress).computeStateForProtoEvent(terms, state, protoEvent, block.timestamp);
+		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
+		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
 
 		if (
-			(settlePayoffForProtoEvent(assetId, protoEvent, payoff, terms.currency) == false)
+			(settlePayoffForEvent(assetId, _event, payoff, terms.currency) == false)
 			&& state.contractPerformance == ContractPerformance.PF
 		) {
 			assetRegistry.setFinalizedState(assetId, state);
 
-			state = IEngine(engineAddress).computeStateForProtoEvent(
+			state = IEngine(engineAddress).computeStateForEvent(
 				terms,
 				state,
-				encodeProtoEvent(EventType.DEL, scheduleTime),
+				encodeEvent(EventType.CE, scheduleTime),
 				block.timestamp
 			);
 		}
 
 		assetRegistry.setState(assetId, state);
 
-		emit AssetProgressed(assetId, eventId);
+		emit AssetProgressed(assetId, eventId, scheduleTime);
 	}
 
 	/**
@@ -97,6 +97,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param productId id of the financial product to use
+	 * @param customTerms asset specific terms
 	 * @param engineAddress address of the ACTUS engine used for the spec. ContractType
 	 * @return true on success
 	 */
@@ -104,6 +105,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		bytes32 productId,
+		CustomTerms memory customTerms,
 		address engineAddress
 	)
 		public
@@ -115,12 +117,23 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
 		);
 
-		State memory initialState = IEngine(engineAddress).computeInitialState(productRegistry.getProductTerms(productId));
+		// if anchorDate is not set, use block.timestamp
+		if (customTerms.anchorDate == uint256(0)) {
+			customTerms.anchorDate = block.timestamp;
+		}
+
+		State memory initialState = IEngine(engineAddress).computeInitialState(
+			deriveLifecycleTerms(
+				productRegistry.getProductTerms(productId),
+				customTerms
+			)
+		);
 
 		assetRegistry.registerAsset(
 			assetId,
 			ownership,
 			productId,
+			customTerms,
 			initialState,
 			engineAddress,
 			address(this)
@@ -130,12 +143,12 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * returns the next ProtoEvent
+	 * returns the next event
 	 * @param assetId id of the asset
 	 * @param terms terms of the asset
-	 * @return ProtoEvent
+	 * @return event
 	 */
-	function getNextProtoEvent(
+	function getNextEvent(
 		bytes32 assetId,
 		LifecycleTerms memory terms
 	)
@@ -143,68 +156,68 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		view
 		returns (bytes32)
 	{
-		bytes32 nextProtoEvent;
+		bytes32 nextEvent;
 
-		// non-cyclic ProtoEvents
-		nextProtoEvent = assetRegistry.getNextNonCyclicProtoEvent(assetId);
-		(EventType nextEventType, uint256 nextScheduleTime) = decodeProtoEvent(nextProtoEvent);
+		// non-cyclic Events
+		nextEvent = assetRegistry.getNextNonCyclicEvent(assetId);
+		(EventType nextEventType, uint256 nextScheduleTime) = decodeEvent(nextEvent);
 
-		// IP / IPCI ProtoEvents
-		bytes32 nextIPProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.IP);
-		(EventType eventType, uint256 scheduleTime) = decodeProtoEvent(nextIPProtoEvent);
+		// IP / IPCI Events
+		bytes32 nextIPEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.IP);
+		(EventType eventType, uint256 scheduleTime) = decodeEvent(nextIPEvent);
 		if (
 			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
-			nextProtoEvent = nextIPProtoEvent;
+			nextEvent = nextIPEvent;
 			nextScheduleTime = scheduleTime;
 			nextEventType = eventType;
 		}
 
-		// PR ProtoEvents
-		bytes32 nextPRProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.PR);
-		(eventType, scheduleTime) = decodeProtoEvent(nextPRProtoEvent);
+		// PR Events
+		bytes32 nextPREvent = assetRegistry.getNextCyclicEvent(assetId, EventType.PR);
+		(eventType, scheduleTime) = decodeEvent(nextPREvent);
 		if (
 			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
-			nextProtoEvent = nextPRProtoEvent;
+			nextEvent = nextPREvent;
 			nextScheduleTime = scheduleTime;
 			nextEventType = eventType;
 		}
 
-		// SC ProtoEvents
-		bytes32 nextSCProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.SC);
-		(eventType, scheduleTime) = decodeProtoEvent(nextSCProtoEvent);
+		// SC Events
+		bytes32 nextSCEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.SC);
+		(eventType, scheduleTime) = decodeEvent(nextSCEvent);
 		if (
 			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
-			nextProtoEvent = nextSCProtoEvent;
+			nextEvent = nextSCEvent;
 			nextScheduleTime = scheduleTime;
 			nextEventType = eventType;
 		}
 
-		// RR ProtoEvents
-		bytes32 nextRRProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.RR);
-		(eventType, scheduleTime) = decodeProtoEvent(nextRRProtoEvent);
+		// RR Events
+		bytes32 nextRREvent = assetRegistry.getNextCyclicEvent(assetId, EventType.RR);
+		(eventType, scheduleTime) = decodeEvent(nextRREvent);
 		if (
 			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
-			nextProtoEvent = nextRRProtoEvent;
+			nextEvent = nextRREvent;
 			nextScheduleTime = scheduleTime;
 			nextEventType = eventType;
 		}
 
-		// PY ProtoEvents
-		bytes32 nextPYProtoEvent = assetRegistry.getNextCyclicProtoEvent(assetId, EventType.PY);
-		(eventType, scheduleTime) = decodeProtoEvent(nextPYProtoEvent);
+		// PY Events
+		bytes32 nextPYEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.PY);
+		(eventType, scheduleTime) = decodeEvent(nextPYEvent);
 		if (
 			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
 			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
 		) {
-			nextProtoEvent = nextPYProtoEvent;
+			nextEvent = nextPYEvent;
 			nextScheduleTime = scheduleTime;
 			nextEventType = eventType;
 		}
@@ -217,7 +230,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 			require(
 				underlyingState.lastEventTime != uint256(0),
-				"AssetActor.getNextProtoEvent: ENTRY_DOES_NOT_EXIST"
+				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
 			);
 
 			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
@@ -229,11 +242,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
 				}
 
-				nextProtoEvent = encodeProtoEvent(EventType.XD, nextScheduleTime);
+				nextEvent = encodeEvent(EventType.XD, nextScheduleTime);
 			}
 		}
 
-		return nextProtoEvent;
+		return nextEvent;
 	}
 
 	/**
@@ -242,13 +255,13 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 * @dev checks if an owner of the specified cashflowId is set,
 	 * if not it sends funds to the default beneficiary
 	 * @param assetId id of the asset which the payment relates to
-	 * @param protoEvent protoEvent to settle the payoff for
-	 * @param payoff payoff of the ProtoEvent
+	 * @param _event _event to settle the payoff for
+	 * @param payoff payoff of the event
 	 * @param token address of the token to transfer
 	 */
-	function settlePayoffForProtoEvent(
+	function settlePayoffForEvent(
 		bytes32 assetId,
-		bytes32 protoEvent,
+		bytes32 _event,
 		int256 payoff,
 		address token
 	)
@@ -256,15 +269,15 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		returns (bool)
 	{
 		require(
-			assetId != bytes32(0) && protoEvent != bytes32(0) && token != address(0),
-			"AssetActor.settlePayoffForProtoEvent: INVALID_FUNCTION_PARAMETERS"
+			assetId != bytes32(0) && _event != bytes32(0) && token != address(0),
+			"AssetActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
 		);
 
 		if (payoff == 0) {
 			return true;
 		}
 
-		(EventType eventType, ) = decodeProtoEvent(protoEvent);
+		(EventType eventType, ) = decodeEvent(_event);
 		int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
 		address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
 		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);

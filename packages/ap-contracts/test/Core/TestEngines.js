@@ -1,12 +1,16 @@
 const { getTestCases } = require('actus-solidity/test/helper/tests');
 const { parseTermsToGeneratingTerms, parseTermsToLifecycleTerms } = require('actus-solidity/test/helper/parser');
 
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
+const { 
+  setupTestEnvironment,
+  parseTermsToProductTerms,
+  parseTermsToCustomTerms 
+} = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {
-  const issuer = accounts[0];
+  // const issuer = accounts[0];
   const recordCreatorObligor = accounts[1];
   const recordCreatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
@@ -30,30 +34,33 @@ contract('AssetActor', (accounts) => {
     const terms = (await getTestCases('PAM'))['10001']['terms'];
     const generatingTerms = parseTermsToGeneratingTerms(terms);
     const lifecycleTerms = parseTermsToLifecycleTerms(terms);
-    const state = await this.PAMEngineInstance.computeInitialState(terms);
+    const productTerms = parseTermsToProductTerms(terms);
+    const customTerms = parseTermsToCustomTerms(terms);
+    const state = await this.PAMEngineInstance.computeInitialState(lifecycleTerms);
     const ownership = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    const protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.PAMEngineInstance.computeNonCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.PAMEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
+    const protoSchedules = {
+      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
     const productId = 'Test Product 1';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), lifecycleTerms, protoEventSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, protoSchedules);
     
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       web3.utils.toHex(productId),
+      customTerms,
       this.PAMEngineInstance.address
     );
 
@@ -67,30 +74,33 @@ contract('AssetActor', (accounts) => {
     const terms = (await getTestCases('ANN'))['20001']['terms'];
     const generatingTerms = parseTermsToGeneratingTerms(terms);
     const lifecycleTerms = parseTermsToLifecycleTerms(terms);
-    const state = await this.ANNEngineInstance.computeInitialState(terms);
+    const productTerms = parseTermsToProductTerms(terms);
+    const customTerms = parseTermsToCustomTerms(terms);
+    const state = await this.ANNEngineInstance.computeInitialState(lifecycleTerms);
     const ownership = {
       recordCreatorObligor, 
       recordCreatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    const protoEventSchedules = {
-      nonCyclicProtoEventSchedule: await this.ANNEngineInstance.computeNonCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
-      cyclicIPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
-      cyclicPRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
-      cyclicSCProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
-      cyclicRRProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
-      cyclicFPProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
-      cyclicPYProtoEventSchedule: await this.ANNEngineInstance.computeCyclicProtoEventScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
+    const protoSchedules = {
+      nonCyclicSchedule: await this.ANNEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
     const productId = 'Test Product 2';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), lifecycleTerms, protoEventSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, protoSchedules);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
       web3.utils.toHex(productId),
+      customTerms,
       this.ANNEngineInstance.address
     );
 

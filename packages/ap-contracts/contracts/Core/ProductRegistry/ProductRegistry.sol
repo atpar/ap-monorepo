@@ -12,31 +12,31 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
   )
     external
     view
-    returns (LifecycleTerms memory)
+    returns (ProductTerms memory)
   {
     return (decodeAndGetTerms(productId));
   }
 
-  function getNonCyclicProtoEventAtIndex(bytes32 productId, uint256 index) external view returns (bytes32) {
-		return products[productId].protoEventSchedules[NON_CYCLIC_INDEX].protoEventSchedule[index];
+  function getNonCyclicEventAtIndex(bytes32 productId, uint256 index) external view returns (bytes32) {
+		return products[productId].protoSchedules[NON_CYCLIC_INDEX].protoSchedule[index];
 	}
 
-	function getCyclicProtoEventAtIndex(bytes32 productId, EventType eventType, uint256 index) external view returns (bytes32) {
-		return products[productId].protoEventSchedules[uint8(eventType)].protoEventSchedule[index];
+	function getCyclicEventAtIndex(bytes32 productId, EventType eventType, uint256 index) external view returns (bytes32) {
+		return products[productId].protoSchedules[uint8(eventType)].protoSchedule[index];
 	}
 
-	function getNonCyclicProtoEventScheduleLength(bytes32 productId) external view returns (uint256) {
-		return products[productId].protoEventSchedules[NON_CYCLIC_INDEX].numberOfProtoEvents;
+	function getNonCyclicScheduleLength(bytes32 productId) external view returns (uint256) {
+		return products[productId].protoSchedules[NON_CYCLIC_INDEX].numberOfEvents;
 	}
 
-	function getCyclicProtoEventScheduleLength(bytes32 productId, EventType eventType) external view returns (uint256) {
-		return products[productId].protoEventSchedules[uint8(eventType)].numberOfProtoEvents;
+	function getCyclicScheduleLength(bytes32 productId, EventType eventType) external view returns (uint256) {
+		return products[productId].protoSchedules[uint8(eventType)].numberOfEvents;
 	}
 
   function registerProduct(
     bytes32 productId,
-    LifecycleTerms memory terms,
-    ProtoEventSchedules memory protoEventSchedules
+    ProductTerms memory terms,
+    Schedules memory protoSchedules
   )
     public
   {
@@ -45,6 +45,6 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 			"ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS"
 		);
 
-    setProduct(productId, terms, protoEventSchedules);
+    setProduct(productId, terms, protoSchedules);
   }
 }

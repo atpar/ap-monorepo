@@ -13,6 +13,7 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
 	struct AssetDraft {
 		bytes32 termsHash;
 		bytes32 productId;
+		CustomTerms customTerms;
 		address creator;
 		address counterparty;
 		address engine;
@@ -27,14 +28,4 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
 	function issueFromOrder(Order memory order) public;
 
 	function issueFromDraft(AssetDraft memory draft) public;
-
-	function issueAsset(
-		bytes32 assetId,
-		AssetOwnership memory ownership,
-		bytes32 productId,
-		address actor,
-		address engine
-	)
-		public
-		returns (bool);
 }

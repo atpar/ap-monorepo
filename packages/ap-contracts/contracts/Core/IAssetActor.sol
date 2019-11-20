@@ -8,7 +8,7 @@ import "./SharedTypes.sol";
 
 contract IAssetActor is Definitions, SharedTypes {
 
-	event AssetProgressed(bytes32 indexed assetId, bytes32 eventId);
+	event AssetProgressed(bytes32 indexed assetId, bytes32 eventId, uint256 scheduleTime);
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
@@ -28,6 +28,7 @@ contract IAssetActor is Definitions, SharedTypes {
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param productId id of the financial product to use
+	 * @param customTerms asset specific terms
 	 * @param engine address of the actus engine
 	 * @return true on success
 	 */
@@ -35,6 +36,7 @@ contract IAssetActor is Definitions, SharedTypes {
 		bytes32 assetId,
 		AssetOwnership memory ownership,
 		bytes32 productId,
+		CustomTerms memory customTerms,
 		address engine
 	)
 		public
