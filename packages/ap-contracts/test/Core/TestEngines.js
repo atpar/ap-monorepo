@@ -43,7 +43,7 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    const protoSchedules = {
+    const productSchedules = {
       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
@@ -54,7 +54,7 @@ contract('AssetActor', (accounts) => {
     };
     const productId = 'Test Product 1';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, protoSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
     
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
@@ -83,7 +83,7 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    const protoSchedules = {
+    const productSchedules = {
       nonCyclicSchedule: await this.ANNEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
       cyclicIPSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
@@ -94,7 +94,7 @@ contract('AssetActor', (accounts) => {
     };
     const productId = 'Test Product 2';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, protoSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),

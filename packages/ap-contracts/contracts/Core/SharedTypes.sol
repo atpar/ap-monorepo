@@ -8,7 +8,7 @@ contract SharedTypes is Definitions {
 	uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 
 	struct Schedule {
-		mapping(uint256 => bytes32) protoSchedule;
+		mapping(uint256 => bytes32) productSchedule;
 		uint256 numberOfEvents;
 	}
 
@@ -19,7 +19,7 @@ contract SharedTypes is Definitions {
 		address counterpartyBeneficiary;
 	}
 
-	struct ProtoSchedules {
+	struct ProductSchedules {
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] nonCyclicSchedule;
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicIPSchedule;
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPRSchedule;

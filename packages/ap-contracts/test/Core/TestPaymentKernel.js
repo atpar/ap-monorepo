@@ -31,7 +31,7 @@
 //       counterpartyObligor, 
 //       counterpartyBeneficiary
 //     };
-//     this.protoSchedules = {
+//     this.productSchedules = {
 //       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate),
 //       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 8),
 //       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.terms, this.terms.contractDealDate, this.terms.maturityDate, 15),
@@ -46,7 +46,7 @@
 //       this.ownership,
 //       this.terms,
 //       this.state,
-//       this.protoSchedules,
+//       this.productSchedules,
 //       this.PAMEngineInstance.address,
 //       '0x0000000000000000000000000000000000000000'
 //     );

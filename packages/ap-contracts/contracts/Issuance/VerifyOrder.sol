@@ -102,12 +102,12 @@ contract VerifyOrder is Definitions, SharedTypes {
 		return keccak256(abi.encode(terms));
 	}
 
-	function hashSchedules(ProtoSchedules memory protoSchedules)
+	function hashSchedules(ProductSchedules memory productSchedules)
 		internal
 		pure
 		returns (bytes32)
 	{
-		return keccak256(abi.encode(protoSchedules));
+		return keccak256(abi.encode(productSchedules));
 	}
 
 	function hashDraftEnhancementOrder(EnhancementOrder memory enhancementOrder)

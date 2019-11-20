@@ -29,7 +29,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Event
 	 */
 	function getNonCyclicEventAtIndex(bytes32 productId, uint256 index) external view returns (bytes32) {
-		return products[productId].protoSchedules[NON_CYCLIC_INDEX].protoSchedule[index];
+		return products[productId].productSchedules[NON_CYCLIC_INDEX].productSchedule[index];
 	}
 
 	/**
@@ -40,7 +40,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Event
 	 */
 	function getCyclicEventAtIndex(bytes32 productId, EventType eventType, uint256 index) external view returns (bytes32) {
-		return products[productId].protoSchedules[uint8(eventType)].protoSchedule[index];
+		return products[productId].productSchedules[uint8(eventType)].productSchedule[index];
 	}
 
 	/**
@@ -49,7 +49,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Length of the schedule
 	 */
 	function getNonCyclicScheduleLength(bytes32 productId) external view returns (uint256) {
-		return products[productId].protoSchedules[NON_CYCLIC_INDEX].numberOfEvents;
+		return products[productId].productSchedules[NON_CYCLIC_INDEX].numberOfEvents;
 	}
 
 	/**
@@ -59,19 +59,19 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Length of the schedule
 	 */
 	function getCyclicScheduleLength(bytes32 productId, EventType eventType) external view returns (uint256) {
-		return products[productId].protoSchedules[uint8(eventType)].numberOfEvents;
+		return products[productId].productSchedules[uint8(eventType)].numberOfEvents;
 	}
 
 	/**
-	 * stores a new financial Product which is comprised of a set of ProductTerms and ProtoSchedules
+	 * stores a new financial Product which is comprised of a set of ProductTerms and ProductSchedules
 	 * @param productId id of the product (has to be unique otherwise it will revert)
 	 * @param terms set of ProductTerms
-	 * @param protoSchedules set of ProtoSchedules encode offsets for ScheduleTime relative to an AnchorDate
+	 * @param productSchedules set of ProductSchedules encode offsets for ScheduleTime relative to an AnchorDate
 	 */
 	function registerProduct(
 		bytes32 productId,
 		ProductTerms memory terms,
-		ProtoSchedules memory protoSchedules
+		ProductSchedules memory productSchedules
 	)
 		public
 	{
@@ -80,6 +80,6 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 			"ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS"
 		);
 
-		setProduct(productId, terms, protoSchedules);
+		setProduct(productId, terms, productSchedules);
 	}
 }

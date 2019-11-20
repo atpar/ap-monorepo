@@ -35,7 +35,7 @@ contract('ProductRegistry', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    this.protoSchedules = {
+    this.productSchedules = {
       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
@@ -48,7 +48,7 @@ contract('ProductRegistry', (accounts) => {
   });
 
   it('should register an asset', async () => {
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.protoSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
 
     const storedNonCyclicSchedule = [];
     for (let i = 0; i < 64; i++) {
@@ -147,12 +147,12 @@ contract('ProductRegistry', (accounts) => {
 
     assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.productTerms)));
 
-    assert.deepEqual(storedNonCyclicSchedule, this.protoSchedules.nonCyclicSchedule);
-    assert.deepEqual(storedCyclicIPSchedule, this.protoSchedules.cyclicIPSchedule);
-    assert.deepEqual(storedCyclicPRSchedule, this.protoSchedules.cyclicPRSchedule);
-    assert.deepEqual(storedCyclicSCSchedule, this.protoSchedules.cyclicSCSchedule);
-    assert.deepEqual(storedCyclicRRSchedule, this.protoSchedules.cyclicRRSchedule);
-    assert.deepEqual(storedCyclicFPSchedule, this.protoSchedules.cyclicFPSchedule);
-    assert.deepEqual(storedCyclicPYSchedule, this.protoSchedules.cyclicPYSchedule);
+    assert.deepEqual(storedNonCyclicSchedule, this.productSchedules.nonCyclicSchedule);
+    assert.deepEqual(storedCyclicIPSchedule, this.productSchedules.cyclicIPSchedule);
+    assert.deepEqual(storedCyclicPRSchedule, this.productSchedules.cyclicPRSchedule);
+    assert.deepEqual(storedCyclicSCSchedule, this.productSchedules.cyclicSCSchedule);
+    assert.deepEqual(storedCyclicRRSchedule, this.productSchedules.cyclicRRSchedule);
+    assert.deepEqual(storedCyclicFPSchedule, this.productSchedules.cyclicFPSchedule);
+    assert.deepEqual(storedCyclicPYSchedule, this.productSchedules.cyclicPYSchedule);
   });
 });

@@ -60,7 +60,7 @@ contract('AssetActor', (accounts) => {
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
     
-    this.protoSchedules = {
+    this.productSchedules = {
       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
@@ -72,7 +72,7 @@ contract('AssetActor', (accounts) => {
 
     this.productId = 'Test Product';
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.protoSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
 
     snapshot = await createSnapshot();
   });

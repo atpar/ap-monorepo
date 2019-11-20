@@ -29,7 +29,7 @@ contract('AssetIssuer', (accounts) => {
     this.customTerms = parseTermsToCustomTerms(this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
-    this.protoSchedules = {
+    this.productSchedules = {
       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
@@ -41,7 +41,7 @@ contract('AssetIssuer', (accounts) => {
     this.productId = 'Test Product';
 
     // register product
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.protoSchedules);
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
   });
 
   it('should issue an asset from an order (without enhancement orders)', async () => {
