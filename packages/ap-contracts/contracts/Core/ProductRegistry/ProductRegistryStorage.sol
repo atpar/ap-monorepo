@@ -20,7 +20,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 	function setProduct(
 		bytes32 productId,
 		ProductTerms memory terms,
-		Schedules memory protoSchedules
+		ProtoSchedules memory protoSchedules
 	)
 		internal
 	{
@@ -87,7 +87,7 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		}
 	}
 
-	function encodeAndSetSchedules(bytes32 productId, Schedules memory protoSchedules)
+	function encodeAndSetSchedules(bytes32 productId, ProtoSchedules memory protoSchedules)
 		internal
 	{
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {

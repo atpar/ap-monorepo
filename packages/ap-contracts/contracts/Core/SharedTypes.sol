@@ -19,7 +19,7 @@ contract SharedTypes is Definitions {
 		address counterpartyBeneficiary;
 	}
 
-	struct Schedules {
+	struct ProtoSchedules {
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] nonCyclicSchedule;
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicIPSchedule;
 		bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPRSchedule;

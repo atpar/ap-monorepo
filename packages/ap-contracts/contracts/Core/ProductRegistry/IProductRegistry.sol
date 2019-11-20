@@ -16,5 +16,5 @@ contract IProductRegistry is ProductRegistryStorage {
 
 	function getCyclicScheduleLength(bytes32 productId, EventType eventType) external view returns (uint256);
 
-	function registerProduct(bytes32 productId, ProductTerms memory terms, Schedules memory protoSchedules) public;
+	function registerProduct(bytes32 productId, ProductTerms memory terms, ProtoSchedules memory protoSchedules) public;
 }

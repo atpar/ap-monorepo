@@ -71,7 +71,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	function registerProduct(
 		bytes32 productId,
 		ProductTerms memory terms,
-		Schedules memory protoSchedules
+		ProtoSchedules memory protoSchedules
 	)
 		public
 	{
