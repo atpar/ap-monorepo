@@ -47,8 +47,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
-	 * the status of all obligations, that are due. If all obligations are fulfilled
-	 * the actor updates the state of the asset in the AssetRegistry
+	 * the status of all obligations, that are due.
 	 * @param assetId id of the asset
 	 * @return true if state was updated
 	 */
@@ -91,7 +90,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided custom terms and sets the initial state, the terms
+	 * derives the initial state of the asset from the provided custom terms and stores the initial state, the custom terms
 	 * together with the ownership of the asset in the AssetRegistry
 	 * @dev can only be called by the whitelisted account
 	 * @param assetId id of the asset
@@ -143,7 +142,10 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * returns the next event
+	 * returns the next event to process by checking for the earliest schedule time for each
+	 * upcoming event of each schedule (non-cyclic, cyclic schedules).
+	 * if the underlying of the asset changes its performance to a covered performance
+	 * it returns the ExecutionDate event
 	 * @param assetId id of the asset
 	 * @param terms terms of the asset
 	 * @return event
@@ -239,6 +241,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
 				}
 
+				// insert ExecutionDate event
 				nextEvent = encodeEvent(EventType.XD, nextScheduleTime);
 			}
 		}
