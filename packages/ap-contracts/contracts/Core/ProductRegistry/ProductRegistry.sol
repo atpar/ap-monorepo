@@ -5,6 +5,9 @@ import "./IProductRegistry.sol";
 import "./ProductRegistryStorage.sol";
 
 
+/**
+ *
+ */
 contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 
 	/**
