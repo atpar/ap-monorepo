@@ -59,7 +59,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
 
 		require(
-			terms.statusDate != uint256(0) && state.lastEventTime != uint256(0) && engineAddress != address(0),
+			terms.statusDate != uint256(0) && state.statusDate != uint256(0) && engineAddress != address(0),
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
 
@@ -228,7 +228,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
 
 			require(
-				underlyingState.lastEventTime != uint256(0),
+				underlyingState.statusDate != uint256(0),
 				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
 			);
 

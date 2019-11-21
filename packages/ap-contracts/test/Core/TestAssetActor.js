@@ -146,7 +146,7 @@ contract('AssetActor', (accounts) => {
     );
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
-    assert.equal(storedNextState.lastEventTime, eventTime);
+    assert.equal(storedNextState.statusDate, eventTime);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -183,7 +183,7 @@ contract('AssetActor', (accounts) => {
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
-    assert.equal(storedNextState.lastEventTime, eventTime);
+    assert.equal(storedNextState.statusDate, eventTime);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -220,7 +220,7 @@ contract('AssetActor', (accounts) => {
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
-    assert.equal(storedNextState.lastEventTime, eventTime);
+    assert.equal(storedNextState.statusDate, eventTime);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);

@@ -63,7 +63,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 	}
 
 	function encodeAndSetState(bytes32 assetId, State memory state) internal {
-		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[101] = bytes32(state.lastEventTime);
+		if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[101] = bytes32(state.statusDate);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[102] = bytes32(state.nonPerformingDate);
 		if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[111] = bytes32(state.maturityDate);
 
@@ -82,7 +82,7 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 	}
 
 	function encodeAndSetFinalizedState(bytes32 assetId, State memory state) internal {
-		if (state.lastEventTime != uint256(0)) assets[assetId].packedTermsState[151] = bytes32(state.lastEventTime);
+		if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[151] = bytes32(state.statusDate);
 		if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[152] = bytes32(state.nonPerformingDate);
 		if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[161] = bytes32(state.maturityDate);
 

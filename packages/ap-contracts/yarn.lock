@@ -116,7 +116,7 @@ accepts@~1.3.7:
 
 "actus-solidity@git://github.com/atpar/actus-solidity.git#MS1":
   version "0.2.1"
-  resolved "git://github.com/atpar/actus-solidity.git#3950c7189f161b9b1cdff6a51d7985761567d93f"
+  resolved "git://github.com/atpar/actus-solidity.git#e7ea09aec245c1b8e4924bc5915944959825e9ab"
 
 aes-js@3.0.0:
   version "3.0.0"
