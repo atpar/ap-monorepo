@@ -325,21 +325,9 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	)
 		internal
 	{
-		if (
-			eventType == EventType.CE
-			|| eventType == EventType.XD
-		) {
-			return;
-		}
+		if (isUnscheduledEventType(eventType)) return;
 
-		if (
-			eventType == EventType.IP
-			|| eventType == EventType.IPCI
-			|| eventType == EventType.PR
-			|| eventType == EventType.SC
-			|| eventType == EventType.RR
-			|| eventType == EventType.PY
-		) {
+		if (isCyclicEventType(eventType)) {
 			assetRegistry.incrementCyclicScheduleIndex(assetId, eventType);
 		} else {
 			assetRegistry.incrementNonCyclicScheduleIndex(assetId);
