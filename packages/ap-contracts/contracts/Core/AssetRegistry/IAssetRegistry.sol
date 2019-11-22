@@ -38,9 +38,9 @@ contract IAssetRegistry is AssetRegistryStorage {
 
 	function setFinalizedState(bytes32 assetId, State memory state) public;
 
-	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public;
+	function incrementNonCyclicScheduleIndex(bytes32 assetId) public;
 
-	function setCyclicEventIndex(bytes32 assetId, EventType eventType, uint256 nextIndex) public;
+	function incrementCyclicScheduleIndex(bytes32 assetId, EventType eventType) public;
 
 	function registerAsset(
 		bytes32 assetId,

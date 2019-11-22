@@ -9,7 +9,7 @@ contract SharedTypes is Definitions {
 
 	struct ProductSchedule {
 		mapping(uint256 => bytes32) productSchedule;
-		uint256 numberOfEvents;
+		uint256 length;
 	}
 
 	struct AssetOwnership {
@@ -113,5 +113,28 @@ contract SharedTypes is Definitions {
 			productTerms.periodCap,
 			productTerms.periodFloor
 		);
+	}
+
+	function isUnscheduledEventType(EventType eventType) internal pure returns (bool) {
+		if (eventType == EventType.CE || eventType == EventType.XD) {
+			return true;
+		}
+
+		return false;
+	}
+
+	function isCyclicEventType(EventType eventType) internal pure returns (bool) {
+		if (
+			eventType == EventType.IP
+			|| eventType == EventType.IPCI
+			|| eventType == EventType.PR
+			|| eventType == EventType.SC
+			|| eventType == EventType.RR
+			|| eventType == EventType.PY
+		) {
+			return true;
+		}
+
+		return false;
 	}
 }

@@ -65,8 +65,22 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 		bytes32 _event = getNextEvent(assetId, terms);
 		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-		bytes32 eventId = keccak256(abi.encode(eventType, scheduleTime + getEpochOffset(eventType)));
 
+		// check if event is still scheduled under the current state and underlying state
+		if (
+			IEngine(engineAddress).isEventScheduled(
+				_event,
+				terms,
+				state,
+				(terms.contractStructure.object != bytes32(0)),
+				assetRegistry.getState(terms.contractStructure.object)
+			) == false
+		) {
+			incrementScheduleIndex(assetId, eventType, terms, state);
+			return;
+		}
+
+		bytes32 eventId = keccak256(abi.encode(eventType, scheduleTime + getEpochOffset(eventType)));
 		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
 		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
 
@@ -82,6 +96,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				encodeEvent(EventType.CE, scheduleTime),
 				block.timestamp
 			);
+		} else {
+			incrementScheduleIndex(assetId, eventType, terms, state);
 		}
 
 		assetRegistry.setState(assetId, state);
@@ -312,5 +328,22 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		}
 
 		return IERC20(token).transferFrom(msg.sender, payee, amount);
+	}
+
+	function incrementScheduleIndex(
+		bytes32 assetId,
+		EventType eventType,
+		LifecycleTerms memory terms,
+		State memory state
+	)
+		internal
+	{
+		if (isUnscheduledEventType(eventType)) return;
+
+		if (isCyclicEventType(eventType)) {
+			assetRegistry.incrementCyclicScheduleIndex(assetId, eventType);
+		} else {
+			assetRegistry.incrementNonCyclicScheduleIndex(assetId);
+		}
 	}
 }

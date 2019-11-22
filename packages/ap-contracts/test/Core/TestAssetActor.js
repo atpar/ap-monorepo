@@ -176,10 +176,10 @@ contract('AssetActor', (accounts) => {
     
     // nonPerformingDate = eventTime of first event
     projectedNextState.nonPerformingDate = String(eventTime);
-    projectedNextState[1] = String(eventTime);
+    projectedNextState[2] = String(eventTime);
     // contractPerformance = DL
     projectedNextState.contractPerformance = '1';
-    projectedNextState[3] = '1';
+    projectedNextState[0] = '1';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -213,10 +213,10 @@ contract('AssetActor', (accounts) => {
 
     // nonPerformingDate = eventTime of first event
     projectedNextState.nonPerformingDate = String(eventTime);
-    projectedNextState[1] = String(eventTime);
+    projectedNextState[2] = String(eventTime);
     // contractPerformance = DQ
     projectedNextState.contractPerformance = '2';
-    projectedNextState[3] = '2';
+    projectedNextState[0] = '2';
 
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);

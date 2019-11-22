@@ -157,38 +157,45 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * sets the index of a non-cyclic schedule of an asset
+	 * increments the index of a non-cyclic schedule of an asset
+	 * if max index is reached the index is left unchanged
 	 * @param assetId id of the asset
-	 * @param nextIndex the new index
 	 */
-	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public onlyDesignatedActor (assetId) {
-		require(
-			productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) > nextIndex,
-			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
-		);
+	function incrementNonCyclicScheduleIndex(bytes32 assetId) public onlyDesignatedActor (assetId) {
+		uint256 scheduleIndex = assets[assetId].nextEventIndex[NON_CYCLIC_INDEX];
 
-		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
+		if (
+			scheduleIndex == productRegistry.getNonCyclicScheduleLength(assets[assetId].productId)
+		) {
+			return;
+		}
+
+		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX] = scheduleIndex + 1;
 	}
 
 	/**
 	 * sets the index of a cyclic schedule of an asset
 	 * @param assetId id of the asset
 	 * @param eventType event type of the cyclic schedule
-	 * @param nextIndex the new index
 	 */
-	function setCyclicEventIndex(
+	function incrementCyclicScheduleIndex(
 		bytes32 assetId,
-		EventType eventType,
-		uint256 nextIndex
+		EventType eventType
 	)
 		public
 		onlyDesignatedActor (assetId)
 	{
-		require(
-			productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) > nextIndex,
-			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
-		);
+		uint256 scheduleIndex = assets[assetId].nextEventIndex[uint8(eventType)];
 
-		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
+		if (
+			scheduleIndex == productRegistry.getCyclicScheduleLength(
+				assets[assetId].productId,
+				eventType
+			)
+		) {
+			return;
+		}
+
+		assets[assetId].nextEventIndex[uint8(eventType)] = scheduleIndex + 1;
 	}
 }
