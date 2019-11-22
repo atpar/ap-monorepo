@@ -104,12 +104,21 @@ contract AssetRegistryStorage is Definitions, Core, SharedTypes {
 		if (state.executionAmount != int256(0)) assets[assetId].packedTermsState[163] = bytes32(state.executionAmount);
 	}
 
-	function decodeAndGetTerms(bytes32 assetId) internal view returns (CustomTerms memory) {
-		return CustomTerms(
+	function decodeAndGetTerms(bytes32 assetId) internal view returns (LifecycleTerms memory) {
+		CustomTerms memory customTerms = CustomTerms(
 			uint256(assets[assetId].packedTermsState[1]),
 			int256(assets[assetId].packedTermsState[2]),
 			int256(assets[assetId].packedTermsState[3])
 		);
+
+		return deriveLifecycleTerms(
+			productRegistry.getProductTerms(assets[assetId].productId),
+			customTerms
+		);
+	}
+
+	function decodeAndGetAnchorDate(bytes32 assetId) internal view returns (uint256) {
+		return uint256(assets[assetId].packedTermsState[1]);
 	}
 
 	function decodeAndGetState(bytes32 assetId) internal view returns (State memory) {

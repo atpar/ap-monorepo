@@ -63,7 +63,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
 
-		bytes32 _event = getNextEvent(assetId, terms);
+		bytes32 _event = assetRegistry.getNextEvent(assetId);
 		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
 		// check if event is still scheduled under the current state and underlying state
@@ -158,114 +158,6 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * returns the next event to process by checking for the earliest schedule time for each
-	 * upcoming event of each schedule (non-cyclic, cyclic schedules).
-	 * if the underlying of the asset changes its performance to a covered performance
-	 * it returns the ExecutionDate event
-	 * @param assetId id of the asset
-	 * @param terms terms of the asset
-	 * @return event
-	 */
-	function getNextEvent(bytes32 assetId, LifecycleTerms memory terms)
-		public
-		view
-		returns (bytes32)
-	{
-		bytes32 nextEvent;
-
-		// non-cyclic Events
-		nextEvent = assetRegistry.getNextNonCyclicEvent(assetId);
-		(EventType nextEventType, uint256 nextScheduleTime) = decodeEvent(nextEvent);
-
-		// IP / IPCI Events
-		bytes32 nextIPEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.IP);
-		(EventType eventType, uint256 scheduleTime) = decodeEvent(nextIPEvent);
-		if (
-			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
-			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
-		) {
-			nextEvent = nextIPEvent;
-			nextScheduleTime = scheduleTime;
-			nextEventType = eventType;
-		}
-
-		// PR Events
-		bytes32 nextPREvent = assetRegistry.getNextCyclicEvent(assetId, EventType.PR);
-		(eventType, scheduleTime) = decodeEvent(nextPREvent);
-		if (
-			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
-			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
-		) {
-			nextEvent = nextPREvent;
-			nextScheduleTime = scheduleTime;
-			nextEventType = eventType;
-		}
-
-		// SC Events
-		bytes32 nextSCEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.SC);
-		(eventType, scheduleTime) = decodeEvent(nextSCEvent);
-		if (
-			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
-			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
-		) {
-			nextEvent = nextSCEvent;
-			nextScheduleTime = scheduleTime;
-			nextEventType = eventType;
-		}
-
-		// RR Events
-		bytes32 nextRREvent = assetRegistry.getNextCyclicEvent(assetId, EventType.RR);
-		(eventType, scheduleTime) = decodeEvent(nextRREvent);
-		if (
-			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
-			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
-		) {
-			nextEvent = nextRREvent;
-			nextScheduleTime = scheduleTime;
-			nextEventType = eventType;
-		}
-
-		// PY Events
-		bytes32 nextPYEvent = assetRegistry.getNextCyclicEvent(assetId, EventType.PY);
-		(eventType, scheduleTime) = decodeEvent(nextPYEvent);
-		if (
-			(nextScheduleTime > scheduleTime && scheduleTime != uint256(0))
-			|| (nextScheduleTime == scheduleTime && getEpochOffset(nextEventType) > getEpochOffset(eventType))
-		) {
-			nextEvent = nextPYEvent;
-			nextScheduleTime = scheduleTime;
-			nextEventType = eventType;
-		}
-
-		// Underlying
-		bytes32 underlyingAssetId = terms.contractStructure.object;
-		if (underlyingAssetId != bytes32(0)) {
-			State memory underlyingState = assetRegistry.getState(underlyingAssetId);
-			LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
-
-			require(
-				underlyingState.statusDate != uint256(0),
-				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
-			);
-
-			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
-				if (underlyingState.contractPerformance == ContractPerformance.DL) {
-					nextScheduleTime = underlyingState.nonPerformingDate;
-				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
-					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
-				} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
-					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
-				}
-
-				// insert ExecutionDate event
-				nextEvent = encodeEvent(EventType.XD, nextScheduleTime);
-			}
-		}
-
-		return nextEvent;
-	}
-
-	/**
 	 * routes a payment to the designated beneficiary
 	 * @dev checks if an owner of the specified cashflowId is set,
 	 * if not it sends funds to the default beneficiary
@@ -288,9 +180,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
 		);
 
-		if (payoff == 0) {
-			return true;
-		}
+		if (payoff == 0) return true;
 
 		(EventType eventType, ) = decodeEvent(_event);
 		int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
@@ -299,16 +189,12 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
 		if (payoff > 0) {
-			if (msg.sender != ownership.counterpartyObligor) {
-				return false;
-			}
+			if (msg.sender != ownership.counterpartyObligor) return false;
 			if (payee == address(0)) {
 				payee = ownership.creatorBeneficiary;
 			}
 		} else {
-			if (msg.sender != ownership.creatorObligor) {
-				return false;
-			}
+			if (msg.sender != ownership.creatorObligor) return false;
 			if (payee == address(0)) {
 				payee = ownership.counterpartyBeneficiary;
 			}
@@ -327,10 +213,9 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	{
 		if (isUnscheduledEventType(eventType)) return;
 
-		if (isCyclicEventType(eventType)) {
-			assetRegistry.incrementCyclicScheduleIndex(assetId, eventType);
-		} else {
-			assetRegistry.incrementNonCyclicScheduleIndex(assetId);
-		}
+		assetRegistry.incrementScheduleIndex(
+			assetId,
+			(isCyclicEventType(eventType) ? uint8(eventType) : NON_CYCLIC_INDEX)
+		);
 	}
 }

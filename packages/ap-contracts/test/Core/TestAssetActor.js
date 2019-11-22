@@ -51,6 +51,8 @@ contract('AssetActor', (accounts) => {
     
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
+
+    this.terms.statusDate = this.terms.contractDealDate;
     
     // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
@@ -108,8 +110,8 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to PF', async () => {
-    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
-    const eventTime = await getEventTime(_event, this.lifecycleTerms);
+    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.lifecycleTerms)
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
       this.lifecycleTerms, 
@@ -122,7 +124,7 @@ contract('AssetActor', (accounts) => {
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.approve(
-      this.AssetActorInstance.address, 
+      this.AssetActorInstance.address,
       value,
       { from: creatorObligor }
     );
@@ -154,7 +156,7 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to DL', async () => {
-    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.lifecycleTerms);
+    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.lifecycleTerms);
 
     // progress asset state
@@ -191,7 +193,7 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to DQ', async () => {
-    const _event = await this.AssetActorInstance.getNextEvent(web3.utils.toHex(this.assetId), this.terms);
+    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state to after deliquency period
