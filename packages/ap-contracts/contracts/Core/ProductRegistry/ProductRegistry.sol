@@ -49,7 +49,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Length of the schedule
 	 */
 	function getNonCyclicScheduleLength(bytes32 productId) external view returns (uint256) {
-		return products[productId].productSchedules[NON_CYCLIC_INDEX].numberOfEvents;
+		return products[productId].productSchedules[NON_CYCLIC_INDEX].length;
 	}
 
 	/**
@@ -59,7 +59,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 	 * @return Length of the schedule
 	 */
 	function getCyclicScheduleLength(bytes32 productId, EventType eventType) external view returns (uint256) {
-		return products[productId].productSchedules[uint8(eventType)].numberOfEvents;
+		return products[productId].productSchedules[uint8(eventType)].length;
 	}
 
 	/**

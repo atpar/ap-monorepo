@@ -9,7 +9,7 @@ contract SharedTypes is Definitions {
 
 	struct ProductSchedule {
 		mapping(uint256 => bytes32) productSchedule;
-		uint256 numberOfEvents;
+		uint256 length;
 	}
 
 	struct AssetOwnership {
