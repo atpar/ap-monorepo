@@ -221,28 +221,41 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			nextEventType = eventType;
 		}
 
-		// Underlying
-		bytes32 underlyingAssetId = terms.contractStructure.object;
-		if (underlyingAssetId != bytes32(0)) {
-			State memory underlyingState = assetRegistry.getState(underlyingAssetId);
-			LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+		// Conditional events (usually, conditional upon XD triggered)
+		State memory state = assetRegistry.getState(assetId);
+		
+		if (state.executedAmount > 0 && state.maturityDate > state.statusDate) { // XD triggerd but not settled
 
-			require(
-				underlyingState.statusDate != uint256(0),
-				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
-			);
+			// insert settlement event
+			nextEvent = encodeEvent(EventType.STD, state.executedDate);
 
-			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
-				if (underlyingState.contractPerformance == ContractPerformance.DL) {
-					nextScheduleTime = underlyingState.nonPerformingDate;
-				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
-					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
-				} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
-					nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
+		} else { // XD has not been triggered
+
+			// does underlying exist and is CEG not matured yet?
+			bytes32 underlyingAssetId = terms.contractStructure.object;
+			if (underlyingAssetId != bytes32(0) && state.maturityDate > state.statusDate) {
+
+				// insert execution event
+				State memory underlyingState = assetRegistry.getState(underlyingAssetId);
+				LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+
+				require(
+					underlyingState.statusDate != uint256(0),
+					"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
+				);
+
+				if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
+					if (underlyingState.contractPerformance == ContractPerformance.DL) {
+						nextScheduleTime = underlyingState.nonPerformingDate;
+					} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
+						nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
+					} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
+						nextScheduleTime = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
+					}
+
+					// insert ExecutionDate event
+					nextEvent = encodeEvent(EventType.XD, nextScheduleTime);
 				}
-
-				// insert ExecutionDate event
-				nextEvent = encodeEvent(EventType.XD, nextScheduleTime);
 			}
 		}
 
