@@ -26,7 +26,7 @@ contract Custodian is Definitions, SharedTypes, ReentrancyGuard {
 		LifecycleTerms memory terms,
 		AssetOwnership memory ownership
 	)
-		external
+		public
 		returns (bool)
 	{
 		require(
@@ -34,18 +34,26 @@ contract Custodian is Definitions, SharedTypes, ReentrancyGuard {
 			"Custodian.lockCollateral: UNAUTHORIZED_SENDER"
 		);
 
+		// derive address of collateralizer
 		address collateralizer = (terms.contractRole == ContractRole.RPA)
 			? ownership.creatorObligor
 			: ownership.counterpartyObligor;
 
 		require(
-			IERC20(terms.currency).allowance(collateralizer) >= terms.,
-			"Custodian.lockCollateral: INSUFFICIENT_FUNDS"
+			IERC20(terms.currency).allowance(collateralizer) >= terms.coverageOfCreditEnhancement,
+			"Custodian.lockCollateral: INSUFFICIENT_ALLOWANCE"
 		);
 
-		IERC20(terms.currency).transferFrom(collateralizer, address(this), terms.notionalPrincipal);
+		// try transferring collateral from collateralizer to the custodian
+		require(
+			IERC20(terms.currency).transferFrom(collateralizer, address(this), terms.coverageOfCreditEnhancement),
+			"Custodian.lockCollateral: TRANFER_FAILED"
+		);
 
-		collateral[assetId] = terms.;
+		// register collateral for assetId
+		collateral[assetId] = terms.coverageOfCreditEnhancement;
+
+		return true;
 	}
 
 	function payoutCollateral(bytes32 assetId) external nonReentrant {
@@ -55,7 +63,7 @@ contract Custodian is Definitions, SharedTypes, ReentrancyGuard {
 
 		require(
 			collateral[assetId] >= uint256(0),
-			"Custodian.payoutCollateral: ENTY_NOT_FOUND"
+			"Custodian.payoutCollateral: ENTRY_NOT_FOUND"
 		);
 
 		if (state.contractPerformance == ContractPerformance.DF) {
