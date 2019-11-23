@@ -63,10 +63,16 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.progress: ENTRY_DOES_NOT_EXIST"
 		);
 
+		require(
+			state.contractPerformance != ContractPerformance.DF,
+			"AssetActor.progress: ASSET_IS_IN_DEFAULT"
+		);
+
+		// get the next event from the AssetRegistry and decode it
 		bytes32 _event = assetRegistry.getNextEvent(assetId);
 		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-		// check if event is still scheduled under the current state and underlying state
+		// check if event is still scheduled under the current states of the asset and the underlying asset
 		if (
 			IEngine(engineAddress).isEventScheduled(
 				_event,
@@ -76,39 +82,47 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				assetRegistry.getState(terms.contractStructure.object)
 			) == false
 		) {
-			incrementScheduleIndex(assetId, eventType, terms, state);
+			// skip the event by incrementing the corresponding schedule index
+			updateScheduleIndex(assetId, eventType);
 			return;
 		}
 
-		bytes32 eventId = keccak256(abi.encode(eventType, scheduleTime + getEpochOffset(eventType)));
+		// compute the payoff and the next state by applying the event to the current state
 		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
 		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
 
-		if (
-			(settlePayoffForEvent(assetId, _event, payoff, terms.currency) == false)
-			&& state.contractPerformance == ContractPerformance.PF
-		) {
-			assetRegistry.setFinalizedState(assetId, state);
+		// try to settle payment obligations
+		if (settlePayoffForEvent(assetId, _event, payoff, terms.currency)) {
+			// if obligation is fulfilled increment the corresponding schedule index
+			updateScheduleIndex(assetId, eventType);
+		} else {
+			// if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF
+			// store the interim state of the asset (state if the current obligation was successfully settled)
+			// (if the obligation is later settled before reaching default,
+			// the interim state is used to derive subsequent states of the asset)
+			if (state.contractPerformance == ContractPerformance.PF) {
+				assetRegistry.setFinalizedState(assetId, state);
+			}
 
+			// derive the actual state of the asset by applying the CreditEvent to update performance of asset
 			state = IEngine(engineAddress).computeStateForEvent(
 				terms,
 				state,
 				encodeEvent(EventType.CE, scheduleTime),
 				block.timestamp
 			);
-		} else {
-			incrementScheduleIndex(assetId, eventType, terms, state);
 		}
 
+		// store the resulting state of the asset
 		assetRegistry.setState(assetId, state);
 
-		emit AssetProgressed(assetId, eventId, scheduleTime);
+		emit AssetProgressed(assetId, eventType, scheduleTime);
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided custom terms and stores the initial state, the custom terms
-	 * together with the ownership of the asset in the AssetRegistry
-	 * @dev can only be called by the whitelisted account
+	 * derives the initial state of the asset from the provided custom terms and stores the initial state, 
+	 * the custom terms together with the ownership of the asset in the AssetRegistry
+	 * @dev can only be called by a whitelisted issuer
 	 * @param assetId id of the asset
 	 * @param ownership ownership of the asset
 	 * @param productId id of the financial product to use
@@ -137,6 +151,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			customTerms.anchorDate = block.timestamp;
 		}
 
+		// compute the initial state of the asset using the LifecycleTerms
 		State memory initialState = IEngine(engineAddress).computeInitialState(
 			deriveLifecycleTerms(
 				productRegistry.getProductTerms(productId),
@@ -144,6 +159,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			)
 		);
 
+		// register the asset in the AssetRegistry
 		assetRegistry.registerAsset(
 			assetId,
 			ownership,
@@ -180,42 +196,53 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
 		);
 
+		// return if there is no amount due
 		if (payoff == 0) return true;
 
+		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
+
+		// derive cashflowId to determine ownership of the cashflow
 		(EventType eventType, ) = decodeEvent(_event);
 		int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
 		address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
-		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
-		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
+		// get the absolute of the payoff
+		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
+
+		// determine the payee of the payment by checking the sign of the payoff
 		if (payoff > 0) {
+			// only allow for the obligor to settle the payment
 			if (msg.sender != ownership.counterpartyObligor) return false;
+			// use the default beneficiary if the there is no specific owner of the cashflow
 			if (payee == address(0)) {
 				payee = ownership.creatorBeneficiary;
 			}
 		} else {
+			// only allow for the obligor to settle the payment
 			if (msg.sender != ownership.creatorObligor) return false;
+			// use the default beneficiary if the there is no specific owner of the cashflow
 			if (payee == address(0)) {
 				payee = ownership.counterpartyBeneficiary;
 			}
 		}
 
+		// try to transfer amount due from obligor to payee
 		return IERC20(token).transferFrom(msg.sender, payee, amount);
 	}
 
-	function incrementScheduleIndex(
+	function updateScheduleIndex(
 		bytes32 assetId,
-		EventType eventType,
-		LifecycleTerms memory terms,
-		State memory state
+		EventType eventType
 	)
 		internal
 	{
+		// skip - for unscheduled events (e.g. CE, XD) there are no corresponding schedules
 		if (isUnscheduledEventType(eventType)) return;
 
+		// increment schedule index by deriving schedule index from the event type 
 		assetRegistry.incrementScheduleIndex(
 			assetId,
-			(isCyclicEventType(eventType) ? uint8(eventType) : NON_CYCLIC_INDEX)
+			deriveScheduleIndexFromEventType(eventType)
 		);
 	}
 }

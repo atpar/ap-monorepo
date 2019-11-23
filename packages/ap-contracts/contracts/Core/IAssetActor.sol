@@ -6,7 +6,7 @@ import "./SharedTypes.sol";
 
 contract IAssetActor is SharedTypes {
 
-	event AssetProgressed(bytes32 indexed assetId, bytes32 eventId, uint256 scheduleTime);
+	event AssetProgressed(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
 
 
 	function progress(bytes32 assetId) external;
