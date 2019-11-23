@@ -1,12 +1,10 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
-
 import "./SharedTypes.sol";
 
 
-contract IAssetActor is Definitions, SharedTypes {
+contract IAssetActor is SharedTypes {
 
 	event AssetProgressed(bytes32 indexed assetId, bytes32 eventId, uint256 scheduleTime);
 

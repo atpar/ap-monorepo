@@ -3,11 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
-import "actus-solidity/contracts/Core/Definitions.sol";
 import "../Core/SharedTypes.sol";
 
 
-contract VerifyOrder is Definitions, SharedTypes {
+contract VerifyOrder is SharedTypes {
 
 	struct EIP712Domain {
 		string  name;
