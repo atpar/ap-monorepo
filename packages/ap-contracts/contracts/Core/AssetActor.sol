@@ -47,13 +47,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	/**
 	 * proceeds with the next state of the asset based on the terms, the last state and
-	 * the status of all obligations, that are due.
+	 * the status of all obligations that are due
+	 * @dev emit AssetProgressed if the state of the asset was updated
 	 * @param assetId id of the asset
-	 * @return true if state was updated
 	 */
-	function progress(bytes32 assetId)
-		public
-	{
+	function progress(bytes32 assetId) public {
 		LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
 		State memory state = assetRegistry.getState(assetId);
 		address engineAddress = assetRegistry.getEngineAddress(assetId);
@@ -68,7 +66,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			"AssetActor.progress: ASSET_IS_IN_DEFAULT"
 		);
 
-		// get the next event from the AssetRegistry and decode it
+		// get the next events event type and schedule time
 		bytes32 _event = assetRegistry.getNextEvent(assetId);
 		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -87,24 +85,24 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			return;
 		}
 
-		// compute the payoff and the next state by applying the event to the current state
+		// compute payoff and the next state by applying the event to the current state
 		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
 		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
 
-		// try to settle payment obligations
+		// try to settle payoff of event
 		if (settlePayoffForEvent(assetId, _event, payoff, terms.currency)) {
 			// if obligation is fulfilled increment the corresponding schedule index
 			updateScheduleIndex(assetId, eventType);
 		} else {
 			// if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF
 			// store the interim state of the asset (state if the current obligation was successfully settled)
-			// (if the obligation is later settled before reaching default,
+			// (if the obligation is later settled before the asset reaches default,
 			// the interim state is used to derive subsequent states of the asset)
 			if (state.contractPerformance == ContractPerformance.PF) {
 				assetRegistry.setFinalizedState(assetId, state);
 			}
 
-			// derive the actual state of the asset by applying the CreditEvent to update performance of asset
+			// derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
 			state = IEngine(engineAddress).computeStateForEvent(
 				terms,
 				state,
@@ -113,7 +111,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			);
 		}
 
-		// store the resulting state of the asset
+		// store the resulting state
 		assetRegistry.setState(assetId, state);
 
 		emit AssetProgressed(assetId, eventType, scheduleTime);
