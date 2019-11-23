@@ -1,12 +1,10 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
-
 import "../SharedTypes.sol";
 
 
-contract ProductRegistryStorage is Definitions, SharedTypes {
+contract ProductRegistryStorage is SharedTypes {
 
 	struct Product {
 		mapping (uint256 => bytes32) packedTerms;
@@ -93,49 +91,49 @@ contract ProductRegistryStorage is Definitions, SharedTypes {
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.nonCyclicSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[NON_CYCLIC_INDEX].productSchedule[i] = productSchedules.nonCyclicSchedule[i];
-			products[productId].productSchedules[NON_CYCLIC_INDEX].numberOfEvents = i;
+			products[productId].productSchedules[NON_CYCLIC_INDEX].length = i;
 		}
 
 		uint8 indexIP = uint8(EventType.IP);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicIPSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexIP].productSchedule[i] = productSchedules.cyclicIPSchedule[i];
-			products[productId].productSchedules[indexIP].numberOfEvents = i;
+			products[productId].productSchedules[indexIP].length = i;
 		}
 
 		uint8 indexPR = uint8(EventType.PR);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicPRSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexPR].productSchedule[i] = productSchedules.cyclicPRSchedule[i];
-			products[productId].productSchedules[indexPR].numberOfEvents = i;
+			products[productId].productSchedules[indexPR].length = i;
 		}
 
 		uint8 indexRR = uint8(EventType.RR);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicRRSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexRR].productSchedule[i] = productSchedules.cyclicRRSchedule[i];
-			products[productId].productSchedules[indexRR].numberOfEvents = i;
+			products[productId].productSchedules[indexRR].length = i;
 		}
 
 		uint8 indexPY = uint8(EventType.PY);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicPYSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexPY].productSchedule[i] = productSchedules.cyclicPYSchedule[i];
-			products[productId].productSchedules[indexPY].numberOfEvents = i;
+			products[productId].productSchedules[indexPY].length = i;
 		}
 
 		uint8 indexSC = uint8(EventType.SC);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicSCSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexSC].productSchedule[i] = productSchedules.cyclicSCSchedule[i];
-			products[productId].productSchedules[indexSC].numberOfEvents = i;
+			products[productId].productSchedules[indexSC].length = i;
 		}
 
 		uint8 indexFP = uint8(EventType.FP);
 		for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
 			if (productSchedules.cyclicFPSchedule[i] == bytes32(0)) break;
 			products[productId].productSchedules[indexFP].productSchedule[i] = productSchedules.cyclicFPSchedule[i];
-			products[productId].productSchedules[indexFP].numberOfEvents = i;
+			products[productId].productSchedules[indexFP].length = i;
 		}
 	}
 

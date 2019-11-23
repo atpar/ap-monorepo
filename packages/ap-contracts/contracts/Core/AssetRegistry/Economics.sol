@@ -20,10 +20,7 @@ contract Economics is AssetRegistryStorage {
 	 * @return terms of the asset
 	 */
 	function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory) {
-		return deriveLifecycleTerms(
-			productRegistry.getProductTerms(assets[assetId].productId),
-			decodeAndGetTerms(assetId)
-		);
+		return decodeAndGetTerms(assetId);
 	}
 
 	/**
@@ -59,81 +56,170 @@ contract Economics is AssetRegistryStorage {
 	 * @return Anchor date
 	 */
 	function getAnchorDate(bytes32 assetId) external view returns (uint256) {
-		CustomTerms memory terms = decodeAndGetTerms(assetId);
-		return terms.anchorDate;
+		return decodeAndGetAnchorDate(assetId);
 	}
 
 	/**
-	 * returns the next event of the non-cyclic event schedule of an asset
+	 * returns the next event to process by checking for the earliest schedule time for each
+	 * upcoming event of each schedule (non-cyclic, cyclic schedules).
+	 * if the underlying of the asset changes its performance to a covered performance
+	 * it returns the ExecutionDate event
 	 * @param assetId id of the asset
-	 * @return next event of the non-cyclic schedule
+	 * @return event
 	 */
-	function getNextNonCyclicEvent(bytes32 assetId) external view returns (bytes32) {
-		if (productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) == 0) {
-			return bytes32(0);
+	function getNextEvent (bytes32 assetId) external view returns (bytes32) {
+		LifecycleTerms memory terms = decodeAndGetTerms(assetId);
+
+		EventType nextEventType;
+		uint256 nextScheduleTimeOffset;
+
+		// non-cyclic Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, NON_CYCLIC_INDEX) > 0) {
+			bytes32 nonCyclicEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				NON_CYCLIC_INDEX,
+				assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(nonCyclicEvent);
+
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
 		}
 
-		CustomTerms memory terms = decodeAndGetTerms(assetId);
+		// IP / IPCI Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.IP)) > 0) {
+			bytes32 ipEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				uint8(EventType.IP),
+				assets[assetId].nextEventIndex[uint8(EventType.IP)]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ipEvent);
 
-		bytes32 _event = productRegistry.getNonCyclicEventAtIndex(
-			assets[assetId].productId,
-			assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]
-		);
-
-		// shift scheduleTime
-		(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(_event);
-
-		return encodeEvent(
-			eventType,
-			scheduleTimeOffset + terms.anchorDate
-		);
-	}
-
-	/**
-	 * returns the next event of a cyclic event schedule of an asset
-	 * @param assetId id of the asset
-	 * @param eventType event type of the cyclic schedule
-	 * @return next event of the non-cyclic event schedule
-	 */
-	function getNextCyclicEvent(bytes32 assetId, EventType eventType) external view returns (bytes32) {
-		if (productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) == 0) {
-			return bytes32(0);
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
 		}
 
-		CustomTerms memory terms = decodeAndGetTerms(assetId);
+		// PR Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.PR)) > 0) {
+			bytes32 prEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				uint8(EventType.PR),
+				assets[assetId].nextEventIndex[uint8(EventType.PR)]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(prEvent);
 
-		bytes32 _event = productRegistry.getCyclicEventAtIndex(
-			assets[assetId].productId,
-			eventType,
-			assets[assetId].nextEventIndex[uint8(eventType)]
-		);
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
+		}
 
-		// shift scheduleTime
-		(, uint256 scheduleTimeOffset) = decodeEvent(_event);
+		// SC Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.SC)) > 0) {
+			bytes32 scEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				uint8(EventType.SC),
+				assets[assetId].nextEventIndex[uint8(EventType.SC)]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(scEvent);
+
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
+		}
+
+		// RR Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.RR)) > 0) {
+			bytes32 rrEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				uint8(EventType.RR),
+				assets[assetId].nextEventIndex[uint8(EventType.RR)]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(rrEvent);
+
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
+		}
+
+		// PY Events
+		if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.PY)) > 0) {
+			bytes32 pyEvent = productRegistry.getEventAtIndex(
+				assets[assetId].productId,
+				uint8(EventType.PY),
+				assets[assetId].nextEventIndex[uint8(EventType.PY)]
+			);
+			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(pyEvent);
+
+			if (
+				(scheduleTimeOffset > nextScheduleTimeOffset)
+				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+			) {
+				nextScheduleTimeOffset = scheduleTimeOffset;
+				nextEventType = eventType;
+			}
+		}
+
+		// Underlying
+		bytes32 underlyingAssetId = terms.contractStructure.object;
+		if (underlyingAssetId != bytes32(0)) {
+			State memory underlyingState = decodeAndGetState(underlyingAssetId);
+			LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);
+
+			require(
+				underlyingState.statusDate != uint256(0),
+				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
+			);
+
+			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
+				// insert ExecutionDate event
+				nextEventType = EventType.XD;
+
+				if (underlyingState.contractPerformance == ContractPerformance.DL) {
+					nextScheduleTimeOffset = underlyingState.nonPerformingDate;
+				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
+					nextScheduleTimeOffset = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
+				} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
+					nextScheduleTimeOffset = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
+				}
+			}
+		}
 
 		return encodeEvent(
-			eventType,
-			scheduleTimeOffset + terms.anchorDate
+			nextEventType,
+			nextScheduleTimeOffset + decodeAndGetAnchorDate(assetId)
 		);
 	}
 
 	/**
-	 * returns the index of the last processed event for a non-cyclic schedule of an asset
+	 * returns the index of the last processed event for a schedule of an asset
 	 * @param assetId id of the asset
+	 * @param scheduleId id of the schedule
 	 * @return Index
 	 */
-	function getNonCyclicScheduleIndex(bytes32 assetId) external view returns (uint256) {
-		return assets[assetId].nextEventIndex[NON_CYCLIC_INDEX];
-	}
-
-	/**
-	 * returns the index of the last processed event for a non-cyclic schedule of an asset
-	 * @param assetId id of the asset
-	 * @param eventType event type of the cyclic schedule
-	 * @return Index
-	 */
-	function getCyclicScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256) {
-		return assets[assetId].nextEventIndex[uint8(eventType)];
+	function getScheduleIndex(bytes32 assetId, uint8 scheduleId) external view returns (uint256) {
+		return assets[assetId].nextEventIndex[scheduleId];
 	}
 
 	/**
@@ -157,38 +243,24 @@ contract Economics is AssetRegistryStorage {
 	}
 
 	/**
-	 * sets the index of a non-cyclic schedule of an asset
+	 * increments the index of a schedule of an asset
+	 * if max index is reached the index will be left unchanged
 	 * @param assetId id of the asset
-	 * @param nextIndex the new index
+	 * @param scheduleId id of the schedule
 	 */
-	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public onlyDesignatedActor (assetId) {
-		require(
-			productRegistry.getNonCyclicScheduleLength(assets[assetId].productId) > nextIndex,
-			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
-		);
-
-		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
-	}
-
-	/**
-	 * sets the index of a cyclic schedule of an asset
-	 * @param assetId id of the asset
-	 * @param eventType event type of the cyclic schedule
-	 * @param nextIndex the new index
-	 */
-	function setCyclicEventIndex(
+	function incrementScheduleIndex(
 		bytes32 assetId,
-		EventType eventType,
-		uint256 nextIndex
+		uint8 scheduleId
 	)
-		public
+		external
 		onlyDesignatedActor (assetId)
 	{
-		require(
-			productRegistry.getCyclicScheduleLength(assets[assetId].productId, eventType) > nextIndex,
-			"AssetRegistry.setNonCyclicEventIndex: OUT_OF_BOUNDS"
-		);
+		uint256 scheduleIndex = assets[assetId].nextEventIndex[scheduleId];
 
-		assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]++;
+		if (scheduleIndex == productRegistry.getScheduleLength(assets[assetId].productId, scheduleId)) {
+			return;
+		}
+
+		assets[assetId].nextEventIndex[scheduleId] = scheduleIndex + 1;
 	}
 }

@@ -52,8 +52,9 @@ contract('ProductRegistry', (accounts) => {
 
     const storedNonCyclicSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getNonCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
+        255,
         i
       );
 
@@ -62,7 +63,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicIPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         8,
         i
@@ -73,7 +74,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicPRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         15,
         i
@@ -84,7 +85,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicSCSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         19,
         i
@@ -95,7 +96,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicRRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         18,
         i
@@ -106,7 +107,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicFPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         4,
         i
@@ -117,7 +118,7 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicPYSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getCyclicEventAtIndex(
+      const _event = await this.ProductRegistryInstance.getEventAtIndex(
         web3.utils.toHex(this.productId),
         11,
         i

@@ -22,25 +22,19 @@ contract IAssetRegistry is AssetRegistryStorage {
 
 	function getFinalizedState(bytes32 assetId) external view returns (State memory);
 
+	function getAnchorDate(bytes32 assetId) external view returns (uint256);
+
 	function getEngineAddress(bytes32 assetId) external view returns (address);
 
-	function getNextNonCyclicEvent(bytes32 assetId) external view returns (bytes32);
+	function getNextEvent (bytes32 assetId) external view returns (bytes32);
 
-	function getNextCyclicEvent(bytes32 assetId, EventType eventType) external view returns (bytes32);
+	function getScheduleIndex(bytes32 assetId, uint8 scheduleId) external view returns (uint256);
 
-	function getNonCyclicScheduleIndex(bytes32 assetId) external view returns (uint256);
-
-	function getCyclicScheduleIndex(bytes32 assetId, EventType eventType) external view returns (uint256);
-
-	function getAnchorDate(bytes32 assetId) external view returns (uint256);
+	function incrementScheduleIndex(bytes32 assetId, uint8 scheduleId) external;
 
 	function setState(bytes32 assetId, State memory state) public;
 
 	function setFinalizedState(bytes32 assetId, State memory state) public;
-
-	function setNonCyclicEventIndex(bytes32 assetId, uint256 nextIndex) public;
-
-	function setCyclicEventIndex(bytes32 assetId, EventType eventType, uint256 nextIndex) public;
 
 	function registerAsset(
 		bytes32 assetId,
