@@ -7,6 +7,9 @@ import "./IMarketObjectRegistry.sol";
 import "./MarketObjectRegistryStorage.sol";
 
 
+/**
+ *
+ */
 contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegistry, Ownable {
 
   /**
@@ -44,7 +47,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
       "MarketObjectRegistry.publishMarketObject: UNAUTHORIZED_SENDER"
     );
 
-    dataPoints[marketObjectId][timestamp] = dataPoint;
+    dataPoints[marketObjectId][timestamp] = DataPoint(dataPoint, true);
     marketObjectLastUpdatedAt[marketObjectId] = timestamp;
   }
 
@@ -52,7 +55,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
    * returns a data point of a market object for a given timestamp
    * @param marketObjectId id of the market object
    * @param timestamp timestamp of the data point
-   * @return data point
+   * @return data point, bool indicating whether data point exists
    */
   function getDataPointOfMarketObject(
     bytes32 marketObjectId,
@@ -60,9 +63,12 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
   )
     public
     view
-    returns (int256)
+    returns (int256, bool)
   {
-    return dataPoints[marketObjectId][timestamp];
+    return (
+      dataPoints[marketObjectId][timestamp].dataPoint,
+      dataPoints[marketObjectId][timestamp].isSet
+    );
   }
 
   /**

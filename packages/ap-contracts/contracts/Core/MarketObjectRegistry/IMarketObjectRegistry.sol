@@ -25,7 +25,7 @@ contract IMarketObjectRegistry is MarketObjectRegistryStorage {
   )
     public
     view
-    returns (int256);
+    returns (int256, bool);
 
   function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
     public
