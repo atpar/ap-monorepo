@@ -9,6 +9,12 @@ import "./MarketObjectRegistryStorage.sol";
 
 contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegistry, Ownable {
 
+  /**
+   * registers / updates a market object provider
+   * @dev can only be called by the owner of the MarketObjectRegistry
+   * @param marketObjectId id of the market object
+   * @param provider address of the provider
+   */
   function setMarketObjectProvider(
     bytes32 marketObjectId,
     address provider
@@ -19,21 +25,36 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
     marketObjectProviders[marketObjectId] = provider;
   }
 
-  function publishMarketObject(
+  /**
+   * stores a new data point of a market object for a given timestamp
+   * @dev can only be called by a whitelisted market object provider
+   * @param marketObjectId id of the market object (see ACTUS spec.)
+   * @param timestamp timestamp of the data point
+   * @param dataPoint the data point for the market object
+   */
+  function publishDataPointOfMarketObject(
     bytes32 marketObjectId,
     uint256 timestamp,
-    int256 marketObject
-  ) public {
+    int256 dataPoint
+  ) 
+    public 
+  {
     require(
       msg.sender == marketObjectProviders[marketObjectId],
       "MarketObjectRegistry.publishMarketObject: UNAUTHORIZED_SENDER"
     );
 
-    marketObjects[marketObjectId][timestamp] = marketObject;
+    dataPoints[marketObjectId][timestamp] = dataPoint;
     marketObjectLastUpdatedAt[marketObjectId] = timestamp;
   }
 
-  function getMarketObject(
+  /**
+   * returns a data point of a market object for a given timestamp
+   * @param marketObjectId id of the market object
+   * @param timestamp timestamp of the data point
+   * @return data point
+   */
+  function getDataPointOfMarketObject(
     bytes32 marketObjectId,
     uint256 timestamp
   )
@@ -41,13 +62,16 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
     view
     returns (int256)
   {
-    return marketObjects[marketObjectId][timestamp];
+    return dataPoints[marketObjectId][timestamp];
   }
 
-  function getMarketObjectLastUpdatedTimestamp(
-    bytes32 marketObjectId,
-    uint256 timestamp
-  )
+  /**
+   * returns the timestamp on which the last data point for a market object 
+   * was submitted
+   * @param marketObjectId id of the market object
+   * @return last updated timestamp
+   */
+  function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
     public
     view
     returns (uint256)

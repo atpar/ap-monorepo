@@ -6,14 +6,20 @@ import "./MarketObjectRegistryStorage.sol";
 
 contract IMarketObjectRegistry is MarketObjectRegistryStorage {
 
-  function publishMarketObject(
+  function setMarketObjectProvider(
     bytes32 marketObjectId,
-    uint256 timestamp,
-    int256 marketObject
+    address provider
   )
     public;
 
-  function getMarketObject(
+  function publishDataPointOfMarketObject(
+    bytes32 marketObjectId,
+    uint256 timestamp,
+    int256 dataPoint
+  )
+    public;
+
+  function getDataPointOfMarketObject(
     bytes32 marketObjectId,
     uint256 timestamp
   )
@@ -21,10 +27,7 @@ contract IMarketObjectRegistry is MarketObjectRegistryStorage {
     view
     returns (int256);
 
-  function getMarketObjectLastUpdatedTimestamp(
-    bytes32 marketObjectId,
-    uint256 timestamp
-  )
+  function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
     public
     view
     returns (uint256);
