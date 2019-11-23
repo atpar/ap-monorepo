@@ -1,12 +1,10 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
-
 import "../SharedTypes.sol";
 
 
-contract ProductRegistryStorage is Definitions, SharedTypes {
+contract ProductRegistryStorage is SharedTypes {
 
 	struct Product {
 		mapping (uint256 => bytes32) packedTerms;
