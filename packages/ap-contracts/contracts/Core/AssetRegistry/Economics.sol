@@ -192,10 +192,16 @@ contract Economics is AssetRegistryStorage {
 				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
 			);
 
-			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
+			// check if ExecutionDate has been triggered
+			if (underlyingState.executionAmount > 0) {
+				// insert SettlementDate event
+				nextEventType = EventType.STD;
+				nextScheduleTimeOffset = block.timestamp;
+			// if not check if performance of underlying asset is covered by this asset
+			} else if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
 				// insert ExecutionDate event
 				nextEventType = EventType.XD;
-
+				// derive scheduleTimeOffset from performance
 				if (underlyingState.contractPerformance == ContractPerformance.DL) {
 					nextScheduleTimeOffset = underlyingState.nonPerformingDate;
 				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {

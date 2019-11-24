@@ -3,30 +3,27 @@ pragma solidity ^0.5.2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 
-import "actus-solidity/contracts/Core/Definitions.sol";
 
-import "./AssetRegistry/IAssetRegistry.sol";
-import "./SharedTypes.sol";
+contract Custodian is ReentrancyGuard {
 
-contract Custodian is Definitions, SharedTypes, ReentrancyGuard {
-
-	IAssetRegistry public assetRegistry;
 	address public assetIssuer;
+	address public assetActor;
 
 	mapping(bytes32 => uint256) collateral;
 
 
-	constructor(IAssetRegistry _assetRegistry, address _assetIssuer) public {
-		assetRegistry = _assetRegistry;
+	constructor(address _assetActor, address _assetIssuer) public {
 		assetIssuer = _assetIssuer;
+		assetActor = _assetActor;
 	}
 
 	function lockCollateral(
 		bytes32 assetId,
-		LifecycleTerms memory terms,
-		AssetOwnership memory ownership
+		uint256 collateralAmount,
+		address collateralizer,
+		address collateralToken
 	)
-		public
+		external
 		returns (bool)
 	{
 		require(
@@ -34,50 +31,48 @@ contract Custodian is Definitions, SharedTypes, ReentrancyGuard {
 			"Custodian.lockCollateral: UNAUTHORIZED_SENDER"
 		);
 
-		// derive address of collateralizer
-		address collateralizer = (terms.contractRole == ContractRole.RPA)
-			? ownership.creatorObligor
-			: ownership.counterpartyObligor;
-
 		require(
-			IERC20(terms.currency).allowance(collateralizer) >= terms.coverageOfCreditEnhancement,
+			IERC20(collateralToken).allowance(collateralizer, address(this)) >= collateralAmount,
 			"Custodian.lockCollateral: INSUFFICIENT_ALLOWANCE"
 		);
 
 		// try transferring collateral from collateralizer to the custodian
 		require(
-			IERC20(terms.currency).transferFrom(collateralizer, address(this), terms.coverageOfCreditEnhancement),
+			IERC20(collateralToken).transferFrom(collateralizer, address(this), collateralAmount),
 			"Custodian.lockCollateral: TRANFER_FAILED"
 		);
 
+		require(
+			IERC20(collateralToken).approve(assetActor, collateralAmount),
+			"Custodian.lockCollateral: APPROVEMENT_FAILED"
+		);
+
 		// register collateral for assetId
-		collateral[assetId] = terms.coverageOfCreditEnhancement;
+		collateral[assetId] = collateralAmount;
 
 		return true;
 	}
 
-	function payoutCollateral(bytes32 assetId) external nonReentrant {
-		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
-		LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
-		State memory state = assetRegistry.getState(assetId);
+	// function payoutCollateral(
+	// 	bytes32 assetId,
+	// 	address collateralRecipient,
+	// 	address collateralToken
+	// )
+	// 	external
+	// 	nonReentrant
+	// 	returns (bool)
+	// {
+	// 	require(
+	// 		msg.sender == assetActor,
+	// 		"Custodian.payoutCollateral: UNAUTHORIZED_SENDER"
+	// 	);
 
-		require(
-			collateral[assetId] >= uint256(0),
-			"Custodian.payoutCollateral: ENTRY_NOT_FOUND"
-		);
+	// 	if (collateral[assetId] == uint256(0)) return true;
 
-		if (state.contractPerformance == ContractPerformance.DF) {
-			IERC20(terms.currency).transferFrom(
-				address(this),
-				(terms.contractRole == ContractRole.RPA) ? ownership.creatorBeneficiary : ownership.counterpartyBeneficiary,
-				collateral[assetId]
-			);
-		} else if (state.maturityDate <= block.timestamp) {
-			IERC20(terms.currency).transferFrom(
-				address(this),
-				(terms.contractRole == ContractRole.RPA) ? ownership.counterpartyBeneficiary : ownership.creatorBeneficiary,
-				collateral[assetId]
-			);
-		}
-	}
+	// 	return IERC20(collateralToken).transferFrom(
+	// 		address(this),
+	// 		collateralRecipient,
+	// 		collateral[assetId]
+	// 	);
+	// }
 }
