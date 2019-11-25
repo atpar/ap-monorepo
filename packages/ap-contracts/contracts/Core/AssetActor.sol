@@ -93,15 +93,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		}
 
 		// handle external data
-		if (eventType == EventType.RR) {
-			// get rate from MOR
-			(int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
-				terms.marketObjectCodeRateReset,
-				scheduleTime
-			);
-			// update rate in state
-			if (isSet) state.resetRate = resetRate;
-		}
+		state = updateStateForEventsWhichRequireExternalData(_event, terms, state);
 
 		// compute payoff and the next state by applying the event to the current state
 		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
@@ -136,7 +128,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided custom terms and stores the initial state, 
+	 * derives the initial state of the asset from the provided custom terms and stores the initial state,
 	 * the custom terms together with the ownership of the asset in the AssetRegistry
 	 * @dev can only be called by a whitelisted issuer
 	 * @param assetId id of the asset
@@ -255,10 +247,33 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// skip - for unscheduled events (e.g. CE, XD) there are no corresponding schedules
 		if (isUnscheduledEventType(eventType)) return;
 
-		// increment schedule index by deriving schedule index from the event type 
+		// increment schedule index by deriving schedule index from the event type
 		assetRegistry.incrementScheduleIndex(
 			assetId,
 			deriveScheduleIndexFromEventType(eventType)
 		);
+	}
+
+	function updateStateForEventsWhichRequireExternalData(
+		bytes32 _event,
+		LifecycleTerms memory terms,
+		State memory state
+	)
+		internal
+		returns (State memory)
+	{
+		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+ 		if (eventType == EventType.RR) {
+			// get rate from MOR
+			(int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+				terms.marketObjectCodeRateReset,
+				scheduleTime
+			);
+			// update rate in state
+			if (isSet) state.resetRate = resetRate;
+		}
+
+		return state;
 	}
 }
