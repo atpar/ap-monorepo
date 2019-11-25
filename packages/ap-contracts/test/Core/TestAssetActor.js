@@ -14,6 +14,8 @@ const {
   mineBlock
 } = require('../helper/blockchain');
 
+const ExternalDataTerms = require('../helper/external-data-terms.json');
+
 
 contract('AssetActor', (accounts) => {
 
@@ -230,40 +232,76 @@ contract('AssetActor', (accounts) => {
 
   it('should process next state with external rate', async () => {
     // schedule with RR
+    const terms = ExternalDataTerms;
+    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
+    const productTerms = parseTermsToProductTerms(terms);
+    const generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(terms));
+    const customTerms = parseTermsToCustomTerms(terms);
+
+    const productSchedules = {
+      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
+      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
+      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
+      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
+      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
+      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
+      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
+    };
+
+    // only want RR events in the schedules
+    productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
+    productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
+    
     // store product
-    // issue asset
-    // ...
+    const assetId = 'External Data Asset';
+    const productId = 'External Data Product';
+    const resetRate = 500000;
 
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
 
-    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.terms);
+    await this.AssetActorInstance.initialize(
+      web3.utils.toHex(assetId),
+      this.ownership,
+      web3.utils.toHex(productId),
+      customTerms,
+      this.PAMEngineInstance.address
+    );
 
-    // progress asset state to after deliquency period
-    await mineBlock(Number(eventTime) + 3000000);
-
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const initialState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
+    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(assetId));
+    const eventTime = await getEventTime(_event, terms);
+    
+    await mineBlock(Number(eventTime));
+    
+    await this.MarketObjectRegistryInstance.setMarketObjectProvider(
+      terms.marketObjectCodeRateReset,
+      accounts[0]
+      );
+      
+    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+      terms.marketObjectCodeRateReset,
+      eventTime,
+      resetRate
+    );
+        
+    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
       txHash, AssetActor, 'AssetProgressed'
     );
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
 
     // compute expected next state
+    const state = { ...initialState, resetRate: resetRate };
+    state[13] = resetRate;
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
-      this.state,
+      lifecycleTerms,
+      state,
       _event,
       eventTime
     );
 
-    // nonPerformingDate = eventTime of first event
-    projectedNextState.nonPerformingDate = String(eventTime);
-    projectedNextState[2] = String(eventTime);
-    // contractPerformance = DQ
-    projectedNextState.contractPerformance = '2';
-    projectedNextState[0] = '2';
-
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.deepEqual(storedNextState, projectedNextState);
 

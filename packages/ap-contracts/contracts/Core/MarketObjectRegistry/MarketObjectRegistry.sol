@@ -39,8 +39,8 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
     bytes32 marketObjectId,
     uint256 timestamp,
     int256 dataPoint
-  ) 
-    public 
+  )
+    public
   {
     require(
       msg.sender == marketObjectProviders[marketObjectId],
