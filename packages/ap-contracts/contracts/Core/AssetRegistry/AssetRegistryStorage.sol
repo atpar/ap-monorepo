@@ -80,6 +80,7 @@ contract AssetRegistryStorage is Core, SharedTypes {
 		if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[111] = bytes32(state.notionalScalingMultiplier);
 		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[112] = bytes32(state.nextPrincipalRedemptionPayment);
 		if (state.executionAmount != int256(0)) assets[assetId].packedTermsState[113] = bytes32(state.executionAmount);
+		if (state.resetRate != int256(0)) assets[assetId].packedTermsState[114] = bytes32(state.resetRate);
 	}
 
 	function encodeAndSetFinalizedState(bytes32 assetId, State memory state) internal {
@@ -101,6 +102,7 @@ contract AssetRegistryStorage is Core, SharedTypes {
 		if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[161] = bytes32(state.notionalScalingMultiplier);
 		if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[162] = bytes32(state.nextPrincipalRedemptionPayment);
 		if (state.executionAmount != int256(0)) assets[assetId].packedTermsState[163] = bytes32(state.executionAmount);
+		if (state.resetRate != int256(0)) assets[assetId].packedTermsState[164] = bytes32(state.resetRate);
 	}
 
 	function decodeAndGetTerms(bytes32 assetId) internal view returns (LifecycleTerms memory) {
@@ -136,7 +138,8 @@ contract AssetRegistryStorage is Core, SharedTypes {
 			int256(assets[assetId].packedTermsState[110]),
 			int256(assets[assetId].packedTermsState[111]),
 			int256(assets[assetId].packedTermsState[112]),
-			int256(assets[assetId].packedTermsState[113])
+			int256(assets[assetId].packedTermsState[113]),
+			int256(assets[assetId].packedTermsState[114])
 		);
 	}
 
@@ -156,7 +159,8 @@ contract AssetRegistryStorage is Core, SharedTypes {
 			int256(assets[assetId].packedTermsState[160]),
 			int256(assets[assetId].packedTermsState[161]),
 			int256(assets[assetId].packedTermsState[162]),
-			int256(assets[assetId].packedTermsState[163])
+			int256(assets[assetId].packedTermsState[163]),
+			int256(assets[assetId].packedTermsState[164])
 		);
 	}
 }

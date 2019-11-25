@@ -35,12 +35,15 @@ contract SharedTypes is Definitions {
 		DayCountConvention dayCountConvention;
 		BusinessDayConvention businessDayConvention;
 		EndOfMonthConvention endOfMonthConvention;
-		address currency;
 		ScalingEffect scalingEffect;
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
 		ContractPerformance creditEventTypeCovered;
 		ContractStructure contractStructure;
+
+		address currency;
+
+		bytes32 marketObjectCodeRateReset;
 
 		uint256 statusDateOffset;
 		uint256 maturityDateOffset;
@@ -82,12 +85,15 @@ contract SharedTypes is Definitions {
 			productTerms.dayCountConvention,
 			productTerms.businessDayConvention,
 			productTerms.endOfMonthConvention,
-			productTerms.currency,
 			productTerms.scalingEffect,
 			productTerms.penaltyType,
 			productTerms.feeBasis,
 			productTerms.creditEventTypeCovered,
 			productTerms.contractStructure,
+
+			productTerms.currency,
+
+			productTerms.marketObjectCodeRateReset,
 
 			productTerms.statusDateOffset + customTerms.anchorDate,
 			productTerms.maturityDateOffset + customTerms.anchorDate,

@@ -227,4 +227,46 @@ contract('AssetActor', (accounts) => {
 
     await revertToSnapshot(snapshot_asset);
   });
+
+  it('should process next state with external rate', async () => {
+    // schedule with RR
+    // store product
+    // issue asset
+    // ...
+
+
+    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.terms);
+
+    // progress asset state to after deliquency period
+    await mineBlock(Number(eventTime) + 3000000);
+
+    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
+      txHash, AssetActor, 'AssetProgressed'
+    );
+    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+
+    // compute expected next state
+    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
+      this.lifecycleTerms,
+      this.state,
+      _event,
+      eventTime
+    );
+
+    // nonPerformingDate = eventTime of first event
+    projectedNextState.nonPerformingDate = String(eventTime);
+    projectedNextState[2] = String(eventTime);
+    // contractPerformance = DQ
+    projectedNextState.contractPerformance = '2';
+    projectedNextState[0] = '2';
+
+    // compare results
+    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(storedNextState.statusDate, eventTime);
+    assert.deepEqual(storedNextState, projectedNextState);
+
+    await revertToSnapshot(snapshot_asset);
+  });
 });

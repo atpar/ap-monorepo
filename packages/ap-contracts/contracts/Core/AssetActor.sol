@@ -11,12 +11,14 @@ import "./SharedTypes.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
 import "./ProductRegistry/IProductRegistry.sol";
+import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
 contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IProductRegistry productRegistry;
+	IMarketObjectRegistry marketObjectRegistry;
 
 	mapping(address => bool) public issuers;
 
@@ -29,11 +31,16 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		_;
 	}
 
-	constructor (IAssetRegistry _assetRegistry, IProductRegistry _productRegistry)
+	constructor (
+		IAssetRegistry _assetRegistry,
+		IProductRegistry _productRegistry,
+		IMarketObjectRegistry _marketObjectRegistry
+	)
 		public
 	{
 		assetRegistry = _assetRegistry;
 		productRegistry = _productRegistry;
+		marketObjectRegistry = _marketObjectRegistry;
 	}
 
 	/**
@@ -83,6 +90,17 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			// skip the event by incrementing the corresponding schedule index
 			updateScheduleIndex(assetId, eventType);
 			return;
+		}
+
+		// handle external data
+		if (eventType == EventType.RR) {
+			// get rate from MOR
+			(int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+				terms.marketObjectCodeRateReset,
+				scheduleTime
+			);
+			// update rate in state
+			if (isSet) state.resetRate = resetRate;
 		}
 
 		// compute payoff and the next state by applying the event to the current state
