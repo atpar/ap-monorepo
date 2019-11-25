@@ -119,7 +119,7 @@ contract('AssetActor', (accounts) => {
       this.lifecycleTerms, 
       this.state, 
       _event,
-      eventTime
+      web3.utils.toHex(eventTime)
     ));
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
@@ -146,7 +146,7 @@ contract('AssetActor', (accounts) => {
       this.lifecycleTerms,
       this.state,
       _event,
-      eventTime
+      web3.utils.toHex(eventTime)
     );
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
@@ -175,7 +175,7 @@ contract('AssetActor', (accounts) => {
       this.lifecycleTerms,
       this.state,
       _event,
-      eventTime
+      web3.utils.toHex(eventTime)
     );
     
     // nonPerformingDate = eventTime of first event
@@ -212,7 +212,7 @@ contract('AssetActor', (accounts) => {
       this.lifecycleTerms,
       this.state,
       _event,
-      eventTime
+      web3.utils.toHex(eventTime)
     );
 
     // nonPerformingDate = eventTime of first event
@@ -291,13 +291,11 @@ contract('AssetActor', (accounts) => {
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
 
     // compute expected next state
-    const state = { ...initialState, resetRate: resetRate };
-    state[13] = resetRate;
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
       lifecycleTerms,
-      state,
+      initialState,
       _event,
-      eventTime
+      web3.utils.toHex(resetRate)
     );
 
     // compare results

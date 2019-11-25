@@ -51,6 +51,7 @@ contract ProductRegistryStorage is SharedTypes {
 
 		if (terms.feeAccrued != int256(0)) products[productId].packedTerms[19] = bytes32(terms.feeAccrued);
 		if (terms.accruedInterest != int256(0)) products[productId].packedTerms[20] = bytes32(terms.accruedInterest);
+		if (terms.rateMultiplier != int256(0)) products[productId].packedTerms[21] = bytes32(terms.rateMultiplier);
 		if (terms.rateSpread != int256(0)) products[productId].packedTerms[22] = bytes32(terms.rateSpread);
 		if (terms.feeRate != int256(0)) products[productId].packedTerms[23] = bytes32(terms.feeRate);
 		if (terms.nextResetRate != int256(0)) products[productId].packedTerms[24] = bytes32(terms.nextResetRate);
@@ -164,6 +165,7 @@ contract ProductRegistryStorage is SharedTypes {
 			uint256(products[productId].packedTerms[8]),
 			int256(products[productId].packedTerms[19]),
 			int256(products[productId].packedTerms[20]),
+			int256(products[productId].packedTerms[21]),
 			int256(products[productId].packedTerms[22]),
 			int256(products[productId].packedTerms[23]),
 			int256(products[productId].packedTerms[24]),

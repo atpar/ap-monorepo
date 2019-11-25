@@ -15,6 +15,7 @@
   "maturityDateOffset",
   "feeAccrued",
   "accruedInterest",
+  "rateMultiplier",
   "rateSpread",
   "feeRate",
   "nextResetRate",

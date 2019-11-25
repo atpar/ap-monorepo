@@ -50,6 +50,7 @@ contract SharedTypes is Definitions {
 
 		int256 feeAccrued;
 		int256 accruedInterest;
+		int256 rateMultiplier;
 		int256 rateSpread;
 		int256 feeRate;
 		int256 nextResetRate;
@@ -102,6 +103,7 @@ contract SharedTypes is Definitions {
 			customTerms.nominalInterestRate,
 			productTerms.feeAccrued,
 			productTerms.accruedInterest,
+			productTerms.rateMultiplier,
 			productTerms.rateSpread,
 			productTerms.feeRate,
 			productTerms.nextResetRate,

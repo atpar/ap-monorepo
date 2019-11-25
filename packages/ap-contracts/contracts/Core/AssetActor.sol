@@ -92,12 +92,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			return;
 		}
 
-		// handle external data
-		state = updateStateForEventsWhichRequireExternalData(_event, terms, state);
-
+		// get external data
+		bytes32 externalData = getExternalDataForEvent(_event, terms);
 		// compute payoff and the next state by applying the event to the current state
-		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
-		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
+		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalData);
+		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
 
 		// try to settle payoff of event
 		if (settlePayoffForEvent(assetId, _event, payoff, terms.currency)) {
@@ -112,12 +111,15 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				assetRegistry.setFinalizedState(assetId, state);
 			}
 
+			// create ceEvent
+			bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
 			// derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
 			state = IEngine(engineAddress).computeStateForEvent(
 				terms,
 				state,
-				encodeEvent(EventType.CE, scheduleTime),
-				block.timestamp
+				ceEvent,
+				getExternalDataForEvent(ceEvent, terms)
 			);
 		}
 
@@ -254,13 +256,12 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		);
 	}
 
-	function updateStateForEventsWhichRequireExternalData(
+	function getExternalDataForEvent(
 		bytes32 _event,
-		LifecycleTerms memory terms,
-		State memory state
+		LifecycleTerms memory terms
 	)
 		internal
-		returns (State memory)
+		returns (bytes32)
 	{
 		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -270,10 +271,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				terms.marketObjectCodeRateReset,
 				scheduleTime
 			);
-			// update rate in state
-			if (isSet) state.resetRate = resetRate;
+			if (isSet) return bytes32(resetRate);
+		} else if (eventType == EventType.CE) {
+			return bytes32(block.timestamp);
 		}
 
-		return state;
+		return bytes32(0);
 	}
 }
