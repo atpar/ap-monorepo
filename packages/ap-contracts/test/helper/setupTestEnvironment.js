@@ -1,6 +1,7 @@
 const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
 // const CEGEngine = artifacts.require('CEGEngine');
+const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
@@ -22,13 +23,15 @@ async function setupTestEnvironment () {
   // instances.CEGEngineInstance = await CEGEngine.new();
   
   // deploy Core
+  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
   instances.ProductRegistryInstance = await ProductRegistry.new();
   instances.AssetRegistryInstance = await AssetRegistry.new(
     instances.ProductRegistryInstance.address
   );
   instances.AssetActorInstance = await AssetActor.new(
     instances.AssetRegistryInstance.address,
-    instances.ProductRegistryInstance.address
+    instances.ProductRegistryInstance.address,
+    instances.MarketObjectRegistryInstance.address
   );
 
   // deploy Issuance

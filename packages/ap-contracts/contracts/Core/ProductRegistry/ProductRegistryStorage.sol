@@ -44,11 +44,14 @@ contract ProductRegistryStorage is SharedTypes {
 
 		if (terms.currency != address(0)) products[productId].packedTerms[4] = bytes32(uint256(terms.currency) << 96);
 
+		if (terms.currency != address(0)) products[productId].packedTerms[5] = bytes32(terms.marketObjectCodeRateReset);
+
 		if (terms.statusDateOffset != uint256(0)) products[productId].packedTerms[6] = bytes32(terms.statusDateOffset);
 		if (terms.maturityDateOffset != uint256(0)) products[productId].packedTerms[8] = bytes32(terms.maturityDateOffset);
 
 		if (terms.feeAccrued != int256(0)) products[productId].packedTerms[19] = bytes32(terms.feeAccrued);
 		if (terms.accruedInterest != int256(0)) products[productId].packedTerms[20] = bytes32(terms.accruedInterest);
+		if (terms.rateMultiplier != int256(0)) products[productId].packedTerms[21] = bytes32(terms.rateMultiplier);
 		if (terms.rateSpread != int256(0)) products[productId].packedTerms[22] = bytes32(terms.rateSpread);
 		if (terms.feeRate != int256(0)) products[productId].packedTerms[23] = bytes32(terms.feeRate);
 		if (terms.nextResetRate != int256(0)) products[productId].packedTerms[24] = bytes32(terms.nextResetRate);
@@ -144,7 +147,6 @@ contract ProductRegistryStorage is SharedTypes {
 			DayCountConvention(uint8(uint256(products[productId].packedTerms[1] >> 224))),
 			BusinessDayConvention(uint8(uint256(products[productId].packedTerms[1] >> 216))),
 			EndOfMonthConvention(uint8(uint256(products[productId].packedTerms[1] >> 208))),
-			address(uint160(uint256(products[productId].packedTerms[4]) >> 96)),
 			ScalingEffect(uint8(uint256(products[productId].packedTerms[1] >> 200))),
 			PenaltyType(uint8(uint256(products[productId].packedTerms[1] >> 192))),
 			FeeBasis(uint8(uint256(products[productId].packedTerms[1] >> 184))),
@@ -154,10 +156,16 @@ contract ProductRegistryStorage is SharedTypes {
 				ContractReferenceType(uint8(uint256(products[productId].packedTerms[42] >> 16))),
 				ContractReferenceRole(uint8(uint256(products[productId].packedTerms[42] >> 8)))
 			),
+
+			address(uint160(uint256(products[productId].packedTerms[4]) >> 96)),
+
+			products[productId].packedTerms[5],
+
 			uint256(products[productId].packedTerms[6]),
 			uint256(products[productId].packedTerms[8]),
 			int256(products[productId].packedTerms[19]),
 			int256(products[productId].packedTerms[20]),
+			int256(products[productId].packedTerms[21]),
 			int256(products[productId].packedTerms[22]),
 			int256(products[productId].packedTerms[23]),
 			int256(products[productId].packedTerms[24]),

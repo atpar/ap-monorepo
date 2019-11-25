@@ -3,6 +3,7 @@ const PAMEngine = artifacts.require('PAMEngine');
 // const CEGEngine = artifacts.require('CEGEngine');
 const SignedMath = artifacts.require('SignedMath');
 
+const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry');
 const ProductRegistry = artifacts.require('ProductRegistry');
 
@@ -23,6 +24,7 @@ module.exports = async (deployer, network, accounts) => {
   // await deployer.deploy(CEGEngine);
 
   // Core
+  await deployer.deploy(MarketObjectRegistry);
   await deployer.deploy(ProductRegistry);
   await deployer.deploy(
     AssetRegistry,
@@ -33,7 +35,8 @@ module.exports = async (deployer, network, accounts) => {
   const AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
-    ProductRegistry.address
+    ProductRegistry.address,
+    MarketObjectRegistry.address
   );
 
   // Issuance
