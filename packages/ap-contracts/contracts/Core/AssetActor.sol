@@ -11,12 +11,14 @@ import "./SharedTypes.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
 import "./ProductRegistry/IProductRegistry.sol";
+import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
 contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IProductRegistry productRegistry;
+	IMarketObjectRegistry marketObjectRegistry;
 
 	mapping(address => bool) public issuers;
 
@@ -29,11 +31,16 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		_;
 	}
 
-	constructor (IAssetRegistry _assetRegistry, IProductRegistry _productRegistry)
+	constructor (
+		IAssetRegistry _assetRegistry,
+		IProductRegistry _productRegistry,
+		IMarketObjectRegistry _marketObjectRegistry
+	)
 		public
 	{
 		assetRegistry = _assetRegistry;
 		productRegistry = _productRegistry;
+		marketObjectRegistry = _marketObjectRegistry;
 	}
 
 	/**
@@ -85,9 +92,11 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			return;
 		}
 
+		// get external data
+		bytes32 externalData = getExternalDataForEvent(_event, terms);
 		// compute payoff and the next state by applying the event to the current state
-		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, block.timestamp);
-		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, block.timestamp);
+		int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalData);
+		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
 
 		// try to settle payoff of event
 		if (settlePayoffForEvent(assetId, _event, payoff, terms.currency)) {
@@ -102,12 +111,15 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				assetRegistry.setFinalizedState(assetId, state);
 			}
 
+			// create ceEvent
+			bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
 			// derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
 			state = IEngine(engineAddress).computeStateForEvent(
 				terms,
 				state,
-				encodeEvent(EventType.CE, scheduleTime),
-				block.timestamp
+				ceEvent,
+				getExternalDataForEvent(ceEvent, terms)
 			);
 		}
 
@@ -118,7 +130,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	}
 
 	/**
-	 * derives the initial state of the asset from the provided custom terms and stores the initial state, 
+	 * derives the initial state of the asset from the provided custom terms and stores the initial state,
 	 * the custom terms together with the ownership of the asset in the AssetRegistry
 	 * @dev can only be called by a whitelisted issuer
 	 * @param assetId id of the asset
@@ -237,10 +249,33 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		// skip - for unscheduled events (e.g. CE, XD) there are no corresponding schedules
 		if (isUnscheduledEventType(eventType)) return;
 
-		// increment schedule index by deriving schedule index from the event type 
+		// increment schedule index by deriving schedule index from the event type
 		assetRegistry.incrementScheduleIndex(
 			assetId,
 			deriveScheduleIndexFromEventType(eventType)
 		);
+	}
+
+	function getExternalDataForEvent(
+		bytes32 _event,
+		LifecycleTerms memory terms
+	)
+		internal
+		returns (bytes32)
+	{
+		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+ 		if (eventType == EventType.RR) {
+			// get rate from MOR
+			(int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+				terms.marketObjectCodeRateReset,
+				scheduleTime
+			);
+			if (isSet) return bytes32(resetRate);
+		} else if (eventType == EventType.CE) {
+			return bytes32(block.timestamp);
+		}
+
+		return bytes32(0);
 	}
 }
