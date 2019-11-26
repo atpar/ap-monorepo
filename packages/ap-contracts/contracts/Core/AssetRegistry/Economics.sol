@@ -182,7 +182,7 @@ contract Economics is AssetRegistryStorage {
 		}
 
 		// Underlying
-		bytes32 underlyingAssetId = terms.contractStructure.object;
+		bytes32 underlyingAssetId = terms.contractReferences[0].object;
 		if (underlyingAssetId != bytes32(0)) {
 			State memory underlyingState = decodeAndGetState(underlyingAssetId);
 			LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);

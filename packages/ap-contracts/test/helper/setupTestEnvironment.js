@@ -5,6 +5,7 @@ const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const Custodian = artifacts.require('Custodian');
 const ProductRegistry = artifacts.require('ProductRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
@@ -33,9 +34,15 @@ async function setupTestEnvironment () {
     instances.ProductRegistryInstance.address,
     instances.MarketObjectRegistryInstance.address
   );
+  instances.CustodianInstance = await Custodian.new(
+    instances.AssetActorInstance.address
+  );
 
   // deploy Issuance
-  instances.AssetIssuerInstance = await AssetIssuer.new();
+  instances.AssetIssuerInstance = await AssetIssuer.new(
+    instances.CustodianInstance.address,
+    instances.ProductRegistryInstance.address
+  );
 
   // deploy Tokenization
   instances.TokenizationFactoryInstance = await TokenizationFactory.new(

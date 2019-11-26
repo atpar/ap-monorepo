@@ -3,11 +3,22 @@ pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
 import "../Core/IAssetActor.sol";
+import "../Core/ICustodian.sol";
+import "../Core/ProductRegistry/IProductRegistry.sol";
 import "./IAssetIssuer.sol";
 import "./VerifyOrder.sol";
 
 
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
+
+	ICustodian public custodian;
+	IProductRegistry public productRegistry;
+
+
+	constructor(ICustodian _custodian, IProductRegistry _productRegistry) public {
+		custodian = _custodian;
+		productRegistry = _productRegistry;
+	}
 
 	/**
 	 * issues an asset from an order which was signed by a maker and taker
@@ -17,48 +28,73 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 	function issueFromOrder(Order memory order)
 		public
 	{
+		// verify signatures of order (and enhancement orders)
 		require(
 			assertOrderSignatures(order),
 			"AssetIssuer.issueFromOrder: INVALID_SIGNATURE"
 		);
 
-		require(
-			issueAsset(
-				keccak256(abi.encode(order.makerSignature, order.takerSignature)),
-				AssetOwnership(order.maker, order.maker, order.taker, order.taker),
-				order.productId,
-				order.customTerms,
-				order.actor,
-				order.engine
+		// issue asset (underlying)
+		issueAsset(
+			keccak256(
+				abi.encode(
+					order.makerSignature,
+					order.takerSignature
+				)
 			),
-			"AssetIssuer.issueFromOrder: Could not issue asset"
+			AssetOwnership(
+				order.maker,
+				order.maker,
+				order.taker,
+				order.taker
+			),
+			order.productId,
+			order.customTerms,
+			order.actor,
+			order.engine
 		);
 
+		// check if first enhancement order is specified
 		if (order.enhancementOrder_1.termsHash != bytes32(0)) {
-			require(
-				issueAsset(
-					keccak256(abi.encode(order.enhancementOrder_1.makerSignature, order.enhancementOrder_1.takerSignature)),
-					AssetOwnership(order.enhancementOrder_1.maker, order.enhancementOrder_1.maker, order.enhancementOrder_1.taker, order.enhancementOrder_1.taker),
-					order.enhancementOrder_1.productId,
-					order.enhancementOrder_1.customTerms,
-					order.actor,
-					order.enhancementOrder_1.engine
+			issueAsset(
+				keccak256(
+					abi.encode(
+						order.enhancementOrder_1.makerSignature,
+						order.enhancementOrder_1.takerSignature
+					)
 				),
-				"AssetIssuer.issueFromOrder: Could not issue enhancement"
+				AssetOwnership(
+					order.enhancementOrder_1.maker,
+					order.enhancementOrder_1.maker,
+					order.enhancementOrder_1.taker,
+					order.enhancementOrder_1.taker
+				),
+				order.enhancementOrder_1.productId,
+				order.enhancementOrder_1.customTerms,
+				order.actor,
+				order.enhancementOrder_1.engine
 			);
 		}
 
+		// check if second enhancement order is specified
 		if (order.enhancementOrder_2.termsHash != bytes32(0)) {
-			require(
-				issueAsset(
-					keccak256(abi.encode(order.enhancementOrder_2.makerSignature, order.enhancementOrder_2.takerSignature)),
-					AssetOwnership(order.enhancementOrder_2.maker, order.enhancementOrder_2.maker, order.enhancementOrder_2.taker, order.enhancementOrder_2.taker),
-					order.enhancementOrder_2.productId,
-					order.enhancementOrder_2.customTerms,
-					order.actor,
-					order.enhancementOrder_2.engine
+			issueAsset(
+				keccak256(
+					abi.encode(
+						order.enhancementOrder_2.makerSignature,
+						order.enhancementOrder_2.takerSignature
+					)
 				),
-				"AssetIssuer.issueFromOrder: Could not issue enhancement"
+				AssetOwnership(
+					order.enhancementOrder_2.maker,
+					order.enhancementOrder_2.maker,
+					order.enhancementOrder_2.taker,
+					order.enhancementOrder_2.taker
+				),
+				order.enhancementOrder_2.productId,
+				order.enhancementOrder_2.customTerms,
+				order.actor,
+				order.enhancementOrder_2.engine
 			);
 		}
 	}
@@ -71,16 +107,18 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 	function issueFromDraft(AssetDraft memory draft)
 		public
 	{
-		require(
-			issueAsset(
-				keccak256(abi.encode(draft)),
-				AssetOwnership(draft.creator, draft.creator, draft.counterparty, draft.counterparty),
-				draft.productId,
-				draft.customTerms,
-				draft.actor,
-				draft.engine
+		issueAsset(
+			keccak256(abi.encode(draft)),
+			AssetOwnership(
+				draft.creator,
+				draft.creator,
+				draft.counterparty,
+				draft.counterparty
 			),
-			"AssetIssuer.issueFromDraft: Could not issue asset"
+			draft.productId,
+			draft.customTerms,
+			draft.actor,
+			draft.engine
 		);
 	}
 
@@ -93,8 +131,16 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		address engine
 	)
 		internal
-		returns (bool)
 	{
+		// contract references
+		executeContractualConditions(
+			assetId,
+			ownership,
+			productId,
+			customTerms
+		);
+
+		// initialize the asset by calling the asset actor
 		require(
 			IAssetActor(actor).initialize(
 				assetId,
@@ -107,7 +153,36 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		);
 
 		emit AssetIssued(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
+	}
 
-		return true;
+	function executeContractualConditions(
+		bytes32 assetId,
+		AssetOwnership memory ownership,
+		bytes32 productId,
+		CustomTerms memory customTerms
+	)
+		internal
+	{
+		// derive terms from product terms and custom terms
+		LifecycleTerms memory terms = deriveLifecycleTerms(
+			productRegistry.getProductTerms(productId),
+			customTerms
+		);
+
+		// check if terms contain a reference to collateral
+		if (terms.contractReferences[1].object != bytes32(0)) {
+			require(
+				terms.contractRole == ContractRole.BUY || terms.contractRole == ContractRole.SEL,
+				"AssetIssuer.executeContractualConditions: INVALID_OPTION"
+			);
+
+			// try transferring collateral to the custodian
+			custodian.lockCollateral(
+				assetId,
+				uint256(uint96(uint256(terms.contractReferences[1].object >> 160))),
+				(terms.contractRole == ContractRole.BUY) ? ownership.counterpartyObligor : ownership.creatorObligor,
+				address(uint160(uint256(terms.contractReferences[1].object)))
+			);
+		}
 	}
 }

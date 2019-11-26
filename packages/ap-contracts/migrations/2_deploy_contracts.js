@@ -9,6 +9,7 @@ const ProductRegistry = artifacts.require('ProductRegistry');
 
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const Custodian = artifacts.require('Custodian');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 
@@ -30,17 +31,23 @@ module.exports = async (deployer, network, accounts) => {
     AssetRegistry,
     ProductRegistry.address
   );
-  
-  // Core: Asset Actor
   const AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
     ProductRegistry.address,
     MarketObjectRegistry.address
   );
+  await deployer.deploy(
+    Custodian,
+    AssetActor.address
+  );
 
   // Issuance
-  await deployer.deploy(AssetIssuer);
+  await deployer.deploy(
+    AssetIssuer,
+    Custodian.address,
+    ProductRegistry.address
+  );
 
   // Tokenization
   await deployer.deploy(

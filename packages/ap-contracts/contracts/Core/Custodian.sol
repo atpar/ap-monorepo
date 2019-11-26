@@ -3,8 +3,10 @@ pragma solidity ^0.5.2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 
+import "./ICustodian.sol";
 
-contract Custodian is ReentrancyGuard {
+
+contract Custodian is ICustodian, ReentrancyGuard {
 
 	address public assetIssuer;
 	address public assetActor;
@@ -12,13 +14,12 @@ contract Custodian is ReentrancyGuard {
 	mapping(bytes32 => uint256) collateral;
 
 
-	constructor(address _assetActor, address _assetIssuer) public {
-		assetIssuer = _assetIssuer;
+	constructor(address _assetActor) public {
 		assetActor = _assetActor;
 	}
 
 	function lockCollateral(
-		bytes32 assetId,
+		bytes32 collateralId,
 		uint256 collateralAmount,
 		address collateralizer,
 		address collateralToken
@@ -26,11 +27,6 @@ contract Custodian is ReentrancyGuard {
 		external
 		returns (bool)
 	{
-		require(
-			msg.sender == assetIssuer,
-			"Custodian.lockCollateral: UNAUTHORIZED_SENDER"
-		);
-
 		require(
 			IERC20(collateralToken).allowance(collateralizer, address(this)) >= collateralAmount,
 			"Custodian.lockCollateral: INSUFFICIENT_ALLOWANCE"
@@ -48,31 +44,8 @@ contract Custodian is ReentrancyGuard {
 		);
 
 		// register collateral for assetId
-		collateral[assetId] = collateralAmount;
+		collateral[collateralId] = collateralAmount;
 
 		return true;
 	}
-
-	// function payoutCollateral(
-	// 	bytes32 assetId,
-	// 	address collateralRecipient,
-	// 	address collateralToken
-	// )
-	// 	external
-	// 	nonReentrant
-	// 	returns (bool)
-	// {
-	// 	require(
-	// 		msg.sender == assetActor,
-	// 		"Custodian.payoutCollateral: UNAUTHORIZED_SENDER"
-	// 	);
-
-	// 	if (collateral[assetId] == uint256(0)) return true;
-
-	// 	return IERC20(collateralToken).transferFrom(
-	// 		address(this),
-	// 		collateralRecipient,
-	// 		collateral[assetId]
-	// 	);
-	// }
 }

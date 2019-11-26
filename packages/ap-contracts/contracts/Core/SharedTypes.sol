@@ -39,7 +39,7 @@ contract SharedTypes is Definitions {
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
 		ContractPerformance creditEventTypeCovered;
-		ContractStructure contractStructure;
+		ContractReference[2] contractReferences;
 
 		address currency;
 
@@ -90,7 +90,7 @@ contract SharedTypes is Definitions {
 			productTerms.penaltyType,
 			productTerms.feeBasis,
 			productTerms.creditEventTypeCovered,
-			productTerms.contractStructure,
+			productTerms.contractReferences,
 
 			productTerms.currency,
 

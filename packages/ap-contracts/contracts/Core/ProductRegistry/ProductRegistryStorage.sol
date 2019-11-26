@@ -80,11 +80,17 @@ contract ProductRegistryStorage is SharedTypes {
 
 		if (terms.coverageOfCreditEnhancement != int256(0)) products[productId].packedTerms[40] = bytes32(terms.coverageOfCreditEnhancement);
 
-		if (terms.contractStructure.object != bytes32(0)) {
-			products[productId].packedTerms[41] = bytes32(terms.contractStructure.object);
+		if (terms.contractReferences[0].object != bytes32(0)) {
+			products[productId].packedTerms[41] = bytes32(terms.contractReferences[0].object);
 			products[productId].packedTerms[42] =
-				bytes32(uint256(terms.contractStructure.contractReferenceType)) << 16 |
-				bytes32(uint256(terms.contractStructure.contractReferenceRole)) << 8;
+				bytes32(uint256(terms.contractReferences[0].contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractReferences[0].contractReferenceRole)) << 8;
+		}
+		if (terms.contractReferences[1].object != bytes32(0)) {
+			products[productId].packedTerms[43] = bytes32(terms.contractReferences[1].object);
+			products[productId].packedTerms[44] =
+				bytes32(uint256(terms.contractReferences[1].contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractReferences[1].contractReferenceRole)) << 8;
 		}
 	}
 
@@ -151,11 +157,18 @@ contract ProductRegistryStorage is SharedTypes {
 			PenaltyType(uint8(uint256(products[productId].packedTerms[1] >> 192))),
 			FeeBasis(uint8(uint256(products[productId].packedTerms[1] >> 184))),
 			ContractPerformance(uint8(uint256(products[productId].packedTerms[1] >> 176))),
-			ContractStructure(
-				products[productId].packedTerms[41],
-				ContractReferenceType(uint8(uint256(products[productId].packedTerms[42] >> 16))),
-				ContractReferenceRole(uint8(uint256(products[productId].packedTerms[42] >> 8)))
-			),
+			[
+				ContractReference(
+					products[productId].packedTerms[41],
+					ContractReferenceType(uint8(uint256(products[productId].packedTerms[42] >> 16))),
+					ContractReferenceRole(uint8(uint256(products[productId].packedTerms[42] >> 8)))
+				),
+				ContractReference(
+					products[productId].packedTerms[43],
+					ContractReferenceType(uint8(uint256(products[productId].packedTerms[44] >> 16))),
+					ContractReferenceRole(uint8(uint256(products[productId].packedTerms[44] >> 8)))
+				)
+			],
 
 			address(uint160(uint256(products[productId].packedTerms[4]) >> 96)),
 

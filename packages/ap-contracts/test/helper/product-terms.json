@@ -8,7 +8,7 @@
   "penaltyType",
   "feeBasis",
   "creditEventTypeCovered",
-  "contractStructure",
+  "contractReferences",
   "currency",
   "marketObjectCodeRateReset",
   "statusDateOffset",
