@@ -1,6 +1,7 @@
 const ANNEngine = artifacts.require('ANNEngine');
 const PAMEngine = artifacts.require('PAMEngine');
-// const CEGEngine = artifacts.require('CEGEngine');
+const CEGEngine = artifacts.require('CEGEngine');
+const CECEngine = artifacts.require('CECEngine');
 const SignedMath = artifacts.require('SignedMath');
 
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
@@ -21,8 +22,10 @@ module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(PAMEngine);
   await deployer.link(SignedMath, ANNEngine);
   await deployer.deploy(ANNEngine);
-  // await deployer.link(SignedMath, CEGEngine);
-  // await deployer.deploy(CEGEngine);
+  await deployer.link(SignedMath, CEGEngine);
+  await deployer.deploy(CEGEngine);
+  await deployer.link(SignedMath, CECEngine);
+  await deployer.deploy(CECEngine);
 
   // Core
   await deployer.deploy(MarketObjectRegistry);

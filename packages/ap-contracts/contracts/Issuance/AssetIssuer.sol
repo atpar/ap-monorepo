@@ -171,18 +171,8 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 
 		// check if terms contain a reference to collateral
 		if (terms.contractReferences[1].object != bytes32(0)) {
-			require(
-				terms.contractRole == ContractRole.BUY || terms.contractRole == ContractRole.SEL,
-				"AssetIssuer.executeContractualConditions: INVALID_OPTION"
-			);
-
 			// try transferring collateral to the custodian
-			custodian.lockCollateral(
-				assetId,
-				uint256(uint96(uint256(terms.contractReferences[1].object >> 160))),
-				(terms.contractRole == ContractRole.BUY) ? ownership.counterpartyObligor : ownership.creatorObligor,
-				address(uint160(uint256(terms.contractReferences[1].object)))
-			);
+			custodian.lockCollateral(assetId, terms, ownership);
 		}
 	}
 }

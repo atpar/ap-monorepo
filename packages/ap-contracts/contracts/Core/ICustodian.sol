@@ -1,14 +1,22 @@
 pragma solidity ^0.5.2;
+pragma experimental ABIEncoderV2;
+
+import "./SharedTypes.sol";
 
 
-interface ICustodian {
+contract ICustodian is SharedTypes {
 
 	function lockCollateral(
 		bytes32 collateralId,
-		uint256 collateralAmount,
-		address collateralizer,
-		address collateralToken
+		LifecycleTerms memory terms,
+		AssetOwnership memory ownership
 	)
-		external
+		public
+		returns (bool);
+
+	function returnCollateral(
+		bytes32 assetId
+	)
+		public
 		returns (bool);
 }
