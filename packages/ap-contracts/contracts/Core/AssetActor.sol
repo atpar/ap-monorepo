@@ -111,7 +111,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				assetRegistry.setFinalizedState(assetId, state);
 			}
 
-			// create ceEvent
+			// create CreditEvent
 			bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
 
 			// derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
@@ -273,6 +273,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			);
 			if (isSet) return bytes32(resetRate);
 		} else if (eventType == EventType.CE) {
+			// get current timestamp
 			return bytes32(block.timestamp);
 		}
 

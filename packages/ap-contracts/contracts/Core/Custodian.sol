@@ -38,6 +38,7 @@ contract Custodian is ICustodian, ReentrancyGuard {
 			"Custodian.lockCollateral: TRANFER_FAILED"
 		);
 
+		// set allowance for AssetActor to later transfer collateral to beneficiary
 		require(
 			IERC20(collateralToken).approve(assetActor, collateralAmount),
 			"Custodian.lockCollateral: APPROVEMENT_FAILED"
