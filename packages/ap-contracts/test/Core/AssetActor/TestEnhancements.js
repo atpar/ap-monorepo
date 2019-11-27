@@ -101,15 +101,15 @@ contract('AssetActor', (accounts) => {
     // register new product
     await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
     // issue collateral asset
-    await this.AssetIssuer.issueFromDraft(
-      '0x0000000000000000000000000000000000000000000000000000000000000001',
-      productId,
+    await this.AssetIssuerInstance.issueFromDraft({
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      productId: web3.utils.toHex(productId),
       customTerms,
-      ...,
-      this.Custodian.address,
-      this.CECEngineInstance.address,
-      this.AssetActorInstance.address
-    );
+      creator: creatorObligor, // for RPL of PAM asset, BUY
+      counterparty: this.CustodianInstance.address, // for RPL of PAM asset, BUY
+      engine: this.CECEngineInstance.address,
+      actor: this.AssetActorInstance.address
+    });
 
   });
 

@@ -170,7 +170,11 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		);
 
 		// check if terms contain a reference to collateral
-		if (terms.contractReferences[1].object != bytes32(0)) {
+		if (terms.contractReferences[1].contractReferenceRole == ContractReferenceRole.CVI) {
+			require(
+				terms.contractReferences[1].object != bytes32(0),
+				"AssetIssuer.executeContractualConditions: ..."
+			);
 			// try transferring collateral to the custodian
 			custodian.lockCollateral(assetId, terms, ownership);
 		}

@@ -42,7 +42,8 @@ module.exports = async (deployer, network, accounts) => {
   );
   await deployer.deploy(
     Custodian,
-    AssetActor.address
+    AssetActor.address,
+    AssetRegistry.address
   );
 
   // Issuance

@@ -38,7 +38,8 @@ async function setupTestEnvironment () {
     instances.MarketObjectRegistryInstance.address
   );
   instances.CustodianInstance = await Custodian.new(
-    instances.AssetActorInstance.address
+    instances.AssetActorInstance.address,
+    instances.AssetRegistryInstance.address
   );
 
   // deploy Issuance
