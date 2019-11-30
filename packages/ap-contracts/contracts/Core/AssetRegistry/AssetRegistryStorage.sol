@@ -1,13 +1,13 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Core.sol";
+import "actus-solidity/contracts/Core/Utils.sol";
 
 import "../ProductRegistry/IProductRegistry.sol";
 import "../SharedTypes.sol";
 
 
-contract AssetRegistryStorage is Core, SharedTypes {
+contract AssetRegistryStorage is SharedTypes, Utils {
 
 	struct Asset {
 		bytes32 assetId;

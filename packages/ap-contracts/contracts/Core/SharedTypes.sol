@@ -1,9 +1,9 @@
 pragma solidity ^0.5.2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
+import "actus-solidity/contracts/Core/ACTUSTypes.sol";
 
 
-contract SharedTypes is Definitions {
+contract SharedTypes is ACTUSTypes {
 
 	uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 

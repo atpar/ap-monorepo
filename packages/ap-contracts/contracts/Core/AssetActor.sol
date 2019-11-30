@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "actus-solidity/contracts/Core/Core.sol";
+import "actus-solidity/contracts/Core/Utils.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
@@ -14,7 +14,7 @@ import "./ProductRegistry/IProductRegistry.sol";
 import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
-contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
+contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IProductRegistry productRegistry;
