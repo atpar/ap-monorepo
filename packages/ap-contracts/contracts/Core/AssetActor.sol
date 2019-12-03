@@ -83,8 +83,8 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 				_event,
 				terms,
 				state,
-				(terms.contractReferences[0].object != bytes32(0)),
-				assetRegistry.getState(terms.contractReferences[0].object)
+				(terms.contractReference_1.object != bytes32(0)),
+				assetRegistry.getState(terms.contractReference_1.object)
 			) == false
 		) {
 			// skip the event by incrementing the corresponding schedule index

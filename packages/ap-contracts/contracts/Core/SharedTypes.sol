@@ -39,7 +39,7 @@ contract SharedTypes is ACTUSTypes {
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
 		ContractPerformance creditEventTypeCovered;
-		ContractReference[2] contractReferences;
+		// ContractReference[2] contractReferences;
 
 		address currency;
 
@@ -51,20 +51,20 @@ contract SharedTypes is ACTUSTypes {
 		int256 feeAccrued;
 		int256 accruedInterest;
 		int256 rateMultiplier;
-		int256 rateSpread;
+		// int256 rateSpread;
 		int256 feeRate;
 		int256 nextResetRate;
 		int256 penaltyRate;
-		int256 premiumDiscountAtIED;
+		// int256 premiumDiscountAtIED;
 		int256 priceAtPurchaseDate;
 		int256 nextPrincipalRedemptionPayment;
-		int256 coverageOfCreditEnhancement;
+		// int256 coverageOfCreditEnhancement;
 
 		IP gracePeriod;
 		IP delinquencyPeriod;
 
-		int256 lifeCap;
-		int256 lifeFloor;
+		// int256 lifeCap;
+		// int256 lifeFloor;
 		int256 periodCap;
 		int256 periodFloor;
 	}
@@ -73,6 +73,13 @@ contract SharedTypes is ACTUSTypes {
 		uint256 anchorDate;
 		int256 notionalPrincipal;
 		int256 nominalInterestRate;
+		int256 premiumDiscountAtIED;
+		int256 rateSpread;
+		int256 lifeCap;
+		int256 lifeFloor;
+		int256 coverageOfCreditEnhancement;
+		ContractReference contractReference_1;
+		ContractReference contractReference_2;
 	}
 
 	function deriveLifecycleTerms(ProductTerms memory productTerms, CustomTerms memory customTerms)
@@ -90,7 +97,9 @@ contract SharedTypes is ACTUSTypes {
 			productTerms.penaltyType,
 			productTerms.feeBasis,
 			productTerms.creditEventTypeCovered,
-			productTerms.contractReferences,
+
+			customTerms.contractReference_1,
+			customTerms.contractReference_2, // productTerms.contractReferences,
 
 			productTerms.currency,
 
@@ -104,20 +113,20 @@ contract SharedTypes is ACTUSTypes {
 			productTerms.feeAccrued,
 			productTerms.accruedInterest,
 			productTerms.rateMultiplier,
-			productTerms.rateSpread,
+			customTerms.rateSpread, // productTerms.rateSpread,
 			productTerms.feeRate,
 			productTerms.nextResetRate,
 			productTerms.penaltyRate,
-			productTerms.premiumDiscountAtIED,
+			customTerms.premiumDiscountAtIED, // productTerms.premiumDiscountAtIED,
 			productTerms.priceAtPurchaseDate,
 			productTerms.nextPrincipalRedemptionPayment,
-			productTerms.coverageOfCreditEnhancement,
+			customTerms.coverageOfCreditEnhancement, // productTerms.coverageOfCreditEnhancement,
 
 			productTerms.gracePeriod,
 			productTerms.delinquencyPeriod,
 
-			productTerms.lifeCap,
-			productTerms.lifeFloor,
+			customTerms.lifeCap, // productTerms.lifeCap,
+			customTerms.lifeFloor, // productTerms.lifeFloor,
 			productTerms.periodCap,
 			productTerms.periodFloor
 		);

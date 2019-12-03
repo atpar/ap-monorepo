@@ -63,12 +63,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 						order.enhancementOrder_1.takerSignature
 					)
 				),
-				AssetOwnership(
-					order.enhancementOrder_1.maker,
-					order.enhancementOrder_1.maker,
-					order.enhancementOrder_1.taker,
-					order.enhancementOrder_1.taker
-				),
+				deriveEnhancementOwnershipFromUnderlying(order.enhancementOrder_1, order),
 				order.enhancementOrder_1.productId,
 				order.enhancementOrder_1.customTerms,
 				order.actor,
@@ -85,12 +80,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 						order.enhancementOrder_2.takerSignature
 					)
 				),
-				AssetOwnership(
-					order.enhancementOrder_2.maker,
-					order.enhancementOrder_2.maker,
-					order.enhancementOrder_2.taker,
-					order.enhancementOrder_2.taker
-				),
+				deriveEnhancementOwnershipFromUnderlying(order.enhancementOrder_2, order),
 				order.enhancementOrder_2.productId,
 				order.enhancementOrder_2.customTerms,
 				order.actor,
@@ -170,13 +160,63 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 		);
 
 		// check if terms contain a reference to collateral
-		if (terms.contractReferences[1].contractReferenceRole == ContractReferenceRole.CVI) {
+		if (terms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
 			require(
-				terms.contractReferences[1].object != bytes32(0),
+				terms.contractReference_2.object != bytes32(0),
 				"AssetIssuer.executeContractualConditions: ..."
 			);
 			// try transferring collateral to the custodian
 			custodian.lockCollateral(assetId, terms, ownership);
 		}
+	}
+
+	function deriveEnhancementOwnershipFromUnderlying(
+		EnhancementOrder memory enhancementOrder,
+		Order memory order
+	)
+		internal
+		view
+		returns (AssetOwnership memory)
+	{
+		// derive terms of underlying from product terms and custom terms
+		LifecycleTerms memory underlyingTerms = deriveLifecycleTerms(
+			productRegistry.getProductTerms(order.productId),
+			order.customTerms
+		);
+
+		// derive terms of enhancement from product terms and custom terms
+		LifecycleTerms memory enhancementTerms = deriveLifecycleTerms(
+			productRegistry.getProductTerms(enhancementOrder.productId),
+			enhancementOrder.customTerms
+		);
+
+		// check if terms of enhancement contain a reference to collateral
+		if (enhancementTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+			if (enhancementTerms.contractRole == ContractRole.BUY && underlyingTerms.contractRole == ContractRole.RPA) {
+				return AssetOwnership(
+					order.maker, // ownership.creatorObligor,
+					order.maker, // ownership.creatorBeneficiary,
+					address(custodian),
+					order.taker // ownership.counterpartyBeneficiary
+				);
+			} else if (enhancementTerms.contractRole == ContractRole.SEL && underlyingTerms.contractRole == ContractRole.RPL) {
+				return AssetOwnership(
+					address(custodian),
+					order.maker, // ownership.creatorBeneficiary,
+					order.taker, // ownership.counterpartyObligor,
+					order.taker // ownership.counterpartyBeneficiary
+				);
+			} else {
+				// only BUY, RPA and SEL, RPL allowed for CEC
+				revert("AssetIssuer.deriveEnhancementOwnershipFromUnderlying: INVALID_CONTRACT_ROLES");
+			}
+		}
+
+		return AssetOwnership(
+			enhancementOrder.maker,
+			enhancementOrder.maker,
+			enhancementOrder.taker,
+			enhancementOrder.taker
+		);
 	}
 }
