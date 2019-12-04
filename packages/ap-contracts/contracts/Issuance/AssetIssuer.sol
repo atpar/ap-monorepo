@@ -2,11 +2,11 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
-import "../Core/IAssetActor.sol";
-import "../Core/ICustodian.sol";
 import "../Core/ProductRegistry/IProductRegistry.sol";
+import "../Core/IAssetActor.sol";
 import "./IAssetIssuer.sol";
 import "./VerifyOrder.sol";
+import "./ICustodian.sol";
 
 
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {

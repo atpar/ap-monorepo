@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
-import "./AssetRegistry/IAssetRegistry.sol";
+import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "./ICustodian.sol";
 
 
@@ -113,11 +113,11 @@ contract Custodian is ICustodian, ReentrancyGuard {
         }
 
         // reset allowance for AssetActor
-        // uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
-        // require(
-        // 	IERC20(collateralToken).approve(assetActor, allowance.sub(collateralAmount)),
-        // 	"Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
-        // );
+        uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
+        require(
+            IERC20(collateralToken).approve(assetActor, allowance.sub(notExecutedAmount)),
+            "Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
+        );
 
         // try transferring amount back to the collateralizer
         require(
