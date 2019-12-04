@@ -14,8 +14,7 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
 		bytes32 termsHash;
 		bytes32 productId;
 		CustomTerms customTerms;
-		address creator;
-		address counterparty;
+		AssetOwnership ownership;
 		address engine;
 		address actor;
 	}

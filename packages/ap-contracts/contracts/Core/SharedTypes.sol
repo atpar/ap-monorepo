@@ -82,6 +82,25 @@ contract SharedTypes is ACTUSTypes {
 		ContractReference contractReference_2;
 	}
 
+	function encodeCollateralAsObject(address collateralToken, uint256 collateralAmount)
+		public
+		pure
+		returns (bytes32)
+	{
+		return bytes32(uint256(uint160(collateralToken))) << 96 | bytes32(uint256(uint96(collateralAmount)));
+	}
+
+	function decodeCollateralObject(bytes32 object)
+		public
+		pure
+		returns (address, uint256)
+	{
+		return (
+			address(uint160(uint256(object >> 96))),
+			uint256(uint96(uint256(object)))
+		);
+	}
+
 	function deriveLifecycleTerms(ProductTerms memory productTerms, CustomTerms memory customTerms)
 		internal
 		pure

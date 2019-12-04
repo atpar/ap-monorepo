@@ -101,6 +101,384 @@ function getCustomTermsHash (customTerms) {
   ));
 }
 
+function getTermsHash (terms) {
+  return web3.utils.keccak256(web3.eth.abi.encodeParameter(
+    {
+      "components": [
+        {
+          "name": "contractType",
+          "type": "uint8"
+        },
+        {
+          "name": "calendar",
+          "type": "uint8"
+        },
+        {
+          "name": "contractRole",
+          "type": "uint8"
+        },
+        {
+          "name": "dayCountConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "businessDayConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "endOfMonthConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "scalingEffect",
+          "type": "uint8"
+        },
+        {
+          "name": "penaltyType",
+          "type": "uint8"
+        },
+        {
+          "name": "feeBasis",
+          "type": "uint8"
+        },
+        {
+          "name": "creditEventTypeCovered",
+          "type": "uint8"
+        },
+        {
+          "components": [
+            {
+              "name": "object",
+              "type": "bytes32"
+            },
+            {
+              "name": "contractReferenceType",
+              "type": "uint8"
+            },
+            {
+              "name": "contractReferenceRole",
+              "type": "uint8"
+            }
+          ],
+          "name": "contractReference_1",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "object",
+              "type": "bytes32"
+            },
+            {
+              "name": "contractReferenceType",
+              "type": "uint8"
+            },
+            {
+              "name": "contractReferenceRole",
+              "type": "uint8"
+            }
+          ],
+          "name": "contractReference_2",
+          "type": "tuple"
+        },
+        {
+          "name": "currency",
+          "type": "address"
+        },
+        {
+          "name": "creatorID",
+          "type": "bytes32"
+        },
+        {
+          "name": "counterpartyID",
+          "type": "bytes32"
+        },
+        {
+          "name": "marketObjectCodeRateReset",
+          "type": "bytes32"
+        },
+        {
+          "name": "contractDealDate",
+          "type": "uint256"
+        },
+        {
+          "name": "statusDate",
+          "type": "uint256"
+        },
+        {
+          "name": "initialExchangeDate",
+          "type": "uint256"
+        },
+        {
+          "name": "maturityDate",
+          "type": "uint256"
+        },
+        {
+          "name": "terminationDate",
+          "type": "uint256"
+        },
+        {
+          "name": "purchaseDate",
+          "type": "uint256"
+        },
+        {
+          "name": "capitalizationEndDate",
+          "type": "uint256"
+        },
+        {
+          "name": "cycleAnchorDateOfInterestPayment",
+          "type": "uint256"
+        },
+        {
+          "name": "cycleAnchorDateOfRateReset",
+          "type": "uint256"
+        },
+        {
+          "name": "cycleAnchorDateOfScalingIndex",
+          "type": "uint256"
+        },
+        {
+          "name": "cycleAnchorDateOfFee",
+          "type": "uint256"
+        },
+        {
+          "name": "cycleAnchorDateOfPrincipalRedemption",
+          "type": "uint256"
+        },
+        {
+          "name": "notionalPrincipal",
+          "type": "int256"
+        },
+        {
+          "name": "nominalInterestRate",
+          "type": "int256"
+        },
+        {
+          "name": "feeAccrued",
+          "type": "int256"
+        },
+        {
+          "name": "accruedInterest",
+          "type": "int256"
+        },
+        {
+          "name": "rateMultiplier",
+          "type": "int256"
+        },
+        {
+          "name": "rateSpread",
+          "type": "int256"
+        },
+        {
+          "name": "feeRate",
+          "type": "int256"
+        },
+        {
+          "name": "nextResetRate",
+          "type": "int256"
+        },
+        {
+          "name": "penaltyRate",
+          "type": "int256"
+        },
+        {
+          "name": "premiumDiscountAtIED",
+          "type": "int256"
+        },
+        {
+          "name": "priceAtPurchaseDate",
+          "type": "int256"
+        },
+        {
+          "name": "nextPrincipalRedemptionPayment",
+          "type": "int256"
+        },
+        {
+          "name": "coverageOfCreditEnhancement",
+          "type": "int256"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "cycleOfInterestPayment",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "cycleOfRateReset",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "cycleOfScalingIndex",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "cycleOfFee",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "cycleOfPrincipalRedemption",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "gracePeriod",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "delinquencyPeriod",
+          "type": "tuple"
+        },
+        {
+          "name": "lifeCap",
+          "type": "int256"
+        },
+        {
+          "name": "lifeFloor",
+          "type": "int256"
+        },
+        {
+          "name": "periodCap",
+          "type": "int256"
+        },
+        {
+          "name": "periodFloor",
+          "type": "int256"
+        }
+      ],
+      "name": "terms",
+      "type": "tuple"
+    },
+    _toTuple(terms)
+  ));
+}
+
+function getOwnershipHash (ownership) {
+  return web3.utils.keccak256(web3.eth.abi.encodeParameters(
+    ['address', 'address', 'address', 'address'],
+    [
+      ownership.creatorObligor,
+      ownership.creatorBeneficiary,
+      ownership.counterpartyObligor,
+      ownership.counterpartyBeneficiary
+    ]
+  ))
+}
+
 function getDraftEnhancementOrderHash (enhancementOrder) {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3.utils.keccak256(
     "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
@@ -128,6 +506,14 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
   const enhancementOrderHash_2 = getDraftEnhancementOrderHash(orderData.enhancementOrder_2);
 
   const customTermsHash = getCustomTermsHash(orderData.customTerms);
+  const ownershipHash = getOwnershipHash(
+    {
+      creatorObligor: orderData.ownership.creatorObligor,
+      creatorBeneficiary: orderData.ownership.creatorBeneficiary,
+      counterpartyObligor: '0x0000000000000000000000000000000000000000',
+      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+    }
+  );
 
   const typedData = {
     domain: {
@@ -148,7 +534,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
         { name: 'productId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'expirationDate', type: 'uint256' },
-        { name: 'maker', type: 'address' },
+        { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
@@ -162,7 +548,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       productId: orderData.productId,
       customTermsHash: customTermsHash,
       expirationDate: orderData.expirationDate,
-      maker: orderData.maker,
+      ownershipHash: ownershipHash,
       engine: orderData.engine,
       actor: orderData.actor,
       enhancementOrderHash_1: enhancementOrderHash_1,
@@ -181,6 +567,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
   const enhancementOrderHash_2 = getDraftEnhancementOrderHash(orderData.enhancementOrder_2);
 
   const customTermsHash = getCustomTermsHash(orderData.customTerms);
+  const ownershipHash = getOwnershipHash(orderData.ownership);
 
   const typedData = {
     domain: {
@@ -201,8 +588,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
         { name: 'productId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'expirationDate', type: 'uint256' },
-        { name: 'maker', type: 'address' },
-        { name: 'taker', type: 'address' },
+        { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
         { name: 'actor', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
@@ -216,8 +602,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       productId: orderData.productId,
       customTermsHash: customTermsHash,
       expirationDate: orderData.expirationDate,
-      maker: orderData.maker,
-      taker: orderData.taker,
+      ownershipHash: ownershipHash,
       engine: orderData.engine,
       actor: orderData.actor,
       enhancementOrderHash_1: enhancementOrderHash_1,
@@ -233,6 +618,14 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
   const verifyingContract = verifyingContractAddress;
 
   const customTermsHash = getCustomTermsHash(enhancementOrderData.customTerms);
+  const ownershipHash = getOwnershipHash(
+    {
+      creatorObligor: enhancementOrderData.ownership.creatorObligor,
+      creatorBeneficiary: enhancementOrderData.ownership.creatorBeneficiary,
+      counterpartyObligor: '0x0000000000000000000000000000000000000000',
+      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+    }
+  );
 
   const typedData = {
     domain: {
@@ -252,7 +645,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
         { name: 'termsHash', type: 'bytes32' },
         { name: 'productId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
-        { name: 'maker', type: 'address' },
+        { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
@@ -262,7 +655,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
       termsHash: enhancementOrderData.termsHash,
       productId: enhancementOrderData.productId,
       customTermsHash: customTermsHash,
-      maker: enhancementOrderData.maker,
+      ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
       salt: enhancementOrderData.salt
     }
@@ -275,6 +668,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
   const verifyingContract = verifyingContractAddress;
 
   const customTermsHash = getCustomTermsHash(enhancementOrderData.customTerms);
+  const ownershipHash = getOwnershipHash(enhancementOrderData.ownership);
 
   const typedData = {
     domain: {
@@ -294,8 +688,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
         { name: 'termsHash', type: 'bytes32' },
         { name: 'productId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
-        { name: 'maker', type: 'address' },
-        { name: 'taker', type: 'address' },
+        { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
@@ -305,8 +698,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
       termsHash: enhancementOrderData.termsHash,
       productId: enhancementOrderData.productId,
       customTermsHash: customTermsHash,
-      maker: enhancementOrderData.maker,
-      taker: enhancementOrderData.taker,
+      ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
       salt: enhancementOrderData.salt
     }
@@ -319,7 +711,7 @@ function getAssetIdFromOrderData (orderData) {
   return web3.utils.keccak256(
     web3.eth.abi.encodeParameters(
       ['bytes', 'bytes'],
-      [orderData.makerSignature, orderData.takerSignature]
+      [orderData.creatorSignature, orderData.counterpartySignature]
     )
   );
 };
@@ -344,5 +736,6 @@ module.exports = {
   getFilledOrderDataAsTypedData,
   getUnfilledEnhancementOrderDataAsTypedData,
   getFilledEnhancementOrderDataAsTypedData,
+  getTermsHash,
   sign
 }

@@ -50,8 +50,7 @@ contract Custodian is ICustodian, ReentrancyGuard {
 			: ownership.creatorBeneficiary;
 
 		// decode token address and amount of collateral
-		address collateralToken = terms.currency; // uint256(uint96(uint256(terms.contractReference_2.object >> 160)))
-		uint256 collateralAmount = uint256(uint96(uint256(terms.contractReference_2.object >> 160)));
+		(address collateralToken, uint256 collateralAmount) = decodeCollateralObject(terms.contractReference_2.object);
 
 		require(
 			IERC20(collateralToken).allowance(collateralizer, address(this)) >= collateralAmount,

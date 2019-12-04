@@ -1,17 +1,11 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
-
-const { setupTestEnvironment, getDefaultTerms } = require('../../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms, convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain')
+const { getTermsHash } = require('../../helper/orderUtils');
 
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
-
-const { 
-  createSnapshot, 
-  revertToSnapshot, 
-  mineBlock
-} = require('../../helper/blockchain');
 
 const CECTerms = require('../../helper/cec-terms.json');
 
@@ -102,11 +96,15 @@ contract('AssetActor', (accounts) => {
     await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
     // issue collateral asset
     await this.AssetIssuerInstance.issueFromDraft({
-      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      termsHash: getTermsHash(terms),
       productId: web3.utils.toHex(productId),
       customTerms,
-      creator: creatorObligor, // for RPL of PAM asset, BUY
-      counterparty: this.CustodianInstance.address, // for RPL of PAM asset, BUY
+      ownership: {
+        creatorObligor: creatorObligor, // for RPA of PAM asset, BUY
+        creatorBeneficiary: creatorBeneficiary,
+        counterpartyObligor: this.CustodianInstance.address, // for RPA of PAM asset, BUY
+        counterpartyBeneficiary: counterpartyBeneficiary
+      },
       engine: this.CECEngineInstance.address,
       actor: this.AssetActorInstance.address
     });
