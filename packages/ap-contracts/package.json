@@ -24,8 +24,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run compile && npm run generate-artifacts",
-    "compile": "truffle compile --all",
+    "build": "npm run compile:all && npm run generate-artifacts",
+    "compile:all": "truffle compile --all",
+    "compile": "truffle compile",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
@@ -45,7 +46,7 @@
   "devDependencies": {
     "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
-    "eth-gas-reporter": "^0.2.11",
+    "eth-gas-reporter": "^0.2.13",
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",

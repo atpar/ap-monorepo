@@ -1,10 +1,13 @@
 const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
-// const CEGEngine = artifacts.require('CEGEngine');
+const CEGEngine = artifacts.require('CEGEngine');
+const CECEngine = artifacts.require('CECEngine');
+
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const Custodian = artifacts.require('Custodian');
 const ProductRegistry = artifacts.require('ProductRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
@@ -20,7 +23,8 @@ async function setupTestEnvironment () {
   // deploy ACTUS Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
   instances.ANNEngineInstance = await ANNEngine.new();
-  // instances.CEGEngineInstance = await CEGEngine.new();
+  instances.CEGEngineInstance = await CEGEngine.new();
+  instances.CECEngineInstance = await CECEngine.new();
   
   // deploy Core
   instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
@@ -33,9 +37,16 @@ async function setupTestEnvironment () {
     instances.ProductRegistryInstance.address,
     instances.MarketObjectRegistryInstance.address
   );
+  instances.CustodianInstance = await Custodian.new(
+    instances.AssetActorInstance.address,
+    instances.AssetRegistryInstance.address
+  );
 
   // deploy Issuance
-  instances.AssetIssuerInstance = await AssetIssuer.new();
+  instances.AssetIssuerInstance = await AssetIssuer.new(
+    instances.CustodianInstance.address,
+    instances.ProductRegistryInstance.address
+  );
 
   // deploy Tokenization
   instances.TokenizationFactoryInstance = await TokenizationFactory.new(

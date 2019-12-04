@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "actus-solidity/contracts/Core/Core.sol";
+import "actus-solidity/contracts/Core/Utils.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
@@ -14,7 +14,7 @@ import "./ProductRegistry/IProductRegistry.sol";
 import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
-contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
+contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
 	IAssetRegistry assetRegistry;
 	IProductRegistry productRegistry;
@@ -83,8 +83,8 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				_event,
 				terms,
 				state,
-				(terms.contractStructure.object != bytes32(0)),
-				assetRegistry.getState(terms.contractStructure.object)
+				(terms.contractReference_1.object != bytes32(0)),
+				assetRegistry.getState(terms.contractReference_1.object)
 			) == false
 		) {
 			// skip the event by incrementing the corresponding schedule index
@@ -99,7 +99,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
 
 		// try to settle payoff of event
-		if (settlePayoffForEvent(assetId, _event, payoff, terms.currency)) {
+		if (settlePayoffForEvent(assetId, _event, payoff, terms)) {
 			// if obligation is fulfilled increment the corresponding schedule index
 			updateScheduleIndex(assetId, eventType);
 		} else {
@@ -111,7 +111,7 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 				assetRegistry.setFinalizedState(assetId, state);
 			}
 
-			// create ceEvent
+			// create CreditEvent
 			bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
 
 			// derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
@@ -190,24 +190,30 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 	 * @param assetId id of the asset which the payment relates to
 	 * @param _event _event to settle the payoff for
 	 * @param payoff payoff of the event
-	 * @param token address of the token to transfer
+	 * @param terms terms of the asset
 	 */
 	function settlePayoffForEvent(
 		bytes32 assetId,
 		bytes32 _event,
 		int256 payoff,
-		address token
+		LifecycleTerms memory terms
 	)
 		internal
 		returns (bool)
 	{
 		require(
-			assetId != bytes32(0) && _event != bytes32(0) && token != address(0),
+			assetId != bytes32(0) && _event != bytes32(0),
 			"AssetActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
 		);
 
 		// return if there is no amount due
 		if (payoff == 0) return true;
+
+		// set address of token
+		address token = terms.currency;
+		if (terms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+			(token, ) = decodeCollateralObject(terms.contractReference_2.object);
+		}
 
 		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
@@ -215,29 +221,34 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 		(EventType eventType, ) = decodeEvent(_event);
 		int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
 		address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
+		address payer;
 
-		// get the absolute of the payoff
-		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
-
-		// determine the payee of the payment by checking the sign of the payoff
+		// determine the payee and payer of the payment by checking the sign of the payoff
 		if (payoff > 0) {
 			// only allow for the obligor to settle the payment
-			if (msg.sender != ownership.counterpartyObligor) return false;
+			payer = ownership.counterpartyObligor;
 			// use the default beneficiary if the there is no specific owner of the cashflow
 			if (payee == address(0)) {
 				payee = ownership.creatorBeneficiary;
 			}
 		} else {
 			// only allow for the obligor to settle the payment
-			if (msg.sender != ownership.creatorObligor) return false;
+			payer = ownership.creatorObligor;
 			// use the default beneficiary if the there is no specific owner of the cashflow
 			if (payee == address(0)) {
 				payee = ownership.counterpartyBeneficiary;
 			}
 		}
 
+		// get the absolute of the payoff
+		uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
+
 		// try to transfer amount due from obligor to payee
-		return IERC20(token).transferFrom(msg.sender, payee, amount);
+		if (IERC20(token).allowance(payer, address(this)) < amount || IERC20(token).balanceOf(payer) < amount) {
+			return false;
+		}
+
+		return IERC20(token).transferFrom(payer, payee, amount);
 	}
 
 	function updateScheduleIndex(
@@ -273,7 +284,14 @@ contract AssetActor is SharedTypes, Core, IAssetActor, Ownable {
 			);
 			if (isSet) return bytes32(resetRate);
 		} else if (eventType == EventType.CE) {
+			// get current timestamp
 			return bytes32(block.timestamp);
+		} else if (eventType == EventType.XD) {
+			// get the remaining notionalPrincipal from the underlying
+			if (terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+				State memory underlyingState = assetRegistry.getState(terms.contractReference_1.object);
+				return bytes32(underlyingState.notionalPrincipal);
+			}
 		}
 
 		return bytes32(0);

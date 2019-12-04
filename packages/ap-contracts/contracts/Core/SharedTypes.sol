@@ -1,9 +1,9 @@
 pragma solidity ^0.5.2;
 
-import "actus-solidity/contracts/Core/Definitions.sol";
+import "actus-solidity/contracts/Core/ACTUSTypes.sol";
 
 
-contract SharedTypes is Definitions {
+contract SharedTypes is ACTUSTypes {
 
 	uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 
@@ -39,7 +39,7 @@ contract SharedTypes is Definitions {
 		PenaltyType penaltyType;
 		FeeBasis feeBasis;
 		ContractPerformance creditEventTypeCovered;
-		ContractStructure contractStructure;
+		// ContractReference[2] contractReferences;
 
 		address currency;
 
@@ -51,20 +51,20 @@ contract SharedTypes is Definitions {
 		int256 feeAccrued;
 		int256 accruedInterest;
 		int256 rateMultiplier;
-		int256 rateSpread;
+		// int256 rateSpread;
 		int256 feeRate;
 		int256 nextResetRate;
 		int256 penaltyRate;
-		int256 premiumDiscountAtIED;
+		// int256 premiumDiscountAtIED;
 		int256 priceAtPurchaseDate;
 		int256 nextPrincipalRedemptionPayment;
-		int256 coverageOfCreditEnhancement;
+		// int256 coverageOfCreditEnhancement;
 
 		IP gracePeriod;
 		IP delinquencyPeriod;
 
-		int256 lifeCap;
-		int256 lifeFloor;
+		// int256 lifeCap;
+		// int256 lifeFloor;
 		int256 periodCap;
 		int256 periodFloor;
 	}
@@ -73,6 +73,32 @@ contract SharedTypes is Definitions {
 		uint256 anchorDate;
 		int256 notionalPrincipal;
 		int256 nominalInterestRate;
+		int256 premiumDiscountAtIED;
+		int256 rateSpread;
+		int256 lifeCap;
+		int256 lifeFloor;
+		int256 coverageOfCreditEnhancement;
+		ContractReference contractReference_1;
+		ContractReference contractReference_2;
+	}
+
+	function encodeCollateralAsObject(address collateralToken, uint256 collateralAmount)
+		public
+		pure
+		returns (bytes32)
+	{
+		return bytes32(uint256(uint160(collateralToken))) << 96 | bytes32(uint256(uint96(collateralAmount)));
+	}
+
+	function decodeCollateralObject(bytes32 object)
+		public
+		pure
+		returns (address, uint256)
+	{
+		return (
+			address(uint160(uint256(object >> 96))),
+			uint256(uint96(uint256(object)))
+		);
 	}
 
 	function deriveLifecycleTerms(ProductTerms memory productTerms, CustomTerms memory customTerms)
@@ -90,7 +116,9 @@ contract SharedTypes is Definitions {
 			productTerms.penaltyType,
 			productTerms.feeBasis,
 			productTerms.creditEventTypeCovered,
-			productTerms.contractStructure,
+
+			customTerms.contractReference_1,
+			customTerms.contractReference_2, // productTerms.contractReferences,
 
 			productTerms.currency,
 
@@ -104,20 +132,20 @@ contract SharedTypes is Definitions {
 			productTerms.feeAccrued,
 			productTerms.accruedInterest,
 			productTerms.rateMultiplier,
-			productTerms.rateSpread,
+			customTerms.rateSpread, // productTerms.rateSpread,
 			productTerms.feeRate,
 			productTerms.nextResetRate,
 			productTerms.penaltyRate,
-			productTerms.premiumDiscountAtIED,
+			customTerms.premiumDiscountAtIED, // productTerms.premiumDiscountAtIED,
 			productTerms.priceAtPurchaseDate,
 			productTerms.nextPrincipalRedemptionPayment,
-			productTerms.coverageOfCreditEnhancement,
+			customTerms.coverageOfCreditEnhancement, // productTerms.coverageOfCreditEnhancement,
 
 			productTerms.gracePeriod,
 			productTerms.delinquencyPeriod,
 
-			productTerms.lifeCap,
-			productTerms.lifeFloor,
+			customTerms.lifeCap, // productTerms.lifeCap,
+			customTerms.lifeFloor, // productTerms.lifeFloor,
 			productTerms.periodCap,
 			productTerms.periodFloor
 		);

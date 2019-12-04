@@ -1,6 +1,7 @@
 const ANNEngine = artifacts.require('ANNEngine');
 const PAMEngine = artifacts.require('PAMEngine');
-// const CEGEngine = artifacts.require('CEGEngine');
+const CEGEngine = artifacts.require('CEGEngine');
+const CECEngine = artifacts.require('CECEngine');
 const SignedMath = artifacts.require('SignedMath');
 
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
@@ -9,6 +10,7 @@ const ProductRegistry = artifacts.require('ProductRegistry');
 
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
+const Custodian = artifacts.require('Custodian');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 
@@ -20,8 +22,10 @@ module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(PAMEngine);
   await deployer.link(SignedMath, ANNEngine);
   await deployer.deploy(ANNEngine);
-  // await deployer.link(SignedMath, CEGEngine);
-  // await deployer.deploy(CEGEngine);
+  await deployer.link(SignedMath, CEGEngine);
+  await deployer.deploy(CEGEngine);
+  await deployer.link(SignedMath, CECEngine);
+  await deployer.deploy(CECEngine);
 
   // Core
   await deployer.deploy(MarketObjectRegistry);
@@ -30,17 +34,24 @@ module.exports = async (deployer, network, accounts) => {
     AssetRegistry,
     ProductRegistry.address
   );
-  
-  // Core: Asset Actor
   const AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
     ProductRegistry.address,
     MarketObjectRegistry.address
   );
+  await deployer.deploy(
+    Custodian,
+    AssetActor.address,
+    AssetRegistry.address
+  );
 
   // Issuance
-  await deployer.deploy(AssetIssuer);
+  await deployer.deploy(
+    AssetIssuer,
+    Custodian.address,
+    ProductRegistry.address
+  );
 
   // Tokenization
   await deployer.deploy(

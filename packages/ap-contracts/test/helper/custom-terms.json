@@ -1,5 +1,12 @@
 [
   "anchorDate",
   "notionalPrincipal",
-  "nominalInterestRate"
+  "nominalInterestRate",
+  "premiumDiscountAtIED",
+  "rateSpread",
+  "lifeCap",
+  "lifeFloor",
+  "coverageOfCreditEnhancement",
+  "contractReference_1",
+  "contractReference_2"
 ]

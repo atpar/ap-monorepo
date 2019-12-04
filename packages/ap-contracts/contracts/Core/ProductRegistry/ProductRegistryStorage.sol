@@ -52,11 +52,11 @@ contract ProductRegistryStorage is SharedTypes {
 		if (terms.feeAccrued != int256(0)) products[productId].packedTerms[19] = bytes32(terms.feeAccrued);
 		if (terms.accruedInterest != int256(0)) products[productId].packedTerms[20] = bytes32(terms.accruedInterest);
 		if (terms.rateMultiplier != int256(0)) products[productId].packedTerms[21] = bytes32(terms.rateMultiplier);
-		if (terms.rateSpread != int256(0)) products[productId].packedTerms[22] = bytes32(terms.rateSpread);
+		// if (terms.rateSpread != int256(0)) products[productId].packedTerms[22] = bytes32(terms.rateSpread);
 		if (terms.feeRate != int256(0)) products[productId].packedTerms[23] = bytes32(terms.feeRate);
 		if (terms.nextResetRate != int256(0)) products[productId].packedTerms[24] = bytes32(terms.nextResetRate);
 		if (terms.penaltyRate != int256(0)) products[productId].packedTerms[25] = bytes32(terms.penaltyRate);
-		if (terms.premiumDiscountAtIED != int256(0)) products[productId].packedTerms[26] = bytes32(terms.premiumDiscountAtIED);
+		// if (terms.premiumDiscountAtIED != int256(0)) products[productId].packedTerms[26] = bytes32(terms.premiumDiscountAtIED);
 		if (terms.priceAtPurchaseDate != int256(0)) products[productId].packedTerms[27] = bytes32(terms.priceAtPurchaseDate);
 		if (terms.nextPrincipalRedemptionPayment != int256(0)) products[productId].packedTerms[28] = bytes32(terms.nextPrincipalRedemptionPayment);
 
@@ -73,19 +73,25 @@ contract ProductRegistryStorage is SharedTypes {
 				bytes32(uint256(1)) << 8;
 		}
 
-		if (terms.lifeCap != int256(0)) products[productId].packedTerms[36] = bytes32(terms.lifeCap);
-		if (terms.lifeFloor != int256(0)) products[productId].packedTerms[37] = bytes32(terms.lifeFloor);
+		// if (terms.lifeCap != int256(0)) products[productId].packedTerms[36] = bytes32(terms.lifeCap);
+		// if (terms.lifeFloor != int256(0)) products[productId].packedTerms[37] = bytes32(terms.lifeFloor);
 		if (terms.periodCap != int256(0)) products[productId].packedTerms[38] = bytes32(terms.periodCap);
 		if (terms.periodFloor != int256(0)) products[productId].packedTerms[39] = bytes32(terms.periodFloor);
 
-		if (terms.coverageOfCreditEnhancement != int256(0)) products[productId].packedTerms[40] = bytes32(terms.coverageOfCreditEnhancement);
+		// if (terms.coverageOfCreditEnhancement != int256(0)) products[productId].packedTerms[40] = bytes32(terms.coverageOfCreditEnhancement);
 
-		if (terms.contractStructure.object != bytes32(0)) {
-			products[productId].packedTerms[41] = bytes32(terms.contractStructure.object);
-			products[productId].packedTerms[42] =
-				bytes32(uint256(terms.contractStructure.contractReferenceType)) << 16 |
-				bytes32(uint256(terms.contractStructure.contractReferenceRole)) << 8;
-		}
+		// if (terms.contractReferences[0].object != bytes32(0)) {
+		// 	products[productId].packedTerms[41] = bytes32(terms.contractReferences[0].object);
+		// 	products[productId].packedTerms[42] =
+		// 		bytes32(uint256(terms.contractReferences[0].contractReferenceType)) << 16 |
+		// 		bytes32(uint256(terms.contractReferences[0].contractReferenceRole)) << 8;
+		// }
+		// if (terms.contractReferences[1].object != bytes32(0)) {
+		// 	products[productId].packedTerms[43] = bytes32(terms.contractReferences[1].object);
+		// 	products[productId].packedTerms[44] =
+		// 		bytes32(uint256(terms.contractReferences[1].contractReferenceType)) << 16 |
+		// 		bytes32(uint256(terms.contractReferences[1].contractReferenceRole)) << 8;
+		// }
 	}
 
 	function encodeAndSetSchedules(bytes32 productId, ProductSchedules memory productSchedules)
@@ -151,11 +157,18 @@ contract ProductRegistryStorage is SharedTypes {
 			PenaltyType(uint8(uint256(products[productId].packedTerms[1] >> 192))),
 			FeeBasis(uint8(uint256(products[productId].packedTerms[1] >> 184))),
 			ContractPerformance(uint8(uint256(products[productId].packedTerms[1] >> 176))),
-			ContractStructure(
-				products[productId].packedTerms[41],
-				ContractReferenceType(uint8(uint256(products[productId].packedTerms[42] >> 16))),
-				ContractReferenceRole(uint8(uint256(products[productId].packedTerms[42] >> 8)))
-			),
+			// [
+			// 	ContractReference(
+			// 		products[productId].packedTerms[41],
+			// 		ContractReferenceType(uint8(uint256(products[productId].packedTerms[42] >> 16))),
+			// 		ContractReferenceRole(uint8(uint256(products[productId].packedTerms[42] >> 8)))
+			// 	),
+			// 	ContractReference(
+			// 		products[productId].packedTerms[43],
+			// 		ContractReferenceType(uint8(uint256(products[productId].packedTerms[44] >> 16))),
+			// 		ContractReferenceRole(uint8(uint256(products[productId].packedTerms[44] >> 8)))
+			// 	)
+			// ],
 
 			address(uint160(uint256(products[productId].packedTerms[4]) >> 96)),
 
@@ -166,14 +179,14 @@ contract ProductRegistryStorage is SharedTypes {
 			int256(products[productId].packedTerms[19]),
 			int256(products[productId].packedTerms[20]),
 			int256(products[productId].packedTerms[21]),
-			int256(products[productId].packedTerms[22]),
+			// int256(products[productId].packedTerms[22]),
 			int256(products[productId].packedTerms[23]),
 			int256(products[productId].packedTerms[24]),
 			int256(products[productId].packedTerms[25]),
-			int256(products[productId].packedTerms[26]),
+			// int256(products[productId].packedTerms[26]),
 			int256(products[productId].packedTerms[27]),
 			int256(products[productId].packedTerms[28]),
-			int256(products[productId].packedTerms[40]),
+			// int256(products[productId].packedTerms[40]),
 			IP(
 				uint256(products[productId].packedTerms[34] >> 24),
 				P(uint8(uint256(products[productId].packedTerms[34] >> 16))),
@@ -184,8 +197,8 @@ contract ProductRegistryStorage is SharedTypes {
 				P(uint8(uint256(products[productId].packedTerms[35] >> 16))),
 				(products[productId].packedTerms[35] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
 			),
-			int256(products[productId].packedTerms[36]),
-			int256(products[productId].packedTerms[37]),
+			// int256(products[productId].packedTerms[36]),
+			// int256(products[productId].packedTerms[37]),
 			int256(products[productId].packedTerms[38]),
 			int256(products[productId].packedTerms[39])
 		);

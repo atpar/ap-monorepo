@@ -9,11 +9,16 @@
     "penaltyType": 0,
     "feeBasis": 0,
     "creditEventTypeCovered": 0,
-    "contractStructure": { 
+    "contractReference_1": { 
         "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "contractReferenceType": 0,
         "contractReferenceRole": 0 
-    },
+      },
+      "contractReference_2": { 
+        "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "contractReferenceType": 0,
+        "contractReferenceRole": 0 
+      },
     "currency": "0x3aFe270E25c5B2fC7679ba431eEF2B5E2d26A52f",
     "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
     "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",

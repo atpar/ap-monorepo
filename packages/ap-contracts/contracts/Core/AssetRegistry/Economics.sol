@@ -83,7 +83,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(nonCyclicEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -101,7 +102,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ipEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -119,7 +121,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(prEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -137,7 +140,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(scEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -155,7 +159,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(rrEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -173,7 +178,8 @@ contract Economics is AssetRegistryStorage {
 			(EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(pyEvent);
 
 			if (
-				(scheduleTimeOffset > nextScheduleTimeOffset)
+				(nextScheduleTimeOffset == 0)
+				|| (scheduleTimeOffset < nextScheduleTimeOffset)
 				|| (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
 			) {
 				nextScheduleTimeOffset = scheduleTimeOffset;
@@ -182,8 +188,12 @@ contract Economics is AssetRegistryStorage {
 		}
 
 		// Underlying
-		bytes32 underlyingAssetId = terms.contractStructure.object;
-		if (underlyingAssetId != bytes32(0)) {
+		if (
+			terms.contractReference_1.object != bytes32(0)
+			&& terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE
+		) {
+			State memory state = decodeAndGetState(assetId);
+			bytes32 underlyingAssetId = terms.contractReference_1.object;
 			State memory underlyingState = decodeAndGetState(underlyingAssetId);
 			LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);
 
@@ -192,10 +202,17 @@ contract Economics is AssetRegistryStorage {
 				"AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
 			);
 
-			if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
+			// check if ExecutionDate has been triggered
+			if (state.executionAmount > 0) {
+				// insert SettlementDate event
+				nextEventType = EventType.STD;
+				nextScheduleTimeOffset = block.timestamp;
+				return encodeEvent(nextEventType, nextScheduleTimeOffset);
+			// if not check if performance of underlying asset is covered by this asset
+			} else if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
 				// insert ExecutionDate event
 				nextEventType = EventType.XD;
-
+				// derive scheduleTimeOffset from performance
 				if (underlyingState.contractPerformance == ContractPerformance.DL) {
 					nextScheduleTimeOffset = underlyingState.nonPerformingDate;
 				} else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
@@ -203,6 +220,7 @@ contract Economics is AssetRegistryStorage {
 				} else if (underlyingState.contractPerformance == ContractPerformance.DF) {
 					nextScheduleTimeOffset = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
 				}
+				return encodeEvent(nextEventType, nextScheduleTimeOffset);
 			}
 		}
 

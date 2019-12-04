@@ -1,13 +1,13 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Core.sol";
+import "actus-solidity/contracts/Core/Utils.sol";
 
 import "../ProductRegistry/IProductRegistry.sol";
 import "../SharedTypes.sol";
 
 
-contract AssetRegistryStorage is Core, SharedTypes {
+contract AssetRegistryStorage is SharedTypes, Utils {
 
 	struct Asset {
 		bytes32 assetId;
@@ -59,6 +59,23 @@ contract AssetRegistryStorage is Core, SharedTypes {
 		if (terms.anchorDate != uint256(0)) assets[assetId].packedTermsState[1] = bytes32(terms.anchorDate);
 		if (terms.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[2] = bytes32(terms.notionalPrincipal);
 		if (terms.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[3] = bytes32(terms.nominalInterestRate);
+		if (terms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[4] = bytes32(terms.premiumDiscountAtIED);
+		if (terms.rateSpread != int256(0)) assets[assetId].packedTermsState[5] = bytes32(terms.rateSpread);
+		if (terms.lifeCap != int256(0)) assets[assetId].packedTermsState[6] = bytes32(terms.lifeCap);
+		if (terms.lifeFloor != int256(0)) assets[assetId].packedTermsState[7] = bytes32(terms.lifeFloor);
+		if (terms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[8] = bytes32(terms.coverageOfCreditEnhancement);
+		if (terms.contractReference_1.object != bytes32(0)) {
+			assets[assetId].packedTermsState[9] = bytes32(terms.contractReference_1.object);
+			assets[assetId].packedTermsState[10] =
+				bytes32(uint256(terms.contractReference_1.contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractReference_1.contractReferenceRole)) << 8;
+		}
+		if (terms.contractReference_2.object != bytes32(0)) {
+			assets[assetId].packedTermsState[11] = bytes32(terms.contractReference_2.object);
+			assets[assetId].packedTermsState[12] =
+				bytes32(uint256(terms.contractReference_2.contractReferenceType)) << 16 |
+				bytes32(uint256(terms.contractReference_2.contractReferenceRole)) << 8;
+		}
 	}
 
 	function encodeAndSetState(bytes32 assetId, State memory state) internal {
@@ -107,7 +124,22 @@ contract AssetRegistryStorage is Core, SharedTypes {
 		CustomTerms memory customTerms = CustomTerms(
 			uint256(assets[assetId].packedTermsState[1]),
 			int256(assets[assetId].packedTermsState[2]),
-			int256(assets[assetId].packedTermsState[3])
+			int256(assets[assetId].packedTermsState[3]),
+			int256(assets[assetId].packedTermsState[4]),
+			int256(assets[assetId].packedTermsState[5]),
+			int256(assets[assetId].packedTermsState[6]),
+			int256(assets[assetId].packedTermsState[7]),
+			int256(assets[assetId].packedTermsState[8]),
+			ContractReference(
+				assets[assetId].packedTermsState[9],
+				ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[10] >> 16))),
+				ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[10] >> 8)))
+			),
+			ContractReference(
+				assets[assetId].packedTermsState[11],
+				ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[12] >> 16))),
+				ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[12] >> 8)))
+			)
 		);
 
 		return deriveLifecycleTerms(
