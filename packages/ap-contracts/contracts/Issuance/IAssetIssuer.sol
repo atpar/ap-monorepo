@@ -8,19 +8,19 @@ import "./VerifyOrder.sol";
 
 contract IAssetIssuer is SharedTypes, VerifyOrder {
 
-  event AssetIssued(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
+    event AssetIssued(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
 
-  struct AssetDraft {
-    bytes32 termsHash;
-    bytes32 productId;
-    CustomTerms customTerms;
-    AssetOwnership ownership;
-    address engine;
-    address actor;
-  }
+    struct AssetDraft {
+        bytes32 termsHash;
+        bytes32 productId;
+        CustomTerms customTerms;
+        AssetOwnership ownership;
+        address engine;
+        address actor;
+    }
 
 
-  function issueFromOrder(Order memory order) public;
+    function issueFromOrder(Order memory order) public;
 
-  function issueFromDraft(AssetDraft memory draft) public;
+    function issueFromDraft(AssetDraft memory draft) public;
 }
