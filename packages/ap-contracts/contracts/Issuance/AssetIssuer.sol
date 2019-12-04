@@ -151,6 +151,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 				enhancementOrder.customTerms
 			);
 
+			// set ownership of enhancement according to contract role of underlying
 			if (enhancementTerms.contractRole == ContractRole.BUY && underlyingTerms.contractRole == ContractRole.RPA) {
 				enhancementOrder.ownership = AssetOwnership(
 					order.ownership.creatorObligor,

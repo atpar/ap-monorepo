@@ -8,7 +8,7 @@
   "scalingEffect": 0,
   "penaltyType": 0,
   "feeBasis": 0,
-  "creditEventTypeCovered": 0,
+  "creditEventTypeCovered": 3,
   "contractReference_1": { 
     "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
     "contractReferenceType": 1,
@@ -47,7 +47,7 @@
   "premiumDiscountAtIED": 0,
   "priceAtPurchaseDate": 0,
   "nextPrincipalRedemptionPayment": 0,
-  "coverageOfCreditEnhancement": 0,
+  "coverageOfCreditEnhancement": "1000000000000000000",
   "cycleOfInterestPayment": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfRateReset": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfScalingIndex": { "i": 0, "p": 0, "s": 0, "isSet": false },

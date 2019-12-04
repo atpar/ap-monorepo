@@ -259,16 +259,14 @@ contract('AssetIssuer', (accounts) => {
 
   it('should issue an asset from an order (with enhancement orders with collateral)', async () => {
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
-
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
-
     // encode collateralToken and collateralAmount in object of second contract reference
     termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
       this.PaymentTokenInstance.address,
       collateralAmount
     );
-
+    // derive terms
     const customTermsCEC = { ...parseTermsToCustomTerms(termsCEC), anchorDate: this.customTerms.anchorDate };
     const generatingTermsCEC = parseTermsToGeneratingTerms(termsCEC);
     const productTermsCEC = parseTermsToProductTerms(termsCEC);
@@ -281,7 +279,6 @@ contract('AssetIssuer', (accounts) => {
       cyclicFPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 4),
       cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
     };
-
     // register product
     const productIdCEC = 'Test Product CEC';
     await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);

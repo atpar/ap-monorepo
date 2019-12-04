@@ -14,7 +14,7 @@ contract Custodian is ICustodian, ReentrancyGuard {
 	address public assetActor;
 	IAssetRegistry public assetRegistry;
 
-	mapping(bytes32 => uint256) collateral;
+	mapping(bytes32 => bool) collateral;
 
 	using SafeMath for uint256;
 
@@ -71,7 +71,7 @@ contract Custodian is ICustodian, ReentrancyGuard {
 		);
 
 		// register collateral for assetId
-		collateral[assetId] = collateralAmount;
+		collateral[assetId] = true;
 
 		return true;
 	}
@@ -82,6 +82,11 @@ contract Custodian is ICustodian, ReentrancyGuard {
 		public
 		returns (bool)
 	{
+		require(
+			collateral[assetId] == true,
+			"Custodian.returnCollateral: ENTRY_DOES_NOT_EXIST"
+		);
+
 		LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
 		State memory state = assetRegistry.getState(assetId);
 		AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
@@ -91,25 +96,32 @@ contract Custodian is ICustodian, ReentrancyGuard {
 			? ownership.counterpartyBeneficiary
 			: ownership.creatorBeneficiary;
 
-		// check if XD of asset was triggered
-		require(
-			state.maturityDate <= state.statusDate && state.executionAmount == int256(0),
-			"Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED"
-		);
+		// decode token address and amount of collateral
+		(address collateralToken, uint256 collateralAmount) = decodeCollateralObject(terms.contractReference_2.object);
 
-		address collateralToken = terms.currency; // uint256(uint96(uint256(terms.contractReferences[1].object >> 160)))
+		// calculate amount to return
+		uint256 notExecutedAmount;
+		// if XD was triggerd
+		if (state.executionDate > uint256(0)) { // executionDate?
+			notExecutedAmount = collateralAmount.sub(uint256(state.executionAmount));
+		// if XD was not triggered and reached maturity
+		} else if (state.executionDate == uint256(0) && state.statusDate >= state.maturityDate) {
+			notExecutedAmount = collateralAmount;
+		// throw if XD was not triggered and maturity is not reached
+		} else {
+			revert("Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED");
+		}
 
 		// reset allowance for AssetActor
-		uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
-		uint256 collateralAmount = collateral[assetId];
-		require(
-			IERC20(collateralToken).approve(assetActor, allowance.sub(collateralAmount)),
-			"Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
-		);
+		// uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
+		// require(
+		// 	IERC20(collateralToken).approve(assetActor, allowance.sub(collateralAmount)),
+		// 	"Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
+		// );
 
-		// try transferring collateral back to the collateralizer
+		// try transferring amount back to the collateralizer
 		require(
-			IERC20(collateralToken).transferFrom(address(this), collateralizer, collateralAmount),
+			IERC20(collateralToken).transfer(collateralizer, notExecutedAmount),
 			"Custodian.returnCollateral: TRANSFER_FAILED"
 		);
 
