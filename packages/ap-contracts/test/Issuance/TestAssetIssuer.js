@@ -12,6 +12,7 @@ const {
   parseTermsToProductTerms,
   parseTermsToCustomTerms
 } = require('../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
 
 const {
   getDefaultOrderData,
@@ -22,7 +23,6 @@ const {
   getFilledOrderDataAsTypedData,
   getUnfilledEnhancementOrderDataAsTypedData,
   getFilledEnhancementOrderDataAsTypedData,
-  getTermsHash,
   sign
 } = require('../helper/orderUtils');
 
@@ -34,6 +34,8 @@ contract('AssetIssuer', (accounts) => {
   const counterparty = accounts[1];
   const guarantor = accounts[2];
   const guarantor_2 = accounts[3];
+
+  let snapshot;
 
   before(async () => {
     const instances = await setupTestEnvironment();
@@ -71,6 +73,12 @@ contract('AssetIssuer', (accounts) => {
 
     // register product
     await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules)
+
+    snapshot = await createSnapshot();
+  });
+
+  after(async () => {
+    await revertToSnapshot(snapshot);
   });
 
   it('should issue an asset from an order (without enhancement orders)', async () => {
@@ -183,6 +191,9 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership_2.creatorBeneficiary, counterparty);
     assert.equal(storedOwnership_2.counterpartyObligor, guarantor_2);
     assert.equal(storedOwnership_2.counterpartyBeneficiary, guarantor_2);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
   });
 
   it('should issue an asset from an order (with enhancement orders with collateral)', async () => {
@@ -265,5 +276,82 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership_1.creatorBeneficiary, creator);
     assert.equal(storedOwnership_1.counterpartyObligor, this.CustodianInstance.address);
     assert.equal(storedOwnership_1.counterpartyBeneficiary, counterparty);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
+  });
+
+  it('should issue an asset from an order (as an enhancement to an existing asset)', async () => {
+    // sign order
+    const orderData = getDefaultOrderData(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+    );
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
+    orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);
+
+    // issue underlying asset
+    await this.AssetIssuerInstance.issueFromOrder(orderData);
+    const underlyingAssetId = getAssetIdFromOrderData(orderData);
+
+    // collateral enhancement order
+    const ownershipCEC = {
+      creatorObligor: '0x0000000000000000000000000000000000000000',
+      creatorBeneficiary: '0x0000000000000000000000000000000000000000',
+      counterpartyObligor: '0x0000000000000000000000000000000000000000',
+      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+    };
+    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
+    // encode underlying assetId in object of first contract reference
+    termsCEC.contractReference_1.object = web3.utils.toHex(underlyingAssetId);
+    // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
+    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
+    // encode collateralToken and collateralAmount in object of second contract reference
+    termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
+      this.PaymentTokenInstance.address,
+      collateralAmount
+    );
+    // derive terms
+    const customTermsCEC = { ...parseTermsToCustomTerms(termsCEC), anchorDate: this.customTerms.anchorDate };
+    const generatingTermsCEC = parseTermsToGeneratingTerms(termsCEC);
+    const productTermsCEC = parseTermsToProductTerms(termsCEC);
+    const productSchedulesCEC = {
+      nonCyclicSchedule: await this.CECEngineInstance.computeNonCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate),
+      cyclicIPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 8),
+      cyclicPRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 15),
+      cyclicSCSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 19),
+      cyclicRRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 18),
+      cyclicFPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 4),
+      cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
+    };
+    // register product
+    const productIdCEC = 'Test Product CEC';
+    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);
+
+    const orderDataCEC = getDefaultOrderData(
+      termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address
+    );
+    orderDataCEC.creatorSignature = '0x0';
+    orderDataCEC.counterpartySignature = '0x0';
+
+    // counterparty has to set allowance == collateralAmount for custodian contract
+    await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterparty });
+    
+    // issue asset
+    await this.AssetIssuerInstance.issueFromOrder(orderDataCEC);
+    const assetIdCEC = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ['bytes32', 'address', 'uint256'],
+        [orderDataCEC.termsHash, this.CustodianInstance.address, orderDataCEC.salt]
+      )
+    );
+
+    const storedEngineAddressCEC = await this.AssetRegistryInstance.getEngineAddress(assetIdCEC);
+
+    assert.equal(storedEngineAddressCEC, orderDataCEC.engine);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
   });
 });
