@@ -94,7 +94,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         if (order.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
             require(
                 order.customTerms.contractReference_1.object != bytes32(0),
-                "AssetIssuer.finalizeOrder: "
+                "AssetIssuer.finalizeOrder: INVALID_OBJECT"
             );
         }
 
@@ -148,8 +148,8 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             order.ownership,
             order.productId,
             order.customTerms,
-            order.actor,
-            order.engine
+            order.engine,
+            order.actor
         );
     }
 
@@ -217,8 +217,8 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             enhancementOrder.ownership,
             enhancementOrder.productId,
             enhancementOrder.customTerms,
-            order.actor,
-            enhancementOrder.engine
+            enhancementOrder.engine,
+            order.actor
         );
     }
 
@@ -227,8 +227,8 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         AssetOwnership memory ownership,
         bytes32 productId,
         CustomTerms memory customTerms,
-        address actor,
-        address engine
+        address engine,
+        address actor
     )
         internal
     {
