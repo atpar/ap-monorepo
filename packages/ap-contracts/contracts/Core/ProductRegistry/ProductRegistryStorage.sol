@@ -58,6 +58,7 @@ contract ProductRegistryStorage is SharedTypes {
         if (terms.penaltyRate != int256(0)) products[productId].packedTerms[25] = bytes32(terms.penaltyRate);
         // if (terms.premiumDiscountAtIED != int256(0)) products[productId].packedTerms[26] = bytes32(terms.premiumDiscountAtIED);
         if (terms.priceAtPurchaseDate != int256(0)) products[productId].packedTerms[27] = bytes32(terms.priceAtPurchaseDate);
+        // solium-disable-next-line
         if (terms.nextPrincipalRedemptionPayment != int256(0)) products[productId].packedTerms[28] = bytes32(terms.nextPrincipalRedemptionPayment);
 
         if (terms.gracePeriod.isSet) {

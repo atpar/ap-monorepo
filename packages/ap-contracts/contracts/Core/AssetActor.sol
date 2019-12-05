@@ -73,7 +73,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
             "AssetActor.progress: ASSET_IS_IN_DEFAULT"
         );
 
-        // get the next events event type and schedule time
+        // get event type and schedule time for the next event
         bytes32 _event = assetRegistry.getNextEvent(assetId);
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -83,29 +83,32 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
                 _event,
                 terms,
                 state,
-                (terms.contractReference_1.object != bytes32(0)),
+                (terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE),
                 assetRegistry.getState(terms.contractReference_1.object)
             ) == false
         ) {
-            // skip the event by incrementing the corresponding schedule index
+            // skip the unscheduled event by incrementing the corresponding schedule index
             updateScheduleIndex(assetId, eventType);
             return;
         }
 
-        // get external data
+        // get external data for the next event
         bytes32 externalData = getExternalDataForEvent(_event, terms);
         // compute payoff and the next state by applying the event to the current state
+        // solium-disable-next-line
         int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalData);
+        // solium-disable-next-line
         state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
 
         // try to settle payoff of event
+        // solium-disable-next-line
         if (settlePayoffForEvent(assetId, _event, payoff, terms)) {
             // if obligation is fulfilled increment the corresponding schedule index
             updateScheduleIndex(assetId, eventType);
         } else {
             // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF
             // store the interim state of the asset (state if the current obligation was successfully settled)
-            // (if the obligation is later settled before the asset reaches default,
+            // (if the obligation is later fulfilled before the asset reaches default,
             // the interim state is used to derive subsequent states of the asset)
             if (state.contractPerformance == ContractPerformance.PF) {
                 assetRegistry.setFinalizedState(assetId, state);
@@ -209,7 +212,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         // return if there is no amount due
         if (payoff == 0) return true;
 
-        // set address of token
+        // get the token address either from currency attribute or from the second contract reference
         address token = terms.currency;
         if (terms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
             (token, ) = decodeCollateralObject(terms.contractReference_2.object);
@@ -240,14 +243,15 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
             }
         }
 
-        // get the absolute of the payoff
+        // calculate the magnitude of the payoff
         uint256 amount = (payoff > 0) ? uint256(payoff) : uint256(payoff * -1);
 
-        // try to transfer amount due from obligor to payee
+        // check if allowance is set by the payer for the Asset Actor and that payer is able to cover payment
         if (IERC20(token).allowance(payer, address(this)) < amount || IERC20(token).balanceOf(payer) < amount) {
             return false;
         }
 
+        // try to transfer amount due from obligor to payee
         return IERC20(token).transferFrom(payer, payee, amount);
     }
 
