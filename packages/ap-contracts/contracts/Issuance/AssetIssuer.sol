@@ -24,8 +24,9 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
     }
 
     /**
-     * issues an asset from an order which was signed by a maker and taker
-     * @dev verifies both signatures and initializes by calling the specified asset actor
+     * issues an asset from an order which was signed by the creator obligor and the counterparty obligor
+     * @dev verifies both signatures and initializes by calling the specified asset actor,
+     * if ownership is undefined and signatures are undefined it skips signature verification
      * @param order order for which to issue the asset
      */
     function issueFromOrder(Order memory order)

@@ -7,9 +7,6 @@ import "./IMarketObjectRegistry.sol";
 import "./MarketObjectRegistryStorage.sol";
 
 
-/**
- *
- */
 contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegistry, Ownable {
 
     /**

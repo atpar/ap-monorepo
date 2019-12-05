@@ -53,7 +53,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-        * register the address of the owner of specific claims of the asset
+     * register the address of the owner of specific claims of the asset
      * @param assetId id of the asset
      * @param cashflowId id of the specific claims for which to register the owner
      * @param beneficiary the address of the owner
@@ -93,7 +93,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-        * retrieve the registered addresses of owners (creator, counterparty) of an asset
+     * retrieve the registered addresses of owners (creator, counterparty) of an asset
      * @param assetId id of the asset
      * @return addresses of all owners of the asset
      */

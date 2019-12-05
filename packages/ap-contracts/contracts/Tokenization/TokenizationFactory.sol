@@ -21,6 +21,13 @@ contract TokenizationFactory {
         assetRegistry = _assetRegistry;
     }
 
+    /**
+     * deploys a new tokenized distributor contract for a specified ERC20 token
+     * @dev mints initial supply after deploying the tokenized distributor contract
+     * @param name name of the token
+     * @param symbol of the token
+     * @param initialSupply of distributor tokens
+     */
     function createERC20Distributor(
         string memory name,
         string memory symbol,

@@ -24,6 +24,15 @@ contract Custodian is ICustodian, ReentrancyGuard {
         assetRegistry = _assetRegistry;
     }
 
+    /**
+     * locks the required collateral amount encoded in the second contract reference in the terms
+     * @dev collateralizer has to set allowance beforehand,
+     * Custodian increases allowance for the AssetActor by amount of collateral
+     * @param assetId id of the asset with collateral requirements
+     * @param terms terms of the asset containing the collateral requirements
+     * @param ownership ownership of the asset
+     * @return true if the collateral was locked by the Custodian
+     */
     function lockCollateral(
         bytes32 assetId,
         LifecycleTerms memory terms,
@@ -78,6 +87,15 @@ contract Custodian is ICustodian, ReentrancyGuard {
         return true;
     }
 
+    /**
+     * returns the entire collateral back to the collateralizer if collateral
+     * was not executed before the asset reached maturity or it returns the remaining
+     * collateral (not executed amount) after collateral was executed and settled
+     * @dev resets allowance for the Asset Actor,
+     * reverts if state of the asset does not allow unlocking the collateral
+     * @param assetId id of the asset for which to return the collateral,
+     * @return true if the collateral was returned to the collateralizer
+     */
     function returnCollateral(
         bytes32 assetId
     )
