@@ -2,17 +2,17 @@ const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
+const {
+  convertDatesToOffsets,
+  parseTermsToProductTerms,
+  parseTermsToCustomTerms,
+  setupTestEnvironment,
+  getDefaultTerms
+} = require('../../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
 
 const AssetActor = artifacts.require('AssetActor');
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
-
-const { setupTestEnvironment, getDefaultTerms } = require('../../helper/setupTestEnvironment');
-const { 
-  createSnapshot, 
-  revertToSnapshot, 
-  mineBlock
-} = require('../../helper/blockchain');
 
 
 contract('AssetActor', (accounts) => {

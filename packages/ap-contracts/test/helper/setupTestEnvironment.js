@@ -11,8 +11,8 @@ const Custodian = artifacts.require('Custodian');
 const ProductRegistry = artifacts.require('ProductRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
-const ProductTerms = require('./product-terms.json');
-const CustomTerms = require('./custom-terms.json');
+const ProductTerms = require('./definitions/product-terms.json');
+const CustomTerms = require('./definitions/custom-terms.json');
 
 
 async function setupTestEnvironment () {

@@ -12,9 +12,10 @@ const {
   getAssetIdFromOrderData
 } = require('../../helper/orderUtils');
 
+const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
+
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 
-const CECCollateralTerms = require('../../helper/cec-collateral-terms.json');
 
 
 contract('AssetActor', (accounts) => {

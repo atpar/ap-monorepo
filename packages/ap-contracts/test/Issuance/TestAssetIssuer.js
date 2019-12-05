@@ -26,7 +26,7 @@ const {
   sign
 } = require('../helper/orderUtils');
 
-const CECCollateralTerms = require('../helper/cec-collateral-terms.json');
+const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
 
 
 contract('AssetIssuer', (accounts) => {

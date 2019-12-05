@@ -1,11 +1,7 @@
 const { getTestCases } = require('actus-solidity/test/helper/tests');
 const { parseTermsToGeneratingTerms, parseTermsToLifecycleTerms } = require('actus-solidity/test/helper/parser');
 
-const { 
-  setupTestEnvironment,
-  parseTermsToProductTerms,
-  parseTermsToCustomTerms 
-} = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
 
 

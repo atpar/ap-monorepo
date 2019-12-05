@@ -12,7 +12,7 @@ const {
   mineBlock
 } = require('../../helper/blockchain');
 
-const ExternalDataTerms = require('../../helper/external-data-terms.json');
+const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
 
 contract('AssetActor', (accounts) => {
