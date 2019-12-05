@@ -5,7 +5,7 @@ const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('act
 const { setupTestEnvironment, getDefaultTerms, convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain')
 const {
-  getTermsHash,
+  getDefaultOrderDataWithEnhancement,
   getUnfilledOrderDataAsTypedData,
   getFilledOrderDataAsTypedData,
   sign,
@@ -36,6 +36,7 @@ contract('AssetActor', (accounts) => {
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.underylingAssetId = 'C123';
+    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
       ...await getDefaultTerms(),
       gracePeriod: { i: 1, p: 2, isSet: true },
@@ -77,6 +78,12 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should trigger collateral', async () => {
+    const ownershipCEC = {
+      creatorObligor: '0x0000000000000000000000000000000000000000',
+      creatorBeneficiary: '0x0000000000000000000000000000000000000000',
+      counterpartyObligor: '0x0000000000000000000000000000000000000000',
+      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+    };
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
@@ -104,60 +111,18 @@ contract('AssetActor', (accounts) => {
     const productIdCEC = 'Test Product CEC';
     await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);
 
-    const orderData = { 
-      termsHash: getTermsHash(this.terms),
-      productId: web3.utils.toHex(this.productId),
-      customTerms: this.customTerms,
-      expirationDate: '11100000000',
-      ownership: {
-        creatorObligor: creatorObligor,
-        creatorBeneficiary: creatorBeneficiary,
-        counterpartyObligor: counterpartyObligor,
-        counterpartyBeneficiary: counterpartyBeneficiary
-      },
-      engine: this.PAMEngineInstance.address,
-      actor: this.AssetActorInstance.address,
-      enhancementOrder_1: {
-        termsHash: getTermsHash(termsCEC),
-        productId: web3.utils.toHex(productIdCEC),
-        customTerms: customTermsCEC,
-        ownership: {
-          creatorObligor: '0x0000000000000000000000000000000000000000',
-          creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-          counterpartyObligor: '0x0000000000000000000000000000000000000000',
-          counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
-        },
-        engine: this.CECEngineInstance.address,
-        creatorSignature: '0x0',
-        counterpartySignature: '0x0',
-        salt: Math.floor(Math.random() * 1000000)
-      },
-      enhancementOrder_2: {
-        termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        customTerms: this.customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
-        ownership: {
-          creatorObligor: '0x0000000000000000000000000000000000000000',
-          creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-          counterpartyObligor: '0x0000000000000000000000000000000000000000',
-          counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
-        },
-        engine: '0x0000000000000000000000000000000000000000',
-        creatorSignature: '0x0',
-        counterpartySignature: '0x0',
-        salt: 0
-      },
-      creatorSignature: null,
-      counterpartySignature: null,
-      salt: Math.floor(Math.random() * 1000000)
-    };
     // sign order
+    const orderData = getDefaultOrderDataWithEnhancement(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
+      termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
+    );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
     orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);
-  
     // collateral enhancement order does not have to be signed (ownership is enforced by AssetIssuer)
+    orderData.enhancementOrder_1.creatorSignature = '0x0';
+    orderData.enhancementOrder_1.counterpartySignature = '0x0';
 
     // counterparty has to set allowance == collateralAmount for custodian contract
     await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterpartyBeneficiary });

@@ -730,6 +730,133 @@ function sign(typedData, account) {
   });
 };
 
+function getDefaultOrderData(terms, productId, customTerms, ownership, engine, actor) {
+  return { 
+    termsHash: getTermsHash(terms),
+    productId: web3.utils.toHex(productId),
+    customTerms: customTerms,
+    expirationDate: '10000000000',
+    ownership: ownership,
+    engine: engine,
+    actor: actor,
+    enhancementOrder_1: {
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
+      ownership: {
+        creatorObligor: '0x0000000000000000000000000000000000000000',
+        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
+        counterpartyObligor: '0x0000000000000000000000000000000000000000',
+        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      },
+      engine: '0x0000000000000000000000000000000000000000',
+      creatorSignature: '0x0',
+      counterpartySignature: '0x0',
+      salt: 0
+    },
+    enhancementOrder_2: {
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
+      ownership: {
+        creatorObligor: '0x0000000000000000000000000000000000000000',
+        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
+        counterpartyObligor: '0x0000000000000000000000000000000000000000',
+        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      },
+      engine: '0x0000000000000000000000000000000000000000',
+      creatorSignature: '0x0',
+      counterpartySignature: '0x0',
+      salt: 0
+    },
+    creatorSignature: null,
+    counterpartySignature: null,
+    salt: Math.floor(Math.random() * 1000000)
+  };
+}
+
+function getDefaultOrderDataWithEnhancement(
+  underlyingTerms,  underlyingProductId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
+  enhancementTerms, enhancementProductId, enhancementCustomTerms, enhancementOwnership, enhancementEngine
+) {
+  return { 
+    termsHash: getTermsHash(underlyingTerms),
+    productId: web3.utils.toHex(underlyingProductId),
+    customTerms: underlyingCustomTerms,
+    expirationDate: '10000000000',
+    ownership: underlyingOwnership,
+    engine: underlyingEngine,
+    actor: underlyingActor,
+    enhancementOrder_1: {
+      termsHash: getTermsHash(enhancementTerms),
+      productId: web3.utils.toHex(enhancementProductId),
+      customTerms: enhancementCustomTerms,
+      ownership: enhancementOwnership,
+      engine: enhancementEngine,
+      creatorSignature: null,
+      counterpartySignature: null,
+      salt: Math.floor(Math.random() * 1000000)
+    },
+    enhancementOrder_2: {
+      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      customTerms: underlyingCustomTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
+      ownership: {
+        creatorObligor: '0x0000000000000000000000000000000000000000',
+        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
+        counterpartyObligor: '0x0000000000000000000000000000000000000000',
+        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      },
+      engine: '0x0000000000000000000000000000000000000000',
+      creatorSignature: '0x0',
+      counterpartySignature: '0x0',
+      salt: 0
+    },
+    creatorSignature: null,
+    counterpartySignature: null,
+    salt: Math.floor(Math.random() * 1000000)
+  };
+}
+
+function getDefaultOrderDataWithEnhancements(
+  underlyingTerms,  underlyingProductId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
+  enhancementTerms_1, enhancementProductId_1, enhancementCustomTerms_1, enhancementOwnership_1, enhancementEngine_1,
+  enhancementTerms_2, enhancementProductId_2, enhancementCustomTerms_2, enhancementOwnership_2, enhancementEngine_2
+) {
+  return { 
+    termsHash: getTermsHash(underlyingTerms),
+    productId: web3.utils.toHex(underlyingProductId),
+    customTerms: underlyingCustomTerms,
+    expirationDate: '10000000000',
+    ownership: underlyingOwnership,
+    engine: underlyingEngine,
+    actor: underlyingActor,
+    enhancementOrder_1: {
+      termsHash: getTermsHash(enhancementTerms_1),
+      productId: web3.utils.toHex(enhancementProductId_1),
+      customTerms: enhancementCustomTerms_1,
+      ownership: enhancementOwnership_1,
+      engine: enhancementEngine_1,
+      creatorSignature: null,
+      counterpartySignature: null,
+      salt: Math.floor(Math.random() * 1000000)
+    },
+    enhancementOrder_2: {
+      termsHash: getTermsHash(enhancementTerms_2),
+      productId: web3.utils.toHex(enhancementProductId_2),
+      customTerms: enhancementCustomTerms_2,
+      ownership: enhancementOwnership_2,
+      engine: enhancementEngine_2,
+      creatorSignature: null,
+      counterpartySignature: null,
+      salt: Math.floor(Math.random() * 1000000)
+    },
+    creatorSignature: null,
+    counterpartySignature: null,
+    salt: Math.floor(Math.random() * 1000000)
+  };
+}
+
 module.exports = {
   getAssetIdFromOrderData,
   getUnfilledOrderDataAsTypedData,
@@ -737,5 +864,8 @@ module.exports = {
   getUnfilledEnhancementOrderDataAsTypedData,
   getFilledEnhancementOrderDataAsTypedData,
   getTermsHash,
+  getDefaultOrderData,
+  getDefaultOrderDataWithEnhancement,
+  getDefaultOrderDataWithEnhancements,
   sign
 }
