@@ -73,6 +73,8 @@ contract Custodian is ICustodian, ReentrancyGuard {
         // register collateral for assetId
         collateral[assetId] = true;
 
+        emit LockedCollateral(assetId, collateralizer, collateralAmount);
+
         return true;
     }
 
