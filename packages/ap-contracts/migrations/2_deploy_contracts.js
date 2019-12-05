@@ -50,7 +50,8 @@ module.exports = async (deployer, network, accounts) => {
   await deployer.deploy(
     AssetIssuer,
     Custodian.address,
-    ProductRegistry.address
+    ProductRegistry.address,
+    AssetRegistry.address
   );
 
   // Tokenization

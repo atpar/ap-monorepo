@@ -3,21 +3,24 @@ pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
 import "../Core/ProductRegistry/IProductRegistry.sol";
+import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "../Core/IAssetActor.sol";
 import "./IAssetIssuer.sol";
-import "./VerifyOrder.sol";
 import "./ICustodian.sol";
+import "./VerifyOrder.sol";
 
 
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 
     ICustodian public custodian;
     IProductRegistry public productRegistry;
+    IAssetRegistry public assetRegistry;
 
 
-    constructor(ICustodian _custodian, IProductRegistry _productRegistry) public {
+    constructor(ICustodian _custodian, IProductRegistry _productRegistry, IAssetRegistry _assetRegistry) public {
         custodian = _custodian;
         productRegistry = _productRegistry;
+        assetRegistry = _assetRegistry;
     }
 
     /**
@@ -35,13 +38,17 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         );
 
         // issue asset (underlying)
+        (
+            bytes32 assetId,
+            AssetOwnership memory ownership,
+            bytes32 productId,
+            CustomTerms memory customTerms,
+            address engine,
+            address actor
+        ) = finalizeOrder(order);
+
         issueAsset(
-            keccak256(abi.encode(order.creatorSignature, order.counterpartySignature)),
-            order.ownership,
-            order.productId,
-            order.customTerms,
-            order.actor,
-            order.engine
+            assetId, ownership, productId, customTerms, engine, actor
         );
 
         // check if first enhancement order is specified
@@ -77,47 +84,73 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         }
     }
 
-    /**
-     * issues an asset from an asset draft
-     * @dev no signature verification
-     * @param draft asset draft which to issue an asset from
-     */
-    function issueFromDraft(AssetDraft memory draft)
-        public
-    {
-        issueAsset(
-            keccak256(abi.encode(draft)),
-            draft.ownership,
-            draft.productId,
-            draft.customTerms,
-            draft.actor,
-            draft.engine
-        );
-    }
-
-    function issueAsset(
-        bytes32 assetId,
-        AssetOwnership memory ownership,
-        bytes32 productId,
-        CustomTerms memory customTerms,
-        address actor,
-        address engine
-    )
+    function finalizeOrder(Order memory order)
         internal
+        returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
     {
-        // initialize the asset by calling the asset actor
-        require(
-            IAssetActor(actor).initialize(
-                assetId,
-                ownership,
-                productId,
-                customTerms,
-                engine
-            ),
-            "AssetIssuer.issueAsset: EXECUTION_ERROR"
-        );
+        bytes32 assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature));
 
-        emit AssetIssued(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
+        // check if first contract reference in terms references an underlying asset
+        if (order.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+            require(
+                order.customTerms.contractReference_1.object != bytes32(0),
+                "AssetIssuer.finalizeOrder: "
+            );
+        }
+
+        // check if second contract reference in terms contains a reference to collateral
+        if (order.customTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+            require(
+                order.customTerms.contractReference_2.object != bytes32(0),
+                "AssetIssuer.finalizeOrder: INVALID_OBJECT"
+            );
+
+            // derive assetId and terms of order from product terms and custom terms
+            assetId = keccak256(abi.encode(order.termsHash, address(custodian), order.salt));
+            LifecycleTerms memory terms = deriveLifecycleTerms(
+                productRegistry.getProductTerms(order.productId),
+                order.customTerms
+            );
+
+            // derive underlying assetId
+            bytes32 underlyingAssetId = order.customTerms.contractReference_1.object;
+            // get terms and ownership of referenced underlying asset
+            LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+            AssetOwnership memory underlyingOwnership = assetRegistry.getOwnership(underlyingAssetId);
+
+            // set ownership of order according to contract role of underlying
+            if (terms.contractRole == ContractRole.BUY && underlyingTerms.contractRole == ContractRole.RPA) {
+                order.ownership = AssetOwnership(
+                    underlyingOwnership.creatorObligor,
+                    underlyingOwnership.creatorBeneficiary,
+                    address(custodian),
+                    underlyingOwnership.counterpartyBeneficiary
+                );
+            } else if (terms.contractRole == ContractRole.SEL && underlyingTerms.contractRole == ContractRole.RPL) {
+                order.ownership = AssetOwnership(
+                    address(custodian),
+                    underlyingOwnership.creatorBeneficiary,
+                    underlyingOwnership.counterpartyObligor,
+                    underlyingOwnership.counterpartyBeneficiary
+                );
+            } else {
+                // only BUY, RPA and SEL, RPL allowed for CEC
+                revert("AssetIssuer.finalizeOrder: INVALID_CONTRACT_ROLES");
+            }
+
+            // execute contractual conditions
+            // try transferring collateral to the custodian
+            custodian.lockCollateral(assetId, terms, order.ownership);
+        }
+
+        return (
+            assetId,
+            order.ownership,
+            order.productId,
+            order.customTerms,
+            order.actor,
+            order.engine
+        );
     }
 
     function finalizeEnhancementOrder(EnhancementOrder memory enhancementOrder, Order memory order)
@@ -126,7 +159,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
     {
         bytes32 assetId = keccak256(abi.encode(enhancementOrder.creatorSignature, enhancementOrder.counterpartySignature));
 
-        // check if first contract reference in enhancement terms reference a underlying asset
+        // check if first contract reference in enhancement terms references an underlying asset
         if (enhancementOrder.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
             // derive assetId of underlying and set as object in the first contract reference
             enhancementOrder.customTerms.contractReference_1.object = keccak256(
@@ -187,5 +220,30 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             order.actor,
             enhancementOrder.engine
         );
+    }
+
+    function issueAsset(
+        bytes32 assetId,
+        AssetOwnership memory ownership,
+        bytes32 productId,
+        CustomTerms memory customTerms,
+        address actor,
+        address engine
+    )
+        internal
+    {
+        // initialize the asset by calling the asset actor
+        require(
+            IAssetActor(actor).initialize(
+                assetId,
+                ownership,
+                productId,
+                customTerms,
+                engine
+            ),
+            "AssetIssuer.issueAsset: EXECUTION_ERROR"
+        );
+
+        emit AssetIssued(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 }

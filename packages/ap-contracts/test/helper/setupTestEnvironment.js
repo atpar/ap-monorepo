@@ -45,7 +45,8 @@ async function setupTestEnvironment () {
   // deploy Issuance
   instances.AssetIssuerInstance = await AssetIssuer.new(
     instances.CustodianInstance.address,
-    instances.ProductRegistryInstance.address
+    instances.ProductRegistryInstance.address,
+    instances.AssetRegistryInstance.address
   );
 
   // deploy Tokenization
