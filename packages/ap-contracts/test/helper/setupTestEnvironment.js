@@ -21,40 +21,40 @@ async function setupTestEnvironment () {
   PAMEngine.numberFormat = 'String';
 
   // deploy ACTUS Solidity
-  instances.PAMEngineInstance = await PAMEngine.new();
-  instances.ANNEngineInstance = await ANNEngine.new();
-  instances.CEGEngineInstance = await CEGEngine.new();
-  instances.CECEngineInstance = await CECEngine.new();
+  instances.PAMEngineInstance = await PAMEngine.deployed();// new();
+  instances.ANNEngineInstance = await ANNEngine.deployed();// new();
+  instances.CEGEngineInstance = await CEGEngine.deployed();// new();
+  instances.CECEngineInstance = await CECEngine.deployed();// new();
   
   // deploy Core
-  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
-  instances.ProductRegistryInstance = await ProductRegistry.new();
-  instances.AssetRegistryInstance = await AssetRegistry.new(
-    instances.ProductRegistryInstance.address
-  );
-  instances.AssetActorInstance = await AssetActor.new(
-    instances.AssetRegistryInstance.address,
-    instances.ProductRegistryInstance.address,
-    instances.MarketObjectRegistryInstance.address
-  );
-  instances.CustodianInstance = await Custodian.new(
-    instances.AssetActorInstance.address,
-    instances.AssetRegistryInstance.address
-  );
+  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.deployed(); // new();
+  instances.ProductRegistryInstance = await ProductRegistry.deployed(); // new();
+  instances.AssetRegistryInstance = await AssetRegistry.deployed() // new(
+    // instances.ProductRegistryInstance.address
+  // );
+  instances.AssetActorInstance = await AssetActor.deployed(); // new(
+    // instances.AssetRegistryInstance.address,
+    // instances.ProductRegistryInstance.address,
+    // instances.MarketObjectRegistryInstance.address
+  // );
+  instances.CustodianInstance = await Custodian.deployed(); // new(
+  //   instances.AssetActorInstance.address,
+  //   instances.AssetRegistryInstance.address
+  // );
 
   // deploy Issuance
-  instances.AssetIssuerInstance = await AssetIssuer.new(
-    instances.CustodianInstance.address,
-    instances.ProductRegistryInstance.address,
-    instances.AssetRegistryInstance.address
-  );
+  instances.AssetIssuerInstance = await AssetIssuer.deployed(); // new(
+  //   instances.CustodianInstance.address,
+  //   instances.ProductRegistryInstance.address,
+  //   instances.AssetRegistryInstance.address
+  // );
 
   // deploy Tokenization
-  instances.TokenizationFactoryInstance = await TokenizationFactory.new(
-    instances.AssetRegistryInstance.address
-  );
+  instances.TokenizationFactoryInstance = await TokenizationFactory.deployed(); // new(
+    // instances.AssetRegistryInstance.address
+  // );
 
-  await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
+  // await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
 
   return instances;
 }

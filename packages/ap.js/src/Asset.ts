@@ -1,8 +1,17 @@
-import { BigNumber } from 'bignumber.js';
+import { 
+  AssetOwnership,
+  NON_CYLIC_SCHEDULE_ID,
+  IP_SCHEDULE_ID,
+  SC_SCHEDULE_ID,
+  PR_SCHEDULE_ID,
+  RR_SCHEDULE_ID,
+  PY_SCHEDULE_ID 
+} from './types';
 
-import { ContractTerms, AssetOwnership, ContractState, EvaluatedEventSchedule } from './types';
 import { AP } from './index';
-import { sha3, computeEventId } from './utils/Utils';
+
+import { sortEvents, removeNullEvents } from './utils/Schedule';
+
 
 
 /**
@@ -25,34 +34,42 @@ export class Asset {
 
   /**
    * return the terms of the asset
-   * @returns {Promise<ContractTerms>}
+   * @returns {Promise<Terms>}
    */
-  public async getTerms (): Promise<ContractTerms> { 
-    return this.ap.economics.getTerms(this.assetId); 
+  public async getTerms () { 
+    return this.ap.contracts.assetRegistry.methods.getTerms(this.assetId).call(); 
   }
 
   /**
    * returns the current state of the asset
-   * @returns {Promise<ContractState>}
+   * @returns {Promise<State>}
    */
-  public async getState (): Promise<ContractState> { 
-    return this.ap.economics.getState(this.assetId); 
+  public async getState () { 
+    return this.ap.contracts.assetRegistry.methods.getState(this.assetId).call(); 
   }
 
   /**
    * returns the finalized state of the asset
-   * @returns {Promise<ContractState>}
+   * @returns {Promise<Staete>}
    */
-  public async getFinalizedState (): Promise<ContractState> { 
-    return this.ap.economics.getFinalizedState(this.assetId); 
+  public async getFinalizedState () { 
+    return this.ap.contracts.assetRegistry.methods.getFinalizedState(this.assetId).call(); 
+  }
+
+  /**
+   * returns the address of the actor which is allowed to update the state of the asset
+   * @returns {Promise<string>}
+   */
+  public async getActorAddress () {
+    return this.ap.contracts.assetRegistry.methods.getActorAddress(this.assetId).call();
   }
 
   /**
    * returns the address of the ACTUS engine used for the asset
    * @returns {Promise<string>}
    */
-  public async getEngineAddress (): Promise<string> {
-    return this.ap.economics.getEngineAddress(this.assetId);
+  public async getEngineAddress () {
+    return this.ap.contracts.assetRegistry.methods.getEngineAddress(this.assetId).call();
   }
 
   /**
@@ -60,176 +77,86 @@ export class Asset {
    * @returns {Promise<AssetOwnership>}
    */
   public async getOwnership (): Promise<AssetOwnership> {
-    return this.ap.ownership.getOwnership(this.assetId);
+    return this.ap.contracts.assetRegistry.methods.getOwnership(this.assetId).call();
+  }
+
+  /**
+   * return the id of the product which this asset is based on
+   * @returns {Promise<string>}
+   */
+  public async getProductId () {
+    return this.ap.contracts.assetRegistry.methods.getProductId(this.assetId).call();
   }
  
   /**
    * returns the schedule derived from the terms of the asset
-   * @returns {Promise<EvaluatedEventSchedule>}
+   * @returns {Promise<string[]>}
    */
-  public async getExpectedSchedule (): Promise<EvaluatedEventSchedule> {
+  public async getSchedule () {
+    const productId = await this.getProductId();
+
+    const nonCyclicScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, NON_CYLIC_SCHEDULE_ID).call()
+    ).toNumber();
+    const ipScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, IP_SCHEDULE_ID).call()
+    ).toNumber();
+    const prScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, PR_SCHEDULE_ID).call()
+    ).toNumber();
+    const scScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, SC_SCHEDULE_ID).call()
+    ).toNumber();
+    const rrScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, RR_SCHEDULE_ID).call()
+    ).toNumber();
+    const pyScheduleLength = (
+      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, PY_SCHEDULE_ID).call()
+    ).toNumber();
+
+    const schedule = [];
+
+    for (let i = 0; i < nonCyclicScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, NON_CYLIC_SCHEDULE_ID, i).call());
+    }
+    for (let i = 0; i < ipScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, IP_SCHEDULE_ID, i).call());
+    }
+    for (let i = 0; i < prScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, PR_SCHEDULE_ID, i).call());
+    }
+    for (let i = 0; i < scScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, SC_SCHEDULE_ID, i).call());
+    }
+    for (let i = 0; i < rrScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, RR_SCHEDULE_ID, i).call());
+    }
+    for (let i = 0; i < pyScheduleLength; i++) {
+      schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, PY_SCHEDULE_ID, i).call());
+    }
+
+    return sortEvents(removeNullEvents(schedule));
+  }
+
+  public async getNextEvent () {
+    return await this.ap.contracts.assetRegistry.methods.getNextEvent(this.assetId).call();
+  }
+
+  public async getNextPayment () {
     const terms = await this.getTerms();
-    const engineAddress = await this.getEngineAddress();
+    const ownership = await this.getOwnership();
+    const engine = await this.getEngineAddress();
+    const event = await this.getNextEvent();
 
-    return await this.ap.economics.engine(
-      terms.contractType, 
-      engineAddress
-    ).computeEvaluatedInitialSchedule(terms);
-  }
+    // @ts-ignore
+    const payoff = await this.ap.contracts.engineContract(engine).methods.computePayoffForEvent(terms, state, event, '0x0').call();
 
-  /**
-   * returns the pending schedule derived from the terms and the current state of the asset
-   * (contains all events between the last state and the specified timestamp)
-   * @param {number} timestamp current timestamp
-   * @returns {Promise<EvaluatedEventSchedule>}
-   */
-  public async getPendingSchedule (timestamp: number): Promise<EvaluatedEventSchedule> {
-    const terms = await this.getTerms();
-    const state = await this.getState();
-    const engineAddress = await this.getEngineAddress();
-
-    return await this.ap.economics.engine(
-      terms.contractType, 
-      engineAddress
-    ).computeEvaluatedPendingSchedule(
-      terms,
-      state,
-      timestamp
-    );
-  }
-
-  /**
-   * returns the amount due to date
-   * absolute value of the sum of only positive or only negative payoffs of all pending events 
-   * (depending on the accounts role)
-   * @param {number} timestamp current timestamp
-   * @returns {Promise<BigNumber>}
-   */
-  public async getAmountOutstanding (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
-    const pendingSchedule = await this.getPendingSchedule(timestamp);
-    const engineAddress = await this.getEngineAddress();
-
-    if (this.ap.signer.account === recordCreatorObligor) {
-      const amountSettled = await this.ap.payment.getSettledAmountForRecordCreator(
-        this.assetId, 
-        pendingSchedule
-      );
-
-      const terms = await this.getTerms();
-      const state = await this.getState();
-
-      const amountDue = await this.ap.economics.engine(
-        terms.contractType, 
-        engineAddress
-      ).computeDuePayoffForRecordCreator(
-        terms, 
-        state, 
-        timestamp
-      );
-      return amountDue.minus(amountSettled)
-    } else if (this.ap.signer.account === counterpartyObligor) {
-      const amountSettled = await this.ap.payment.getSettledAmountForCounterparty(
-        this.assetId, 
-        pendingSchedule
-      );
-
-      const terms = await this.getTerms();
-      const state = await this.getState();
-
-      const amountDue = await this.ap.economics.engine(
-        terms.contractType,
-        engineAddress
-      ).computeDuePayoffForCounterparty(
-        terms, 
-        state, 
-        timestamp
-      );
-      return amountDue.minus(amountSettled)
-    }
-
-    return new BigNumber(0);
-  }
-
-  /**
-   * returns the amount outstanding for the next payment oligation of a pending event
-   * (depending on the accounts role)
-   * @param {number} timestamp current timestamp
-   * @returns {Promise<BigNumber>}
-   */
-  public async getAmountOutstandingForNextObligation (timestamp: number): Promise<BigNumber> {
-    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
-    const pendingSchedule = await this.getPendingSchedule(timestamp);
-
-    for (let i = 0; i < pendingSchedule.length; i++) {
-      const { event } = pendingSchedule[i];
-      
-      // skip counterparty payoffs
-      if (this.ap.signer.account === recordCreatorObligor && event.payoff.isGreaterThan(0)) {
-        continue;
-      }
-
-      // skip record creator payoffs
-      if (this.ap.signer.account === counterpartyObligor && event.payoff.isLessThan(0)) {
-        continue;
-      }
-
-      const eventId = computeEventId(event);
-      const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
-      const duePayoff = event.payoff.abs();
-      const outstanding = duePayoff.minus(settledPayoff);
-
-      if (outstanding.isGreaterThan(0)) { return outstanding; }
-    }
-
-    return new BigNumber(0);
-  }
-
-  /**
-   * settles the next payment obligation of a pending event (depending on the accounts role)
-   * can be paid partially (has to be specified in the value field in txOptions)
-   * @dev this requires the users signature (metamask pop-up)
-   * @param {number} timestamp current timestamp
-   * @param  {BigNumber} value amount to settle
-   * @returns {Promise<void>}
-   */
-  public async settleNextObligation (timestamp: number, amount: BigNumber): Promise<void> {
-    const { recordCreatorObligor, counterpartyObligor } = await this.getOwnership();
-    const pendingSchedule = await this.getPendingSchedule(timestamp);
-
-    for (let i = 0; i < pendingSchedule.length; i++) {
-      const { event } = pendingSchedule[i];
-
-      // skip counterparty payoffs
-      if (this.ap.signer.account === recordCreatorObligor && event.payoff.isGreaterThan(0)) {
-        continue;
-      }
-
-      // skip record creator payoffs
-      if (this.ap.signer.account === counterpartyObligor && event.payoff.isLessThan(0)) {
-        continue;
-      }
-
-      const eventId = computeEventId(event)
-      const settledPayoff = await this.ap.payment.getPayoffBalance(this.assetId, eventId);
-      const duePayoff = event.payoff.abs();
-      const outstanding = duePayoff.minus(settledPayoff);
-
-      if (outstanding.isGreaterThan(0)) { 
-        const tokenAddress = pendingSchedule[i].event.currency;
-        const cashflowId = (event.payoff.isGreaterThan(0))? 
-          (Number(event.eventType) + 1) : -(Number(event.eventType) + 1);
-
-        await this.ap.payment.settlePayment(
-          this.assetId, 
-          cashflowId, 
-          eventId, 
-          tokenAddress, 
-          amount,
-        ).send({ from: this.ap.signer.account, gas: 150000 });
-        break; 
-      }
-    }
+    return {
+      amount: payoff.abs(),
+      token: terms.currency,
+      payer: (payoff.isNeg()) ? ownership.creatorObligor : ownership.counterpartyObligor,
+      payee: (payoff.isNeg()) ? ownership.counterpartyBeneficiary : ownership.creatorBeneficiary
+    };
   }
 
   /**
@@ -238,7 +165,7 @@ export class Asset {
    * @return {Promise<void>}
    */
   public async progress (): Promise<void> {
-    await this.ap.lifecycle.progress(this.assetId).send(
+    await this.ap.contracts.assetActor.methods.progress(this.assetId).send(
       { from: this.ap.signer.account, gas: 750000 }
     );
   }
@@ -254,67 +181,32 @@ export class Asset {
    * @param {SendOptions} txOptions 
    * @returns {Promise<string>} address of deployed FDT contract
    */
-  public async tokenizeBeneficiary (name: string, symbol: string, initialSupply: BigNumber): Promise<string> {
-    const { recordCreatorBeneficiary, counterpartyBeneficiary } = await this.getOwnership();
+  public async tokenizeBeneficiary (name: string, symbol: string, initialSupply: string): Promise<string> {
+    const { creatorBeneficiary, counterpartyBeneficiary } = await this.getOwnership();
     
-    if (![recordCreatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
+    if (![creatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
       throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
     }
-
+    
     const { currency } = await this.getTerms();
 
-    if (currency === '0x0000000000000000000000000000000000000000') { 
-      throw new Error('EXECUTION_ERROR: Invalid address for currency attribute');
-    }
-    
-    const tx = await this.ap.tokenization.createERC20Distributor(name, symbol, initialSupply, currency).send(
+    const tx = await this.ap.contracts.tokenizationFactory.methods.createERC20Distributor(name, symbol, initialSupply, currency).send(
       { from: this.ap.signer.account, gas: 2000000}
     );
-    // @ts-ignore
+
     const address = tx.events.DeployedDistributor.returnValues.distributor;
 
-    if (this.ap.signer.account === recordCreatorBeneficiary) {
-      await this.ap.ownership.setRecordCreatorBeneficiary(this.assetId, address).send(
+    if (this.ap.signer.account === creatorBeneficiary) {
+      await this.ap.contracts.assetRegistry.methods.setCreatorBeneficiary(this.assetId, address).send(
         { from: this.ap.signer.account, gas: 100000 }
       );
     } else if (this.ap.signer.account === counterpartyBeneficiary) {
-      await this.ap.ownership.setCounterpartyBeneficiary(this.assetId, address).send(
+      await this.ap.contracts.assetRegistry.methods.setCounterpartyBeneficiary(this.assetId, address).send(
         { from: this.ap.signer.account, gas: 100000 }
       );
     }
 
     return address;
-  }
-
-  /**
-   * registers the terms, the initial state and the ownership of an asset 
-   * and returns a new Asset instance.
-   * computes the initial state of the asset,
-   * stores it together with the terms of the EconomicsRegistry,
-   * stores the ownership of the asset in the OwnershipRegistry and sends it
-   * @param {AP} ap AP instance
-   * @param {ContractTerms} terms terms of the asset
-   * @param {AssetOwnership} ownership ownership of the asset
-   * @returns {Promise<Asset>}
-   */
-  public static async create (
-    ap: AP,
-    terms: ContractTerms,
-    ownership: AssetOwnership
-  ): Promise<Asset> {
-    const assetId = sha3(
-      ownership.recordCreatorObligor, 
-      ownership.counterpartyObligor, 
-      String(Math.floor(Math.random() * 1000000))
-    );
-
-    const engineAddress = ap.contracts.engineContract(terms.contractType).instance.options.address;
-
-    await ap.lifecycle.initialize(assetId, ownership, terms, engineAddress).send(
-      { from: ap.signer.account, gas: 6000000 }
-    );
-
-    return new Asset(ap, assetId);
   }
 
   /**
@@ -327,11 +219,6 @@ export class Asset {
     ap: AP,
     assetId: string
   ): Promise<Asset> {
-    // @ts-ignore
-    const { contractType, statusDate } = await ap.economics.getTerms(assetId);
-
-    if (statusDate == 0) { throw('NOT_FOUND_ERROR: No contract found for given AssetId!'); }
-      
     return new Asset(ap, assetId);
   }
 }

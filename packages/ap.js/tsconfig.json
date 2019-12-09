@@ -11,7 +11,7 @@
     "sourceMap": true,
     "baseUrl": "./",
     "rootDirs": ["./src"],
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["./node_modules/@types"],
     "composite": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,

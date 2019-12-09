@@ -26,6 +26,10 @@ contract IAssetRegistry is AssetRegistryStorage {
 
     function getEngineAddress(bytes32 assetId) external view returns (address);
 
+    function getActorAddress(bytes32 assetId) external view returns (address);
+
+    function getProductId(bytes32 assetId) external view returns (bytes32);
+
     function getNextEvent (bytes32 assetId) external view returns (bytes32);
 
     function getScheduleIndex(bytes32 assetId, uint8 scheduleId) external view returns (uint256);

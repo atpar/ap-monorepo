@@ -1,5 +1,5 @@
 import { AP } from "../";
-import { OrderData, OrderParams, isOrderData } from "../types";
+import { OrderParams, OrderData, isOrderData } from "../types";
 
 
 export class Order {
@@ -18,15 +18,17 @@ export class Order {
    * @returns {Promise<void>}
    */
   public async signOrder (): Promise<void> {
-    if (this.orderData.makerAddress === this.ap.signer.account) {
-      this.orderData.signatures.makerSignature = await this.ap.signer.signOrderAsMaker(this.orderData);
-    } else if (this.orderData.takerAddress === null) {
-      this.orderData.takerAddress = this.ap.signer.account;
-      this.orderData.takerCreditEnhancementAddress = '0x0000000000000000000000000000000000000000';
-      this.orderData.signatures.takerSignature = await this.ap.signer.signOrderAsTaker(this.orderData);
+    if (this.orderData.ownership.creatorObligor === this.ap.signer.account) {
+      this.orderData.creatorSignature = await this.ap.signer.signOrderAsMaker(this.orderData);
+    } else if (this.orderData.ownership.counterpartyObligor === this.ap.signer.account) {
+      this.orderData.counterpartySignature = await this.ap.signer.signOrderAsTaker(this.orderData);
+    } else if (this.orderData.ownership.counterpartyObligor === null) {
+      this.orderData.ownership.counterpartyObligor = this.ap.signer.account;
+      this.orderData.ownership.counterpartyBeneficiary = this.ap.signer.account;
+      this.orderData.counterpartySignature = await this.ap.signer.signOrderAsTaker(this.orderData);
     } else {
       throw(new Error(
-        'EXECUTION_ERROR: makerAddress does not match or takerAddress is already set.'
+        'EXECUTION_ERROR: Addresses of obligors do not match current account'
       ));
     }
   }
@@ -35,11 +37,11 @@ export class Order {
    * issues a new asset if the order is filled.
    */
   public async issueAssetFromOrder (): Promise<void> {
-    if (!this.orderData.signatures.makerSignature || !this.orderData.signatures.takerSignature) {
+    if (!this.orderData.creatorSignature || !this.orderData.counterpartySignature) {
       throw(new Error('EXECUTION_ERROR: Can not issue asset from unfilled order. Signature is missing!'));
     }
 
-    await this.ap.issuance.fillOrder(this.orderData).send({ from: this.ap.signer.account, gas: 5000000 });
+    await this.ap.contracts.assetIssuer.methods.issueFromOrder(this.orderData).send({ from: this.ap.signer.account, gas: 5000000 });
   }
 
   /**
@@ -61,7 +63,7 @@ export class Order {
       throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); 
     }
 
-    if (! (await ap.signer.validateOrderDataSignatures(orderData))) {
+    if (! (await ap.signer.validateSignatures(orderData))) {
       throw(new Error('EXECUTION_ERROR: Signatures are invalid.'));
     }
 
@@ -71,24 +73,45 @@ export class Order {
   /**
    * creates a new Order instance from the provided orderParams
    * @param {AP} ap AP instance
-   * @param orderParams 
+   * @param {OrderParams} orderParams 
    * @returns {Order}
    */
   public static create (ap: AP, orderParams: OrderParams): Order {
-    const orderData: OrderData = { 
-      ...orderParams,
-      takerAddress: null,
-      takerCreditEnhancementAddress: null,
-      engineAddress: ap.contracts.engineContract(orderParams.terms.contractType).instance.options.address,
-      actorAddress: ap.contracts.assetActor.instance.options.address,
-      signatures: {
-        makerSignature: null,
-        takerSignature: null
+    const orderData: OrderData = {
+      termsHash: orderParams.termsHash,
+      productId: orderParams.productId,
+      customTerms: orderParams.customTerms,
+      ownership: orderParams.ownership,
+      expirationDate: orderParams.expirationDate,
+      engine: orderParams.engine,
+      actor: ap.contracts.assetActor.options.address,
+      enhancementOrder_1: {
+        termsHash: orderParams.enhancement_1.termsHash,
+        productId: orderParams.enhancement_1.productId,
+        customTerms: orderParams.enhancement_1.customTerms,
+        ownership: orderParams.enhancement_1.ownership,
+        engine: orderParams.enhancement_1.engine,
+        creatorSignature: ap.utils.ZERO_BYTES,
+        counterpartySignature: ap.utils.ZERO_BYTES,
+        salt: Math.floor(Math.random() * 1000000)
+
       },
+      enhancementOrder_2: {
+        termsHash: orderParams.enhancement_2.termsHash,
+        productId: orderParams.enhancement_2.productId,
+        customTerms: orderParams.enhancement_2.customTerms,
+        ownership: orderParams.enhancement_2.ownership,
+        engine: orderParams.enhancement_2.engine,
+        creatorSignature: ap.utils.ZERO_BYTES,
+        counterpartySignature: ap.utils.ZERO_BYTES,
+        salt: Math.floor(Math.random() * 1000000)
+      },
+      creatorSignature: ap.utils.ZERO_BYTES,
+      counterpartySignature: ap.utils.ZERO_BYTES,
       salt: Math.floor(Math.random() * 1000000)
     }
 
-    return new Order(ap,  orderData);
+    return new Order(ap, orderData);
   }
 
 }

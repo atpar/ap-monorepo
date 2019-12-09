@@ -139,7 +139,11 @@ contract('ProductRegistry', (accounts) => {
           case 'boolean':
             return value;
           case 'string':
-            return (web3.utils.isHexStrict(value) && value.length < 42) ? web3.utils.hexToNumberString(value) : value;
+            return (web3.utils.isHexStrict(value) && value.length < 42)
+              ? web3.utils.hexToNumberString(value)
+              : (value !== '0x0000000000000000000000000000000000000000000000000000000000000000')
+                ? value
+                : "0";
           default:
             return value;
         }

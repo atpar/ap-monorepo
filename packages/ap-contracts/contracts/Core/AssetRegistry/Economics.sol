@@ -42,6 +42,15 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
+     * returns the anchor date of an asset
+     * @param assetId id of the asset
+     * @return Anchor date
+     */
+    function getAnchorDate(bytes32 assetId) external view returns (uint256) {
+        return decodeAndGetAnchorDate(assetId);
+    }
+
+    /**
      * returns the address of a the ACTUS engine corresponding to the ContractType of an asset
      * @param assetId id of the asset
      * @return address of the engine of the asset
@@ -51,12 +60,21 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the anchor date of an asset
+     * return the address of the actor which is allowed to update the state of the asset
      * @param assetId id of the asset
-     * @return Anchor date
+     * @return address of the asset actor
      */
-    function getAnchorDate(bytes32 assetId) external view returns (uint256) {
-        return decodeAndGetAnchorDate(assetId);
+    function getActorAddress(bytes32 assetId) external view returns (address) {
+        return assets[assetId].actor;
+    }
+
+    /**
+     * return the id of the product which this asset is based on
+     * @param assetId id of the asset
+     * @return id of the product
+     */
+    function getProductId(bytes32 assetId) external view returns (bytes32) {
+        return assets[assetId].productId;
     }
 
     /**

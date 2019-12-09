@@ -5,7 +5,7 @@ module.exports = {
   ],
   "setupTestFrameworkScriptFile": "./jest.setup.js",
   "testPathIgnorePatterns": ["src/.*"],
-  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+  "testRegex": "/__tests__/.*.test.ts$",
   "transform": {
     "^.+\\.tsx?$": "ts-jest"
   },

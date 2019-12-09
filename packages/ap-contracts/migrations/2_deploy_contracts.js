@@ -61,4 +61,21 @@ module.exports = async (deployer, network, accounts) => {
   );
 
   await AssetActorInstance.registerIssuer(AssetIssuer.address);
+
+  console.log(`
+    Deployments:
+    
+      ANNEngine: ${ANNEngine.address}
+      AssetActor: ${AssetActor.address}
+      AssetIssuer: ${AssetIssuer.address}
+      AssetRegistry: ${AssetRegistry.address}
+      CECEngine: ${CECEngine.address}
+      CEGEngine: ${CEGEngine.address}
+      Custodian: ${Custodian.address}
+      MarketObjectRegistry: ${MarketObjectRegistry.address}
+      PAMEngine: ${PAMEngine.address}
+      ProductRegistry: ${ProductRegistry.address}
+      SignedMath: ${SignedMath.address}
+      TokenizationFactory: ${TokenizationFactory.address}
+  `);
 };

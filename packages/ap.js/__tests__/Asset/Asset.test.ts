@@ -1,58 +1,39 @@
 import Web3 from 'web3';
 
-import { AP, Asset } from '../../src';
-import { AssetOwnership, ContractTerms } from '../../src/types';
-
-// @ts-ignore
-import DefaultTerms from '../DefaultTerms.json';
+import { AP, Order, Asset } from '../../src';
+import { getDefaultSignedOrder, getAssetIdFromOrderData } from '../orderUtils';
 
 
-describe('AssetClass', () => {
+describe('Asset', () => {
 
   let web3: Web3;
-  let recordCreator: string;
+  let creator: string;
   let counterparty: string;
 
   let apRC: AP;
   let apCP: AP;
-  let assetRC: Asset;
-  let assetCP: Asset;
+
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
-    recordCreator = (await web3.eth.getAccounts())[0];
+    creator = (await web3.eth.getAccounts())[0];
     counterparty = (await web3.eth.getAccounts())[1];
 
-    apRC = await AP.init(web3, recordCreator);
+    apRC = await AP.init(web3, creator);
     apCP = await AP.init(web3, counterparty);
   });
 
-  it('should create a new Asset instance', async () => {
-    const terms: ContractTerms = DefaultTerms;
-
-    const ownership: AssetOwnership = { 
-      recordCreatorObligor: recordCreator,
-      recordCreatorBeneficiary: recordCreator,
-      counterpartyObligor: counterparty, 
-      counterpartyBeneficiary: counterparty
-    }
-
-    assetRC = await Asset.create(apRC, terms, ownership);
-
-    const storedOwnership = await apRC.ownership.getOwnership(assetRC.assetId);
-    const storedTerms = await assetRC.getTerms();
-    
-    expect(assetRC instanceof Asset).toBe(true);
-    expect(ownership).toStrictEqual(storedOwnership);
-    expect(terms.statusDate.toString() === storedTerms.statusDate.toString()).toBe(true);
-  });
-
   it('should load Asset from registries for counterparty', async () => {
-    assetCP = await Asset.load(apCP, assetRC.assetId);
+    const order = await Order.load(apRC, await getDefaultSignedOrder());
+    await order.issueAssetFromOrder();
+    const assetId = getAssetIdFromOrderData(order.serializeOrder());
 
-    const storedOwnershipRC = await apRC.ownership.getOwnership(assetRC.assetId);
+    const assetRC = await Asset.load(apRC, assetId);
+    const assetCP = await Asset.load(apCP, assetId);
+
+    const storedOwnershipRC = await assetRC.getOwnership();
     const storedTermsRC = await assetRC.getTerms();
-    const storedOwnershipCP = await apCP.ownership.getOwnership(assetCP.assetId);
+    const storedOwnershipCP = await assetCP.getOwnership();
     const storedTermsCP = await assetCP.getTerms();
 
     expect(assetCP instanceof Asset).toBe(true);
