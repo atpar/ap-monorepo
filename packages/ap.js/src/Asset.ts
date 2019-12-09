@@ -97,43 +97,44 @@ export class Asset {
   public async getSchedule () {
     const productId = await this.getProductId();
 
-    const nonCyclicScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, NON_CYLIC_SCHEDULE_ID).call()
-    ).toNumber();
-    const ipScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, IP_SCHEDULE_ID).call()
-    ).toNumber();
-    const prScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, PR_SCHEDULE_ID).call()
-    ).toNumber();
-    const scScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, SC_SCHEDULE_ID).call()
-    ).toNumber();
-    const rrScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, RR_SCHEDULE_ID).call()
-    ).toNumber();
-    const pyScheduleLength = (
-      await this.ap.contracts.productRegistry.methods.getScheduleLength(productId, PY_SCHEDULE_ID).call()
-    ).toNumber();
+    const nonCyclicScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId, NON_CYLIC_SCHEDULE_ID
+    ).call()
+    const ipScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId, IP_SCHEDULE_ID
+    ).call();
+    const prScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId, PR_SCHEDULE_ID
+    ).call();
+    const scScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId,
+      SC_SCHEDULE_ID
+    ).call();
+    const rrScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId, RR_SCHEDULE_ID
+    ).call();
+    const pyScheduleLength = await this.ap.contracts.productRegistry.methods.getScheduleLength(
+      productId, PY_SCHEDULE_ID
+    ).call();
 
     const schedule = [];
 
-    for (let i = 0; i < nonCyclicScheduleLength; i++) {
+    for (let i = 0; i < Number(nonCyclicScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, NON_CYLIC_SCHEDULE_ID, i).call());
     }
-    for (let i = 0; i < ipScheduleLength; i++) {
+    for (let i = 0; i < Number(ipScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, IP_SCHEDULE_ID, i).call());
     }
-    for (let i = 0; i < prScheduleLength; i++) {
+    for (let i = 0; i < Number(prScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, PR_SCHEDULE_ID, i).call());
     }
-    for (let i = 0; i < scScheduleLength; i++) {
+    for (let i = 0; i < Number(scScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, SC_SCHEDULE_ID, i).call());
     }
-    for (let i = 0; i < rrScheduleLength; i++) {
+    for (let i = 0; i < Number(rrScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, RR_SCHEDULE_ID, i).call());
     }
-    for (let i = 0; i < pyScheduleLength; i++) {
+    for (let i = 0; i < Number(pyScheduleLength); i++) {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, PY_SCHEDULE_ID, i).call());
     }
 

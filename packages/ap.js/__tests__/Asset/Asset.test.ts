@@ -43,6 +43,13 @@ describe('Asset', () => {
     expect(storedTermsCP.statusDate === storedTermsRC.statusDate).toBe(true);
   });
 
+  it('should retrieve the schedule of the asset', async () => {
+    const asset = await Asset.load(apRC, assetId);
+    const schedule = await asset.getSchedule();
+
+    expect(schedule.length > 0).toBe(true);
+  });
+
   it('should retrieve the next event of the asset', async () => {
     const asset = await Asset.load(apRC, assetId);
     const event = await asset.getNextEvent();
