@@ -40,4 +40,6 @@ describe('Asset', () => {
     expect(storedOwnershipCP).toStrictEqual(storedOwnershipRC);
     expect(storedTermsCP.statusDate === storedTermsRC.statusDate).toBe(true);
   });
+
+  // add test cases for getNextPayment, progress, etc.
 });
