@@ -1,4 +1,7 @@
-const Web3Utils = require('web3-utils');
+import Web3Utils from 'web3-utils';
+
+import { Terms } from "../types";
+import { toGeneratingTerms } from "./Terms";
 
 
 export function getEpochOffsetForEventType (eventType: number): number {
@@ -19,6 +22,29 @@ export function getEpochOffsetForEventType (eventType: number): number {
   if (eventType === 10) { return 160; } // MD
   if (eventType === 0) { return 950; } // AD
   return 0;
+}
+
+export async function generateProductSchedule (engineContract: any, terms: Terms) {
+  if (
+    !engineContract
+    || !engineContract.methods
+    || typeof engineContract.methods.computeNonCyclicScheduleSegment !== 'function' 
+    || typeof engineContract.methods.computeCyclicScheduleSegment !== 'function' 
+  ) { 
+    throw new Error('EXECUTION_ERROR: Invalid engine provided.'); 
+  }
+
+  const generatingTerms = toGeneratingTerms(terms);
+
+  return {
+    nonCyclicSchedule: await engineContract.methods.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate).call(),
+    cyclicIPSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8).call(),
+    cyclicPRSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15).call(),
+    cyclicSCSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19).call(),
+    cyclicRRSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18).call(),
+    cyclicFPSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4).call(),
+    cyclicPYSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11).call(),
+  };
 }
 
 export function sortEvents (_events: string[]): string[] {

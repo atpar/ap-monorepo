@@ -11,6 +11,8 @@ import {
 import { AP } from './index';
 
 import { sortEvents, removeNullEvents } from './utils/Schedule';
+import { ZERO_BYTES32 } from './utils';
+import BN from 'bn.js';
 
 
 
@@ -144,18 +146,26 @@ export class Asset {
 
   public async getNextPayment () {
     const terms = await this.getTerms();
+    const state = await this.getState();
     const ownership = await this.getOwnership();
     const engine = await this.getEngineAddress();
     const event = await this.getNextEvent();
 
-    // @ts-ignore
-    const payoff = await this.ap.contracts.engineContract(engine).methods.computePayoffForEvent(terms, state, event, '0x0').call();
+    const payoff = await this.ap.contracts.engine(engine).methods.computePayoffForEvent(
+      // @ts-ignore
+      terms,
+      state,
+      event,
+      ZERO_BYTES32
+    ).call();
+
+    const payoffAsBN = new BN(payoff);
 
     return {
-      amount: payoff.abs(),
+      amount: payoffAsBN.abs().toString(),
       token: terms.currency,
-      payer: (payoff.isNeg()) ? ownership.creatorObligor : ownership.counterpartyObligor,
-      payee: (payoff.isNeg()) ? ownership.counterpartyBeneficiary : ownership.creatorBeneficiary
+      payer: (payoffAsBN.isNeg()) ? ownership.creatorObligor : ownership.counterpartyObligor,
+      payee: (payoffAsBN.isNeg()) ? ownership.counterpartyBeneficiary : ownership.creatorBeneficiary
     };
   }
 
@@ -164,8 +174,8 @@ export class Asset {
    * stores the new state if all obligation where fulfilled
    * @return {Promise<void>}
    */
-  public async progress (): Promise<void> {
-    await this.ap.contracts.assetActor.methods.progress(this.assetId).send(
+  public async progress (): Promise<any> {
+    return await this.ap.contracts.assetActor.methods.progress(this.assetId).send(
       { from: this.ap.signer.account, gas: 750000 }
     );
   }

@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 import { AP, Order, APTypes } from '../src';
 
-import { getDefaultOrderParams } from './orderUtils';
+import { getDefaultOrderParams } from './utils';
 
 
 describe('OrderClass', () => {
@@ -32,7 +32,7 @@ describe('OrderClass', () => {
   });
 
   it('should create a order instance', async () => {
-    const orderParams = await getDefaultOrderParams();
+    const orderParams = await getDefaultOrderParams(web3.utils.toHex('Some Product'));
 
     const order = Order.create(apRC, orderParams);
     await order.signOrder();

@@ -1,9 +1,12 @@
 import Web3 from 'web3';
 
+const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
+
 import { AP, APTypes, Order } from '../src';
 
 // @ts-ignore
 import DefaultTerms from './DefaultTerms.json';
+import { Terms } from '../src/types';
 
 
 export function getAssetIdFromOrderData(orderData: APTypes.OrderData): string {
@@ -16,16 +19,29 @@ export function getAssetIdFromOrderData(orderData: APTypes.OrderData): string {
   );
 }
 
-export async function getDefaultOrderParams (): Promise<APTypes.OrderParams> {
+export async function getDefaultTerms (): Promise<Terms> {
+  const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
+  const account = (await web3.eth.getAccounts())[0];
+
+  let sampleToken = new web3.eth.Contract(ERC20SampleTokenArtifact.abi);
+  sampleToken = await sampleToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send({ from: account, gas: 2000000 });
+
+  const terms: Terms = DefaultTerms;
+  terms.currency = sampleToken.options.address;
+
+  return terms;
+}
+
+export async function getDefaultOrderParams (productId: string): Promise<APTypes.OrderParams> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const creator = (await web3.eth.getAccounts())[0];
   const counterparty = (await web3.eth.getAccounts())[1];
   const ap = await AP.init(web3, creator);
-  const terms: APTypes.Terms = DefaultTerms;
+  const terms: APTypes.Terms = await getDefaultTerms();
 
   return {
     termsHash: ap.utils.getTermsHash(terms),
-    productId: ap.utils.toHex('Some Product'),
+    productId: productId,
     customTerms: ap.utils.toCustomTerms(terms),
     ownership: {
       creatorObligor: creator,
@@ -62,14 +78,14 @@ export async function getDefaultOrderParams (): Promise<APTypes.OrderParams> {
   }
 }
 
-export async function getDefaultSignedOrder (): Promise<APTypes.OrderData> {
+export async function getDefaultSignedOrder (productId: string): Promise<APTypes.OrderData> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const creator = (await web3.eth.getAccounts())[0];
   const counterparty = (await web3.eth.getAccounts())[1];
   const apRC = await AP.init(web3, creator);
   const apCP = await AP.init(web3, counterparty);
 
-  const orderParams = await getDefaultOrderParams();
+  const orderParams = await getDefaultOrderParams(productId);
   const orderRC = Order.create(apRC, orderParams);
   await orderRC.signOrder();
 
@@ -77,4 +93,26 @@ export async function getDefaultSignedOrder (): Promise<APTypes.OrderData> {
   await orderCP.signOrder();
 
   return orderCP.serializeOrder();
+}
+
+export async function issueDefaultAsset (): Promise<string> {
+  const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
+  const account = (await web3.eth.getAccounts())[0];
+  const ap = await AP.init(web3, account);
+
+  const terms = await getDefaultTerms();
+  const productId = web3.utils.toHex('Some Product: ' + Math.floor(Math.random() * 1000000));
+  const productTerms = ap.utils.toProductTerms(terms);
+  const productSchedules = await ap.utils.generateProductSchedule(ap.contracts.pamEngine, terms);
+
+  await ap.contracts.productRegistry.methods.registerProduct(
+    productId,
+    productTerms,
+    productSchedules
+  ).send({ from: account, gas: 2000000 });
+
+  const order = await Order.load(ap, await getDefaultSignedOrder(productId));
+  await order.issueAssetFromOrder();
+  
+  return getAssetIdFromOrderData(order.serializeOrder());
 }

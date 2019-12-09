@@ -1,7 +1,9 @@
 import Web3 from 'web3';
+const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
 
-import { AP, Order, Asset } from '../../src';
-import { getDefaultSignedOrder, getAssetIdFromOrderData } from '../orderUtils';
+import { AP, Asset } from '../../src';
+import { issueDefaultAsset } from '../utils';
+import { decodeEvent } from '../../src/utils';
 
 
 describe('Asset', () => {
@@ -13,6 +15,8 @@ describe('Asset', () => {
   let apRC: AP;
   let apCP: AP;
 
+  let assetId: string;
+
 
   beforeAll(async () => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
@@ -21,13 +25,11 @@ describe('Asset', () => {
 
     apRC = await AP.init(web3, creator);
     apCP = await AP.init(web3, counterparty);
+
+    assetId = await issueDefaultAsset();
   });
 
   it('should load Asset from registries for counterparty', async () => {
-    const order = await Order.load(apRC, await getDefaultSignedOrder());
-    await order.issueAssetFromOrder();
-    const assetId = getAssetIdFromOrderData(order.serializeOrder());
-
     const assetRC = await Asset.load(apRC, assetId);
     const assetCP = await Asset.load(apCP, assetId);
 
@@ -41,5 +43,45 @@ describe('Asset', () => {
     expect(storedTermsCP.statusDate === storedTermsRC.statusDate).toBe(true);
   });
 
-  // add test cases for getNextPayment, progress, etc.
+  it('should retrieve the next event of the asset', async () => {
+    const asset = await Asset.load(apRC, assetId);
+    const event = await asset.getNextEvent();
+    const decodedEvent = decodeEvent(event);
+
+    expect(decodedEvent.eventType > 0 && decodedEvent.scheduleTime > 0).toBe(true);
+  });
+
+  it('should retrieve the next payment data of the asset', async () => {
+    const asset = await Asset.load(apRC, assetId);
+    const payoff = await asset.getNextPayment();
+
+    expect(Number(payoff.amount) > 0).toBe(true);
+  });
+
+  it('should tokenize creator beneficiary', async () => {
+    const asset = await Asset.load(apRC, assetId);
+    const distributorAddress = await asset.tokenizeBeneficiary(
+      web3.utils.toHex('Distributor'),
+      web3.utils.toHex('FDT'),
+      web3.utils.toWei('10000')
+    );
+
+    const ownership = await asset.getOwnership();
+
+    expect(ownership.creatorBeneficiary === distributorAddress).toBe(true);
+  });
+
+  it('should progress the asset state', async () => {
+    const asset = await Asset.load(apRC, assetId);
+    const terms = await asset.getTerms();
+    const sampleToken = new web3.eth.Contract(ERC20SampleTokenArtifact.abi, terms.currency);
+    const payoff = await asset.getNextPayment();
+    const event = decodeEvent(await asset.getNextEvent());
+
+    await sampleToken.methods.approve(apRC.contracts.assetActor.options.address, payoff.amount);
+    const tx = await asset.progress();
+
+    expect(Number(tx.events.AssetProgressed.returnValues.eventType)).toBe(event.eventType);
+    expect(Number(tx.events.AssetProgressed.returnValues.scheduleTime)).toBe(event.scheduleTime);
+  });
 });
