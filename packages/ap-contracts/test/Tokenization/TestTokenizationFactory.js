@@ -11,6 +11,8 @@ const {
   parseTermsToCustomTerms
 } = require('../helper/setupTestEnvironment');
 
+const { deriveProductId } = require('../helper/orderUtils');
+
 
 contract('TokenizationFactory', (accounts) => {
   const creatorObligor = accounts[0];
@@ -49,7 +51,7 @@ contract('TokenizationFactory', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-    this.productId = 'Test Product';
+    this.productId = deriveProductId(this.productTerms, this.productSchedules);
 
     // register Ownership for assetId
     await this.AssetRegistryInstance.registerAsset(

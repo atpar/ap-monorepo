@@ -77,7 +77,6 @@ export class ProductRegistry extends Contract {
     ): TransactionObject<BN>;
 
     registerProduct(
-      productId: string | number[],
       terms: {
         calendar: number | string;
         contractRole: number | string;

@@ -26,6 +26,8 @@ const {
   sign
 } = require('../helper/orderUtils');
 
+const { deriveProductId } = require('../helper/orderUtils');
+
 const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
 
 
@@ -69,10 +71,10 @@ contract('AssetIssuer', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-    this.productId = 'Test Product';
+    this.productId = deriveProductId(this.productTerms, this.productSchedules);
 
     // register product
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules)
+    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules)
 
     snapshot = await createSnapshot();
   });
@@ -225,8 +227,8 @@ contract('AssetIssuer', (accounts) => {
       cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
     };
     // register product
-    const productIdCEC = 'Test Product CEC';
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);
+    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
+    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
     
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
@@ -326,8 +328,8 @@ contract('AssetIssuer', (accounts) => {
       cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
     };
     // register product
-    const productIdCEC = 'Test Product CEC';
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);
+    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
+    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
 
     const orderDataCEC = getDefaultOrderData(
       termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address

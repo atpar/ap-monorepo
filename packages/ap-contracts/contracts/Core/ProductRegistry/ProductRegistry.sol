@@ -48,17 +48,23 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 
     /**
      * stores a new financial Product which is comprised of a set of ProductTerms and ProductSchedules
-     * @param productId id of the product (has to be unique otherwise it will revert)
+     * the productId is derived from the hash of the ProductTerms and the ProductSchedules to circumvent duplicate ProductTerms on-chain
      * @param terms set of ProductTerms
      * @param productSchedules set of ProductSchedules encode offsets for ScheduleTime relative to an AnchorDate
      */
     function registerProduct(
-        bytes32 productId,
         ProductTerms memory terms,
         ProductSchedules memory productSchedules
     )
         public
     {
+        bytes32 productId = keccak256(
+            abi.encode(
+                keccak256(abi.encode(terms)),
+                keccak256(abi.encode(productSchedules))
+            )
+        );
+
         require(
             products[productId].isSet == false,
             "ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS"

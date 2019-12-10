@@ -12,6 +12,8 @@ const {
   mineBlock
 } = require('../../helper/blockchain');
 
+const { deriveProductId } = require('../../helper/orderUtils');
+
 const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
 
@@ -71,10 +73,10 @@ contract('AssetActor', (accounts) => {
     
     // store product
     const assetId = 'External Data Asset';
-    const productId = 'External Data Product';
+    const productId = deriveProductId(productTerms, productSchedules);
     const resetRate = 500000;
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
+    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),

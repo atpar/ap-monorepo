@@ -9,7 +9,8 @@ const {
   getUnfilledOrderDataAsTypedData,
   getFilledOrderDataAsTypedData,
   sign,
-  getAssetIdFromOrderData
+  getAssetIdFromOrderData,
+  deriveProductId
 } = require('../../helper/orderUtils');
 
 const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
@@ -68,8 +69,8 @@ contract('AssetActor', (accounts) => {
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
     // register new product
-    this.productId = 'Test Product Underlying';
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), productTerms, productSchedules);
+    this.productId = deriveProductId(productTerms, productSchedules);
+    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
 
     snapshot = await createSnapshot();
   });
@@ -109,8 +110,8 @@ contract('AssetActor', (accounts) => {
       cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
     };
     // register product
-    const productIdCEC = 'Test Product CEC';
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productIdCEC), productTermsCEC, productSchedulesCEC);
+    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
+    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
 
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(

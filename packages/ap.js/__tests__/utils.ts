@@ -101,15 +101,17 @@ export async function issueDefaultAsset (): Promise<string> {
   const ap = await AP.init(web3, account);
 
   const terms = await getDefaultTerms();
-  const productId = web3.utils.toHex('Some Product: ' + Math.floor(Math.random() * 1000000));
   const productTerms = ap.utils.convert.toProductTerms(terms);
   const productSchedules = await ap.utils.schedule.generateProductSchedule(ap.contracts.pamEngine, terms);
-
-  await ap.contracts.productRegistry.methods.registerProduct(
-    productId,
-    productTerms,
-    productSchedules
-  ).send({ from: account, gas: 2000000 });
+  const productId = ap.utils.erc712.deriveProductId(productTerms, productSchedules);
+  const storedProductTerms = await ap.contracts.productRegistry.methods.getProductTerms(web3.utils.toHex(productId)).call();
+  
+  if (String(storedProductTerms.maturityDateOffset) === '0') {
+    await ap.contracts.productRegistry.methods.registerProduct(
+      productTerms,
+      productSchedules
+    ).send({ from: account, gas: 2000000 });
+  }
 
   const order = await Order.load(ap, await getDefaultSignedOrder(productId));
   await order.issueAssetFromOrder();

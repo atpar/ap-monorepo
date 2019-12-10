@@ -3,6 +3,7 @@ const { parseTermsToGeneratingTerms, parseTermsToLifecycleTerms } = require('act
 
 const { setupTestEnvironment, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
+const { deriveProductId } = require('../helper/orderUtils');
 
 
 contract('AssetActor', (accounts) => {
@@ -48,9 +49,9 @@ contract('AssetActor', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
-    const productId = 'Test Product 1';
+    const productId = deriveProductId(productTerms, productSchedules);
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
+    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
     
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
@@ -88,9 +89,9 @@ contract('AssetActor', (accounts) => {
       cyclicFPSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.ANNEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
     };
-    const productId = 'Test Product 2';
+    const productId = deriveProductId(productTerms, productSchedules);
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(productId), productTerms, productSchedules);
+    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),

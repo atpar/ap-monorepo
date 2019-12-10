@@ -8,6 +8,8 @@ const {
   parseTermsToCustomTerms
 } = require('../helper/setupTestEnvironment');
 
+const { deriveProductId } = require('../helper/orderUtils');
+
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
 const INVALID_CASHFLOWID = 'INVALID_CASHFLOWID';
@@ -54,10 +56,10 @@ contract('AssetRegistry', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-    this.productId = 'Test Product';
+    this.productId = deriveProductId(this.productTerms, this.productSchedules);
 
     // register product
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
+    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules);
   });
 
   it('should register an asset', async () => {

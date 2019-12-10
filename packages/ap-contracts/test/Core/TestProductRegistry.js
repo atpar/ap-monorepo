@@ -8,6 +8,8 @@ const {
   parseTermsToCustomTerms
 } = require('../helper/setupTestEnvironment');
 
+const { deriveProductId } = require('../helper/orderUtils');
+
 
 contract('ProductRegistry', (accounts) => {
   const creatorObligor = accounts[2];
@@ -44,11 +46,11 @@ contract('ProductRegistry', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-    this.productId = 'Test Product';
+    this.productId = deriveProductId(this.productTerms, this.productSchedules);
   });
 
   it('should register an asset', async () => {
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
+    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules);
 
     const storedNonCyclicSchedule = [];
     for (let i = 0; i < 64; i++) {

@@ -4,6 +4,7 @@ import web3EthAbi from 'web3-eth-abi';
 import {
 Terms,
 CustomTerms,
+ProductTerms,
 AssetOwnership,
 OrderData,
 OrderDataAsTypedData,
@@ -11,6 +12,193 @@ EnhancementOrderData,
 EnhancementOrderDataAsTypedData
 } from '../types';
 import { ZERO_ADDRESS } from './Constants';
+
+
+export function deriveProductId(productTerms: ProductTerms, productSchedules: any): string {
+  // @ts-ignore
+    const productTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+      {  
+        "components": [
+          {
+            "name": "calendar",
+            "type": "uint8"
+          },
+          {
+            "name": "contractRole",
+            "type": "uint8"
+          },
+          {
+            "name": "dayCountConvention",
+            "type": "uint8"
+          },
+          {
+            "name": "businessDayConvention",
+            "type": "uint8"
+          },
+          {
+            "name": "endOfMonthConvention",
+            "type": "uint8"
+          },
+          {
+            "name": "scalingEffect",
+            "type": "uint8"
+          },
+          {
+            "name": "penaltyType",
+            "type": "uint8"
+          },
+          {
+            "name": "feeBasis",
+            "type": "uint8"
+          },
+          {
+            "name": "creditEventTypeCovered",
+            "type": "uint8"
+          },
+          {
+            "name": "currency",
+            "type": "address"
+          },
+          {
+            "name": "marketObjectCodeRateReset",
+            "type": "bytes32"
+          },
+          {
+            "name": "statusDateOffset",
+            "type": "uint256"
+          },
+          {
+            "name": "maturityDateOffset",
+            "type": "uint256"
+          },
+          {
+            "name": "feeAccrued",
+            "type": "int256"
+          },
+          {
+            "name": "accruedInterest",
+            "type": "int256"
+          },
+          {
+            "name": "rateMultiplier",
+            "type": "int256"
+          },
+          {
+            "name": "feeRate",
+            "type": "int256"
+          },
+          {
+            "name": "nextResetRate",
+            "type": "int256"
+          },
+          {
+            "name": "penaltyRate",
+            "type": "int256"
+          },
+          {
+            "name": "priceAtPurchaseDate",
+            "type": "int256"
+          },
+          {
+            "name": "nextPrincipalRedemptionPayment",
+            "type": "int256"
+          },
+          {
+            "components": [
+              {
+                "name": "i",
+                "type": "uint256"
+              },
+              {
+                "name": "p",
+                "type": "uint8"
+              },
+              {
+                "name": "isSet",
+                "type": "bool"
+              }
+            ],
+            "name": "gracePeriod",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "name": "i",
+                "type": "uint256"
+              },
+              {
+                "name": "p",
+                "type": "uint8"
+              },
+              {
+                "name": "isSet",
+                "type": "bool"
+              }
+            ],
+            "name": "delinquencyPeriod",
+            "type": "tuple"
+          },
+          {
+            "name": "periodCap",
+            "type": "int256"
+          },
+          {
+            "name": "periodFloor",
+            "type": "int256"
+          }
+        ],
+        "name": "terms",
+        "type": "tuple"
+      },
+      _toTuple(productTerms)
+    ));
+  
+    // @ts-ignore
+    const productSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+      {
+        "components": [
+          {
+            "name": "nonCyclicSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicIPSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicPRSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicRRSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicPYSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicSCSchedule",
+            "type": "bytes32[64]"
+          },
+          {
+            "name": "cyclicFPSchedule",
+            "type": "bytes32[64]"
+          }
+        ],
+        "name": "productSchedules",
+        "type": "tuple"
+      },
+      _toTuple(productSchedules)
+    ));
+  
+    // @ts-ignore
+    return web3Utils.keccak256(web3EthAbi.encodeParameters(
+      ['bytes32', 'bytes32'],
+      [productTermsHash, productSchedulesHash]
+    ));
+}
 
 
 export function getOrderDataAsTypedData (

@@ -11,6 +11,8 @@ const {
 } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
 
+const { deriveProductId } = require('../../helper/orderUtils');
+
 const AssetActor = artifacts.require('AssetActor');
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
 
@@ -72,9 +74,9 @@ contract('AssetActor', (accounts) => {
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
 
-    this.productId = 'Test Product';
+    this.productId = deriveProductId(this.productTerms, this.productSchedules);
 
-    await this.ProductRegistryInstance.registerProduct(web3.utils.toHex(this.productId), this.productTerms, this.productSchedules);
+    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules);
 
     snapshot = await createSnapshot();
   });
