@@ -1,8 +1,4 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
-
-const { convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
-
 const AssetActor = artifacts.require('AssetActor');
 
 const { setupTestEnvironment } = require('../../helper/setupTestEnvironment');
@@ -13,6 +9,7 @@ const {
 } = require('../../helper/blockchain');
 
 const { deriveProductId } = require('../../helper/orderUtils');
+const { deriveTerms, generateProductSchedules, getEngineContractInstanceForContractType } = require('../../helper/utils');
 
 const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
@@ -32,8 +29,8 @@ contract('AssetActor', (accounts) => {
   }
 
   before(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment();
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     snapshot = await createSnapshot();
   });
@@ -43,40 +40,30 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with external rate', async () => {
-    // schedule with RR
-    const terms = ExternalDataTerms;
-    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
-    const productTerms = parseTermsToProductTerms(terms);
-    const generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(terms));
-    const customTerms = parseTermsToCustomTerms(terms);
-
     const ownership = {
       creatorObligor, 
       creatorBeneficiary, 
       counterpartyObligor, 
       counterpartyBeneficiary
     };
+    // schedule with RR
+    const terms = ExternalDataTerms;
 
-    const productSchedules = {
-      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
-      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
-      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
-      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
-      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
-      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
-      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
-    };
-
+    // register product
+    const { lifecycleTerms, customTerms, generatingTerms, productTerms } = deriveTerms(terms);
+    const productSchedules = await generateProductSchedules(
+      getEngineContractInstanceForContractType(this.instances, terms.contractType),
+      generatingTerms
+    ); 
     // only want RR events in the schedules
     productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
     productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
+    await this.instances.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
+    const productId = deriveProductId(productTerms, productSchedules);
     
     // store product
     const assetId = 'External Data Asset';
-    const productId = deriveProductId(productTerms, productSchedules);
-    const resetRate = 500000;
-
-    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
+    const resetRate = 500000
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),

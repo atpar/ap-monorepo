@@ -1,17 +1,9 @@
 const BigNumber = require('bignumber.js');
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
 
-const {
-  setupTestEnvironment,
-  getDefaultTerms,
-  convertDatesToOffsets,
-  parseTermsToProductTerms,
-  parseTermsToCustomTerms
-} = require('../helper/setupTestEnvironment');
-
-const { deriveProductId } = require('../helper/orderUtils');
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { deriveTerms, registerProduct, ZERO_ADDRESS } = require('../helper/utils');
 
 
 contract('TokenizationFactory', (accounts) => {
@@ -25,33 +17,17 @@ contract('TokenizationFactory', (accounts) => {
   const assetId = 'C123';
 
   beforeEach(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment();
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
+    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = await getDefaultTerms();
-    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
-    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
-    this.productTerms = parseTermsToProductTerms(this.terms);
-    this.customTerms = parseTermsToCustomTerms(this.terms);
+
+    // register product
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
-    this.ownership = { 
-      creatorObligor, 
-      creatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
-    };
-    this.productSchedules = {
-      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
-      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
-      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
-      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
-      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
-      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
-      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
-    };
-    this.productId = deriveProductId(this.productTerms, this.productSchedules);
 
     // register Ownership for assetId
     await this.AssetRegistryInstance.registerAsset(
@@ -61,7 +37,7 @@ contract('TokenizationFactory', (accounts) => {
       this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
-      '0x0000000000000000000000000000000000000000'
+      ZERO_ADDRESS
     );
   });
 

@@ -1,21 +1,26 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { setupTestEnvironment, getDefaultTerms, convertDatesToOffsets, parseTermsToProductTerms, parseTermsToCustomTerms } = require('../../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain')
 const {
   getDefaultOrderDataWithEnhancement,
   getUnfilledOrderDataAsTypedData,
   getFilledOrderDataAsTypedData,
   sign,
-  getAssetIdFromOrderData,
-  deriveProductId
+  getAssetIdFromOrderData
 } = require('../../helper/orderUtils');
 
-const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
+const {
+  deriveTerms,
+  registerProduct,
+  deployPaymentToken,
+  ZERO_ADDRESS,
+  ZERO_BYTES32,
+  ZERO_BYTES
+} = require('../../helper/utils');
 
-const ERC20SampleToken = artifacts.require('ERC20SampleToken');
+const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
 
 
 
@@ -27,15 +32,14 @@ contract('AssetActor', (accounts) => {
   const counterpartyBeneficiary = accounts[4];
 
   let snapshot;
-  let snapshot_asset;
 
   const getEventTime = async (_event, lifecycleTerms) => {
     return Number(await this.PAMEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms));
   }
 
   before(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment();
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.underylingAssetId = 'C123';
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
@@ -44,33 +48,16 @@ contract('AssetActor', (accounts) => {
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await ERC20SampleToken.new({ from: creatorObligor });
-    this.PaymentTokenInstance.transfer(counterpartyBeneficiary, web3.utils.toWei('5000'), { from: creatorObligor });
 
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
-    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
-    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    const generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
-    const productTerms = parseTermsToProductTerms(this.terms);
-    this.customTerms = parseTermsToCustomTerms(this.terms);
-    // // compute the initial state
-    // const state = await this.PAMEngineInstance.computeInitialState(lifecycleTerms);
-    // compute schedules for asset
-    const productSchedules = {
-      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
-      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
-      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15),
-      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19),
-      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18),
-      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4),
-      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11),
-    };
-    // register new product
-    this.productId = deriveProductId(productTerms, productSchedules);
-    await this.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
+
+    // register product
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
 
     snapshot = await createSnapshot();
   });
@@ -81,10 +68,10 @@ contract('AssetActor', (accounts) => {
 
   it('should trigger collateral', async () => {
     const ownershipCEC = {
-      creatorObligor: '0x0000000000000000000000000000000000000000',
-      creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-      counterpartyObligor: '0x0000000000000000000000000000000000000000',
-      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      creatorObligor: ZERO_ADDRESS,
+      creatorBeneficiary: ZERO_ADDRESS,
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
     };
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
@@ -95,23 +82,9 @@ contract('AssetActor', (accounts) => {
       this.PaymentTokenInstance.address,
       collateralAmount
     );
-    // derive terms
-    const lifecycleTermsCEC = parseTermsToLifecycleTerms(termsCEC);
-    const customTermsCEC = { ...parseTermsToCustomTerms(termsCEC), anchorDate: this.customTerms.anchorDate };
-    const generatingTermsCEC = parseTermsToGeneratingTerms(termsCEC);
-    const productTermsCEC = parseTermsToProductTerms(termsCEC);
-    const productSchedulesCEC = {
-      nonCyclicSchedule: await this.CECEngineInstance.computeNonCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate),
-      cyclicIPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 8),
-      cyclicPRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 15),
-      cyclicSCSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 19),
-      cyclicRRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 18),
-      cyclicFPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 4),
-      cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
-    };
-    // register product
-    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
-    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
+
+    const { lifecycleTerms: lifecycleTermsCEC, customTerms: customTermsCEC } = deriveTerms(termsCEC);
+    const productIdCEC = await registerProduct(this.instances, termsCEC);
 
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
@@ -123,8 +96,8 @@ contract('AssetActor', (accounts) => {
     orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
     orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);
     // collateral enhancement order does not have to be signed (ownership is enforced by AssetIssuer)
-    orderData.enhancementOrder_1.creatorSignature = '0x0';
-    orderData.enhancementOrder_1.counterpartySignature = '0x0';
+    orderData.enhancementOrder_1.creatorSignature = ZERO_BYTES;
+    orderData.enhancementOrder_1.counterpartySignature = ZERO_BYTES;
 
     // counterparty has to set allowance == collateralAmount for custodian contract
     await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterpartyBeneficiary });
@@ -158,7 +131,7 @@ contract('AssetActor', (accounts) => {
       this.lifecycleTerms,
       await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId)),
       iedEvent,
-      '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ZERO_BYTES32
     );
 
     // progress to schedule time of IED

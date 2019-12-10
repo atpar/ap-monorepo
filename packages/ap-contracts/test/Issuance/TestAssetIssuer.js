@@ -1,18 +1,17 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol');
-const ERC20SampleToken = artifacts.require('ERC20SampleToken.sol');
 
-const {
-  setupTestEnvironment,
-  getDefaultTerms,
-  convertDatesToOffsets,
-  parseTermsToProductTerms,
-  parseTermsToCustomTerms
-} = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
+const {
+  deriveTerms,
+  registerProduct,
+  deployPaymentToken,
+  ZERO_BYTES,
+  ZERO_ADDRESS
+} = require('../helper/utils');
 
 const {
   getDefaultOrderData,
@@ -26,8 +25,6 @@ const {
   sign
 } = require('../helper/orderUtils');
 
-const { deriveProductId } = require('../helper/orderUtils');
-
 const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
 
 
@@ -40,12 +37,8 @@ contract('AssetIssuer', (accounts) => {
   let snapshot;
 
   before(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
-
-    // deploy test ERC20 token and load accounts
-    this.PaymentTokenInstance = await ERC20SampleToken.new({ from: creator });
-    this.PaymentTokenInstance.transfer(counterparty, web3.utils.toWei('10000'));
+    this.instances = await setupTestEnvironment();
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.ownership = {
       creatorObligor: creator,
@@ -53,28 +46,19 @@ contract('AssetIssuer', (accounts) => {
       counterpartyObligor: counterparty,
       counterpartyBeneficiary: counterparty
     };
+
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await deployPaymentToken(this.ownership.creatorObligor,[this.ownership.counterpartyBeneficiary]);
+    // set address of payment token as currency in terms
     this.terms = await getDefaultTerms();
     this.terms.currency = this.PaymentTokenInstance.address;
-    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
-    this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
-    this.productTerms = parseTermsToProductTerms(this.terms);
-    this.customTerms = parseTermsToCustomTerms(this.terms);
-
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
-    this.productSchedules = {
-      nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
-      cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
-      cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
-      cyclicSCSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 19),
-      cyclicRRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 18),
-      cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
-      cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
-    };
-    this.productId = deriveProductId(this.productTerms, this.productSchedules);
+    this.terms.statusDate = this.terms.contractDealDate;
 
     // register product
-    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules)
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
+
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 
     snapshot = await createSnapshot();
   });
@@ -200,10 +184,10 @@ contract('AssetIssuer', (accounts) => {
 
   it('should issue an asset from an order (with enhancement orders with collateral)', async () => {
     const ownershipCEC = {
-      creatorObligor: '0x0000000000000000000000000000000000000000',
-      creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-      counterpartyObligor: '0x0000000000000000000000000000000000000000',
-      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      creatorObligor: ZERO_ADDRESS,
+      creatorBeneficiary: ZERO_ADDRESS,
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
     };
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
@@ -213,22 +197,10 @@ contract('AssetIssuer', (accounts) => {
       this.PaymentTokenInstance.address,
       collateralAmount
     );
-    // derive terms
-    const customTermsCEC = { ...parseTermsToCustomTerms(termsCEC), anchorDate: this.customTerms.anchorDate };
-    const generatingTermsCEC = parseTermsToGeneratingTerms(termsCEC);
-    const productTermsCEC = parseTermsToProductTerms(termsCEC);
-    const productSchedulesCEC = {
-      nonCyclicSchedule: await this.CECEngineInstance.computeNonCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate),
-      cyclicIPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 8),
-      cyclicPRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 15),
-      cyclicSCSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 19),
-      cyclicRRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 18),
-      cyclicFPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 4),
-      cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
-    };
+
     // register product
-    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
-    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
+    const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
+    const productIdCEC = await registerProduct(this.instances, termsCEC);
     
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
@@ -299,10 +271,10 @@ contract('AssetIssuer', (accounts) => {
 
     // collateral enhancement order
     const ownershipCEC = {
-      creatorObligor: '0x0000000000000000000000000000000000000000',
-      creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-      counterpartyObligor: '0x0000000000000000000000000000000000000000',
-      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      creatorObligor: ZERO_ADDRESS,
+      creatorBeneficiary: ZERO_ADDRESS,
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
     };
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
     // encode underlying assetId in object of first contract reference
@@ -314,28 +286,17 @@ contract('AssetIssuer', (accounts) => {
       this.PaymentTokenInstance.address,
       collateralAmount
     );
-    // derive terms
-    const customTermsCEC = { ...parseTermsToCustomTerms(termsCEC), anchorDate: this.customTerms.anchorDate };
-    const generatingTermsCEC = parseTermsToGeneratingTerms(termsCEC);
-    const productTermsCEC = parseTermsToProductTerms(termsCEC);
-    const productSchedulesCEC = {
-      nonCyclicSchedule: await this.CECEngineInstance.computeNonCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate),
-      cyclicIPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 8),
-      cyclicPRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 15),
-      cyclicSCSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 19),
-      cyclicRRSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 18),
-      cyclicFPSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 4),
-      cyclicPYSchedule: await this.CECEngineInstance.computeCyclicScheduleSegment(generatingTermsCEC, generatingTermsCEC.contractDealDate, generatingTermsCEC.maturityDate, 11),
-    };
+    
     // register product
-    const productIdCEC = deriveProductId(productTermsCEC, productSchedulesCEC);
-    await this.ProductRegistryInstance.registerProduct(productTermsCEC, productSchedulesCEC);
+    const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
+    customTermsCEC.anchorDate = this.customTerms.anchorDate;
+    const productIdCEC = await registerProduct(this.instances, termsCEC);
 
     const orderDataCEC = getDefaultOrderData(
       termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address
     );
-    orderDataCEC.creatorSignature = '0x0';
-    orderDataCEC.counterpartySignature = '0x0';
+    orderDataCEC.creatorSignature = ZERO_BYTES;
+    orderDataCEC.counterpartySignature = ZERO_BYTES;
 
     // counterparty has to set allowance == collateralAmount for custodian contract
     await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterparty });
