@@ -38,8 +38,8 @@ describe('OrderClass', () => {
     await order.signOrder();
     orderData = order.serializeOrder();
 
-    expect(orderData.creatorSignature !== apRC.utils.ZERO_BYTES).toBe(true);
-    expect(orderData.counterpartySignature === apRC.utils.ZERO_BYTES).toBe(true);
+    expect(orderData.creatorSignature !== apRC.utils.constants.ZERO_BYTES).toBe(true);
+    expect(orderData.counterpartySignature === apRC.utils.constants.ZERO_BYTES).toBe(true);
   });
 
   it('should verify and reject order with invalid signature on behalf of the counterparty', async () => {
@@ -55,8 +55,8 @@ describe('OrderClass', () => {
     await order.signOrder();
     const signedOrderData = order.serializeOrder();
 
-    expect(signedOrderData.creatorSignature !== apCP.utils.ZERO_BYTES).toBe(true);
-    expect(signedOrderData.counterpartySignature !== apCP.utils.ZERO_BYTES).toBe(true);
+    expect(signedOrderData.creatorSignature !== apCP.utils.constants.ZERO_BYTES).toBe(true);
+    expect(signedOrderData.counterpartySignature !== apCP.utils.constants.ZERO_BYTES).toBe(true);
   });
 
   it('should fill co-signed order', async () => {

@@ -10,13 +10,8 @@ import {
   isOrderData,
   isEnhancementOrderData
 } from '../types';
-
-import { 
-  getOrderDataAsTypedData,
-  getEnhancementOrderDataAsTypedData,
-  ZERO_BYTES,
-  ZERO_ADDRESS
-} from '../utils';
+import { getOrderDataAsTypedData, getEnhancementOrderDataAsTypedData } from '../utils/ERC712';
+import { ZERO_BYTES, ZERO_ADDRESS } from '../utils/Constants';
 
 
 export class Signer {

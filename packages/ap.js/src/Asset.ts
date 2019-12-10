@@ -10,8 +10,6 @@ import {
 
 import { AP } from './index';
 
-import { sortEvents, removeNullEvents } from './utils/Schedule';
-import { ZERO_BYTES32 } from './utils';
 import BN from 'bn.js';
 
 
@@ -138,7 +136,7 @@ export class Asset {
       schedule.push(await this.ap.contracts.productRegistry.methods.getEventAtIndex(productId, PY_SCHEDULE_ID, i).call());
     }
 
-    return sortEvents(removeNullEvents(schedule));
+    return this.ap.utils.schedule.sortEvents(this.ap.utils.schedule.removeNullEvents(schedule));
   }
 
   public async getNextEvent () {
@@ -157,7 +155,7 @@ export class Asset {
       terms,
       state,
       event,
-      ZERO_BYTES32
+      this.ap.utils.constants.ZERO_BYTES32
     ).call();
 
     const payoffAsBN = new BN(payoff);

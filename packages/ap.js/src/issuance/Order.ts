@@ -91,8 +91,8 @@ export class Order {
         customTerms: orderParams.enhancement_1.customTerms,
         ownership: orderParams.enhancement_1.ownership,
         engine: orderParams.enhancement_1.engine,
-        creatorSignature: ap.utils.ZERO_BYTES,
-        counterpartySignature: ap.utils.ZERO_BYTES,
+        creatorSignature: ap.utils.constants.ZERO_BYTES,
+        counterpartySignature: ap.utils.constants.ZERO_BYTES,
         salt: Math.floor(Math.random() * 1000000)
 
       },
@@ -102,12 +102,12 @@ export class Order {
         customTerms: orderParams.enhancement_2.customTerms,
         ownership: orderParams.enhancement_2.ownership,
         engine: orderParams.enhancement_2.engine,
-        creatorSignature: ap.utils.ZERO_BYTES,
-        counterpartySignature: ap.utils.ZERO_BYTES,
+        creatorSignature: ap.utils.constants.ZERO_BYTES,
+        counterpartySignature: ap.utils.constants.ZERO_BYTES,
         salt: Math.floor(Math.random() * 1000000)
       },
-      creatorSignature: ap.utils.ZERO_BYTES,
-      counterpartySignature: ap.utils.ZERO_BYTES,
+      creatorSignature: ap.utils.constants.ZERO_BYTES,
+      counterpartySignature: ap.utils.constants.ZERO_BYTES,
       salt: Math.floor(Math.random() * 1000000)
     }
 

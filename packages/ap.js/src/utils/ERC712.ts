@@ -2,15 +2,15 @@ import * as web3Utils from 'web3-utils';
 import web3EthAbi from 'web3-eth-abi';
 
 import {
-  Terms,
-  CustomTerms,
-  AssetOwnership,
-  OrderData,
-  OrderDataAsTypedData,
-  EnhancementOrderData,
-  EnhancementOrderDataAsTypedData
+Terms,
+CustomTerms,
+AssetOwnership,
+OrderData,
+OrderDataAsTypedData,
+EnhancementOrderData,
+EnhancementOrderDataAsTypedData
 } from '../types';
-import { ZERO_ADDRESS } from './Conversions';
+import { ZERO_ADDRESS } from './Constants';
 
 
 export function getOrderDataAsTypedData (
@@ -119,7 +119,7 @@ export function getEnhancementOrderDataAsTypedData (
   return typedData;
 }
 
-function getOwnershipHash (ownership: AssetOwnership) {
+export function getOwnershipHash (ownership: AssetOwnership) {
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameters(
     ['address', 'address', 'address', 'address'],
@@ -132,7 +132,7 @@ function getOwnershipHash (ownership: AssetOwnership) {
   ))
 }
 
-function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData) {
+export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData) {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3Utils.keccak256(
     "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
   );
@@ -154,7 +154,7 @@ function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData) {
   ));
 };
 
-function getCustomTermsHash (customTerms: CustomTerms) {
+export function getCustomTermsHash (customTerms: CustomTerms) {
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameter(
     {

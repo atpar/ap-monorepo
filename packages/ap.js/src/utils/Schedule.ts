@@ -1,7 +1,7 @@
 import Web3Utils from 'web3-utils';
 
-import { Terms } from "../types";
-import { toGeneratingTerms } from "./Terms";
+import { Terms } from '../types';
+import { toGeneratingTerms } from './Conversions';
 
 
 export function getEpochOffsetForEventType (eventType: number): number {

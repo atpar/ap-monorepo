@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from "../utils";
+import { ZERO_ADDRESS } from "../utils/Constants";
 
 export interface AddressBook {
   ANNEngine: string;

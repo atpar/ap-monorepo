@@ -5,8 +5,7 @@ import * as APTypes from './types';
 
 import { Asset } from './Asset';
 import { Order } from './issuance/Order';
-import { Signer, Contracts } from './apis';
-import * as Utils from './utils';
+import { Contracts, Signer, Utils } from './apis';
 import { AddressBook } from './types';
 
 
@@ -16,17 +15,19 @@ export class AP {
   
   public contracts: Contracts;
   public signer: Signer;
-  public utils = Utils;
+  public utils: Utils;
 
   constructor (
     web3: Web3,
     contracts: Contracts,
     signer: Signer,
+    utils: Utils
   ) {
     this.web3 = web3;
 
     this.contracts = contracts;
     this.signer = signer;
+    this.utils = utils;
   }
 
   /**
@@ -110,8 +111,9 @@ export class AP {
 
     const contracts = new Contracts(web3, addressBook);
     const signer = new Signer(web3, defaultAccount, addressBook.AssetIssuer);
+    const utils = new Utils();
 
-    return new AP(web3, contracts, signer);
+    return new AP(web3, contracts, signer, utils);
   }
 }
 

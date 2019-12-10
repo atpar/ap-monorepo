@@ -3,7 +3,6 @@ const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20Sam
 
 import { AP, Asset } from '../../src';
 import { issueDefaultAsset } from '../utils';
-import { decodeEvent } from '../../src/utils';
 
 
 describe('Asset', () => {
@@ -53,7 +52,7 @@ describe('Asset', () => {
   it('should retrieve the next event of the asset', async () => {
     const asset = await Asset.load(apRC, assetId);
     const event = await asset.getNextEvent();
-    const decodedEvent = decodeEvent(event);
+    const decodedEvent = apRC.utils.schedule.decodeEvent(event);
 
     expect(decodedEvent.eventType > 0 && decodedEvent.scheduleTime > 0).toBe(true);
   });
@@ -83,7 +82,7 @@ describe('Asset', () => {
     const terms = await asset.getTerms();
     const sampleToken = new web3.eth.Contract(ERC20SampleTokenArtifact.abi, terms.currency);
     const payoff = await asset.getNextPayment();
-    const event = decodeEvent(await asset.getNextEvent());
+    const event = apRC.utils.schedule.decodeEvent(await asset.getNextEvent());
 
     await sampleToken.methods.approve(apRC.contracts.assetActor.options.address, payoff.amount);
     const tx = await asset.progress();

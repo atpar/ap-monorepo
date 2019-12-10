@@ -40,9 +40,9 @@ export async function getDefaultOrderParams (productId: string): Promise<APTypes
   const terms: APTypes.Terms = await getDefaultTerms();
 
   return {
-    termsHash: ap.utils.getTermsHash(terms),
+    termsHash: ap.utils.erc712.getTermsHash(terms),
     productId: productId,
-    customTerms: ap.utils.toCustomTerms(terms),
+    customTerms: ap.utils.convert.toCustomTerms(terms),
     ownership: {
       creatorObligor: creator,
       creatorBeneficiary: creator,
@@ -52,28 +52,28 @@ export async function getDefaultOrderParams (productId: string): Promise<APTypes
     expirationDate: String(terms.contractDealDate),
     engine: ap.contracts.pamEngine.options.address,
     enhancement_1: {
-      termsHash: ap.utils.ZERO_BYTES32,
-      productId: ap.utils.ZERO_BYTES32,
-      customTerms: ap.utils.toCustomTerms(terms), // arbitrary customTerms
+      termsHash: ap.utils.constants.ZERO_BYTES32,
+      productId: ap.utils.constants.ZERO_BYTES32,
+      customTerms: ap.utils.convert.toCustomTerms(terms), // arbitrary customTerms
       ownership: {
-        creatorObligor: ap.utils.ZERO_ADDRESS,
-        creatorBeneficiary: ap.utils.ZERO_ADDRESS,
-        counterpartyObligor: ap.utils.ZERO_ADDRESS,
-        counterpartyBeneficiary: ap.utils.ZERO_ADDRESS
+        creatorObligor: ap.utils.constants.ZERO_ADDRESS,
+        creatorBeneficiary: ap.utils.constants.ZERO_ADDRESS,
+        counterpartyObligor: ap.utils.constants.ZERO_ADDRESS,
+        counterpartyBeneficiary: ap.utils.constants.ZERO_ADDRESS
       },
-      engine: ap.utils.ZERO_ADDRESS
+      engine: ap.utils.constants.ZERO_ADDRESS
     },
     enhancement_2: {
-      termsHash: ap.utils.ZERO_BYTES32,
-      productId: ap.utils.ZERO_BYTES32,
-      customTerms: ap.utils.toCustomTerms(terms), // arbitrary customTerms
+      termsHash: ap.utils.constants.ZERO_BYTES32,
+      productId: ap.utils.constants.ZERO_BYTES32,
+      customTerms: ap.utils.convert.toCustomTerms(terms), // arbitrary customTerms
       ownership: {
-        creatorObligor: ap.utils.ZERO_ADDRESS,
-        creatorBeneficiary: ap.utils.ZERO_ADDRESS,
-        counterpartyObligor: ap.utils.ZERO_ADDRESS,
-        counterpartyBeneficiary: ap.utils.ZERO_ADDRESS
+        creatorObligor: ap.utils.constants.ZERO_ADDRESS,
+        creatorBeneficiary: ap.utils.constants.ZERO_ADDRESS,
+        counterpartyObligor: ap.utils.constants.ZERO_ADDRESS,
+        counterpartyBeneficiary: ap.utils.constants.ZERO_ADDRESS
       },
-      engine: ap.utils.ZERO_ADDRESS
+      engine: ap.utils.constants.ZERO_ADDRESS
     }
   }
 }
@@ -102,8 +102,8 @@ export async function issueDefaultAsset (): Promise<string> {
 
   const terms = await getDefaultTerms();
   const productId = web3.utils.toHex('Some Product: ' + Math.floor(Math.random() * 1000000));
-  const productTerms = ap.utils.toProductTerms(terms);
-  const productSchedules = await ap.utils.generateProductSchedule(ap.contracts.pamEngine, terms);
+  const productTerms = ap.utils.convert.toProductTerms(terms);
+  const productSchedules = await ap.utils.schedule.generateProductSchedule(ap.contracts.pamEngine, terms);
 
   await ap.contracts.productRegistry.methods.registerProduct(
     productId,
