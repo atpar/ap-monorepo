@@ -16,6 +16,8 @@ import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
+    event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
+
     IAssetRegistry assetRegistry;
     IProductRegistry productRegistry;
     IMarketObjectRegistry marketObjectRegistry;
@@ -129,7 +131,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
-        emit AssetProgressed(assetId, eventType, scheduleTime);
+        emit ProgressedAsset(assetId, eventType, scheduleTime);
     }
 
     /**

@@ -9,6 +9,9 @@ import "./Ownership.sol";
 
 contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Ownership {
 
+    event RegisteredAsset(bytes32 assetId);
+
+
     constructor(IProductRegistry _productRegistry)
         public
         AssetRegistryStorage(_productRegistry)
@@ -52,5 +55,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
             engine,
             actor
         );
+
+        emit RegisteredAsset(assetId);
     }
 }

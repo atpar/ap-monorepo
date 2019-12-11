@@ -10,6 +10,9 @@ import "./ProductRegistryStorage.sol";
  */
 contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 
+    event RegistedProduct(bytes32 productId);
+
+
     /**
      * returns the terms of a product
      * @param productId id of the product
@@ -71,5 +74,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
         );
 
         setProduct(productId, terms, productSchedules);
+
+        emit RegistedProduct(productId);
     }
 }

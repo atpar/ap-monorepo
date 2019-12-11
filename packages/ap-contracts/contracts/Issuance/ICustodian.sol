@@ -6,9 +6,6 @@ import "../Core/SharedTypes.sol";
 
 contract ICustodian is SharedTypes {
 
-    event LockedCollateral(bytes32 assetId, address collateralizer, uint256 collateralAmount);
-
-
     function lockCollateral(
         bytes32 assetId,
         LifecycleTerms memory terms,

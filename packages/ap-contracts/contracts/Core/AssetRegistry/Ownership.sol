@@ -6,6 +6,11 @@ import "./AssetRegistryStorage.sol";
 
 contract Ownership is AssetRegistryStorage {
 
+    event UpdatedBeneficiary(bytes32 assetId, address oldBeneficiary, address newBeneficiary);
+
+    event UpdatedCashflowBeneficiary(bytes32 assetId, int8 cashflowId, address oldBeneficiary, address newBeneficiary);
+
+
     /**
      * update the address of the default beneficiary of cashflows going to the creator
      * @param assetId id of the asset
@@ -27,6 +32,8 @@ contract Ownership is AssetRegistryStorage {
         );
 
         assets[assetId].ownership.creatorBeneficiary = newCreatorBeneficiary;
+
+        emit UpdatedBeneficiary(assetId, msg.sender, newCreatorBeneficiary);
     }
 
     /**
@@ -50,6 +57,8 @@ contract Ownership is AssetRegistryStorage {
         );
 
         assets[assetId].ownership.counterpartyBeneficiary = newCounterpartyBeneficiary;
+
+        emit UpdatedBeneficiary(assetId, msg.sender, newCounterpartyBeneficiary);
     }
 
     /**
@@ -90,6 +99,13 @@ contract Ownership is AssetRegistryStorage {
         }
 
         assets[assetId].cashflowBeneficiaries[cashflowId] = beneficiary;
+
+        emit UpdatedCashflowBeneficiary(
+            assetId,
+            cashflowId,
+            msg.sender,
+            beneficiary
+        );
     }
 
     /**

@@ -12,6 +12,10 @@ import "./VerifyOrder.sol";
 
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 
+    event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
+
+    event IssuedAsset(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
+
     ICustodian public custodian;
     IProductRegistry public productRegistry;
     IAssetRegistry public assetRegistry;
@@ -83,6 +87,8 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
                 assetId, ownership, productId, customTerms, engine, actor
             );
         }
+
+        emit ExecutedOrder(keccak256(abi.encode(order.creatorSignature)), assetId);
     }
 
     function finalizeOrder(Order memory order)
@@ -245,6 +251,6 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             "AssetIssuer.issueAsset: EXECUTION_ERROR"
         );
 
-        emit AssetIssued(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
+        emit IssuedAsset(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 }

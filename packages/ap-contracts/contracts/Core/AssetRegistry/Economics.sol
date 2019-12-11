@@ -6,6 +6,13 @@ import "./AssetRegistryStorage.sol";
 
 contract Economics is AssetRegistryStorage {
 
+    event IncrementedScheduleIndex(bytes32 indexed assetId, uint8 scheduleId, uint256 scheduleIndex);
+
+    event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
+
+    event UpdatedFinalizedState(bytes32 indexed assetId, uint256 statusDate);
+
+
     modifier onlyDesignatedActor(bytes32 assetId) {
         require(
             assets[assetId].actor == msg.sender,
@@ -278,6 +285,8 @@ contract Economics is AssetRegistryStorage {
         }
 
         assets[assetId].nextEventIndex[scheduleId] = scheduleIndex + 1;
+
+        emit IncrementedScheduleIndex(assetId, scheduleId, assets[assetId].nextEventIndex[scheduleId]);
     }
 
     /**
@@ -288,6 +297,8 @@ contract Economics is AssetRegistryStorage {
      */
     function setState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
         encodeAndSetState(assetId, state);
+
+        emit UpdatedState(assetId, state.statusDate);
     }
 
     /**
@@ -298,5 +309,7 @@ contract Economics is AssetRegistryStorage {
      */
     function setFinalizedState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
         encodeAndSetFinalizedState(assetId, state);
+
+        emit UpdatedFinalizedState(assetId, state.statusDate);
     }
 }

@@ -9,6 +9,11 @@ import "./MarketObjectRegistryStorage.sol";
 
 contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegistry, Ownable {
 
+    event UpdatedMarketObjectProvider(bytes32 indexed marketObjectId, address provider);
+
+    event PublishedDataPoint(bytes32 indexed marketObjectId, int256 dataPoint);
+
+
     /**
      * registers / updates a market object provider
      * @dev can only be called by the owner of the MarketObjectRegistry
@@ -23,6 +28,8 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         onlyOwner
     {
         marketObjectProviders[marketObjectId] = provider;
+
+        emit UpdatedMarketObjectProvider(marketObjectId, provider);
     }
 
     /**
@@ -46,6 +53,8 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
 
         dataPoints[marketObjectId][timestamp] = DataPoint(dataPoint, true);
         marketObjectLastUpdatedAt[marketObjectId] = timestamp;
+
+        emit PublishedDataPoint(marketObjectId, dataPoint);
     }
 
     /**

@@ -106,7 +106,7 @@ contract('AssetActor', (accounts) => {
       { from: creatorObligor }
     );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'AssetProgressed'
+      txHash, AssetActor, 'ProgressedAsset'
     );
 
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
@@ -134,7 +134,7 @@ contract('AssetActor', (accounts) => {
 
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'AssetProgressed'
+      txHash, AssetActor, 'ProgressedAsset'
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
@@ -171,7 +171,7 @@ contract('AssetActor', (accounts) => {
 
     const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'AssetProgressed'
+      txHash, AssetActor, 'ProgressedAsset'
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
