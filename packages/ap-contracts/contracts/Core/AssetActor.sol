@@ -276,6 +276,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         LifecycleTerms memory terms
     )
         internal
+        view
         returns (bytes32)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
