@@ -94,12 +94,13 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         }
 
         // get external data for the next event
-        bytes32 externalData = getExternalDataForEvent(_event, terms);
+        bytes32 externalDataForPOF = getExternalDataForPOF(_event, terms);
+        bytes32 externalDataForSTF = getExternalDataForSTF(_event, terms);
         // compute payoff and the next state by applying the event to the current state
         // solium-disable-next-line
-        int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalData);
+        int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalDataForPOF);
         // solium-disable-next-line
-        state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
+        state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalDataForSTF);
 
         // try to settle payoff of event
         // solium-disable-next-line
@@ -272,7 +273,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         );
     }
 
-    function getExternalDataForEvent(
+    function getExternalDataForSTF(
         bytes32 _event,
         LifecycleTerms memory terms
     )
@@ -302,4 +303,23 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
         return bytes32(0);
     }
+
+    function getExternalDataForPOF(
+        bytes32 _event,
+        LifecycleTerms memory terms
+    )
+        internal
+        view
+        returns (bytes32)
+    {
+        if (terms.currency !== terms.settlementCurrency) {
+            // get FX rate
+            (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+                keccak256(abi.encode(terms.currency, terms.settlementCurrency)),
+                scheduleTime
+            );
+            if (isSet) return bytes32(fxRate);
+        }
+    }
+    
 }
