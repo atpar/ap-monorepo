@@ -96,14 +96,6 @@ export class ICustodian extends Contract {
     returnCollateral(assetId: string | number[]): TransactionObject<boolean>;
   };
   events: {
-    LockedCollateral: ContractEvent<{
-      assetId: string;
-      collateralizer: string;
-      collateralAmount: BN;
-      0: string;
-      1: string;
-      2: BN;
-    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

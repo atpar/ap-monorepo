@@ -141,14 +141,6 @@ export class IAssetIssuer extends Contract {
     }): TransactionObject<void>;
   };
   events: {
-    AssetIssued: ContractEvent<{
-      assetId: string;
-      creator: string;
-      counterparty: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

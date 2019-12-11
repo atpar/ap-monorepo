@@ -36,7 +36,7 @@ export class AP {
    * after a new asset in which the default account is involved is issued
    */
   public onNewAssetIssued (cb: (asset: Asset) => void): void {
-    this.contracts.assetIssuer.events.AssetIssued().on('data', async (event) => {
+    this.contracts.assetIssuer.events.IssuedAsset().on('data', async (event) => {
       if (
         !event 
         || !event.returnValues 
@@ -62,7 +62,7 @@ export class AP {
    * @returns {Promise<string[]>}
    */
   public async getAssetIds (): Promise<string[]> {
-    const issuances = await this.contracts.assetIssuer.getPastEvents('AssetIssued');
+    const issuances = await this.contracts.assetIssuer.getPastEvents('IssuedAsset');
     const assetIds = [];
 
     for (const issuance of issuances) {

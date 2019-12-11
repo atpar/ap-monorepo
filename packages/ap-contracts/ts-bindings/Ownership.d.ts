@@ -134,6 +134,24 @@ export class Ownership extends Contract {
     ): TransactionObject<string>;
   };
   events: {
+    UpdatedBeneficiary: ContractEvent<{
+      assetId: string;
+      oldBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedCashflowBeneficiary: ContractEvent<{
+      assetId: string;
+      cashflowId: BN;
+      oldBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: BN;
+      2: string;
+      3: string;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

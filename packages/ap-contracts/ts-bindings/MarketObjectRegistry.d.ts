@@ -67,6 +67,18 @@ export class MarketObjectRegistry extends Contract {
     ): TransactionObject<BN>;
   };
   events: {
+    UpdatedMarketObjectProvider: ContractEvent<{
+      marketObjectId: string;
+      provider: string;
+      0: string;
+      1: string;
+    }>;
+    PublishedDataPoint: ContractEvent<{
+      marketObjectId: string;
+      dataPoint: BN;
+      0: string;
+      1: BN;
+    }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;
       newOwner: string;

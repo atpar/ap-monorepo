@@ -87,7 +87,7 @@ describe('Asset', () => {
     await sampleToken.methods.approve(apRC.contracts.assetActor.options.address, payoff.amount);
     const tx = await asset.progress();
 
-    expect(Number(tx.events.AssetProgressed.returnValues.eventType)).toBe(event.eventType);
-    expect(Number(tx.events.AssetProgressed.returnValues.scheduleTime)).toBe(event.scheduleTime);
+    expect(Number(tx.events.ProgressedAsset.returnValues.eventType)).toBe(event.eventType);
+    expect(Number(tx.events.ProgressedAsset.returnValues.scheduleTime)).toBe(event.scheduleTime);
   });
 });

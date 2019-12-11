@@ -120,6 +120,7 @@ export class ProductRegistry extends Contract {
     ): TransactionObject<void>;
   };
   events: {
+    RegistedProduct: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

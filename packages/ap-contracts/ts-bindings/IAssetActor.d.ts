@@ -70,14 +70,6 @@ export class IAssetActor extends Contract {
     ): TransactionObject<boolean>;
   };
   events: {
-    AssetProgressed: ContractEvent<{
-      assetId: string;
-      eventType: BN;
-      scheduleTime: BN;
-      0: string;
-      1: BN;
-      2: BN;
-    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>
