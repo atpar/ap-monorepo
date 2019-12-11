@@ -68,6 +68,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
             "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
         );
 
+        // skip progression if asset defaulted
         require(
             state.contractPerformance != ContractPerformance.DF,
             "AssetActor.progress: ASSET_IS_IN_DEFAULT"
@@ -103,10 +104,10 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         // try to settle payoff of event
         // solium-disable-next-line
         if (settlePayoffForEvent(assetId, _event, payoff, terms)) {
-            // if obligation is fulfilled increment the corresponding schedule index
+            // if obligation is fulfilled increment the corresponding schedule index of the processed event
             updateScheduleIndex(assetId, eventType);
         } else {
-            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
             // store the interim state of the asset (state if the current obligation was successfully settled)
             // (if the obligation is later fulfilled before the asset reaches default,
             // the interim state is used to derive subsequent states of the asset)
