@@ -49,6 +49,7 @@ export function toLifecycleTerms (terms: Terms): LifecycleTerms {
     contractReference_2: terms.contractReference_2,
 
     currency: terms.currency,
+    settlementCurrency: terms.settlementCurrency,
 
     marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
@@ -124,6 +125,7 @@ export function toProductTerms (terms: Terms): ProductTerms {
     creditEventTypeCovered: terms.creditEventTypeCovered,
     
     currency: terms.currency,
+    settlementCurrency: terms.settlementCurrency,
     
     marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
     

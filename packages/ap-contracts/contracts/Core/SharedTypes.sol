@@ -42,6 +42,7 @@ contract SharedTypes is ACTUSTypes {
         // ContractReference[2] contractReferences;
 
         address currency;
+        address settlementCurrency;
 
         bytes32 marketObjectCodeRateReset;
 
@@ -121,6 +122,7 @@ contract SharedTypes is ACTUSTypes {
             customTerms.contractReference_2, // productTerms.contractReferences,
 
             productTerms.currency,
+            productTerms.settlementCurrency,
 
             productTerms.marketObjectCodeRateReset,
 

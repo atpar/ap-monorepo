@@ -102,7 +102,8 @@ export interface Terms {
   contractReference_2: ContractReference;
   
   currency: string;
-  
+  settlementCurrency: string;
+
   creatorID: string | number[];
   counterpartyID: string | number[]
   marketObjectCodeRateReset: string | number[];
@@ -164,6 +165,7 @@ export interface LifecycleTerms {
   contractReference_2: ContractReference;
 
   currency: string;
+  settlementCurrency: string;
 
   marketObjectCodeRateReset: string | number[];
 
@@ -233,6 +235,7 @@ export interface ProductTerms {
   creditEventTypeCovered: string | number;
   
   currency: string;
+  settlementCurrency: string;
   
   marketObjectCodeRateReset: string | number[];
   

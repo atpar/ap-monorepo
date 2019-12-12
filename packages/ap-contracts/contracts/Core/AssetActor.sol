@@ -94,13 +94,19 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         }
 
         // get external data for the next event
-        bytes32 externalDataForPOF = getExternalDataForPOF(_event, terms);
-        bytes32 externalDataForSTF = getExternalDataForSTF(_event, terms);
         // compute payoff and the next state by applying the event to the current state
-        // solium-disable-next-line
-        int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalDataForPOF);
-        // solium-disable-next-line
-        state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalDataForSTF);
+        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForPOF(_event, terms)
+        );
+        state = IEngine(engineAddress).computeStateForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForSTF(_event, terms)
+        );
 
         // try to settle payoff of event
         // solium-disable-next-line
@@ -124,7 +130,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
                 terms,
                 state,
                 ceEvent,
-                getExternalDataForEvent(ceEvent, terms)
+                getExternalDataForSTF(ceEvent, terms)
             );
         }
 
@@ -312,7 +318,9 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         view
         returns (bytes32)
     {
-        if (terms.currency !== terms.settlementCurrency) {
+        (, uint256  scheduleTime) = decodeEvent(_event);
+
+        if (terms.currency != terms.settlementCurrency) {
             // get FX rate
             (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
                 keccak256(abi.encode(terms.currency, terms.settlementCurrency)),
