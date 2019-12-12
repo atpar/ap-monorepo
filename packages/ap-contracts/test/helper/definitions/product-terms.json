@@ -9,6 +9,7 @@
   "feeBasis",
   "creditEventTypeCovered",
   "currency",
+  "settlementCurrency",
   "marketObjectCodeRateReset",
   "statusDateOffset",
   "maturityDateOffset",

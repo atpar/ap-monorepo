@@ -66,6 +66,10 @@ function deriveProductId (productTerms, productSchedules) {
           "type": "address"
         },
         {
+          "name": "settlementCurrency",
+          "type": "address"
+        },
+        {
           "name": "marketObjectCodeRateReset",
           "type": "bytes32"
         },
@@ -366,6 +370,10 @@ function getTermsHash (terms) {
         },
         {
           "name": "currency",
+          "type": "address"
+        },
+        {
+          "name": "settlementCurrency",
           "type": "address"
         },
         {

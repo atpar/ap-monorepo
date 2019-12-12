@@ -43,10 +43,11 @@ contract ProductRegistryStorage is SharedTypes {
         if (enums != bytes32(0)) products[productId].packedTerms[1] = enums;
 
         if (terms.currency != address(0)) products[productId].packedTerms[4] = bytes32(uint256(terms.currency) << 96);
+        if (terms.settlementCurrency != address(0)) products[productId].packedTerms[5] = bytes32(uint256(terms.settlementCurrency) << 96);
 
-        if (terms.currency != address(0)) products[productId].packedTerms[5] = bytes32(terms.marketObjectCodeRateReset);
+        if (terms.marketObjectCodeRateReset != bytes32(0)) products[productId].packedTerms[6] = bytes32(terms.marketObjectCodeRateReset);
 
-        if (terms.statusDateOffset != uint256(0)) products[productId].packedTerms[6] = bytes32(terms.statusDateOffset);
+        if (terms.statusDateOffset != uint256(0)) products[productId].packedTerms[7] = bytes32(terms.statusDateOffset);
         if (terms.maturityDateOffset != uint256(0)) products[productId].packedTerms[8] = bytes32(terms.maturityDateOffset);
 
         if (terms.feeAccrued != int256(0)) products[productId].packedTerms[19] = bytes32(terms.feeAccrued);
@@ -172,10 +173,11 @@ contract ProductRegistryStorage is SharedTypes {
             // ],
 
             address(uint160(uint256(products[productId].packedTerms[4]) >> 96)),
+            address(uint160(uint256(products[productId].packedTerms[5]) >> 96)),
 
-            products[productId].packedTerms[5],
+            products[productId].packedTerms[6],
 
-            uint256(products[productId].packedTerms[6]),
+            uint256(products[productId].packedTerms[7]),
             uint256(products[productId].packedTerms[8]),
             int256(products[productId].packedTerms[19]),
             int256(products[productId].packedTerms[20]),
