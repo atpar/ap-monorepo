@@ -23,7 +23,6 @@ const {
 const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
 
 
-
 contract('AssetActor', (accounts) => {
 
   const creatorObligor = accounts[1];
@@ -53,6 +52,7 @@ contract('AssetActor', (accounts) => {
     this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
     // register product
@@ -162,7 +162,7 @@ contract('AssetActor', (accounts) => {
     // creator should have received seized collateral from custodian
     assert.equal(
       (await this.PaymentTokenInstance.balanceOf(creatorBeneficiary)).toString(),
-      web3.utils.hexToNumberString(this.customTerms.notionalPrincipal)
+      String(this.customTerms.notionalPrincipal)
     );
     // custodian should have not executed amount (overcollateral) left
     assert.equal(

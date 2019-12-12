@@ -73,6 +73,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
             "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
         );
 
+        // skip progression if asset defaulted
         require(
             state.contractPerformance != ContractPerformance.DF,
             "AssetActor.progress: ASSET_IS_IN_DEFAULT"
@@ -98,20 +99,27 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         }
 
         // get external data for the next event
-        bytes32 externalData = getExternalDataForEvent(_event, terms);
         // compute payoff and the next state by applying the event to the current state
-        // solium-disable-next-line
-        int256 payoff = IEngine(engineAddress).computePayoffForEvent(terms, state, _event, externalData);
-        // solium-disable-next-line
-        state = IEngine(engineAddress).computeStateForEvent(terms, state, _event, externalData);
+        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForPOF(_event, terms)
+        );
+        state = IEngine(engineAddress).computeStateForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForSTF(_event, terms)
+        );
 
         // try to settle payoff of event
         // solium-disable-next-line
         if (settlePayoffForEvent(assetId, _event, payoff, terms)) {
-            // if obligation is fulfilled increment the corresponding schedule index
+            // if obligation is fulfilled increment the corresponding schedule index of the processed event
             updateScheduleIndex(assetId, eventType);
         } else {
-            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
             // store the interim state of the asset (state if the current obligation was successfully settled)
             // (if the obligation is later fulfilled before the asset reaches default,
             // the interim state is used to derive subsequent states of the asset)
@@ -127,7 +135,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
                 terms,
                 state,
                 ceEvent,
-                getExternalDataForEvent(ceEvent, terms)
+                getExternalDataForSTF(ceEvent, terms)
             );
         }
 
@@ -277,7 +285,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         );
     }
 
-    function getExternalDataForEvent(
+    function getExternalDataForSTF(
         bytes32 _event,
         LifecycleTerms memory terms
     )
@@ -307,4 +315,25 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
         return bytes32(0);
     }
+
+    function getExternalDataForPOF(
+        bytes32 _event,
+        LifecycleTerms memory terms
+    )
+        internal
+        view
+        returns (bytes32)
+    {
+        (, uint256  scheduleTime) = decodeEvent(_event);
+
+        if (terms.currency != terms.settlementCurrency) {
+            // get FX rate
+            (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+                keccak256(abi.encode(terms.currency, terms.settlementCurrency)),
+                scheduleTime
+            );
+            if (isSet) return bytes32(fxRate);
+        }
+    }
+    
 }

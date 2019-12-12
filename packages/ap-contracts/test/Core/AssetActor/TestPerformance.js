@@ -38,6 +38,7 @@ contract('AssetActor', (accounts) => {
     this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
     // register product

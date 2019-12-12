@@ -28,6 +28,7 @@ export async function getDefaultTerms (): Promise<Terms> {
 
   const terms: Terms = DefaultTerms;
   terms.currency = sampleToken.options.address;
+  terms.settlementCurrency = sampleToken.options.address;
 
   return terms;
 }

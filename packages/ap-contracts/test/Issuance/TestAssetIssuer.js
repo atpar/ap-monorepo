@@ -52,6 +52,7 @@ contract('AssetIssuer', (accounts) => {
     // set address of payment token as currency in terms
     this.terms = await getDefaultTerms();
     this.terms.currency = this.PaymentTokenInstance.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
     // register product
