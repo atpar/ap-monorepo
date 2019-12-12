@@ -21,6 +21,8 @@ export class EndOfMonthConvention extends Contract {
   );
   clone(): EndOfMonthConvention;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
 
     adjustEndOfMonthConvention(

@@ -33,6 +33,8 @@ export class MarketObjectRegistryStorage extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
   };
   events: {

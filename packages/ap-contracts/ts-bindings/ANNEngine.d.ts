@@ -32,57 +32,14 @@ export class ANNEngine extends Contract {
       }
     ): TransactionObject<BN>;
 
-    computeEventTimeForEvent(
-      _event: string | number[],
-      terms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        currency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-      }
-    ): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: BN;
+      1: BN;
+    }>;
 
     computeStateForEvent(
       terms: {
@@ -106,6 +63,7 @@ export class ANNEngine extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;
@@ -166,21 +124,62 @@ export class ANNEngine extends Contract {
       executionAmount: BN;
     }>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: BN;
-      1: BN;
-    }>;
-
     getEpochOffset(eventType: number | string): TransactionObject<BN>;
 
-    PRECISION(): TransactionObject<BN>;
+    computeEventTimeForEvent(
+      _event: string | number[],
+      terms: {
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        feeAccrued: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        feeRate: number | string;
+        nextResetRate: number | string;
+        penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+      }
+    ): TransactionObject<BN>;
 
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
+    PRECISION(): TransactionObject<BN>;
 
     computePayoffForEvent(
       terms: {
@@ -204,6 +203,7 @@ export class ANNEngine extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;
@@ -250,6 +250,11 @@ export class ANNEngine extends Contract {
       externalData: string | number[]
     ): TransactionObject<BN>;
 
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
+    ): TransactionObject<string>;
+
     computeInitialState(terms: {
       calendar: number | string;
       contractRole: number | string;
@@ -271,6 +276,7 @@ export class ANNEngine extends Contract {
         contractReferenceRole: number | string;
       };
       currency: string;
+      settlementCurrency: string;
       marketObjectCodeRateReset: string | number[];
       statusDate: number | string;
       maturityDate: number | string;
@@ -451,6 +457,7 @@ export class ANNEngine extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;

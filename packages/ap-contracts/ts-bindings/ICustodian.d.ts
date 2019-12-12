@@ -33,6 +33,8 @@ export class ICustodian extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
 
     lockCollateral(
@@ -58,6 +60,7 @@ export class ICustodian extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;

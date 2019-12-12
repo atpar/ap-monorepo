@@ -21,6 +21,8 @@ export class ContractRoleConvention extends Contract {
   );
   clone(): ContractRoleConvention;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
   };
   events: {

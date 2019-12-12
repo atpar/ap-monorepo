@@ -21,6 +21,33 @@ export class AssetActor extends Contract {
   );
   clone(): AssetActor;
   methods: {
+    issuers(arg0: string): TransactionObject<boolean>;
+
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: BN;
+    }>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
+    renounceOwnership(): TransactionObject<void>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: BN;
+      1: BN;
+    }>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       terms: {
@@ -44,6 +71,7 @@ export class AssetActor extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;
@@ -72,31 +100,6 @@ export class AssetActor extends Contract {
         periodFloor: number | string;
       }
     ): TransactionObject<BN>;
-
-    issuers(arg0: string): TransactionObject<boolean>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: BN;
-    }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
-
-    renounceOwnership(): TransactionObject<void>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: BN;
-      1: BN;
-    }>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
 
     owner(): TransactionObject<string>;
 
@@ -155,6 +158,12 @@ export class AssetActor extends Contract {
       0: string;
       1: BN;
       2: BN;
+    }>;
+    Status: ContractEvent<{
+      assetId: string;
+      statusMessage: string;
+      0: string;
+      1: string;
     }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;

@@ -21,6 +21,29 @@ export class Ownership extends Contract {
   );
   clone(): Ownership;
   methods: {
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: BN;
+    }>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: BN;
+      1: BN;
+    }>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       terms: {
@@ -44,6 +67,7 @@ export class Ownership extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;
@@ -72,27 +96,6 @@ export class Ownership extends Contract {
         periodFloor: number | string;
       }
     ): TransactionObject<BN>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: BN;
-    }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: BN;
-      1: BN;
-    }>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
 
     PRECISION(): TransactionObject<BN>;
 

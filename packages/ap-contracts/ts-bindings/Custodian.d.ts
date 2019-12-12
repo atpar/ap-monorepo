@@ -33,6 +33,8 @@ export class Custodian extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     assetRegistry(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<BN>;
@@ -62,6 +64,7 @@ export class Custodian extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;

@@ -21,6 +21,8 @@ export class ContractDefaultConvention extends Contract {
   );
   clone(): ContractDefaultConvention;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
   };
   events: {

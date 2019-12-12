@@ -21,6 +21,8 @@ export class SharedTypes extends Contract {
   );
   clone(): SharedTypes;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
 
     encodeCollateralAsObject(

@@ -21,6 +21,8 @@ export class BusinessDayConvention extends Contract {
   );
   clone(): BusinessDayConvention;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
   };
   events: {

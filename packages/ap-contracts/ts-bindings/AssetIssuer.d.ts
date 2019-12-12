@@ -35,6 +35,8 @@ export class AssetIssuer extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     assetRegistry(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<BN>;

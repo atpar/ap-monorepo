@@ -21,6 +21,8 @@ export class Utils extends Contract {
   );
   clone(): Utils;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
 
     encodeEvent(
@@ -58,6 +60,7 @@ export class Utils extends Contract {
           contractReferenceRole: number | string;
         };
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDate: number | string;
         maturityDate: number | string;

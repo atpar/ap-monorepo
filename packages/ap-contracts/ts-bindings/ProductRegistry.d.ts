@@ -33,6 +33,8 @@ export class ProductRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
 
     getProductTerms(
@@ -48,6 +50,7 @@ export class ProductRegistry extends Contract {
       feeBasis: BN;
       creditEventTypeCovered: BN;
       currency: string;
+      settlementCurrency: string;
       marketObjectCodeRateReset: string;
       statusDateOffset: BN;
       maturityDateOffset: BN;
@@ -88,6 +91,7 @@ export class ProductRegistry extends Contract {
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
         currency: string;
+        settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
         statusDateOffset: number | string;
         maturityDateOffset: number | string;

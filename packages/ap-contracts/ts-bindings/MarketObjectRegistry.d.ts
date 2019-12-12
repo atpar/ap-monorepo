@@ -33,6 +33,8 @@ export class MarketObjectRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     renounceOwnership(): TransactionObject<void>;
 
     owner(): TransactionObject<string>;

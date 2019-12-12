@@ -21,6 +21,8 @@ export class DayCountConvention extends Contract {
   );
   clone(): DayCountConvention;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<BN>;
+
     PRECISION(): TransactionObject<BN>;
   };
   events: {
