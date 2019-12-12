@@ -11,6 +11,10 @@ import "./ICustodian.sol";
 
 contract Custodian is ICustodian, ReentrancyGuard {
 
+    event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
+
+    event ReturnedCollateral(bytes32 indexed assetId, address collateralizer, uint256 returnedAmount);
+
     address public assetActor;
     IAssetRegistry public assetRegistry;
 
@@ -146,6 +150,8 @@ contract Custodian is ICustodian, ReentrancyGuard {
             IERC20(collateralToken).transfer(collateralizer, notExecutedAmount),
             "Custodian.returnCollateral: TRANSFER_FAILED"
         );
+
+        emit ReturnedCollateral(assetId, collateralizer, notExecutedAmount);
 
         return true;
     }

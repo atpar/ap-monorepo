@@ -93,7 +93,7 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
 
-    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'IssuedAsset', {
       assetId: assetId,
       creator: creator,
       counterparty: counterparty
@@ -147,7 +147,7 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
   
-    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'IssuedAsset', {
       assetId: assetId,
       creator: creator,
       counterparty: counterparty
@@ -231,7 +231,7 @@ contract('AssetIssuer', (accounts) => {
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
   
-    await expectEvent.inTransaction(tx.tx, AssetIssuer, 'AssetIssued', {
+    await expectEvent.inTransaction(tx.tx, AssetIssuer, 'IssuedAsset', {
       assetId: assetId,
       creator: creator,
       counterparty: counterparty

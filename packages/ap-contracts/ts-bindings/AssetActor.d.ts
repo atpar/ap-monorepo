@@ -148,19 +148,19 @@ export class AssetActor extends Contract {
     ): TransactionObject<boolean>;
   };
   events: {
-    OwnershipTransferred: ContractEvent<{
-      previousOwner: string;
-      newOwner: string;
-      0: string;
-      1: string;
-    }>;
-    AssetProgressed: ContractEvent<{
+    ProgressedAsset: ContractEvent<{
       assetId: string;
       eventType: BN;
       scheduleTime: BN;
       0: string;
       1: BN;
       2: BN;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
     }>;
     allEvents: (
       options?: EventOptions,

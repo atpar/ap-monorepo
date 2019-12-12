@@ -108,6 +108,14 @@ export class Custodian extends Contract {
       1: string;
       2: BN;
     }>;
+    ReturnedCollateral: ContractEvent<{
+      assetId: string;
+      collateralizer: string;
+      returnedAmount: BN;
+      0: string;
+      1: string;
+      2: BN;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

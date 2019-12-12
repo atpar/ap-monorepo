@@ -323,6 +323,45 @@ export class AssetRegistry extends Contract {
     ): TransactionObject<void>;
   };
   events: {
+    RegisteredAsset: ContractEvent<string>;
+    UpdatedBeneficiary: ContractEvent<{
+      assetId: string;
+      oldBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedCashflowBeneficiary: ContractEvent<{
+      assetId: string;
+      cashflowId: BN;
+      oldBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: BN;
+      2: string;
+      3: string;
+    }>;
+    IncrementedScheduleIndex: ContractEvent<{
+      assetId: string;
+      scheduleId: BN;
+      scheduleIndex: BN;
+      0: string;
+      1: BN;
+      2: BN;
+    }>;
+    UpdatedState: ContractEvent<{
+      assetId: string;
+      statusDate: BN;
+      0: string;
+      1: BN;
+    }>;
+    UpdatedFinalizedState: ContractEvent<{
+      assetId: string;
+      statusDate: BN;
+      0: string;
+      1: BN;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

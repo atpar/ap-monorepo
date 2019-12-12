@@ -245,6 +245,26 @@ export class Economics extends Contract {
     ): TransactionObject<void>;
   };
   events: {
+    IncrementedScheduleIndex: ContractEvent<{
+      assetId: string;
+      scheduleId: BN;
+      scheduleIndex: BN;
+      0: string;
+      1: BN;
+      2: BN;
+    }>;
+    UpdatedState: ContractEvent<{
+      assetId: string;
+      statusDate: BN;
+      0: string;
+      1: BN;
+    }>;
+    UpdatedFinalizedState: ContractEvent<{
+      assetId: string;
+      statusDate: BN;
+      0: string;
+      1: BN;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

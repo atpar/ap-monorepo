@@ -8,8 +8,5 @@ import "./VerifyOrder.sol";
 
 contract IAssetIssuer is SharedTypes, VerifyOrder {
 
-    event AssetIssued(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
-
-
     function issueFromOrder(Order memory order) public;
 }

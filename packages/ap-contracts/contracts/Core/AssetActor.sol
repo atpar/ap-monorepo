@@ -16,6 +16,11 @@ import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
+    event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
+
+    event Status(bytes32 indexed assetId, bytes32 statusMessage);
+
+
     IAssetRegistry assetRegistry;
     IProductRegistry productRegistry;
     IMarketObjectRegistry marketObjectRegistry;
@@ -137,7 +142,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
-        emit AssetProgressed(assetId, eventType, scheduleTime);
+        emit ProgressedAsset(assetId, eventType, scheduleTime);
     }
 
     /**
@@ -256,6 +261,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
         // check if allowance is set by the payer for the Asset Actor and that payer is able to cover payment
         if (IERC20(token).allowance(payer, address(this)) < amount || IERC20(token).balanceOf(payer) < amount) {
+            emit Status(assetId, "INSUFFICIENT_FUNDS");
             return false;
         }
 
