@@ -9,3 +9,11 @@ script:
 - yarn bootstrap
 - yarn build
 - yarn test
+deploy:
+  provider: pages
+  local_dir: packages/ap.js/docs
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  target-branch: gh-pages
+  on:
+    branch: MS1

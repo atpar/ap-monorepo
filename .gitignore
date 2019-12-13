@@ -4,6 +4,7 @@ artifacts/
 Database.json
 Orderbook-Database.json
 Channel-Database.json
+packages/ap.js/docs
 
 mnemonic.js
 
