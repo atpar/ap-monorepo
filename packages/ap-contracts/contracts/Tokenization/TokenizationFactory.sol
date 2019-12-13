@@ -8,6 +8,10 @@ import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 
+/**
+ * @title TokenizationFactory
+ * @notice Factory for deploying FDT contracts
+ */
 contract TokenizationFactory {
 
     IAssetRegistry assetRegistry;

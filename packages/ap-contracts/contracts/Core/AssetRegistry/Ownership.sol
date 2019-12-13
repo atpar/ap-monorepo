@@ -4,6 +4,9 @@ pragma experimental ABIEncoderV2;
 import "./AssetRegistryStorage.sol";
 
 
+/**
+ * @title Ownership
+ */
 contract Ownership is AssetRegistryStorage {
 
     event UpdatedBeneficiary(bytes32 assetId, address oldBeneficiary, address newBeneficiary);
@@ -12,7 +15,7 @@ contract Ownership is AssetRegistryStorage {
 
 
     /**
-     * update the address of the default beneficiary of cashflows going to the creator
+     * @notice Update the address of the default beneficiary of cashflows going to the creator.
      * @param assetId id of the asset
      * @param newCreatorBeneficiary address of the new beneficiary
      */
@@ -37,7 +40,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-     * update the address of the default beneficiary of cashflows going to the counterparty
+     * @notice Updates the address of the default beneficiary of cashflows going to the counterparty.
      * @param assetId id of the asset
      * @param newCounterpartyBeneficiary address of the new beneficiary
      */
@@ -62,7 +65,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-     * register the address of the owner of specific claims of the asset
+     * @notice Registers the address of the owner of specific claims of the asset.
      * @param assetId id of the asset
      * @param cashflowId id of the specific claims for which to register the owner
      * @param beneficiary the address of the owner
@@ -109,7 +112,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-     * retrieve the registered addresses of owners (creator, counterparty) of an asset
+     * @notice Retrieves the registered addresses of owners (creator, counterparty) of an asset.
      * @param assetId id of the asset
      * @return addresses of all owners of the asset
      */
@@ -122,7 +125,7 @@ contract Ownership is AssetRegistryStorage {
     }
 
     /**
-     * retrieve the registered address of the owner of specific future claims from an asset
+     * @notice Retrieves the registered address of the owner of specific future claims from an asset.
      * @param assetId id of the asset
      * @param cashflowId the identifier of the specific claims owned by the registerd address
      * @return address of the beneficiary corresponding to the given cashflowId

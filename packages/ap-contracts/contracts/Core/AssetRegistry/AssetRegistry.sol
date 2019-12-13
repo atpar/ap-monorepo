@@ -7,6 +7,10 @@ import "./Economics.sol";
 import "./Ownership.sol";
 
 
+/**
+ * @title AssetRegistry
+ * @notice Registry for ACTUS Protocol assets
+ */
 contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Ownership {
 
     event RegisteredAsset(bytes32 assetId);
@@ -18,10 +22,10 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     {}
 
     /**
-     * Stores the addresses of the owners (owner of creator-side payment obligations,
+     * @notice Stores the addresses of the owners (owner of creator-side payment obligations,
      * owner of creator-side payment claims), terms and the initial state of an asset
      * and sets the address of the actor (address of account which is allowed to update the state).
-     * @dev the terms and state can only be called by a whitelisted actor
+     * @dev The state of the asset can only be updates by a whitelisted actor.
      * @param assetId id of the asset
      * @param ownership ownership of the asset
      * @param productId id of the financial product to use
@@ -41,11 +45,13 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     )
         public
     {
+        // revert if an asset with the provided assetId already exists
         require(
             assets[assetId].assetId == bytes32(0),
             "AssetRegistry.registerAsset: ENTRY_ALREADY_EXISTS"
         );
 
+        // storage the asset
         setAsset(
             assetId,
             ownership,

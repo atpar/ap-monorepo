@@ -26,7 +26,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run compile:all && npm run generate-artifacts",
+    "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
     "compile:all": "truffle compile --all",
     "compile": "truffle compile",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",

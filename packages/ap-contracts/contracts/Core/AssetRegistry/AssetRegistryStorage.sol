@@ -7,6 +7,11 @@ import "../ProductRegistry/IProductRegistry.sol";
 import "../SharedTypes.sol";
 
 
+/**
+ * @title AssetRegistryStorage
+ * @notice Describes the storage of the AssetRegistry
+ * Contains getter and setter methods for encoding, decoding data to optimize gas cost
+ */
 contract AssetRegistryStorage is SharedTypes, Utils {
 
     struct Asset {
