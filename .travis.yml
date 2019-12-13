@@ -15,5 +15,4 @@ deploy:
   local_dir: packages/ap.js/docs
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  on:
-    branch: gh-pages
+  target-branch: gh-pages
