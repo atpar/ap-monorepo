@@ -9,7 +9,6 @@ script:
 - yarn bootstrap
 - yarn build
 - yarn test
-- yarn generate-docs
 deploy:
   provider: pages
   local_dir: packages/ap.js/docs
