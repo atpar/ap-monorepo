@@ -10,8 +10,7 @@
     "link-packages": "lerna link",
     "publish": "lerna run build && lerna publish --exact --dist-tag latest",
     "start": "./scripts/start.sh",
-    "test": "./scripts/test.sh",
-    "generate-docs": "./scripts/generate-docs.sh"
+    "test": "./scripts/test.sh"
   },
   "publishConfig": {
     "access": "public"

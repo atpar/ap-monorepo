@@ -19,7 +19,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack && npm run generate-docs",
+    "generate-docs": "typedoc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "prebuild": "rm -rf dist/ && tsc",
