@@ -10,6 +10,11 @@ import "./ICustodian.sol";
 import "./VerifyOrder.sol";
 
 
+/**
+ * @title AssetIssuer
+ * @notice Contract for issuing ACTUS assets. Currently supports the issuance of
+ * independent assets as well as assets with up to two enhancements (such as Guarantee and Collateral).
+ */
 contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
 
     event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
@@ -28,9 +33,10 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
     }
 
     /**
-     * issues an asset from an order which was signed by the creator obligor and the counterparty obligor
+     * @notice Issues an asset from an order which was signed by the creator obligor and the counterparty obligor.
      * @dev verifies both signatures and initializes by calling the specified asset actor,
-     * if ownership is undefined and signatures are undefined it skips signature verification
+     * If ownership is undefined and signatures are undefined it skips signature verification.
+     * (required if a Collateral enhancement is present)
      * @param order order for which to issue the asset
      */
     function issueFromOrder(Order memory order)
@@ -91,6 +97,10 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         emit ExecutedOrder(keccak256(abi.encode(order.creatorSignature)), assetId);
     }
 
+    /**
+     * @notice Executes all pre-issuance conditions (e.g. collateral requirements)
+     * defined in the contract references of the order and sets the final ownership of the asset
+     */
     function finalizeOrder(Order memory order)
         internal
         returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
@@ -160,6 +170,10 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         );
     }
 
+    /**
+     * @notice Executes all pre-issuance conditions (e.g. collateral requirements)
+     * defined in the contract references of the enhancement order and sets the final ownership of the enhancement
+     */
     function finalizeEnhancementOrder(EnhancementOrder memory enhancementOrder, Order memory order)
         internal
         returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)

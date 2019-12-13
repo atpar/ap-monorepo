@@ -4,6 +4,9 @@ pragma experimental ABIEncoderV2;
 import "./AssetRegistryStorage.sol";
 
 
+/**
+ * @title Economics
+ */
 contract Economics is AssetRegistryStorage {
 
     event IncrementedScheduleIndex(bytes32 indexed assetId, uint8 scheduleId, uint256 scheduleIndex);
@@ -22,7 +25,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the terms of an asset
+     * @notice Returns the terms of an asset.
      * @param assetId id of the asset
      * @return terms of the asset
      */
@@ -31,7 +34,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the state of an asset
+     * @notice Returns the state of an asset.
      * @param assetId id of the asset
      * @return state of the asset
      */
@@ -40,7 +43,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the state of an asset
+     * @notice Returns the state of an asset.
      * @param assetId id of the asset
      * @return state of the asset
      */
@@ -49,7 +52,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the anchor date of an asset
+     * @notice Returns the anchor date of an asset.
      * @param assetId id of the asset
      * @return Anchor date
      */
@@ -58,7 +61,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the address of a the ACTUS engine corresponding to the ContractType of an asset
+     * @notice Returns the address of a the ACTUS engine corresponding to the ContractType of an asset.
      * @param assetId id of the asset
      * @return address of the engine of the asset
      */
@@ -67,7 +70,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * return the address of the actor which is allowed to update the state of the asset
+     * @notice Returns the address of the actor which is allowed to update the state of the asset.
      * @param assetId id of the asset
      * @return address of the asset actor
      */
@@ -76,7 +79,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * return the id of the product which this asset is based on
+     * @notice Returns the id of the product which this asset is based on.
      * @param assetId id of the asset
      * @return id of the product
      */
@@ -85,10 +88,9 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the next event to process by checking for the earliest schedule time for each
-     * upcoming event of each schedule (non-cyclic, cyclic schedules).
-     * if the underlying of the asset changes its performance to a covered performance
-     * it returns the ExecutionDate event
+     * @notice Returns the next event to process by checking for the earliest schedule time
+     * for each upcoming event of each schedule (non-cyclic, cyclic schedules). If the underlying
+     * of the asset changes in performance to a covered performance, it returns the ExecutionDate event.
      * @param assetId id of the asset
      * @return event
      */
@@ -256,7 +258,7 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * returns the index of the last processed event for a schedule of an asset
+     * @notice Returns the index of the last processed event for a schedule of an asset.
      * @param assetId id of the asset
      * @param scheduleId id of the schedule
      * @return Index
@@ -266,8 +268,8 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * increments the index of a schedule of an asset
-     * if max index is reached the index will be left unchanged
+     * @notice Increments the index of a schedule of an asset.
+     * (if max index is reached the index will be left unchanged)
      * @param assetId id of the asset
      * @param scheduleId id of the schedule
      */
@@ -290,8 +292,8 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * sets next state of an asset
-     * @dev can only be updated by the assets actor
+     * @notice Sets next state of an asset.
+     * @dev Can only be updated by the assets actor.
      * @param assetId id of the asset
      * @param state next state of the asset
      */
@@ -302,8 +304,8 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * sets next finalized state of an asset
-     * @dev can only be updated by the assets actor
+     * @notice Sets next finalized state of an asset.
+     * @dev Can only be updated by the assets actor.
      * @param assetId id of the asset
      * @param state next state of the asset
      */

@@ -6,6 +6,10 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "../Core/SharedTypes.sol";
 
 
+/**
+ * @title VerifyOrder
+ * @notice Contract for verifying order signature according to ERC712
+ */
 contract VerifyOrder is SharedTypes {
 
     struct EIP712Domain {
@@ -59,6 +63,7 @@ contract VerifyOrder is SharedTypes {
     );
 
     bytes32 DOMAIN_SEPARATOR;
+
 
     constructor () public {
         DOMAIN_SEPARATOR = hashEIP712Domain(
@@ -223,7 +228,7 @@ contract VerifyOrder is SharedTypes {
     }
 
     /**
-     * Verifies the signature of the Order with all Enhancement Orders.
+     * @notice Verifies the signature of the Order with all Enhancement Orders.
      * The creator and counterparty signatures of the parent Order (or just Order)
      * are verified using the hash of the drafted version of the enhancement orders
      * in order to verify that the terms of the Enhancement Order where not changed.

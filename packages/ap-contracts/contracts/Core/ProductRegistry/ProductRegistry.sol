@@ -6,30 +6,26 @@ import "./ProductRegistryStorage.sol";
 
 
 /**
- *
+ * @title ProductRegistry
+ * @notice Registry for ACTUS compatible products.
+ * A Product is made up of a set of ProductTerms and ProductSchedules.
  */
 contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
 
-    event RegistedProduct(bytes32 productId);
+    event RegisteredProduct(bytes32 productId);
 
 
     /**
-     * returns the terms of a product
+     * @notice Returns the terms of a product.
      * @param productId id of the product
      * @return ProductTerms
      */
-    function getProductTerms(
-        bytes32 productId
-    )
-        external
-        view
-        returns (ProductTerms memory)
-    {
+    function getProductTerms(bytes32 productId) external view returns (ProductTerms memory) {
         return (decodeAndGetTerms(productId));
     }
 
     /**
-     * returns an event for a given position (index) of a schedule of a given product
+     * @notice Returns an event for a given position (index) in a schedule of a given product.
      * @param productId id of the product
      * @param scheduleId id of the schedule
      * @param index index of the event to return
@@ -40,7 +36,7 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
     }
 
     /**
-     * returns the length of the a schedule of a given product
+     * @notice Returns the length of a schedule (given its scheduleId) of a given product.
      * @param productId id of the product
      * @param scheduleId id of the schedule
      * @return Length of the schedule
@@ -50,17 +46,14 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
     }
 
     /**
-     * stores a new financial Product which is comprised of a set of ProductTerms and ProductSchedules
-     * the productId is derived from the hash of the ProductTerms and the ProductSchedules to circumvent duplicate ProductTerms on-chain
+     * @notice Stores a new product for given set of ProductTerms and ProductSchedules.
+     * The productId is derived from the hash of the ProductTerms and the ProductSchedules
+     * to circumvent duplicate ProductTerms on-chain.
      * @param terms set of ProductTerms
-     * @param productSchedules set of ProductSchedules encode offsets for ScheduleTime relative to an AnchorDate
+     * @param productSchedules set of ProductSchedules which encode offsets for ScheduleTime relative to an AnchorDate
      */
-    function registerProduct(
-        ProductTerms memory terms,
-        ProductSchedules memory productSchedules
-    )
-        public
-    {
+    function registerProduct(ProductTerms memory terms, ProductSchedules memory productSchedules) public {
+        // derive the productId from the hash of the provided ProductTerms and ProductSchedules
         bytes32 productId = keccak256(
             abi.encode(
                 keccak256(abi.encode(terms)),
@@ -68,13 +61,15 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
             )
         );
 
+        // revert if a product for the derived product already exists
         require(
             products[productId].isSet == false,
             "ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS"
         );
 
+        // store the product
         setProduct(productId, terms, productSchedules);
 
-        emit RegistedProduct(productId);
+        emit RegisteredProduct(productId);
     }
 }

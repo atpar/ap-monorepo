@@ -9,6 +9,10 @@ import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "./ICustodian.sol";
 
 
+/**
+ * @title Custodian
+ * @notice Contract which holds the collateral of CEC (Credit Enhancement Collateral) assets.
+ */
 contract Custodian is ICustodian, ReentrancyGuard {
 
     event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
@@ -29,9 +33,10 @@ contract Custodian is ICustodian, ReentrancyGuard {
     }
 
     /**
-     * locks the required collateral amount encoded in the second contract reference in the terms
-     * @dev collateralizer has to set allowance beforehand,
-     * Custodian increases allowance for the AssetActor by amount of collateral
+     * @notice Locks the required collateral amount encoded in the second contract
+     * reference in the terms.
+     * @dev The collateralizer has to set allowance beforehand. The custodian increases
+     * allowance for the AssetActor by amount of collateral
      * @param assetId id of the asset with collateral requirements
      * @param terms terms of the asset containing the collateral requirements
      * @param ownership ownership of the asset
@@ -92,7 +97,7 @@ contract Custodian is ICustodian, ReentrancyGuard {
     }
 
     /**
-     * returns the entire collateral back to the collateralizer if collateral
+     * @notice Returns the entire collateral back to the collateralizer if collateral
      * was not executed before the asset reached maturity or it returns the remaining
      * collateral (not executed amount) after collateral was executed and settled
      * @dev resets allowance for the Asset Actor,

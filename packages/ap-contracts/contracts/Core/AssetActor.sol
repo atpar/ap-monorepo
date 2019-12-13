@@ -14,6 +14,16 @@ import "./ProductRegistry/IProductRegistry.sol";
 import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
+/**
+ * @title AssetActor
+ * @notice As the centerpiece of the ACTUS Protocol it is responsible for managing the
+ * lifecycle of assets registered through the AssetRegistry. It acts as the executive of AP
+ * by initializing the state of the state and by processing the assets schedule as specified
+ * in the ProductRegistry. It derives the next state and the current outstanding payoff of
+ * the asset by submitting the last finalized state to the corresponding ACTUS Engine.
+ * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
+ * to settle the current outstanding payoff on behalf of the obligor.
+ */
 contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
@@ -49,8 +59,8 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
     }
 
     /**
-     * whitelists the address of an issuer contract for initializing an asset
-     * @dev can only be called by the owner of the contract
+     * @notice Whitelists the address of an issuer contract for initializing an asset.
+     * @dev Can only be called by the owner of the contract.
      * @param issuer address of the issuer
      */
     function registerIssuer(address issuer) external onlyOwner {
@@ -58,9 +68,9 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
     }
 
     /**
-     * proceeds with the next state of the asset based on the terms, the last state and
-     * the status of all obligations that are due
-     * @dev emit AssetProgressed if the state of the asset was updated
+     * @notice Proceeds with the next state of the asset based on the terms, the last state,
+     * market object data and the settlement status of current obligation (payoff).
+     * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
      */
     function progress(bytes32 assetId) public {
@@ -68,6 +78,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         State memory state = assetRegistry.getState(assetId);
         address engineAddress = assetRegistry.getEngineAddress(assetId);
 
+        // revert if the asset is not registered in the AssetRegistry or malformed
         require(
             terms.statusDate != uint256(0) && state.statusDate != uint256(0) && engineAddress != address(0),
             "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
@@ -146,9 +157,10 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
     }
 
     /**
-     * derives the initial state of the asset from the provided custom terms and stores the initial state,
-     * the custom terms together with the ownership of the asset in the AssetRegistry
-     * @dev can only be called by a whitelisted issuer
+     * @notice Derives the initial state of the asset from the provided custom terms and
+     * stores the initial state, the custom terms together with the ownership of the asset
+     * in the AssetRegistry.
+     * @dev Can only be called by a whitelisted issuer.
      * @param assetId id of the asset
      * @param ownership ownership of the asset
      * @param productId id of the financial product to use
@@ -164,7 +176,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         address engineAddress
     )
         public
-        // onlyRegisteredIssuer
+        // onlyRegisteredIssuer // for testing purposes
         returns (bool)
     {
         require(
@@ -200,9 +212,9 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
     }
 
     /**
-     * routes a payment to the designated beneficiary
-     * @dev checks if an owner of the specified cashflowId is set,
-     * if not it sends funds to the default beneficiary
+     * @notice Routes a payment to the designated beneficiary of the event obligation.
+     * @dev Checks if an owner of the specified cashflowId is set, if not it sends 
+     * funds to the default beneficiary.
      * @param assetId id of the asset which the payment relates to
      * @param _event _event to settle the payoff for
      * @param payoff payoff of the event
@@ -269,6 +281,9 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         return IERC20(token).transferFrom(payer, payee, amount);
     }
 
+    /**
+     * @notice Updates the schedule index of the asset for a given event type.
+     */
     function updateScheduleIndex(
         bytes32 assetId,
         EventType eventType
@@ -285,6 +300,10 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         );
     }
 
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
     function getExternalDataForSTF(
         bytes32 _event,
         LifecycleTerms memory terms
@@ -316,6 +335,10 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         return bytes32(0);
     }
 
+    /**
+     * @notice Retrieves external data (such as market object data)
+     * used for evaluating the POF for a given event.
+     */
     function getExternalDataForPOF(
         bytes32 _event,
         LifecycleTerms memory terms
@@ -335,5 +358,4 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
             if (isSet) return bytes32(fxRate);
         }
     }
-    
 }
