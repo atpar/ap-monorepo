@@ -16,3 +16,4 @@ deploy:
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   target-branch: gh-pages
+  all_branches: true
