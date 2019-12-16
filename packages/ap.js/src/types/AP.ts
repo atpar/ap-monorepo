@@ -5,12 +5,12 @@ export interface AddressBook {
   AssetActor: string;
   AssetIssuer: string;
   AssetRegistry: string;
-  CEGEngine: string,
-  CECEngine: string,
-  Custodian: string,
-  MarketObjectRegistry: string,
+  CEGEngine: string;
+  CECEngine: string;
+  Custodian: string;
+  MarketObjectRegistry: string;
   PAMEngine: string;
-  ProductRegistry: string,
+  ProductRegistry: string;
   SignedMath: string;
   TokenizationFactory: string;
 }
@@ -20,6 +20,16 @@ export interface AssetOwnership {
   creatorBeneficiary: string;
   counterpartyObligor: string;
   counterpartyBeneficiary: string;
+}
+
+export interface ProductSchedule {
+  nonCyclicSchedule: string[];
+  cyclicIPSchedule: string[];
+  cyclicPRSchedule: string[];
+  cyclicSCSchedule: string[];
+  cyclicRRSchedule: string[];
+  cyclicFPSchedule: string[];
+  cyclicPYSchedule: string[];
 }
 
 // @todo add type checks

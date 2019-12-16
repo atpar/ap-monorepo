@@ -1,7 +1,8 @@
 import Web3Utils from 'web3-utils';
 
-import { Terms } from '../types';
+import { Terms, ProductSchedule } from '../types';
 import { toGeneratingTerms } from './Conversions';
+import { Contract } from 'web3-eth-contract';
 
 
 export function getEpochOffsetForEventType (eventType: number): number {
@@ -24,7 +25,7 @@ export function getEpochOffsetForEventType (eventType: number): number {
   return 0;
 }
 
-export async function generateProductSchedule (engineContract: any, terms: Terms) {
+export async function generateProductSchedule (engineContract: Contract, terms: Terms): Promise<ProductSchedule> {
   if (
     !engineContract
     || !engineContract.methods
@@ -47,15 +48,31 @@ export async function generateProductSchedule (engineContract: any, terms: Terms
   };
 }
 
-export function sortEvents (_events: string[]): string[] {
-  _events.sort((_eventA, _eventB) => {
-    const { eventType: eventTypeA, scheduleTime: scheduleTimeA } = decodeEvent(_eventA);
-    const { eventType: eventTypeB, scheduleTime: scheduleTimeB } = decodeEvent(_eventB)
+export function applyAnchorDateToSchedule(schedule: string[], anchorDate: string | number): string[] {
+  const shiftedSchedule = [];
 
-    if (scheduleTimeA == 0) { return 1 }
-    if (scheduleTimeB == 0) { return -1 }
-    if (scheduleTimeA > scheduleTimeB) { return 1 }
-    if (scheduleTimeA < scheduleTimeB) { return -1 }
+  for (const event of schedule) {
+    const { eventType, scheduleTime } = decodeEvent(event);
+    shiftedSchedule.push(
+      encodeEvent(
+        eventType,
+        (Number(scheduleTime) !== 0) ? Number(scheduleTime) + Number(anchorDate) : Number(scheduleTime)
+      )
+    );
+  }
+
+  return shiftedSchedule;
+}
+
+export function sortEvents (_events: string[]): string[] {
+  _events.sort((_eventA, _eventB): number => {
+    const { eventType: eventTypeA, scheduleTime: scheduleTimeA } = decodeEvent(_eventA);
+    const { eventType: eventTypeB, scheduleTime: scheduleTimeB } = decodeEvent(_eventB);
+
+    if (scheduleTimeA == 0) { return 1; }
+    if (scheduleTimeB == 0) { return -1; }
+    if (scheduleTimeA > scheduleTimeB) { return 1; }
+    if (scheduleTimeA < scheduleTimeB) { return -1; }
     
     if (getEpochOffsetForEventType(eventTypeA) > getEpochOffsetForEventType(eventTypeB)) { 
       return 1; 
@@ -64,7 +81,7 @@ export function sortEvents (_events: string[]): string[] {
       return -1;
     }
 
-    return 0
+    return 0;
   });
 
   return _events;
@@ -74,21 +91,28 @@ export function removeNullEvents (_eventSchedule: string[]): string[] {
   const compactEventSchedule = [];
 
   for (let _event of _eventSchedule) {
-    if (decodeEvent(_event).scheduleTime === 0) { continue }
+    if (decodeEvent(_event).scheduleTime === 0) { continue; }
     compactEventSchedule.push(_event);
   }
 
   return compactEventSchedule;
 }
 
-export function decodeEvent (encodedEvent: string): { eventType: number; scheduleTime: number; } {
+export function decodeEvent (encodedEvent: string): { eventType: number; scheduleTime: number } {
   return {
     eventType: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(2, 2)),
     scheduleTime: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(10, encodedEvent.length))
   };
 }
 
-export function parseEventSchedule (encodedEventSchedule: string[]): { eventType: number; scheduleTime: number; }[] {
+export function encodeEvent (eventType: string | number, scheduleTime: string | number): string {
+  const eventTypeAsHex = Web3Utils.padLeft(Web3Utils.toHex(eventType), 2);
+  const scheduleTimeAsHex = Web3Utils.padLeft(Web3Utils.toHex(scheduleTime), 62);
+
+  return eventTypeAsHex + scheduleTimeAsHex.substr(2, scheduleTimeAsHex.length);
+}
+
+export function parseEventSchedule (encodedEventSchedule: string[]): { eventType: number; scheduleTime: number }[] {
   return removeNullEvents(
     encodedEventSchedule
   ).map((encodedEvent) => decodeEvent(encodedEvent));
