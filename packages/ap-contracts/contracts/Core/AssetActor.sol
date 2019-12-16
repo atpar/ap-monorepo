@@ -176,7 +176,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
         address engineAddress
     )
         public
-        // onlyRegisteredIssuer // for testing purposes
+        onlyRegisteredIssuer
         returns (bool)
     {
         require(
@@ -213,7 +213,7 @@ contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
 
     /**
      * @notice Routes a payment to the designated beneficiary of the event obligation.
-     * @dev Checks if an owner of the specified cashflowId is set, if not it sends 
+     * @dev Checks if an owner of the specified cashflowId is set, if not it sends
      * funds to the default beneficiary.
      * @param assetId id of the asset which the payment relates to
      * @param _event _event to settle the payoff for

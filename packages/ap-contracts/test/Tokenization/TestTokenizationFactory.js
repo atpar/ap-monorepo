@@ -7,17 +7,17 @@ const { deriveTerms, registerProduct, ZERO_ADDRESS } = require('../helper/utils'
 
 
 contract('TokenizationFactory', (accounts) => {
-  const creatorObligor = accounts[0];
-  const creatorBeneficiary = accounts[1];
-  const counterpartyObligor = accounts[2];
-  const counterpartyBeneficiary = accounts[3];
+  const creatorObligor = accounts[1];
+  const creatorBeneficiary = accounts[2];
+  const counterpartyObligor = accounts[3];
+  const counterpartyBeneficiary = accounts[4];
 
   const initialSupply = (new BigNumber(10000 * 10 ** 18)).toFixed();
   
   const assetId = 'C123';
 
   beforeEach(async () => {
-    this.instances = await setupTestEnvironment();
+    this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };

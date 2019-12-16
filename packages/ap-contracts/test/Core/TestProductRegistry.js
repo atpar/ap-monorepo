@@ -12,13 +12,13 @@ const { deriveProductId } = require('../helper/orderUtils');
 
 
 contract('ProductRegistry', (accounts) => {
-  const creatorObligor = accounts[2];
-  const creatorBeneficiary = accounts[3];
-  const counterpartyObligor = accounts[4];
-  const counterpartyBeneficiary = accounts[5];
+  const creatorObligor = accounts[1];
+  const creatorBeneficiary = accounts[2];
+  const counterpartyObligor = accounts[3];
+  const counterpartyBeneficiary = accounts[4];
 
   before(async () => {
-    const instances = await setupTestEnvironment();
+    const instances = await setupTestEnvironment(accounts);
     Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
 
     this.assetId = 'C123';

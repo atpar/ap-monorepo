@@ -15,7 +15,8 @@ const ProductTerms = require('./definitions/product-terms.json');
 const CustomTerms = require('./definitions/custom-terms.json');
 
 
-async function setupTestEnvironment () {
+async function setupTestEnvironment (accounts) {
+  const admin = accounts[0];
   const instances = {};
 
   PAMEngine.numberFormat = 'String';
@@ -54,7 +55,8 @@ async function setupTestEnvironment () {
     // instances.AssetRegistryInstance.address
   // );
 
-  // await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
+  await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
+  await instances.AssetActorInstance.registerIssuer(admin);
 
   return instances;
 }

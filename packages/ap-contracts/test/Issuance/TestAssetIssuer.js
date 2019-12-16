@@ -29,15 +29,15 @@ const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
 
 
 contract('AssetIssuer', (accounts) => {
-  const creator = accounts[0];
-  const counterparty = accounts[1];
-  const guarantor = accounts[2];
-  const guarantor_2 = accounts[3];
+  const creator = accounts[1];
+  const counterparty = accounts[2];
+  const guarantor = accounts[3];
+  const guarantor_2 = accounts[4];
 
   let snapshot;
 
   before(async () => {
-    this.instances = await setupTestEnvironment();
+    this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.ownership = {

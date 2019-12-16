@@ -20,7 +20,7 @@ contract('AssetRegistry', (accounts) => {
   const newCashflowBeneficiary = accounts[7];
 
   before(async () => {
-    this.instances = await setupTestEnvironment();
+    this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.assetId = 'C123';
