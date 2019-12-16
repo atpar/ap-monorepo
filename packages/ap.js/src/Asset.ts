@@ -15,8 +15,8 @@ import BN from 'bn.js';
 
 
 /**
- * class which provides methods for managing an ACTUS asset 
- * exposes methods for ownership management, settlement of payoffs and 
+ * Class which provides methods for managing an ACTUS asset.
+ * Exposes methods for ownership management (incl. tokenization), settlement of payoffs and 
  * economic lifecycle management for an ACTUS asset
  */
 export class Asset {
@@ -33,31 +33,31 @@ export class Asset {
   }
 
   /**
-   * return the terms of the asset
+   * Returns the terms of the asset.
    * @returns {Promise<Terms>}
    */
-  public async getTerms () { 
-    return this.ap.contracts.assetRegistry.methods.getTerms(this.assetId).call(); 
+  public async getTerms () {
+    return this.ap.contracts.assetRegistry.methods.getTerms(this.assetId).call();
   }
 
   /**
-   * returns the current state of the asset
+   * Eeturns the current state of the asset.
    * @returns {Promise<State>}
    */
-  public async getState () { 
-    return this.ap.contracts.assetRegistry.methods.getState(this.assetId).call(); 
+  public async getState () {
+    return this.ap.contracts.assetRegistry.methods.getState(this.assetId).call();
   }
 
   /**
-   * returns the finalized state of the asset
-   * @returns {Promise<Staete>}
+   * Returns the finalized state of the asset.
+   * @returns {Promise<State>}
    */
-  public async getFinalizedState () { 
-    return this.ap.contracts.assetRegistry.methods.getFinalizedState(this.assetId).call(); 
+  public async getFinalizedState () {
+    return this.ap.contracts.assetRegistry.methods.getFinalizedState(this.assetId).call();
   }
 
   /**
-   * returns the address of the actor which is allowed to update the state of the asset
+   * Returns the address of the actor which is allowed to update the state of the asset.
    * @returns {Promise<string>}
    */
   public async getActorAddress (): Promise<string> {
@@ -65,7 +65,7 @@ export class Asset {
   }
 
   /**
-   * returns the address of the ACTUS engine used for the asset
+   * Returns the address of the ACTUS engine used for the asset.
    * @returns {Promise<string>}
    */
   public async getEngineAddress (): Promise<string> {
@@ -81,7 +81,7 @@ export class Asset {
   }
 
   /**
-   * return the id of the product which this asset is based on
+   * Return the id of the product which this asset is based on.
    * @returns {Promise<string>}
    */
   public async getProductId (): Promise<string> {
@@ -89,7 +89,7 @@ export class Asset {
   }
  
   /**
-   * returns the schedule derived from the terms of the asset
+   * Returns the schedule derived from the terms of the asset.
    * @returns {Promise<string[]>}
    */
   public async getSchedule (): Promise<string[]> {
@@ -154,11 +154,19 @@ export class Asset {
     );
   }
 
+  /**
+   * Returns the next event to be processed of the asset
+   * @returns {Promise<string>} Promise yielding the next event
+   */
   public async getNextEvent (): Promise<string> {
     return await this.ap.contracts.assetRegistry.methods.getNextEvent(this.assetId).call();
   }
 
-  public async getNextPayment (): Promise<{ amount: string; token: string; payer: string; payee: string}> {
+  /**
+   * Returns payment information for the next event
+   * @returns {Promise<{amount: string; token: string; payer: string; payee: string}>} Promise yielding payment info.
+   */
+  public async getNextPayment (): Promise<{amount: string; token: string; payer: string; payee: string}> {
     const terms = await this.getTerms();
     const state = await this.getState();
     const ownership = await this.getOwnership();
@@ -184,8 +192,8 @@ export class Asset {
   }
 
   /**
-   * derives obligations by computing the next state of the asset and 
-   * stores the new state if all obligation where fulfilled
+   * Derives obligations by computing the next state of the asset and
+   * stores the new state if all obligation where fulfilled.
    * @return {Promise<void>}
    */
   public async progress (): Promise<any> {
@@ -195,14 +203,13 @@ export class Asset {
   }
 
   /**
-   * tokenizes beneficiary 
-   * depending on if the default account is the record creator or counterparty beneficiary
+   * Tokenizes a beneficiary depending on if the default account is the creator or the counterparty beneficiary.
    * @dev deploys new FundsDistributionToken contract and 
    * sets contract address as the beneficiary in the OwnershipRegistry
    * @todo implement for cashflow beneficiaries
    * @param {string} name name of the FDT
    * @param {string} symbol symbol of the FDT
-   * @param {SendOptions} txOptions 
+   * @param {string} initialSupply initial supply of FDTs
    * @returns {Promise<string>} address of deployed FDT contract
    */
   public async tokenizeBeneficiary (name: string, symbol: string, initialSupply: string): Promise<string> {
@@ -234,10 +241,10 @@ export class Asset {
   }
 
   /**
-   * loads an already registered asset and returns a new Asset instance from a provided AssetId
+   * Loads an already registered asset and returns a new Asset instance from a provided AssetId.
    * @param {AP} ap AP instance
-   * @param {string} assetId 
-   * @returns {Promise<Asset>}
+   * @param {string} assetId id of the asset to instantiate
+   * @returns {Promise<Asset>} Promise yielding an instance of Asset
    */
   public static async load (
     ap: AP,

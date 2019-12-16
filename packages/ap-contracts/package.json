@@ -29,6 +29,7 @@
     "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
     "compile:all": "truffle compile --all",
     "compile": "truffle compile",
+    "coverage": "truffle run coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "generate-ts-bindings": "typechain --target web3-v1 --outDir ./ts-bindings './build/contracts/*.json'",
     "lint": "solium -d contracts/",
@@ -53,10 +54,12 @@
   "devDependencies": {
     "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
+    "coveralls": "^3.0.9",
     "eth-gas-reporter": "^0.2.13",
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",
+    "solidity-coverage": "^0.7.0-beta.3",
     "truffle": "^5.1.2",
     "typechain": "^1.0.3",
     "typechain-target-web3-v1": "^1.0.3"

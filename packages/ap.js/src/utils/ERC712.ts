@@ -2,206 +2,206 @@ import * as web3Utils from 'web3-utils';
 import web3EthAbi from 'web3-eth-abi';
 
 import {
-Terms,
-CustomTerms,
-ProductTerms,
-AssetOwnership,
-OrderData,
-OrderDataAsTypedData,
-EnhancementOrderData,
-EnhancementOrderDataAsTypedData
+  Terms,
+  CustomTerms,
+  ProductTerms,
+  AssetOwnership,
+  OrderData,
+  OrderDataAsTypedData,
+  EnhancementOrderData,
+  EnhancementOrderDataAsTypedData
 } from '../types';
 import { ZERO_ADDRESS } from './Constants';
 
 
 export function deriveProductId(productTerms: ProductTerms, productSchedules: any): string {
   // @ts-ignore
-    const productTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
-      {  
-        "components": [
-          {
-            "name": "calendar",
-            "type": "uint8"
-          },
-          {
-            "name": "contractRole",
-            "type": "uint8"
-          },
-          {
-            "name": "dayCountConvention",
-            "type": "uint8"
-          },
-          {
-            "name": "businessDayConvention",
-            "type": "uint8"
-          },
-          {
-            "name": "endOfMonthConvention",
-            "type": "uint8"
-          },
-          {
-            "name": "scalingEffect",
-            "type": "uint8"
-          },
-          {
-            "name": "penaltyType",
-            "type": "uint8"
-          },
-          {
-            "name": "feeBasis",
-            "type": "uint8"
-          },
-          {
-            "name": "creditEventTypeCovered",
-            "type": "uint8"
-          },
-          {
-            "name": "currency",
-            "type": "address"
-          },
-          {
-            "name": "settlementCurrency",
-            "type": "address"
-          },
-          {
-            "name": "marketObjectCodeRateReset",
-            "type": "bytes32"
-          },
-          {
-            "name": "statusDateOffset",
-            "type": "uint256"
-          },
-          {
-            "name": "maturityDateOffset",
-            "type": "uint256"
-          },
-          {
-            "name": "feeAccrued",
-            "type": "int256"
-          },
-          {
-            "name": "accruedInterest",
-            "type": "int256"
-          },
-          {
-            "name": "rateMultiplier",
-            "type": "int256"
-          },
-          {
-            "name": "feeRate",
-            "type": "int256"
-          },
-          {
-            "name": "nextResetRate",
-            "type": "int256"
-          },
-          {
-            "name": "penaltyRate",
-            "type": "int256"
-          },
-          {
-            "name": "priceAtPurchaseDate",
-            "type": "int256"
-          },
-          {
-            "name": "nextPrincipalRedemptionPayment",
-            "type": "int256"
-          },
-          {
-            "components": [
-              {
-                "name": "i",
-                "type": "uint256"
-              },
-              {
-                "name": "p",
-                "type": "uint8"
-              },
-              {
-                "name": "isSet",
-                "type": "bool"
-              }
-            ],
-            "name": "gracePeriod",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "name": "i",
-                "type": "uint256"
-              },
-              {
-                "name": "p",
-                "type": "uint8"
-              },
-              {
-                "name": "isSet",
-                "type": "bool"
-              }
-            ],
-            "name": "delinquencyPeriod",
-            "type": "tuple"
-          },
-          {
-            "name": "periodCap",
-            "type": "int256"
-          },
-          {
-            "name": "periodFloor",
-            "type": "int256"
-          }
-        ],
-        "name": "terms",
-        "type": "tuple"
-      },
-      _toTuple(productTerms)
-    ));
-  
-    // @ts-ignore
-    const productSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
-      {
-        "components": [
-          {
-            "name": "nonCyclicSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicIPSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicPRSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicRRSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicPYSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicSCSchedule",
-            "type": "bytes32[64]"
-          },
-          {
-            "name": "cyclicFPSchedule",
-            "type": "bytes32[64]"
-          }
-        ],
-        "name": "productSchedules",
-        "type": "tuple"
-      },
-      _toTuple(productSchedules)
-    ));
-  
-    // @ts-ignore
-    return web3Utils.keccak256(web3EthAbi.encodeParameters(
-      ['bytes32', 'bytes32'],
-      [productTermsHash, productSchedulesHash]
-    ));
+  const productTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+    {  
+      "components": [
+        {
+          "name": "calendar",
+          "type": "uint8"
+        },
+        {
+          "name": "contractRole",
+          "type": "uint8"
+        },
+        {
+          "name": "dayCountConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "businessDayConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "endOfMonthConvention",
+          "type": "uint8"
+        },
+        {
+          "name": "scalingEffect",
+          "type": "uint8"
+        },
+        {
+          "name": "penaltyType",
+          "type": "uint8"
+        },
+        {
+          "name": "feeBasis",
+          "type": "uint8"
+        },
+        {
+          "name": "creditEventTypeCovered",
+          "type": "uint8"
+        },
+        {
+          "name": "currency",
+          "type": "address"
+        },
+        {
+          "name": "settlementCurrency",
+          "type": "address"
+        },
+        {
+          "name": "marketObjectCodeRateReset",
+          "type": "bytes32"
+        },
+        {
+          "name": "statusDateOffset",
+          "type": "uint256"
+        },
+        {
+          "name": "maturityDateOffset",
+          "type": "uint256"
+        },
+        {
+          "name": "feeAccrued",
+          "type": "int256"
+        },
+        {
+          "name": "accruedInterest",
+          "type": "int256"
+        },
+        {
+          "name": "rateMultiplier",
+          "type": "int256"
+        },
+        {
+          "name": "feeRate",
+          "type": "int256"
+        },
+        {
+          "name": "nextResetRate",
+          "type": "int256"
+        },
+        {
+          "name": "penaltyRate",
+          "type": "int256"
+        },
+        {
+          "name": "priceAtPurchaseDate",
+          "type": "int256"
+        },
+        {
+          "name": "nextPrincipalRedemptionPayment",
+          "type": "int256"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "gracePeriod",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "name": "delinquencyPeriod",
+          "type": "tuple"
+        },
+        {
+          "name": "periodCap",
+          "type": "int256"
+        },
+        {
+          "name": "periodFloor",
+          "type": "int256"
+        }
+      ],
+      "name": "terms",
+      "type": "tuple"
+    },
+    _toTuple(productTerms)
+  ));
+
+  // @ts-ignore
+  const productSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+    {
+      "components": [
+        {
+          "name": "nonCyclicSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicIPSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicPRSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicRRSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicPYSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicSCSchedule",
+          "type": "bytes32[64]"
+        },
+        {
+          "name": "cyclicFPSchedule",
+          "type": "bytes32[64]"
+        }
+      ],
+      "name": "productSchedules",
+      "type": "tuple"
+    },
+    _toTuple(productSchedules)
+  ));
+
+  // @ts-ignore
+  return web3Utils.keccak256(web3EthAbi.encodeParameters(
+    ['bytes32', 'bytes32'],
+    [productTermsHash, productSchedulesHash]
+  ));
 }
 
 
@@ -311,7 +311,7 @@ export function getEnhancementOrderDataAsTypedData (
   return typedData;
 }
 
-export function getOwnershipHash (ownership: AssetOwnership) {
+export function getOwnershipHash (ownership: AssetOwnership): string {
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameters(
     ['address', 'address', 'address', 'address'],
@@ -324,7 +324,7 @@ export function getOwnershipHash (ownership: AssetOwnership) {
   ))
 }
 
-export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData) {
+export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData): string {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3Utils.keccak256(
     "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
   );
@@ -346,7 +346,7 @@ export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrder
   ));
 };
 
-export function getCustomTermsHash (customTerms: CustomTerms) {
+export function getCustomTermsHash (customTerms: CustomTerms): string {
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameter(
     {
@@ -427,7 +427,7 @@ export function getCustomTermsHash (customTerms: CustomTerms) {
   ));
 }
 
-export function getTermsHash (terms: Terms) {
+export function getTermsHash (terms: Terms): string {
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameter(
     {
@@ -799,14 +799,14 @@ export function getTermsHash (terms: Terms) {
 }
 
 // @ts-ignore
-function _toTuple (obj) {
+function _toTuple (obj): any[] {
   if (!(obj instanceof Object)) {
     return [];
   }
   // @ts-ignore
   var output = [];
   var i = 0;
-  Object.keys(obj).forEach((k) => {
+  Object.keys(obj).forEach((k): void => {
     if (obj[k] instanceof Object) {
       // @ts-ignore
       output[i] = _toTuple(obj[k]);
@@ -815,7 +815,7 @@ function _toTuple (obj) {
       // @ts-ignore
       let temp1 = [];
       // @ts-ignore
-      obj[k].forEach((ak) => {
+      obj[k].forEach((ak): void => {
         // @ts-ignore
         temp1[j1] = _toTuple(obj[k]);
         j1++;

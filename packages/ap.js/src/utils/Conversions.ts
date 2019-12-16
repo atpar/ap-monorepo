@@ -17,15 +17,15 @@ export function toChecksumAddress (address: string): string {
   return web3Utils.toChecksumAddress(address);
 }
 
-export function toPrecision (number: number | string | BN) {
+export function toPrecision (number: number | string | BN): string {
   return web3Utils.toWei((typeof number === 'string') ? number : number.toString());
 }
 
-export function fromPrecision (number: number | string | BN) {
+export function fromPrecision (number: number | string | BN): string {
   return web3Utils.fromWei((typeof number === 'string') ? number : number.toString());
 }
 
-export function encodeAsBytes32 (externalData: number | string) {
+export function encodeAsBytes32 (externalData: number | string): string {
   return web3Utils.padLeft(web3Utils.toHex(externalData), 64);
 }
 

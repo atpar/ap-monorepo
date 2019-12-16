@@ -9,6 +9,7 @@ script:
 - yarn bootstrap
 - yarn build
 - yarn test
+- yarn coverage
 deploy:
   provider: pages
   local_dir: packages/ap.js/docs

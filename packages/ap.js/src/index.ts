@@ -17,7 +17,7 @@ export class AP {
   public signer: Signer;
   public utils: Utils;
 
-  constructor (
+  private constructor (
     web3: Web3,
     contracts: Contracts,
     signer: Signer,
@@ -31,12 +31,12 @@ export class AP {
   }
 
   /**
-   * look for new issued assets in which the default account is involved
-   * @param {(asset: Asset) => void} cb callback function to be called
-   * after a new asset in which the default account is involved is issued
+   * Listen for new issued assets in which the default account is involved.
+   * @param {(asset: Asset) => void} cb callback function to be called after 
+   * a new asset in which the default account is involved is issued
    */
   public onNewAssetIssued (cb: (asset: Asset) => void): void {
-    this.contracts.assetIssuer.events.IssuedAsset().on('data', async (event) => {
+    this.contracts.assetIssuer.events.IssuedAsset().on('data', async (event): Promise<void> => {
       if (
         !event 
         || !event.returnValues 
@@ -58,7 +58,7 @@ export class AP {
   }
 
   /**
-   * returns an array of assetIds of assets in which the default account is involved
+   * Returns an array of assetIds of assets in which the default account is involved.
    * @returns {Promise<string[]>}
    */
   public async getAssetIds (): Promise<string[]> {
@@ -84,10 +84,10 @@ export class AP {
   }
 
   /**
-   * returns a new AP instance
+   * Returns a new AP instance.
    * @param {Web3} web3 Web3 instance
    * @param {string} defaultAccount default account for signing contract updates and transactions
-   * @param {AddressBook?} object containing custom addresses for ap-contracts (overwrites default addresses)
+   * @param {AddressBook?} addressBook object containing custom addresses for ap-contracts (overwrites default addresses)
    * @returns {Promise<AP>} 
    */
   public static async init (

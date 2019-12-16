@@ -50,9 +50,9 @@ export class Contracts {
 
 
   /**
-   * initializes all AP contracts and returns a new instance of the ContractsAPI class
+   * Initializes all AP contracts and returns a new instance of the ContractsAPI class.
    * @param {AddressBook} addressBook object containing addresses for ap-contacts
-   * @returns {Promise<ContractsAPI>}
+   * @returns {Promise<Contracts>} Promise yielding the Contracts instance
    */
   public constructor (web3: Web3, addressBook: AddressBook) {
     // if (!isAddressBook(addressBook)) { throw new Error('INITIALIZATION_ERROR: Malformed AddressBook.') }
@@ -88,9 +88,9 @@ export class Contracts {
   }
 
   /**
-   * returns ACTUS engine contract by ContractType
+   * Returns ACTUS engine contract by ContractType.
    * @param {ContractType | string} contractTypeOrAddress ContractType or address of the engine 
-   * @returns {IEngine}
+   * @returns {IEngine} Instance of IEngine
    */
   public engine (address: string): IEngine {
     const engine = this._engine.clone();

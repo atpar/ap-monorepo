@@ -138,7 +138,7 @@ export class Signer {
   }
 
   private async _sendJsonRpcRequest (method: string, params: any[]): Promise<string> {
-    return new Promise((resolve: any, reject: any) => {
+    return new Promise((resolve: any, reject: any): void => {
       if (!this.web3.currentProvider) { throw new Error('No web3 provider found.'); }
 
       // @ts-ignore
@@ -148,7 +148,7 @@ export class Signer {
         id: new Date().getSeconds(),
         jsonrpc: "2.0"
       // @ts-ignore
-      }, function (error: any, result: any) {
+      }, function (error: any, result: any): any {
         if (result.error) { return reject(result.error); }
         resolve(result.result);
       });    

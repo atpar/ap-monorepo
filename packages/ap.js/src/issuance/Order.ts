@@ -13,7 +13,7 @@ export class Order {
   }
 
   /**
-   * signs the order either as the maker (creating an unfilled order) or as the taker (filling an order)
+   * Signs the order either as the creator (creating an unfilled order) or as the counterparty (filling an order).
    * @dev this requires the users signature (metamask pop-up)
    * @returns {Promise<void>}
    */
@@ -34,7 +34,7 @@ export class Order {
   }
   
   /**
-   * issues a new asset if the order is filled.
+   * Issues a new asset if the order is filled.
    */
   public async issueAssetFromOrder (): Promise<void> {
     if (!this.orderData.creatorSignature || !this.orderData.counterpartySignature) {
@@ -45,7 +45,7 @@ export class Order {
   }
 
   /**
-   * serializes the order as orderData which can be deserialized again via load()
+   * Serializes the order as orderData which can be deserialized again via load().
    * @returns {OrderData}
    */
   public serializeOrder (): OrderData {
@@ -53,7 +53,7 @@ export class Order {
   }
   
   /**
-   * instantiates a new Order instance with the provided orderData
+   * Instantiates a new Order instance with the provided orderData.
    * @param {AP} ap AP instance
    * @param {OrderData} orderData
    * @returns {Promise<Order>}
@@ -71,7 +71,7 @@ export class Order {
   }
 
   /**
-   * creates a new Order instance from the provided orderParams
+   * Creates a new Order instance from the provided orderParams.
    * @param {AP} ap AP instance
    * @param {OrderParams} orderParams 
    * @returns {Order}
@@ -113,5 +113,4 @@ export class Order {
 
     return new Order(ap, orderData);
   }
-
 }
