@@ -46,6 +46,24 @@ contract ProductRegistry is ProductRegistryStorage, IProductRegistry {
     }
 
     /**
+     * @notice Convenience method for retrieving the entire schedule for a given scheduleId
+     * Not recommended to execute it on-chain (if schedule is too long the tx may run out of gas)
+     * @param productId id of the product
+     * @param scheduleId id of the schedule to retrieve
+     * @return the schedule
+     */
+    function getSchedule(bytes32 productId, uint8 scheduleId) external view returns (bytes32[] memory schedule) {
+        uint256 scheduleLength = products[productId].productSchedules[scheduleId].length;
+        schedule = new bytes32[](scheduleLength);
+
+        for (uint256 i = 0; i < scheduleLength; i++) {
+            schedule[i] = products[productId].productSchedules[scheduleId].productSchedule[i];
+        }
+
+        return schedule;
+    }
+
+    /**
      * @notice Stores a new product for given set of ProductTerms and ProductSchedules.
      * The productId is derived from the hash of the ProductTerms and the ProductSchedules
      * to circumvent duplicate ProductTerms on-chain.
