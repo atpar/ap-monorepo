@@ -31,6 +31,7 @@
     "compile": "truffle compile",
     "coverage": "truffle run coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
+    "generate-docs": "./scripts/generate-docs.sh",
     "generate-ts-bindings": "typechain --target web3-v1 --outDir ./ts-bindings './build/contracts/*.json'",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
