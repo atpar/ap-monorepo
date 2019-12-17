@@ -1,24 +1,30 @@
 {
   "1994": {
     "ANNEngine": "0xAC68a00bB798C3923210909244Eb900E76D4726A",
-    "AssetActor": "0x882FbD67A3a5b2905730548C8378b5fE44336154",
-    "AssetIssuer": "0x54aF1553Ea0D564E1B45FFe3EB1Bca85F0703331",
-    "AssetRegistry": "0x0b893858a41C8518c1b7Eb769b34Ed9466c3C0eD",
+    "AssetActor": "0x54aF1553Ea0D564E1B45FFe3EB1Bca85F0703331",
+    "AssetIssuer": "0xE82F1D585DBC1D3B2068487206d39CdAe3590e4A",
+    "AssetRegistry": "0x882FbD67A3a5b2905730548C8378b5fE44336154",
+    "CECEngine": "0xC2Be15A598b3F80f781cbd8f3227d5E9559b0899",
+    "CEGEngine": "0x0b893858a41C8518c1b7Eb769b34Ed9466c3C0eD",
+    "Custodian": "0x1B3B145d4234Cd48EA33ABdD333F6E62767960A2",
+    "MarketObjectRegistry": "0xE1fcFd1F2a7C04391a66a8031522b4f071C1BEAE",
     "PAMEngine": "0x1725b9c802415a25202B3Da4A33E0631f44BBbf2",
-    "PaymentRegistry": "0xC2Be15A598b3F80f781cbd8f3227d5E9559b0899",
-    "PaymentRouter": "0xE1fcFd1F2a7C04391a66a8031522b4f071C1BEAE",
+    "ProductRegistry": "0xeBEABDe323B77c0f6EBc01e5C61d586D201636F3",
     "SignedMath": "0xCA386B0fD4f446aA61957f87d0A1630042255b37",
-    "TokenizationFactory": "0x1B3B145d4234Cd48EA33ABdD333F6E62767960A2"
+    "TokenizationFactory": "0xA240Ee48f8dD44CdEeAC513C6fd6739F0C6bE46c"
   },
   "5": {
-    "ANNEngine": "0x5f1662AaE2D5fC43D65af11B5027F04bF95d7Bf8",
-    "AssetActor": "0x7082636B57e2bdeA67Af0A114a0c66F08F7dEC0D",
-    "AssetIssuer": "0x018f8F6F6D0bd930167E181351099842789d442b",
-    "AssetRegistry": "0x499Aed4315755025B844A2D18D07e716A2e2e6c1",
-    "PAMEngine": "0xa4A9A374Eb2E294Ef236009E899CC45F7C2C8a2a",
-    "PaymentRegistry": "0x1b54daf84A72075B81BdABf3febA389217908638",
-    "PaymentRouter": "0x38Ba1Cc70772d473B2156CaEA71f02FebF6D98b6",
-    "SignedMath": "0xCE0c1F81a10a34f15A39B5aD18497449467A0F49",
-    "TokenizationFactory": "0xE14C549D34ea9663796715bbFb0b593f3990fa8C"
+    "ANNEngine": "",
+    "AssetActor": "",
+    "AssetIssuer": "",
+    "AssetRegistry": "",
+    "CECEngine": "",
+    "CEGEngine": "",
+    "Custodian": "",
+    "MarketObjectRegistry": "",
+    "PAMEngine": "",
+    "ProductRegistry": "",
+    "SignedMath": "",
+    "TokenizationFactory": ""
   }
 }

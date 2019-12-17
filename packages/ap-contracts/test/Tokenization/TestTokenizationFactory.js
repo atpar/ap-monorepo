@@ -1,70 +1,44 @@
 const BigNumber = require('bignumber.js');
 
-const TokenizationFactory = artifacts.require('TokenizationFactory');
 const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { deriveTerms, registerProduct, ZERO_ADDRESS } = require('../helper/utils');
 
 
 contract('TokenizationFactory', (accounts) => {
-  const recordCreatorObligor = accounts[0];
-  const recordCreatorBeneficiary = accounts[1];
-  const counterpartyObligor = accounts[2];
-  const counterpartyBeneficiary = accounts[3];
+  const creatorObligor = accounts[1];
+  const creatorBeneficiary = accounts[2];
+  const counterpartyObligor = accounts[3];
+  const counterpartyBeneficiary = accounts[4];
 
   const initialSupply = (new BigNumber(10000 * 10 ** 18)).toFixed();
   
   const assetId = 'C123';
-  const cashflowId = 5;
-  const payoffAmount = 2 * 10  ** 15;
 
   beforeEach(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment(accounts);
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
+    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
-    this.ownership = { 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
-    };
+
+    // register product
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
+
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 
     // register Ownership for assetId
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(assetId), 
       this.ownership,
-      this.terms,
+      web3.utils.toHex(this.productId),
+      this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
-      '0x0000000000000000000000000000000000000000'
+      ZERO_ADDRESS
     );
-  });
-
-  it('should tokenize default beneficiary - ETH', async () => {
-    const tx = await this.TokenizationFactoryInstance.createETHDistributor(
-      'FundsDistributionToken',
-      'FDT',
-      initialSupply, 
-      { from: recordCreatorBeneficiary }
-    );
-
-    const FDT_ETHExtensionInstance = await FDT_ETHExtension.at(
-      tx.logs[0].args.distributor
-    );
-
-    await this.AssetRegistryInstance.setRecordCreatorBeneficiary(
-      web3.utils.toHex(assetId),
-      FDT_ETHExtensionInstance.address,
-      { from: recordCreatorBeneficiary }
-    );
-
-    const storedRecordCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
-    const balanceOfRecordCreatoBeneficiary = (await FDT_ETHExtensionInstance.balanceOf(recordCreatorBeneficiary)).toString();
-
-    assert.equal(storedRecordCreatorBeneficiary.recordCreatorBeneficiary, FDT_ETHExtensionInstance.address);
-    assert.equal(balanceOfRecordCreatoBeneficiary, initialSupply);
   });
 
   it('should tokenize default beneficiary - ERC20', async () => {
@@ -73,23 +47,23 @@ contract('TokenizationFactory', (accounts) => {
       'FDT',
       initialSupply,
       "0x0000000000000000000000000000000000000001",
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
 
     const FDT_ERC20ExtensionInstance = await FDT_ETHExtension.at(
       tx.logs[0].args.distributor
     );
 
-    await this.AssetRegistryInstance.setRecordCreatorBeneficiary(
+    await this.AssetRegistryInstance.setCreatorBeneficiary(
       web3.utils.toHex(assetId),
       FDT_ERC20ExtensionInstance.address,
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
 
-    const storedRecordCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
-    const balanceOfRecordCreatoBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(recordCreatorBeneficiary)).toString();
+    const storedCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
+    const balanceOfRecordCreatoBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(creatorBeneficiary)).toString();
 
-    assert.equal(storedRecordCreatorBeneficiary.recordCreatorBeneficiary, FDT_ERC20ExtensionInstance.address);
+    assert.equal(storedCreatorBeneficiary.creatorBeneficiary, FDT_ERC20ExtensionInstance.address);
     assert.equal(balanceOfRecordCreatoBeneficiary, initialSupply);
   });
 });

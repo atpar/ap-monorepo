@@ -1,488 +1,321 @@
+const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
+const {
+  deriveTerms,
+  registerProduct,
+  deployPaymentToken,
+  ZERO_BYTES,
+  ZERO_ADDRESS
+} = require('../helper/utils');
+
+const {
+  getDefaultOrderData,
+  getDefaultOrderDataWithEnhancement,
+  getDefaultOrderDataWithEnhancements,
+  getAssetIdFromOrderData,
+  getUnfilledOrderDataAsTypedData,
+  getFilledOrderDataAsTypedData,
+  getUnfilledEnhancementOrderDataAsTypedData,
+  getFilledEnhancementOrderDataAsTypedData,
+  sign
+} = require('../helper/orderUtils');
+
+const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
+
 
 contract('AssetIssuer', (accounts) => {
-  const recordCreator = accounts[0];
-  const counterparty = accounts[1];
+  const creator = accounts[1];
+  const counterparty = accounts[2];
+  const guarantor = accounts[3];
+  const guarantor_2 = accounts[4];
+
+  let snapshot;
 
   before(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment(accounts);
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
-    this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
-  })
-
-  it('should issue an asset from an order', async () => {
-    const orderData = { 
-      makerAddress: recordCreator,
-      takerAddress: counterparty,
-      engineAddress: this.PAMEngineInstance.address,
-      actorAddress: this.AssetActorInstance.address,
-      terms: this.terms,
-      makerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
-      takerCreditEnhancementAddress: '0x0000000000000000000000000000000000000000',
-      signatures: { 
-        makerSignature: null,
-        takerSignature: null 
-      },
-      salt: Math.floor(Math.random() * 1000000) 
+    this.ownership = {
+      creatorObligor: creator,
+      creatorBeneficiary: creator,
+      counterpartyObligor: counterparty,
+      counterpartyBeneficiary: counterparty
     };
 
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await deployPaymentToken(this.ownership.creatorObligor,[this.ownership.counterpartyBeneficiary]);
+    // set address of payment token as currency in terms
+    this.terms = await getDefaultTerms();
+    this.terms.currency = this.PaymentTokenInstance.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
+    this.terms.statusDate = this.terms.contractDealDate;
+
+    // register product
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
+
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
+
+    snapshot = await createSnapshot();
+  });
+
+  after(async () => {
+    await revertToSnapshot(snapshot);
+  });
+
+  it('should issue an asset from an order (without enhancement orders)', async () => {
+    // sign order
+    const orderData = getDefaultOrderData(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+    );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
+    orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);
 
-    orderData.signatures.makerSignature = await sign(unfilledOrderAsTypedData, recordCreator);
-    orderData.signatures.takerSignature = await sign(filledOrderAsTypedData, counterparty);
+    // issue asset
+    const { tx: txHash } = await this.AssetIssuerInstance.issueFromOrder(orderData);
 
-    const order = {
-      maker: orderData.makerAddress,
-      taker: orderData.takerAddress,
-      engine: orderData.engineAddress,
-      actor: orderData.actorAddress,
-      terms: orderData.terms,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
-      takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
-      salt: orderData.salt
-    };
-
-    const { tx: txHash } = await this.AssetIssuerInstance.fillOrder(
-      order,
-      orderData.signatures.makerSignature,
-      orderData.signatures.takerSignature
-    );
-
-    const assetId = web3.utils.keccak256(
-      web3.eth.abi.encodeParameters(
-        ['bytes', 'bytes'],
-        [orderData.signatures.makerSignature, orderData.signatures.takerSignature]
-      )
-    );
+    const assetId = getAssetIdFromOrderData(orderData);
 
     const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
-
-    assert.equal(storedTerms['statusDate'], orderData.terms['statusDate']);
-    assert.equal(storedEngineAddress, orderData.engineAddress);
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreator);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreator);
+    
+    assert.equal(storedEngineAddress, orderData.engine);
+    assert.equal(storedOwnership.creatorObligor, creator);
+    assert.equal(storedOwnership.creatorBeneficiary, creator);
     assert.equal(storedOwnership.counterpartyObligor, counterparty);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
 
-    await expectEvent.inTransaction(txHash, AssetIssuer, 'AssetIssued', {
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'IssuedAsset', {
       assetId: assetId,
-      recordCreator: recordCreator,
+      creator: creator,
       counterparty: counterparty
     });
   });
-});
 
-const sign = (typedData, account) => {
-  return new Promise((resolve, reject) => {
-    web3.currentProvider.send({
-      method: 'eth_signTypedData',
-      params: [account, typedData],
-      from: account,
-      id: new Date().getSeconds()
-    }, (error, result) => {
-      if (error) { return reject(error) }
-      resolve(result.result)
-    });
-  });
-};
-
-const getUnfilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
-  const verifyingContract = verifyingContractAddress;
-
-  const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
-    ContractTermsABI, _toTuple(orderData.terms)
-  ));
-
-  const typedData = {
-    domain: {
-      name: 'ACTUS Protocol',
-      version: '1',
-      chainId: 0,
-      verifyingContract: verifyingContract
-    },
-    types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' }
-      ],
-      Order: [
-        { name: 'maker', type: 'address' },
-        { name: 'engine', type: 'address' },
-        { name: 'actor', type: 'address' },
-        { name: 'contractTermsHash', type: 'bytes32' },
-        { name: 'makerCreditEnhancement', type: 'address' },
-        { name: 'salt', type: 'uint256' }
-      ]
-    },
-    primaryType: 'Order',
-    message: {
-      maker: orderData.makerAddress,
-      engine: orderData.engineAddress,
-      actor: orderData.actorAddress,
-      contractTermsHash: contractTermsHash,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
-      salt: orderData.salt
-    }
-  };
-
-  return typedData;
-};
-
-const getFilledOrderDataAsTypedData = (orderData, verifyingContractAddress) => {
-  const verifyingContract = verifyingContractAddress;
+  it('should issue an asset from an order (with enhancement orders without collateral)', async () => {
+    const enhancementOwnership_1 = {
+      creatorObligor: counterparty, creatorBeneficiary: counterparty, counterpartyObligor: guarantor, counterpartyBeneficiary: guarantor
+    };
+    const enhancementOwnership_2 = {
+      creatorObligor: counterparty, creatorBeneficiary: counterparty, counterpartyObligor: guarantor_2, counterpartyBeneficiary: guarantor_2
+    };
+    
+    // sign order
+    const orderData = getDefaultOrderDataWithEnhancements(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
+      this.terms, this.productId, this.customTerms, enhancementOwnership_1, this.CEGEngineInstance.address,
+      this.terms, this.productId, this.customTerms, enhancementOwnership_2, this.CEGEngineInstance.address
+    );
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.creatorSignature = await sign(unfilledOrderAsTypedData, creator);
+    orderData.counterpartySignature = await sign(filledOrderAsTypedData, counterparty);
   
-  const contractTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
-    ContractTermsABI, _toTuple(orderData.terms)
-  ));
+    // sign enhancement order 1
+    const unfilledEnhancementOrderAsTypedData_1 = getUnfilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_1, this.AssetIssuerInstance.address);
+    const filledEnhancementOrderAsTypedData_1 = getFilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_1, this.AssetIssuerInstance.address);
+    orderData.enhancementOrder_1.creatorSignature = await sign(unfilledEnhancementOrderAsTypedData_1, counterparty);
+    orderData.enhancementOrder_1.counterpartySignature = await sign(filledEnhancementOrderAsTypedData_1, guarantor);
+  
+    // sign enhancement order 2
+    const unfilledEnhancementOrderAsTypedData_2 = getUnfilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_2, this.AssetIssuerInstance.address);
+    const filledEnhancementOrderAsTypedData_2 = getFilledEnhancementOrderDataAsTypedData(orderData.enhancementOrder_2, this.AssetIssuerInstance.address);
+    orderData.enhancementOrder_2.creatorSignature = await sign(unfilledEnhancementOrderAsTypedData_2, counterparty);
+    orderData.enhancementOrder_2.counterpartySignature = await sign(filledEnhancementOrderAsTypedData_2, guarantor_2);
+  
+    // issue asset
+    const { tx: txHash } = await this.AssetIssuerInstance.issueFromOrder(orderData);
+  
+    const assetId = getAssetIdFromOrderData(orderData);
+  
+    // const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+  
+    // assert.equal(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress, orderData.engine);
+    assert.equal(storedOwnership.creatorObligor, creator);
+    assert.equal(storedOwnership.creatorBeneficiary, creator);
+    assert.equal(storedOwnership.counterpartyObligor, counterparty);
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
+  
+    await expectEvent.inTransaction(txHash, AssetIssuer, 'IssuedAsset', {
+      assetId: assetId,
+      creator: creator,
+      counterparty: counterparty
+    });
 
-  const typedData = {
-    domain: {
-      name: 'ACTUS Protocol',
-      version: '1',
-      chainId: 0,
-      verifyingContract: verifyingContract
-    },
-    types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' }
-      ],
-      Order: [
-        { name: 'maker', type: 'address' },
-        { name: 'taker', type: 'address' },
-        { name: 'engine', type: 'address' },
-        { name: 'actor', type: 'address' },
-        { name: 'contractTermsHash', type: 'bytes32' },
-        { name: 'makerCreditEnhancement', type: 'address' },
-        { name: 'takerCreditEnhancement', type: 'address' },
-        { name: 'salt', type: 'uint256' }
-      ]
-    },
-    primaryType: 'Order',
-    message: {
-      maker: orderData.makerAddress,
-      taker: orderData.takerAddress,
-      engine: orderData.engineAddress,
-      actor: orderData.actorAddress,
-      contractTermsHash: contractTermsHash,
-      makerCreditEnhancement: orderData.makerCreditEnhancementAddress,
-      takerCreditEnhancement: orderData.takerCreditEnhancementAddress,
-      salt: orderData.salt
-    }
-  };
+    // enhancementOrder_1
+    const assetId_1 = getAssetIdFromOrderData(orderData.enhancementOrder_1);
+    // const storedTerms_1 = await this.AssetRegistryInstance.getTerms(assetId_1);
+    const storedOwnership_1 = await this.AssetRegistryInstance.getOwnership(assetId_1);
+    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngineAddress(assetId_1);
 
-  return typedData;
-};
+    // assert.equal(storedTerms_1['initialExchangeDate'], this.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress_1, orderData.enhancementOrder_1.engine);
+    assert.equal(storedOwnership_1.creatorObligor, counterparty);
+    assert.equal(storedOwnership_1.creatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_1.counterpartyObligor, guarantor);
+    assert.equal(storedOwnership_1.counterpartyBeneficiary, guarantor);
 
-const _toTuple = (obj) => {
-  if (!(obj instanceof Object)) { return []; }
-  var output = [];
-  var i = 0;
-  Object.keys(obj).forEach((k) => {
-    if (obj[k] instanceof Object) {
-      output[i] = _toTuple(obj[k]);
-    } else if (obj[k] instanceof Array) {
-      let j1 = 0;
-      let temp1 = [];
-      obj[k].forEach((ak) => {
-        temp1[j1] = _toTuple(obj[k]);
-        j1++;
-      });
-      output[i] = temp1;
-    } else {
-      output[i] = obj[k];
-    }
-    i++;
+    // enhancementOrder_2
+    const assetId_2 = getAssetIdFromOrderData(orderData.enhancementOrder_2);
+    // const storedTerms_2 = await this.AssetRegistryInstance.getTerms(assetId_2);
+    const storedOwnership_2 = await this.AssetRegistryInstance.getOwnership(assetId_2);
+    const storedEngineAddress_2 = await this.AssetRegistryInstance.getEngineAddress(assetId_2);
+
+    // assert.equal(storedTerms_2['initialExchangeDate'], this.terms['initialExchangeDate']);
+    assert.equal(storedEngineAddress_2, orderData.enhancementOrder_2.engine);
+    assert.equal(storedOwnership_2.creatorObligor, counterparty);
+    assert.equal(storedOwnership_2.creatorBeneficiary, counterparty);
+    assert.equal(storedOwnership_2.counterpartyObligor, guarantor_2);
+    assert.equal(storedOwnership_2.counterpartyBeneficiary, guarantor_2);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
   });
-  return output;
-};
 
-const ContractTermsABI = {
-  "components": [
-    {
-      "name": "contractType",
-      "type": "uint8"
-    },
-    {
-      "name": "calendar",
-      "type": "uint8"
-    },
-    {
-      "name": "contractRole",
-      "type": "uint8"
-    },
-    {
-      "name": "creatorID",
-      "type": "bytes32"
-    },
-    {
-      "name": "counterpartyID",
-      "type": "bytes32"
-    },
-    {
-      "name": "dayCountConvention",
-      "type": "uint8"
-    },
-    {
-      "name": "businessDayConvention",
-      "type": "uint8"
-    },
-    {
-      "name": "endOfMonthConvention",
-      "type": "uint8"
-    },
-    {
-      "name": "currency",
-      "type": "address"
-    },
-    {
-      "name": "scalingEffect",
-      "type": "uint8"
-    },
-    {
-      "name": "penaltyType",
-      "type": "uint8"
-    },
-    {
-      "name": "feeBasis",
-      "type": "uint8"
-    },
-    {
-      "name": "contractDealDate",
-      "type": "uint256"
-    },
-    {
-      "name": "statusDate",
-      "type": "uint256"
-    },
-    {
-      "name": "initialExchangeDate",
-      "type": "uint256"
-    },
-    {
-      "name": "maturityDate",
-      "type": "uint256"
-    },
-    {
-      "name": "terminationDate",
-      "type": "uint256"
-    },
-    {
-      "name": "purchaseDate",
-      "type": "uint256"
-    },
-    {
-      "name": "capitalizationEndDate",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfInterestPayment",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfRateReset",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfScalingIndex",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfFee",
-      "type": "uint256"
-    },
-    {
-      "name": "cycleAnchorDateOfPrincipalRedemption",
-      "type": "uint256"
-    },
-    {
-      "name": "notionalPrincipal",
-      "type": "int256"
-    },
-    {
-      "name": "nominalInterestRate",
-      "type": "int256"
-    },
-    {
-      "name": "feeAccrued",
-      "type": "int256"
-    },
-    {
-      "name": "accruedInterest",
-      "type": "int256"
-    },
-    {
-      "name": "rateMultiplier",
-      "type": "int256"
-    },
-    {
-      "name": "rateSpread",
-      "type": "int256"
-    },
-    {
-      "name": "feeRate",
-      "type": "int256"
-    },
-    {
-      "name": "nextResetRate",
-      "type": "int256"
-    },
-    {
-      "name": "penaltyRate",
-      "type": "int256"
-    },
-    {
-      "name": "premiumDiscountAtIED",
-      "type": "int256"
-    },
-    {
-      "name": "priceAtPurchaseDate",
-      "type": "int256"
-    },
-    {
-      "name": "nextPrincipalRedemptionPayment",
-      "type": "int256"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfInterestPayment",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfRateReset",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfScalingIndex",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfFee",
-      "type": "tuple"
-    },
-    {
-      "components": [
-        {
-          "name": "i",
-          "type": "uint256"
-        },
-        {
-          "name": "p",
-          "type": "uint8"
-        },
-        {
-          "name": "s",
-          "type": "uint8"
-        },
-        {
-          "name": "isSet",
-          "type": "bool"
-        }
-      ],
-      "name": "cycleOfPrincipalRedemption",
-      "type": "tuple"
-    },
-    {
-      "name": "lifeCap",
-      "type": "int256"
-    },
-    {
-      "name": "lifeFloor",
-      "type": "int256"
-    },
-    {
-      "name": "periodCap",
-      "type": "int256"
-    },
-    {
-      "name": "periodFloor",
-      "type": "int256"
-    }
-  ],
-  "name": "terms",
-  "type": "tuple"
-};
+  it('should issue an asset from an order (with enhancement orders with collateral)', async () => {
+    const ownershipCEC = {
+      creatorObligor: ZERO_ADDRESS,
+      creatorBeneficiary: ZERO_ADDRESS,
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
+    };
+    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
+    // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
+    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
+    // encode collateralToken and collateralAmount in object of second contract reference
+    termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
+      this.PaymentTokenInstance.address,
+      collateralAmount
+    );
+
+    // register product
+    const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
+    const productIdCEC = await registerProduct(this.instances, termsCEC);
+    
+    // sign order
+    const orderData = getDefaultOrderDataWithEnhancement(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
+      termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
+    );
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
+    orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);  
+    // collateral enhancement order does not have to be signed (ownership is enforced by AssetIssuer)
+    orderData.enhancementOrder_1.creatorSignature = '0x0';
+    orderData.enhancementOrder_1.counterpartySignature = '0x0';
+
+    // counterparty has to set allowance == collateralAmount for custodian contract
+    await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterparty });
+
+    // // issue asset
+    const tx = await this.AssetIssuerInstance.issueFromOrder(orderData, { from: counterparty });
+  
+    const assetId = getAssetIdFromOrderData(orderData);
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    assert.equal(storedEngineAddress, orderData.engine);
+    assert.equal(storedOwnership.creatorObligor, creator);
+    assert.equal(storedOwnership.creatorBeneficiary, creator);
+    assert.equal(storedOwnership.counterpartyObligor, counterparty);
+    assert.equal(storedOwnership.counterpartyBeneficiary, counterparty);
+  
+    await expectEvent.inTransaction(tx.tx, AssetIssuer, 'IssuedAsset', {
+      assetId: assetId,
+      creator: creator,
+      counterparty: counterparty
+    });
+
+    // enhancementOrder_1
+    const assetId_1 = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ['bytes', 'bytes', 'address'],
+        [orderData.creatorSignature, orderData.counterpartySignature, this.CustodianInstance.address]
+      )
+    );
+    const storedOwnership_1 = await this.AssetRegistryInstance.getOwnership(assetId_1);
+    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngineAddress(assetId_1);
+    assert.equal(storedEngineAddress_1, orderData.enhancementOrder_1.engine);
+    assert.equal(storedOwnership_1.creatorObligor, creator);
+    assert.equal(storedOwnership_1.creatorBeneficiary, creator);
+    assert.equal(storedOwnership_1.counterpartyObligor, this.CustodianInstance.address);
+    assert.equal(storedOwnership_1.counterpartyBeneficiary, counterparty);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
+  });
+
+  it('should issue an asset from an order (as an enhancement to an existing asset)', async () => {
+    // sign order
+    const orderData = getDefaultOrderData(
+      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+    );
+    const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
+    orderData.creatorSignature = await sign(unfilledOrderAsTypedData, orderData.ownership.creatorObligor);
+    orderData.counterpartySignature = await sign(filledOrderAsTypedData, orderData.ownership.counterpartyObligor);
+
+    // issue underlying asset
+    await this.AssetIssuerInstance.issueFromOrder(orderData);
+    const underlyingAssetId = getAssetIdFromOrderData(orderData);
+
+    // collateral enhancement order
+    const ownershipCEC = {
+      creatorObligor: ZERO_ADDRESS,
+      creatorBeneficiary: ZERO_ADDRESS,
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
+    };
+    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
+    // encode underlying assetId in object of first contract reference
+    termsCEC.contractReference_1.object = web3.utils.toHex(underlyingAssetId);
+    // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
+    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
+    // encode collateralToken and collateralAmount in object of second contract reference
+    termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
+      this.PaymentTokenInstance.address,
+      collateralAmount
+    );
+    
+    // register product
+    const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
+    customTermsCEC.anchorDate = this.customTerms.anchorDate;
+    const productIdCEC = await registerProduct(this.instances, termsCEC);
+
+    const orderDataCEC = getDefaultOrderData(
+      termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address
+    );
+    orderDataCEC.creatorSignature = ZERO_BYTES;
+    orderDataCEC.counterpartySignature = ZERO_BYTES;
+
+    // counterparty has to set allowance == collateralAmount for custodian contract
+    await this.PaymentTokenInstance.approve(this.CustodianInstance.address, collateralAmount, { from: counterparty });
+    
+    // issue asset
+    await this.AssetIssuerInstance.issueFromOrder(orderDataCEC);
+    const assetIdCEC = web3.utils.keccak256(
+      web3.eth.abi.encodeParameters(
+        ['bytes32', 'address', 'uint256'],
+        [orderDataCEC.termsHash, this.CustodianInstance.address, orderDataCEC.salt]
+      )
+    );
+
+    const storedEngineAddressCEC = await this.AssetRegistryInstance.getEngineAddress(assetIdCEC);
+
+    assert.equal(storedEngineAddressCEC, orderDataCEC.engine);
+
+    await revertToSnapshot(snapshot);
+    snapshot = await createSnapshot();
+  });
+});

@@ -1,6 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { deriveTerms, registerProduct, deployPaymentToken } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -10,8 +11,8 @@ const INVALID_CASHFLOWID = 'INVALID_CASHFLOWID';
 contract('AssetRegistry', (accounts) => {
   const actor = accounts[1];
 
-  const recordCreatorObligor = accounts[2];
-  const recordCreatorBeneficiary = accounts[3];
+  const creatorObligor = accounts[2];
+  const creatorBeneficiary = accounts[3];
   const counterpartyObligor = accounts[4];
   const counterpartyBeneficiary = accounts[5];
   
@@ -19,25 +20,37 @@ contract('AssetRegistry', (accounts) => {
   const newCashflowBeneficiary = accounts[7];
 
   before(async () => {
-    const instances = await setupTestEnvironment();
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
+    this.instances = await setupTestEnvironment(accounts);
+    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
     this.assetId = 'C123';
-    this.terms = await getDefaultTerms();
-    this.state = await this.PAMEngineInstance.computeInitialState(this.terms, {});
-    this.ownership = { 
-      recordCreatorObligor, 
-      recordCreatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
+    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
+    this.terms = { 
+      ...await getDefaultTerms(),
+      gracePeriod: { i: 1, p: 2, isSet: true },
+      delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
+
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
+    // set address of payment token as currency in terms
+    this.terms.currency = this.PaymentTokenInstance.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
+    this.terms.statusDate = this.terms.contractDealDate;
+
+    // register product
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.productId = await registerProduct(this.instances, this.terms);
+
+    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
   });
 
   it('should register an asset', async () => {
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      this.terms,
+      web3.utils.toHex(this.productId),
+      this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
       actor
@@ -58,18 +71,22 @@ contract('AssetRegistry', (accounts) => {
           case 'boolean':
             return value;
           case 'string':
-            return (web3.utils.isHexStrict(value) && value.length < 42) ? web3.utils.hexToNumberString(value) : value;
+            return (web3.utils.isHexStrict(value) && value.length < 42)
+              ? web3.utils.hexToNumberString(value)
+              : (value !== '0x0000000000000000000000000000000000000000000000000000000000000000')
+                ? value
+                : "0";
           default:
             return value;
         }
       });
     }
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.terms)))
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.lifecycleTerms)));
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
-    assert.equal(storedOwnership.recordCreatorObligor, recordCreatorObligor);
-    assert.equal(storedOwnership.recordCreatorBeneficiary, recordCreatorBeneficiary);
+    assert.equal(storedOwnership.creatorObligor, creatorObligor);
+    assert.equal(storedOwnership.creatorBeneficiary, creatorBeneficiary);
     assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
     assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
   });
@@ -79,7 +96,8 @@ contract('AssetRegistry', (accounts) => {
       this.AssetRegistryInstance.registerAsset(
         web3.utils.toHex(this.assetId),
         this.ownership,
-        this.terms,
+        web3.utils.toHex(this.productId),
+        this.customTerms,
         this.state,
         this.PAMEngineInstance.address,
         actor
@@ -88,47 +106,19 @@ contract('AssetRegistry', (accounts) => {
     );
   });
 
-  it('should let the actor overwrite and update the terms, state and the eventId of an asset', async () => {
-    await this.AssetRegistryInstance.setTerms(
-      web3.utils.toHex(this.assetId), 
-      this.terms,
-      { from: actor }
-    );
-
+  it('should let the actor overwrite and update the terms, state of an asset', async () => {
     await this.AssetRegistryInstance.setState(
       web3.utils.toHex(this.assetId), 
       this.state,
       { from: actor }
     );
-
-    await this.AssetRegistryInstance.setEventId(
-      web3.utils.toHex(this.assetId), 
-      1,
-      { from: actor }
-    );
   });
 
-  it('should not let an unauthorized account overwrite and update the terms, state and the eventId of an asset', async () => {
-    await shouldFail.reverting.withMessage(
-      this.AssetRegistryInstance.setTerms(
-        web3.utils.toHex(this.assetId), 
-        this.terms,
-      ),
-      'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
-    );
-
+  it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
     await shouldFail.reverting.withMessage(
       this.AssetRegistryInstance.setState(
         web3.utils.toHex(this.assetId), 
         this.state,
-      ),
-      'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
-    );
-
-    await shouldFail.reverting.withMessage(
-      this.AssetRegistryInstance.setEventId(
-        web3.utils.toHex(this.assetId), 
-        1,
       ),
       'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
     );
@@ -141,7 +131,7 @@ contract('AssetRegistry', (accounts) => {
       web3.utils.toHex(this.assetId), 
       cashflowIdA, 
       cashflowIdBeneficiary,
-      { from: recordCreatorBeneficiary }
+      { from: creatorBeneficiary }
     );
     
     const resultA = await this.AssetRegistryInstance.getCashflowBeneficiary(
@@ -188,7 +178,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdA, 
         cashflowIdBeneficiary,
-        { from: recordCreatorObligor }
+        { from: creatorObligor }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -230,7 +220,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
-        { from: recordCreatorObligor }
+        { from: creatorObligor }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -240,7 +230,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowIdB, 
         cashflowIdBeneficiary,
-        { from: recordCreatorBeneficiary }
+        { from: creatorBeneficiary }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + UNAUTHORIZED_SENDER
     );
@@ -254,7 +244,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         cashflowId, 
         cashflowIdBeneficiary,
-        { from: recordCreatorBeneficiary }
+        { from: creatorBeneficiary }
       ),
       'AssetRegistry.setBeneficiaryForCashflowId: ' + INVALID_CASHFLOWID
     );

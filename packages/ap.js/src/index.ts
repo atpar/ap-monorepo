@@ -1,109 +1,93 @@
 import Web3 from 'web3';
+import Deployments from '@atpar/ap-contracts/deployments.json';
 
 import * as APTypes from './types';
 
 import { Asset } from './Asset';
 import { Order } from './issuance/Order';
-import { Signer } from './utils/Signer';
-import { Common } from './utils/Common';
-import { 
-  OwnershipAPI, 
-  EconomicsAPI, 
-  PaymentAPI, 
-  LifecycleAPI, 
-  TokenizationAPI, 
-  IssuanceAPI, 
-  ContractsAPI 
-} from './apis';
+import { Contracts, Signer, Utils } from './apis';
+import { AddressBook } from './types';
 
 
 export class AP {
 
   public web3: Web3;
-
-  public ownership: OwnershipAPI;
-  public economics: EconomicsAPI;
-  public payment: PaymentAPI;
-  public lifecycle: LifecycleAPI;
-  public issuance: IssuanceAPI;
-  public tokenization: TokenizationAPI;
   
-  public contracts: ContractsAPI;
+  public contracts: Contracts;
   public signer: Signer;
-  public common: Common;
+  public utils: Utils;
 
-  constructor (
-    web3: Web3, 
-    ownership: OwnershipAPI, 
-    economics: EconomicsAPI,
-    payment: PaymentAPI,
-    lifecycle: LifecycleAPI,
-    issuance: IssuanceAPI,
-    tokenization: TokenizationAPI,
-    contracts: ContractsAPI,
+  private constructor (
+    web3: Web3,
+    contracts: Contracts,
     signer: Signer,
-    common: Common
+    utils: Utils
   ) {
     this.web3 = web3;
-    
-    this.ownership = ownership;
-    this.economics = economics;
-    this.payment = payment;
-    this.lifecycle = lifecycle;
-    this.issuance = issuance;
-    this.tokenization = tokenization;
 
     this.contracts = contracts;
     this.signer = signer;
-    this.common = common;
+    this.utils = utils;
   }
 
   /**
-   * look for new issued assets in which the default account is involved
-   * @param {(asset: Asset) => void} cb callback function to be called
-   * after a new asset in which the default account is involved is issued
+   * Listen for new issued assets in which the default account is involved.
+   * @param {(asset: Asset) => void} cb callback function to be called after 
+   * a new asset in which the default account is involved is issued
    */
   public onNewAssetIssued (cb: (asset: Asset) => void): void {
-    this.issuance.onAssetIssued(async (event) => {  
+    this.contracts.assetIssuer.events.IssuedAsset().on('data', async (event): Promise<void> => {
       if (
-        event.recordCreatorAddress !== this.signer.account &&
-        event.counterpartyAddress !== this.signer.account
-      ) { 
-        return; 
-      }
+        !event 
+        || !event.returnValues 
+        || !event.returnValues.assetId 
+        || !event.returnValues.creator 
+        || !event.returnValues.counterparty
+      ) { throw new Error(''); }
+
+      if (
+        event.returnValues.creator !== this.signer.account &&
+        event.returnValues.counterparty !== this.signer.account
+      ) { return; }
       
       try {
-        const asset = await Asset.load(this, event.assetId);
+        const asset = await Asset.load(this, event.returnValues.assetId);
         cb(asset);
       } catch (error) { console.log(error); return; }
     });
   }
 
   /**
-   * returns an array of assetIds of assets in which the default account is involved
+   * Returns an array of assetIds of assets in which the default account is involved.
    * @returns {Promise<string[]>}
    */
   public async getAssetIds (): Promise<string[]> {
-    const issuances = await this.issuance.getAssetIssuances();
+    const issuances = await this.contracts.assetIssuer.getPastEvents('IssuedAsset');
     const assetIds = [];
 
     for (const issuance of issuances) {
       if (
-        issuance.recordCreatorAddress === this.signer.account ||
-        issuance.counterpartyAddress === this.signer.account
-      ) {
-        assetIds.push(issuance.assetId);
-      }
+        !issuance 
+        || !issuance.returnValues 
+        || !issuance.returnValues.assetId 
+        || !issuance.returnValues.creator 
+        || !issuance.returnValues.counterparty
+      ) { throw new Error(''); }
+
+      if (
+        issuance.returnValues.creator === this.signer.account ||
+        issuance.returnValues.counterparty === this.signer.account
+      ) { assetIds.push(issuance.returnValues.assetId); }
     }
 
     return assetIds;
   }
 
   /**
-   * returns a new AP instance
+   * Returns a new AP instance.
    * @param {Web3} web3 Web3 instance
    * @param {string} defaultAccount default account for signing contract updates and transactions
-   * @param {AddressBook?} object containing custom addresses for ap-contracts (overwrites default addresses)
+   * @param {AddressBook?} addressBook object containing custom addresses for ap-contracts (overwrites default addresses)
    * @returns {Promise<AP>} 
    */
   public static async init (
@@ -112,40 +96,25 @@ export class AP {
     addressBook?: APTypes.AddressBook
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
-      throw(new Error('CONNECTION_ERROR: could not establish connection to node!'));
+      throw(new Error('CONNECTION_ERROR: could not establish connection.'));
     }
 
-    const contracts = await ContractsAPI.init(web3, addressBook);
+    if (!addressBook) {
+      const netId = await web3.eth.net.getId();
+      // @ts-ignore
+      if (!Deployments[netId]) {
+        throw new Error('INITIALIZATION_ERROR: Contracts are not deployed on current network.');
+      }
+      // @ts-ignore
+      addressBook = Deployments[netId] as AddressBook;
+    }
 
-    const ownership = new OwnershipAPI(contracts);
-    const economics = new EconomicsAPI(contracts);
-    const payment = new PaymentAPI(contracts);
-    const lifecycle = new LifecycleAPI(contracts);
-    const issuance = new IssuanceAPI(contracts);
-    const tokenization = new TokenizationAPI(contracts);
+    const contracts = new Contracts(web3, addressBook);
+    const signer = new Signer(web3, defaultAccount, addressBook.AssetIssuer);
+    const utils = new Utils();
 
-    const common = new Common(web3);
-    const signer = new Signer(
-      web3, 
-      defaultAccount, 
-      contracts.assetIssuer.instance.options.address
-    );
-
-    return new AP(
-      web3, 
-      ownership, 
-      economics, 
-      payment, 
-      lifecycle, 
-      issuance, 
-      tokenization,
-      contracts,
-      signer, 
-      common
-    );
+    return new AP(web3, contracts, signer, utils);
   }
 }
 
-export { Asset };
-export { Order };
-export { APTypes };
+export { Asset, Order, APTypes }

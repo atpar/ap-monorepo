@@ -5,13 +5,15 @@
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
   "license": "Apache-2.0",
+  "types": "./ts-bindings/*.d.ts",
   "files": [
     "artifacts/",
     "build/",
     "contracts/",
     "deployments.json",
     "migrations/",
-    "truffle-config.js"
+    "truffle-config.js",
+    "ts-bindings/"
   ],
   "repository": {
     "type": "git",
@@ -24,9 +26,12 @@
     "access": "public"
   },
   "scripts": {
-    "build": "npm run compile && npm run generate-artifacts",
-    "compile": "truffle compile --all",
+    "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
+    "compile:all": "truffle compile --all",
+    "compile": "truffle compile",
+    "coverage": "truffle run coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
+    "generate-ts-bindings": "typechain --target web3-v1 --outDir ./ts-bindings './build/contracts/*.json'",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
     "migrate:goerli": "truffle migrate --network goerli",
@@ -36,21 +41,27 @@
     "migrate:testnets": "npm run migrate:goerli && npm run migrate:kovan && npm run migrate:rinkeby && npm run migrate:ropsten",
     "test": "./scripts/test.sh"
   },
+  "resolutions": {
+    "**/web3-eth-contract": "1.2.4"
+  },
   "dependencies": {
-    "actus-solidity": "0.2.1",
+    "actus-solidity": "git://github.com/atpar/actus-solidity.git#master",
     "funds-distribution-token": "0.1.2",
     "openzeppelin-solidity": "^2.1.2",
-    "truffle-hdwallet-provider": "^1.0.9"
+    "truffle-hdwallet-provider": "^1.0.9",
+    "web3": "1.2.4"
   },
   "devDependencies": {
     "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
-    "eth-gas-reporter": "^0.2.11",
-    "eth-sig-util": "2.1.1",
+    "coveralls": "^3.0.9",
+    "eth-gas-reporter": "^0.2.13",
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",
-    "truffle": "^5.0.2",
-    "web3-utils": "1.0.0-beta.46"
+    "solidity-coverage": "^0.7.0-beta.3",
+    "truffle": "^5.1.2",
+    "typechain": "^1.0.3",
+    "typechain-target-web3-v1": "^1.0.3"
   }
 }

@@ -2,15 +2,32 @@
 	"contractType": 0,
 	"calendar": 0,
 	"contractRole": 0,
-	"creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"dayCountConvention": 2,
 	"businessDayConvention": 0,
 	"endOfMonthConvention": 0,
-	"currency": "0x0000000000000000000000000000000000000000",
 	"scalingEffect": 0,
 	"penaltyType": 0,
 	"feeBasis": 0,
+	"creditEventTypeCovered": 3,
+
+	"contractReference_1": {
+		"object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+		"contractReferenceType": 0,
+		"contractReferenceRole": 0
+	},
+	"contractReference_2": {
+		"object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+		"contractReferenceType": 0,
+		"contractReferenceRole": 0
+	},
+
+	"currency": "0x0000000000000000000000000000000000000000",
+	"settlementCurrency": "0x0000000000000000000000000000000000000000",
+
+	"creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+	"counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+	"marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
+
 	"contractDealDate": 1356652800,
 	"statusDate": 1356825600,
 	"initialExchangeDate": 1356998400,
@@ -23,8 +40,8 @@
 	"cycleAnchorDateOfScalingIndex": 0,
 	"cycleAnchorDateOfFee": 0,
 	"cycleAnchorDateOfPrincipalRedemption": 0,
-	"notionalPrincipal": "0xa2a15d09519be00000",
-	"nominalInterestRate": "0x16345785d8a0000",
+	"notionalPrincipal": "1000000000000000000000",
+	"nominalInterestRate": "2500000000000000000",
 	"feeAccrued": "0",
 	"accruedInterest": "0",
 	"rateMultiplier": "0",
@@ -35,6 +52,8 @@
 	"premiumDiscountAtIED": "0",
 	"priceAtPurchaseDate": "0",
 	"nextPrincipalRedemptionPayment": "0",
+	"coverageOfCreditEnhancement": "0",
+
 	"cycleOfInterestPayment": {
 			"i": 1,
 			"p": 2,
@@ -65,6 +84,18 @@
 		"s": 0,
 		"isSet": false
 	},
+
+	"gracePeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+	},
+	"delinquencyPeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+	},
+
 	"lifeCap": "0",
 	"lifeFloor": "0",
 	"periodCap": "0",

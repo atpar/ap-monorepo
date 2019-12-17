@@ -3,60 +3,55 @@ pragma experimental ABIEncoderV2;
 
 import "../Core/AssetRegistry/IAssetRegistry.sol";
 
-import "funds-distribution-token/contracts/extensions/FDT_ETHExtension.sol";
 import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 
+/**
+ * @title TokenizationFactory
+ * @notice Factory for deploying FDT contracts
+ */
 contract TokenizationFactory {
 
-	IAssetRegistry assetRegistry;
-	address paymentRouter;
+    IAssetRegistry assetRegistry;
 
 
-	event DeployedDistributor(address distributor, address creator);
+    event DeployedDistributor(address distributor, address creator);
 
-	constructor(
-		IAssetRegistry _assetRegistry,
-		address _paymentRouter
-	) public {
-		assetRegistry = _assetRegistry;
-		paymentRouter = _paymentRouter;
-	}
+    constructor(
+        IAssetRegistry _assetRegistry
+    ) public {
+        assetRegistry = _assetRegistry;
+    }
 
-	function createETHDistributor(
-		string memory name,
-		string memory symbol,
-		uint256 initialSupply
-	)
-		public
-	{
-		FDT_ETHExtension distributor = new FDT_ETHExtension(name, symbol);
+    /**
+     * deploys a new tokenized distributor contract for a specified ERC20 token
+     * @dev mints initial supply after deploying the tokenized distributor contract
+     * @param name name of the token
+     * @param symbol of the token
+     * @param initialSupply of distributor tokens
+     */
+    function createERC20Distributor(
+        string memory name,
+        string memory symbol,
+        uint256 initialSupply,
+        IERC20 token
+    )
+        public
+    {
+        require(
+            address(token) != address(0),
+            "TokenizationFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
+        );
 
-		require(
-			distributor.mint(msg.sender, initialSupply),
-			"TokenizationFactory.createETHDistributor: Could not mint initial supply"
-		);
+        FDT_ERC20Extension distributor = new FDT_ERC20Extension(name, symbol, token);
 
-		emit DeployedDistributor(address(distributor), msg.sender);
-	}
+        require(
+            distributor.mint(msg.sender, initialSupply),
+            "TokenizationFactory.createERC20Distributor: Could not mint initial supply"
+        );
 
-	function createERC20Distributor(
-		string memory name,
-		string memory symbol,
-		uint256 initialSupply,
-		IERC20 token
-	)
-		public
-	{
-		FDT_ERC20Extension distributor = new FDT_ERC20Extension(name, symbol, token);
-
-		require(
-			distributor.mint(msg.sender, initialSupply),
-			"TokenizationFactory.createERC20Distributor: Could not mint initial supply"
-		);
-
-		emit DeployedDistributor(address(distributor), msg.sender);
-	}
+        emit DeployedDistributor(address(distributor), msg.sender);
+    }
 }
