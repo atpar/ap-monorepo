@@ -21,9 +21,9 @@ export class SignedMath extends Contract {
   );
   clone(): SignedMath;
   methods: {
-    MULTIPLICATOR(): TransactionObject<BN>;
+    MULTIPLICATOR(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
   };
   events: {
     allEvents: (

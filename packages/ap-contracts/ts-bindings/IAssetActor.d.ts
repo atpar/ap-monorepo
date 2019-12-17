@@ -25,7 +25,7 @@ export class IAssetActor extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,9 +33,9 @@ export class IAssetActor extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     progress(assetId: string | number[]): TransactionObject<void>;
 

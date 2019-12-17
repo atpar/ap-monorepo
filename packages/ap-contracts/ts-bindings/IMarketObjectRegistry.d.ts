@@ -25,7 +25,7 @@ export class IMarketObjectRegistry extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,9 +33,9 @@ export class IMarketObjectRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     setMarketObjectProvider(
       marketObjectId: string | number[],
@@ -52,13 +52,13 @@ export class IMarketObjectRegistry extends Contract {
       marketObjectId: string | number[],
       timestamp: number | string
     ): TransactionObject<{
-      0: BN;
+      0: string;
       1: boolean;
     }>;
 
     getMarketObjectLastUpdatedTimestamp(
       marketObjectId: string | number[]
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
   };
   events: {
     allEvents: (

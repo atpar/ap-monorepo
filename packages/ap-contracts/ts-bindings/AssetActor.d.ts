@@ -27,7 +27,7 @@ export class AssetActor extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -35,18 +35,18 @@ export class AssetActor extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;
 
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
-      0: BN;
-      1: BN;
+      0: string;
+      1: string;
     }>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     computeEventTimeForEvent(
       _event: string | number[],
@@ -99,13 +99,13 @@ export class AssetActor extends Contract {
         periodCap: number | string;
         periodFloor: number | string;
       }
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 
     isOwner(): TransactionObject<boolean>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -153,11 +153,11 @@ export class AssetActor extends Contract {
   events: {
     ProgressedAsset: ContractEvent<{
       assetId: string;
-      eventType: BN;
-      scheduleTime: BN;
+      eventType: string;
+      scheduleTime: string;
       0: string;
-      1: BN;
-      2: BN;
+      1: string;
+      2: string;
     }>;
     Status: ContractEvent<{
       assetId: string;

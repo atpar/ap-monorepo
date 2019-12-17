@@ -21,9 +21,9 @@ export class Utils extends Contract {
   );
   clone(): Utils;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -33,8 +33,8 @@ export class Utils extends Contract {
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
-      0: BN;
-      1: BN;
+      0: string;
+      1: string;
     }>;
 
     computeEventTimeForEvent(
@@ -88,9 +88,9 @@ export class Utils extends Contract {
         periodCap: number | string;
         periodFloor: number | string;
       }
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
   };
   events: {
     allEvents: (

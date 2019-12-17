@@ -26,7 +26,7 @@ export class ERC20Mintable extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    totalSupply(): TransactionObject<BN>;
+    totalSupply(): TransactionObject<string>;
 
     transferFrom(
       sender: string,
@@ -39,7 +39,7 @@ export class ERC20Mintable extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    balanceOf(account: string): TransactionObject<BN>;
+    balanceOf(account: string): TransactionObject<string>;
 
     addMinter(account: string): TransactionObject<void>;
 
@@ -57,7 +57,7 @@ export class ERC20Mintable extends Contract {
 
     isMinter(account: string): TransactionObject<boolean>;
 
-    allowance(owner: string, spender: string): TransactionObject<BN>;
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     mint(account: string, amount: number | string): TransactionObject<boolean>;
   };
@@ -67,18 +67,18 @@ export class ERC20Mintable extends Contract {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

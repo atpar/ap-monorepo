@@ -25,7 +25,7 @@ export class Custodian extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,11 +33,11 @@ export class Custodian extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
     assetRegistry(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     assetActor(): TransactionObject<string>;
 
@@ -106,18 +106,18 @@ export class Custodian extends Contract {
     LockedCollateral: ContractEvent<{
       assetId: string;
       collateralizer: string;
-      collateralAmount: BN;
+      collateralAmount: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     ReturnedCollateral: ContractEvent<{
       assetId: string;
       collateralizer: string;
-      returnedAmount: BN;
+      returnedAmount: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

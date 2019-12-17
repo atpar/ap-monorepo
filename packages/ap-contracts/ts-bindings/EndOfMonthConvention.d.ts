@@ -21,9 +21,9 @@ export class EndOfMonthConvention extends Contract {
   );
   clone(): EndOfMonthConvention;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     adjustEndOfMonthConvention(
       eomc: number | string,
@@ -34,7 +34,7 @@ export class EndOfMonthConvention extends Contract {
         s: number | string;
         isSet: boolean;
       }
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
   };
   events: {
     allEvents: (

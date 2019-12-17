@@ -21,9 +21,9 @@ export class SharedTypes extends Contract {
   );
   clone(): SharedTypes;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     encodeCollateralAsObject(
       collateralToken: string,
@@ -34,7 +34,7 @@ export class SharedTypes extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
   };
   events: {

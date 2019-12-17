@@ -21,9 +21,9 @@ export class IEngine extends Contract {
   );
   clone(): IEngine;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     computeInitialState(terms: {
       calendar: number | string;
@@ -74,19 +74,19 @@ export class IEngine extends Contract {
       periodCap: number | string;
       periodFloor: number | string;
     }): TransactionObject<{
-      contractPerformance: BN;
-      statusDate: BN;
-      nonPerformingDate: BN;
-      maturityDate: BN;
-      executionDate: BN;
-      notionalPrincipal: BN;
-      accruedInterest: BN;
-      feeAccrued: BN;
-      nominalInterestRate: BN;
-      interestScalingMultiplier: BN;
-      notionalScalingMultiplier: BN;
-      nextPrincipalRedemptionPayment: BN;
-      executionAmount: BN;
+      contractPerformance: string;
+      statusDate: string;
+      nonPerformingDate: string;
+      maturityDate: string;
+      executionDate: string;
+      notionalPrincipal: string;
+      accruedInterest: string;
+      feeAccrued: string;
+      nominalInterestRate: string;
+      interestScalingMultiplier: string;
+      notionalScalingMultiplier: string;
+      nextPrincipalRedemptionPayment: string;
+      executionAmount: string;
     }>;
 
     computeStateForEvent(
@@ -157,19 +157,19 @@ export class IEngine extends Contract {
       _event: string | number[],
       externalData: string | number[]
     ): TransactionObject<{
-      contractPerformance: BN;
-      statusDate: BN;
-      nonPerformingDate: BN;
-      maturityDate: BN;
-      executionDate: BN;
-      notionalPrincipal: BN;
-      accruedInterest: BN;
-      feeAccrued: BN;
-      nominalInterestRate: BN;
-      interestScalingMultiplier: BN;
-      notionalScalingMultiplier: BN;
-      nextPrincipalRedemptionPayment: BN;
-      executionAmount: BN;
+      contractPerformance: string;
+      statusDate: string;
+      nonPerformingDate: string;
+      maturityDate: string;
+      executionDate: string;
+      notionalPrincipal: string;
+      accruedInterest: string;
+      feeAccrued: string;
+      nominalInterestRate: string;
+      interestScalingMultiplier: string;
+      notionalScalingMultiplier: string;
+      nextPrincipalRedemptionPayment: string;
+      executionAmount: string;
     }>;
 
     computePayoffForEvent(
@@ -239,7 +239,7 @@ export class IEngine extends Contract {
       },
       _event: string | number[],
       externalData: string | number[]
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
     computeNonCyclicScheduleSegment(
       terms: {

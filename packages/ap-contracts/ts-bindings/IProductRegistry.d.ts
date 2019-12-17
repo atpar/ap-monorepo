@@ -25,7 +25,7 @@ export class IProductRegistry extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,39 +33,39 @@ export class IProductRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     getProductTerms(
       productId: string | number[]
     ): TransactionObject<{
-      calendar: BN;
-      contractRole: BN;
-      dayCountConvention: BN;
-      businessDayConvention: BN;
-      endOfMonthConvention: BN;
-      scalingEffect: BN;
-      penaltyType: BN;
-      feeBasis: BN;
-      creditEventTypeCovered: BN;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      creditEventTypeCovered: string;
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string;
-      statusDateOffset: BN;
-      maturityDateOffset: BN;
-      feeAccrued: BN;
-      accruedInterest: BN;
-      rateMultiplier: BN;
-      feeRate: BN;
-      nextResetRate: BN;
-      penaltyRate: BN;
-      priceAtPurchaseDate: BN;
-      nextPrincipalRedemptionPayment: BN;
-      gracePeriod: { i: BN; p: BN; isSet: boolean };
-      delinquencyPeriod: { i: BN; p: BN; isSet: boolean };
-      periodCap: BN;
-      periodFloor: BN;
+      statusDateOffset: string;
+      maturityDateOffset: string;
+      feeAccrued: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      feeRate: string;
+      nextResetRate: string;
+      penaltyRate: string;
+      priceAtPurchaseDate: string;
+      nextPrincipalRedemptionPayment: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      periodCap: string;
+      periodFloor: string;
     }>;
 
     getEventAtIndex(
@@ -77,7 +77,7 @@ export class IProductRegistry extends Contract {
     getScheduleLength(
       productId: string | number[],
       scheduleId: number | string
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
     registerProduct(
       terms: {

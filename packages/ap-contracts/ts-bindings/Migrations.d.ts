@@ -21,7 +21,7 @@ export class Migrations extends Contract {
   );
   clone(): Migrations;
   methods: {
-    last_completed_migration(): TransactionObject<BN>;
+    last_completed_migration(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 

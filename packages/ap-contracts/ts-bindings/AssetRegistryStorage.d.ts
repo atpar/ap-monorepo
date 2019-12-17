@@ -25,7 +25,7 @@ export class AssetRegistryStorage extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,16 +33,16 @@ export class AssetRegistryStorage extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
-      0: BN;
-      1: BN;
+      0: string;
+      1: string;
     }>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     computeEventTimeForEvent(
       _event: string | number[],
@@ -95,9 +95,9 @@ export class AssetRegistryStorage extends Contract {
         periodCap: number | string;
         periodFloor: number | string;
       }
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,

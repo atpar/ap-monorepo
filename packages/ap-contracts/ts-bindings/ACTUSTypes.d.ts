@@ -21,9 +21,9 @@ export class ACTUSTypes extends Contract {
   );
   clone(): ACTUSTypes;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
   };
   events: {
     allEvents: (

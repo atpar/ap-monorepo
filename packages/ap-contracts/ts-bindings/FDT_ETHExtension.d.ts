@@ -21,7 +21,7 @@ export class FDT_ETHExtension extends Contract {
   );
   clone(): FDT_ETHExtension;
   methods: {
-    withdrawnFundsOf(_owner: string): TransactionObject<BN>;
+    withdrawnFundsOf(_owner: string): TransactionObject<string>;
 
     name(): TransactionObject<string>;
 
@@ -30,7 +30,7 @@ export class FDT_ETHExtension extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    totalSupply(): TransactionObject<BN>;
+    totalSupply(): TransactionObject<string>;
 
     transferFrom(
       sender: string,
@@ -38,7 +38,7 @@ export class FDT_ETHExtension extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    decimals(): TransactionObject<BN>;
+    decimals(): TransactionObject<string>;
 
     increaseAllowance(
       spender: string,
@@ -47,11 +47,11 @@ export class FDT_ETHExtension extends Contract {
 
     mint(account: string, amount: number | string): TransactionObject<boolean>;
 
-    withdrawableFundsOf(_owner: string): TransactionObject<BN>;
+    withdrawableFundsOf(_owner: string): TransactionObject<string>;
 
-    accumulativeFundsOf(_owner: string): TransactionObject<BN>;
+    accumulativeFundsOf(_owner: string): TransactionObject<string>;
 
-    balanceOf(account: string): TransactionObject<BN>;
+    balanceOf(account: string): TransactionObject<string>;
 
     symbol(): TransactionObject<string>;
 
@@ -71,7 +71,7 @@ export class FDT_ETHExtension extends Contract {
 
     isMinter(account: string): TransactionObject<boolean>;
 
-    allowance(owner: string, spender: string): TransactionObject<BN>;
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     withdrawFunds(): TransactionObject<void>;
   };
@@ -81,30 +81,30 @@ export class FDT_ETHExtension extends Contract {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     FundsDistributed: ContractEvent<{
       by: string;
-      fundsDistributed: BN;
+      fundsDistributed: string;
       0: string;
-      1: BN;
+      1: string;
     }>;
     FundsWithdrawn: ContractEvent<{
       by: string;
-      fundsWithdrawn: BN;
+      fundsWithdrawn: string;
       0: string;
-      1: BN;
+      1: string;
     }>;
     allEvents: (
       options?: EventOptions,

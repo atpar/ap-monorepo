@@ -25,7 +25,7 @@ export class IAssetRegistry extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,16 +33,16 @@ export class IAssetRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
-      0: BN;
-      1: BN;
+      0: string;
+      1: string;
     }>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<BN>;
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     computeEventTimeForEvent(
       _event: string | number[],
@@ -95,9 +95,9 @@ export class IAssetRegistry extends Contract {
         periodCap: number | string;
         periodFloor: number | string;
       }
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -139,88 +139,88 @@ export class IAssetRegistry extends Contract {
     getTerms(
       assetId: string | number[]
     ): TransactionObject<{
-      calendar: BN;
-      contractRole: BN;
-      dayCountConvention: BN;
-      businessDayConvention: BN;
-      endOfMonthConvention: BN;
-      scalingEffect: BN;
-      penaltyType: BN;
-      feeBasis: BN;
-      creditEventTypeCovered: BN;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      creditEventTypeCovered: string;
       contractReference_1: {
         object: string;
-        contractReferenceType: BN;
-        contractReferenceRole: BN;
+        contractReferenceType: string;
+        contractReferenceRole: string;
       };
       contractReference_2: {
         object: string;
-        contractReferenceType: BN;
-        contractReferenceRole: BN;
+        contractReferenceType: string;
+        contractReferenceRole: string;
       };
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string;
-      statusDate: BN;
-      maturityDate: BN;
-      notionalPrincipal: BN;
-      nominalInterestRate: BN;
-      feeAccrued: BN;
-      accruedInterest: BN;
-      rateMultiplier: BN;
-      rateSpread: BN;
-      feeRate: BN;
-      nextResetRate: BN;
-      penaltyRate: BN;
-      premiumDiscountAtIED: BN;
-      priceAtPurchaseDate: BN;
-      nextPrincipalRedemptionPayment: BN;
-      coverageOfCreditEnhancement: BN;
-      gracePeriod: { i: BN; p: BN; isSet: boolean };
-      delinquencyPeriod: { i: BN; p: BN; isSet: boolean };
-      lifeCap: BN;
-      lifeFloor: BN;
-      periodCap: BN;
-      periodFloor: BN;
+      statusDate: string;
+      maturityDate: string;
+      notionalPrincipal: string;
+      nominalInterestRate: string;
+      feeAccrued: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      rateSpread: string;
+      feeRate: string;
+      nextResetRate: string;
+      penaltyRate: string;
+      premiumDiscountAtIED: string;
+      priceAtPurchaseDate: string;
+      nextPrincipalRedemptionPayment: string;
+      coverageOfCreditEnhancement: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      lifeCap: string;
+      lifeFloor: string;
+      periodCap: string;
+      periodFloor: string;
     }>;
 
     getState(
       assetId: string | number[]
     ): TransactionObject<{
-      contractPerformance: BN;
-      statusDate: BN;
-      nonPerformingDate: BN;
-      maturityDate: BN;
-      executionDate: BN;
-      notionalPrincipal: BN;
-      accruedInterest: BN;
-      feeAccrued: BN;
-      nominalInterestRate: BN;
-      interestScalingMultiplier: BN;
-      notionalScalingMultiplier: BN;
-      nextPrincipalRedemptionPayment: BN;
-      executionAmount: BN;
+      contractPerformance: string;
+      statusDate: string;
+      nonPerformingDate: string;
+      maturityDate: string;
+      executionDate: string;
+      notionalPrincipal: string;
+      accruedInterest: string;
+      feeAccrued: string;
+      nominalInterestRate: string;
+      interestScalingMultiplier: string;
+      notionalScalingMultiplier: string;
+      nextPrincipalRedemptionPayment: string;
+      executionAmount: string;
     }>;
 
     getFinalizedState(
       assetId: string | number[]
     ): TransactionObject<{
-      contractPerformance: BN;
-      statusDate: BN;
-      nonPerformingDate: BN;
-      maturityDate: BN;
-      executionDate: BN;
-      notionalPrincipal: BN;
-      accruedInterest: BN;
-      feeAccrued: BN;
-      nominalInterestRate: BN;
-      interestScalingMultiplier: BN;
-      notionalScalingMultiplier: BN;
-      nextPrincipalRedemptionPayment: BN;
-      executionAmount: BN;
+      contractPerformance: string;
+      statusDate: string;
+      nonPerformingDate: string;
+      maturityDate: string;
+      executionDate: string;
+      notionalPrincipal: string;
+      accruedInterest: string;
+      feeAccrued: string;
+      nominalInterestRate: string;
+      interestScalingMultiplier: string;
+      notionalScalingMultiplier: string;
+      nextPrincipalRedemptionPayment: string;
+      executionAmount: string;
     }>;
 
-    getAnchorDate(assetId: string | number[]): TransactionObject<BN>;
+    getAnchorDate(assetId: string | number[]): TransactionObject<string>;
 
     getEngineAddress(assetId: string | number[]): TransactionObject<string>;
 
@@ -233,7 +233,7 @@ export class IAssetRegistry extends Contract {
     getScheduleIndex(
       assetId: string | number[],
       scheduleId: number | string
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
 
     incrementScheduleIndex(
       assetId: string | number[],

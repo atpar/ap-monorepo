@@ -25,7 +25,7 @@ export class MarketObjectRegistry extends Contract {
       object: string | number[]
     ): TransactionObject<{
       0: string;
-      1: BN;
+      1: string;
     }>;
 
     encodeCollateralAsObject(
@@ -33,7 +33,7 @@ export class MarketObjectRegistry extends Contract {
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<BN>;
+    ONE_POINT_ZERO(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;
 
@@ -41,7 +41,7 @@ export class MarketObjectRegistry extends Contract {
 
     isOwner(): TransactionObject<boolean>;
 
-    PRECISION(): TransactionObject<BN>;
+    PRECISION(): TransactionObject<string>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
@@ -60,13 +60,13 @@ export class MarketObjectRegistry extends Contract {
       marketObjectId: string | number[],
       timestamp: number | string
     ): TransactionObject<{
-      0: BN;
+      0: string;
       1: boolean;
     }>;
 
     getMarketObjectLastUpdatedTimestamp(
       marketObjectId: string | number[]
-    ): TransactionObject<BN>;
+    ): TransactionObject<string>;
   };
   events: {
     UpdatedMarketObjectProvider: ContractEvent<{
@@ -77,9 +77,9 @@ export class MarketObjectRegistry extends Contract {
     }>;
     PublishedDataPoint: ContractEvent<{
       marketObjectId: string;
-      dataPoint: BN;
+      dataPoint: string;
       0: string;
-      1: BN;
+      1: string;
     }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;

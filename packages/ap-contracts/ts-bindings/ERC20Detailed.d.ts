@@ -26,7 +26,7 @@ export class ERC20Detailed extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    totalSupply(): TransactionObject<BN>;
+    totalSupply(): TransactionObject<string>;
 
     transferFrom(
       sender: string,
@@ -34,37 +34,37 @@ export class ERC20Detailed extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    balanceOf(account: string): TransactionObject<BN>;
+    balanceOf(account: string): TransactionObject<string>;
 
     transfer(
       recipient: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
-    allowance(owner: string, spender: string): TransactionObject<BN>;
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     name(): TransactionObject<string>;
 
     symbol(): TransactionObject<string>;
 
-    decimals(): TransactionObject<BN>;
+    decimals(): TransactionObject<string>;
   };
   events: {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

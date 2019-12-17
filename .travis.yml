@@ -17,4 +17,4 @@ deploy:
   github_token: $GITHUB_TOKEN
   target-branch: gh-pages
   on:
-    branch: MS1
+    branch: master

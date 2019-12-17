@@ -21,22 +21,22 @@ export class IFundsDistributionToken extends Contract {
   );
   clone(): IFundsDistributionToken;
   methods: {
-    withdrawableFundsOf(owner: string): TransactionObject<BN>;
+    withdrawableFundsOf(owner: string): TransactionObject<string>;
 
     withdrawFunds(): TransactionObject<void>;
   };
   events: {
     FundsDistributed: ContractEvent<{
       by: string;
-      fundsDistributed: BN;
+      fundsDistributed: string;
       0: string;
-      1: BN;
+      1: string;
     }>;
     FundsWithdrawn: ContractEvent<{
       by: string;
-      fundsWithdrawn: BN;
+      fundsWithdrawn: string;
       0: string;
-      1: BN;
+      1: string;
     }>;
     allEvents: (
       options?: EventOptions,
