@@ -8,21 +8,21 @@ export interface OrderParams {
   customTerms: CustomTerms;
   ownership: AssetOwnership;
   expirationDate: string;
-  enhancement_1: {
+  enhancement_1?: {
     termsHash: string;
     productId: string;
     customTerms: CustomTerms;
     ownership: AssetOwnership;
     engine: string;
-  };
+  } | null;
   engine: string;
-  enhancement_2: {
+  enhancement_2?: {
     termsHash: string;
     productId: string;
     customTerms: CustomTerms;
     ownership: AssetOwnership;
     engine: string;
-  };
+  } | null;
 }
 
 export interface OrderData {

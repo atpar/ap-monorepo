@@ -51,31 +51,7 @@ export async function getDefaultOrderParams (productId: string): Promise<APTypes
       counterpartyBeneficiary: counterparty
     },
     expirationDate: String(terms.contractDealDate),
-    engine: ap.contracts.pamEngine.options.address,
-    enhancement_1: {
-      termsHash: ap.utils.constants.ZERO_BYTES32,
-      productId: ap.utils.constants.ZERO_BYTES32,
-      customTerms: ap.utils.convert.toCustomTerms(terms), // arbitrary customTerms
-      ownership: {
-        creatorObligor: ap.utils.constants.ZERO_ADDRESS,
-        creatorBeneficiary: ap.utils.constants.ZERO_ADDRESS,
-        counterpartyObligor: ap.utils.constants.ZERO_ADDRESS,
-        counterpartyBeneficiary: ap.utils.constants.ZERO_ADDRESS
-      },
-      engine: ap.utils.constants.ZERO_ADDRESS
-    },
-    enhancement_2: {
-      termsHash: ap.utils.constants.ZERO_BYTES32,
-      productId: ap.utils.constants.ZERO_BYTES32,
-      customTerms: ap.utils.convert.toCustomTerms(terms), // arbitrary customTerms
-      ownership: {
-        creatorObligor: ap.utils.constants.ZERO_ADDRESS,
-        creatorBeneficiary: ap.utils.constants.ZERO_ADDRESS,
-        counterpartyObligor: ap.utils.constants.ZERO_ADDRESS,
-        counterpartyBeneficiary: ap.utils.constants.ZERO_ADDRESS
-      },
-      engine: ap.utils.constants.ZERO_ADDRESS
-    }
+    engine: ap.contracts.pamEngine.options.address
   }
 }
 

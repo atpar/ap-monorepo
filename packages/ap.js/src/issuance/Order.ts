@@ -1,5 +1,6 @@
-import { AP } from "../";
-import { OrderParams, OrderData, isOrderData } from "../types";
+import { AP } from '../';
+import { OrderParams, OrderData, isOrderData } from '../types';
+import { EMPTY_ENHANCEMENT_PARAMS } from '../utils/Constants';
 
 
 export class Order {
@@ -77,6 +78,28 @@ export class Order {
    * @returns {Order}
    */
   public static create (ap: AP, orderParams: OrderParams): Order {
+    const enhancementOrder_1 = (orderParams.enhancement_1) ? {
+      termsHash: orderParams.enhancement_1.termsHash,
+      productId: orderParams.enhancement_1.productId,
+      customTerms: orderParams.enhancement_1.customTerms,
+      ownership: orderParams.enhancement_1.ownership,
+      engine: orderParams.enhancement_1.engine,
+      creatorSignature: ap.utils.constants.ZERO_BYTES,
+      counterpartySignature: ap.utils.constants.ZERO_BYTES,
+      salt: Math.floor(Math.random() * 1000000)
+    } : EMPTY_ENHANCEMENT_PARAMS;
+
+    const enhancementOrder_2 = (orderParams.enhancement_2) ? {
+      termsHash: orderParams.enhancement_2.termsHash,
+      productId: orderParams.enhancement_2.productId,
+      customTerms: orderParams.enhancement_2.customTerms,
+      ownership: orderParams.enhancement_2.ownership,
+      engine: orderParams.enhancement_2.engine,
+      creatorSignature: ap.utils.constants.ZERO_BYTES,
+      counterpartySignature: ap.utils.constants.ZERO_BYTES,
+      salt: Math.floor(Math.random() * 1000000)
+    } : EMPTY_ENHANCEMENT_PARAMS;
+
     const orderData: OrderData = {
       termsHash: orderParams.termsHash,
       productId: orderParams.productId,
@@ -85,27 +108,8 @@ export class Order {
       expirationDate: orderParams.expirationDate,
       engine: orderParams.engine,
       actor: ap.contracts.assetActor.options.address,
-      enhancementOrder_1: {
-        termsHash: orderParams.enhancement_1.termsHash,
-        productId: orderParams.enhancement_1.productId,
-        customTerms: orderParams.enhancement_1.customTerms,
-        ownership: orderParams.enhancement_1.ownership,
-        engine: orderParams.enhancement_1.engine,
-        creatorSignature: ap.utils.constants.ZERO_BYTES,
-        counterpartySignature: ap.utils.constants.ZERO_BYTES,
-        salt: Math.floor(Math.random() * 1000000)
-
-      },
-      enhancementOrder_2: {
-        termsHash: orderParams.enhancement_2.termsHash,
-        productId: orderParams.enhancement_2.productId,
-        customTerms: orderParams.enhancement_2.customTerms,
-        ownership: orderParams.enhancement_2.ownership,
-        engine: orderParams.enhancement_2.engine,
-        creatorSignature: ap.utils.constants.ZERO_BYTES,
-        counterpartySignature: ap.utils.constants.ZERO_BYTES,
-        salt: Math.floor(Math.random() * 1000000)
-      },
+      enhancementOrder_1,
+      enhancementOrder_2,
       creatorSignature: ap.utils.constants.ZERO_BYTES,
       counterpartySignature: ap.utils.constants.ZERO_BYTES,
       salt: Math.floor(Math.random() * 1000000)
