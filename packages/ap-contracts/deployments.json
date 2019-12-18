@@ -14,17 +14,17 @@
     "TokenizationFactory": "0xA240Ee48f8dD44CdEeAC513C6fd6739F0C6bE46c"
   },
   "5": {
-    "ANNEngine": "",
-    "AssetActor": "",
-    "AssetIssuer": "",
-    "AssetRegistry": "",
-    "CECEngine": "",
-    "CEGEngine": "",
-    "Custodian": "",
-    "MarketObjectRegistry": "",
-    "PAMEngine": "",
-    "ProductRegistry": "",
-    "SignedMath": "",
-    "TokenizationFactory": ""
+    "ANNEngine": "0x99422910c1805e5f007bf05c9bea637672BA18C4",
+    "AssetActor": "0xD9822944488E79A4601e9DAbD56085126b8a9Df5",
+    "AssetIssuer": "0x9f2C94F6187667Af2492a1BAFe83bd1506A5da21",
+    "AssetRegistry": "0x034F067372041829FeB830217F24492248850A46",
+    "CECEngine": "0x90310C32f6e043de6A1b43d2F450741b884054dc",
+    "CEGEngine": "0xc1a46B4BfCBe96c70D5d3e6E7296306EA97582C2",
+    "Custodian": "0xf822872DbDE80b8bc6419f9Ebb31ff6DaaFDff16",
+    "MarketObjectRegistry": "0x8ee3Ad4F365D7499cFe058CFBc74f798B330f8ce",
+    "PAMEngine": "0xD520f70c570a6f0a2789A3d7E68831D8A36Da9Af",
+    "ProductRegistry": "0x731714BB0013e3ADdf3338415b38C2e22764E285",
+    "SignedMath": "0xE8746f7E08310d51A63ABdbE739Ae0a0d3c35f77",
+    "TokenizationFactory": "0x8DbC6c0A201a617C77985779ead6F96B0Cf6526d"
   }
 }
