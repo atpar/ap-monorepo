@@ -32,6 +32,7 @@ import { AddressBook } from '../types';
 export class Contracts {
 
   private _engine: IEngine;
+  private _distributor: FDT_ERC20Extension;
 
   public annEngine: ANNEngine;
   public pamEngine: PAMEngine;
@@ -46,7 +47,6 @@ export class Contracts {
   public productRegistry: ProductRegistry;
   public signedMath: SignedMath;
   public tokenizationFactory: TokenizationFactory;
-  public fundsDistributionTokenERC20Extension: FDT_ERC20Extension;
 
 
   /**
@@ -84,12 +84,12 @@ export class Contracts {
     // @ts-ignore
     this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory) as TokenizationFactory;
     // @ts-ignore
-    this.fundsDistributionTokenERC20Extension = new web3.eth.Contract(FDT_ERC20ExtensionArtifact.abi) as FDT_ERC20Extension;
+    this._distributor = new web3.eth.Contract(FDT_ERC20ExtensionArtifact.abi) as FDT_ERC20Extension;
   }
 
   /**
-   * Returns ACTUS engine contract by ContractType.
-   * @param {ContractType | string} contractTypeOrAddress ContractType or address of the engine 
+   * Instantiates ACTUS engine contract by with a provided address and returns the instance.
+   * @param {string} address address of the engine 
    * @returns {IEngine} Instance of IEngine
    */
   public engine (address: string): IEngine {
@@ -97,5 +97,17 @@ export class Contracts {
     engine.options.address = address;
 
     return engine;
+  }
+
+  /**
+   * Instantiates distributor contract (FDT) by with a provided address and returns the instance.
+   * @param {string} address address of the distributor (FDT) 
+   * @returns {FDT_ERC20Extension} Instance of FDT_ERC20Extension
+   */
+  public distributor(address: string): FDT_ERC20Extension {
+    const distributor = this._distributor.clone();
+    distributor.options.address = address;
+
+    return distributor;
   }
 }

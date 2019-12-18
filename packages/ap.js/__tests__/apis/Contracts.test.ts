@@ -43,18 +43,15 @@ describe('Contracts', () => {
     expect(initializedAddresses).toEqual(addressBook);
   });
 
-  it('should return instance of IEngine for a given contract type or address', async () => {
+  it('should return instance of IEngine for a given address', async () => {
     expect(
-      contracts.engine(contracts.annEngine.options.address).options.address === contracts.annEngine.options.address
-    ).toBe(true);
-    expect(
-      contracts.engine(contracts.cegEngine.options.address).options.address === contracts.cegEngine.options.address
-    ).toBe(true);
-    expect(
-      contracts.engine(contracts.cecEngine.options.address).options.address === contracts.cecEngine.options.address
-    ).toBe(true);
-    expect(
-      contracts.engine(contracts.pamEngine.options.address).options.address === contracts.pamEngine.options.address
+      contracts.engine('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);    
+  });
+
+  it('should return instance of FDT_ERC20Extension for a given address', async () => {
+    expect(
+      contracts.distributor('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
+    ).toBe(true);
   });
 });
