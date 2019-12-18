@@ -54,4 +54,10 @@ describe('Contracts', () => {
       contracts.distributor('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);
   });
+
+  it('should return instance of ERC20 for a given address', async () => {
+    expect(
+      contracts.erc20('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
+    ).toBe(true);
+  });
 });

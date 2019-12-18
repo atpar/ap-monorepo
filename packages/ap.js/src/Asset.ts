@@ -13,7 +13,6 @@ import { AP } from './index';
 import BN from 'bn.js';
 
 
-
 /**
  * Class which provides methods for managing an ACTUS asset.
  * Exposes methods for ownership management (incl. tokenization), settlement of payoffs and 
@@ -194,12 +193,24 @@ export class Asset {
   /**
    * Derives obligations by computing the next state of the asset and
    * stores the new state if all obligation where fulfilled.
-   * @return {Promise<void>}
+   * @return {Promise<any>}
    */
   public async progress (): Promise<any> {
     return await this.ap.contracts.assetActor.methods.progress(this.assetId).send(
       { from: this.ap.signer.account, gas: 750000 }
     );
+  }
+
+  /**
+   * Sets sufficient allowance for the AssetActor to transfer the next payment on the users behalf
+   * @return {Promise<any>}
+   */
+  public async approveNextPayment (): Promise<any> {
+    const actor = await this.getActorAddress();
+    const payment = await this.getNextPayment();
+
+    const erc20 = this.ap.contracts.erc20(payment.token);
+    return await erc20.methods.approve(actor, payment.amount).send({ from: this.ap.signer.account });
   }
 
   /**

@@ -186,4 +186,3 @@ function convertDatesToOffsets (terms: Terms): Terms {
 function normalizeDate (anchorDate: number | string, date: number | string): string {
   return (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0';
 }
-

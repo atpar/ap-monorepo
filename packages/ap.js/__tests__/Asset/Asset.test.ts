@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
 
 import { AP, Asset } from '../../src';
 import { issueDefaultAsset } from '../utils';
@@ -79,12 +78,9 @@ describe('Asset', () => {
 
   it('should progress the asset state', async () => {
     const asset = await Asset.load(apRC, assetId);
-    const terms = await asset.getTerms();
-    const sampleToken = new web3.eth.Contract(ERC20SampleTokenArtifact.abi, terms.currency);
-    const payoff = await asset.getNextPayment();
     const event = apRC.utils.schedule.decodeEvent(await asset.getNextEvent());
 
-    await sampleToken.methods.approve(apRC.contracts.assetActor.options.address, payoff.amount);
+    await asset.approveNextPayment();
     const tx = await asset.progress();
 
     expect(Number(tx.events.ProgressedAsset.returnValues.eventType)).toBe(event.eventType);

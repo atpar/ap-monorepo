@@ -10,6 +10,7 @@ import ProductRegistryArtifact from '@atpar/ap-contracts/artifacts/ProductRegist
 import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
 import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/TokenizationFactory.min.json';
 import FDT_ERC20ExtensionArtifact from '@atpar/ap-contracts/artifacts/FDT_ERC20Extension.min.json';
+import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 
 import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
@@ -25,6 +26,7 @@ import { ProductRegistry } from '@atpar/ap-contracts/ts-bindings/ProductRegistry
 import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/TokenizationFactory';
 import { FDT_ERC20Extension } from '@atpar/ap-contracts/ts-bindings/FDT_ERC20Extension';
+import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 
 import { AddressBook } from '../types';
 
@@ -33,6 +35,7 @@ export class Contracts {
 
   private _engine: IEngine;
   private _distributor: FDT_ERC20Extension;
+  private _erc20: ERC20;
 
   public annEngine: ANNEngine;
   public pamEngine: PAMEngine;
@@ -85,6 +88,8 @@ export class Contracts {
     this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory) as TokenizationFactory;
     // @ts-ignore
     this._distributor = new web3.eth.Contract(FDT_ERC20ExtensionArtifact.abi) as FDT_ERC20Extension;
+    // @ts-ignore
+    this._erc20 = new web3.eth.Contract(ERC20Artifact.abi) as ERC20;
   }
 
   /**
@@ -109,5 +114,12 @@ export class Contracts {
     distributor.options.address = address;
 
     return distributor;
+  }
+
+  public erc20(address: string): ERC20 {
+    const erc20 = this._erc20.clone();
+    erc20.options.address = address;
+
+    return erc20;
   }
 }
