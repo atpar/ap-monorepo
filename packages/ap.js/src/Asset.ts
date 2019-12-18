@@ -209,6 +209,8 @@ export class Asset {
     const actor = await this.getActorAddress();
     const payment = await this.getNextPayment();
 
+    if (payment.payer !== this.ap.signer.account) { return; }
+
     const erc20 = this.ap.contracts.erc20(payment.token);
     return await erc20.methods.approve(actor, payment.amount).send({ from: this.ap.signer.account });
   }
