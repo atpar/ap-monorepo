@@ -1,4 +1,4 @@
 *.sol linguist-language=Solidity
 
-packages/docs/* linguist-vendored
+packages/ap.js/docs/* linguist-vendored
 linguist-vendored=false
