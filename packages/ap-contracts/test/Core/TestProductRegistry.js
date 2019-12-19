@@ -1,3 +1,5 @@
+const { shouldFail } = require('openzeppelin-test-helpers');
+
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
@@ -162,4 +164,11 @@ contract('ProductRegistry', (accounts) => {
     assert.deepEqual(storedCyclicFPSchedule, this.productSchedules.cyclicFPSchedule);
     assert.deepEqual(storedCyclicPYSchedule, this.productSchedules.cyclicPYSchedule);
   });
+
+  it('should not register same product twice', async () => {
+    await shouldFail.reverting.withMessage(
+      this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules),
+      'ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS'
+    );
+  });  
 });
