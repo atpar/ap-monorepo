@@ -4,7 +4,7 @@ import Deployments from '@atpar/ap-contracts/deployments.json';
 import * as APTypes from './types';
 
 import { Asset } from './Asset';
-import { Order } from './issuance/Order';
+import { Order } from './Order';
 import { Contracts, Signer, Utils } from './apis';
 import { AddressBook } from './types';
 

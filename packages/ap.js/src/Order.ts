@@ -1,6 +1,6 @@
-import { AP } from '../';
-import { OrderParams, OrderData, isOrderData } from '../types';
-import { EMPTY_ENHANCEMENT_PARAMS } from '../utils/Constants';
+import { AP } from '.';
+import { OrderParams, OrderData, isOrderData } from './types';
+import { EMPTY_ENHANCEMENT_PARAMS } from './utils/Constants';
 
 
 export class Order {
