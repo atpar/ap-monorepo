@@ -14,40 +14,46 @@ const Custodian = artifacts.require('Custodian');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 
+const { registerProduct } = require('../test/helper/utils');
+
+const B3MB = require('../products/b3mb.json');
+
 
 module.exports = async (deployer, network, accounts) => {
+  const instances = {};
+
   // ACTUS-Solidity
-  await deployer.deploy(SignedMath);
+  instances.SignedMathInstance = await deployer.deploy(SignedMath);
   await deployer.link(SignedMath, PAMEngine);
-  await deployer.deploy(PAMEngine);
+  instances.PAMEngineInstance = await deployer.deploy(PAMEngine);
   await deployer.link(SignedMath, ANNEngine);
-  await deployer.deploy(ANNEngine);
+  instances.ANNEngineInstance = await deployer.deploy(ANNEngine);
   await deployer.link(SignedMath, CEGEngine);
-  await deployer.deploy(CEGEngine);
+  instances.CEGEngineInstance = await deployer.deploy(CEGEngine);
   await deployer.link(SignedMath, CECEngine);
-  await deployer.deploy(CECEngine);
+  instances.CECEngineInstance = await deployer.deploy(CECEngine);
 
   // Core
-  await deployer.deploy(MarketObjectRegistry);
-  await deployer.deploy(ProductRegistry);
-  await deployer.deploy(
+  instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
+  instances.ProductRegistryInstance = await deployer.deploy(ProductRegistry);
+  instances.AssetRegistryInstance = await deployer.deploy(
     AssetRegistry,
     ProductRegistry.address
   );
-  const AssetActorInstance = await deployer.deploy(
+  instances.AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
     ProductRegistry.address,
     MarketObjectRegistry.address
   );
-  await deployer.deploy(
+  instances.CustodianInstance = await deployer.deploy(
     Custodian,
     AssetActor.address,
     AssetRegistry.address
   );
 
   // Issuance
-  await deployer.deploy(
+  instances.AssetIssuerInstance = await deployer.deploy(
     AssetIssuer,
     Custodian.address,
     ProductRegistry.address,
@@ -55,12 +61,12 @@ module.exports = async (deployer, network, accounts) => {
   );
 
   // Tokenization
-  await deployer.deploy(
+  instances.TokenizationFactoryInstance = await deployer.deploy(
     TokenizationFactory,
     AssetRegistry.address
   );
 
-  await AssetActorInstance.registerIssuer(AssetIssuer.address);
+  await instances.AssetActorInstance.registerIssuer(AssetIssuer.address);
 
   console.log(`
     Deployments:
@@ -78,4 +84,7 @@ module.exports = async (deployer, network, accounts) => {
       SignedMath: ${SignedMath.address}
       TokenizationFactory: ${TokenizationFactory.address}
   `);
+
+  // registering standard products
+  const productId_1 = await registerProduct(instances, B3MB.terms);
 };

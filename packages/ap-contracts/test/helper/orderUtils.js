@@ -1,3 +1,6 @@
+const Web3Utils = require('web3-utils');
+const Web3EthAbi = require('web3-eth-abi');
+
 const _toTuple = (obj) => {
   if (!(obj instanceof Object)) { return []; }
   var output = [];
@@ -22,7 +25,7 @@ const _toTuple = (obj) => {
 };
 
 function deriveProductId (productTerms, productSchedules) {
-  const productTermsHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+  const productTermsHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {  
       "components": [
         {
@@ -164,7 +167,7 @@ function deriveProductId (productTerms, productSchedules) {
     _toTuple(productTerms)
   ));
 
-  const productSchedulesHash = web3.utils.keccak256(web3.eth.abi.encodeParameter(
+  const productSchedulesHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {
       "components": [
         {
@@ -202,14 +205,14 @@ function deriveProductId (productTerms, productSchedules) {
     _toTuple(productSchedules)
   ));
 
-  return web3.utils.keccak256(web3.eth.abi.encodeParameters(
+  return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     ['bytes32', 'bytes32'],
     [productTermsHash, productSchedulesHash]
   ));
 }
 
 function getCustomTermsHash (customTerms) {
-  return web3.utils.keccak256(web3.eth.abi.encodeParameter(
+  return Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {
       "components": [
         {
@@ -289,7 +292,7 @@ function getCustomTermsHash (customTerms) {
 }
 
 function getTermsHash (terms) {
-  return web3.utils.keccak256(web3.eth.abi.encodeParameter(
+  return Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {
       "components": [
         {
@@ -659,7 +662,7 @@ function getTermsHash (terms) {
 }
 
 function getOwnershipHash (ownership) {
-  return web3.utils.keccak256(web3.eth.abi.encodeParameters(
+  return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     ['address', 'address', 'address', 'address'],
     [
       ownership.creatorObligor,
@@ -671,13 +674,13 @@ function getOwnershipHash (ownership) {
 }
 
 function getDraftEnhancementOrderHash (enhancementOrder) {
-  const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3.utils.keccak256(
+  const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = Web3Utils.keccak256(
     "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
   );
 
   const customTermsHash = getCustomTermsHash(enhancementOrder.customTerms);
 
-  return web3.utils.keccak256(web3.eth.abi.encodeParameters(
+  return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     [
       'bytes32', 'bytes32', 'bytes32', 'uint256', 'address', 'uint256'
     ],
@@ -899,8 +902,8 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
 };
 
 function getAssetIdFromOrderData (orderData) {
-  return web3.utils.keccak256(
-    web3.eth.abi.encodeParameters(
+  return Web3Utils.keccak256(
+    Web3EthAbi.encodeParameters(
       ['bytes', 'bytes'],
       [orderData.creatorSignature, orderData.counterpartySignature]
     )
@@ -924,7 +927,7 @@ function sign(typedData, account) {
 function getDefaultOrderData(terms, productId, customTerms, ownership, engine, actor) {
   return { 
     termsHash: getTermsHash(terms),
-    productId: web3.utils.toHex(productId),
+    productId: Web3Utils.toHex(productId),
     customTerms: customTerms,
     expirationDate: '10000000000',
     ownership: ownership,
@@ -972,7 +975,7 @@ function getDefaultOrderDataWithEnhancement(
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
-    productId: web3.utils.toHex(underlyingProductId),
+    productId: Web3Utils.toHex(underlyingProductId),
     customTerms: underlyingCustomTerms,
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
@@ -980,7 +983,7 @@ function getDefaultOrderDataWithEnhancement(
     actor: underlyingActor,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms),
-      productId: web3.utils.toHex(enhancementProductId),
+      productId: Web3Utils.toHex(enhancementProductId),
       customTerms: enhancementCustomTerms,
       ownership: enhancementOwnership,
       engine: enhancementEngine,
@@ -1016,7 +1019,7 @@ function getDefaultOrderDataWithEnhancements(
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
-    productId: web3.utils.toHex(underlyingProductId),
+    productId: Web3Utils.toHex(underlyingProductId),
     customTerms: underlyingCustomTerms,
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
@@ -1024,7 +1027,7 @@ function getDefaultOrderDataWithEnhancements(
     actor: underlyingActor,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms_1),
-      productId: web3.utils.toHex(enhancementProductId_1),
+      productId: Web3Utils.toHex(enhancementProductId_1),
       customTerms: enhancementCustomTerms_1,
       ownership: enhancementOwnership_1,
       engine: enhancementEngine_1,
@@ -1034,7 +1037,7 @@ function getDefaultOrderDataWithEnhancements(
     },
     enhancementOrder_2: {
       termsHash: getTermsHash(enhancementTerms_2),
-      productId: web3.utils.toHex(enhancementProductId_2),
+      productId: Web3Utils.toHex(enhancementProductId_2),
       customTerms: enhancementCustomTerms_2,
       ownership: enhancementOwnership_2,
       engine: enhancementEngine_2,

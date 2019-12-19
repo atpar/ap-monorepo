@@ -3,12 +3,11 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 
 const AssetIssuer = artifacts.require('AssetIssuer.sol');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
 const {
   deriveTerms,
   registerProduct,
-  deployPaymentToken,
   ZERO_BYTES,
   ZERO_ADDRESS
 } = require('../helper/utils');

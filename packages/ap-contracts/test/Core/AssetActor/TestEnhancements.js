@@ -1,7 +1,7 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain')
 const {
   getDefaultOrderDataWithEnhancement,
@@ -14,7 +14,6 @@ const {
 const {
   deriveTerms,
   registerProduct,
-  deployPaymentToken,
   ZERO_ADDRESS,
   ZERO_BYTES32,
   ZERO_BYTES

@@ -1,14 +1,14 @@
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { 
-  setupTestEnvironment,
-  getDefaultTerms,
+const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
+
+const { deriveProductId } = require('../helper/orderUtils');
+
+const {
   convertDatesToOffsets,
   parseTermsToProductTerms,
   parseTermsToCustomTerms
-} = require('../helper/setupTestEnvironment');
-
-const { deriveProductId } = require('../helper/orderUtils');
+} = require('../helper/utils');
 
 
 contract('ProductRegistry', (accounts) => {

@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerProduct, deployPaymentToken } = require('../helper/utils');
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { deriveTerms, registerProduct } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';

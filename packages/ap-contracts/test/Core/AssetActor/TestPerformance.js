@@ -1,9 +1,9 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms } = require('../../helper/setupTestEnvironment');
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
-const { deriveTerms, registerProduct, deployPaymentToken } = require('../../helper/utils');
+const { deriveTerms, registerProduct } = require('../../helper/utils');
 
 const AssetActor = artifacts.require('AssetActor');
 
