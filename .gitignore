@@ -1,14 +1,13 @@
 # ap.js
 dist/
-docs/
 CNAME
-
 
 # ap-contracts
 build/
 artifacts/
-
 mnemonic.js
+
+docs/
 
 node_modules/
 
