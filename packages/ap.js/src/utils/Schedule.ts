@@ -1,6 +1,6 @@
 import Web3Utils from 'web3-utils';
 
-import { Terms, ProductSchedule } from '../types';
+import { Terms, TemplateSchedule } from '../types';
 import { toGeneratingTerms } from './Conversions';
 import { Contract } from 'web3-eth-contract';
 
@@ -25,7 +25,7 @@ export function getEpochOffsetForEventType (eventType: number): number {
   return 0;
 }
 
-export async function generateProductSchedule (engineContract: Contract, terms: Terms): Promise<ProductSchedule> {
+export async function generateTemplateSchedule (engineContract: Contract, terms: Terms): Promise<TemplateSchedule> {
   if (
     !engineContract
     || !engineContract.methods

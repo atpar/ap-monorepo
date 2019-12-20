@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerProduct } = require('../helper/utils');
+const { deriveTerms, registerTemplate } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -38,9 +38,9 @@ contract('AssetRegistry', (accounts) => {
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
-    // register product
+    // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.productId = await registerProduct(this.instances, this.terms);
+    this.templateId = await registerTemplate(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
   });
@@ -49,7 +49,7 @@ contract('AssetRegistry', (accounts) => {
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      web3.utils.toHex(this.productId),
+      web3.utils.toHex(this.templateId),
       this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
@@ -96,7 +96,7 @@ contract('AssetRegistry', (accounts) => {
       this.AssetRegistryInstance.registerAsset(
         web3.utils.toHex(this.assetId),
         this.ownership,
-        web3.utils.toHex(this.productId),
+        web3.utils.toHex(this.templateId),
         this.customTerms,
         this.state,
         this.PAMEngineInstance.address,

@@ -27,7 +27,7 @@ export const EMPTY_CUSTOM_TERMS = {
 
 export const EMPTY_ENHANCEMENT_PARAMS = {
   termsHash: ZERO_BYTES32,
-  productId: ZERO_BYTES32,
+  templateId: ZERO_BYTES32,
   customTerms: EMPTY_CUSTOM_TERMS,
   ownership: EMPTY_OWNERSHIP,
   engine: ZERO_ADDRESS,

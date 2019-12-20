@@ -28,7 +28,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 
     function getActorAddress(bytes32 assetId) external view returns (address);
 
-    function getProductId(bytes32 assetId) external view returns (bytes32);
+    function getTemplateId(bytes32 assetId) external view returns (bytes32);
 
     function getNextEvent (bytes32 assetId) external view returns (bytes32);
 
@@ -43,7 +43,7 @@ contract IAssetRegistry is AssetRegistryStorage {
     function registerAsset(
         bytes32 assetId,
         AssetOwnership memory ownership,
-        bytes32 productId,
+        bytes32 templateId,
         CustomTerms memory customTerms,
         State memory state,
         address engine,

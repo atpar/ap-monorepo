@@ -79,12 +79,12 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * @notice Returns the id of the product which this asset is based on.
+     * @notice Returns the id of the template which this asset is based on.
      * @param assetId id of the asset
-     * @return id of the product
+     * @return id of the template
      */
-    function getProductId(bytes32 assetId) external view returns (bytes32) {
-        return assets[assetId].productId;
+    function getTemplateId(bytes32 assetId) external view returns (bytes32) {
+        return assets[assetId].templateId;
     }
 
     /**
@@ -101,9 +101,9 @@ contract Economics is AssetRegistryStorage {
         uint256 nextScheduleTimeOffset;
 
         // non-cyclic Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, NON_CYCLIC_INDEX) > 0) {
-            bytes32 nonCyclicEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, NON_CYCLIC_INDEX) > 0) {
+            bytes32 nonCyclicEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 NON_CYCLIC_INDEX,
                 assets[assetId].nextEventIndex[NON_CYCLIC_INDEX]
             );
@@ -120,9 +120,9 @@ contract Economics is AssetRegistryStorage {
         }
 
         // IP / IPCI Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.IP)) > 0) {
-            bytes32 ipEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, uint8(EventType.IP)) > 0) {
+            bytes32 ipEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 uint8(EventType.IP),
                 assets[assetId].nextEventIndex[uint8(EventType.IP)]
             );
@@ -139,9 +139,9 @@ contract Economics is AssetRegistryStorage {
         }
 
         // PR Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.PR)) > 0) {
-            bytes32 prEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, uint8(EventType.PR)) > 0) {
+            bytes32 prEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 uint8(EventType.PR),
                 assets[assetId].nextEventIndex[uint8(EventType.PR)]
             );
@@ -158,9 +158,9 @@ contract Economics is AssetRegistryStorage {
         }
 
         // SC Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.SC)) > 0) {
-            bytes32 scEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, uint8(EventType.SC)) > 0) {
+            bytes32 scEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 uint8(EventType.SC),
                 assets[assetId].nextEventIndex[uint8(EventType.SC)]
             );
@@ -177,9 +177,9 @@ contract Economics is AssetRegistryStorage {
         }
 
         // RR Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.RR)) > 0) {
-            bytes32 rrEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, uint8(EventType.RR)) > 0) {
+            bytes32 rrEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 uint8(EventType.RR),
                 assets[assetId].nextEventIndex[uint8(EventType.RR)]
             );
@@ -196,9 +196,9 @@ contract Economics is AssetRegistryStorage {
         }
 
         // PY Events
-        if (productRegistry.getScheduleLength(assets[assetId].productId, uint8(EventType.PY)) > 0) {
-            bytes32 pyEvent = productRegistry.getEventAtIndex(
-                assets[assetId].productId,
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId, uint8(EventType.PY)) > 0) {
+            bytes32 pyEvent = templateRegistry.getEventAtIndex(
+                assets[assetId].templateId,
                 uint8(EventType.PY),
                 assets[assetId].nextEventIndex[uint8(EventType.PY)]
             );
@@ -282,7 +282,7 @@ contract Economics is AssetRegistryStorage {
     {
         uint256 scheduleIndex = assets[assetId].nextEventIndex[scheduleId];
 
-        if (scheduleIndex == productRegistry.getScheduleLength(assets[assetId].productId, scheduleId)) {
+        if (scheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId, scheduleId)) {
             return;
         }
 

@@ -7,8 +7,8 @@ contract SharedTypes is ACTUSTypes {
 
     uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 
-    struct ProductSchedule {
-        mapping(uint256 => bytes32) productSchedule;
+    struct TemplateSchedule {
+        mapping(uint256 => bytes32) templateSchedule;
         uint256 length;
     }
 
@@ -19,7 +19,7 @@ contract SharedTypes is ACTUSTypes {
         address counterpartyBeneficiary;
     }
 
-    struct ProductSchedules {
+    struct TemplateSchedules {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] nonCyclicSchedule;
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicIPSchedule;
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPRSchedule;
@@ -29,7 +29,7 @@ contract SharedTypes is ACTUSTypes {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicFPSchedule;
     }
 
-    struct ProductTerms {
+    struct TemplateTerms {
         Calendar calendar;
         ContractRole contractRole;
         DayCountConvention dayCountConvention;
@@ -96,54 +96,54 @@ contract SharedTypes is ACTUSTypes {
         );
     }
 
-    function deriveLifecycleTerms(ProductTerms memory productTerms, CustomTerms memory customTerms)
+    function deriveLifecycleTerms(TemplateTerms memory templateTerms, CustomTerms memory customTerms)
         internal
         pure
         returns (LifecycleTerms memory)
     {
         return LifecycleTerms(
-            productTerms.calendar,
-            productTerms.contractRole,
-            productTerms.dayCountConvention,
-            productTerms.businessDayConvention,
-            productTerms.endOfMonthConvention,
-            productTerms.scalingEffect,
-            productTerms.penaltyType,
-            productTerms.feeBasis,
-            productTerms.creditEventTypeCovered,
+            templateTerms.calendar,
+            templateTerms.contractRole,
+            templateTerms.dayCountConvention,
+            templateTerms.businessDayConvention,
+            templateTerms.endOfMonthConvention,
+            templateTerms.scalingEffect,
+            templateTerms.penaltyType,
+            templateTerms.feeBasis,
+            templateTerms.creditEventTypeCovered,
 
             customTerms.contractReference_1,
             customTerms.contractReference_2,
 
-            productTerms.currency,
-            productTerms.settlementCurrency,
+            templateTerms.currency,
+            templateTerms.settlementCurrency,
 
-            productTerms.marketObjectCodeRateReset,
+            templateTerms.marketObjectCodeRateReset,
 
-            productTerms.statusDateOffset + customTerms.anchorDate,
-            productTerms.maturityDateOffset + customTerms.anchorDate,
+            templateTerms.statusDateOffset + customTerms.anchorDate,
+            templateTerms.maturityDateOffset + customTerms.anchorDate,
 
             customTerms.notionalPrincipal,
             customTerms.nominalInterestRate,
-            productTerms.feeAccrued,
-            productTerms.accruedInterest,
-            productTerms.rateMultiplier,
+            templateTerms.feeAccrued,
+            templateTerms.accruedInterest,
+            templateTerms.rateMultiplier,
             customTerms.rateSpread,
-            productTerms.feeRate,
-            productTerms.nextResetRate,
-            productTerms.penaltyRate,
+            templateTerms.feeRate,
+            templateTerms.nextResetRate,
+            templateTerms.penaltyRate,
             customTerms.premiumDiscountAtIED,
-            productTerms.priceAtPurchaseDate,
-            productTerms.nextPrincipalRedemptionPayment,
+            templateTerms.priceAtPurchaseDate,
+            templateTerms.nextPrincipalRedemptionPayment,
             customTerms.coverageOfCreditEnhancement,
 
-            productTerms.gracePeriod,
-            productTerms.delinquencyPeriod,
+            templateTerms.gracePeriod,
+            templateTerms.delinquencyPeriod,
 
             customTerms.lifeCap,
             customTerms.lifeFloor,
-            productTerms.periodCap,
-            productTerms.periodFloor
+            templateTerms.periodCap,
+            templateTerms.periodFloor
         );
     }
 

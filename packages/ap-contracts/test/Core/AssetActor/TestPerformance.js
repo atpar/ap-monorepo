@@ -3,7 +3,7 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
-const { deriveTerms, registerProduct } = require('../../helper/utils');
+const { deriveTerms, registerTemplate } = require('../../helper/utils');
 
 const AssetActor = artifacts.require('AssetActor');
 
@@ -41,9 +41,9 @@ contract('AssetActor', (accounts) => {
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
-    // register product
+    // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.productId = await registerProduct(this.instances, this.terms);
+    this.templateId = await registerTemplate(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 
@@ -58,7 +58,7 @@ contract('AssetActor', (accounts) => {
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(this.assetId),
       this.ownership,
-      web3.utils.toHex(this.productId),
+      web3.utils.toHex(this.templateId),
       this.customTerms,
       this.PAMEngineInstance.address
     );

@@ -97,14 +97,14 @@ export class IAssetRegistry extends Contract {
       }
     ): TransactionObject<string>;
 
+    templateRegistry(): TransactionObject<string>;
+
     PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
-
-    productRegistry(): TransactionObject<string>;
 
     setCreatorBeneficiary(
       assetId: string | number[],
@@ -226,7 +226,7 @@ export class IAssetRegistry extends Contract {
 
     getActorAddress(assetId: string | number[]): TransactionObject<string>;
 
-    getProductId(assetId: string | number[]): TransactionObject<string>;
+    getTemplateId(assetId: string | number[]): TransactionObject<string>;
 
     getNextEvent(assetId: string | number[]): TransactionObject<string>;
 
@@ -286,7 +286,7 @@ export class IAssetRegistry extends Contract {
         counterpartyObligor: string;
         counterpartyBeneficiary: string;
       },
-      productId: string | number[],
+      templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
         notionalPrincipal: number | string;

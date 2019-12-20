@@ -2,7 +2,7 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
-import "../Core/ProductRegistry/IProductRegistry.sol";
+import "../Core/TemplateRegistry/ITemplateRegistry.sol";
 import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "../Core/IAssetActor.sol";
 import "./IAssetIssuer.sol";
@@ -22,13 +22,13 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
     event IssuedAsset(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
 
     ICustodian public custodian;
-    IProductRegistry public productRegistry;
+    ITemplateRegistry public templateRegistry;
     IAssetRegistry public assetRegistry;
 
 
-    constructor(ICustodian _custodian, IProductRegistry _productRegistry, IAssetRegistry _assetRegistry) public {
+    constructor(ICustodian _custodian, ITemplateRegistry _templateRegistry, IAssetRegistry _assetRegistry) public {
         custodian = _custodian;
-        productRegistry = _productRegistry;
+        templateRegistry = _templateRegistry;
         assetRegistry = _assetRegistry;
     }
 
@@ -52,14 +52,14 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         (
             bytes32 assetId,
             AssetOwnership memory ownership,
-            bytes32 productId,
+            bytes32 templateId,
             CustomTerms memory customTerms,
             address engine,
             address actor
         ) = finalizeOrder(order);
 
         issueAsset(
-            assetId, ownership, productId, customTerms, engine, actor
+            assetId, ownership, templateId, customTerms, engine, actor
         );
 
         // check if first enhancement order is specified
@@ -67,14 +67,14 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             (
                 bytes32 assetId,
                 AssetOwnership memory ownership,
-                bytes32 productId,
+                bytes32 templateId,
                 CustomTerms memory customTerms,
                 address engine,
                 address actor
             ) = finalizeEnhancementOrder(order.enhancementOrder_1, order);
 
             issueAsset(
-                assetId, ownership, productId, customTerms, engine, actor
+                assetId, ownership, templateId, customTerms, engine, actor
             );
         }
 
@@ -83,14 +83,14 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             (
                 bytes32 assetId,
                 AssetOwnership memory ownership,
-                bytes32 productId,
+                bytes32 templateId,
                 CustomTerms memory customTerms,
                 address engine,
                 address actor
             ) = finalizeEnhancementOrder(order.enhancementOrder_2, order);
 
             issueAsset(
-                assetId, ownership, productId, customTerms, engine, actor
+                assetId, ownership, templateId, customTerms, engine, actor
             );
         }
 
@@ -122,10 +122,10 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
                 "AssetIssuer.finalizeOrder: INVALID_OBJECT"
             );
 
-            // derive assetId and terms of order from product terms and custom terms
+            // derive assetId and terms of order from template terms and custom terms
             assetId = keccak256(abi.encode(order.termsHash, address(custodian), order.salt));
             LifecycleTerms memory terms = deriveLifecycleTerms(
-                productRegistry.getProductTerms(order.productId),
+                templateRegistry.getTemplateTerms(order.templateId),
                 order.customTerms
             );
 
@@ -163,7 +163,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         return (
             assetId,
             order.ownership,
-            order.productId,
+            order.templateId,
             order.customTerms,
             order.engine,
             order.actor
@@ -193,14 +193,14 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             // derive assetId
             assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature, address(custodian)));
 
-            // derive terms of underlying from product terms and custom terms
+            // derive terms of underlying from template terms and custom terms
             LifecycleTerms memory underlyingTerms = deriveLifecycleTerms(
-                productRegistry.getProductTerms(order.productId),
+                templateRegistry.getTemplateTerms(order.templateId),
                 order.customTerms
             );
-            // derive terms of enhancement from product terms and custom terms
+            // derive terms of enhancement from template terms and custom terms
             LifecycleTerms memory enhancementTerms = deriveLifecycleTerms(
-                productRegistry.getProductTerms(enhancementOrder.productId),
+                templateRegistry.getTemplateTerms(enhancementOrder.templateId),
                 enhancementOrder.customTerms
             );
 
@@ -236,7 +236,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
         return (
             assetId,
             enhancementOrder.ownership,
-            enhancementOrder.productId,
+            enhancementOrder.templateId,
             enhancementOrder.customTerms,
             enhancementOrder.engine,
             order.actor
@@ -246,7 +246,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
     function issueAsset(
         bytes32 assetId,
         AssetOwnership memory ownership,
-        bytes32 productId,
+        bytes32 templateId,
         CustomTerms memory customTerms,
         address engine,
         address actor
@@ -258,7 +258,7 @@ contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
             IAssetActor(actor).initialize(
                 assetId,
                 ownership,
-                productId,
+                templateId,
                 customTerms,
                 engine
             ),

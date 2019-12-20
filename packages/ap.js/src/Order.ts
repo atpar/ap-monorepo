@@ -80,7 +80,7 @@ export class Order {
   public static create (ap: AP, orderParams: OrderParams): Order {
     const enhancementOrder_1 = (orderParams.enhancement_1) ? {
       termsHash: orderParams.enhancement_1.termsHash,
-      productId: orderParams.enhancement_1.productId,
+      templateId: orderParams.enhancement_1.templateId,
       customTerms: orderParams.enhancement_1.customTerms,
       ownership: orderParams.enhancement_1.ownership,
       engine: orderParams.enhancement_1.engine,
@@ -91,7 +91,7 @@ export class Order {
 
     const enhancementOrder_2 = (orderParams.enhancement_2) ? {
       termsHash: orderParams.enhancement_2.termsHash,
-      productId: orderParams.enhancement_2.productId,
+      templateId: orderParams.enhancement_2.templateId,
       customTerms: orderParams.enhancement_2.customTerms,
       ownership: orderParams.enhancement_2.ownership,
       engine: orderParams.enhancement_2.engine,
@@ -102,7 +102,7 @@ export class Order {
 
     const orderData: OrderData = {
       termsHash: orderParams.termsHash,
-      productId: orderParams.productId,
+      templateId: orderParams.templateId,
       customTerms: orderParams.customTerms,
       ownership: orderParams.ownership,
       expirationDate: orderParams.expirationDate,

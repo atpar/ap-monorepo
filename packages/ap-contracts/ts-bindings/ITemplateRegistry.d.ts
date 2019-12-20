@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class AssetRegistryStorage extends Contract {
+export class ITemplateRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): AssetRegistryStorage;
+  clone(): ITemplateRegistry;
   methods: {
     decodeCollateralObject(
       object: string | number[]
@@ -35,17 +35,51 @@ export class AssetRegistryStorage extends Contract {
 
     ONE_POINT_ZERO(): TransactionObject<string>;
 
-    decodeEvent(
-      _event: string | number[]
+    PRECISION(): TransactionObject<string>;
+
+    getTemplateTerms(
+      templateId: string | number[]
     ): TransactionObject<{
-      0: string;
-      1: string;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      creditEventTypeCovered: string;
+      currency: string;
+      settlementCurrency: string;
+      marketObjectCodeRateReset: string;
+      statusDateOffset: string;
+      maturityDateOffset: string;
+      feeAccrued: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      feeRate: string;
+      nextResetRate: string;
+      penaltyRate: string;
+      priceAtPurchaseDate: string;
+      nextPrincipalRedemptionPayment: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      periodCap: string;
+      periodFloor: string;
     }>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
+    getEventAtIndex(
+      templateId: string | number[],
+      scheduleId: number | string,
+      index: number | string
+    ): TransactionObject<string>;
 
-    computeEventTimeForEvent(
-      _event: string | number[],
+    getScheduleLength(
+      templateId: string | number[],
+      scheduleId: number | string
+    ): TransactionObject<string>;
+
+    registerTemplate(
       terms: {
         calendar: number | string;
         contractRole: number | string;
@@ -56,55 +90,38 @@ export class AssetRegistryStorage extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
+        statusDateOffset: number | string;
+        maturityDateOffset: number | string;
         feeAccrued: number | string;
         accruedInterest: number | string;
         rateMultiplier: number | string;
-        rateSpread: number | string;
         feeRate: number | string;
         nextResetRate: number | string;
         penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
         periodCap: number | string;
         periodFloor: number | string;
+      },
+      templateSchedules: {
+        nonCyclicSchedule: (string | number[])[];
+        cyclicIPSchedule: (string | number[])[];
+        cyclicPRSchedule: (string | number[])[];
+        cyclicRRSchedule: (string | number[])[];
+        cyclicPYSchedule: (string | number[])[];
+        cyclicSCSchedule: (string | number[])[];
+        cyclicFPSchedule: (string | number[])[];
       }
-    ): TransactionObject<string>;
-
-    templateRegistry(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
+    ): TransactionObject<void>;
   };
   events: {
     allEvents: (

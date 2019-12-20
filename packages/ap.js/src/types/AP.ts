@@ -10,7 +10,7 @@ export interface AddressBook {
   Custodian: string;
   MarketObjectRegistry: string;
   PAMEngine: string;
-  ProductRegistry: string;
+  TemplateRegistry: string;
   SignedMath: string;
   TokenizationFactory: string;
 }
@@ -22,7 +22,7 @@ export interface AssetOwnership {
   counterpartyBeneficiary: string;
 }
 
-export interface ProductSchedule {
+export interface TemplateSchedule {
   nonCyclicSchedule: string[];
   cyclicIPSchedule: string[];
   cyclicPRSchedule: string[];
@@ -44,7 +44,7 @@ export function isAddressBook (obj: any): obj is AddressBook {
   if (!obj.Custodian || obj.Custodian === ZERO_ADDRESS) { return false; }
   if (!obj.MarketObjectRegistry || obj.MarketObjectRegistry === ZERO_ADDRESS) { return false; }
   if (!obj.PAMEngine || obj.PAMEngine === ZERO_ADDRESS) { return false; }
-  if (!obj.ProductRegistry || obj.ProductRegistry === ZERO_ADDRESS) { return false; }
+  if (!obj.TemplateRegistry || obj.TemplateRegistry === ZERO_ADDRESS) { return false; }
   if (!obj.SignedMath || obj.SignedMath === ZERO_ADDRESS) { return false; }
   if (!obj.TokenizationFactory || obj.TokenizationFactory === ZERO_ADDRESS) { return false; }
 

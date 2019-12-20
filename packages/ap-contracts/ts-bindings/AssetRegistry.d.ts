@@ -39,6 +39,8 @@ export class AssetRegistry extends Contract {
       executionAmount: string;
     }>;
 
+    getTemplateId(assetId: string | number[]): TransactionObject<string>;
+
     setState(
       assetId: string | number[],
       state: {
@@ -246,7 +248,7 @@ export class AssetRegistry extends Contract {
       beneficiary: string
     ): TransactionObject<void>;
 
-    getProductId(assetId: string | number[]): TransactionObject<string>;
+    templateRegistry(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
 
@@ -276,8 +278,6 @@ export class AssetRegistry extends Contract {
 
     getEngineAddress(assetId: string | number[]): TransactionObject<string>;
 
-    productRegistry(): TransactionObject<string>;
-
     registerAsset(
       assetId: string | number[],
       ownership: {
@@ -286,7 +286,7 @@ export class AssetRegistry extends Contract {
         counterpartyObligor: string;
         counterpartyBeneficiary: string;
       },
-      productId: string | number[],
+      templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
         notionalPrincipal: number | string;

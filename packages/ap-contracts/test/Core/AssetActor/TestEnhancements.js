@@ -13,7 +13,7 @@ const {
 
 const {
   deriveTerms,
-  registerProduct,
+  registerTemplate,
   ZERO_ADDRESS,
   ZERO_BYTES32,
   ZERO_BYTES
@@ -54,9 +54,9 @@ contract('AssetActor', (accounts) => {
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
-    // register product
+    // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.productId = await registerProduct(this.instances, this.terms);
+    this.templateId = await registerTemplate(this.instances, this.terms);
 
     snapshot = await createSnapshot();
   });
@@ -83,12 +83,12 @@ contract('AssetActor', (accounts) => {
     );
 
     const { lifecycleTerms: lifecycleTermsCEC, customTerms: customTermsCEC } = deriveTerms(termsCEC);
-    const productIdCEC = await registerProduct(this.instances, termsCEC);
+    const templateIdCEC = await registerTemplate(this.instances, termsCEC);
 
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
-      this.terms, this.productId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
-      termsCEC, productIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
+      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
