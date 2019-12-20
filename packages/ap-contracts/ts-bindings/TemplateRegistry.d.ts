@@ -13,20 +13,32 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class IProductRegistry extends Contract {
+export class TemplateRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): IProductRegistry;
+  clone(): TemplateRegistry;
   methods: {
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
 
-    getProductTerms(
-      productId: string | number[]
+    getTemplateTerms(
+      templateId: string | number[]
     ): TransactionObject<{
       calendar: string;
       contractRole: string;
@@ -57,17 +69,22 @@ export class IProductRegistry extends Contract {
     }>;
 
     getEventAtIndex(
-      productId: string | number[],
+      templateId: string | number[],
       scheduleId: number | string,
       index: number | string
     ): TransactionObject<string>;
 
     getScheduleLength(
-      productId: string | number[],
+      templateId: string | number[],
       scheduleId: number | string
     ): TransactionObject<string>;
 
-    registerProduct(
+    getSchedule(
+      templateId: string | number[],
+      scheduleId: number | string
+    ): TransactionObject<string[]>;
+
+    registerTemplate(
       terms: {
         calendar: number | string;
         contractRole: number | string;
@@ -100,7 +117,7 @@ export class IProductRegistry extends Contract {
         periodCap: number | string;
         periodFloor: number | string;
       },
-      productSchedules: {
+      templateSchedules: {
         nonCyclicSchedule: (string | number[])[];
         cyclicIPSchedule: (string | number[])[];
         cyclicPRSchedule: (string | number[])[];
@@ -112,6 +129,7 @@ export class IProductRegistry extends Contract {
     ): TransactionObject<void>;
   };
   events: {
+    RegisteredTemplate: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

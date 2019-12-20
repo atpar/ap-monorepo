@@ -2,6 +2,7 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
+import "../Core/Conversions.sol";
 import "../Core/ProductRegistry/IProductRegistry.sol";
 import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "../Core/IAssetActor.sol";
@@ -15,7 +16,12 @@ import "./VerifyOrder.sol";
  * @notice Contract for issuing ACTUS assets. Currently supports the issuance of
  * independent assets as well as assets with up to two enhancements (such as Guarantee and Collateral).
  */
-contract AssetIssuer is SharedTypes, VerifyOrder, IAssetIssuer {
+contract AssetIssuer is
+    SharedTypes,
+    Conversions,
+    VerifyOrder,
+    IAssetIssuer
+{
 
     event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
 

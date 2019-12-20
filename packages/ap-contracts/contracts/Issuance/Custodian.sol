@@ -5,6 +5,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
+import "../Core/Conversions.sol";
 import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "./ICustodian.sol";
 
@@ -13,7 +14,7 @@ import "./ICustodian.sol";
  * @title Custodian
  * @notice Contract which holds the collateral of CEC (Credit Enhancement Collateral) assets.
  */
-contract Custodian is ICustodian, ReentrancyGuard {
+contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
     event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
 

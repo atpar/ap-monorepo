@@ -1,11 +1,10 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "../Core/AssetRegistry/IAssetRegistry.sol";
-
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "../Core/AssetRegistry/IAssetRegistry.sol";
 
 
 /**

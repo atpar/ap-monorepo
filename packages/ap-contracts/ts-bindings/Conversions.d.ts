@@ -13,17 +13,29 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ProductRegistryStorage extends Contract {
+export class Conversions extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ProductRegistryStorage;
+  clone(): Conversions;
   methods: {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
   };
   events: {
     allEvents: (

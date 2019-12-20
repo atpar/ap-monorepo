@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ProductRegistryStorage extends Contract {
+export class ScheduleUtils extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ProductRegistryStorage;
+  clone(): ScheduleUtils;
   methods: {
     ONE_POINT_ZERO(): TransactionObject<string>;
 

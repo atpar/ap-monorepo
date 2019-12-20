@@ -21,18 +21,6 @@ export class ICustodian extends Contract {
   );
   clone(): ICustodian;
   methods: {
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
-
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;

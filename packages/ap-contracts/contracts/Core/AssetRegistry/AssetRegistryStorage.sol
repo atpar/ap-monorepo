@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "actus-solidity/contracts/Core/Utils.sol";
 
 import "../ProductRegistry/IProductRegistry.sol";
+import "../Conversions.sol";
 import "../SharedTypes.sol";
 
 
@@ -12,7 +13,7 @@ import "../SharedTypes.sol";
  * @notice Describes the storage of the AssetRegistry
  * Contains getter and setter methods for encoding, decoding data to optimize gas cost
  */
-contract AssetRegistryStorage is SharedTypes, Utils {
+contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
 
     struct Asset {
         bytes32 assetId;

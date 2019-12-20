@@ -8,6 +8,8 @@ import "actus-solidity/contracts/Core/Utils.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
 import "./SharedTypes.sol";
+import "./ScheduleUtils.sol";
+import "./Conversions.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
 import "./ProductRegistry/IProductRegistry.sol";
@@ -24,7 +26,14 @@ import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-contract AssetActor is SharedTypes, Utils, IAssetActor, Ownable {
+contract AssetActor is
+    SharedTypes,
+    Utils,
+    ScheduleUtils,
+    Conversions,
+    IAssetActor,
+    Ownable
+{
 
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
 
