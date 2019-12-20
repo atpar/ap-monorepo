@@ -69,78 +69,10 @@
 				</a>
 				<p>AP.js is a typescript library for interacting with the ACTUS Protocol smart contracts.
 				It allows developers to create and manage ACTUS assets.</p>
-				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-					<h2>Usage</h2>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
 				</a>
-				<pre><code class="language-sh">yarn add @atpar/ap.js </code></pre>
-				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
-					<h3>Setup</h3>
-				</a>
-				<p>Initializing the ACTUS Protocol library.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { AP, Asset, Order, APTypes } <span class="hljs-keyword">from</span> <span class="hljs-string">'./ap.js'</span>;
-
-<span class="hljs-keyword">const</span> addressBook: APTypes.AddressBook;
-
-<span class="hljs-keyword">const</span> ap = <span class="hljs-keyword">await</span> AP.init(
-  web3, 
-  DEFAULT_ACCOUNT,
-  addressBook <span class="hljs-comment">// optional addresses specified in ap-contracts for the current network</span>
-);</code></pre>
-				<a href="#order" id="order" style="color: inherit; text-decoration: none;">
-					<h3>Order</h3>
-				</a>
-				<p><code>Order</code> contains methods for creating orders and issuing assets from a co-signed orders.</p>
-				<pre><code class="language-ts"><span class="hljs-comment">// see __tests__/utils.ts for structure of OrderParams</span>
-<span class="hljs-keyword">const</span> order = Order.create(ap, orderParams);</code></pre>
-				<p>Serializing an <code>Order</code> as <code>OrderData</code></p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> orderData: APTypes.OrderData = Order.serializeOrder();</code></pre>
-				<p>Instantiate an <code>Order</code> from <code>OrderData</code>.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> order = Order.load(ap, orderData);</code></pre>
-				<p>Signing an order (as creator or counterparty obligor).</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">await</span> order.signOrder();</code></pre>
-				<p>Issue a new asset from an co-signed order (requires both signatures).</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">await</span> order.issueAssetFromOrder();</code></pre>
-				<a href="#asset" id="asset" style="color: inherit; text-decoration: none;">
-					<h3>Asset</h3>
-				</a>
-				<p><code>Asset</code> is a wrapper around <code>AP.js</code> APIs to make the creation and the lifecycle management of an ACTUS asset easier.</p>
-				<p>Loading an <code>Asset</code> given its AssetId from the Asset Registry.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> asset = <span class="hljs-keyword">await</span> Asset.load(ap, ASSET_ID);</code></pre>
-				<p>Retrieve information of the asset such as the terms, the state or the ownership.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> terms = <span class="hljs-keyword">await</span> asset.getTerms();</code></pre>
-				<p>Schedule</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> schedule = <span class="hljs-keyword">await</span> asset.getSchedule();</code></pre>
-				<p>Settlement of obligations: The next obligation is the most immediate obligation which is not yet paid off.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> payment = <span class="hljs-keyword">await</span> asset.getNextPayment();</code></pre>
-				<p>Settlement of obligations: The next obligation is the most immediate obligation which is not yet paid off.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> event = <span class="hljs-keyword">await</span> asset.getNextEvent();
-<span class="hljs-keyword">const</span> decodedEvent = ap.utils.decodeEvent(event);</code></pre>
-				<p>Progressing the state of the asset. Requires that the Asset Actor has sufficient allowance to settle the obligation of the pending event.
-				If there are unsettled obligation for the pending event, the actor will transition the state of the asset to a non-performant state.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">await</span> asset.progress(); <span class="hljs-comment">// progresses the state to the current block timestamp</span></code></pre>
-				<p>Tokenizing the one of the beneficiaries of the asset.
-					Tokenizes the beneficary (respective to the default accounts ownership of the asset)
-				by deploying a new Funds Distribution Token smart contract.</p>
-				<pre><code class="language-ts"><span class="hljs-keyword">const</span> distributorAddress = <span class="hljs-keyword">await</span> asset.tokenizeBeneficiary();</code></pre>
-				<a href="#api-overview" id="api-overview" style="color: inherit; text-decoration: none;">
-					<h2>API Overview</h2>
-				</a>
-				<table>
-					<thead>
-						<tr>
-							<th>API</th>
-							<th>Description</th>
-						</tr>
-					</thead>
-					<tbody><tr>
-							<td>Contracts</td>
-							<td>wrapper around the ACTUS Protocol smart contracts</td>
-						</tr>
-						<tr>
-							<td>Signer</td>
-							<td>signature utilities to sign and verify orders</td>
-						</tr>
-				</tbody></table>
+				<p><a href="https://docs.actus-protocol.io/ap-js/overview">https://docs.actus-protocol.io/ap-js/overview</a></p>
 				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
 					<h2>Development</h2>
 				</a>

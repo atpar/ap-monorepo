@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "./SharedTypes.sol";
+import "../SharedTypes.sol";
 
 
 contract IAssetActor is SharedTypes {

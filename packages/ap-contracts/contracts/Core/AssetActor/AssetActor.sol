@@ -7,13 +7,13 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "actus-solidity/contracts/Core/Utils.sol";
 import "actus-solidity/contracts/Engines/IEngine.sol";
 
-import "./SharedTypes.sol";
-import "./ScheduleUtils.sol";
-import "./Conversions.sol";
+import "../SharedTypes.sol";
+import "../ScheduleUtils.sol";
+import "../Conversions.sol";
+import "../AssetRegistry/IAssetRegistry.sol";
+import "../TemplateRegistry/ITemplateRegistry.sol";
+import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
 import "./IAssetActor.sol";
-import "./AssetRegistry/IAssetRegistry.sol";
-import "./TemplateRegistry/ITemplateRegistry.sol";
-import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
 /**

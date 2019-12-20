@@ -5,7 +5,7 @@ import "../Core/SharedTypes.sol";
 import "../Core/Conversions.sol";
 import "../Core/TemplateRegistry/ITemplateRegistry.sol";
 import "../Core/AssetRegistry/IAssetRegistry.sol";
-import "../Core/IAssetActor.sol";
+import "../Core/AssetActor/IAssetActor.sol";
 import "./IAssetIssuer.sol";
 import "./ICustodian.sol";
 import "./VerifyOrder.sol";
