@@ -16,9 +16,9 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     event RegisteredAsset(bytes32 assetId);
 
 
-    constructor(IProductRegistry _productRegistry)
+    constructor(ITemplateRegistry _templateRegistry)
         public
-        AssetRegistryStorage(_productRegistry)
+        AssetRegistryStorage(_templateRegistry)
     {}
 
     /**
@@ -28,7 +28,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
      * @dev The state of the asset can only be updates by a whitelisted actor.
      * @param assetId id of the asset
      * @param ownership ownership of the asset
-     * @param productId id of the financial product to use
+     * @param templateId id of the financial template to use
      * @param customTerms asset specific terms
      * @param state initial state of the asset
      * @param engine ACTUS Engine of the asset
@@ -37,7 +37,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     function registerAsset(
         bytes32 assetId,
         AssetOwnership memory ownership,
-        bytes32 productId,
+        bytes32 templateId,
         CustomTerms memory customTerms,
         State memory state,
         address engine,
@@ -55,7 +55,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
         setAsset(
             assetId,
             ownership,
-            productId,
+            templateId,
             customTerms,
             state,
             engine,

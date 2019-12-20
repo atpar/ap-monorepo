@@ -24,8 +24,8 @@ const _toTuple = (obj) => {
   return output;
 };
 
-function deriveProductId (productTerms, productSchedules) {
-  const productTermsHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
+function deriveTemplateId (templateTerms, templateSchedules) {
+  const templateTermsHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {  
       "components": [
         {
@@ -164,10 +164,10 @@ function deriveProductId (productTerms, productSchedules) {
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(productTerms)
+    _toTuple(templateTerms)
   ));
 
-  const productSchedulesHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
+  const templateSchedulesHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
     {
       "components": [
         {
@@ -199,15 +199,15 @@ function deriveProductId (productTerms, productSchedules) {
           "type": "bytes32[64]"
         }
       ],
-      "name": "productSchedules",
+      "name": "templateSchedules",
       "type": "tuple"
     },
-    _toTuple(productSchedules)
+    _toTuple(templateSchedules)
   ));
 
   return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     ['bytes32', 'bytes32'],
-    [productTermsHash, productSchedulesHash]
+    [templateTermsHash, templateSchedulesHash]
   ));
 }
 
@@ -675,7 +675,7 @@ function getOwnershipHash (ownership) {
 
 function getDraftEnhancementOrderHash (enhancementOrder) {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = Web3Utils.keccak256(
-    "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
+    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
   );
 
   const customTermsHash = getCustomTermsHash(enhancementOrder.customTerms);
@@ -687,7 +687,7 @@ function getDraftEnhancementOrderHash (enhancementOrder) {
     [
       DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
       enhancementOrder.termsHash,
-      enhancementOrder.productId,
+      enhancementOrder.templateId,
       customTermsHash,
       enhancementOrder.engine,
       enhancementOrder.salt
@@ -725,7 +725,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       ],
       Order: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
@@ -739,7 +739,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
     primaryType: 'Order',
     message: {
       termsHash: orderData.termsHash,
-      productId: orderData.productId,
+      templateId: orderData.templateId,
       customTermsHash: customTermsHash,
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
@@ -779,7 +779,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       ],
       Order: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
@@ -793,7 +793,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
     primaryType: 'Order',
     message: {
       termsHash: orderData.termsHash,
-      productId: orderData.productId,
+      templateId: orderData.templateId,
       customTermsHash: customTermsHash,
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
@@ -837,7 +837,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
       ],
       EnhancementOrder: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
@@ -847,7 +847,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
     primaryType: 'EnhancementOrder',
     message: {
       termsHash: enhancementOrderData.termsHash,
-      productId: enhancementOrderData.productId,
+      templateId: enhancementOrderData.templateId,
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
@@ -880,7 +880,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
       ],
       EnhancementOrder: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
@@ -890,7 +890,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
     primaryType: 'EnhancementOrder',
     message: {
       termsHash: enhancementOrderData.termsHash,
-      productId: enhancementOrderData.productId,
+      templateId: enhancementOrderData.templateId,
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
@@ -924,10 +924,10 @@ function sign(typedData, account) {
   });
 };
 
-function getDefaultOrderData(terms, productId, customTerms, ownership, engine, actor) {
+function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, actor) {
   return { 
     termsHash: getTermsHash(terms),
-    productId: Web3Utils.toHex(productId),
+    templateId: Web3Utils.toHex(templateId),
     customTerms: customTerms,
     expirationDate: '10000000000',
     ownership: ownership,
@@ -935,7 +935,7 @@ function getDefaultOrderData(terms, productId, customTerms, ownership, engine, a
     actor: actor,
     enhancementOrder_1: {
       termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
       customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
         creatorObligor: '0x0000000000000000000000000000000000000000',
@@ -950,7 +950,7 @@ function getDefaultOrderData(terms, productId, customTerms, ownership, engine, a
     },
     enhancementOrder_2: {
       termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
       customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
         creatorObligor: '0x0000000000000000000000000000000000000000',
@@ -970,12 +970,12 @@ function getDefaultOrderData(terms, productId, customTerms, ownership, engine, a
 }
 
 function getDefaultOrderDataWithEnhancement(
-  underlyingTerms,  underlyingProductId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
-  enhancementTerms, enhancementProductId, enhancementCustomTerms, enhancementOwnership, enhancementEngine
+  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
+  enhancementTerms, enhancementTemplateId, enhancementCustomTerms, enhancementOwnership, enhancementEngine
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
-    productId: Web3Utils.toHex(underlyingProductId),
+    templateId: Web3Utils.toHex(underlyingTemplateId),
     customTerms: underlyingCustomTerms,
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
@@ -983,7 +983,7 @@ function getDefaultOrderDataWithEnhancement(
     actor: underlyingActor,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms),
-      productId: Web3Utils.toHex(enhancementProductId),
+      templateId: Web3Utils.toHex(enhancementTemplateId),
       customTerms: enhancementCustomTerms,
       ownership: enhancementOwnership,
       engine: enhancementEngine,
@@ -993,7 +993,7 @@ function getDefaultOrderDataWithEnhancement(
     },
     enhancementOrder_2: {
       termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      productId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
       customTerms: underlyingCustomTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
         creatorObligor: '0x0000000000000000000000000000000000000000',
@@ -1013,13 +1013,13 @@ function getDefaultOrderDataWithEnhancement(
 }
 
 function getDefaultOrderDataWithEnhancements(
-  underlyingTerms,  underlyingProductId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
-  enhancementTerms_1, enhancementProductId_1, enhancementCustomTerms_1, enhancementOwnership_1, enhancementEngine_1,
-  enhancementTerms_2, enhancementProductId_2, enhancementCustomTerms_2, enhancementOwnership_2, enhancementEngine_2
+  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
+  enhancementTerms_1, enhancementTemplateId_1, enhancementCustomTerms_1, enhancementOwnership_1, enhancementEngine_1,
+  enhancementTerms_2, enhancementTemplateId_2, enhancementCustomTerms_2, enhancementOwnership_2, enhancementEngine_2
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
-    productId: Web3Utils.toHex(underlyingProductId),
+    templateId: Web3Utils.toHex(underlyingTemplateId),
     customTerms: underlyingCustomTerms,
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
@@ -1027,7 +1027,7 @@ function getDefaultOrderDataWithEnhancements(
     actor: underlyingActor,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms_1),
-      productId: Web3Utils.toHex(enhancementProductId_1),
+      templateId: Web3Utils.toHex(enhancementTemplateId_1),
       customTerms: enhancementCustomTerms_1,
       ownership: enhancementOwnership_1,
       engine: enhancementEngine_1,
@@ -1037,7 +1037,7 @@ function getDefaultOrderDataWithEnhancements(
     },
     enhancementOrder_2: {
       termsHash: getTermsHash(enhancementTerms_2),
-      productId: Web3Utils.toHex(enhancementProductId_2),
+      templateId: Web3Utils.toHex(enhancementTemplateId_2),
       customTerms: enhancementCustomTerms_2,
       ownership: enhancementOwnership_2,
       engine: enhancementEngine_2,
@@ -1052,7 +1052,7 @@ function getDefaultOrderDataWithEnhancements(
 }
 
 module.exports = {
-  deriveProductId,
+  deriveTemplateId,
   getAssetIdFromOrderData,
   getUnfilledOrderDataAsTypedData,
   getFilledOrderDataAsTypedData,

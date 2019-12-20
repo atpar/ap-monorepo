@@ -97,14 +97,14 @@ export class Ownership extends Contract {
       }
     ): TransactionObject<string>;
 
+    templateRegistry(): TransactionObject<string>;
+
     PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
-
-    productRegistry(): TransactionObject<string>;
 
     setCreatorBeneficiary(
       assetId: string | number[],

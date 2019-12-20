@@ -4,13 +4,13 @@ import { AssetOwnership } from './AP';
 
 export interface OrderParams {
   termsHash: string;
-  productId: string;
+  templateId: string;
   customTerms: CustomTerms;
   ownership: AssetOwnership;
   expirationDate: string;
   enhancement_1?: {
     termsHash: string;
-    productId: string;
+    templateId: string;
     customTerms: CustomTerms;
     ownership: AssetOwnership;
     engine: string;
@@ -18,7 +18,7 @@ export interface OrderParams {
   engine: string;
   enhancement_2?: {
     termsHash: string;
-    productId: string;
+    templateId: string;
     customTerms: CustomTerms;
     ownership: AssetOwnership;
     engine: string;
@@ -27,7 +27,7 @@ export interface OrderParams {
 
 export interface OrderData {
   termsHash: string;
-  productId: string;
+  templateId: string;
   customTerms: CustomTerms;
   ownership: AssetOwnership;
   expirationDate: string;
@@ -42,7 +42,7 @@ export interface OrderData {
 
 export interface EnhancementOrderData {
   termsHash: string;
-  productId: string;
+  templateId: string;
   customTerms: CustomTerms;
   ownership: AssetOwnership;
   engine: string;
@@ -77,7 +77,7 @@ export interface OrderDataAsTypedData extends TypedData {
   primaryType: string;
   message: {
     termsHash: string;
-    productId: string;
+    templateId: string;
     customTermsHash: string;
     expirationDate: string;
     ownershipHash: string;
@@ -103,7 +103,7 @@ export interface EnhancementOrderDataAsTypedData extends TypedData {
   primaryType: string;
   message: {
     termsHash: string;
-    productId: string;
+    templateId: string;
     customTermsHash: string;
     ownershipHash: string;
     engine: string;

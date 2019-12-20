@@ -1,7 +1,7 @@
 import * as web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
-import { Terms, CustomTerms, ProductTerms, LifecycleTerms, GeneratingTerms } from '../types';
+import { Terms, CustomTerms, TemplateTerms, LifecycleTerms, GeneratingTerms } from '../types';
 
 
 export function toHex (mixed: any): any {
@@ -112,7 +112,7 @@ export function toGeneratingTerms (terms: Terms): GeneratingTerms {
   };
 }
 
-export function toProductTerms (terms: Terms): ProductTerms {
+export function toTemplateTerms (terms: Terms): TemplateTerms {
   return {
     calendar: terms.calendar,
     contractRole: terms.contractRole,

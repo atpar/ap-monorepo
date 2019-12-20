@@ -223,7 +223,7 @@ export interface GeneratingTerms {
   delinquencyPeriod: IP;
 }
 
-export interface ProductTerms {
+export interface TemplateTerms {
   calendar: string | number;
   contractRole: string | number;
   dayCountConvention: string | number;

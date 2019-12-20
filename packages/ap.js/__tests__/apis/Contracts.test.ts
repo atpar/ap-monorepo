@@ -34,7 +34,7 @@ describe('Contracts', () => {
       Custodian: contracts.custodian.options.address,
       MarketObjectRegistry: contracts.marketObjectRegistry.options.address,
       PAMEngine: contracts.pamEngine.options.address,
-      ProductRegistry: contracts.productRegistry.options.address,
+      TemplateRegistry: contracts.templateRegistry.options.address,
       SignedMath: contracts.signedMath.options.address,
       TokenizationFactory: contracts.tokenizationFactory.options.address
     }

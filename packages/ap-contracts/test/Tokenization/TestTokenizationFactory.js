@@ -3,7 +3,7 @@ const BigNumber = require('bignumber.js');
 const FDT_ETHExtension = artifacts.require('FDT_ETHExtension');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerProduct, ZERO_ADDRESS } = require('../helper/utils');
+const { deriveTerms, registerTemplate, ZERO_ADDRESS } = require('../helper/utils');
 
 
 contract('TokenizationFactory', (accounts) => {
@@ -23,9 +23,9 @@ contract('TokenizationFactory', (accounts) => {
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = await getDefaultTerms();
 
-    // register product
+    // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.productId = await registerProduct(this.instances, this.terms);
+    this.templateId = await registerTemplate(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 
@@ -33,7 +33,7 @@ contract('TokenizationFactory', (accounts) => {
     await this.AssetRegistryInstance.registerAsset(
       web3.utils.toHex(assetId), 
       this.ownership,
-      web3.utils.toHex(this.productId),
+      web3.utils.toHex(this.templateId),
       this.customTerms,
       this.state,
       this.PAMEngineInstance.address,

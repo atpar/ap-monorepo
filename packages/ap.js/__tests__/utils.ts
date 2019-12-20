@@ -33,7 +33,7 @@ export async function getDefaultTerms (): Promise<Terms> {
   return terms;
 }
 
-export async function getDefaultOrderParams (productId: string): Promise<APTypes.OrderParams> {
+export async function getDefaultOrderParams (templateId: string): Promise<APTypes.OrderParams> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const creator = (await web3.eth.getAccounts())[0];
   const counterparty = (await web3.eth.getAccounts())[1];
@@ -42,7 +42,7 @@ export async function getDefaultOrderParams (productId: string): Promise<APTypes
 
   return {
     termsHash: ap.utils.erc712.getTermsHash(terms),
-    productId: productId,
+    templateId: templateId,
     customTerms: ap.utils.convert.toCustomTerms(terms),
     ownership: {
       creatorObligor: creator,
@@ -55,14 +55,14 @@ export async function getDefaultOrderParams (productId: string): Promise<APTypes
   }
 }
 
-export async function getDefaultSignedOrder (productId: string): Promise<APTypes.OrderData> {
+export async function getDefaultSignedOrder (templateId: string): Promise<APTypes.OrderData> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const creator = (await web3.eth.getAccounts())[0];
   const counterparty = (await web3.eth.getAccounts())[1];
   const apRC = await AP.init(web3, creator);
   const apCP = await AP.init(web3, counterparty);
 
-  const orderParams = await getDefaultOrderParams(productId);
+  const orderParams = await getDefaultOrderParams(templateId);
   const orderRC = Order.create(apRC, orderParams);
   await orderRC.signOrder();
 
@@ -78,19 +78,19 @@ export async function issueDefaultAsset (): Promise<string> {
   const ap = await AP.init(web3, account);
 
   const terms = await getDefaultTerms();
-  const productTerms = ap.utils.convert.toProductTerms(terms);
-  const productSchedules = await ap.utils.schedule.generateProductSchedule(ap.contracts.pamEngine, terms);
-  const productId = ap.utils.erc712.deriveProductId(productTerms, productSchedules);
-  const storedProductTerms = await ap.contracts.productRegistry.methods.getProductTerms(web3.utils.toHex(productId)).call();
+  const templateTerms = ap.utils.convert.toTemplateTerms(terms);
+  const templateSchedules = await ap.utils.schedule.generateTemplateSchedule(ap.contracts.pamEngine, terms);
+  const templateId = ap.utils.erc712.deriveTemplateId(templateTerms, templateSchedules);
+  const storedTemplateTerms = await ap.contracts.templateRegistry.methods.getTemplateTerms(web3.utils.toHex(templateId)).call();
   
-  if (String(storedProductTerms.maturityDateOffset) === '0') {
-    await ap.contracts.productRegistry.methods.registerProduct(
-      productTerms,
-      productSchedules
+  if (String(storedTemplateTerms.maturityDateOffset) === '0') {
+    await ap.contracts.templateRegistry.methods.registerTemplate(
+      templateTerms,
+      templateSchedules
     ).send({ from: account, gas: 2000000 });
   }
 
-  const order = await Order.load(ap, await getDefaultSignedOrder(productId));
+  const order = await Order.load(ap, await getDefaultSignedOrder(templateId));
   await order.issueAssetFromOrder();
   
   return getAssetIdFromOrderData(order.serializeOrder());

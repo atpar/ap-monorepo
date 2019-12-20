@@ -1,8 +1,8 @@
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
 
-const { deriveProductId } = require('./orderUtils');
+const { deriveTemplateId } = require('./orderUtils');
 
-const ProductTerms = require('./definitions/product-terms.json');
+const TemplateTerms = require('./definitions/template-terms.json');
 const CustomTerms = require('./definitions/custom-terms.json');
 
 
@@ -11,22 +11,22 @@ const ZERO_BYTES32 = '0x00000000000000000000000000000000000000000000000000000000
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 
-function parseTermsToProductTerms (terms) {
-  const productTerms = {};
+function parseTermsToTemplateTerms (terms) {
+  const templateTerms = {};
 
-  for (const attribute of ProductTerms) {
+  for (const attribute of TemplateTerms) {
     if (attribute === 'statusDateOffset') {
-      productTerms[attribute] = terms['statusDate'] - terms['contractDealDate'];
+      templateTerms[attribute] = terms['statusDate'] - terms['contractDealDate'];
       continue;
     }
     if (attribute === 'maturityDateOffset') {
-      productTerms[attribute] = terms['maturityDate'] - terms['contractDealDate'];
+      templateTerms[attribute] = terms['maturityDate'] - terms['contractDealDate'];
       continue;
     }
-    productTerms[attribute] = terms[attribute];
+    templateTerms[attribute] = terms[attribute];
   }
 
-  return productTerms;
+  return templateTerms;
 }
 
 function parseTermsToCustomTerms (terms) {
@@ -81,12 +81,12 @@ function deriveTerms(terms) {
   return {
     lifecycleTerms: parseTermsToLifecycleTerms(terms),
     generatingTerms: convertDatesToOffsets(parseTermsToGeneratingTerms(terms)),
-    productTerms: parseTermsToProductTerms(terms),
+    templateTerms: parseTermsToTemplateTerms(terms),
     customTerms: parseTermsToCustomTerms(terms)
   }
 }
 
-async function generateProductSchedules(engineContractInstance, generatingTerms) {
+async function generateTemplateSchedules(engineContractInstance, generatingTerms) {
   return {
     nonCyclicSchedule: await engineContractInstance.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate),
     cyclicIPSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8),
@@ -98,26 +98,26 @@ async function generateProductSchedules(engineContractInstance, generatingTerms)
   };
 }
 
-async function registerProduct(instances, terms) {
-  const { generatingTerms, productTerms } = deriveTerms(terms);
-  const productSchedules = await generateProductSchedules(
+async function registerTemplate(instances, terms) {
+  const { generatingTerms, templateTerms } = deriveTerms(terms);
+  const templateSchedules = await generateTemplateSchedules(
     getEngineContractInstanceForContractType(instances, terms.contractType),
     generatingTerms
   ); 
-  const productId = deriveProductId(productTerms, productSchedules);
+  const templateId = deriveTemplateId(templateTerms, templateSchedules);
 
-  await instances.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
+  await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
 
-  return productId;
+  return templateId;
 }
 
 module.exports = {
   convertDatesToOffsets,
-  parseTermsToProductTerms,
+  parseTermsToTemplateTerms,
   parseTermsToCustomTerms,
   getEngineContractInstanceForContractType,
-  generateProductSchedules,
-  registerProduct,
+  generateTemplateSchedules,
+  registerTemplate,
   deriveTerms,
   ZERO_ADDRESS,
   ZERO_BYTES32,

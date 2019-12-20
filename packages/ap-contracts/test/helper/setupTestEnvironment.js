@@ -8,7 +8,7 @@ const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
-const ProductRegistry = artifacts.require('ProductRegistry');
+const TemplateRegistry = artifacts.require('TemplateRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
 const ERC20SampleToken = artifacts.require('ERC20SampleToken');
@@ -28,13 +28,13 @@ async function setupTestEnvironment (accounts) {
   
   // deploy Core
   instances.MarketObjectRegistryInstance = await MarketObjectRegistry.deployed(); // new();
-  instances.ProductRegistryInstance = await ProductRegistry.deployed(); // new();
+  instances.TemplateRegistryInstance = await TemplateRegistry.deployed(); // new();
   instances.AssetRegistryInstance = await AssetRegistry.deployed() // new(
-    // instances.ProductRegistryInstance.address
+    // instances.TemplateRegistryInstance.address
   // );
   instances.AssetActorInstance = await AssetActor.deployed(); // new(
     // instances.AssetRegistryInstance.address,
-    // instances.ProductRegistryInstance.address,
+    // instances.TemplateRegistryInstance.address,
     // instances.MarketObjectRegistryInstance.address
   // );
   instances.CustodianInstance = await Custodian.deployed(); // new(
@@ -45,7 +45,7 @@ async function setupTestEnvironment (accounts) {
   // deploy Issuance
   instances.AssetIssuerInstance = await AssetIssuer.deployed(); // new(
   //   instances.CustodianInstance.address,
-  //   instances.ProductRegistryInstance.address,
+  //   instances.TemplateRegistryInstance.address,
   //   instances.AssetRegistryInstance.address
   // );
 

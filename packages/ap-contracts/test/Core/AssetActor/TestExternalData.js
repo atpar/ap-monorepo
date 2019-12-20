@@ -8,8 +8,8 @@ const {
   mineBlock
 } = require('../../helper/blockchain');
 
-const { deriveProductId } = require('../../helper/orderUtils');
-const { deriveTerms, generateProductSchedules, getEngineContractInstanceForContractType } = require('../../helper/utils');
+const { deriveTemplateId } = require('../../helper/orderUtils');
+const { deriveTerms, generateTemplateSchedules, getEngineContractInstanceForContractType } = require('../../helper/utils');
 
 const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
@@ -49,26 +49,26 @@ contract('AssetActor', (accounts) => {
     // schedule with RR
     const terms = ExternalDataTerms;
 
-    // register product
-    const { lifecycleTerms, customTerms, generatingTerms, productTerms } = deriveTerms(terms);
-    const productSchedules = await generateProductSchedules(
+    // register template
+    const { lifecycleTerms, customTerms, generatingTerms, templateTerms } = deriveTerms(terms);
+    const templateSchedules = await generateTemplateSchedules(
       getEngineContractInstanceForContractType(this.instances, terms.contractType),
       generatingTerms
     ); 
     // only want RR events in the schedules
-    productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
-    productSchedules.nonCyclicSchedule = productSchedules.cyclicPYSchedule;
-    await this.instances.ProductRegistryInstance.registerProduct(productTerms, productSchedules);
-    const productId = deriveProductId(productTerms, productSchedules);
+    templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
+    templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
+    await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+    const templateId = deriveTemplateId(templateTerms, templateSchedules);
     
-    // store product
+    // store template
     const assetId = 'External Data Asset';
     const resetRate = 500000
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
       ownership,
-      web3.utils.toHex(productId),
+      web3.utils.toHex(templateId),
       customTerms,
       this.PAMEngineInstance.address
     );
