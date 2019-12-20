@@ -24,54 +24,54 @@ contract Conversions is SharedTypes {
         );
     }
 
-    function deriveLifecycleTerms(ProductTerms memory productTerms, CustomTerms memory customTerms)
+    function deriveLifecycleTerms(TemplateTerms memory templateTerms, CustomTerms memory customTerms)
         internal
         pure
         returns (LifecycleTerms memory)
     {
         return LifecycleTerms(
-            productTerms.calendar,
-            productTerms.contractRole,
-            productTerms.dayCountConvention,
-            productTerms.businessDayConvention,
-            productTerms.endOfMonthConvention,
-            productTerms.scalingEffect,
-            productTerms.penaltyType,
-            productTerms.feeBasis,
-            productTerms.creditEventTypeCovered,
+            templateTerms.calendar,
+            templateTerms.contractRole,
+            templateTerms.dayCountConvention,
+            templateTerms.businessDayConvention,
+            templateTerms.endOfMonthConvention,
+            templateTerms.scalingEffect,
+            templateTerms.penaltyType,
+            templateTerms.feeBasis,
+            templateTerms.creditEventTypeCovered,
 
             customTerms.contractReference_1,
             customTerms.contractReference_2,
 
-            productTerms.currency,
-            productTerms.settlementCurrency,
+            templateTerms.currency,
+            templateTerms.settlementCurrency,
 
-            productTerms.marketObjectCodeRateReset,
+            templateTerms.marketObjectCodeRateReset,
 
-            productTerms.statusDateOffset + customTerms.anchorDate,
-            productTerms.maturityDateOffset + customTerms.anchorDate,
+            templateTerms.statusDateOffset + customTerms.anchorDate,
+            templateTerms.maturityDateOffset + customTerms.anchorDate,
 
             customTerms.notionalPrincipal,
             customTerms.nominalInterestRate,
-            productTerms.feeAccrued,
-            productTerms.accruedInterest,
-            productTerms.rateMultiplier,
+            templateTerms.feeAccrued,
+            templateTerms.accruedInterest,
+            templateTerms.rateMultiplier,
             customTerms.rateSpread,
-            productTerms.feeRate,
-            productTerms.nextResetRate,
-            productTerms.penaltyRate,
+            templateTerms.feeRate,
+            templateTerms.nextResetRate,
+            templateTerms.penaltyRate,
             customTerms.premiumDiscountAtIED,
-            productTerms.priceAtPurchaseDate,
-            productTerms.nextPrincipalRedemptionPayment,
+            templateTerms.priceAtPurchaseDate,
+            templateTerms.nextPrincipalRedemptionPayment,
             customTerms.coverageOfCreditEnhancement,
 
-            productTerms.gracePeriod,
-            productTerms.delinquencyPeriod,
+            templateTerms.gracePeriod,
+            templateTerms.delinquencyPeriod,
 
             customTerms.lifeCap,
             customTerms.lifeFloor,
-            productTerms.periodCap,
-            productTerms.periodFloor
+            templateTerms.periodCap,
+            templateTerms.periodFloor
         );
     }
 }

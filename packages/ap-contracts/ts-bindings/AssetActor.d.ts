@@ -126,7 +126,7 @@ export class AssetActor extends Contract {
         counterpartyObligor: string;
         counterpartyBeneficiary: string;
       },
-      productId: string | number[],
+      templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
         notionalPrincipal: number | string;

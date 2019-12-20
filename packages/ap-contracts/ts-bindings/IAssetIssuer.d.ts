@@ -27,7 +27,7 @@ export class IAssetIssuer extends Contract {
 
     issueFromOrder(order: {
       termsHash: string | number[];
-      productId: string | number[];
+      templateId: string | number[];
       customTerms: {
         anchorDate: number | string;
         notionalPrincipal: number | string;
@@ -59,7 +59,7 @@ export class IAssetIssuer extends Contract {
       actor: string;
       enhancementOrder_1: {
         termsHash: string | number[];
-        productId: string | number[];
+        templateId: string | number[];
         customTerms: {
           anchorDate: number | string;
           notionalPrincipal: number | string;
@@ -93,7 +93,7 @@ export class IAssetIssuer extends Contract {
       };
       enhancementOrder_2: {
         termsHash: string | number[];
-        productId: string | number[];
+        templateId: string | number[];
         customTerms: {
           anchorDate: number | string;
           notionalPrincipal: number | string;

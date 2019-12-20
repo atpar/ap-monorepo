@@ -21,7 +21,7 @@ contract VerifyOrder is SharedTypes {
 
     struct EnhancementOrder {
         bytes32 termsHash;
-        bytes32 productId;
+        bytes32 templateId;
         CustomTerms customTerms;
         AssetOwnership ownership;
         address engine;
@@ -32,7 +32,7 @@ contract VerifyOrder is SharedTypes {
 
     struct Order {
         bytes32 termsHash;
-        bytes32 productId;
+        bytes32 templateId;
         CustomTerms customTerms;
         uint256 expirationDate;
         AssetOwnership ownership;
@@ -51,15 +51,15 @@ contract VerifyOrder is SharedTypes {
 
     // signed by the creator of the Order which includes the Enhancement Order
     bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-        "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
+        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
     );
 
     bytes32 constant ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-        "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,bytes32 ownershipHash,address engine,uint256 salt)"
+        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,bytes32 ownershipHash,address engine,uint256 salt)"
     );
 
     bytes32 constant ORDER_TYPEHASH = keccak256(
-        "Order(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,uint256 expirationDate,bytes32 ownershipHash,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+        "Order(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,uint256 expirationDate,bytes32 ownershipHash,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
     );
 
     bytes32 DOMAIN_SEPARATOR;
@@ -100,12 +100,12 @@ contract VerifyOrder is SharedTypes {
         return keccak256(abi.encode(terms));
     }
 
-    function hashSchedules(ProductSchedules memory productSchedules)
+    function hashSchedules(TemplateSchedules memory templateSchedules)
         internal
         pure
         returns (bytes32)
     {
-        return keccak256(abi.encode(productSchedules));
+        return keccak256(abi.encode(templateSchedules));
     }
 
     function hashOwnership(AssetOwnership memory ownership)
@@ -125,7 +125,7 @@ contract VerifyOrder is SharedTypes {
             abi.encode(
                 DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
                 enhancementOrder.termsHash,
-                enhancementOrder.productId,
+                enhancementOrder.templateId,
                 hashCustomTerms(enhancementOrder.customTerms),
                 enhancementOrder.engine,
                 enhancementOrder.salt
@@ -142,7 +142,7 @@ contract VerifyOrder is SharedTypes {
             abi.encode(
                 ENHANCEMENT_ORDER_TYPEHASH,
                 enhancementOrder.termsHash,
-                enhancementOrder.productId,
+                enhancementOrder.templateId,
                 hashCustomTerms(enhancementOrder.customTerms),
                 hashOwnership(
                     AssetOwnership(
@@ -167,7 +167,7 @@ contract VerifyOrder is SharedTypes {
             abi.encode(
                 ENHANCEMENT_ORDER_TYPEHASH,
                 enhancementOrder.termsHash,
-                enhancementOrder.productId,
+                enhancementOrder.templateId,
                 hashCustomTerms(enhancementOrder.customTerms),
                 hashOwnership(enhancementOrder.ownership),
                 enhancementOrder.engine,
@@ -185,7 +185,7 @@ contract VerifyOrder is SharedTypes {
             abi.encode(
                 ORDER_TYPEHASH,
                 order.termsHash,
-                order.productId,
+                order.templateId,
                 hashCustomTerms(order.customTerms),
                 order.expirationDate,
                 hashOwnership(
@@ -214,7 +214,7 @@ contract VerifyOrder is SharedTypes {
             abi.encode(
                 ORDER_TYPEHASH,
                 order.termsHash,
-                order.productId,
+                order.templateId,
                 hashCustomTerms(order.customTerms),
                 order.expirationDate,
                 hashOwnership(order.ownership),

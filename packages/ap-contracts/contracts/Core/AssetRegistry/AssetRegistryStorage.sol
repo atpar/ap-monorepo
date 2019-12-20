@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "actus-solidity/contracts/Core/Utils.sol";
 
-import "../ProductRegistry/IProductRegistry.sol";
+import "../TemplateRegistry/ITemplateRegistry.sol";
 import "../Conversions.sol";
 import "../SharedTypes.sol";
 
@@ -19,7 +19,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         bytes32 assetId;
         AssetOwnership ownership;
         mapping (int8 => address) cashflowBeneficiaries;
-        bytes32 productId;
+        bytes32 templateId;
         mapping(uint8 => uint256) nextEventIndex;
         mapping (uint8 => bytes32) packedTermsState;
         uint256 eventId;
@@ -29,17 +29,17 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
 
     mapping (bytes32 => Asset) assets;
 
-    IProductRegistry public productRegistry;
+    ITemplateRegistry public templateRegistry;
 
 
-    constructor(IProductRegistry _productRegistry) public {
-        productRegistry = _productRegistry;
+    constructor(ITemplateRegistry _templateRegistry) public {
+        templateRegistry = _templateRegistry;
     }
 
     function setAsset(
         bytes32 _assetId,
         AssetOwnership memory _ownership,
-        bytes32 _productId,
+        bytes32 _templateId,
         CustomTerms memory customTerms,
         State memory state,
         address _engine,
@@ -50,7 +50,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         assets[_assetId] = Asset({
             assetId: _assetId,
             ownership: _ownership,
-            productId: _productId,
+            templateId: _templateId,
             eventId: 0,
             engine: _engine,
             actor: _actor
@@ -151,7 +151,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         );
 
         return deriveLifecycleTerms(
-            productRegistry.getProductTerms(assets[assetId].productId),
+            templateRegistry.getTemplateTerms(assets[assetId].templateId),
             customTerms
         );
     }

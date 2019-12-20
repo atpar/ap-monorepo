@@ -6,7 +6,7 @@ const SignedMath = artifacts.require('SignedMath');
 
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry');
-const ProductRegistry = artifacts.require('ProductRegistry');
+const TemplateRegistry = artifacts.require('TemplateRegistry');
 
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
@@ -14,9 +14,9 @@ const Custodian = artifacts.require('Custodian');
 
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 
-const { registerProduct } = require('../test/helper/utils');
+const { registerTemplate } = require('../test/helper/utils');
 
-const B3MB = require('../products/b3mb.json');
+const B3MB = require('../templates/b3mb.json');
 
 
 module.exports = async (deployer, network, accounts) => {
@@ -35,15 +35,15 @@ module.exports = async (deployer, network, accounts) => {
 
   // Core
   instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
-  instances.ProductRegistryInstance = await deployer.deploy(ProductRegistry);
+  instances.TemplateRegistryInstance = await deployer.deploy(TemplateRegistry);
   instances.AssetRegistryInstance = await deployer.deploy(
     AssetRegistry,
-    ProductRegistry.address
+    TemplateRegistry.address
   );
   instances.AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
-    ProductRegistry.address,
+    TemplateRegistry.address,
     MarketObjectRegistry.address
   );
   instances.CustodianInstance = await deployer.deploy(
@@ -56,7 +56,7 @@ module.exports = async (deployer, network, accounts) => {
   instances.AssetIssuerInstance = await deployer.deploy(
     AssetIssuer,
     Custodian.address,
-    ProductRegistry.address,
+    TemplateRegistry.address,
     AssetRegistry.address
   );
 
@@ -80,11 +80,11 @@ module.exports = async (deployer, network, accounts) => {
       Custodian: ${Custodian.address}
       MarketObjectRegistry: ${MarketObjectRegistry.address}
       PAMEngine: ${PAMEngine.address}
-      ProductRegistry: ${ProductRegistry.address}
+      TemplateRegistry: ${TemplateRegistry.address}
       SignedMath: ${SignedMath.address}
       TokenizationFactory: ${TokenizationFactory.address}
   `);
 
-  // registering standard products
-  const productId_1 = await registerProduct(instances, B3MB.terms);
+  // registering standard templates
+  const templateId_1 = await registerTemplate(instances, B3MB.terms);
 };

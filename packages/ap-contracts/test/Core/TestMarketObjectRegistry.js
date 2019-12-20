@@ -9,7 +9,7 @@ const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 
 
-contract('ProductRegistry', (accounts) => {
+contract('TemplateRegistry', (accounts) => {
   const admin = accounts[0];
   const marketObjectProvider = accounts[1];
   const unregisteredProvider = accounts[2];

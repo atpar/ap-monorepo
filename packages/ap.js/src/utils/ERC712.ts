@@ -4,7 +4,7 @@ import web3EthAbi from 'web3-eth-abi';
 import {
   Terms,
   CustomTerms,
-  ProductTerms,
+  TemplateTerms,
   AssetOwnership,
   OrderData,
   OrderDataAsTypedData,
@@ -14,9 +14,9 @@ import {
 import { ZERO_ADDRESS } from './Constants';
 
 
-export function deriveProductId(productTerms: ProductTerms, productSchedules: any): string {
+export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules: any): string {
   // @ts-ignore
-  const productTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+  const templateTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
     {  
       "components": [
         {
@@ -155,11 +155,11 @@ export function deriveProductId(productTerms: ProductTerms, productSchedules: an
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(productTerms)
+    _toTuple(templateTerms)
   ));
 
   // @ts-ignore
-  const productSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+  const templateSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
     {
       "components": [
         {
@@ -191,16 +191,16 @@ export function deriveProductId(productTerms: ProductTerms, productSchedules: an
           "type": "bytes32[64]"
         }
       ],
-      "name": "productSchedules",
+      "name": "templateSchedules",
       "type": "tuple"
     },
-    _toTuple(productSchedules)
+    _toTuple(templateSchedules)
   ));
 
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameters(
     ['bytes32', 'bytes32'],
-    [productTermsHash, productSchedulesHash]
+    [templateTermsHash, templateSchedulesHash]
   ));
 }
 
@@ -234,7 +234,7 @@ export function getOrderDataAsTypedData (
       ],
       Order: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
@@ -248,7 +248,7 @@ export function getOrderDataAsTypedData (
     primaryType: 'Order',
     message: {
       termsHash: orderData.termsHash,
-      productId: orderData.productId,
+      templateId: orderData.templateId,
       customTermsHash: customTermsHash,
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
@@ -290,7 +290,7 @@ export function getEnhancementOrderDataAsTypedData (
       ],
       Order: [
         { name: 'termsHash', type: 'bytes32' },
-        { name: 'productId', type: 'bytes32' },
+        { name: 'templateId', type: 'bytes32' },
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
@@ -300,7 +300,7 @@ export function getEnhancementOrderDataAsTypedData (
     primaryType: 'Order',
     message: {
       termsHash: enhancementOrderData.termsHash,
-      productId: enhancementOrderData.productId,
+      templateId: enhancementOrderData.templateId,
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
@@ -326,7 +326,7 @@ export function getOwnershipHash (ownership: AssetOwnership): string {
 
 export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData): string {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3Utils.keccak256(
-    "EnhancementOrder(bytes32 termsHash,bytes32 productId,bytes32 customTermsHash,address engine,uint256 salt)"
+    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
   );
 
   const customTermsHash = getCustomTermsHash(enhancementOrder.customTerms);
@@ -338,7 +338,7 @@ export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrder
     [
       DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
       enhancementOrder.termsHash,
-      enhancementOrder.productId,
+      enhancementOrder.templateId,
       customTermsHash,
       enhancementOrder.engine,
       enhancementOrder.salt

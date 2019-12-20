@@ -12,7 +12,7 @@ import "./ScheduleUtils.sol";
 import "./Conversions.sol";
 import "./IAssetActor.sol";
 import "./AssetRegistry/IAssetRegistry.sol";
-import "./ProductRegistry/IProductRegistry.sol";
+import "./TemplateRegistry/ITemplateRegistry.sol";
 import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
 
 
@@ -21,7 +21,7 @@ import "./MarketObjectRegistry/IMarketObjectRegistry.sol";
  * @notice As the centerpiece of the ACTUS Protocol it is responsible for managing the
  * lifecycle of assets registered through the AssetRegistry. It acts as the executive of AP
  * by initializing the state of the state and by processing the assets schedule as specified
- * in the ProductRegistry. It derives the next state and the current outstanding payoff of
+ * in the TemplateRegistry. It derives the next state and the current outstanding payoff of
  * the asset by submitting the last finalized state to the corresponding ACTUS Engine.
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
@@ -41,7 +41,7 @@ contract AssetActor is
 
 
     IAssetRegistry assetRegistry;
-    IProductRegistry productRegistry;
+    ITemplateRegistry templateRegistry;
     IMarketObjectRegistry marketObjectRegistry;
 
     mapping(address => bool) public issuers;
@@ -57,13 +57,13 @@ contract AssetActor is
 
     constructor (
         IAssetRegistry _assetRegistry,
-        IProductRegistry _productRegistry,
+        ITemplateRegistry _templateRegistry,
         IMarketObjectRegistry _marketObjectRegistry
     )
         public
     {
         assetRegistry = _assetRegistry;
-        productRegistry = _productRegistry;
+        templateRegistry = _templateRegistry;
         marketObjectRegistry = _marketObjectRegistry;
     }
 
@@ -172,7 +172,7 @@ contract AssetActor is
      * @dev Can only be called by a whitelisted issuer.
      * @param assetId id of the asset
      * @param ownership ownership of the asset
-     * @param productId id of the financial product to use
+     * @param templateId id of the financial template to use
      * @param customTerms asset specific terms
      * @param engineAddress address of the ACTUS engine used for the spec. ContractType
      * @return true on success
@@ -180,7 +180,7 @@ contract AssetActor is
     function initialize(
         bytes32 assetId,
         AssetOwnership memory ownership,
-        bytes32 productId,
+        bytes32 templateId,
         CustomTerms memory customTerms,
         address engineAddress
     )
@@ -201,7 +201,7 @@ contract AssetActor is
         // compute the initial state of the asset using the LifecycleTerms
         State memory initialState = IEngine(engineAddress).computeInitialState(
             deriveLifecycleTerms(
-                productRegistry.getProductTerms(productId),
+                templateRegistry.getTemplateTerms(templateId),
                 customTerms
             )
         );
@@ -210,7 +210,7 @@ contract AssetActor is
         assetRegistry.registerAsset(
             assetId,
             ownership,
-            productId,
+            templateId,
             customTerms,
             initialState,
             engineAddress,

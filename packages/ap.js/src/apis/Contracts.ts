@@ -6,7 +6,7 @@ import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.j
 import AssetRegistryArtifact from '@atpar/ap-contracts/artifacts/AssetRegistry.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
 import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketObjectRegistry.min.json';
-import ProductRegistryArtifact from '@atpar/ap-contracts/artifacts/ProductRegistry.min.json';
+import TemplateRegistryArtifact from '@atpar/ap-contracts/artifacts/TemplateRegistry.min.json';
 import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
 import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/TokenizationFactory.min.json';
 import FDT_ERC20ExtensionArtifact from '@atpar/ap-contracts/artifacts/FDT_ERC20Extension.min.json';
@@ -22,7 +22,7 @@ import { AssetRegistry } from '@atpar/ap-contracts/ts-bindings/AssetRegistry';
 import { AssetIssuer } from '@atpar/ap-contracts/ts-bindings/AssetIssuer';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObjectRegistry';
-import { ProductRegistry } from '@atpar/ap-contracts/ts-bindings/ProductRegistry';
+import { TemplateRegistry } from '@atpar/ap-contracts/ts-bindings/TemplateRegistry';
 import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/TokenizationFactory';
 import { FDT_ERC20Extension } from '@atpar/ap-contracts/ts-bindings/FDT_ERC20Extension';
@@ -47,7 +47,7 @@ export class Contracts {
   public assetRegistry: AssetRegistry;
   public custodian: Custodian;
   public marketObjectRegistry: MarketObjectRegistry;
-  public productRegistry: ProductRegistry;
+  public templateRegistry: TemplateRegistry;
   public signedMath: SignedMath;
   public tokenizationFactory: TokenizationFactory;
 
@@ -81,7 +81,7 @@ export class Contracts {
     // @ts-ignore
     this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry) as MarketObjectRegistry,
     // @ts-ignore
-    this.productRegistry = new web3.eth.Contract(ProductRegistryArtifact.abi, addressBook.ProductRegistry) as ProductRegistry;
+    this.templateRegistry = new web3.eth.Contract(TemplateRegistryArtifact.abi, addressBook.TemplateRegistry) as TemplateRegistry;
     // @ts-ignore
     this.signedMath = new web3.eth.Contract(SignedMathArtifact.abi, addressBook.SignedMath) as SignedMath;
     // @ts-ignore

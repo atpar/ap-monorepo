@@ -7,8 +7,8 @@ contract SharedTypes is ACTUSTypes {
 
     uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
 
-    struct ProductSchedule {
-        mapping(uint256 => bytes32) productSchedule;
+    struct TemplateSchedule {
+        mapping(uint256 => bytes32) templateSchedule;
         uint256 length;
     }
 
@@ -19,7 +19,7 @@ contract SharedTypes is ACTUSTypes {
         address counterpartyBeneficiary;
     }
 
-    struct ProductSchedules {
+    struct TemplateSchedules {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] nonCyclicSchedule;
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicIPSchedule;
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPRSchedule;
@@ -29,7 +29,7 @@ contract SharedTypes is ACTUSTypes {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicFPSchedule;
     }
 
-    struct ProductTerms {
+    struct TemplateTerms {
         Calendar calendar;
         ContractRole contractRole;
         DayCountConvention dayCountConvention;

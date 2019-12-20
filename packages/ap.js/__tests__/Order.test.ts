@@ -32,7 +32,7 @@ describe('OrderClass', () => {
   });
 
   it('should create a order instance', async () => {
-    const orderParams = await getDefaultOrderParams(web3.utils.toHex('Some Product'));
+    const orderParams = await getDefaultOrderParams(web3.utils.toHex('Some Template'));
 
     const order = Order.create(apRC, orderParams);
     await order.signOrder();

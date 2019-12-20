@@ -4,16 +4,16 @@ const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('act
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 
-const { deriveProductId } = require('../helper/orderUtils');
+const { deriveTemplateId } = require('../helper/orderUtils');
 
 const {
   convertDatesToOffsets,
-  parseTermsToProductTerms,
+  parseTermsToTemplateTerms,
   parseTermsToCustomTerms
 } = require('../helper/utils');
 
 
-contract('ProductRegistry', (accounts) => {
+contract('TemplateRegistry', (accounts) => {
   const creatorObligor = accounts[1];
   const creatorBeneficiary = accounts[2];
   const counterpartyObligor = accounts[3];
@@ -26,10 +26,10 @@ contract('ProductRegistry', (accounts) => {
     this.assetId = 'C123';
     this.terms = await getDefaultTerms();
 
-    // derive LifecycleTerms, GeneratingTerms, ProductTerms and CustomTerms
+    // derive LifecycleTerms, GeneratingTerms, TemplateTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
     this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
-    this.productTerms = parseTermsToProductTerms(this.terms);
+    this.templateTerms = parseTermsToTemplateTerms(this.terms);
     this.customTerms = parseTermsToCustomTerms(this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
@@ -39,7 +39,7 @@ contract('ProductRegistry', (accounts) => {
       counterpartyObligor, 
       counterpartyBeneficiary
     };
-    this.productSchedules = {
+    this.templateSchedules = {
       nonCyclicSchedule: await this.PAMEngineInstance.computeNonCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate),
       cyclicIPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 8),
       cyclicPRSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 15),
@@ -48,16 +48,16 @@ contract('ProductRegistry', (accounts) => {
       cyclicFPSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 4),
       cyclicPYSchedule: await this.PAMEngineInstance.computeCyclicScheduleSegment(this.generatingTerms, this.generatingTerms.contractDealDate, this.generatingTerms.maturityDate, 11),
     };
-    this.productId = deriveProductId(this.productTerms, this.productSchedules);
+    this.templateId = deriveTemplateId(this.templateTerms, this.templateSchedules);
   });
 
   it('should register an asset', async () => {
-    await this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules);
+    await this.TemplateRegistryInstance.registerTemplate(this.templateTerms, this.templateSchedules);
 
     const storedNonCyclicSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         255,
         i
       );
@@ -67,8 +67,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicIPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         8,
         i
       );
@@ -78,8 +78,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicPRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         15,
         i
       );
@@ -89,8 +89,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicSCSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         19,
         i
       );
@@ -100,8 +100,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicRRSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         18,
         i
       );
@@ -111,8 +111,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicFPSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         4,
         i
       );
@@ -122,8 +122,8 @@ contract('ProductRegistry', (accounts) => {
 
     const storedCyclicPYSchedule = [];
     for (let i = 0; i < 64; i++) {
-      const _event = await this.ProductRegistryInstance.getEventAtIndex(
-        web3.utils.toHex(this.productId),
+      const _event = await this.TemplateRegistryInstance.getEventAtIndex(
+        web3.utils.toHex(this.templateId),
         11,
         i
       );
@@ -131,7 +131,7 @@ contract('ProductRegistry', (accounts) => {
       storedCyclicPYSchedule.push(_event);
     }
 
-    const storedTerms = await this.ProductRegistryInstance.getProductTerms(web3.utils.toHex(this.productId));
+    const storedTerms = await this.TemplateRegistryInstance.getTemplateTerms(web3.utils.toHex(this.templateId));
 
     function parseTerms (array) {
       return array.map((value) => {
@@ -154,21 +154,21 @@ contract('ProductRegistry', (accounts) => {
       });
     }
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.productTerms)));
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.templateTerms)));
 
-    assert.deepEqual(storedNonCyclicSchedule, this.productSchedules.nonCyclicSchedule);
-    assert.deepEqual(storedCyclicIPSchedule, this.productSchedules.cyclicIPSchedule);
-    assert.deepEqual(storedCyclicPRSchedule, this.productSchedules.cyclicPRSchedule);
-    assert.deepEqual(storedCyclicSCSchedule, this.productSchedules.cyclicSCSchedule);
-    assert.deepEqual(storedCyclicRRSchedule, this.productSchedules.cyclicRRSchedule);
-    assert.deepEqual(storedCyclicFPSchedule, this.productSchedules.cyclicFPSchedule);
-    assert.deepEqual(storedCyclicPYSchedule, this.productSchedules.cyclicPYSchedule);
+    assert.deepEqual(storedNonCyclicSchedule, this.templateSchedules.nonCyclicSchedule);
+    assert.deepEqual(storedCyclicIPSchedule, this.templateSchedules.cyclicIPSchedule);
+    assert.deepEqual(storedCyclicPRSchedule, this.templateSchedules.cyclicPRSchedule);
+    assert.deepEqual(storedCyclicSCSchedule, this.templateSchedules.cyclicSCSchedule);
+    assert.deepEqual(storedCyclicRRSchedule, this.templateSchedules.cyclicRRSchedule);
+    assert.deepEqual(storedCyclicFPSchedule, this.templateSchedules.cyclicFPSchedule);
+    assert.deepEqual(storedCyclicPYSchedule, this.templateSchedules.cyclicPYSchedule);
   });
 
-  it('should not register same product twice', async () => {
+  it('should not register same template twice', async () => {
     await shouldFail.reverting.withMessage(
-      this.ProductRegistryInstance.registerProduct(this.productTerms, this.productSchedules),
-      'ProductRegistry.registerProduct: ENTRY_ALREADY_EXISTS'
+      this.TemplateRegistryInstance.registerTemplate(this.templateTerms, this.templateSchedules),
+      'TemplateRegistry.registerTemplate: ENTRY_ALREADY_EXISTS'
     );
   });  
 });

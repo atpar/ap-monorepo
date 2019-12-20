@@ -97,14 +97,14 @@ export class Economics extends Contract {
       }
     ): TransactionObject<string>;
 
+    templateRegistry(): TransactionObject<string>;
+
     PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
-
-    productRegistry(): TransactionObject<string>;
 
     getTerms(
       assetId: string | number[]
@@ -196,7 +196,7 @@ export class Economics extends Contract {
 
     getActorAddress(assetId: string | number[]): TransactionObject<string>;
 
-    getProductId(assetId: string | number[]): TransactionObject<string>;
+    getTemplateId(assetId: string | number[]): TransactionObject<string>;
 
     getNextEvent(assetId: string | number[]): TransactionObject<string>;
 
