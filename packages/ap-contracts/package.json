@@ -46,7 +46,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "actus-solidity": "git://github.com/atpar/actus-solidity.git#master",
+    "actus-solidity": "0.3.0",
     "funds-distribution-token": "0.1.2",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.9",
