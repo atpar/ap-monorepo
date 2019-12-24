@@ -49,7 +49,7 @@ export class Signer {
   /**
    * validates the signatures of OrderData
    * @param {OrderData} orderData orderData containing signature to validate
-   * @returns {Promise<boolean>} true if signatures are valid
+   * @returns {boolean} true if signatures are valid
    */
   public validateSignatures (
     orderDataOrEnhancementOrderData: OrderData | EnhancementOrderData

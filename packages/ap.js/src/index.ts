@@ -43,7 +43,7 @@ export class AP {
         || !event.returnValues.assetId 
         || !event.returnValues.creator 
         || !event.returnValues.counterparty
-      ) { throw new Error(''); }
+      ) { throw new Error('EXECUTION_ERROR: Malformed event returned.'); }
 
       if (
         event.returnValues.creator !== this.signer.account &&
@@ -53,7 +53,7 @@ export class AP {
       try {
         const asset = await Asset.load(this, event.returnValues.assetId);
         cb(asset);
-      } catch (error) { console.log(error); return; }
+      } catch (error) { console.log(error); }
     });
   }
 
@@ -96,7 +96,7 @@ export class AP {
     addressBook?: APTypes.AddressBook
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
-      throw(new Error('CONNECTION_ERROR: could not establish connection.'));
+      throw(new Error('CONNECTION_ERROR: Could not establish connection.'));
     }
 
     if (!addressBook) {

@@ -20,7 +20,7 @@ import "./IAssetActor.sol";
  * @title AssetActor
  * @notice As the centerpiece of the ACTUS Protocol it is responsible for managing the
  * lifecycle of assets registered through the AssetRegistry. It acts as the executive of AP
- * by initializing the state of the state and by processing the assets schedule as specified
+ * by initializing the state of the asset and by processing the assets schedule as specified
  * in the TemplateRegistry. It derives the next state and the current outstanding payoff of
  * the asset by submitting the last finalized state to the corresponding ACTUS Engine.
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able

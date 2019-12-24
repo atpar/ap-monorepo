@@ -64,7 +64,7 @@ export class Order {
       throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); 
     }
 
-    if (! (await ap.signer.validateSignatures(orderData))) {
+    if (!(ap.signer.validateSignatures(orderData))) {
       throw(new Error('EXECUTION_ERROR: Signatures are invalid.'));
     }
 

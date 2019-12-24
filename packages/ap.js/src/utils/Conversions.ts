@@ -1,86 +1,91 @@
 import * as web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
-import { Terms, CustomTerms, TemplateTerms, LifecycleTerms, GeneratingTerms } from '../types';
+import { Terms, State, CustomTerms, TemplateTerms, LifecycleTerms, GeneratingTerms } from '../types';
 
 
-export function toHex (mixed: any): any {
-  if (String(mixed).startsWith('0x')) { return mixed; }
-  return web3Utils.toHex(mixed);
-}
+export const toHex = (mixed: any): any => (
+  (String(mixed).startsWith('0x')) ? mixed : web3Utils.toHex(mixed)
+);
 
-export function hexToUtf8 (hex: string): any {
-  return web3Utils.hexToAscii(hex);
-}
+export const hexToUtf8 = (hex: string): any => (
+  web3Utils.hexToAscii(hex)
+);
 
-export function toChecksumAddress (address: string): string {
-  return web3Utils.toChecksumAddress(address);
-}
+export const toChecksumAddress = (address: string): string => (
+  web3Utils.toChecksumAddress(address)
+);
 
-export function toPrecision (number: number | string | BN): string {
-  return web3Utils.toWei((typeof number === 'string') ? number : number.toString());
-}
+export const toPrecision = (number: number | string | BN): string => (
+  web3Utils.toWei((typeof number === 'string') ? number : number.toString())
+);
 
-export function fromPrecision (number: number | string | BN): string {
-  return web3Utils.fromWei((typeof number === 'string') ? number : number.toString());
-}
+export const fromPrecision = (number: number | string | BN): string => (
+  web3Utils.fromWei((typeof number === 'string') ? number : number.toString())
+);
 
-export function encodeAsBytes32 (externalData: number | string): string {
-  return web3Utils.padLeft(web3Utils.toHex(externalData), 64);
-}
+export const encodeAsBytes32 = (externalData: number | string): string => (
+  web3Utils.padLeft(web3Utils.toHex(externalData), 64)
+);
 
-export function decodeBytes32AsNumber (bytes32Data: string): string {
-  return web3Utils.hexToNumberString(bytes32Data);
-}
+export const decodeBytes32AsNumber = (bytes32Data: string): string => (
+  web3Utils.hexToNumberString(bytes32Data)
+);
 
-export function toLifecycleTerms (terms: Terms): LifecycleTerms {
-  return {
-    calendar: terms.calendar,
-    contractRole: terms.contractRole,
-    dayCountConvention: terms.dayCountConvention,
-    businessDayConvention: terms.businessDayConvention,
-    endOfMonthConvention: terms.endOfMonthConvention,
-    scalingEffect: terms.scalingEffect,
-    penaltyType: terms.penaltyType,
-    feeBasis: terms.feeBasis,
-    creditEventTypeCovered: terms.creditEventTypeCovered,
+export const web3ResponseToLifecycleTerms = (web3Response: [any]): LifecycleTerms => (
+  associativeArrayToObject(web3Response) as LifecycleTerms
+);
 
-    contractReference_1: terms.contractReference_1,
-    contractReference_2: terms.contractReference_2,
+export const web3ResponseToState = (web3Response: [any]): State => (
+  associativeArrayToObject(web3Response) as State
+);
 
-    currency: terms.currency,
-    settlementCurrency: terms.settlementCurrency,
+export const deriveLifecycleTerms = (terms: Terms): LifecycleTerms => ({
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  scalingEffect: terms.scalingEffect,
+  penaltyType: terms.penaltyType,
+  feeBasis: terms.feeBasis,
+  creditEventTypeCovered: terms.creditEventTypeCovered,
 
-    marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
+  contractReference_1: terms.contractReference_1,
+  contractReference_2: terms.contractReference_2,
 
-    statusDate: terms.statusDate,
-    maturityDate: terms.maturityDate,
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
 
-    notionalPrincipal: terms.notionalPrincipal,
-    nominalInterestRate: terms.nominalInterestRate,
-    feeAccrued: terms.feeAccrued,
-    accruedInterest: terms.accruedInterest,
-    rateMultiplier: terms.rateMultiplier,
-    rateSpread: terms.rateSpread,
-    feeRate: terms.feeRate,
-    nextResetRate: terms.nextResetRate,
-    penaltyRate: terms.penaltyRate,
-    premiumDiscountAtIED: terms.premiumDiscountAtIED,
-    priceAtPurchaseDate: terms.priceAtPurchaseDate,
-    nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
-    coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
+  marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
-    gracePeriod: terms.gracePeriod,
-    delinquencyPeriod: terms.delinquencyPeriod,
+  statusDate: terms.statusDate,
+  maturityDate: terms.maturityDate,
 
-    lifeCap: terms.lifeCap,
-    lifeFloor: terms.lifeFloor,
-    periodCap: terms.periodCap,
-    periodFloor: terms.periodFloor
-  }
-}
+  notionalPrincipal: terms.notionalPrincipal,
+  nominalInterestRate: terms.nominalInterestRate,
+  feeAccrued: terms.feeAccrued,
+  accruedInterest: terms.accruedInterest,
+  rateMultiplier: terms.rateMultiplier,
+  rateSpread: terms.rateSpread,
+  feeRate: terms.feeRate,
+  nextResetRate: terms.nextResetRate,
+  penaltyRate: terms.penaltyRate,
+  premiumDiscountAtIED: terms.premiumDiscountAtIED,
+  priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
+  coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
 
-export function toGeneratingTerms (terms: Terms): GeneratingTerms {
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+
+  lifeCap: terms.lifeCap,
+  lifeFloor: terms.lifeFloor,
+  periodCap: terms.periodCap,
+  periodFloor: terms.periodFloor
+});
+
+export function deriveGeneratingTerms (terms: Terms): GeneratingTerms {
   const normalizedTerms = convertDatesToOffsets(terms);
 
   return {
@@ -112,57 +117,53 @@ export function toGeneratingTerms (terms: Terms): GeneratingTerms {
   };
 }
 
-export function toTemplateTerms (terms: Terms): TemplateTerms {
-  return {
-    calendar: terms.calendar,
-    contractRole: terms.contractRole,
-    dayCountConvention: terms.dayCountConvention,
-    businessDayConvention: terms.businessDayConvention,
-    endOfMonthConvention: terms.endOfMonthConvention,
-    scalingEffect: terms.scalingEffect,
-    penaltyType: terms.penaltyType,
-    feeBasis: terms.feeBasis,
-    creditEventTypeCovered: terms.creditEventTypeCovered,
-    
-    currency: terms.currency,
-    settlementCurrency: terms.settlementCurrency,
-    
-    marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
-    
-    statusDateOffset: normalizeDate(terms.contractDealDate, terms.statusDate),
-    maturityDateOffset: normalizeDate(terms.contractDealDate, terms.maturityDate),
+export const deriveTemplateTerms = (terms: Terms): TemplateTerms => ({
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  scalingEffect: terms.scalingEffect,
+  penaltyType: terms.penaltyType,
+  feeBasis: terms.feeBasis,
+  creditEventTypeCovered: terms.creditEventTypeCovered,
   
-    feeAccrued: terms.feeAccrued,
-    accruedInterest: terms.accruedInterest,
-    rateMultiplier: terms.rateMultiplier,
-    feeRate: terms.feeRate,
-    nextResetRate: terms.nextResetRate,
-    penaltyRate: terms.penaltyRate,
-    priceAtPurchaseDate: terms.priceAtPurchaseDate,
-    nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
   
-    gracePeriod: terms.gracePeriod,
-    delinquencyPeriod: terms.delinquencyPeriod,
+  marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
   
-    periodCap: terms.periodCap,
-    periodFloor: terms.periodFloor
-  }
-}
+  statusDateOffset: normalizeDate(terms.contractDealDate, terms.statusDate),
+  maturityDateOffset: normalizeDate(terms.contractDealDate, terms.maturityDate),
+  
+  feeAccrued: terms.feeAccrued,
+  accruedInterest: terms.accruedInterest,
+  rateMultiplier: terms.rateMultiplier,
+  feeRate: terms.feeRate,
+  nextResetRate: terms.nextResetRate,
+  penaltyRate: terms.penaltyRate,
+  priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
+  
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+  
+  periodCap: terms.periodCap,
+  periodFloor: terms.periodFloor
+});
 
-export function toCustomTerms (terms: Terms): CustomTerms {
-  return {
-    anchorDate: terms.contractDealDate,
-    notionalPrincipal: terms.notionalPrincipal,
-    nominalInterestRate: terms.nominalInterestRate,
-    premiumDiscountAtIED: terms.premiumDiscountAtIED,
-    rateSpread: terms.rateSpread,
-    lifeCap: terms.lifeCap,
-    lifeFloor: terms.lifeFloor,
-    coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
-    contractReference_1: terms.contractReference_1,
-    contractReference_2: terms.contractReference_2
-  };
-}
+export const deriveCustomTerms = (terms: Terms): CustomTerms => ({
+  anchorDate: terms.contractDealDate,
+  notionalPrincipal: terms.notionalPrincipal,
+  nominalInterestRate: terms.nominalInterestRate,
+  premiumDiscountAtIED: terms.premiumDiscountAtIED,
+  rateSpread: terms.rateSpread,
+  lifeCap: terms.lifeCap,
+  lifeFloor: terms.lifeFloor,
+  coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
+  contractReference_1: terms.contractReference_1,
+  contractReference_2: terms.contractReference_2
+});
 
 function convertDatesToOffsets (terms: Terms): Terms {
   const anchorDate = terms.contractDealDate;
@@ -183,6 +184,19 @@ function convertDatesToOffsets (terms: Terms): Terms {
   return terms;
 }
 
-function normalizeDate (anchorDate: number | string, date: number | string): string {
-  return (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0';
-}
+const normalizeDate = (anchorDate: number | string, date: number | string): string => (
+  (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0'
+);
+
+const associativeArrayToObject = (arr: [any]): object => ({ 
+  ...Object.keys(arr).reduce((obj: object, element: any): object => (
+    (!Number.isInteger(Number(element)))
+      ? { 
+        ...obj,
+        [element]: (Array.isArray(arr[element]))
+          ? associativeArrayToObject(arr[element])
+          : arr[element]
+      }
+      : obj
+  ), {})
+});

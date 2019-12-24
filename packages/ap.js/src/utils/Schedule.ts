@@ -1,7 +1,7 @@
 import Web3Utils from 'web3-utils';
 
 import { Terms, TemplateSchedule } from '../types';
-import { toGeneratingTerms } from './Conversions';
+import { deriveGeneratingTerms } from './Conversions';
 import { Contract } from 'web3-eth-contract';
 
 
@@ -35,7 +35,7 @@ export async function generateTemplateSchedule (engineContract: Contract, terms:
     throw new Error('EXECUTION_ERROR: Invalid engine provided.'); 
   }
 
-  const generatingTerms = toGeneratingTerms(terms);
+  const generatingTerms = deriveGeneratingTerms(terms);
 
   return {
     nonCyclicSchedule: await engineContract.methods.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate).call(),
@@ -98,12 +98,10 @@ export function removeNullEvents (_eventSchedule: string[]): string[] {
   return compactEventSchedule;
 }
 
-export function decodeEvent (encodedEvent: string): { eventType: number; scheduleTime: number } {
-  return {
-    eventType: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(2, 2)),
-    scheduleTime: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(10, encodedEvent.length))
-  };
-}
+export const decodeEvent = (encodedEvent: string): { eventType: number; scheduleTime: number } => ({
+  eventType: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(2, 2)),
+  scheduleTime: Web3Utils.hexToNumber('0x' + String(encodedEvent).substr(10, encodedEvent.length))
+});
 
 export function encodeEvent (eventType: string | number, scheduleTime: string | number): string {
   const eventTypeAsHex = Web3Utils.padLeft(Web3Utils.toHex(eventType), 2);
@@ -115,5 +113,5 @@ export function encodeEvent (eventType: string | number, scheduleTime: string | 
 export function parseEventSchedule (encodedEventSchedule: string[]): { eventType: number; scheduleTime: number }[] {
   return removeNullEvents(
     encodedEventSchedule
-  ).map((encodedEvent) => decodeEvent(encodedEvent));
+  ).map((encodedEvent): { eventType: number; scheduleTime: number } => decodeEvent(encodedEvent));
 }

@@ -33,24 +33,30 @@ export class Asset {
 
   /**
    * Returns the terms of the asset.
-   * @returns {Promise<Terms>}
+   * @dev use web3ResponseToLifecycleTerms to convert assoc. array to LifecycleTerms
+   * @returns {Promise<[any]>}
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public async getTerms () {
     return this.ap.contracts.assetRegistry.methods.getTerms(this.assetId).call();
   }
 
   /**
-   * Eeturns the current state of the asset.
-   * @returns {Promise<State>}
+   * Returns the current state of the asset.
+   * @dev use web3ResponseToState to convert assoc. array to State
+   * @returns {Promise<[any]>}
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public async getState () {
     return this.ap.contracts.assetRegistry.methods.getState(this.assetId).call();
   }
 
   /**
    * Returns the finalized state of the asset.
-   * @returns {Promise<State>}
+   * @dev use web3ResponseToState to convert assoc. array to State
+   * @returns {Promise<[any]>}
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public async getFinalizedState () {
     return this.ap.contracts.assetRegistry.methods.getFinalizedState(this.assetId).call();
   }

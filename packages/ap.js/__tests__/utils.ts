@@ -43,7 +43,7 @@ export async function getDefaultOrderParams (templateId: string): Promise<APType
   return {
     termsHash: ap.utils.erc712.getTermsHash(terms),
     templateId: templateId,
-    customTerms: ap.utils.convert.toCustomTerms(terms),
+    customTerms: ap.utils.convert.deriveCustomTerms(terms),
     ownership: {
       creatorObligor: creator,
       creatorBeneficiary: creator,
@@ -78,7 +78,7 @@ export async function issueDefaultAsset (): Promise<string> {
   const ap = await AP.init(web3, account);
 
   const terms = await getDefaultTerms();
-  const templateTerms = ap.utils.convert.toTemplateTerms(terms);
+  const templateTerms = ap.utils.convert.deriveTemplateTerms(terms);
   const templateSchedules = await ap.utils.schedule.generateTemplateSchedule(ap.contracts.pamEngine, terms);
   const templateId = ap.utils.erc712.deriveTemplateId(templateTerms, templateSchedules);
   const storedTemplateTerms = await ap.contracts.templateRegistry.methods.getTemplateTerms(web3.utils.toHex(templateId)).call();

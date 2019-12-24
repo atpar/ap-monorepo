@@ -70,21 +70,21 @@ export interface ContractReference {
 // export enum ContractReferenceRole { CT, CID, MOC, LEI, CS }
 // export enum ContractReferenceType { UDY, FL, SL, CVE, CVI }
 
-// export interface ContractState {
-//   contractPerformance: ContractPerformance;
-//   statusDate: number | string;
-//   nonPerformingDate: number | string;
-//   maturityDate: number | string;
-//   executionDate: number | string;
-//   notionalPrincipal: number | string;
-//   accruedInterest: number | string;
-//   feeAccrued: number | string;
-//   nominalInterestRate: number | string;
-//   interestScalingMultiplier: number | string;
-//   notionalScalingMultiplier: number | string;
-//   nextPrincipalRedemptionPayment: number | string;
-//   executionAmount: number | string;
-// }
+export interface State {
+  contractPerformance: number | string;
+  statusDate: number | string;
+  nonPerformingDate: number | string;
+  maturityDate: number | string;
+  executionDate: number | string;
+  notionalPrincipal: number | string;
+  accruedInterest: number | string;
+  feeAccrued: number | string;
+  nominalInterestRate: number | string;
+  interestScalingMultiplier: number | string;
+  notionalScalingMultiplier: number | string;
+  nextPrincipalRedemptionPayment: number | string;
+  executionAmount: number | string;
+}
 
 export interface Terms {
   contractType: string | number;
@@ -105,7 +105,7 @@ export interface Terms {
   settlementCurrency: string;
 
   creatorID: string | number[];
-  counterpartyID: string | number[]
+  counterpartyID: string | number[];
   marketObjectCodeRateReset: string | number[];
   
   contractDealDate: number | string;

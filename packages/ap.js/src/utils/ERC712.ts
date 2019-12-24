@@ -815,7 +815,7 @@ function _toTuple (obj): any[] {
       // @ts-ignore
       let temp1 = [];
       // @ts-ignore
-      obj[k].forEach((ak): void => {
+      obj[k].forEach((): void => {
         // @ts-ignore
         temp1[j1] = _toTuple(obj[k]);
         j1++;
