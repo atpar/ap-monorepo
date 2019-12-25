@@ -10,14 +10,14 @@ export const PY_SCHEDULE_ID = '11';
 // export enum P { D, W, M, Q, H, Y } // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
 // export enum S { LONG, SHORT } // S=[+=long stub,- short stub, {} if S empty then - for short stub]
 export interface IPS { 
-  i: number; // I=Integer
+  i: string | number; // I=Integer
   p: string | number; 
   s: string | number;
   isSet: boolean;
 }
 // IP
 export interface IP { 
-  i: number; // I=Integer
+  i: string | number; // I=Integer
   p: string | number;
   isSet: boolean;
 }

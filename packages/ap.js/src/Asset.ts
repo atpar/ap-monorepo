@@ -5,7 +5,9 @@ import {
   SC_SCHEDULE_ID,
   PR_SCHEDULE_ID,
   RR_SCHEDULE_ID,
-  PY_SCHEDULE_ID 
+  PY_SCHEDULE_ID, 
+  LifecycleTerms,
+  State
 } from './types';
 
 import { AP } from './index';
@@ -34,30 +36,27 @@ export class Asset {
   /**
    * Returns the terms of the asset.
    * @dev use web3ResponseToLifecycleTerms to convert assoc. array to LifecycleTerms
-   * @returns {Promise<[any]>}
+   * @returns {Promise<LifecycleTerms>}
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public async getTerms () {
+  public async getTerms (): Promise<LifecycleTerms> {
     return this.ap.contracts.assetRegistry.methods.getTerms(this.assetId).call();
   }
 
   /**
    * Returns the current state of the asset.
    * @dev use web3ResponseToState to convert assoc. array to State
-   * @returns {Promise<[any]>}
+   * @returns {Promise<State>}
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public async getState () {
+  public async getState (): Promise<State> {
     return this.ap.contracts.assetRegistry.methods.getState(this.assetId).call();
   }
 
   /**
    * Returns the finalized state of the asset.
    * @dev use web3ResponseToState to convert assoc. array to State
-   * @returns {Promise<[any]>}
+   * @returns {Promise<State>}
    */
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public async getFinalizedState () {
+  public async getFinalizedState (): Promise<State> {
     return this.ap.contracts.assetRegistry.methods.getFinalizedState(this.assetId).call();
   }
 
