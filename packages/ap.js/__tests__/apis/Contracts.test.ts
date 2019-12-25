@@ -7,21 +7,21 @@ import { Contracts } from '../../src/apis';
 import { AddressBook } from '../../src/types';
 
 
-describe('Contracts', () => {
+describe('Contracts', (): void => {
 
   let web3: Web3;
   let contracts: Contracts;
   let addressBook: AddressBook;
 
 
-  beforeAll(async () => {
+  beforeAll(async (): Promise<void> => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 
     // @ts-ignore
     addressBook = Deployments[await web3.eth.net.getId()];
   });
 
-  it('should instantiate ContractsAPI', async () => {
+  it('should instantiate ContractsAPI', async (): Promise<void> => {
     contracts = new Contracts(web3, addressBook);
 
     const initializedAddresses = {
@@ -43,19 +43,19 @@ describe('Contracts', () => {
     expect(initializedAddresses).toEqual(addressBook);
   });
 
-  it('should return instance of IEngine for a given address', async () => {
+  it('should return instance of IEngine for a given address', async (): Promise<void> => {
     expect(
       contracts.engine('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);    
   });
 
-  it('should return instance of FDT_ERC20Extension for a given address', async () => {
+  it('should return instance of FDT_ERC20Extension for a given address', async (): Promise<void> => {
     expect(
       contracts.distributor('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);
   });
 
-  it('should return instance of ERC20 for a given address', async () => {
+  it('should return instance of ERC20 for a given address', async (): Promise<void> => {
     expect(
       contracts.erc20('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);

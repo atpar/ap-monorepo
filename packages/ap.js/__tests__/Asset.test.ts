@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
-import { AP, Asset } from '../../src';
-import { issueDefaultAsset } from '../utils';
+import { AP, Asset } from '../src';
+import { issueDefaultAsset } from './utils';
 
 
 describe('Asset', (): void => {

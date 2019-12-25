@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
 
 import { AP, APTypes, Order } from '../src';
