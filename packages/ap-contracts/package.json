@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-contracts",
-  "version": "0.2.0",
+  "version": "0.2.1-beta.0",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
