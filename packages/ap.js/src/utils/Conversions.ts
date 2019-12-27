@@ -32,11 +32,15 @@ export const decodeBytes32AsNumber = (bytes32Data: string): string => (
   web3Utils.hexToNumberString(bytes32Data)
 );
 
-export const web3ResponseToLifecycleTerms = (web3Response: [any]): LifecycleTerms => (
+export const web3ResponseToLifecycleTerms = (web3Response: any): LifecycleTerms => (
   associativeArrayToObject(web3Response) as LifecycleTerms
 );
 
-export const web3ResponseToState = (web3Response: [any]): State => (
+export const web3ResponseToTemplateTerms = (web3Response: any): TemplateTerms => (
+  associativeArrayToObject(web3Response) as TemplateTerms
+);
+
+export const web3ResponseToState = (web3Response: any): State => (
   associativeArrayToObject(web3Response) as State
 );
 
@@ -166,29 +170,30 @@ export const deriveCustomTerms = (terms: Terms): CustomTerms => ({
 });
 
 function convertDatesToOffsets (terms: Terms): Terms {
+  const normalizedTerms = { ...terms };
   const anchorDate = terms.contractDealDate;
 
-  terms.contractDealDate = 0;
-  terms.statusDate = 0;
-  terms.initialExchangeDate = normalizeDate(anchorDate, terms.initialExchangeDate); 
-  terms.maturityDate = normalizeDate(anchorDate, terms.maturityDate)
-  terms.terminationDate = normalizeDate(anchorDate, terms.terminationDate)
-  terms.purchaseDate = normalizeDate(anchorDate, terms.purchaseDate)
-  terms.capitalizationEndDate = normalizeDate(anchorDate, terms.capitalizationEndDate)
-  terms.cycleAnchorDateOfInterestPayment = normalizeDate(anchorDate, terms.cycleAnchorDateOfInterestPayment)
-  terms.cycleAnchorDateOfRateReset = normalizeDate(anchorDate, terms.cycleAnchorDateOfRateReset)
-  terms.cycleAnchorDateOfScalingIndex = normalizeDate(anchorDate, terms.cycleAnchorDateOfScalingIndex)
-  terms.cycleAnchorDateOfFee = normalizeDate(anchorDate, terms.cycleAnchorDateOfFee)
-  terms.cycleAnchorDateOfPrincipalRedemption = normalizeDate(anchorDate, terms.cycleAnchorDateOfPrincipalRedemption)
+  normalizedTerms.contractDealDate = 0;
+  normalizedTerms.statusDate = 0;
+  normalizedTerms.initialExchangeDate = normalizeDate(anchorDate, terms.initialExchangeDate); 
+  normalizedTerms.maturityDate = normalizeDate(anchorDate, terms.maturityDate)
+  normalizedTerms.terminationDate = normalizeDate(anchorDate, terms.terminationDate)
+  normalizedTerms.purchaseDate = normalizeDate(anchorDate, terms.purchaseDate)
+  normalizedTerms.capitalizationEndDate = normalizeDate(anchorDate, terms.capitalizationEndDate)
+  normalizedTerms.cycleAnchorDateOfInterestPayment = normalizeDate(anchorDate, terms.cycleAnchorDateOfInterestPayment)
+  normalizedTerms.cycleAnchorDateOfRateReset = normalizeDate(anchorDate, terms.cycleAnchorDateOfRateReset)
+  normalizedTerms.cycleAnchorDateOfScalingIndex = normalizeDate(anchorDate, terms.cycleAnchorDateOfScalingIndex)
+  normalizedTerms.cycleAnchorDateOfFee = normalizeDate(anchorDate, terms.cycleAnchorDateOfFee)
+  normalizedTerms.cycleAnchorDateOfPrincipalRedemption = normalizeDate(anchorDate, terms.cycleAnchorDateOfPrincipalRedemption)
 
-  return terms;
+  return normalizedTerms;
 }
 
 const normalizeDate = (anchorDate: number | string, date: number | string): string => (
   (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0'
 );
 
-const associativeArrayToObject = (arr: [any]): object => ({ 
+const associativeArrayToObject = (arr: any): object => ({ 
   ...Object.keys(arr).reduce((obj: object, element: any): object => (
     (!Number.isInteger(Number(element)))
       ? { 

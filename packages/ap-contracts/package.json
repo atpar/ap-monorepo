@@ -12,6 +12,8 @@
     "contracts/",
     "deployments.json",
     "migrations/",
+    "templates/",
+    "test/",
     "truffle-config.js",
     "ts-bindings/"
   ],

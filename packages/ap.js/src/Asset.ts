@@ -1,16 +1,6 @@
-import { 
-  AssetOwnership,
-  NON_CYLIC_SCHEDULE_ID,
-  IP_SCHEDULE_ID,
-  SC_SCHEDULE_ID,
-  PR_SCHEDULE_ID,
-  RR_SCHEDULE_ID,
-  PY_SCHEDULE_ID, 
-  LifecycleTerms,
-  State
-} from './types';
+import { AssetOwnership, LifecycleTerms, State } from './types';
 
-import { AP } from './index';
+import { AP, Template  } from './index';
 
 import BN from 'bn.js';
 
@@ -99,61 +89,10 @@ export class Asset {
   public async getSchedule (): Promise<string[]> {
     const templateId = await this.getTemplateId();
     const anchorDate = (await this.ap.contracts.assetRegistry.methods.getAnchorDate(this.assetId).call()).toString();
-    const schedule = [];
-
-    // try to use convenience method first
-    try {
-      const events = [];
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, NON_CYLIC_SCHEDULE_ID).call()));
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, IP_SCHEDULE_ID).call()));
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, PR_SCHEDULE_ID).call()));
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, SC_SCHEDULE_ID).call()));
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, RR_SCHEDULE_ID).call()));
-      events.push(...(await this.ap.contracts.templateRegistry.methods.getSchedule(templateId, PY_SCHEDULE_ID).call()));
-      schedule.push(...events);
-    } catch (error) {
-      const nonCyclicScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId, NON_CYLIC_SCHEDULE_ID
-      ).call()
-      const ipScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId, IP_SCHEDULE_ID
-      ).call();
-      const prScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId, PR_SCHEDULE_ID
-      ).call();
-      const scScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId,
-        SC_SCHEDULE_ID
-      ).call();
-      const rrScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId, RR_SCHEDULE_ID
-      ).call();
-      const pyScheduleLength = await this.ap.contracts.templateRegistry.methods.getScheduleLength(
-        templateId, PY_SCHEDULE_ID
-      ).call();
-  
-      for (let i = 0; i < Number(nonCyclicScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, NON_CYLIC_SCHEDULE_ID, i).call());
-      }
-      for (let i = 0; i < Number(ipScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, IP_SCHEDULE_ID, i).call());
-      }
-      for (let i = 0; i < Number(prScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, PR_SCHEDULE_ID, i).call());
-      }
-      for (let i = 0; i < Number(scScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, SC_SCHEDULE_ID, i).call());
-      }
-      for (let i = 0; i < Number(rrScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, RR_SCHEDULE_ID, i).call());
-      }
-      for (let i = 0; i < Number(pyScheduleLength); i++) {
-        schedule.push(await this.ap.contracts.templateRegistry.methods.getEventAtIndex(templateId, PY_SCHEDULE_ID, i).call());
-      }
-    }
+    const templateSchedule = await (await Template.load(this.ap, templateId)).getTemplateSchedule();
 
     return this.ap.utils.schedule.applyAnchorDateToSchedule(
-      this.ap.utils.schedule.sortEvents(this.ap.utils.schedule.removeNullEvents(schedule)),
+      templateSchedule,
       anchorDate
     );
   }

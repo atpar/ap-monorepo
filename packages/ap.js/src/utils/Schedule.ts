@@ -1,9 +1,5 @@
 import Web3Utils from 'web3-utils';
 
-import { Terms, TemplateSchedule } from '../types';
-import { deriveGeneratingTerms } from './Conversions';
-import { Contract } from 'web3-eth-contract';
-
 
 export function getEpochOffsetForEventType (eventType: number): number {
   if (eventType === 5) { return 20; } // IED
@@ -23,29 +19,6 @@ export function getEpochOffsetForEventType (eventType: number): number {
   if (eventType === 10) { return 160; } // MD
   if (eventType === 0) { return 950; } // AD
   return 0;
-}
-
-export async function generateTemplateSchedule (engineContract: Contract, terms: Terms): Promise<TemplateSchedule> {
-  if (
-    !engineContract
-    || !engineContract.methods
-    || typeof engineContract.methods.computeNonCyclicScheduleSegment !== 'function' 
-    || typeof engineContract.methods.computeCyclicScheduleSegment !== 'function' 
-  ) { 
-    throw new Error('EXECUTION_ERROR: Invalid engine provided.'); 
-  }
-
-  const generatingTerms = deriveGeneratingTerms(terms);
-
-  return {
-    nonCyclicSchedule: await engineContract.methods.computeNonCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate).call(),
-    cyclicIPSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 8).call(),
-    cyclicPRSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 15).call(),
-    cyclicSCSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 19).call(),
-    cyclicRRSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 18).call(),
-    cyclicFPSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 4).call(),
-    cyclicPYSchedule: await engineContract.methods.computeCyclicScheduleSegment(generatingTerms, generatingTerms.contractDealDate, generatingTerms.maturityDate, 11).call(),
-  };
 }
 
 export function applyAnchorDateToSchedule(schedule: string[], anchorDate: string | number): string[] {

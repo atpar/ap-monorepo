@@ -3,7 +3,7 @@ import Web3 from 'web3';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
 
-import { AP, APTypes, Order } from '../src';
+import { AP, APTypes, Order, Template } from '../src';
 
 // @ts-ignore
 import DefaultTerms from './DefaultTerms.json';
@@ -79,16 +79,15 @@ export async function issueDefaultAsset (): Promise<string> {
   const ap = await AP.init(web3, account);
 
   const terms = await getDefaultTerms();
-  const templateTerms = ap.utils.convert.deriveTemplateTerms(terms);
-  const templateSchedules = await ap.utils.schedule.generateTemplateSchedule(ap.contracts.pamEngine, terms);
-  const templateId = ap.utils.erc712.deriveTemplateId(templateTerms, templateSchedules);
-  const storedTemplateTerms = await ap.contracts.templateRegistry.methods.getTemplateTerms(web3.utils.toHex(templateId)).call();
-  
-  if (String(storedTemplateTerms.maturityDateOffset) === '0') {
-    await ap.contracts.templateRegistry.methods.registerTemplate(
-      templateTerms,
-      templateSchedules
-    ).send({ from: account, gas: 2000000 });
+  let templateId;
+
+  // for second runs, if template is already registered
+  try {
+    const template = await Template.create(ap, terms);
+    templateId = template.templateId;
+  } catch (error) {
+    const template = await Template.loadFromTerms(ap, terms);
+    templateId = template.templateId;
   }
 
   const order = await Order.load(ap, await getDefaultSignedOrder(templateId));

@@ -12,7 +12,7 @@ import "./TemplateRegistryStorage.sol";
  */
 contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
 
-    event RegisteredTemplate(bytes32 templateId);
+    event RegisteredTemplate(bytes32 indexed templateId);
 
 
     /**

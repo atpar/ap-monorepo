@@ -93,14 +93,29 @@ export class Contracts {
   }
 
   /**
-   * Instantiates ACTUS engine contract by with a provided address and returns the instance.
-   * @param {string} address address of the engine 
+   * Instantiates ACTUS engine contract by with a provided address or contract type  and returns the instance.
+   * @param {string} addressOrContractType address of the engine or a supported contract type
    * @returns {IEngine} Instance of IEngine
    */
-  public engine (address: string): IEngine {
+  public engine (addressOrContractType: string): IEngine {
     const engine = this._engine.clone();
-    engine.options.address = address;
+    let address = addressOrContractType;
 
+    if (!addressOrContractType.startsWith('0x')) {
+      if (addressOrContractType === '0') {
+        address = this.pamEngine.options.address;
+      } else if (addressOrContractType === '1') {
+        address = this.annEngine.options.address;
+      } else if (addressOrContractType === '16') {
+        address = this.cegEngine.options.address;
+      } else if (addressOrContractType === '17') {
+        address = this.cecEngine.options.address;
+      } else {
+        throw new Error('Could return Engine contract instance. Unsupported contract type provided.');
+      }
+    }
+    
+    engine.options.address = address;
     return engine;
   }
 

@@ -5,6 +5,7 @@ import * as APTypes from './types';
 
 import { Asset } from './Asset';
 import { Order } from './Order';
+import { Template } from './Template';
 import { Contracts, Signer, Utils } from './apis';
 import { AddressBook } from './types';
 
@@ -117,4 +118,4 @@ export class AP {
   }
 }
 
-export { Asset, Order, APTypes }
+export { Asset, Order, Template,APTypes }
