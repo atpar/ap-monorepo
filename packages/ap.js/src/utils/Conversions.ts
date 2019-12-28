@@ -169,6 +169,54 @@ export const deriveCustomTerms = (terms: Terms): CustomTerms => ({
   contractReference_2: terms.contractReference_2
 });
 
+export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
+  templateTerms: TemplateTerms,
+  customTerms: CustomTerms
+): LifecycleTerms => ({
+  calendar: templateTerms.calendar,
+  contractRole: templateTerms.contractRole,
+  dayCountConvention: templateTerms.dayCountConvention,
+  businessDayConvention: templateTerms.businessDayConvention,
+  endOfMonthConvention: templateTerms.endOfMonthConvention,
+  scalingEffect: templateTerms.scalingEffect,
+  penaltyType: templateTerms.penaltyType,
+  feeBasis: templateTerms.feeBasis,
+  creditEventTypeCovered: templateTerms.creditEventTypeCovered,
+
+  contractReference_1: customTerms.contractReference_1,
+  contractReference_2: customTerms.contractReference_2,
+
+  currency: templateTerms.currency,
+  settlementCurrency: templateTerms.settlementCurrency,
+
+  marketObjectCodeRateReset: templateTerms.marketObjectCodeRateReset,
+
+  statusDate: denormalizeDate(customTerms.anchorDate, templateTerms.statusDateOffset),
+  maturityDate: denormalizeDate(customTerms.anchorDate, templateTerms.maturityDateOffset),
+
+  notionalPrincipal: customTerms.notionalPrincipal,
+  nominalInterestRate: customTerms.nominalInterestRate,
+  feeAccrued: templateTerms.feeAccrued,
+  accruedInterest: templateTerms.accruedInterest,
+  rateMultiplier: templateTerms.rateMultiplier,
+  rateSpread: customTerms.rateSpread,
+  feeRate: templateTerms.feeRate,
+  nextResetRate: templateTerms.nextResetRate,
+  penaltyRate: templateTerms.penaltyRate,
+  premiumDiscountAtIED: customTerms.premiumDiscountAtIED,
+  priceAtPurchaseDate: templateTerms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: templateTerms.nextPrincipalRedemptionPayment,
+  coverageOfCreditEnhancement: customTerms.coverageOfCreditEnhancement,
+
+  gracePeriod: templateTerms.gracePeriod,
+  delinquencyPeriod: templateTerms.delinquencyPeriod,
+
+  lifeCap: customTerms.lifeCap,
+  lifeFloor: customTerms.lifeFloor,
+  periodCap: templateTerms.periodCap,
+  periodFloor: templateTerms.periodFloor
+});
+
 function convertDatesToOffsets (terms: Terms): Terms {
   const normalizedTerms = { ...terms };
   const anchorDate = terms.contractDealDate;
@@ -191,6 +239,10 @@ function convertDatesToOffsets (terms: Terms): Terms {
 
 const normalizeDate = (anchorDate: number | string, date: number | string): string => (
   (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0'
+);
+
+const denormalizeDate = (anchorDate: number | string, dateOffset: number | string): string => (
+  String(Number(dateOffset) + Number(anchorDate))
 );
 
 const associativeArrayToObject = (arr: any): object => ({ 
