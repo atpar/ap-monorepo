@@ -310,10 +310,10 @@ accepts@~1.3.7:
   version "0.0.0"
   resolved "https://github.com/actusfrf/actus-dictionary.git#d42fda056355b3350701de93bf13161c4ce37bde"
 
-actus-solidity@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/actus-solidity/-/actus-solidity-0.3.0.tgz#9e14419833b90478a493ee225a663ca12a3b9ebb"
-  integrity sha512-WoxOnjn+58kUsH4lZRDWpsOqvKeKydlld4XDFm1qEAPpufkcHz0iLGxaLwh/jm0SAwFZDGE77jwMdGwLci1QXA==
+actus-solidity@0.3.1-beta.0:
+  version "0.3.1-beta.0"
+  resolved "https://registry.yarnpkg.com/actus-solidity/-/actus-solidity-0.3.1-beta.0.tgz#8843b891647115f1ff91ef96a58452ec1714ada9"
+  integrity sha512-8AO3dvNV9eXtmI37P5ZSLukFjby4Jb8wEnC/ytH6INp30p2BmUrgVsJFP7md9pMsdcsejKV4JQPmhhePa1DrLQ==
 
 address@^1.0.1:
   version "1.1.2"
