@@ -1,14 +1,16 @@
 
-export const NON_CYLIC_SCHEDULE_ID = '256';
+// schedule ids
+export const NON_CYLIC_SCHEDULE_ID = '255';
 export const IP_SCHEDULE_ID = '8';
 export const PR_SCHEDULE_ID = '15';
 export const SC_SCHEDULE_ID = '19';
 export const RR_SCHEDULE_ID = '18';
 export const PY_SCHEDULE_ID = '11';
 
+// define zero offset as offset == anchorDate
+export const ZERO_OFFSET = '1'; // '0xFFFFFFFFFFFFFFFF';
+
 // IPS
-// export enum P { D, W, M, Q, H, Y } // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
-// export enum S { LONG, SHORT } // S=[+=long stub,- short stub, {} if S empty then - for short stub]
 export interface IPS { 
   i: string | number; // I=Integer
   p: string | number; 
@@ -27,48 +29,6 @@ export interface ContractReference {
   contractReferenceType: number | string;
   contractReferenceRole: number | string;
 }
-
-// export enum BusinessDayConvention { NULL, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP }
-// export enum Calendar { NULL, NOCALENDAR, MondayToFriday }
-// // @ts-ignore:6196
-// export enum ClearingHouse { YES, NO }
-// export enum ContractRole { RPA, RPL, LG, ST, RFL, BUYER, PFL, SELLER, GUARANTOR, OBLIGEE }
-// export enum ContractPerformance { PF, DL, DQ, DF }
-// export enum ContractType { PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC }
-// // @ts-ignore:6196
-// export enum CyclePointOfInterestPayment { EndOf, BeginningOf }
-// // @ts-ignore:6196
-// export enum CyclePointOfRateReset { BeginningOf, EndOf }
-// // @ts-ignore:6196
-// export enum CycleTriggerOfOptionality { IP, PR, RR }
-// export enum DayCountConvention { 'A/AISDA', 'A/360', 'A/365', '30E/360ISDA', '30E/360', '30/360', 'BUS/252' }
-// export enum EndOfMonthConvention { SD, EOM }
-// // @ts-ignore:6196
-// export enum EventLevel { P }
-// export enum EventType { AD, CD, DV, XD, FP, IED, IPCB, IPCI, IP, MR, MD, PY, PD, PRF, PP, PR, PRD, RRF, RR, SC, STD, TD }
-// export enum FeeBasis { A, N }
-// // @ts-ignore:6196
-// export enum InterestCalculationBase { NT, NTIED, NTL}
-// // @ts-ignore:6196
-// export enum MarketObjectCodeOfRateReset { USD_SWP, USD_GOV, CHF_SWP }
-// // @ts-ignore:6196
-// export enum ObjectCodeOfPrepaymentModel { IDXY }
-// // @ts-ignore:6196
-// export enum OptionExecutionType { E, B, A }
-// // @ts-ignore:6196
-// export enum OptionStrikeDriver { FX, IR, PR}
-// // @ts-ignore:6196
-// export enum OptionType { C, P, CP }
-// export enum PenaltyType { O, A, N, I }
-// // @ts-ignore:6196
-// export enum PrepaymentEffect { N, A, M }
-// export enum ScalingEffect { '000', '0N0', '00M', '0NM', 'I00', 'IN0', 'I0M', 'INM' }
-// // @ts-ignore:6196
-// export enum Seniority { S, J }
-// // @ts-ignore:6196
-// export enum Unit { BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO }
-// export enum ContractReferenceRole { CT, CID, MOC, LEI, CS }
-// export enum ContractReferenceType { UDY, FL, SL, CVE, CVI }
 
 export interface State {
   contractPerformance: number | string;

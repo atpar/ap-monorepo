@@ -103,6 +103,18 @@ contract AssetActor is
         bytes32 _event = assetRegistry.getNextEvent(assetId);
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
+        // revert if there is no next event
+        require(
+            eventType != EventType.AD,
+            "AssetActor.progress: NO_NEXT_EVENT"
+        );
+
+        // revert if the scheduleTime of the next event is in the future
+        require(
+            scheduleTime <= block.timestamp,
+            "AssetActor.progress: NEXT_EVENT_NOT_YET_SCHEDULED"
+        );
+
         // check if event is still scheduled under the current states of the asset and the underlying asset
         if (
             IEngine(engineAddress).isEventScheduled(

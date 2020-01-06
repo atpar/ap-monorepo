@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 import { AP, Asset } from '../src';
-import { issueDefaultAsset } from './utils';
+import { issueDefaultAsset, jumpToBlockTime } from './utils';
 
 
 describe('Asset', (): void => {
@@ -51,9 +51,9 @@ describe('Asset', (): void => {
   it('should retrieve the next event of the asset', async (): Promise<void> => {
     const asset = await Asset.load(apRC, assetId);
     const event = await asset.getNextEvent();
-    const decodedEvent = apRC.utils.schedule.decodeEvent(event);
+    const { eventType, scheduleTime } = apRC.utils.schedule.decodeEvent(event);
 
-    expect(decodedEvent.eventType > 0 && decodedEvent.scheduleTime > 0).toBe(true);
+    expect(Number(eventType) > 0 && Number(scheduleTime) > 0).toBe(true);
   });
 
   it('should retrieve the next payment data of the asset', async (): Promise<void> => {
@@ -80,10 +80,12 @@ describe('Asset', (): void => {
     const asset = await Asset.load(apRC, assetId);
     const event = apRC.utils.schedule.decodeEvent(await asset.getNextEvent());
 
+    await jumpToBlockTime(event.scheduleTime);
+
     await asset.approveNextPayment();
     const tx = await asset.progress();
 
-    expect(Number(tx.events.ProgressedAsset.returnValues.eventType)).toBe(event.eventType);
-    expect(Number(tx.events.ProgressedAsset.returnValues.scheduleTime)).toBe(event.scheduleTime);
+    expect(tx.events.ProgressedAsset.returnValues.eventType).toBe(event.eventType);
+    expect(tx.events.ProgressedAsset.returnValues.scheduleTime).toBe(event.scheduleTime);
   });
 });

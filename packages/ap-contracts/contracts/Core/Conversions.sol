@@ -24,6 +24,19 @@ contract Conversions is SharedTypes {
         );
     }
 
+    function applyAnchorDateToOffset(uint256 anchorDate, uint256 offset)
+        internal
+        pure
+        returns (uint256)
+    {
+        // interpret offset == 0 as a not set date value, only shift by anchorDate if offset > 0
+        if (offset == 0) return 0;
+        // offset == ZERO_OFFSET indicating that offset is set and equal to anchorDate
+        if (offset == ZERO_OFFSET) return anchorDate;
+        // if offset != ZERO_OFFSET, shift offset by anchorDate
+        return anchorDate + offset;
+    }
+
     function deriveLifecycleTerms(TemplateTerms memory templateTerms, CustomTerms memory customTerms)
         internal
         pure
@@ -48,8 +61,8 @@ contract Conversions is SharedTypes {
 
             templateTerms.marketObjectCodeRateReset,
 
-            templateTerms.statusDateOffset + customTerms.anchorDate,
-            templateTerms.maturityDateOffset + customTerms.anchorDate,
+            applyAnchorDateToOffset(customTerms.anchorDate, templateTerms.statusDateOffset),
+            applyAnchorDateToOffset(customTerms.anchorDate, templateTerms.maturityDateOffset),
 
             customTerms.notionalPrincipal,
             customTerms.nominalInterestRate,

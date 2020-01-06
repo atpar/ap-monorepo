@@ -253,7 +253,7 @@ contract Economics is AssetRegistryStorage {
 
         return encodeEvent(
             nextEventType,
-            nextScheduleTimeOffset + decodeAndGetAnchorDate(assetId)
+            applyAnchorDateToOffset(decodeAndGetAnchorDate(assetId), nextScheduleTimeOffset) 
         );
     }
 

@@ -4,7 +4,7 @@
   "devDependencies": {
     "lerna": "^3.13.0"
   },
-	"scripts": {
+  "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
     "coverage": "./scripts/coverage.sh",

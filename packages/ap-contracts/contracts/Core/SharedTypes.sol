@@ -5,7 +5,11 @@ import "actus-solidity/contracts/Core/ACTUSTypes.sol";
 
 contract SharedTypes is ACTUSTypes {
 
+    // define maximum of uint8 as schedule index for the non-cyclic schedulee
     uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
+    // define maximum of uint64 (0xFFFFFFFFFFFFFFFF) as offset == anchorDate, 
+    // since offset == 0 is interpreted as a not set date value and not shifted
+    uint256 constant ZERO_OFFSET = 1; // uint256(~uint64(0));
 
     struct TemplateSchedule {
         mapping(uint256 => bytes32) templateSchedule;
@@ -45,8 +49,8 @@ contract SharedTypes is ACTUSTypes {
 
         bytes32 marketObjectCodeRateReset;
 
-        uint256 statusDateOffset;
-        uint256 maturityDateOffset;
+        uint256 statusDateOffset; // if set == 0 offset is interpreted as a not set date value
+        uint256 maturityDateOffset; // if set == 0 offset is interpreted as a not set date value
 
         int256 feeAccrued;
         int256 accruedInterest;

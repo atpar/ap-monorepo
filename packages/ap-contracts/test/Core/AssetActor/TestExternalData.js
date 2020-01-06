@@ -58,8 +58,8 @@ contract('AssetActor', (accounts) => {
     // only want RR events in the schedules
     templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
     templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
-    await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
-    const templateId = deriveTemplateId(templateTerms, templateSchedules);
+    const tx = await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+    const templateId = tx.logs[0].args.templateId;
     
     // store template
     const assetId = 'External Data Asset';

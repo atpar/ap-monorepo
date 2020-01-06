@@ -95,3 +95,21 @@ export async function issueDefaultAsset (): Promise<string> {
   
   return getAssetIdFromOrderData(order.serializeOrder());
 }
+
+export async function jumpToBlockTime (blockTimestamp: string | number): Promise<void> {
+  const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
+
+  return new Promise((resolve, reject): void =>  {
+    // @ts-ignore
+    web3.currentProvider.send({ 
+      jsonrpc: '2.0', 
+      method: 'evm_mine', 
+      params: [String(blockTimestamp)], 
+      id: new Date().getSeconds()
+    }, async (err: any, res: any): Promise<void> => {
+      // console.log('res: ' + JSON.stringify(res), 'error: ' + JSON.stringify(err));
+      if (err) { reject(err); }
+      return resolve(res);
+    });
+  });
+}

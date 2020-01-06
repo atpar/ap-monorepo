@@ -55,7 +55,7 @@ contract('AssetActor', (accounts) => {
     this.terms.statusDate = this.terms.contractDealDate;
 
     // register template
-    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms, generatingTerms: this.generatingTerms } = deriveTerms(this.terms));
     this.templateId = await registerTemplate(this.instances, this.terms);
 
     snapshot = await createSnapshot();
@@ -72,7 +72,7 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor: ZERO_ADDRESS,
       counterpartyBeneficiary: ZERO_ADDRESS
     };
-    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
+    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate, statusDate: this.terms.statusDate };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
     const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(overCollateral);

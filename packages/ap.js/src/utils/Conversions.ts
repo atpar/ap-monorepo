@@ -1,7 +1,15 @@
 import * as web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
-import { Terms, State, CustomTerms, TemplateTerms, LifecycleTerms, GeneratingTerms } from '../types';
+import {
+  Terms,
+  State,
+  CustomTerms,
+  TemplateTerms,
+  LifecycleTerms,
+  GeneratingTerms,
+  ZERO_OFFSET
+} from '../types';
 
 
 export const toHex = (mixed: any): any => (
@@ -90,34 +98,34 @@ export const deriveLifecycleTerms = (terms: Terms): LifecycleTerms => ({
 });
 
 export function deriveGeneratingTerms (terms: Terms): GeneratingTerms {
-  const normalizedTerms = convertDatesToOffsets(terms);
+  const anchorDate = terms.contractDealDate;
 
   return {
-    scalingEffect: normalizedTerms.scalingEffect,
+    scalingEffect: terms.scalingEffect,
   
-    contractDealDate: normalizedTerms.contractDealDate,
-    statusDate: normalizedTerms.statusDate,
-    initialExchangeDate: normalizedTerms.initialExchangeDate,
-    maturityDate: normalizedTerms.maturityDate,
-    terminationDate: normalizedTerms.terminationDate,
-    purchaseDate: normalizedTerms.purchaseDate,
-    capitalizationEndDate: normalizedTerms.capitalizationEndDate,
-    cycleAnchorDateOfInterestPayment: normalizedTerms.cycleAnchorDateOfInterestPayment,
-    cycleAnchorDateOfRateReset: normalizedTerms.cycleAnchorDateOfRateReset,
-    cycleAnchorDateOfScalingIndex: normalizedTerms.cycleAnchorDateOfScalingIndex,
-    cycleAnchorDateOfFee: normalizedTerms.cycleAnchorDateOfFee,
-    cycleAnchorDateOfPrincipalRedemption: normalizedTerms.cycleAnchorDateOfPrincipalRedemption,
+    contractDealDate: normalizeDate(anchorDate, terms.contractDealDate),
+    statusDate: normalizeDate(anchorDate, terms.statusDate),
+    initialExchangeDate: normalizeDate(anchorDate, terms.initialExchangeDate),
+    maturityDate: normalizeDate(anchorDate, terms.maturityDate),
+    terminationDate: normalizeDate(anchorDate, terms.terminationDate),
+    purchaseDate: normalizeDate(anchorDate, terms.purchaseDate),
+    capitalizationEndDate: normalizeDate(anchorDate, terms.capitalizationEndDate),
+    cycleAnchorDateOfInterestPayment: normalizeDate(anchorDate, terms.cycleAnchorDateOfInterestPayment),
+    cycleAnchorDateOfRateReset: normalizeDate(anchorDate, terms.cycleAnchorDateOfRateReset),
+    cycleAnchorDateOfScalingIndex: normalizeDate(anchorDate, terms.cycleAnchorDateOfScalingIndex),
+    cycleAnchorDateOfFee: normalizeDate(anchorDate, terms.cycleAnchorDateOfFee),
+    cycleAnchorDateOfPrincipalRedemption: normalizeDate(anchorDate, terms.cycleAnchorDateOfPrincipalRedemption),
   
-    nominalInterestRate: normalizedTerms.nominalInterestRate,
+    nominalInterestRate: terms.nominalInterestRate,
   
-    cycleOfInterestPayment: normalizedTerms.cycleOfInterestPayment,
-    cycleOfRateReset: normalizedTerms.cycleOfRateReset,
-    cycleOfScalingIndex: normalizedTerms.cycleOfScalingIndex,
-    cycleOfFee: normalizedTerms.cycleOfFee,
-    cycleOfPrincipalRedemption: normalizedTerms.cycleOfPrincipalRedemption,
+    cycleOfInterestPayment: terms.cycleOfInterestPayment,
+    cycleOfRateReset: terms.cycleOfRateReset,
+    cycleOfScalingIndex: terms.cycleOfScalingIndex,
+    cycleOfFee: terms.cycleOfFee,
+    cycleOfPrincipalRedemption: terms.cycleOfPrincipalRedemption,
   
-    gracePeriod: normalizedTerms.gracePeriod,
-    delinquencyPeriod: normalizedTerms.delinquencyPeriod
+    gracePeriod: terms.gracePeriod,
+    delinquencyPeriod: terms.delinquencyPeriod
   };
 }
 
@@ -217,33 +225,31 @@ export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
   periodFloor: templateTerms.periodFloor
 });
 
-function convertDatesToOffsets (terms: Terms): Terms {
-  const normalizedTerms = { ...terms };
-  const anchorDate = terms.contractDealDate;
+// derive a normalized date (date offset) by subtracting the anchor date from an (absolute) date value
+// used for deriving TemplateTerms and for deriving normalized GeneratingTerms for generating template schedules
+export const normalizeDate = (anchorDate: number | string, date: number | string): string => {
+  // not set date value, do not normalize
+  if (Number(date) === 0) { return '0'; }
 
-  normalizedTerms.contractDealDate = 0;
-  normalizedTerms.statusDate = 0;
-  normalizedTerms.initialExchangeDate = normalizeDate(anchorDate, terms.initialExchangeDate); 
-  normalizedTerms.maturityDate = normalizeDate(anchorDate, terms.maturityDate)
-  normalizedTerms.terminationDate = normalizeDate(anchorDate, terms.terminationDate)
-  normalizedTerms.purchaseDate = normalizeDate(anchorDate, terms.purchaseDate)
-  normalizedTerms.capitalizationEndDate = normalizeDate(anchorDate, terms.capitalizationEndDate)
-  normalizedTerms.cycleAnchorDateOfInterestPayment = normalizeDate(anchorDate, terms.cycleAnchorDateOfInterestPayment)
-  normalizedTerms.cycleAnchorDateOfRateReset = normalizeDate(anchorDate, terms.cycleAnchorDateOfRateReset)
-  normalizedTerms.cycleAnchorDateOfScalingIndex = normalizeDate(anchorDate, terms.cycleAnchorDateOfScalingIndex)
-  normalizedTerms.cycleAnchorDateOfFee = normalizeDate(anchorDate, terms.cycleAnchorDateOfFee)
-  normalizedTerms.cycleAnchorDateOfPrincipalRedemption = normalizeDate(anchorDate, terms.cycleAnchorDateOfPrincipalRedemption)
+  const normalizedDate = String(Number(date) - Number(anchorDate));
+  // anchorDate is greater than date to normalize
+  if (Number(normalizedDate) < 0) { throw new Error('Normalized date is negative'); }
+  // date value is set, set to ZERO_OFFSET to indicate that value is set
+  if (Number(normalizedDate) === 0) { return ZERO_OFFSET; }
 
-  return normalizedTerms;
-}
+  return normalizedDate;
+};
 
-const normalizeDate = (anchorDate: number | string, date: number | string): string => (
-  (Number(date) > Number(anchorDate)) ? String(Number(date) - Number(anchorDate)) : '0'
-);
-
-const denormalizeDate = (anchorDate: number | string, dateOffset: number | string): string => (
-  String(Number(dateOffset) + Number(anchorDate))
-);
+// derive the actual date value from a date offset by adding anchor date
+// used off-chain for computing deriving terms from TemplateTerms and TemplateSchedules
+export const denormalizeDate = (anchorDate: number | string, dateOffset: number | string): string => {
+  // interpret offset == 0 as not set date value
+  if (Number(dateOffset) === 0) { return '0'; }
+  // interpret offset == ZERO_OFFSET as date value equal to anchor date
+  if (String(dateOffset) === ZERO_OFFSET) { return String(anchorDate); }
+  // shift date offsets not equal to ZERO_OFFSET
+  return String(Number(anchorDate) + Number(dateOffset));
+};
 
 const associativeArrayToObject = (arr: any): object => ({ 
   ...Object.keys(arr).reduce((obj: object, element: any): object => (

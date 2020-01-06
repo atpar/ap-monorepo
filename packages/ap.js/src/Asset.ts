@@ -91,9 +91,9 @@ export class Asset {
     const anchorDate = (await this.ap.contracts.assetRegistry.methods.getAnchorDate(this.assetId).call()).toString();
     const templateSchedule = await (await Template.load(this.ap, templateId)).getTemplateSchedule();
 
-    return this.ap.utils.schedule.applyAnchorDateToSchedule(
-      templateSchedule,
-      anchorDate
+    return this.ap.utils.schedule.deriveScheduleFromTemplateSchedule(
+      anchorDate,
+      templateSchedule
     );
   }
 
