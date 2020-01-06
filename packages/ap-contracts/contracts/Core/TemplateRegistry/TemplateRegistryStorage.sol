@@ -88,49 +88,49 @@ contract TemplateRegistryStorage is SharedTypes {
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.nonCyclicSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[NON_CYCLIC_INDEX].templateSchedule[i] = templateSchedules.nonCyclicSchedule[i];
-            templates[templateId].templateSchedules[NON_CYCLIC_INDEX].length = i;
+            templates[templateId].templateSchedules[NON_CYCLIC_INDEX].length = i + 1;
         }
 
         uint8 indexIP = uint8(EventType.IP);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicIPSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexIP].templateSchedule[i] = templateSchedules.cyclicIPSchedule[i];
-            templates[templateId].templateSchedules[indexIP].length = i;
+            templates[templateId].templateSchedules[indexIP].length = i + 1;
         }
 
         uint8 indexPR = uint8(EventType.PR);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicPRSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexPR].templateSchedule[i] = templateSchedules.cyclicPRSchedule[i];
-            templates[templateId].templateSchedules[indexPR].length = i;
+            templates[templateId].templateSchedules[indexPR].length = i + 1;
         }
 
         uint8 indexRR = uint8(EventType.RR);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicRRSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexRR].templateSchedule[i] = templateSchedules.cyclicRRSchedule[i];
-            templates[templateId].templateSchedules[indexRR].length = i;
+            templates[templateId].templateSchedules[indexRR].length = i + 1;
         }
 
         uint8 indexPY = uint8(EventType.PY);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicPYSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexPY].templateSchedule[i] = templateSchedules.cyclicPYSchedule[i];
-            templates[templateId].templateSchedules[indexPY].length = i;
+            templates[templateId].templateSchedules[indexPY].length = i + 1;
         }
 
         uint8 indexSC = uint8(EventType.SC);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicSCSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexSC].templateSchedule[i] = templateSchedules.cyclicSCSchedule[i];
-            templates[templateId].templateSchedules[indexSC].length = i;
+            templates[templateId].templateSchedules[indexSC].length = i + 1;
         }
 
         uint8 indexFP = uint8(EventType.FP);
         for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
             if (templateSchedules.cyclicFPSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedules[indexFP].templateSchedule[i] = templateSchedules.cyclicFPSchedule[i];
-            templates[templateId].templateSchedules[indexFP].length = i;
+            templates[templateId].templateSchedules[indexFP].length = i + 1;
         }
     }
 
