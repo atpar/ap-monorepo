@@ -3,7 +3,7 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
-const { deriveTerms, registerTemplate } = require('../../helper/utils');
+const { deriveTerms, registerTemplateFromTerms } = require('../../helper/utils');
 
 const AssetActor = artifacts.require('AssetActor');
 
@@ -43,7 +43,7 @@ contract('AssetActor', (accounts) => {
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplate(this.instances, this.terms);
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 

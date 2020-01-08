@@ -8,7 +8,8 @@ import {
   TemplateTerms,
   LifecycleTerms,
   GeneratingTerms,
-  ZERO_OFFSET
+  ZERO_OFFSET,
+  ExtendedTemplateTerms
 } from '../types';
 
 
@@ -116,8 +117,6 @@ export function deriveGeneratingTerms (terms: Terms): GeneratingTerms {
     cycleAnchorDateOfFee: normalizeDate(anchorDate, terms.cycleAnchorDateOfFee),
     cycleAnchorDateOfPrincipalRedemption: normalizeDate(anchorDate, terms.cycleAnchorDateOfPrincipalRedemption),
   
-    nominalInterestRate: terms.nominalInterestRate,
-  
     cycleOfInterestPayment: terms.cycleOfInterestPayment,
     cycleOfRateReset: terms.cycleOfRateReset,
     cycleOfScalingIndex: terms.cycleOfScalingIndex,
@@ -223,6 +222,73 @@ export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
   lifeFloor: customTerms.lifeFloor,
   periodCap: templateTerms.periodCap,
   periodFloor: templateTerms.periodFloor
+});
+
+export const deriveTermsFromExtendedTemplateTermsAndCustomTerms = (
+  extendedTemplateTerms: ExtendedTemplateTerms,
+  customTerms: CustomTerms
+): Terms => ({
+  contractType: extendedTemplateTerms.contractType,
+  calendar: extendedTemplateTerms.calendar,
+  contractRole: extendedTemplateTerms.contractRole,
+  dayCountConvention: extendedTemplateTerms.dayCountConvention,
+  businessDayConvention: extendedTemplateTerms.businessDayConvention,
+  endOfMonthConvention: extendedTemplateTerms.endOfMonthConvention,
+  scalingEffect: extendedTemplateTerms.scalingEffect,
+  penaltyType: extendedTemplateTerms.penaltyType,
+  feeBasis: extendedTemplateTerms.feeBasis,
+  creditEventTypeCovered: extendedTemplateTerms.creditEventTypeCovered,
+
+  contractReference_1: customTerms.contractReference_1,
+  contractReference_2: customTerms.contractReference_2,
+
+  currency: extendedTemplateTerms.currency,
+  settlementCurrency: extendedTemplateTerms.settlementCurrency,
+
+  creatorID: extendedTemplateTerms.creatorID,
+  counterpartyID: extendedTemplateTerms.counterpartyID,
+  marketObjectCodeRateReset: extendedTemplateTerms.marketObjectCodeRateReset,
+
+  contractDealDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.contractDealDateOffset),
+  statusDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.statusDateOffset),
+  initialExchangeDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.initialExchangeDateOffset),
+  maturityDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.maturityDateOffset),
+  terminationDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.terminationDateOffset),
+  purchaseDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.purchaseDateOffset),
+  capitalizationEndDate: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.capitalizationEndDateOffset),
+  cycleAnchorDateOfInterestPayment: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.cycleAnchorDateOfInterestPaymentOffset),
+  cycleAnchorDateOfRateReset: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.cycleAnchorDateOfRateResetOffset),
+  cycleAnchorDateOfScalingIndex: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.cycleAnchorDateOfScalingIndexOffset),
+  cycleAnchorDateOfFee: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.cycleAnchorDateOfFeeOffset),
+  cycleAnchorDateOfPrincipalRedemption: denormalizeDate(customTerms.anchorDate, extendedTemplateTerms.cycleAnchorDateOfPrincipalRedemptionOffset), 
+
+  notionalPrincipal: customTerms.notionalPrincipal,
+  nominalInterestRate: customTerms.nominalInterestRate,
+  feeAccrued: extendedTemplateTerms.feeAccrued,
+  accruedInterest: extendedTemplateTerms.accruedInterest,
+  rateMultiplier: extendedTemplateTerms.rateMultiplier,
+  rateSpread: customTerms.rateSpread,
+  feeRate: extendedTemplateTerms.feeRate,
+  nextResetRate: extendedTemplateTerms.nextResetRate,
+  penaltyRate: extendedTemplateTerms.penaltyRate,
+  premiumDiscountAtIED: customTerms.premiumDiscountAtIED,
+  priceAtPurchaseDate: extendedTemplateTerms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: extendedTemplateTerms.nextPrincipalRedemptionPayment,
+  coverageOfCreditEnhancement: customTerms.coverageOfCreditEnhancement,
+
+  cycleOfInterestPayment: extendedTemplateTerms.cycleOfInterestPayment,
+  cycleOfRateReset: extendedTemplateTerms.cycleOfRateReset,
+  cycleOfScalingIndex: extendedTemplateTerms.cycleOfScalingIndex,
+  cycleOfFee: extendedTemplateTerms.cycleOfFee,
+  cycleOfPrincipalRedemption: extendedTemplateTerms.cycleOfPrincipalRedemption,
+
+  gracePeriod: extendedTemplateTerms.gracePeriod,
+  delinquencyPeriod: extendedTemplateTerms.delinquencyPeriod,
+
+  lifeCap: customTerms.lifeCap,
+  lifeFloor: customTerms.lifeFloor,
+  periodCap: extendedTemplateTerms.periodCap,
+  periodFloor: extendedTemplateTerms.periodFloor
 });
 
 // derive a normalized date (date offset) by subtracting the anchor date from an (absolute) date value

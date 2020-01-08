@@ -28,7 +28,7 @@ import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/Tokenizatio
 import { FDT_ERC20Extension } from '@atpar/ap-contracts/ts-bindings/FDT_ERC20Extension';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 
-import { AddressBook } from '../types';
+import { AddressBook, isAddressBook } from '../types';
 
 
 export class Contracts {
@@ -58,7 +58,7 @@ export class Contracts {
    * @returns {Promise<Contracts>} Promise yielding the Contracts instance
    */
   public constructor (web3: Web3, addressBook: AddressBook) {
-    // if (!isAddressBook(addressBook)) { throw new Error('INITIALIZATION_ERROR: Malformed AddressBook.') }
+    if (!isAddressBook(addressBook)) { throw new Error('INITIALIZATION_ERROR: Malformed AddressBook.'); }
 
     // @ts-ignore
     this._engine = new web3.eth.Contract(IEngineArtifact.abi) as IEngine;
@@ -97,18 +97,19 @@ export class Contracts {
    * @param {string} addressOrContractType address of the engine or a supported contract type
    * @returns {IEngine} Instance of IEngine
    */
-  public engine (addressOrContractType: string): IEngine {
+  public engine (addressOrContractType: string | number): IEngine {
     const engine = this._engine.clone();
-    let address = addressOrContractType;
+    let address = String(addressOrContractType);
 
-    if (!addressOrContractType.startsWith('0x')) {
-      if (addressOrContractType === '0') {
+    if (!String(addressOrContractType).startsWith('0x')) {
+      const contractType = String(addressOrContractType);
+      if (contractType === '0') {
         address = this.pamEngine.options.address;
-      } else if (addressOrContractType === '1') {
+      } else if (contractType === '1') {
         address = this.annEngine.options.address;
-      } else if (addressOrContractType === '16') {
+      } else if (contractType === '16') {
         address = this.cegEngine.options.address;
-      } else if (addressOrContractType === '17') {
+      } else if (contractType === '17') {
         address = this.cecEngine.options.address;
       } else {
         throw new Error('Could return Engine contract instance. Unsupported contract type provided.');

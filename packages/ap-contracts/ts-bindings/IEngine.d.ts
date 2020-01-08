@@ -256,7 +256,6 @@ export class IEngine extends Contract {
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
         cycleAnchorDateOfPrincipalRedemption: number | string;
-        nominalInterestRate: number | string;
         cycleOfInterestPayment: {
           i: number | string;
           p: number | string;
@@ -313,7 +312,6 @@ export class IEngine extends Contract {
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
         cycleAnchorDateOfPrincipalRedemption: number | string;
-        nominalInterestRate: number | string;
         cycleOfInterestPayment: {
           i: number | string;
           p: number | string;

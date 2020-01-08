@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerTemplate } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -40,7 +40,7 @@ contract('AssetRegistry', (accounts) => {
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplate(this.instances, this.terms);
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
   });

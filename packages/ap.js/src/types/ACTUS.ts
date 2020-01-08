@@ -171,8 +171,6 @@ export interface GeneratingTerms {
   cycleAnchorDateOfFee: number | string;
   cycleAnchorDateOfPrincipalRedemption: number | string;
 
-  nominalInterestRate: number | string;
-
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
   cycleOfScalingIndex: IPS;
@@ -181,6 +179,19 @@ export interface GeneratingTerms {
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
+}
+
+export interface CustomTerms {
+  anchorDate: string | number;
+  notionalPrincipal: number | string;
+  nominalInterestRate: number | string;
+  premiumDiscountAtIED: number | string;
+  rateSpread: number | string;
+  lifeCap: number | string;
+  lifeFloor: number | string;
+  coverageOfCreditEnhancement: number | string;
+  contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
 }
 
 export interface TemplateTerms {
@@ -218,15 +229,56 @@ export interface TemplateTerms {
   periodFloor: number | string;
 }
 
-export interface CustomTerms {
-  anchorDate: string | number;
-  notionalPrincipal: number | string;
-  nominalInterestRate: number | string;
-  premiumDiscountAtIED: number | string;
-  rateSpread: number | string;
-  lifeCap: number | string;
-  lifeFloor: number | string;
-  coverageOfCreditEnhancement: number | string;
-  contractReference_1: ContractReference;
-  contractReference_2: ContractReference;
+export interface ExtendedTemplateTerms {
+  contractType: string | number;
+  calendar: string | number;
+  contractRole: string | number;
+  dayCountConvention: string | number;
+  businessDayConvention: string | number;
+  endOfMonthConvention: string | number;
+  scalingEffect: string | number;
+  penaltyType: string | number;
+  feeBasis: string | number;
+  creditEventTypeCovered: string | number;
+  
+  currency: string;
+  settlementCurrency: string;
+
+  creatorID: string | number[];
+  counterpartyID: string | number[];
+  marketObjectCodeRateReset: string | number[];
+  
+  contractDealDateOffset: number | string;
+  statusDateOffset: number | string;
+  initialExchangeDateOffset: number | string;
+  maturityDateOffset: number | string;
+  terminationDateOffset: number | string;
+  purchaseDateOffset: number | string;
+  capitalizationEndDateOffset: number | string;
+  cycleAnchorDateOfInterestPaymentOffset: number | string;
+  cycleAnchorDateOfRateResetOffset: number | string;
+  cycleAnchorDateOfScalingIndexOffset: number | string;
+  cycleAnchorDateOfFeeOffset: number | string;
+  cycleAnchorDateOfPrincipalRedemptionOffset: number | string;
+
+  feeAccrued: number | string;
+  accruedInterest: number | string;
+  rateMultiplier: number | string;
+  feeRate: number | string;
+  nextResetRate: number | string;
+  penaltyRate: number | string;
+  priceAtPurchaseDate: number | string;
+  nextPrincipalRedemptionPayment: number | string;
+
+  cycleOfInterestPayment: IPS;
+  cycleOfRateReset: IPS;
+  cycleOfScalingIndex: IPS;
+  cycleOfFee: IPS;
+  cycleOfPrincipalRedemption: IPS;
+
+  gracePeriod: IP;
+  delinquencyPeriod: IP;
+
+  periodCap: number | string;
+  periodFloor: number | string;
 }

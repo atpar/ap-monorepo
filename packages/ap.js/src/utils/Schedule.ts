@@ -22,17 +22,17 @@ export function getEpochOffsetForEventType (eventType: string): number {
   return 0;
 }
 
-export function deriveScheduleFromTemplateSchedule(anchorDate: string | number, schedule: string[]): string[] {
-  const shiftedSchedule = [];
+export function deriveScheduleFromTemplateSchedule(anchorDate: string | number, templateSchedule: string[]): string[] {
+  const schedule = [];
 
-  for (const event of schedule) {
+  for (const event of templateSchedule) {
     const { eventType, scheduleTime: scheduleTimeOffset } = decodeEvent(event);
-    shiftedSchedule.push(
+    schedule.push(
       encodeEvent(eventType, denormalizeDate(anchorDate, scheduleTimeOffset))
     );
   }
 
-  return shiftedSchedule;
+  return schedule;
 }
 
 export function sortEvents (_events: string[]): string[] {

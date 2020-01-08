@@ -7,7 +7,7 @@ const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEn
 const { deriveTemplateId } = require('../helper/orderUtils');
 
 const {
-  convertDatesToOffsets,
+  normalizeDates,
   parseTermsToTemplateTerms,
   parseTermsToCustomTerms,
   generateTemplateSchedules,
@@ -51,7 +51,7 @@ contract('TemplateRegistry', (accounts) => {
 
     // derive LifecycleTerms, GeneratingTerms, TemplateTerms and CustomTerms
     this.lifecycleTerms = parseTermsToLifecycleTerms(this.terms);
-    this.generatingTerms = convertDatesToOffsets(parseTermsToGeneratingTerms(this.terms));
+    this.generatingTerms = normalizeDates(parseTermsToGeneratingTerms(this.terms));
     this.templateTerms = parseTermsToTemplateTerms(this.terms);
     this.customTerms = parseTermsToCustomTerms(this.terms);
 

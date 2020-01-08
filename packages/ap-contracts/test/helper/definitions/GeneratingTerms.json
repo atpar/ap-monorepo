@@ -1,0 +1,22 @@
+[
+  "scalingEffect",
+  "contractDealDate",
+  "statusDate",
+  "initialExchangeDate",
+  "maturityDate",
+  "terminationDate",
+  "purchaseDate",
+  "capitalizationEndDate",
+  "cycleAnchorDateOfInterestPayment",
+  "cycleAnchorDateOfRateReset",
+  "cycleAnchorDateOfScalingIndex",
+  "cycleAnchorDateOfFee",
+  "cycleAnchorDateOfPrincipalRedemption",
+  "cycleOfInterestPayment",
+  "cycleOfRateReset",
+  "cycleOfScalingIndex",
+  "cycleOfFee",
+  "cycleOfPrincipalRedemption",
+  "gracePeriod",
+  "delinquencyPeriod"
+]

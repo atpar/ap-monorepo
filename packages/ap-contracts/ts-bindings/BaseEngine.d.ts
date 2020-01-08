@@ -131,7 +131,6 @@ export class BaseEngine extends Contract {
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
         cycleAnchorDateOfPrincipalRedemption: number | string;
-        nominalInterestRate: number | string;
         cycleOfInterestPayment: {
           i: number | string;
           p: number | string;
@@ -171,6 +170,63 @@ export class BaseEngine extends Contract {
       },
       segmentStart: number | string,
       segmentEnd: number | string
+    ): TransactionObject<string[]>;
+
+    computeCyclicScheduleSegment(
+      terms: {
+        scalingEffect: number | string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        terminationDate: number | string;
+        purchaseDate: number | string;
+        capitalizationEndDate: number | string;
+        cycleAnchorDateOfInterestPayment: number | string;
+        cycleAnchorDateOfRateReset: number | string;
+        cycleAnchorDateOfScalingIndex: number | string;
+        cycleAnchorDateOfFee: number | string;
+        cycleAnchorDateOfPrincipalRedemption: number | string;
+        cycleOfInterestPayment: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfRateReset: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfScalingIndex: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfPrincipalRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+      },
+      segmentStart: number | string,
+      segmentEnd: number | string,
+      eventType: number | string
     ): TransactionObject<string[]>;
 
     ONE_POINT_ZERO(): TransactionObject<string>;
@@ -243,64 +299,6 @@ export class BaseEngine extends Contract {
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
-
-    computeCyclicScheduleSegment(
-      terms: {
-        scalingEffect: number | string;
-        contractDealDate: number | string;
-        statusDate: number | string;
-        initialExchangeDate: number | string;
-        maturityDate: number | string;
-        terminationDate: number | string;
-        purchaseDate: number | string;
-        capitalizationEndDate: number | string;
-        cycleAnchorDateOfInterestPayment: number | string;
-        cycleAnchorDateOfRateReset: number | string;
-        cycleAnchorDateOfScalingIndex: number | string;
-        cycleAnchorDateOfFee: number | string;
-        cycleAnchorDateOfPrincipalRedemption: number | string;
-        nominalInterestRate: number | string;
-        cycleOfInterestPayment: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfRateReset: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfScalingIndex: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfFee: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfPrincipalRedemption: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-      },
-      segmentStart: number | string,
-      segmentEnd: number | string,
-      eventType: number | string
-    ): TransactionObject<string[]>;
 
     computeInitialState(terms: {
       calendar: number | string;

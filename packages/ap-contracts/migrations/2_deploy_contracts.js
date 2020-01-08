@@ -86,7 +86,7 @@ module.exports = async (deployer, network, accounts) => {
   `);
 
   // registering standard templates
-  const templateId_1 = await registerTemplate(instances, B3MB.terms);
+  const templateId_1 = await registerTemplate(instances, B3MB);
   
   console.log(`
     Templates:

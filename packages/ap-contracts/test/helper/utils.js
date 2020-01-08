@@ -2,8 +2,9 @@ const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('act
 
 const { deriveTemplateId } = require('./orderUtils');
 
-const TemplateTerms = require('./definitions/template-terms.json');
-const CustomTerms = require('./definitions/custom-terms.json');
+const TemplateTerms = require('./definitions/TemplateTerms.json');
+const CustomTerms = require('./definitions/CustomTerms.json');
+const GeneratingTerms = require('./definitions/GeneratingTerms.json');
 
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -48,6 +49,7 @@ function parseTermsToCustomTerms (terms) {
 
   for (const attribute of CustomTerms) {
     if (attribute === 'anchorDate') {
+      // define anchor date as contract deal date
       customTerms[attribute] = terms['contractDealDate'];
       continue;
     }
@@ -58,7 +60,29 @@ function parseTermsToCustomTerms (terms) {
   return customTerms;
 }
 
-function convertDatesToOffsets (terms) {
+function parseExtendedTemplateTermsToTemplateTerms (extendedTemplateTerms) {
+  const templateTerms = {};
+
+  for (const attribute of TemplateTerms) {
+    templateTerms[attribute] = extendedTemplateTerms[attribute];
+  }
+
+  return templateTerms;
+}
+
+function deriveGeneratingTermsFromExtendedTemplateTerms (extendedTemplateTerms) {
+  const generatingTerms = {};
+
+  for (const attribute of GeneratingTerms) {
+    // translate Terms attributes to ExtendedTemplateTerms attributes (e.g. postfix 'Offset')
+    const extendedTemplateTermsAttribute = Object.keys(extendedTemplateTerms).find((attr) => attr.includes(attribute));
+    generatingTerms[attribute] = extendedTemplateTerms[extendedTemplateTermsAttribute];
+  }
+
+  return generatingTerms;
+}
+
+function normalizeDates (terms) {
   const anchorDate = terms.contractDealDate;
 
   terms.contractDealDate = normalizeDate(anchorDate, terms.contractDealDate);
@@ -94,7 +118,8 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 function deriveTerms(terms) {
   return {
     lifecycleTerms: parseTermsToLifecycleTerms(terms),
-    generatingTerms: convertDatesToOffsets(parseTermsToGeneratingTerms(terms)),
+    // normalize dates for generating TemplateSchedules
+    generatingTerms: normalizeDates(parseTermsToGeneratingTerms(terms)),
     templateTerms: parseTermsToTemplateTerms(terms),
     customTerms: parseTermsToCustomTerms(terms)
   }
@@ -112,7 +137,25 @@ async function generateTemplateSchedules(engineContractInstance, generatingTerms
   };
 }
 
-async function registerTemplate(instances, terms) {
+// used for registering templates after migrations
+async function registerTemplate(instances, template) {
+  const templateTerms = parseExtendedTemplateTermsToTemplateTerms(template.extendedTemplateTerms);
+  const generatingTerms = deriveGeneratingTermsFromExtendedTemplateTerms(template.extendedTemplateTerms);
+  const templateSchedules = await generateTemplateSchedules(
+    getEngineContractInstanceForContractType(instances, template.extendedTemplateTerms.contractType),
+    generatingTerms
+  );
+
+  await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+  const templateId = deriveTemplateId(templateTerms, templateSchedules); // tx.logs[0].args.templateId;
+
+  return templateId;
+}
+
+// used in test cases
+// todo: refactor test cases such that we provide templates instead of a terms object such that
+// this method is not needed anymore
+async function registerTemplateFromTerms(instances, terms) {
   const { generatingTerms, templateTerms } = deriveTerms(terms);
   const templateSchedules = await generateTemplateSchedules(
     getEngineContractInstanceForContractType(instances, terms.contractType),
@@ -137,12 +180,13 @@ function removeNullEvents (events) {
 }
 
 module.exports = {
-  convertDatesToOffsets,
+  normalizeDates,
   parseTermsToTemplateTerms,
   parseTermsToCustomTerms,
   getEngineContractInstanceForContractType,
   generateTemplateSchedules,
   registerTemplate,
+  registerTemplateFromTerms,
   deriveTerms,
   removeNullEvents,
   ZERO_ADDRESS,

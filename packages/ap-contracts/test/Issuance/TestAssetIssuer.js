@@ -7,7 +7,7 @@ const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('.
 const { createSnapshot, revertToSnapshot } = require('../helper/blockchain');
 const {
   deriveTerms,
-  registerTemplate,
+  registerTemplateFromTerms,
   ZERO_BYTES,
   ZERO_ADDRESS
 } = require('../helper/utils');
@@ -56,7 +56,7 @@ contract('AssetIssuer', (accounts) => {
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplate(this.instances, this.terms);
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
 
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
 
@@ -200,7 +200,7 @@ contract('AssetIssuer', (accounts) => {
 
     // register template
     const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
-    const templateIdCEC = await registerTemplate(this.instances, termsCEC);
+    const templateIdCEC = await registerTemplateFromTerms(this.instances, termsCEC);
     
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
@@ -290,7 +290,7 @@ contract('AssetIssuer', (accounts) => {
     // register template
     const { customTerms: customTermsCEC } = deriveTerms(termsCEC);
     customTermsCEC.anchorDate = this.customTerms.anchorDate;
-    const templateIdCEC = await registerTemplate(this.instances, termsCEC);
+    const templateIdCEC = await registerTemplateFromTerms(this.instances, termsCEC);
 
     const orderDataCEC = getDefaultOrderData(
       termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address

@@ -2,7 +2,7 @@ const { getTestCases } = require('actus-solidity/test/helper/tests');
 
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
-const { deriveTerms, registerTemplate } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
 
 
 contract('AssetActor', (accounts) => {
@@ -37,7 +37,7 @@ contract('AssetActor', (accounts) => {
     };
   
     // register template
-    const templateId = await registerTemplate(this.instances, terms);
+    const templateId = await registerTemplateFromTerms(this.instances, terms);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),
@@ -65,7 +65,7 @@ contract('AssetActor', (accounts) => {
     };
   
     // register template
-    const templateId = await registerTemplate(this.instances, terms);
+    const templateId = await registerTemplateFromTerms(this.instances, terms);
 
     await this.AssetActorInstance.initialize(
       web3.utils.toHex(assetId),

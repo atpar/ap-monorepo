@@ -13,7 +13,7 @@ const {
 
 const {
   deriveTerms,
-  registerTemplate,
+  registerTemplateFromTerms,
   ZERO_ADDRESS,
   ZERO_BYTES32,
   ZERO_BYTES
@@ -56,7 +56,7 @@ contract('AssetActor', (accounts) => {
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms, generatingTerms: this.generatingTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplate(this.instances, this.terms);
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
 
     snapshot = await createSnapshot();
   });
@@ -83,7 +83,7 @@ contract('AssetActor', (accounts) => {
     );
 
     const { lifecycleTerms: lifecycleTermsCEC, customTerms: customTermsCEC } = deriveTerms(termsCEC);
-    const templateIdCEC = await registerTemplate(this.instances, termsCEC);
+    const templateIdCEC = await registerTemplateFromTerms(this.instances, termsCEC);
 
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
