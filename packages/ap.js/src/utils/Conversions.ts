@@ -291,6 +291,22 @@ export const deriveTermsFromExtendedTemplateTermsAndCustomTerms = (
   periodFloor: extendedTemplateTerms.periodFloor
 });
 
+export const deriveCustomTermsFromLifecycleTermsAndAnchorDate = (
+  lifecycleTerms: LifecycleTerms,
+  anchorDate: string
+): CustomTerms => ({
+  anchorDate: anchorDate,
+  notionalPrincipal: lifecycleTerms.notionalPrincipal,
+  nominalInterestRate: lifecycleTerms.nominalInterestRate,
+  premiumDiscountAtIED: lifecycleTerms.premiumDiscountAtIED,
+  rateSpread: lifecycleTerms.rateSpread,
+  lifeCap: lifecycleTerms.lifeCap,
+  lifeFloor: lifecycleTerms.lifeFloor,
+  coverageOfCreditEnhancement: lifecycleTerms.coverageOfCreditEnhancement,
+  contractReference_1: lifecycleTerms.contractReference_1,
+  contractReference_2: lifecycleTerms.contractReference_2
+});
+
 // derive a normalized date (date offset) by subtracting the anchor date from an (absolute) date value
 // used for deriving TemplateTerms and for deriving normalized GeneratingTerms for generating template schedules
 export const normalizeDate = (anchorDate: number | string, date: number | string): string => {
