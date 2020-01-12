@@ -1,6 +1,6 @@
 import { AP } from '.';
 import { OrderParams, OrderData, isOrderData } from './types';
-import { EMPTY_ENHANCEMENT_PARAMS } from './utils/Constants';
+import { EMPTY_ENHANCEMENT_PARAMS, ZERO_ADDRESS } from './utils/Constants';
 
 
 export class Order {
@@ -23,7 +23,7 @@ export class Order {
       this.orderData.creatorSignature = await this.ap.signer.signOrderAsMaker(this.orderData);
     } else if (this.orderData.ownership.counterpartyObligor === this.ap.signer.account) {
       this.orderData.counterpartySignature = await this.ap.signer.signOrderAsTaker(this.orderData);
-    } else if (this.orderData.ownership.counterpartyObligor === null) {
+    } else if (this.orderData.ownership.counterpartyObligor === ZERO_ADDRESS) {
       this.orderData.ownership.counterpartyObligor = this.ap.signer.account;
       this.orderData.ownership.counterpartyBeneficiary = this.ap.signer.account;
       this.orderData.counterpartySignature = await this.ap.signer.signOrderAsTaker(this.orderData);
