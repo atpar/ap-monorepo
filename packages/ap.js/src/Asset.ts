@@ -67,11 +67,20 @@ export class Asset {
   }
 
   /**
-   * returns the current ownership of the asset
+   * Returns the current ownership of the asset
    * @returns {Promise<AssetOwnership>}
    */
   public async getOwnership (): Promise<AssetOwnership> {
     return this.ap.contracts.assetRegistry.methods.getOwnership(this.assetId).call();
+  }
+
+  /**
+   * Returns the anchor date defined in the CustomTerms,
+   * used to compute the actual dates from the date offsets defined in the template
+   * @returns {Promise<string>}
+   */
+  public async getAnchorDate (): Promise<string> {
+    return this.ap.contracts.assetRegistry.methods.getAnchorDate(this.assetId).call();
   }
 
   /**
