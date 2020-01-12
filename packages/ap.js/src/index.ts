@@ -63,7 +63,7 @@ export class AP {
    * @returns {Promise<string[]>}
    */
   public async getAssetIds (): Promise<string[]> {
-    const issuances = await this.contracts.assetIssuer.getPastEvents('IssuedAsset');
+    const issuances = await this.contracts.assetIssuer.getPastEvents('IssuedAsset', { filter: {}, fromBlock: 0, toBlock: 'latest' });
     const assetIds = [];
 
     for (const issuance of issuances) {
