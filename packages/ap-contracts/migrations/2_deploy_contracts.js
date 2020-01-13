@@ -1,25 +1,24 @@
+const fs = require('fs');
+const path = require('path');
+
 const ANNEngine = artifacts.require('ANNEngine');
 const PAMEngine = artifacts.require('PAMEngine');
 const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
 const SignedMath = artifacts.require('SignedMath');
-
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 const AssetRegistry = artifacts.require('AssetRegistry');
 const TemplateRegistry = artifacts.require('TemplateRegistry');
-
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
-
 const TokenizationFactory = artifacts.require('TokenizationFactory');
+const TestToken = artifacts.require('TestToken');
 
 const { registerTemplate } = require('../test/helper/utils');
 
-const B3MB = require('../templates/b3mb.json');
 
-
-module.exports = async (deployer, network, accounts) => {
+module.exports = async (deployer, network) => {
   const instances = {};
 
   // ACTUS-Solidity
@@ -85,11 +84,29 @@ module.exports = async (deployer, network, accounts) => {
       TokenizationFactory: ${TokenizationFactory.address}
   `);
 
+  // deploy test token (necessary for registering templates on testnets)
+  await deployer.deploy(TestToken);
+  console.log('    Deployed test token: ' + TestToken.address);
+  console.log('');
+
   // registering standard templates
-  const templateId_1 = await registerTemplate(instances, B3MB);
-  
-  console.log(`
-    Templates:
-      B3MD: ${templateId_1}
-  `);
+  const pathToTemplates = (network === 'development')
+    ? '../templates/local/'
+    : (network === 'goerli')
+      ? '../templates/goerli/'
+      : null;
+
+  if (!pathToTemplates) { return; } 
+
+  console.log('    Registering standard templates on network ' + network + ':');
+  console.log('');
+
+  for (const templateFileName of fs.readdirSync(path.resolve(__dirname, pathToTemplates))) {
+    if (!templateFileName.includes('.json')) { continue; }
+    const template = JSON.parse(fs.readFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), 'utf8'));
+    template.extendedTemplateTerms.currency = TestToken.address;
+    template.templateId = await registerTemplate(instances, template);
+    console.log('      ' + template.name + ': ' + template.templateId);
+    fs.writeFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), JSON.stringify(template, null, 4), 'utf8');
+  }
 };

@@ -1,0 +1,86 @@
+{
+    "templateId": "0xce8b0d5a504ca8cf93e9479043dd0e90c29600fae08946d796fb9f7c4654012b",
+    "productPresetId": "",
+    "name": "Buyer 3M-Amortizing Loan",
+    "label": "Buyer 3-Month Coupon-Bearing Amortizing Loan",
+    "description": "This is a 3-month fixed-rate coupon-bearing loan with weekly amortization. The issuer of the instrument takes the lender-side.",
+    "extendedTemplateTerms": {
+        "contractType": 1,
+        "calendar": 0,
+        "contractRole": 0,
+        "dayCountConvention": 0,
+        "businessDayConvention": 0,
+        "endOfMonthConvention": 0,
+        "scalingEffect": 0,
+        "penaltyType": 0,
+        "feeBasis": 0,
+        "creditEventTypeCovered": 0,
+        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "settlementCurrency": "0x0000000000000000000000000000000000000000",
+        "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "contractDealDateOffset": 1,
+        "statusDateOffset": 1,
+        "initialExchangeDateOffset": 1,
+        "maturityDateOffset": 7890000,
+        "terminationDateOffset": 0,
+        "purchaseDateOffset": 0,
+        "capitalizationEndDateOffset": 0,
+        "cycleAnchorDateOfInterestPaymentOffset": 604800,
+        "cycleAnchorDateOfRateResetOffset": 0,
+        "cycleAnchorDateOfScalingIndexOffset": 0,
+        "cycleAnchorDateOfFeeOffset": 0,
+        "cycleAnchorDateOfPrincipalRedemptionOffset": 604800,
+        "feeAccrued": 0,
+        "accruedInterest": 0,
+        "rateMultiplier": 0,
+        "feeRate": 0,
+        "nextResetRate": 0,
+        "penaltyRate": 0,
+        "priceAtPurchaseDate": 0,
+        "nextPrincipalRedemptionPayment": 0,
+        "cycleOfInterestPayment": {
+            "i": 1,
+            "p": 1,
+            "s": 0,
+            "isSet": true
+        },
+        "cycleOfRateReset": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfScalingIndex": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfFee": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfPrincipalRedemption": {
+            "i": 1,
+            "p": 1,
+            "s": 0,
+            "isSet": true
+        },
+        "gracePeriod": {
+            "i": 0,
+            "p": 0,
+            "isSet": false
+        },
+        "delinquencyPeriod": {
+            "i": 0,
+            "p": 0,
+            "isSet": false
+        },
+        "periodCap": 0,
+        "periodFloor": 0
+    }
+}

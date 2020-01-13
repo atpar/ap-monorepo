@@ -1,0 +1,86 @@
+{
+    "templateId": "0x032f493a5723ebd5f659f387c958524977ef1b6f71d4680d7c1cad947ed4f014",
+    "productPresetId": "",
+    "name": "Buyer 3M CDS",
+    "label": "Buyer 3-Months Single-Entity Credit Default Swap",
+    "description": "This is a 3-months single-entity credit default swap with upfront fee. The issuer of the instrument takes the protection buyer-side.",
+    "extendedTemplateTerms": {
+        "contractType": 16,
+        "calendar": 0,
+        "contractRole": 6,
+        "dayCountConvention": 0,
+        "businessDayConvention": 0,
+        "endOfMonthConvention": 0,
+        "scalingEffect": 0,
+        "penaltyType": 0,
+        "feeBasis": 0,
+        "creditEventTypeCovered": 3,
+        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "settlementCurrency": "0x0000000000000000000000000000000000000000",
+        "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "contractDealDateOffset": 1,
+        "statusDateOffset": 1,
+        "initialExchangeDateOffset": 1,
+        "maturityDateOffset": 7890000,
+        "terminationDateOffset": 0,
+        "purchaseDateOffset": 1,
+        "capitalizationEndDateOffset": 0,
+        "cycleAnchorDateOfInterestPaymentOffset": 0,
+        "cycleAnchorDateOfRateResetOffset": 0,
+        "cycleAnchorDateOfScalingIndexOffset": 0,
+        "cycleAnchorDateOfFeeOffset": 0,
+        "cycleAnchorDateOfPrincipalRedemptionOffset": 0,
+        "feeAccrued": 0,
+        "accruedInterest": 0,
+        "rateMultiplier": 0,
+        "feeRate": 0,
+        "nextResetRate": 0,
+        "penaltyRate": 0,
+        "priceAtPurchaseDate": 0,
+        "nextPrincipalRedemptionPayment": 0,
+        "cycleOfInterestPayment": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfRateReset": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfScalingIndex": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfFee": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "cycleOfPrincipalRedemption": {
+            "i": 0,
+            "p": 0,
+            "s": 0,
+            "isSet": false
+        },
+        "gracePeriod": {
+            "i": 0,
+            "p": 0,
+            "isSet": false
+        },
+        "delinquencyPeriod": {
+            "i": 0,
+            "p": 0,
+            "isSet": false
+        },
+        "periodCap": 0,
+        "periodFloor": 0
+    }
+}
