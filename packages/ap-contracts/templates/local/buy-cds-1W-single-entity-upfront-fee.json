@@ -1,5 +1,5 @@
 {
-    "templateId": "0x032f493a5723ebd5f659f387c958524977ef1b6f71d4680d7c1cad947ed4f014",
+    "templateId": "0xce1efd896b71fe12fefde384e2eb0270f2e68ad34b53dd221d86c62d4175336f",
     "productPresetId": "",
     "name": "Buyer 3M CDS",
     "label": "Buyer 3-Months Single-Entity Credit Default Swap",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 3,
-        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "currency": "0x8EbDdE4756Ba352f5c65C888082EEcFed99e1E71",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",

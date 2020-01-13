@@ -67,9 +67,6 @@ module.exports = async (deployer, network) => {
 
   await instances.AssetActorInstance.registerIssuer(AssetIssuer.address);
 
-  // deploy test token (necessary for registering templates on testnets)
-  await deployer.deploy(TestToken);
-
   console.log(`
     Deployments:
     
@@ -85,8 +82,12 @@ module.exports = async (deployer, network) => {
       TemplateRegistry: ${TemplateRegistry.address}
       SignedMath: ${SignedMath.address}
       TokenizationFactory: ${TokenizationFactory.address}
-      TestToken: ${TestToken.address}
   `);
+
+  // deploy test token (necessary for registering templates on testnets)
+  await deployer.deploy(TestToken);
+  console.log('    Deployed test token: ' + TestToken.address);
+  console.log('');
 
   // registering standard templates
   const pathToTemplates = (network === 'development')
@@ -97,7 +98,7 @@ module.exports = async (deployer, network) => {
 
   if (!pathToTemplates) { return; } 
 
-  console.log('    Registering standard templates on network ' + network + ':');
+  console.log('    Registering standard templates on network \'' + network + '\':');
   console.log('');
 
   for (const templateFileName of fs.readdirSync(path.resolve(__dirname, pathToTemplates))) {
