@@ -1,5 +1,5 @@
 {
-    "templateId": "0xb1c643636872c62121224364c6fe7af7a3e39c30dd7a81bfffcea6ab235de283",
+    "templateId": "0xce8b0d5a504ca8cf93e9479043dd0e90c29600fae08946d796fb9f7c4654012b",
     "productPresetId": "",
     "name": "Buyer 3M-Amortizing Loan",
     "label": "Buyer 3-Month Coupon-Bearing Amortizing Loan",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x8EbDdE4756Ba352f5c65C888082EEcFed99e1E71",
+        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
