@@ -19,4 +19,10 @@ then
   ganache_pid=$!
 fi
 
+if [ ! -d "build" ]
+then
+	# echo "• compiling actus-solidity"
+	truffle compile | 1>/dev/null
+fi
+
 truffle test "$@"

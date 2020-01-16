@@ -10,7 +10,8 @@ shutdown_ganache() {
   fi
 }
 
-npx --quiet ganache-cli@v6.5.0 \
+# use id ap-chain Id
+ganache-cli \
 	-i 1994 \
 	-t "2009-01-03T18:15:05" \
 	-e 5000000000 \
@@ -20,19 +21,12 @@ npx --quiet ganache-cli@v6.5.0 \
 ganache_pid=$!
 sleep 1
 
-(
-	cd packages/actus-solidity
-	npx --quiet truffle@v5.0.28 compile --all | 1>/dev/null
-)
+# necessary otherwise contracts are not persisted for test cases in ap.js
 
+# echo "• migrating ap-contracts"
 (
 	cd packages/ap-contracts
-	npx --quiet truffle@v5.0.28 compile --all | 1>/dev/null
-)
-
-(
-	cd packages/ap-contracts
-	npx --quiet truffle@v5.0.28 migrate --reset --network development | 1>/dev/null
+	truffle migrate --reset --network development | 1>/dev/null
 )
 
 lerna run test --stream --no-prefix

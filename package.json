@@ -2,7 +2,9 @@
   "name": "root",
   "private": false,
   "devDependencies": {
-    "lerna": "^3.13.0"
+    "ganache-cli": "^6.8.1",
+    "lerna": "^3.13.0",
+    "truffle": "^5.1.8"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -10,7 +12,6 @@
     "coverage": "./scripts/coverage.sh",
     "link-packages": "lerna link",
     "publish": "lerna run build && lerna publish --exact --dist-tag latest",
-    "start": "./scripts/start.sh",
     "test": "./scripts/test.sh"
   },
   "publishConfig": {

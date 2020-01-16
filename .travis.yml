@@ -1,8 +1,7 @@
-sudo: false
+os: linux
 group: beta
 language: node_js
-node_js:
-- '8'
+node_js: '8'
 cache: yarn
 install: yarn
 script:
@@ -13,8 +12,8 @@ script:
 deploy:
   provider: pages
   local_dir: packages/ap.js/docs
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  target-branch: gh-pages
+  cleanup: true
+  token: $GITHUB_TOKEN
+  target_branch: gh-pages
   on:
     branch: master
