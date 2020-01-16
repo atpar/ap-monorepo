@@ -7,6 +7,10 @@ build/
 artifacts/
 mnemonic.js
 
+# actus-solidity
+ref-test-results
+ref-test-terms
+
 docs/
 
 node_modules/
