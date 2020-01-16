@@ -1,9 +1,6 @@
 # **ACTUS** Solidity
 
-[![Build Status](https://travis-ci.org/atpar/actus-solidity.svg?branch=MS1)](https://travis-ci.org/atpar/actus-solidity)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![npm version](http://img.shields.io/npm/v/actus-solidity.svg?style=flat)](https://npmjs.org/package/actus-solidity "View this project on npm")
-[![Coverage Status](https://coveralls.io/repos/github/atpar/actus-solidity/badge.svg?branch=master)](https://coveralls.io/github/atpar/actus-solidity?branch=master)
 
 **DISCLAIMER: THIS IS A WORK IN PROGRESS AND NOT AUDITED. USE IT AT YOUR OWN RISK.**
 
@@ -47,14 +44,6 @@ yarn install
 # contracts/
 yarn test
 ```
-
-### Deployments
-| Network  | ANNEngine                                  | PAMEngine                                  | SignedMath                                 |
-|----------|--------------------------------------------|--------------------------------------------|--------------------------------------------|
-| Görli    | 0xF7584Ac4375890505ccAbe43927F061284Ff30dD | 0xAd135adab829EEdc52a1c5c24741F4196f2D71A0 | 0xE9692a8E5eAaE6a01A82BB734A42cBA0A9b0541a |
-| Kovan    | 0xF7584Ac4375890505ccAbe43927F061284Ff30dD | 0xAd135adab829EEdc52a1c5c24741F4196f2D71A0 | 0xE9692a8E5eAaE6a01A82BB734A42cBA0A9b0541a |
-| Rinkeby  | 0x53162Fd13940fD778F024982a756faa64CECf9a3 | 0xBDB1624D894A62b4fB3B3D9bE20b1F69Ba969cD4 | 0x27bd9D7c156AF2BC60e0B2b458D716e080066697 |
-| Ropsten  | 0x53162Fd13940fD778F024982a756faa64CECf9a3 | 0xBDB1624D894A62b4fB3B3D9bE20b1F69Ba969cD4 | 0x27bd9D7c156AF2BC60e0B2b458D716e080066697 |
 
 ## Implemented Conventions
 - [x] Contract-Role-Sign-Convention (for PAM)
