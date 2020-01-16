@@ -37,6 +37,7 @@
     "generate-ts-bindings": "typechain --target web3-v1 --outDir ./ts-bindings './build/contracts/*.json'",
     "lint": "solium -d contracts/",
     "lint:fix": "solium -d contracts/ --fix",
+    "migrate:ap-chain": "./scripts/setup-ap-chain.sh",
     "migrate:goerli": "truffle migrate --network goerli",
     "migrate:kovan": "truffle migrate --network kovan",
     "migrate:rinkeby": "truffle migrate --network rinkeby",
@@ -48,7 +49,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "actus-solidity": "https://github.com/atpar/actus-solidity.git",
+    "@atpar/actus-solidity": "0.2.1-beta.5",
     "funds-distribution-token": "0.1.2",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-hdwallet-provider": "^1.0.9",

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-import "actus-solidity/contracts/Core/ACTUSTypes.sol";
+import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 
 
 contract SharedTypes is ACTUSTypes {

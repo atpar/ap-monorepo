@@ -1,0 +1,1 @@
+solidity-docgen -i ./ -o docs --contract-pages --exclude="test,node_modules,migrations,docs,scripts,ts-bindings,build,artifacts" --solc-settings "{remappings: ['openzeppelin-solidity/=node_modules/openzeppelin-solidity/','actus-solidity/=node_modules/actus-solidity/','funds-distribution-token/=node_modules/funds-distribution-token/','truffle/=node_modules/truffle/build/']}"

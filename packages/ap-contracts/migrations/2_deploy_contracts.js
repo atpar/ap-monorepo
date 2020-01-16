@@ -89,9 +89,9 @@ module.exports = async (deployer, network) => {
   console.log('    Deployed test token: ' + TestToken.address);
   console.log('');
 
-  // registering standard templates
-  const pathToTemplates = (network === 'development')
-    ? '../templates/local/'
+  // registering standard templates (skip for local)
+  const pathToTemplates = (network === 'ap-chain')
+    ? '../templates/ap-chain/'
     : (network === 'goerli')
       ? '../templates/goerli/'
       : null;
@@ -109,4 +109,22 @@ module.exports = async (deployer, network) => {
     console.log('      ' + template.name + ': ' + template.templateId);
     fs.writeFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), JSON.stringify(template, null, 4), 'utf8');
   }
+
+  // update address for ap-chain or goerli deployment
+  const deployments = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../', 'deployments.json'), 'utf8'));
+  deployments[await web3.eth.net.getId()] = {
+    "ANNEngine": ANNEngine.address,
+    "AssetActor": AssetActor.address,
+    "AssetIssuer": AssetIssuer.address,
+    "AssetRegistry": AssetRegistry.address,
+    "CECEngine": CECEngine.address,
+    "CEGEngine": CEGEngine.address,
+    "Custodian": Custodian.address,
+    "MarketObjectRegistry": MarketObjectRegistry.address,
+    "PAMEngine": PAMEngine.address,
+    "TemplateRegistry": TemplateRegistry.address,
+    "SignedMath": SignedMath.address,
+    "TokenizationFactory": TokenizationFactory.address
+  }
+  fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };

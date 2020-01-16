@@ -21,6 +21,11 @@ ganache_pid=$!
 sleep 1
 
 (
+	cd packages/actus-solidity
+	npx --quiet truffle@v5.0.28 compile --all | 1>/dev/null
+)
+
+(
 	cd packages/ap-contracts
 	npx --quiet truffle@v5.0.28 compile --all | 1>/dev/null
 )

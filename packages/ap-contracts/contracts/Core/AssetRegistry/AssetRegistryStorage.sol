@@ -1,7 +1,7 @@
 pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
-import "actus-solidity/contracts/Core/Utils.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 
 import "../TemplateRegistry/ITemplateRegistry.sol";
 import "../Conversions.sol";

@@ -1,4 +1,4 @@
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
+const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('@atpar/actus-solidity/test/helper/parser');
 
 const { deriveTemplateId } = require('./orderUtils');
 

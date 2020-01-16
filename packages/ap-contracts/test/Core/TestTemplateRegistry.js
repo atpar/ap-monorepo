@@ -1,6 +1,6 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('actus-solidity/test/helper/parser');
+const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('@atpar/actus-solidity/test/helper/parser');
 
 const { setupTestEnvironment, getDefaultTerms } = require('../helper/setupTestEnvironment');
 

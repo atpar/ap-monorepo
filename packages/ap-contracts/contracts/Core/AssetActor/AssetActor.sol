@@ -4,8 +4,8 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "actus-solidity/contracts/Core/Utils.sol";
-import "actus-solidity/contracts/Engines/IEngine.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils.sol";
+import "@atpar/actus-solidity/contracts/Engines/IEngine.sol";
 
 import "../SharedTypes.sol";
 import "../ScheduleUtils.sol";

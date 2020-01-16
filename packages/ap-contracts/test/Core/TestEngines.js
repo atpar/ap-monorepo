@@ -1,4 +1,4 @@
-const { getTestCases } = require('actus-solidity/test/helper/tests');
+const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
 
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');

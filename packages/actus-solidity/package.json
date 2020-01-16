@@ -1,0 +1,66 @@
+{
+  "name": "@atpar/actus-solidity",
+  "version": "0.2.1-beta.5",
+  "description": "ACTUS smart contracts",
+  "author": "atpar AG",
+  "authors": [
+    "jo-es <johannes.escherich+github@atpar.io>"
+  ],
+  "homepage": "https://github.com/atpar/ap-monorepo#readme",
+  "license": "Apache-2.0",
+  "files": [
+    "actus-resources",
+    "artifacts/",
+    "build/",
+    "contracts/",
+    "deployments/",
+    "scripts/",
+    "test/",
+    "truffle-config.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atpar/ap-monorepo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/atpar/ap-monorepo/issues"
+  },
+  "keywords": [
+    "Ethereum",
+    "Solidity",
+    "ACTUS"
+  ],
+  "scripts": {
+    "build": "npm run compile && npm run generate-artifacts",
+    "compile": "truffle compile",
+    "coverage": "truffle run coverage",
+    "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
+    "generate-docs": "./scripts/generate-docs.sh",
+    "lint": "solium -d contracts/",
+    "lint:fix": "solium -d contracts/ --fix",
+    "migrate:goerli": "truffle migrate --network goerli",
+    "migrate:kovan": "truffle migrate --network kovan",
+    "migrate:rinkeby": "truffle migrate --network rinkeby",
+    "migrate:ropsten": "truffle migrate --network ropsten",
+    "test": "./scripts/test.sh"
+  },
+  "resolutions": {
+    "**/web3-eth-contract": "1.2.4"
+  },
+  "devDependencies": {
+    "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
+    "bignumber.js": "^7.2.1",
+    "coveralls": "^3.0.9",
+    "csvtojson": "^2.0.8",
+    "eth-sig-util": "2.1.1",
+    "ethlint": "^1.2.3",
+    "ganache-cli": "^6.4.3",
+    "openzeppelin-solidity": "^2.1.2",
+    "openzeppelin-test-helpers": "^0.1.2",
+    "solidity-coverage": "^0.7.0-beta.3",
+    "truffle": "^5.1.2",
+    "truffle-hdwallet-provider": "^1.0.9",
+    "truffle-security": "^1.4.4",
+    "web3-utils": "^1.2.4"
+  }
+}
