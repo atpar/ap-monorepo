@@ -1,6 +1,6 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment, getComplexTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
 const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
@@ -25,18 +25,7 @@ contract('AssetRegistry', (accounts) => {
 
     this.assetId = 'C123';
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { 
-      ...await getDefaultTerms(),
-      gracePeriod: { i: 1, p: 2, isSet: true },
-      delinquencyPeriod: { i: 1, p: 3, isSet: true }
-    };
-
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
-    // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
-    this.terms.statusDate = this.terms.contractDealDate;
+    this.terms = { ...getComplexTerms() };
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));

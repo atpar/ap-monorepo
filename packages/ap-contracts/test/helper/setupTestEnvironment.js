@@ -60,8 +60,12 @@ async function setupTestEnvironment (accounts) {
   return instances;
 }
 
-function getDefaultTerms () {
+async function getDefaultTerms () {
   return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms('PAM');
+}
+
+function getComplexTerms () {
+  return require('./terms/complex-terms.json');
 }
 
 async function deployPaymentToken(owner, holders) {
@@ -77,5 +81,6 @@ async function deployPaymentToken(owner, holders) {
 module.exports = {
   setupTestEnvironment,
   getDefaultTerms,
+  getComplexTerms,
   deployPaymentToken
 };

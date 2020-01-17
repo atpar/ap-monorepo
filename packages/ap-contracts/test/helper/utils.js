@@ -162,10 +162,12 @@ async function registerTemplateFromTerms(instances, terms) {
     generatingTerms
   );
 
-  await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
-  const templateId = deriveTemplateId(templateTerms, templateSchedules); // tx.logs[0].args.templateId;
-
-  return templateId;
+  const tx = await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+  
+  return tx.logs[0].args.templateId;
+  
+  // const templateId = deriveTemplateId(templateTerms, templateSchedules);
+  // return templateId;
 }
 
 function removeNullEvents (events) {
