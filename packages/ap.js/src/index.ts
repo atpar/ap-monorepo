@@ -16,19 +16,17 @@ export class AP {
   
   public contracts: Contracts;
   public signer: Signer;
-  public utils: Utils;
+  public utils = Utils;
 
   private constructor (
     web3: Web3,
     contracts: Contracts,
-    signer: Signer,
-    utils: Utils
+    signer: Signer
   ) {
     this.web3 = web3;
 
     this.contracts = contracts;
     this.signer = signer;
-    this.utils = utils;
   }
 
   /**
@@ -112,10 +110,9 @@ export class AP {
 
     const contracts = new Contracts(web3, addressBook);
     const signer = new Signer(web3, defaultAccount, addressBook.AssetIssuer);
-    const utils = new Utils();
 
-    return new AP(web3, contracts, signer, utils);
+    return new AP(web3, contracts, signer);
   }
 }
 
-export { Asset, Order, Template,APTypes }
+export { Asset, Order, Template, Utils, APTypes }
