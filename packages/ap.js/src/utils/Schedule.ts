@@ -1,5 +1,9 @@
 import Web3Utils from 'web3-utils';
-import { denormalizeDate } from './Conversion';
+
+import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
+
+import { denormalizeDate, deriveGeneratingTermsFromExtendedTemplateTerms } from './Conversion';
+import { ExtendedTemplateTerms, TemplateSchedule } from '../types';
 
 
 export function getEpochOffsetForEventType (eventType: string): number {
@@ -33,6 +37,26 @@ export function deriveScheduleFromTemplateSchedule(anchorDate: string | number, 
   }
 
   return schedule;
+}
+
+export async function computeTemplateScheduleFromExtendedTemplateTerms(
+  engine: IEngine,
+  extendedTemplateTerms: ExtendedTemplateTerms
+): Promise<TemplateSchedule> {
+  const generatingTerms = deriveGeneratingTermsFromExtendedTemplateTerms(extendedTemplateTerms);
+  const { maturityDate } = generatingTerms;
+
+  const templateSchedule = {
+    nonCyclicSchedule: await engine.methods.computeNonCyclicScheduleSegment(generatingTerms, 0, maturityDate).call(),
+    cyclicIPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 8).call(),
+    cyclicPRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 15).call(),
+    cyclicSCSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 19).call(),
+    cyclicRRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 18).call(),
+    cyclicFPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 4).call(),
+    cyclicPYSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 11).call(),
+  };
+
+  return templateSchedule;
 }
 
 export function sortEvents (_events: string[]): string[] {
