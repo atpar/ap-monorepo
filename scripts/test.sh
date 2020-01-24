@@ -29,4 +29,4 @@ sleep 1
 	truffle migrate --reset --network development | 1>/dev/null
 )
 
-lerna run test --stream --no-prefix
+lerna run test --stream --no-prefix $1
