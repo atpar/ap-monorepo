@@ -1,5 +1,5 @@
 import Web3Utils from 'web3-utils';
-import { denormalizeDate } from './Conversions';
+import { denormalizeDate } from './Conversion';
 
 
 export function getEpochOffsetForEventType (eventType: string): number {

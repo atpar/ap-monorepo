@@ -1,12 +1,12 @@
 import {
-  Terms,
   TemplateTerms,
   NON_CYLIC_SCHEDULE_ID,
   IP_SCHEDULE_ID,
   SC_SCHEDULE_ID,
   PR_SCHEDULE_ID,
   RR_SCHEDULE_ID,
-  PY_SCHEDULE_ID
+  PY_SCHEDULE_ID,
+  ExtendedTemplateTerms
 } from './types';
 
 import { AP } from './index';
@@ -91,18 +91,20 @@ export class Template {
    */
   public static async create (
     ap: AP,
-    terms: Terms
+    extendedTemplateTerms: ExtendedTemplateTerms
   ): Promise<Template> {
-    const templateTerms = ap.utils.convert.deriveTemplateTerms(terms);
-    const generatingTerms = ap.utils.convert.deriveGeneratingTerms(terms);
+    const templateTerms = ap.utils.conversion.deriveTemplateTermsFromExtendedTemplateTerms(extendedTemplateTerms);
+    const generatingTerms = ap.utils.conversion.deriveGeneratingTermsFromExtendedTemplateTerms(extendedTemplateTerms);
+    const { contractType, maturityDateOffset: maturityDate } = extendedTemplateTerms;
+    const engine = ap.contracts.engine(contractType);
     const templateSchedules = {
-      nonCyclicSchedule: await ap.contracts.engine(terms.contractType).methods.computeNonCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate).call(),
-      cyclicIPSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 8).call(),
-      cyclicPRSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 15).call(),
-      cyclicSCSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 19).call(),
-      cyclicRRSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 18).call(),
-      cyclicFPSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 4).call(),
-      cyclicPYSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 11).call(),
+      nonCyclicSchedule: await engine.methods.computeNonCyclicScheduleSegment(generatingTerms, 0, maturityDate).call(),
+      cyclicIPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 8).call(),
+      cyclicPRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 15).call(),
+      cyclicSCSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 19).call(),
+      cyclicRRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 18).call(),
+      cyclicFPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 4).call(),
+      cyclicPYSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 11).call(),
     };
 
     const tx = await ap.contracts.templateRegistry.methods.registerTemplate(
@@ -131,23 +133,25 @@ export class Template {
   /**
    * Loads an already registered template and returns a new Template instance from a provided Terms object.
    * @param {AP} ap AP instance
-   * @param {Terms} terms ACTUS terms object
+   * @param {ExtendedTemplateTerms} extendedTemplateTerms extended template terms object
    * @returns {Promise<Template>} Promise yielding an instance of Template
    */
-  public static async loadFromTerms (
+  public static async loadFromExtendedTemplateTerms (
     ap: AP,
-    terms: Terms
+    extendedTemplateTerms: ExtendedTemplateTerms
   ): Promise<Template> {
-    const templateTerms = ap.utils.convert.deriveTemplateTerms(terms);
-    const generatingTerms = ap.utils.convert.deriveGeneratingTerms(terms);
+    const templateTerms = ap.utils.conversion.deriveTemplateTermsFromExtendedTemplateTerms(extendedTemplateTerms);
+    const generatingTerms = ap.utils.conversion.deriveGeneratingTermsFromExtendedTemplateTerms(extendedTemplateTerms);
+    const { contractType, maturityDateOffset: maturityDate } = extendedTemplateTerms;
+    const engine = ap.contracts.engine(contractType);
     const templateSchedules = {
-      nonCyclicSchedule: await ap.contracts.engine(terms.contractType).methods.computeNonCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate).call(),
-      cyclicIPSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 8).call(),
-      cyclicPRSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 15).call(),
-      cyclicSCSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 19).call(),
-      cyclicRRSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 18).call(),
-      cyclicFPSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 4).call(),
-      cyclicPYSchedule: await ap.contracts.engine(terms.contractType).methods.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 11).call(),
+      nonCyclicSchedule: await engine.methods.computeNonCyclicScheduleSegment(generatingTerms, 0, maturityDate).call(),
+      cyclicIPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 8).call(),
+      cyclicPRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 15).call(),
+      cyclicSCSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 19).call(),
+      cyclicRRSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 18).call(),
+      cyclicFPSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 4).call(),
+      cyclicPYSchedule: await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 11).call(),
     };
     const templateId = ap.utils.erc712.deriveTemplateId(templateTerms, templateSchedules);
     const registeredTemplateEvents = await ap.contracts.templateRegistry.getPastEvents('RegisteredTemplate', { filter: { templateId }});

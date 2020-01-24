@@ -176,6 +176,7 @@ export const deriveCustomTerms = (terms: Terms): CustomTerms => ({
   contractReference_2: terms.contractReference_2
 });
 
+// used within ap-contracts
 export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
   templateTerms: TemplateTerms,
   customTerms: CustomTerms
@@ -224,6 +225,7 @@ export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
   periodFloor: templateTerms.periodFloor
 });
 
+// retrieve ACTUS terms from subsets
 export const deriveTermsFromExtendedTemplateTermsAndCustomTerms = (
   extendedTemplateTerms: ExtendedTemplateTerms,
   customTerms: CustomTerms
@@ -305,6 +307,118 @@ export const deriveCustomTermsFromLifecycleTermsAndAnchorDate = (
   coverageOfCreditEnhancement: lifecycleTerms.coverageOfCreditEnhancement,
   contractReference_1: lifecycleTerms.contractReference_1,
   contractReference_2: lifecycleTerms.contractReference_2
+});
+
+export const deriveTemplateTermsFromExtendedTemplateTerms = (
+  extendedTemplateTerms: ExtendedTemplateTerms
+): TemplateTerms => ({
+  calendar: extendedTemplateTerms.calendar,
+  contractRole: extendedTemplateTerms.contractRole,
+  dayCountConvention: extendedTemplateTerms.dayCountConvention,
+  businessDayConvention: extendedTemplateTerms.businessDayConvention,
+  endOfMonthConvention: extendedTemplateTerms.endOfMonthConvention,
+  scalingEffect: extendedTemplateTerms.scalingEffect,
+  penaltyType: extendedTemplateTerms.penaltyType,
+  feeBasis: extendedTemplateTerms.feeBasis,
+  creditEventTypeCovered: extendedTemplateTerms.creditEventTypeCovered,
+  
+  currency: extendedTemplateTerms.currency,
+  settlementCurrency: extendedTemplateTerms.settlementCurrency,
+  
+  marketObjectCodeRateReset: extendedTemplateTerms.marketObjectCodeRateReset,
+  
+  statusDateOffset: extendedTemplateTerms.statusDateOffset,
+  maturityDateOffset: extendedTemplateTerms.maturityDateOffset,
+  
+  feeAccrued: extendedTemplateTerms.feeAccrued,
+  accruedInterest: extendedTemplateTerms.accruedInterest,
+  rateMultiplier: extendedTemplateTerms.rateMultiplier,
+  feeRate: extendedTemplateTerms.feeRate,
+  nextResetRate: extendedTemplateTerms.nextResetRate,
+  penaltyRate: extendedTemplateTerms.penaltyRate,
+  priceAtPurchaseDate: extendedTemplateTerms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: extendedTemplateTerms.nextPrincipalRedemptionPayment,
+  
+  gracePeriod: extendedTemplateTerms.gracePeriod,
+  delinquencyPeriod: extendedTemplateTerms.delinquencyPeriod,
+  
+  periodCap: extendedTemplateTerms.periodCap,
+  periodFloor: extendedTemplateTerms.periodFloor
+});
+
+export const deriveGeneratingTermsFromExtendedTemplateTerms = (
+  extendedTemplateTerms: ExtendedTemplateTerms
+): GeneratingTerms => ({
+  scalingEffect: extendedTemplateTerms.scalingEffect,
+
+  contractDealDate: extendedTemplateTerms.contractDealDateOffset,
+  statusDate: extendedTemplateTerms.statusDateOffset,
+  initialExchangeDate: extendedTemplateTerms.initialExchangeDateOffset,
+  maturityDate: extendedTemplateTerms.maturityDateOffset,
+  terminationDate: extendedTemplateTerms.terminationDateOffset,
+  purchaseDate: extendedTemplateTerms.purchaseDateOffset,
+  capitalizationEndDate: extendedTemplateTerms.capitalizationEndDateOffset,
+  cycleAnchorDateOfInterestPayment: extendedTemplateTerms.cycleAnchorDateOfInterestPaymentOffset,
+  cycleAnchorDateOfRateReset: extendedTemplateTerms.cycleAnchorDateOfRateResetOffset,
+  cycleAnchorDateOfScalingIndex: extendedTemplateTerms.cycleAnchorDateOfScalingIndexOffset,
+  cycleAnchorDateOfFee: extendedTemplateTerms.cycleAnchorDateOfFeeOffset,
+  cycleAnchorDateOfPrincipalRedemption: extendedTemplateTerms.cycleAnchorDateOfPrincipalRedemptionOffset,
+
+  cycleOfInterestPayment: extendedTemplateTerms.cycleOfInterestPayment,
+  cycleOfRateReset: extendedTemplateTerms.cycleOfRateReset,
+  cycleOfScalingIndex: extendedTemplateTerms.cycleOfScalingIndex,
+  cycleOfFee: extendedTemplateTerms.cycleOfFee,
+  cycleOfPrincipalRedemption: extendedTemplateTerms.cycleOfPrincipalRedemption,
+
+  gracePeriod: extendedTemplateTerms.gracePeriod,
+  delinquencyPeriod: extendedTemplateTerms.delinquencyPeriod
+});
+
+export const deriveExtendedTemplateTermsFromTerms = (terms: Terms): ExtendedTemplateTerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  scalingEffect: terms.scalingEffect,
+  penaltyType: terms.penaltyType,
+  feeBasis: terms.feeBasis,
+  creditEventTypeCovered: terms.creditEventTypeCovered,
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+  creatorID: terms.creatorID,
+  counterpartyID: terms.counterpartyID,
+  marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
+  contractDealDateOffset: normalizeDate(terms.contractDealDate, terms.contractDealDate),
+  statusDateOffset: normalizeDate(terms.contractDealDate, terms.statusDate),
+  initialExchangeDateOffset: normalizeDate(terms.contractDealDate, terms.initialExchangeDate),
+  maturityDateOffset: normalizeDate(terms.contractDealDate, terms.maturityDate),
+  terminationDateOffset: normalizeDate(terms.contractDealDate, terms.terminationDate),
+  purchaseDateOffset: normalizeDate(terms.contractDealDate, terms.purchaseDate),
+  capitalizationEndDateOffset: normalizeDate(terms.contractDealDate, terms.capitalizationEndDate),
+  cycleAnchorDateOfInterestPaymentOffset: normalizeDate(terms.contractDealDate, terms.cycleAnchorDateOfInterestPayment),
+  cycleAnchorDateOfRateResetOffset: normalizeDate(terms.contractDealDate, terms.cycleAnchorDateOfRateReset),
+  cycleAnchorDateOfScalingIndexOffset: normalizeDate(terms.contractDealDate, terms.cycleAnchorDateOfScalingIndex),
+  cycleAnchorDateOfFeeOffset: normalizeDate(terms.contractDealDate, terms.cycleAnchorDateOfFee),
+  cycleAnchorDateOfPrincipalRedemptionOffset: normalizeDate(terms.contractDealDate, terms.cycleAnchorDateOfPrincipalRedemption),
+  feeAccrued: terms.feeAccrued,
+  accruedInterest: terms.accruedInterest,
+  rateMultiplier: terms.rateMultiplier,
+  feeRate: terms.feeRate,
+  nextResetRate: terms.nextResetRate,
+  penaltyRate: terms.penaltyRate,
+  priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
+  cycleOfInterestPayment: terms.cycleOfInterestPayment,
+  cycleOfRateReset: terms.cycleOfRateReset,
+  cycleOfScalingIndex: terms.cycleOfScalingIndex,
+  cycleOfFee: terms.cycleOfFee,
+  cycleOfPrincipalRedemption: terms.cycleOfPrincipalRedemption,
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+  periodCap: terms.periodCap,
+  periodFloor: terms.periodFloor,
 });
 
 // derive a normalized date (date offset) by subtracting the anchor date from an (absolute) date value
