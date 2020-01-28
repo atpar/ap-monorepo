@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getComplexTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -27,10 +27,21 @@ contract('AssetRegistry', (accounts) => {
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { ...getComplexTerms() };
 
-    // register template
-    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
+    this.overwrittenAttributeValues = {
+      notionalPrincipal: web3.utils.toWei('22'),
+      nominalInterestRate: web3.utils.toWei('3.5')
+    };
 
+    this.customTerms = encodeCustomTerms(
+      this.terms.contractDealDate,
+      this.terms.contractReference_1,
+      this.terms.contractReference_2,
+      this.overwrittenAttributeValues
+    );
+
+    // register template
+    ({ lifecycleTerms: this.lifecycleTerms, templateTerms: this.templateTerms } = deriveTerms(this.terms));
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
     this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
   });
 
@@ -45,11 +56,19 @@ contract('AssetRegistry', (accounts) => {
       actor
     );
 
+    // console.log(this.customTerms.overwrittenAttributesMap);
+    // console.log(this.customTerms.packedAttributeValues);
+    // console.log(await this.AssetRegistryInstance.isOverwritten(this.customTerms.overwrittenAttributesMap, '33'));
+    // console.log(await this.AssetRegistryInstance.deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
+    //   this.templateTerms,
+    //   this.customTerms
+    // ));
+    
     const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
     const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
-
+    
     function parseTerms (array) {
       return array.map((value) => {
         switch (typeof value) {
@@ -71,7 +90,7 @@ contract('AssetRegistry', (accounts) => {
       });
     }
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.lifecycleTerms)));
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values({ ...this.lifecycleTerms, ...this.overwrittenAttributeValues })));
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
     assert.equal(storedOwnership.creatorObligor, creatorObligor);

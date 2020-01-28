@@ -38,13 +38,6 @@ export class IAssetActor extends Contract {
       templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        premiumDiscountAtIED: number | string;
-        rateSpread: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        coverageOfCreditEnhancement: number | string;
         contractReference_1: {
           object: string | number[];
           contractReferenceType: number | string;
@@ -55,6 +48,8 @@ export class IAssetActor extends Contract {
           contractReferenceType: number | string;
           contractReferenceRole: number | string;
         };
+        overwrittenAttributeMap: number | string;
+        packedAttributeValues: string | number[];
       },
       engine: string
     ): TransactionObject<boolean>;

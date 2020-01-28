@@ -1,3 +1,5 @@
+const Web3Utils = require('web3-utils');
+
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('@atpar/actus-solidity/test/helper/parser');
 
 const { deriveTemplateId } = require('./orderUtils');
@@ -5,6 +7,7 @@ const { deriveTemplateId } = require('./orderUtils');
 const TemplateTerms = require('./definitions/TemplateTerms.json');
 const CustomTerms = require('./definitions/CustomTerms.json');
 const GeneratingTerms = require('./definitions/GeneratingTerms.json');
+const LifecycleTerms = require('@atpar/actus-solidity/test/helper/definitions/LifecycleTerms.json');
 
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -181,7 +184,28 @@ function removeNullEvents (events) {
   return compactEvents;
 }
 
+function encodeCustomTerms (anchorDate, contractReference_1, contractReference_2, overwrittenAttributes) {
+  let overwrittenAttributesMap = '';
+  const packedAttributeValues = [];
+
+  for (const attribute of LifecycleTerms) {
+    if (overwrittenAttributes[attribute]) {
+      overwrittenAttributesMap = '1' + overwrittenAttributesMap;
+      packedAttributeValues.push(Web3Utils.padLeft(Web3Utils.toHex(overwrittenAttributes[attribute]), 64));
+    } else {
+      overwrittenAttributesMap = '0' + overwrittenAttributesMap;
+      packedAttributeValues.push(Web3Utils.padLeft('0x0', 64));
+    }
+  }
+
+  // convert from binary string to number
+  overwrittenAttributesMap = parseInt(overwrittenAttributesMap, 2);
+  
+  return { anchorDate, contractReference_1, contractReference_2, overwrittenAttributesMap, packedAttributeValues };
+}
+
 module.exports = {
+  encodeCustomTerms,
   normalizeDates,
   parseTermsToTemplateTerms,
   parseTermsToCustomTerms,

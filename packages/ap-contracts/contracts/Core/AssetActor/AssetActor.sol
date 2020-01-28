@@ -212,7 +212,7 @@ contract AssetActor is
 
         // compute the initial state of the asset using the LifecycleTerms
         State memory initialState = IEngine(engineAddress).computeInitialState(
-            deriveLifecycleTerms(
+            deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(templateId),
                 customTerms
             )

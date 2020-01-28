@@ -55,15 +55,21 @@ contract TemplateRegistryStorage is SharedTypes {
         if (terms.statusDateOffset != uint256(0)) templates[templateId].packedTerms[7] = bytes32(terms.statusDateOffset);
         if (terms.maturityDateOffset != uint256(0)) templates[templateId].packedTerms[8] = bytes32(terms.maturityDateOffset);
 
+        if (terms.notionalPrincipal != int256(0)) templates[templateId].packedTerms[17] = bytes32(terms.notionalPrincipal);
+        if (terms.nominalInterestRate != int256(0)) templates[templateId].packedTerms[18] = bytes32(terms.nominalInterestRate);
         if (terms.feeAccrued != int256(0)) templates[templateId].packedTerms[19] = bytes32(terms.feeAccrued);
         if (terms.accruedInterest != int256(0)) templates[templateId].packedTerms[20] = bytes32(terms.accruedInterest);
         if (terms.rateMultiplier != int256(0)) templates[templateId].packedTerms[21] = bytes32(terms.rateMultiplier);
+        if (terms.rateSpread != int256(0)) templates[templateId].packedTerms[22] = bytes32(terms.rateSpread);
         if (terms.feeRate != int256(0)) templates[templateId].packedTerms[23] = bytes32(terms.feeRate);
         if (terms.nextResetRate != int256(0)) templates[templateId].packedTerms[24] = bytes32(terms.nextResetRate);
         if (terms.penaltyRate != int256(0)) templates[templateId].packedTerms[25] = bytes32(terms.penaltyRate);
+        if (terms.premiumDiscountAtIED != int256(0)) templates[templateId].packedTerms[26] = bytes32(terms.premiumDiscountAtIED);
         if (terms.priceAtPurchaseDate != int256(0)) templates[templateId].packedTerms[27] = bytes32(terms.priceAtPurchaseDate);
         // solium-disable-next-line
         if (terms.nextPrincipalRedemptionPayment != int256(0)) templates[templateId].packedTerms[28] = bytes32(terms.nextPrincipalRedemptionPayment);
+        // solium-disable-next-line
+        if (terms.coverageOfCreditEnhancement != int256(0)) templates[templateId].packedTerms[29] = bytes32(terms.coverageOfCreditEnhancement);
 
         if (terms.gracePeriod.isSet) {
             templates[templateId].packedTerms[34] =
@@ -78,6 +84,8 @@ contract TemplateRegistryStorage is SharedTypes {
                 bytes32(uint256(1)) << 8;
         }
 
+        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[36] = bytes32(terms.lifeCap);
+        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[37] = bytes32(terms.lifeFloor);
         if (terms.periodCap != int256(0)) templates[templateId].packedTerms[38] = bytes32(terms.periodCap);
         if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[39] = bytes32(terms.periodFloor);
     }
@@ -153,14 +161,19 @@ contract TemplateRegistryStorage is SharedTypes {
 
             uint256(templates[templateId].packedTerms[7]),
             uint256(templates[templateId].packedTerms[8]),
+            int256(templates[templateId].packedTerms[17]),
+            int256(templates[templateId].packedTerms[18]),
             int256(templates[templateId].packedTerms[19]),
             int256(templates[templateId].packedTerms[20]),
             int256(templates[templateId].packedTerms[21]),
+            int256(templates[templateId].packedTerms[22]),
             int256(templates[templateId].packedTerms[23]),
             int256(templates[templateId].packedTerms[24]),
             int256(templates[templateId].packedTerms[25]),
+            int256(templates[templateId].packedTerms[26]),
             int256(templates[templateId].packedTerms[27]),
             int256(templates[templateId].packedTerms[28]),
+            int256(templates[templateId].packedTerms[29]),
 
             IP(
                 uint256(templates[templateId].packedTerms[34] >> 24),
@@ -173,6 +186,8 @@ contract TemplateRegistryStorage is SharedTypes {
                 (templates[templateId].packedTerms[35] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
 
+            int256(templates[templateId].packedTerms[36]),
+            int256(templates[templateId].packedTerms[37]),
             int256(templates[templateId].packedTerms[38]),
             int256(templates[templateId].packedTerms[39])
         );

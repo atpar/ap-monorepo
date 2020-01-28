@@ -52,32 +52,40 @@ contract SharedTypes is ACTUSTypes {
         uint256 statusDateOffset; // if set == 0 offset is interpreted as a not set date value
         uint256 maturityDateOffset; // if set == 0 offset is interpreted as a not set date value
 
+        int256 notionalPrincipal;
+        int256 nominalInterestRate;
         int256 feeAccrued;
         int256 accruedInterest;
         int256 rateMultiplier;
+        int256 rateSpread;
         int256 feeRate;
         int256 nextResetRate;
         int256 penaltyRate;
+        int256 premiumDiscountAtIED;
         int256 priceAtPurchaseDate;
         int256 nextPrincipalRedemptionPayment;
+        int256 coverageOfCreditEnhancement;
 
         IP gracePeriod;
         IP delinquencyPeriod;
 
+        int256 lifeCap;
+        int256 lifeFloor;
         int256 periodCap;
         int256 periodFloor;
     }
 
     struct CustomTerms {
         uint256 anchorDate;
-        int256 notionalPrincipal;
-        int256 nominalInterestRate;
-        int256 premiumDiscountAtIED;
-        int256 rateSpread;
-        int256 lifeCap;
-        int256 lifeFloor;
-        int256 coverageOfCreditEnhancement;
         ContractReference contractReference_1;
         ContractReference contractReference_2;
+        // set of boolean values, true indicating that attribute is overwritten, bit position in uint256 --> position in lifecycleTerms
+        // e.g. 0010110000...
+        uint256 overwrittenAttributesMap;
+        // packed attribute values encoded as bytes32, sorted after position in lifecycleTerms
+        // e.g. 0x|000...0|000...0|0003da...|000...0|5ab3...|fff3...|...
+        // IP is encoded as a tightly packed bytes32 (uint64 i, uint8 p, boolean isSet)
+        // bytes packedAttributeValues;
+        bytes32[] packedAttributeValues;
     }
 }

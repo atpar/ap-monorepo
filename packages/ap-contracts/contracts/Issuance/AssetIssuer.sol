@@ -130,7 +130,7 @@ contract AssetIssuer is
 
             // derive assetId and terms of order from template terms and custom terms
             assetId = keccak256(abi.encode(order.termsHash, address(custodian), order.salt));
-            LifecycleTerms memory terms = deriveLifecycleTerms(
+            LifecycleTerms memory terms = deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(order.templateId),
                 order.customTerms
             );
@@ -200,12 +200,12 @@ contract AssetIssuer is
             assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature, address(custodian)));
 
             // derive terms of underlying from template terms and custom terms
-            LifecycleTerms memory underlyingTerms = deriveLifecycleTerms(
+            LifecycleTerms memory underlyingTerms = deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(order.templateId),
                 order.customTerms
             );
             // derive terms of enhancement from template terms and custom terms
-            LifecycleTerms memory enhancementTerms = deriveLifecycleTerms(
+            LifecycleTerms memory enhancementTerms = deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(enhancementOrder.templateId),
                 enhancementOrder.customTerms
             );
