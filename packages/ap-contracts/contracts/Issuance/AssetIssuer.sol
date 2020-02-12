@@ -22,7 +22,6 @@ contract AssetIssuer is
     VerifyOrder,
     IAssetIssuer
 {
-
     event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
 
     event IssuedAsset(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
@@ -36,6 +35,92 @@ contract AssetIssuer is
         custodian = _custodian;
         templateRegistry = _templateRegistry;
         assetRegistry = _assetRegistry;
+    }
+
+    function issueFromDraft(Draft memory draft)
+        public
+    {
+        (
+            bytes32 assetId,
+            AssetOwnership memory ownership,
+            bytes32 templateId,
+            CustomTerms memory customTerms,
+            address engine,
+            address actor
+        ) = finalizeDraft(draft);
+
+        issueAsset(
+            assetId, ownership, templateId, customTerms, engine, actor
+        );
+    }
+
+    function finalizeDraft(Draft memory draft)
+        internal
+        returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
+    {
+        bytes32 assetId = keccak256(abi.encode(draft.termsHash, block.timestamp));
+
+        // check if first contract reference in terms references an underlying asset
+        if (draft.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+            require(
+                draft.customTerms.contractReference_1.object != bytes32(0),
+                "AssetIssuer.finalizeDraft: INVALID_OBJECT"
+            );
+        }
+
+        // check if second contract reference in terms contains a reference to collateral
+        if (draft.customTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+            require(
+                draft.customTerms.contractReference_2.object != bytes32(0),
+                "AssetIssuer.finalizeDraft: INVALID_OBJECT"
+            );
+
+            // derive assetId and terms of draft from template terms and custom terms
+            assetId = keccak256(abi.encode(draft.termsHash, address(custodian), block.timestamp));
+            LifecycleTerms memory terms = deriveLifecycleTerms(
+                templateRegistry.getTemplateTerms(draft.templateId),
+                draft.customTerms
+            );
+
+            // derive underlying assetId
+            bytes32 underlyingAssetId = draft.customTerms.contractReference_1.object;
+            // get terms and ownership of referenced underlying asset
+            LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
+            AssetOwnership memory underlyingOwnership = assetRegistry.getOwnership(underlyingAssetId);
+
+            // set ownership of draft according to contract role of underlying
+            if (terms.contractRole == ContractRole.BUY && underlyingTerms.contractRole == ContractRole.RPA) {
+                draft.ownership = AssetOwnership(
+                    underlyingOwnership.creatorObligor,
+                    underlyingOwnership.creatorBeneficiary,
+                    address(custodian),
+                    underlyingOwnership.counterpartyBeneficiary
+                );
+            } else if (terms.contractRole == ContractRole.SEL && underlyingTerms.contractRole == ContractRole.RPL) {
+                draft.ownership = AssetOwnership(
+                    address(custodian),
+                    underlyingOwnership.creatorBeneficiary,
+                    underlyingOwnership.counterpartyObligor,
+                    underlyingOwnership.counterpartyBeneficiary
+                );
+            } else {
+                // only BUY, RPA and SEL, RPL allowed for CEC
+                revert("AssetIssuer.finalizeDraft: INVALID_CONTRACT_ROLES");
+            }
+
+            // execute contractual conditions
+            // try transferring collateral to the custodian
+            custodian.lockCollateral(assetId, terms, draft.ownership);
+        }
+
+        return (
+            assetId,
+            draft.ownership,
+            draft.templateId,
+            draft.customTerms,
+            draft.engine,
+            draft.actor
+        );
     }
 
     /**

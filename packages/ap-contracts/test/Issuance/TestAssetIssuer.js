@@ -13,6 +13,7 @@ const {
 } = require('../helper/utils');
 
 const {
+  getDefaultDraftData,
   getDefaultOrderData,
   getDefaultOrderDataWithEnhancement,
   getDefaultOrderDataWithEnhancements,
@@ -316,5 +317,17 @@ contract('AssetIssuer', (accounts) => {
 
     await revertToSnapshot(snapshot);
     snapshot = await createSnapshot();
+  });
+
+  it('should issue an asset from a draft', async () => {
+    const draftData = getDefaultDraftData(
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+    );
+
+    const tx = await this.AssetIssuerInstance.issueFromDraft(draftData);
+    const assetId = tx.logs[0].args.assetId;
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+
+    assert.equal(storedEngineAddress, draftData.engine);
   });
 });

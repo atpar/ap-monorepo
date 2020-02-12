@@ -8,5 +8,18 @@ import "./VerifyOrder.sol";
 
 contract IAssetIssuer is SharedTypes, VerifyOrder {
 
+    struct Draft {
+        bytes32 termsHash;
+        bytes32 templateId;
+        CustomTerms customTerms;
+        uint256 expirationDate;
+        AssetOwnership ownership;
+        address engine;
+        address actor;
+    }
+
+
+    function issueFromDraft(Draft memory draft) public;
+
     function issueFromOrder(Order memory order) public;
 }
