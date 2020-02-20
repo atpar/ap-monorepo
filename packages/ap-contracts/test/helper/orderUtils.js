@@ -924,6 +924,18 @@ function sign(typedData, account) {
   });
 };
 
+function getDefaultDraftData(terms, templateId, customTerms, ownership, engine, actor) {
+  return {
+    termsHash: getTermsHash(terms),
+    templateId: Web3Utils.toHex(templateId),
+    customTerms: customTerms,
+    expirationDate: '10000000000',
+    ownership: ownership,
+    engine: engine,
+    actor: actor
+  }
+}
+
 function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, actor) {
   return { 
     termsHash: getTermsHash(terms),
@@ -1059,6 +1071,7 @@ module.exports = {
   getUnfilledEnhancementOrderDataAsTypedData,
   getFilledEnhancementOrderDataAsTypedData,
   getTermsHash,
+  getDefaultDraftData,
   getDefaultOrderData,
   getDefaultOrderDataWithEnhancement,
   getDefaultOrderDataWithEnhancements,

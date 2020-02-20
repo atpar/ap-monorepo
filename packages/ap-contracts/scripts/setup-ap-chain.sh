@@ -15,13 +15,13 @@ shutdown_ganache() {
 # throw if port is already in use
 # deploy deterministically
 echo "Starting new ganache-cli instance."
-ganache-cli -p "$ganache_port" -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" 1>/dev/null &
+npx --quiet ganache-cli -p "$ganache_port" -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" 1>/dev/null &
 ganache_pid=$!
 
 sleep 1
 
-truffle compile --all
-truffle migrate --network ap-chain
+npx --quiet truffle compile --all
+npx --quiet truffle migrate --network ap-chain
 
 echo "✓ ready"
 

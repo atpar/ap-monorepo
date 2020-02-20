@@ -43,6 +43,40 @@ export class AssetIssuer extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    issueFromDraft(draft: {
+      termsHash: string | number[];
+      templateId: string | number[];
+      customTerms: {
+        anchorDate: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        premiumDiscountAtIED: number | string;
+        rateSpread: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        coverageOfCreditEnhancement: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+      };
+      expirationDate: number | string;
+      ownership: {
+        creatorObligor: string;
+        creatorBeneficiary: string;
+        counterpartyObligor: string;
+        counterpartyBeneficiary: string;
+      };
+      engine: string;
+      actor: string;
+    }): TransactionObject<void>;
+
     issueFromOrder(order: {
       termsHash: string | number[];
       templateId: string | number[];

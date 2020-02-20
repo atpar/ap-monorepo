@@ -15,8 +15,7 @@ import { ZERO_ADDRESS } from './Constants';
 
 
 export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules: any): string {
-  // @ts-ignore
-  const templateTermsHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+  const templateTermsHash = web3Utils.keccak256(_encodeParameter(
     {  
       "components": [
         {
@@ -155,11 +154,10 @@ export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(templateTerms)
+    templateTerms
   ));
 
-  // @ts-ignore
-  const templateSchedulesHash = web3Utils.keccak256(web3EthAbi.encodeParameter(
+  const templateSchedulesHash = web3Utils.keccak256(_encodeParameter(
     {
       "components": [
         {
@@ -194,7 +192,7 @@ export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules
       "name": "templateSchedules",
       "type": "tuple"
     },
-    _toTuple(templateSchedules)
+    templateSchedules
   ));
 
   // @ts-ignore
@@ -347,8 +345,7 @@ export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrder
 };
 
 export function getCustomTermsHash (customTerms: CustomTerms): string {
-  // @ts-ignore
-  return web3Utils.keccak256(web3EthAbi.encodeParameter(
+  return web3Utils.keccak256(_encodeParameter(
     {
       "components": [
         {
@@ -423,13 +420,12 @@ export function getCustomTermsHash (customTerms: CustomTerms): string {
       "name": "customTerms",
       "type": "tuple"
     },
-    _toTuple(customTerms)
+    customTerms
   ));
 }
 
 export function getTermsHash (terms: Terms): string {
-  // @ts-ignore
-  return web3Utils.keccak256(web3EthAbi.encodeParameter(
+  return web3Utils.keccak256(_encodeParameter(
     {
       "components": [
         {
@@ -794,39 +790,37 @@ export function getTermsHash (terms: Terms): string {
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(terms)
+    terms
   ));
 }
 
-// @ts-ignore
-function _toTuple (obj): any[] {
-  if (!(obj instanceof Object)) {
-    return [];
+function _encodeParameter (paramType: any, paramValue: any): any {
+  // @ts-ignore
+  return web3EthAbi.encodeParameter(paramType, _toTuple(paramType, paramValue));
+}
+
+function _toTuple(paramType: any, paramValue: any): any {
+  if (!paramType || paramValue == null || !paramType.name) {
+    throw new Error('Provided paramValues does not match paramType.');
   }
-  // @ts-ignore
-  var output = [];
-  var i = 0;
-  Object.keys(obj).forEach((k): void => {
-    if (obj[k] instanceof Object) {
-      // @ts-ignore
-      output[i] = _toTuple(obj[k]);
-    } else if (obj[k] instanceof Array) {
-      let j1 = 0;
-      // @ts-ignore
-      let temp1 = [];
-      // @ts-ignore
-      obj[k].forEach((): void => {
-        // @ts-ignore
-        temp1[j1] = _toTuple(obj[k]);
-        j1++;
-      });
-      // @ts-ignore
-      output[i] = temp1;
-    } else {
-      output[i] = obj[k];
+
+  const tuple = [];
+
+  if (paramType.type === 'tuple') {
+    if (!paramType.components) {
+      throw new Error('Malformed paramType. Expected key components to exist on type tuple.');
     }
-    i++;
-  });
-  // @ts-ignore
-  return output;
+    for (const compParamType of paramType.components) {
+      if (!compParamType.name) { throw new Error('Malformed paramValue. Expected key name to  exist.'); }
+      tuple.push(_toTuple(compParamType, paramValue[compParamType.name]));
+    }
+  } else if (paramType.type.includes('[]')) {
+    for (const value of paramValue) {
+      tuple.push(value);
+    }
+  } else {
+    return paramValue;
+  }
+
+  return tuple;
 }
