@@ -26,10 +26,10 @@
   "priceAtPurchaseDate",
   "nextPrincipalRedemptionPayment",
   "coverageOfCreditEnhancement",
-  "gracePeriod",
-  "delinquencyPeriod",
   "lifeCap",
   "lifeFloor",
   "periodCap",
-  "periodFloor"
+  "periodFloor",
+  "gracePeriod",
+  "delinquencyPeriod"
 ]

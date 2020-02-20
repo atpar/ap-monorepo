@@ -55,12 +55,12 @@ export class TemplateRegistry extends Contract {
       priceAtPurchaseDate: string;
       nextPrincipalRedemptionPayment: string;
       coverageOfCreditEnhancement: string;
-      gracePeriod: { i: string; p: string; isSet: boolean };
-      delinquencyPeriod: { i: string; p: string; isSet: boolean };
       lifeCap: string;
       lifeFloor: string;
       periodCap: string;
       periodFloor: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
     }>;
 
     getEventAtIndex(
@@ -108,16 +108,16 @@ export class TemplateRegistry extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
       },
       templateSchedules: {
         nonCyclicSchedule: (string | number[])[];

@@ -21,6 +21,107 @@ export class AssetActor extends Contract {
   );
   clone(): AssetActor;
   methods: {
+    deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
+      templateTerms: {
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        statusDateOffset: number | string;
+        maturityDateOffset: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        feeAccrued: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        feeRate: number | string;
+        nextResetRate: number | string;
+        penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+      },
+      terms: {
+        anchorDate: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        overwrittenAttributesMap: number | string;
+        packedAttributeValues: (string | number[])[];
+      }
+    ): TransactionObject<{
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      creditEventTypeCovered: string;
+      currency: string;
+      settlementCurrency: string;
+      marketObjectCodeRateReset: string;
+      statusDate: string;
+      maturityDate: string;
+      notionalPrincipal: string;
+      nominalInterestRate: string;
+      feeAccrued: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      rateSpread: string;
+      feeRate: string;
+      nextResetRate: string;
+      penaltyRate: string;
+      premiumDiscountAtIED: string;
+      priceAtPurchaseDate: string;
+      nextPrincipalRedemptionPayment: string;
+      coverageOfCreditEnhancement: string;
+      lifeCap: string;
+      lifeFloor: string;
+      periodCap: string;
+      periodFloor: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      contractReference_1: {
+        object: string;
+        contractReferenceType: string;
+        contractReferenceRole: string;
+      };
+      contractReference_2: {
+        object: string;
+        contractReferenceType: string;
+        contractReferenceRole: string;
+      };
+    }>;
+
     issuers(arg0: string): TransactionObject<boolean>;
 
     decodeCollateralObject(
@@ -48,6 +149,10 @@ export class AssetActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
+    owner(): TransactionObject<string>;
+
+    isOwner(): TransactionObject<boolean>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       terms: {
@@ -60,16 +165,6 @@ export class AssetActor extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -88,22 +183,28 @@ export class AssetActor extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       }
     ): TransactionObject<string>;
-
-    owner(): TransactionObject<string>;
-
-    isOwner(): TransactionObject<boolean>;
 
     PRECISION(): TransactionObject<string>;
 
@@ -139,8 +240,8 @@ export class AssetActor extends Contract {
           contractReferenceType: number | string;
           contractReferenceRole: number | string;
         };
-        overwrittenAttributeMap: number | string;
-        packedAttributeValues: string | number[];
+        overwrittenAttributesMap: number | string;
+        packedAttributeValues: (string | number[])[];
       },
       engineAddress: string
     ): TransactionObject<boolean>;

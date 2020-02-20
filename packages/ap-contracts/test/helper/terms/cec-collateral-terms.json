@@ -9,16 +9,6 @@
   "penaltyType": 0,
   "feeBasis": 0,
   "creditEventTypeCovered": 3,
-  "contractReference_1": { 
-    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "contractReferenceType": 1,
-    "contractReferenceRole": 3
-  },
-  "contractReference_2": { 
-    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "contractReferenceType": 0,
-    "contractReferenceRole": 4
-  },
   "currency": "0x0000000000000000000000000000000000000000",
   "settlementCurrency": "0x0000000000000000000000000000000000000000",
   "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -49,6 +39,10 @@
   "priceAtPurchaseDate": 0,
   "nextPrincipalRedemptionPayment": 0,
   "coverageOfCreditEnhancement": "1000000000000000000",
+  "lifeCap": 0,
+  "lifeFloor": 0,
+  "periodCap": 0,
+  "periodFloor": 0,
   "cycleOfInterestPayment": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfRateReset": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfScalingIndex": { "i": 0, "p": 0, "s": 0, "isSet": false },
@@ -56,8 +50,14 @@
   "cycleOfPrincipalRedemption": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "gracePeriod": { "i": 0, "p": 0, "isSet": false },
   "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
-  "lifeCap": 0,
-  "lifeFloor": 0,
-  "periodCap": 0,
-  "periodFloor": 0 
+  "contractReference_1": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "contractReferenceType": 1,
+    "contractReferenceRole": 3
+  },
+  "contractReference_2": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "contractReferenceType": 0,
+    "contractReferenceRole": 4
+  }
 }

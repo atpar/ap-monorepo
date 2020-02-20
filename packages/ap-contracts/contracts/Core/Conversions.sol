@@ -15,66 +15,61 @@ contract Conversions is SharedTypes {
         returns (LifecycleTerms memory)
     {
         return LifecycleTerms(
-            isOverwritten(terms.overwrittenAttributesMap, 0) ? Calendar(uint8(uint256(terms.packedAttributeValues[0]))) : templateTerms.calendar,
-            isOverwritten(terms.overwrittenAttributesMap, 1) ? ContractRole(uint8(uint256(terms.packedAttributeValues[1]))) : templateTerms.contractRole,
-            isOverwritten(terms.overwrittenAttributesMap, 2) ? DayCountConvention(uint8(uint256(terms.packedAttributeValues[2]))) : templateTerms.dayCountConvention,
-            isOverwritten(terms.overwrittenAttributesMap, 3) ? BusinessDayConvention(uint8(uint256(terms.packedAttributeValues[3]))) : templateTerms.businessDayConvention,
-            isOverwritten(terms.overwrittenAttributesMap, 4) ? EndOfMonthConvention(uint8(uint256(terms.packedAttributeValues[4]))) : templateTerms.endOfMonthConvention,
-            isOverwritten(terms.overwrittenAttributesMap, 5) ? ScalingEffect(uint8(uint256(terms.packedAttributeValues[5]))) : templateTerms.scalingEffect,
-            isOverwritten(terms.overwrittenAttributesMap, 6) ? PenaltyType(uint8(uint256(terms.packedAttributeValues[6]))) : templateTerms.penaltyType,
-            isOverwritten(terms.overwrittenAttributesMap, 7) ? FeeBasis(uint8(uint256(terms.packedAttributeValues[7]))) : templateTerms.feeBasis,
-            isOverwritten(terms.overwrittenAttributesMap, 8) ? ContractPerformance(uint8(uint256(terms.packedAttributeValues[8]))) : templateTerms.creditEventTypeCovered,
+            isOverwritten(terms.overwrittenAttributesMap, 0) ? Calendar(uint8(uint256(terms.packedAttributeValues[0] >> 248))) : templateTerms.calendar,
+            isOverwritten(terms.overwrittenAttributesMap, 1) ? ContractRole(uint8(uint256(terms.packedAttributeValues[0] >> 240))) : templateTerms.contractRole,
+            isOverwritten(terms.overwrittenAttributesMap, 2) ? DayCountConvention(uint8(uint256(terms.packedAttributeValues[0] >> 232))) : templateTerms.dayCountConvention,
+            isOverwritten(terms.overwrittenAttributesMap, 3) ? BusinessDayConvention(uint8(uint256(terms.packedAttributeValues[0] >> 224))) : templateTerms.businessDayConvention,
+            isOverwritten(terms.overwrittenAttributesMap, 4) ? EndOfMonthConvention(uint8(uint256(terms.packedAttributeValues[0] >> 216))) : templateTerms.endOfMonthConvention,
+            isOverwritten(terms.overwrittenAttributesMap, 5) ? ScalingEffect(uint8(uint256(terms.packedAttributeValues[0] >> 208))) : templateTerms.scalingEffect,
+            isOverwritten(terms.overwrittenAttributesMap, 6) ? PenaltyType(uint8(uint256(terms.packedAttributeValues[0] >> 200))) : templateTerms.penaltyType,
+            isOverwritten(terms.overwrittenAttributesMap, 7) ? FeeBasis(uint8(uint256(terms.packedAttributeValues[0] >> 192))) : templateTerms.feeBasis,
+            isOverwritten(terms.overwrittenAttributesMap, 8) ? ContractPerformance(uint8(uint256(terms.packedAttributeValues[0] >> 184))) : templateTerms.creditEventTypeCovered,
 
-            terms.contractReference_1, // mandatory custom terms attribute
-            terms.contractReference_2, // mandatory custom terms attribute
+            isOverwritten(terms.overwrittenAttributesMap, 9) ? address(uint160(uint256(terms.packedAttributeValues[1]) >> 96)) : templateTerms.currency,
+            isOverwritten(terms.overwrittenAttributesMap, 10) ? address(uint160(uint256(terms.packedAttributeValues[2]) >> 96)) : templateTerms.settlementCurrency,
 
-            isOverwritten(terms.overwrittenAttributesMap, 11) ? address(uint160(uint256(terms.packedAttributeValues[11]) >> 96)) : templateTerms.currency,
-            isOverwritten(terms.overwrittenAttributesMap, 12) ? address(uint160(uint256(terms.packedAttributeValues[12]) >> 96)) : templateTerms.settlementCurrency,
+            isOverwritten(terms.overwrittenAttributesMap, 11) ? terms.packedAttributeValues[3] : templateTerms.marketObjectCodeRateReset,
 
-            isOverwritten(terms.overwrittenAttributesMap, 13) ? terms.packedAttributeValues[13] : templateTerms.marketObjectCodeRateReset,
+            isOverwritten(terms.overwrittenAttributesMap, 12) ? uint256(terms.packedAttributeValues[4]) : applyAnchorDateToOffset(terms.anchorDate, templateTerms.statusDateOffset),
+            isOverwritten(terms.overwrittenAttributesMap, 13) ? uint256(terms.packedAttributeValues[5]) : applyAnchorDateToOffset(terms.anchorDate, templateTerms.maturityDateOffset),
 
-            isOverwritten(terms.overwrittenAttributesMap, 14)
-                ? uint256(terms.packedAttributeValues[14])
-                : applyAnchorDateToOffset(terms.anchorDate, templateTerms.statusDateOffset),
-            isOverwritten(terms.overwrittenAttributesMap, 15)
-                ? uint256(terms.packedAttributeValues[15])
-                : applyAnchorDateToOffset(terms.anchorDate, templateTerms.maturityDateOffset),
+            isOverwritten(terms.overwrittenAttributesMap, 14) ? int256(terms.packedAttributeValues[6]) : templateTerms.notionalPrincipal,
+            isOverwritten(terms.overwrittenAttributesMap, 15) ? int256(terms.packedAttributeValues[7]) : templateTerms.nominalInterestRate,
+            isOverwritten(terms.overwrittenAttributesMap, 16) ? int256(terms.packedAttributeValues[8]) : templateTerms.feeAccrued,
+            isOverwritten(terms.overwrittenAttributesMap, 17) ? int256(terms.packedAttributeValues[9]) : templateTerms.accruedInterest,
+            isOverwritten(terms.overwrittenAttributesMap, 18) ? int256(terms.packedAttributeValues[10]) : templateTerms.rateMultiplier,
+            isOverwritten(terms.overwrittenAttributesMap, 19) ? int256(terms.packedAttributeValues[11]) : templateTerms.rateSpread,
+            isOverwritten(terms.overwrittenAttributesMap, 20) ? int256(terms.packedAttributeValues[12]) : templateTerms.feeRate,
+            isOverwritten(terms.overwrittenAttributesMap, 21) ? int256(terms.packedAttributeValues[13]) : templateTerms.nextResetRate,
+            isOverwritten(terms.overwrittenAttributesMap, 22) ? int256(terms.packedAttributeValues[14]) : templateTerms.penaltyRate,
+            isOverwritten(terms.overwrittenAttributesMap, 23) ? int256(terms.packedAttributeValues[15]) : templateTerms.premiumDiscountAtIED,
+            isOverwritten(terms.overwrittenAttributesMap, 24) ? int256(terms.packedAttributeValues[16]) : templateTerms.priceAtPurchaseDate,
+            isOverwritten(terms.overwrittenAttributesMap, 25) ? int256(terms.packedAttributeValues[17]) : templateTerms.nextPrincipalRedemptionPayment,
+            isOverwritten(terms.overwrittenAttributesMap, 26) ? int256(terms.packedAttributeValues[18]) : templateTerms.coverageOfCreditEnhancement,
+            isOverwritten(terms.overwrittenAttributesMap, 27) ? int256(terms.packedAttributeValues[19]) : templateTerms.lifeCap,
+            isOverwritten(terms.overwrittenAttributesMap, 28) ? int256(terms.packedAttributeValues[20]) : templateTerms.lifeFloor,
+            isOverwritten(terms.overwrittenAttributesMap, 29) ? int256(terms.packedAttributeValues[21]) : templateTerms.periodCap,
+            isOverwritten(terms.overwrittenAttributesMap, 30) ? int256(terms.packedAttributeValues[22]) : templateTerms.periodFloor,
 
-            isOverwritten(terms.overwrittenAttributesMap, 16) ? int256(terms.packedAttributeValues[16]) : templateTerms.notionalPrincipal,
-            isOverwritten(terms.overwrittenAttributesMap, 17) ? int256(terms.packedAttributeValues[17]) : templateTerms.nominalInterestRate,
-            isOverwritten(terms.overwrittenAttributesMap, 18) ? int256(terms.packedAttributeValues[18]) : templateTerms.feeAccrued,
-            isOverwritten(terms.overwrittenAttributesMap, 19) ? int256(terms.packedAttributeValues[19]) : templateTerms.accruedInterest,
-            isOverwritten(terms.overwrittenAttributesMap, 20) ? int256(terms.packedAttributeValues[20]) : templateTerms.rateMultiplier,
-            isOverwritten(terms.overwrittenAttributesMap, 21) ? int256(terms.packedAttributeValues[21]) : templateTerms.rateSpread,
-            isOverwritten(terms.overwrittenAttributesMap, 22) ? int256(terms.packedAttributeValues[22]) : templateTerms.feeRate,
-            isOverwritten(terms.overwrittenAttributesMap, 23) ? int256(terms.packedAttributeValues[23]) : templateTerms.nextResetRate,
-            isOverwritten(terms.overwrittenAttributesMap, 24) ? int256(terms.packedAttributeValues[24]) : templateTerms.penaltyRate,
-            isOverwritten(terms.overwrittenAttributesMap, 25) ? int256(terms.packedAttributeValues[25]) : templateTerms.premiumDiscountAtIED,
-            isOverwritten(terms.overwrittenAttributesMap, 26) ? int256(terms.packedAttributeValues[26]) : templateTerms.priceAtPurchaseDate,
-            isOverwritten(terms.overwrittenAttributesMap, 27) ? int256(terms.packedAttributeValues[27]) : templateTerms.nextPrincipalRedemptionPayment,
-            isOverwritten(terms.overwrittenAttributesMap, 28) ? int256(terms.packedAttributeValues[28]) : templateTerms.coverageOfCreditEnhancement,
-
-            isOverwritten(terms.overwrittenAttributesMap, 29)
+            isOverwritten(terms.overwrittenAttributesMap, 31)
                 ?
                     IP(
-                        uint256(terms.packedAttributeValues[29] >> 24),
-                        P(uint8(uint256(terms.packedAttributeValues[29] >> 16))),
-                        (terms.packedAttributeValues[29] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                        uint256(terms.packedAttributeValues[23] >> 24),
+                        P(uint8(uint256(terms.packedAttributeValues[23] >> 16))),
+                        (terms.packedAttributeValues[23] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
                     )
                 : templateTerms.gracePeriod,
-            isOverwritten(terms.overwrittenAttributesMap, 30)
+            isOverwritten(terms.overwrittenAttributesMap, 32)
                 ?
                     IP(
-                        uint256(terms.packedAttributeValues[30] >> 24),
-                        P(uint8(uint256(terms.packedAttributeValues[30] >> 16))),
-                        (terms.packedAttributeValues[30] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                        uint256(terms.packedAttributeValues[24] >> 24),
+                        P(uint8(uint256(terms.packedAttributeValues[24] >> 16))),
+                        (terms.packedAttributeValues[24] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
                     )
                 : templateTerms.delinquencyPeriod,
 
-            isOverwritten(terms.overwrittenAttributesMap, 31) ? int256(terms.packedAttributeValues[31]) : templateTerms.lifeCap,
-            isOverwritten(terms.overwrittenAttributesMap, 32) ? int256(terms.packedAttributeValues[32]) : templateTerms.lifeFloor,
-            isOverwritten(terms.overwrittenAttributesMap, 33) ? int256(terms.packedAttributeValues[33]) : templateTerms.periodCap,
-            isOverwritten(terms.overwrittenAttributesMap, 34) ? int256(terms.packedAttributeValues[34]) : templateTerms.periodFloor
+            terms.contractReference_1, // mandatory custom terms attribute
+            terms.contractReference_2 // mandatory custom terms attribute
         );
     }
 

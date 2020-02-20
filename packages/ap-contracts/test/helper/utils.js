@@ -187,16 +187,47 @@ function removeNullEvents (events) {
 function encodeCustomTerms (anchorDate, contractReference_1, contractReference_2, overwrittenAttributes) {
   let overwrittenAttributesMap = '';
   const packedAttributeValues = [];
+  let packedEnums = '';
 
-  for (const attribute of LifecycleTerms) {
+  LifecycleTerms.forEach((attribute, index) => {
+    // tightly pack enums
+    if (index <= 8) {
+      if (overwrittenAttributes[attribute]) {
+        packedEnums += Number(overwrittenAttributes[attribute]).toString(2).padStart(8, '0');
+      } else {
+        packedEnums += Number(0).toString(2).padStart(8, '0');
+      }
+    } else {
+      if (overwrittenAttributes[attribute]) {
+        // handle periods
+        if (index === 31 || index === 32) {
+          // todo implement
+          packedAttributeValues.push(Web3Utils.padLeft(Web3Utils.toHex(overwrittenAttributes[attribute]), 64));
+        } else {
+          packedAttributeValues.push(Web3Utils.padLeft(Web3Utils.toHex(overwrittenAttributes[attribute]), 64));
+        }
+      }
+      else {
+        packedAttributeValues.push(Web3Utils.padLeft('0x0', 64));
+      }
+    }
+
+    // set attributes map
     if (overwrittenAttributes[attribute]) {
       overwrittenAttributesMap = '1' + overwrittenAttributesMap;
-      packedAttributeValues.push(Web3Utils.padLeft(Web3Utils.toHex(overwrittenAttributes[attribute]), 64));
     } else {
       overwrittenAttributesMap = '0' + overwrittenAttributesMap;
-      packedAttributeValues.push(Web3Utils.padLeft('0x0', 64));
     }
-  }
+  });
+
+  // convert from binary to hex
+  // right pad binary string to 256 places, convert binrary string to hex,
+  // pad left hex to 64 places (to re-add 0s which where truncated by convertion to hex)
+  // todo fix convertion from binary string to hex
+  packedAttributeValues.unshift(Web3Utils.padLeft('0x' + parseInt(packedEnums.padEnd(256, '0'), 2).toString(16), 64));
+
+  // console.log(packedAttributeValues);
+  // console.log(overwrittenAttributesMap);
 
   // convert from binary string to number
   overwrittenAttributesMap = parseInt(overwrittenAttributesMap, 2);

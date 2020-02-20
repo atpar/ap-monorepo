@@ -35,16 +35,6 @@ export class IEngine extends Contract {
       penaltyType: number | string;
       feeBasis: number | string;
       creditEventTypeCovered: number | string;
-      contractReference_1: {
-        object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
-      };
-      contractReference_2: {
-        object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
-      };
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string | number[];
@@ -63,16 +53,26 @@ export class IEngine extends Contract {
       priceAtPurchaseDate: number | string;
       nextPrincipalRedemptionPayment: number | string;
       coverageOfCreditEnhancement: number | string;
+      lifeCap: number | string;
+      lifeFloor: number | string;
+      periodCap: number | string;
+      periodFloor: number | string;
       gracePeriod: { i: number | string; p: number | string; isSet: boolean };
       delinquencyPeriod: {
         i: number | string;
         p: number | string;
         isSet: boolean;
       };
-      lifeCap: number | string;
-      lifeFloor: number | string;
-      periodCap: number | string;
-      periodFloor: number | string;
+      contractReference_1: {
+        object: string | number[];
+        contractReferenceType: number | string;
+        contractReferenceRole: number | string;
+      };
+      contractReference_2: {
+        object: string | number[];
+        contractReferenceType: number | string;
+        contractReferenceRole: number | string;
+      };
     }): TransactionObject<{
       contractPerformance: string;
       statusDate: string;
@@ -100,16 +100,6 @@ export class IEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -128,16 +118,26 @@ export class IEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -183,16 +183,6 @@ export class IEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -211,16 +201,26 @@ export class IEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -366,16 +366,6 @@ export class IEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -394,16 +384,26 @@ export class IEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;

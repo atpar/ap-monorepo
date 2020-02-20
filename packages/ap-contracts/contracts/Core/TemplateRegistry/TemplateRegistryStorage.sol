@@ -70,6 +70,10 @@ contract TemplateRegistryStorage is SharedTypes {
         if (terms.nextPrincipalRedemptionPayment != int256(0)) templates[templateId].packedTerms[28] = bytes32(terms.nextPrincipalRedemptionPayment);
         // solium-disable-next-line
         if (terms.coverageOfCreditEnhancement != int256(0)) templates[templateId].packedTerms[29] = bytes32(terms.coverageOfCreditEnhancement);
+        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[30] = bytes32(terms.lifeCap);
+        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[31] = bytes32(terms.lifeFloor);
+        if (terms.periodCap != int256(0)) templates[templateId].packedTerms[32] = bytes32(terms.periodCap);
+        if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[33] = bytes32(terms.periodFloor);
 
         if (terms.gracePeriod.isSet) {
             templates[templateId].packedTerms[34] =
@@ -83,11 +87,6 @@ contract TemplateRegistryStorage is SharedTypes {
                 bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
                 bytes32(uint256(1)) << 8;
         }
-
-        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[36] = bytes32(terms.lifeCap);
-        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[37] = bytes32(terms.lifeFloor);
-        if (terms.periodCap != int256(0)) templates[templateId].packedTerms[38] = bytes32(terms.periodCap);
-        if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[39] = bytes32(terms.periodFloor);
     }
 
     function encodeAndSetSchedules(bytes32 templateId, TemplateSchedules memory templateSchedules)
@@ -174,6 +173,10 @@ contract TemplateRegistryStorage is SharedTypes {
             int256(templates[templateId].packedTerms[27]),
             int256(templates[templateId].packedTerms[28]),
             int256(templates[templateId].packedTerms[29]),
+            int256(templates[templateId].packedTerms[30]),
+            int256(templates[templateId].packedTerms[31]),
+            int256(templates[templateId].packedTerms[32]),
+            int256(templates[templateId].packedTerms[33]),
 
             IP(
                 uint256(templates[templateId].packedTerms[34] >> 24),
@@ -184,12 +187,7 @@ contract TemplateRegistryStorage is SharedTypes {
                 uint256(templates[templateId].packedTerms[35] >> 24),
                 P(uint8(uint256(templates[templateId].packedTerms[35] >> 16))),
                 (templates[templateId].packedTerms[35] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-
-            int256(templates[templateId].packedTerms[36]),
-            int256(templates[templateId].packedTerms[37]),
-            int256(templates[templateId].packedTerms[38]),
-            int256(templates[templateId].packedTerms[39])
+            )
         );
     }
 }

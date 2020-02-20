@@ -40,6 +40,8 @@
         "penaltyRate": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
+        "periodCap": 0,
+        "periodFloor": 0,
         "cycleOfInterestPayment": {
             "i": 1,
             "p": 1,
@@ -79,8 +81,6 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        },
-        "periodCap": 0,
-        "periodFloor": 0
+        }
     }
 }

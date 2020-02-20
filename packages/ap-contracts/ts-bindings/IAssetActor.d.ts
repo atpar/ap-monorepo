@@ -48,8 +48,8 @@ export class IAssetActor extends Contract {
           contractReferenceType: number | string;
           contractReferenceRole: number | string;
         };
-        overwrittenAttributeMap: number | string;
-        packedAttributeValues: string | number[];
+        overwrittenAttributesMap: number | string;
+        packedAttributeValues: (string | number[])[];
       },
       engine: string
     ): TransactionObject<boolean>;

@@ -7,7 +7,7 @@ contract SharedTypes is ACTUSTypes {
 
     // define maximum of uint8 as schedule index for the non-cyclic schedulee
     uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
-    // define maximum of uint64 (0xFFFFFFFFFFFFFFFF) as offset == anchorDate, 
+    // define maximum of uint64 (0xFFFFFFFFFFFFFFFF) as offset == anchorDate,
     // since offset == 0 is interpreted as a not set date value and not shifted
     uint256 constant ZERO_OFFSET = 1; // uint256(~uint64(0));
 
@@ -65,27 +65,27 @@ contract SharedTypes is ACTUSTypes {
         int256 priceAtPurchaseDate;
         int256 nextPrincipalRedemptionPayment;
         int256 coverageOfCreditEnhancement;
-
-        IP gracePeriod;
-        IP delinquencyPeriod;
-
         int256 lifeCap;
         int256 lifeFloor;
         int256 periodCap;
         int256 periodFloor;
+
+        IP gracePeriod;
+        IP delinquencyPeriod;
     }
 
     struct CustomTerms {
         uint256 anchorDate;
         ContractReference contractReference_1;
         ContractReference contractReference_2;
-        // set of boolean values, true indicating that attribute is overwritten, bit position in uint256 --> position in lifecycleTerms
+        // set of boolean values, true indicating that attribute is overwritten,
+        // bit position from right to left in uint256 := position in lifecycleTerms (excluding contractReferences)
         // e.g. 0010110000...
         uint256 overwrittenAttributesMap;
-        // packed attribute values encoded as bytes32, sorted after position in lifecycleTerms
-        // e.g. 0x|000...0|000...0|0003da...|000...0|5ab3...|fff3...|...
+        // array of tightly packed attribute values encoded as bytes32, sorted after position in lifecycleTerms
         // IP is encoded as a tightly packed bytes32 (uint64 i, uint8 p, boolean isSet)
-        // bytes packedAttributeValues;
+        // position from left to right in array := position in lifecycleTerms (excluding contractReferences)
+        // e.g. 0x000...0|0x000...0|0x0003da...|0x000...0|0x5ab3...|0xfff3...|...
         bytes32[] packedAttributeValues;
     }
 }

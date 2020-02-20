@@ -28,8 +28,18 @@ contract('AssetRegistry', (accounts) => {
     this.terms = { ...getComplexTerms() };
 
     this.overwrittenAttributeValues = {
+      calendar: '0',
+      contractRole: '2',
+      dayCountConvention: '4',
+      businessDayConvention: '6',
+      endOfMonthConvention: '0',
+      scalingEffect: '5',
+      penaltyType: '3',
+      feeBasis: '0',
+      // creditEventTypeCovered: '3', // todo fix convertion from binary string to hex
       notionalPrincipal: web3.utils.toWei('22'),
-      nominalInterestRate: web3.utils.toWei('3.5')
+      nominalInterestRate: web3.utils.toWei('3.5'),
+      periodFloor: '10'
     };
 
     this.customTerms = encodeCustomTerms(
@@ -55,14 +65,6 @@ contract('AssetRegistry', (accounts) => {
       this.PAMEngineInstance.address,
       actor
     );
-
-    // console.log(this.customTerms.overwrittenAttributesMap);
-    // console.log(this.customTerms.packedAttributeValues);
-    // console.log(await this.AssetRegistryInstance.isOverwritten(this.customTerms.overwrittenAttributesMap, '33'));
-    // console.log(await this.AssetRegistryInstance.deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
-    //   this.templateTerms,
-    //   this.customTerms
-    // ));
     
     const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));

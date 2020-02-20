@@ -77,7 +77,7 @@ contract AssetIssuer is
 
             // derive assetId and terms of draft from template terms and custom terms
             assetId = keccak256(abi.encode(draft.termsHash, address(custodian), block.timestamp));
-            LifecycleTerms memory terms = deriveLifecycleTerms(
+            LifecycleTerms memory terms = deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(draft.templateId),
                 draft.customTerms
             );
