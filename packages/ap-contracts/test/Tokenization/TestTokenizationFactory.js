@@ -16,7 +16,7 @@ contract('TokenizationFactory', (accounts) => {
   
   const assetId = 'C123';
 
-  beforeEach(async () => {
+  before(async () => {
     this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
@@ -60,10 +60,36 @@ contract('TokenizationFactory', (accounts) => {
       { from: creatorBeneficiary }
     );
 
-    const storedCreatorBeneficiary = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
-    const balanceOfRecordCreatoBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(creatorBeneficiary)).toString();
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
+    const balanceOfCreatorBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(creatorBeneficiary)).toString();
 
-    assert.equal(storedCreatorBeneficiary.creatorBeneficiary, FDT_ERC20ExtensionInstance.address);
-    assert.equal(balanceOfRecordCreatoBeneficiary, initialSupply);
+    assert.equal(storedOwnership.creatorBeneficiary, FDT_ERC20ExtensionInstance.address);
+    assert.equal(balanceOfCreatorBeneficiary, initialSupply);
+  });
+
+    it('should tokenize default beneficiary - restricted ERC20', async () => {
+    const tx = await this.TokenizationFactoryInstance.createRestrictedERC20Distributor(
+      'FundsDistributionToken',
+      'FDT',
+      initialSupply,
+      "0x0000000000000000000000000000000000000001",
+      { from: counterpartyBeneficiary }
+    );
+
+    const FDT_ERC20ExtensionInstance = await FDT_ETHExtension.at(
+      tx.logs[0].args.distributor
+    );
+
+    await this.AssetRegistryInstance.setCounterpartyBeneficiary(
+      web3.utils.toHex(assetId),
+      FDT_ERC20ExtensionInstance.address,
+      { from: counterpartyBeneficiary }
+    );
+
+    const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(assetId));
+    const balanceOfCounterpartyBeneficiary = (await FDT_ERC20ExtensionInstance.balanceOf(counterpartyBeneficiary)).toString();
+
+    assert.equal(storedOwnership.counterpartyBeneficiary, FDT_ERC20ExtensionInstance.address);
+    assert.equal(balanceOfCounterpartyBeneficiary, initialSupply);
   });
 });

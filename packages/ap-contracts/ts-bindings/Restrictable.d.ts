@@ -13,32 +13,31 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class TokenizationFactory extends Contract {
+export class Restrictable extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): TokenizationFactory;
+  clone(): Restrictable;
   methods: {
-    createERC20Distributor(
-      name: string,
-      symbol: string,
-      initialSupply: number | string,
-      token: string
-    ): TransactionObject<void>;
+    renounceOwnership(): TransactionObject<void>;
 
-    createRestrictedERC20Distributor(
-      name: string,
-      symbol: string,
-      initialSupply: number | string,
-      token: string
-    ): TransactionObject<void>;
+    owner(): TransactionObject<string>;
+
+    isOwner(): TransactionObject<boolean>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
+    isRestrictionEnabled(): TransactionObject<boolean>;
+
+    disableRestrictions(): TransactionObject<void>;
   };
   events: {
-    DeployedDistributor: ContractEvent<{
-      distributor: string;
-      creator: string;
+    RestrictionsDisabled: ContractEvent<string>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
       0: string;
       1: string;
     }>;
