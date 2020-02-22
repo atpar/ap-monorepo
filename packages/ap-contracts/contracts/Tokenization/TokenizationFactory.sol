@@ -15,14 +15,12 @@ import "../external/SimpleRestrictedFDT.sol";
  */
 contract TokenizationFactory {
 
-    IAssetRegistry assetRegistry;
+    IAssetRegistry public assetRegistry;
 
 
     event DeployedDistributor(address distributor, address creator);
 
-    constructor(
-        IAssetRegistry _assetRegistry
-    ) public {
+    constructor(IAssetRegistry _assetRegistry) public {
         assetRegistry = _assetRegistry;
     }
 

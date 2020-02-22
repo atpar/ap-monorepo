@@ -21,6 +21,8 @@ export class AssetActor extends Contract {
   );
   clone(): AssetActor;
   methods: {
+    marketObjectRegistry(): TransactionObject<string>;
+
     issuers(arg0: string): TransactionObject<boolean>;
 
     decodeCollateralObject(
@@ -104,6 +106,10 @@ export class AssetActor extends Contract {
     owner(): TransactionObject<string>;
 
     isOwner(): TransactionObject<boolean>;
+
+    assetRegistry(): TransactionObject<string>;
+
+    templateRegistry(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
 

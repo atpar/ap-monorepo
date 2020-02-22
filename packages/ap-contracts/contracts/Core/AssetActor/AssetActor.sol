@@ -40,9 +40,9 @@ contract AssetActor is
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
 
-    IAssetRegistry assetRegistry;
-    ITemplateRegistry templateRegistry;
-    IMarketObjectRegistry marketObjectRegistry;
+    IAssetRegistry public assetRegistry;
+    ITemplateRegistry public templateRegistry;
+    IMarketObjectRegistry public marketObjectRegistry;
 
     mapping(address => bool) public issuers;
 
