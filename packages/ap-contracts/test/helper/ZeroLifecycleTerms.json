@@ -35,37 +35,6 @@
 	"periodCap": "0",
 	"periodFloor": "0",
 
-	"cycleOfInterestPayment": {
-			"i": 0,
-			"p": 0,
-			"s": 0,
-			"isSet": false
-	},
-	"cycleOfRateReset": {
-			"i": 0,
-			"p": 0,
-			"s": 0,
-			"isSet": false
-	},
-	"cycleOfScalingIndex": {
-			"i": 0,
-			"p": 0,
-			"s": 0,
-			"isSet": false
-	},
-	"cycleOfFee": {
-			"i": 0,
-			"p": 0,
-			"s": 0,
-			"isSet": false
-	},
-	"cycleOfPrincipalRedemption": {
-		"i": 0,
-		"p": 0,
-		"s": 0,
-		"isSet": false
-	},
-
 	"gracePeriod": {
 		"i": 0,
 		"p": 0,

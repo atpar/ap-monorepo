@@ -48,19 +48,22 @@ function parseTermsToTemplateTerms (terms) {
 }
 
 function parseTermsToCustomTerms (terms) {
-  const customTerms = {};
+  const templateTerms = parseTermsToTemplateTerms(terms);
+  const anchorDate = terms.contractDealDate;
+  const overwrittenAttributes = {};
+  Object.keys(terms)
+    .filter((attribute) => {
+      return (
+        !templateTerms[(attribute.includes('Date') ? attribute + 'Offset' : attribute)]
+        && ZeroTerms[attribute]
+        && ZeroTerms[attribute] != terms[attribute]
+      );
+    })
+    .map((attribute) => { 
+      overwrittenAttributes[attribute] = terms[attribute] 
+    });
 
-  for (const attribute of CustomTerms) {
-    if (attribute === 'anchorDate') {
-      // define anchor date as contract deal date
-      customTerms[attribute] = terms['contractDealDate'];
-      continue;
-    }
-
-    customTerms[attribute] = terms[attribute];
-  }
-
-  return customTerms;
+  return encodeCustomTerms(anchorDate, overwrittenAttributes);
 }
 
 function parseExtendedTemplateTermsToTemplateTerms (extendedTemplateTerms) {
@@ -187,9 +190,6 @@ function removeNullEvents (events) {
 function encodeCustomTerms (anchorDate, overwrittenAttributes) {
   let overwrittenAttributesMap = '';
   const overwrittenTerms = { ...ZeroTerms, ...overwrittenAttributes };
-
-  // console.log(overwrittenAttributes);
-  // console.log(overwrittenTerms);
 
   LifecycleTerms.forEach((attribute) => {
     // set attributes map

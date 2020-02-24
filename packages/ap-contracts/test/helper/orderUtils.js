@@ -1,31 +1,39 @@
 const Web3Utils = require('web3-utils');
 const Web3EthAbi = require('web3-eth-abi');
 
-const _toTuple = (obj) => {
-  if (!(obj instanceof Object)) { return []; }
-  var output = [];
-  var i = 0;
-  Object.keys(obj).forEach((k) => {
-    if (obj[k] instanceof Object) {
-      output[i] = _toTuple(obj[k]);
-    } else if (obj[k] instanceof Array) {
-      let j1 = 0;
-      let temp1 = [];
-      obj[k].forEach((ak) => {
-        temp1[j1] = _toTuple(obj[k]);
-        j1++;
-      });
-      output[i] = temp1;
-    } else {
-      output[i] = obj[k];
+
+function _encodeParameter (paramType, paramValue) {
+  return Web3EthAbi.encodeParameter(paramType, _toTuple(paramType, paramValue));
+}
+
+function _toTuple(paramType, paramValue) {
+  if (!paramType || paramValue == null || !paramType.name) {
+    throw new Error('Provided paramValues does not match paramType.');
+  }
+
+  const tuple = [];
+
+  if (paramType.type === 'tuple') {
+    if (!paramType.components) {
+      throw new Error('Malformed paramType. Expected key components to exist on type tuple.');
     }
-    i++;
-  });
-  return output;
-};
+    for (const compParamType of paramType.components) {
+      if (!compParamType.name) { throw new Error('Malformed paramValue. Expected key name to  exist.'); }
+      tuple.push(_toTuple(compParamType, paramValue[compParamType.name]));
+    }
+  } else if (paramType.type.includes('[]')) {
+    for (const value of paramValue) {
+      tuple.push(value);
+    }
+  } else {
+    return paramValue;
+  }
+
+  return tuple;
+}
 
 function deriveTemplateId (templateTerms, templateSchedules) {
-  const templateTermsHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
+  const templateTermsHash = Web3Utils.keccak256(_encodeParameter(
     {  
       "components": [
         {
@@ -117,6 +125,14 @@ function deriveTemplateId (templateTerms, templateSchedules) {
           "type": "int256"
         },
         {
+          "name": "periodCap",
+          "type": "int256"
+        },
+        {
+          "name": "periodFloor",
+          "type": "int256"
+        },
+        {
           "components": [
             {
               "name": "i",
@@ -151,20 +167,12 @@ function deriveTemplateId (templateTerms, templateSchedules) {
           ],
           "name": "delinquencyPeriod",
           "type": "tuple"
-        },
-        {
-          "name": "periodCap",
-          "type": "int256"
-        },
-        {
-          "name": "periodFloor",
-          "type": "int256"
         }
       ],
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(templateTerms)
+    templateTerms
   ));
 
   const templateSchedulesHash = Web3Utils.keccak256(Web3EthAbi.encodeParameter(
@@ -212,7 +220,8 @@ function deriveTemplateId (templateTerms, templateSchedules) {
 }
 
 function getCustomTermsHash (customTerms) {
-  return Web3Utils.keccak256(Web3EthAbi.encodeParameter(
+  // console.log(customTerms);
+  return Web3Utils.keccak256(_encodeParameter(
     {
       "components": [
         {
@@ -220,79 +229,221 @@ function getCustomTermsHash (customTerms) {
           "type": "uint256"
         },
         {
-          "name": "notionalPrincipal",
-          "type": "int256"
-        },
-        {
-          "name": "nominalInterestRate",
-          "type": "int256"
-        },
-        {
-          "name": "premiumDiscountAtIED",
-          "type": "int256"
-        },
-        {
-          "name": "rateSpread",
-          "type": "int256"
-        },
-        {
-          "name": "lifeCap",
-          "type": "int256"
-        },
-        {
-          "name": "lifeFloor",
-          "type": "int256"
-        },
-        {
-          "name": "coverageOfCreditEnhancement",
-          "type": "int256"
+          "name": "overwrittenAttributesMap",
+          "type": "uint256"
         },
         {
           "components": [
             {
-              "name": "object",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "name": "creditEventTypeCovered",
+              "type": "uint8"
+            },
+            {
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "name": "marketObjectCodeRateReset",
               "type": "bytes32"
             },
             {
-              "name": "contractReferenceType",
-              "type": "uint8"
+              "name": "statusDate",
+              "type": "uint256"
             },
             {
-              "name": "contractReferenceRole",
-              "type": "uint8"
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "name": "coverageOfCreditEnhancement",
+              "type": "int256"
+            },
+            {
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "name": "object",
+                  "type": "bytes32"
+                },
+                {
+                  "name": "contractReferenceType",
+                  "type": "uint8"
+                },
+                {
+                  "name": "contractReferenceRole",
+                  "type": "uint8"
+                }
+              ],
+              "name": "contractReference_1",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "name": "object",
+                  "type": "bytes32"
+                },
+                {
+                  "name": "contractReferenceType",
+                  "type": "uint8"
+                },
+                {
+                  "name": "contractReferenceRole",
+                  "type": "uint8"
+                }
+              ],
+              "name": "contractReference_2",
+              "type": "tuple"
             }
           ],
-          "name": "contractReference_1",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "name": "object",
-              "type": "bytes32"
-            },
-            {
-              "name": "contractReferenceType",
-              "type": "uint8"
-            },
-            {
-              "name": "contractReferenceRole",
-              "type": "uint8"
-            }
-          ],
-          "name": "contractReference_2",
+          "name": "overwrittenTerms",
           "type": "tuple"
         }
       ],
       "name": "customTerms",
       "type": "tuple"
     },
-    _toTuple(customTerms)
+    customTerms
   ));
 }
 
 function getTermsHash (terms) {
-  return Web3Utils.keccak256(Web3EthAbi.encodeParameter(
+  return Web3Utils.keccak256(_encodeParameter(
     {
       "components": [
         {
@@ -334,42 +485,6 @@ function getTermsHash (terms) {
         {
           "name": "creditEventTypeCovered",
           "type": "uint8"
-        },
-        {
-          "components": [
-            {
-              "name": "object",
-              "type": "bytes32"
-            },
-            {
-              "name": "contractReferenceType",
-              "type": "uint8"
-            },
-            {
-              "name": "contractReferenceRole",
-              "type": "uint8"
-            }
-          ],
-          "name": "contractReference_1",
-          "type": "tuple"
-        },
-        {
-          "components": [
-            {
-              "name": "object",
-              "type": "bytes32"
-            },
-            {
-              "name": "contractReferenceType",
-              "type": "uint8"
-            },
-            {
-              "name": "contractReferenceRole",
-              "type": "uint8"
-            }
-          ],
-          "name": "contractReference_2",
-          "type": "tuple"
         },
         {
           "name": "currency",
@@ -489,6 +604,22 @@ function getTermsHash (terms) {
         },
         {
           "name": "coverageOfCreditEnhancement",
+          "type": "int256"
+        },
+        {
+          "name": "lifeCap",
+          "type": "int256"
+        },
+        {
+          "name": "lifeFloor",
+          "type": "int256"
+        },
+        {
+          "name": "periodCap",
+          "type": "int256"
+        },
+        {
+          "name": "periodFloor",
           "type": "int256"
         },
         {
@@ -638,26 +769,46 @@ function getTermsHash (terms) {
           "type": "tuple"
         },
         {
-          "name": "lifeCap",
-          "type": "int256"
+          "components": [
+            {
+              "name": "object",
+              "type": "bytes32"
+            },
+            {
+              "name": "contractReferenceType",
+              "type": "uint8"
+            },
+            {
+              "name": "contractReferenceRole",
+              "type": "uint8"
+            }
+          ],
+          "name": "contractReference_1",
+          "type": "tuple"
         },
         {
-          "name": "lifeFloor",
-          "type": "int256"
-        },
-        {
-          "name": "periodCap",
-          "type": "int256"
-        },
-        {
-          "name": "periodFloor",
-          "type": "int256"
+          "components": [
+            {
+              "name": "object",
+              "type": "bytes32"
+            },
+            {
+              "name": "contractReferenceType",
+              "type": "uint8"
+            },
+            {
+              "name": "contractReferenceRole",
+              "type": "uint8"
+            }
+          ],
+          "name": "contractReference_2",
+          "type": "tuple"
         }
       ],
       "name": "terms",
       "type": "tuple"
     },
-    _toTuple(terms)
+    terms
   ));
 }
 

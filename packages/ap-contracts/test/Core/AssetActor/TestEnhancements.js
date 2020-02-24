@@ -48,7 +48,7 @@ contract('AssetActor', (accounts) => {
     };
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
+    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor, [counterpartyBeneficiary]);
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
@@ -56,7 +56,7 @@ contract('AssetActor', (accounts) => {
 
     // register template
     ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms, generatingTerms: this.generatingTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
+    this.templateId = await registerTemplateFromTerms(this.instances, this.terms)
 
     snapshot = await createSnapshot();
   });
@@ -72,16 +72,18 @@ contract('AssetActor', (accounts) => {
       counterpartyObligor: ZERO_ADDRESS,
       counterpartyBeneficiary: ZERO_ADDRESS
     };
-    const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate, statusDate: this.terms.statusDate };
+    const termsCEC = {
+      ...CECCollateralTerms, maturityDate: this.terms.maturityDate, statusDate: this.terms.statusDate, contractDealDate: this.terms.contractDealDate
+    };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
-    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(overCollateral);
+    const collateralAmount = (new BigNumber(this.terms.notionalPrincipal)).plus(overCollateral);
     // encode collateralToken and collateralAmount in object of second contract reference
     termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
       this.PaymentTokenInstance.address,
       collateralAmount
     );
-
+  
     const { lifecycleTerms: lifecycleTermsCEC, customTerms: customTermsCEC } = deriveTerms(termsCEC);
     const templateIdCEC = await registerTemplateFromTerms(this.instances, termsCEC);
 
@@ -103,7 +105,7 @@ contract('AssetActor', (accounts) => {
 
     // issue asset
     await this.AssetIssuerInstance.issueFromOrder(orderData, { from: counterpartyBeneficiary });
- 
+
     // counterparty should have paid collateral
     assert.equal(
       (await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary)).toString(),
@@ -154,14 +156,14 @@ contract('AssetActor', (accounts) => {
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
 
     // progress collateral enhancement
-    const stdEvent = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(cecAssetId))
+    const stdEvent = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
 
     // creator should have received seized collateral from custodian
     assert.equal(
       (await this.PaymentTokenInstance.balanceOf(creatorBeneficiary)).toString(),
-      String(this.customTerms.notionalPrincipal)
+      String(this.terms.notionalPrincipal)
     );
     // custodian should have not executed amount (overcollateral) left
     assert.equal(

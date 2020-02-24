@@ -130,8 +130,8 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
 
         }
         if (customTerms.overwrittenTerms.contractReference_2.object != bytes32(0)) {
-            assets[assetId].packedTermsState[36] = bytes32(customTerms.overwrittenTerms.contractReference_2.object);
-            assets[assetId].packedTermsState[37] =
+            assets[assetId].packedTermsState[38] = bytes32(customTerms.overwrittenTerms.contractReference_2.object);
+            assets[assetId].packedTermsState[39] =
                 bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceType)) << 16 |
                 bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceRole)) << 8;
 
