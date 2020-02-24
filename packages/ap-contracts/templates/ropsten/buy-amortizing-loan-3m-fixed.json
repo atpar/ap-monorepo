@@ -1,13 +1,13 @@
 {
-    "templateId": "0x9402c00870c8d61479b275c52b9dcd572f323f4600bdd19e67d52cdc20cb1002",
+    "templateId": "0xf2b6b699b7a097d99f872ef6ca59d973763dced2dee0d673e2d2e499af8fe241",
     "productPresetId": "",
-    "name": "Seller 2W-Bond",
-    "label": "Seller 2-Weeks Coupon-Bearing Bond",
-    "description": "This is a 2-weeks fixed-rate coupon-bearing bond with full amortization at maturity. The issuer of the instrument takes the borrower-side.",
+    "name": "Buyer 3M-Amortizing Loan",
+    "label": "Buyer 3-Month Coupon-Bearing Amortizing Loan",
+    "description": "This is a 3-month fixed-rate coupon-bearing loan with weekly amortization. The issuer of the instrument takes the lender-side.",
     "extendedTemplateTerms": {
-        "contractType": 0,
+        "contractType": 1,
         "calendar": 0,
-        "contractRole": 1,
+        "contractRole": 0,
         "dayCountConvention": 0,
         "businessDayConvention": 0,
         "endOfMonthConvention": 0,
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x7F047518e36af0c42164B996aBe70d88Cd5A9d5C",
+        "currency": "0x8f12a7B4d25f5d67f5f7d6B8E11067Fa3A40B806",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -23,15 +23,15 @@
         "contractDealDateOffset": 1,
         "statusDateOffset": 1,
         "initialExchangeDateOffset": 1,
-        "maturityDateOffset": 1209600,
+        "maturityDateOffset": 7890000,
         "terminationDateOffset": 0,
         "purchaseDateOffset": 0,
         "capitalizationEndDateOffset": 0,
-        "cycleAnchorDateOfInterestPaymentOffset": 86400,
+        "cycleAnchorDateOfInterestPaymentOffset": 604800,
         "cycleAnchorDateOfRateResetOffset": 0,
         "cycleAnchorDateOfScalingIndexOffset": 0,
         "cycleAnchorDateOfFeeOffset": 0,
-        "cycleAnchorDateOfPrincipalRedemptionOffset": 0,
+        "cycleAnchorDateOfPrincipalRedemptionOffset": 604800,
         "feeAccrued": 0,
         "accruedInterest": 0,
         "rateMultiplier": 0,
@@ -40,11 +40,9 @@
         "penaltyRate": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
-        "periodCap": 0,
-        "periodFloor": 0,
         "cycleOfInterestPayment": {
             "i": 1,
-            "p": 0,
+            "p": 1,
             "s": 0,
             "isSet": true
         },
@@ -67,10 +65,10 @@
             "isSet": false
         },
         "cycleOfPrincipalRedemption": {
-            "i": 0,
-            "p": 0,
+            "i": 1,
+            "p": 1,
             "s": 0,
-            "isSet": false
+            "isSet": true
         },
         "gracePeriod": {
             "i": 0,
@@ -81,6 +79,8 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        }
+        },
+        "periodCap": 0,
+        "periodFloor": 0
     }
 }

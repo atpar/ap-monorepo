@@ -1,21 +1,21 @@
 {
-    "templateId": "0x9402c00870c8d61479b275c52b9dcd572f323f4600bdd19e67d52cdc20cb1002",
+    "templateId": "0x248b3eee9d204ecca624c185d6faa88886f75d17e9ad301faed04e407d4160b6",
     "productPresetId": "",
-    "name": "Seller 2W-Bond",
-    "label": "Seller 2-Weeks Coupon-Bearing Bond",
-    "description": "This is a 2-weeks fixed-rate coupon-bearing bond with full amortization at maturity. The issuer of the instrument takes the borrower-side.",
+    "name": "Buyer 3M CDS",
+    "label": "Buyer 3-Months Single-Entity Credit Default Swap",
+    "description": "This is a 3-months single-entity credit default swap with monthly fee payments. The issuer of the instrument takes the protection buyer-side.",
     "extendedTemplateTerms": {
-        "contractType": 0,
+        "contractType": 16,
         "calendar": 0,
-        "contractRole": 1,
+        "contractRole": 7,
         "dayCountConvention": 0,
         "businessDayConvention": 0,
         "endOfMonthConvention": 0,
         "scalingEffect": 0,
         "penaltyType": 0,
-        "feeBasis": 0,
-        "creditEventTypeCovered": 0,
-        "currency": "0x7F047518e36af0c42164B996aBe70d88Cd5A9d5C",
+        "feeBasis": 1,
+        "creditEventTypeCovered": 3,
+        "currency": "0x8f12a7B4d25f5d67f5f7d6B8E11067Fa3A40B806",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -23,14 +23,14 @@
         "contractDealDateOffset": 1,
         "statusDateOffset": 1,
         "initialExchangeDateOffset": 1,
-        "maturityDateOffset": 1209600,
+        "maturityDateOffset": 7890000,
         "terminationDateOffset": 0,
-        "purchaseDateOffset": 0,
+        "purchaseDateOffset": 1,
         "capitalizationEndDateOffset": 0,
-        "cycleAnchorDateOfInterestPaymentOffset": 86400,
+        "cycleAnchorDateOfInterestPaymentOffset": 0,
         "cycleAnchorDateOfRateResetOffset": 0,
         "cycleAnchorDateOfScalingIndexOffset": 0,
-        "cycleAnchorDateOfFeeOffset": 0,
+        "cycleAnchorDateOfFeeOffset": 2630000,
         "cycleAnchorDateOfPrincipalRedemptionOffset": 0,
         "feeAccrued": 0,
         "accruedInterest": 0,
@@ -40,13 +40,11 @@
         "penaltyRate": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
-        "periodCap": 0,
-        "periodFloor": 0,
         "cycleOfInterestPayment": {
-            "i": 1,
+            "i": 0,
             "p": 0,
             "s": 0,
-            "isSet": true
+            "isSet": false
         },
         "cycleOfRateReset": {
             "i": 0,
@@ -61,8 +59,8 @@
             "isSet": false
         },
         "cycleOfFee": {
-            "i": 0,
-            "p": 0,
+            "i": 1,
+            "p": 2,
             "s": 0,
             "isSet": false
         },
@@ -81,6 +79,8 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        }
+        },
+        "periodCap": 0,
+        "periodFloor": 0
     }
 }

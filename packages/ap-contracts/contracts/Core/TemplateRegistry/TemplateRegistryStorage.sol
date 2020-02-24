@@ -17,7 +17,7 @@ contract TemplateRegistryStorage is SharedTypes {
         bool isSet;
     }
 
-    mapping (bytes32 => Template) templates;
+    mapping (bytes32 => Template) public templates;
 
 
     function setTemplate(

@@ -21,6 +21,8 @@ export class ITemplateRegistry extends Contract {
   );
   clone(): ITemplateRegistry;
   methods: {
+    templates(arg0: string | number[]): TransactionObject<boolean>;
+
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;

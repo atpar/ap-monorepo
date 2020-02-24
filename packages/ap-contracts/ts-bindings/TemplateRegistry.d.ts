@@ -21,6 +21,8 @@ export class TemplateRegistry extends Contract {
   );
   clone(): TemplateRegistry;
   methods: {
+    templates(arg0: string | number[]): TransactionObject<boolean>;
+
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;

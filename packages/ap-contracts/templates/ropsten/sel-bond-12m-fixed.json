@@ -1,9 +1,9 @@
 {
-    "templateId": "0x9402c00870c8d61479b275c52b9dcd572f323f4600bdd19e67d52cdc20cb1002",
+    "templateId": "0xe31be64b043b4b90f12878279263928a28e4cd3aa99882bf9747287509aa91f4",
     "productPresetId": "",
-    "name": "Seller 2W-Bond",
-    "label": "Seller 2-Weeks Coupon-Bearing Bond",
-    "description": "This is a 2-weeks fixed-rate coupon-bearing bond with full amortization at maturity. The issuer of the instrument takes the borrower-side.",
+    "name": "Seller 12M-Bond",
+    "label": "Seller 12-Month Coupon-Bearing Bond",
+    "description": "This is a 12-month fixed-rate coupon-bearing bond with full amortization at maturity. The issuer of the instrument takes the borrower-side.",
     "extendedTemplateTerms": {
         "contractType": 0,
         "calendar": 0,
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x7F047518e36af0c42164B996aBe70d88Cd5A9d5C",
+        "currency": "0x8f12a7B4d25f5d67f5f7d6B8E11067Fa3A40B806",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -23,11 +23,11 @@
         "contractDealDateOffset": 1,
         "statusDateOffset": 1,
         "initialExchangeDateOffset": 1,
-        "maturityDateOffset": 1209600,
+        "maturityDateOffset": 31560000,
         "terminationDateOffset": 0,
         "purchaseDateOffset": 0,
         "capitalizationEndDateOffset": 0,
-        "cycleAnchorDateOfInterestPaymentOffset": 86400,
+        "cycleAnchorDateOfInterestPaymentOffset": 2630000,
         "cycleAnchorDateOfRateResetOffset": 0,
         "cycleAnchorDateOfScalingIndexOffset": 0,
         "cycleAnchorDateOfFeeOffset": 0,
@@ -40,11 +40,9 @@
         "penaltyRate": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
-        "periodCap": 0,
-        "periodFloor": 0,
         "cycleOfInterestPayment": {
             "i": 1,
-            "p": 0,
+            "p": 2,
             "s": 0,
             "isSet": true
         },
@@ -81,6 +79,8 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        }
+        },
+        "periodCap": 0,
+        "periodFloor": 0
     }
 }

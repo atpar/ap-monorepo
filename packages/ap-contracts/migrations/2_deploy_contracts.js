@@ -94,7 +94,9 @@ module.exports = async (deployer, network) => {
     ? '../templates/ap-chain/'
     : (network === 'goerli')
       ? '../templates/goerli/'
-      : null;
+      : (network === 'ropsten')
+        ? '../templates/ropsten/'
+        : null;
 
   if (!pathToTemplates) { return; } 
 
