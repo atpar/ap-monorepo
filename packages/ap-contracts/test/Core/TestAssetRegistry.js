@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getComplexTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms, ZERO_BYTES32 } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -25,7 +25,19 @@ contract('AssetRegistry', (accounts) => {
 
     this.assetId = 'C123';
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { ...getComplexTerms() };
+    this.terms = {
+      ...getComplexTerms(),
+      contractReference_1: {
+        object: ZERO_BYTES32,
+        contractReferenceType: 0,
+        contractReferenceRole: 0
+      },
+      contractReference_2: {
+        object: ZERO_BYTES32,
+        contractReferenceType: 0,
+        contractReferenceRole: 0
+      },
+    };
 
     this.overwrittenAttributeValues = {
       calendar: '0',
@@ -36,7 +48,7 @@ contract('AssetRegistry', (accounts) => {
       scalingEffect: '5',
       penaltyType: '3',
       feeBasis: '0',
-      // creditEventTypeCovered: '3', // todo fix convertion from binary string to hex
+      creditEventTypeCovered: '3',
       notionalPrincipal: web3.utils.toWei('22'),
       nominalInterestRate: web3.utils.toWei('3.5'),
       periodFloor: '10'
@@ -44,8 +56,6 @@ contract('AssetRegistry', (accounts) => {
 
     this.customTerms = encodeCustomTerms(
       this.terms.contractDealDate,
-      this.terms.contractReference_1,
-      this.terms.contractReference_2,
       this.overwrittenAttributeValues
     );
 

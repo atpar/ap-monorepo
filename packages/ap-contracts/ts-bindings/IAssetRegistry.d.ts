@@ -63,18 +63,60 @@ export class IAssetRegistry extends Contract {
       },
       terms: {
         anchorDate: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         overwrittenAttributesMap: number | string;
-        packedAttributeValues: (string | number[])[];
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
       }
     ): TransactionObject<{
       calendar: string;
@@ -390,18 +432,60 @@ export class IAssetRegistry extends Contract {
       templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         overwrittenAttributesMap: number | string;
-        packedAttributeValues: (string | number[])[];
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
       },
       state: {
         contractPerformance: number | string;

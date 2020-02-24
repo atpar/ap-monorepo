@@ -21,6 +21,8 @@ export class AssetActor extends Contract {
   );
   clone(): AssetActor;
   methods: {
+    marketObjectRegistry(): TransactionObject<string>;
+
     deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
       templateTerms: {
         calendar: number | string;
@@ -63,18 +65,60 @@ export class AssetActor extends Contract {
       },
       terms: {
         anchorDate: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         overwrittenAttributesMap: number | string;
-        packedAttributeValues: (string | number[])[];
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
       }
     ): TransactionObject<{
       calendar: string;
@@ -153,6 +197,8 @@ export class AssetActor extends Contract {
 
     isOwner(): TransactionObject<boolean>;
 
+    assetRegistry(): TransactionObject<string>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       terms: {
@@ -206,6 +252,8 @@ export class AssetActor extends Contract {
       }
     ): TransactionObject<string>;
 
+    templateRegistry(): TransactionObject<string>;
+
     PRECISION(): TransactionObject<string>;
 
     encodeEvent(
@@ -230,18 +278,60 @@ export class AssetActor extends Contract {
       templateId: string | number[],
       customTerms: {
         anchorDate: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         overwrittenAttributesMap: number | string;
-        packedAttributeValues: (string | number[])[];
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
       },
       engineAddress: string
     ): TransactionObject<boolean>;

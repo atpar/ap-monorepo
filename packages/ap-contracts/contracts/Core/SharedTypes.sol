@@ -76,16 +76,11 @@ contract SharedTypes is ACTUSTypes {
 
     struct CustomTerms {
         uint256 anchorDate;
-        ContractReference contractReference_1;
-        ContractReference contractReference_2;
         // set of boolean values, true indicating that attribute is overwritten,
-        // bit position from right to left in uint256 := position in lifecycleTerms (excluding contractReferences)
+        // bit position from right to left in uint256 := position in lifecycleTerms (contractReference are always overwritten)
         // e.g. 0010110000...
         uint256 overwrittenAttributesMap;
-        // array of tightly packed attribute values encoded as bytes32, sorted after position in lifecycleTerms
-        // IP is encoded as a tightly packed bytes32 (uint64 i, uint8 p, boolean isSet)
-        // position from left to right in array := position in lifecycleTerms (excluding contractReferences)
-        // e.g. 0x000...0|0x000...0|0x0003da...|0x000...0|0x5ab3...|0xfff3...|...
-        bytes32[] packedAttributeValues;
+        // terms object containing overwritten values
+        LifecycleTerms overwrittenTerms;
     }
 }

@@ -61,17 +61,17 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(draft.termsHash, block.timestamp));
 
         // check if first contract reference in terms references an underlying asset
-        if (draft.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+        if (draft.customTerms.overwrittenTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
             require(
-                draft.customTerms.contractReference_1.object != bytes32(0),
+                draft.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
                 "AssetIssuer.finalizeDraft: INVALID_OBJECT"
             );
         }
 
         // check if second contract reference in terms contains a reference to collateral
-        if (draft.customTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+        if (draft.customTerms.overwrittenTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
             require(
-                draft.customTerms.contractReference_2.object != bytes32(0),
+                draft.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
                 "AssetIssuer.finalizeDraft: INVALID_OBJECT"
             );
 
@@ -83,7 +83,7 @@ contract AssetIssuer is
             );
 
             // derive underlying assetId
-            bytes32 underlyingAssetId = draft.customTerms.contractReference_1.object;
+            bytes32 underlyingAssetId = draft.customTerms.overwrittenTerms.contractReference_1.object;
             // get terms and ownership of referenced underlying asset
             LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
             AssetOwnership memory underlyingOwnership = assetRegistry.getOwnership(underlyingAssetId);
@@ -199,17 +199,17 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature));
 
         // check if first contract reference in terms references an underlying asset
-        if (order.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+        if (order.customTerms.overwrittenTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
             require(
-                order.customTerms.contractReference_1.object != bytes32(0),
+                order.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
                 "AssetIssuer.finalizeOrder: INVALID_OBJECT"
             );
         }
 
         // check if second contract reference in terms contains a reference to collateral
-        if (order.customTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+        if (order.customTerms.overwrittenTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
             require(
-                order.customTerms.contractReference_2.object != bytes32(0),
+                order.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
                 "AssetIssuer.finalizeOrder: INVALID_OBJECT"
             );
 
@@ -221,7 +221,7 @@ contract AssetIssuer is
             );
 
             // derive underlying assetId
-            bytes32 underlyingAssetId = order.customTerms.contractReference_1.object;
+            bytes32 underlyingAssetId = order.customTerms.overwrittenTerms.contractReference_1.object;
             // get terms and ownership of referenced underlying asset
             LifecycleTerms memory underlyingTerms = assetRegistry.getTerms(underlyingAssetId);
             AssetOwnership memory underlyingOwnership = assetRegistry.getOwnership(underlyingAssetId);
@@ -272,15 +272,15 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(enhancementOrder.creatorSignature, enhancementOrder.counterpartySignature));
 
         // check if first contract reference in enhancement terms references an underlying asset
-        if (enhancementOrder.customTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
+        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE) {
             // derive assetId of underlying and set as object in the first contract reference
-            enhancementOrder.customTerms.contractReference_1.object = keccak256(
+            enhancementOrder.customTerms.overwrittenTerms.contractReference_1.object = keccak256(
                 abi.encode(order.creatorSignature, order.counterpartySignature)
             );
         }
 
         // check if second contract reference in enhancement terms contain a reference to collateral
-        if (enhancementOrder.customTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
+        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_2.contractReferenceRole == ContractReferenceRole.CVI) {
             // derive assetId
             assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature, address(custodian)));
 

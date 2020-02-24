@@ -68,20 +68,73 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
     function encodeAndSetTerms(bytes32 assetId, CustomTerms memory customTerms) internal {
         if (customTerms.anchorDate != uint256(0)) assets[assetId].packedTermsState[1] = bytes32(customTerms.anchorDate);
 
-        // tightly pack contractReferences
-        assets[assetId].packedTermsState[2] = bytes32(customTerms.contractReference_1.object);
-        assets[assetId].packedTermsState[3] =
-            bytes32(uint256(customTerms.contractReference_1.contractReferenceType)) << 16 |
-            bytes32(uint256(customTerms.contractReference_1.contractReferenceRole)) << 8;
-        assets[assetId].packedTermsState[4] = bytes32(customTerms.contractReference_2.object);
-        assets[assetId].packedTermsState[5] =
-            bytes32(uint256(customTerms.contractReference_2.contractReferenceType)) << 16 |
-            bytes32(uint256(customTerms.contractReference_2.contractReferenceRole)) << 8;
+        bytes32 enums =
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.calendar))) << 240 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.contractRole))) << 232 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.dayCountConvention))) << 224 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.businessDayConvention))) << 216 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.endOfMonthConvention))) << 208 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.scalingEffect))) << 200 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.penaltyType))) << 192 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.feeBasis))) << 184 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.creditEventTypeCovered))) << 176;
 
-        // store overwritten attribute values (35 - enums (+ tightly packed) - contractReferences)
-        for (uint256 i = 0; i < 25; i++) {
-            if (customTerms.packedAttributeValues[i] == bytes32(0)) { continue; }
-            assets[assetId].packedTermsState[uint8(i + 10)] = customTerms.packedAttributeValues[i];
+        if (enums != bytes32(0)) assets[assetId].packedTermsState[2] = enums;
+
+        if (customTerms.overwrittenTerms.currency != address(0)) assets[assetId].packedTermsState[4] = bytes32(uint256(customTerms.overwrittenTerms.currency) << 96);
+        if (customTerms.overwrittenTerms.settlementCurrency != address(0)) assets[assetId].packedTermsState[5] = bytes32(uint256(customTerms.overwrittenTerms.settlementCurrency) << 96);
+
+        if (customTerms.overwrittenTerms.marketObjectCodeRateReset != bytes32(0)) assets[assetId].packedTermsState[6] = bytes32(customTerms.overwrittenTerms.marketObjectCodeRateReset);
+
+        if (customTerms.overwrittenTerms.statusDate != uint256(0)) assets[assetId].packedTermsState[7] = bytes32(customTerms.overwrittenTerms.statusDate);
+        if (customTerms.overwrittenTerms.maturityDate != uint256(0)) assets[assetId].packedTermsState[8] = bytes32(customTerms.overwrittenTerms.maturityDate);
+
+        if (customTerms.overwrittenTerms.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[17] = bytes32(customTerms.overwrittenTerms.notionalPrincipal);
+        if (customTerms.overwrittenTerms.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[18] = bytes32(customTerms.overwrittenTerms.nominalInterestRate);
+        if (customTerms.overwrittenTerms.feeAccrued != int256(0)) assets[assetId].packedTermsState[19] = bytes32(customTerms.overwrittenTerms.feeAccrued);
+        if (customTerms.overwrittenTerms.accruedInterest != int256(0)) assets[assetId].packedTermsState[20] = bytes32(customTerms.overwrittenTerms.accruedInterest);
+        if (customTerms.overwrittenTerms.rateMultiplier != int256(0)) assets[assetId].packedTermsState[21] = bytes32(customTerms.overwrittenTerms.rateMultiplier);
+        if (customTerms.overwrittenTerms.rateSpread != int256(0)) assets[assetId].packedTermsState[22] = bytes32(customTerms.overwrittenTerms.rateSpread);
+        if (customTerms.overwrittenTerms.feeRate != int256(0)) assets[assetId].packedTermsState[23] = bytes32(customTerms.overwrittenTerms.feeRate);
+        if (customTerms.overwrittenTerms.nextResetRate != int256(0)) assets[assetId].packedTermsState[24] = bytes32(customTerms.overwrittenTerms.nextResetRate);
+        if (customTerms.overwrittenTerms.penaltyRate != int256(0)) assets[assetId].packedTermsState[25] = bytes32(customTerms.overwrittenTerms.penaltyRate);
+        if (customTerms.overwrittenTerms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[26] = bytes32(customTerms.overwrittenTerms.premiumDiscountAtIED);
+        if (customTerms.overwrittenTerms.priceAtPurchaseDate != int256(0)) assets[assetId].packedTermsState[27] = bytes32(customTerms.overwrittenTerms.priceAtPurchaseDate);
+        // solium-disable-next-line
+        if (customTerms.overwrittenTerms.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[28] = bytes32(customTerms.overwrittenTerms.nextPrincipalRedemptionPayment);
+        // solium-disable-next-line
+        if (customTerms.overwrittenTerms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[29] = bytes32(customTerms.overwrittenTerms.coverageOfCreditEnhancement);
+        if (customTerms.overwrittenTerms.lifeCap != int256(0)) assets[assetId].packedTermsState[30] = bytes32(customTerms.overwrittenTerms.lifeCap);
+        if (customTerms.overwrittenTerms.lifeFloor != int256(0)) assets[assetId].packedTermsState[31] = bytes32(customTerms.overwrittenTerms.lifeFloor);
+        if (customTerms.overwrittenTerms.periodCap != int256(0)) assets[assetId].packedTermsState[32] = bytes32(customTerms.overwrittenTerms.periodCap);
+        if (customTerms.overwrittenTerms.periodFloor != int256(0)) assets[assetId].packedTermsState[33] = bytes32(customTerms.overwrittenTerms.periodFloor);
+
+        if (customTerms.overwrittenTerms.gracePeriod.isSet) {
+            assets[assetId].packedTermsState[34] =
+                bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.i)) << 24 |
+                bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.p)) << 16 |
+                bytes32(uint256(1)) << 8;
+        }
+        if (customTerms.overwrittenTerms.delinquencyPeriod.isSet) {
+            assets[assetId].packedTermsState[35] =
+                bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.i)) << 24 |
+                bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.p)) << 16 |
+                bytes32(uint256(1)) << 8;
+        }
+
+        if (customTerms.overwrittenTerms.contractReference_1.object != bytes32(0)) {
+            assets[assetId].packedTermsState[36] = bytes32(customTerms.overwrittenTerms.contractReference_1.object);
+            assets[assetId].packedTermsState[37] =
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.contractReferenceType)) << 16 |
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.contractReferenceRole)) << 8;
+
+        }
+        if (customTerms.overwrittenTerms.contractReference_2.object != bytes32(0)) {
+            assets[assetId].packedTermsState[36] = bytes32(customTerms.overwrittenTerms.contractReference_2.object);
+            assets[assetId].packedTermsState[37] =
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceType)) << 16 |
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceRole)) << 8;
+
         }
     }
 
@@ -133,28 +186,69 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         // load templateTerms from TemplateRegistry
         TemplateTerms memory templateTerms = templateRegistry.getTemplateTerms(assets[assetId].templateId);
 
-        // load overwritten attributes from mapping into array
-        bytes32[] memory packedOverwrittenValues = new bytes32[](25);
-        for (uint256 i = 0; i < 25; i++) {
-            packedOverwrittenValues[i] = assets[assetId].packedTermsState[uint8(i + 10)];
-        }
-
         CustomTerms memory customTerms = CustomTerms(
             // load anchorDate
             uint256(assets[assetId].packedTermsState[1]),
-            // decode contractReferences
-            ContractReference(
-                assets[assetId].packedTermsState[2],
-                ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[3] >> 16))),
-                ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[3] >> 8)))
-            ),
-            ContractReference(
-                assets[assetId].packedTermsState[4],
-                ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[5] >> 16))),
-                ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[5] >> 8)))
-            ),
+            // laod map of overwritten attributes
             assets[assetId].overwrittenAttributesMap,
-            packedOverwrittenValues
+            // load overwritten values
+            LifecycleTerms(
+                Calendar(uint8(uint256(assets[assetId].packedTermsState[2] >> 240))),
+                ContractRole(uint8(uint256(assets[assetId].packedTermsState[2] >> 232))),
+                DayCountConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 224))),
+                BusinessDayConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 216))),
+                EndOfMonthConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 208))),
+                ScalingEffect(uint8(uint256(assets[assetId].packedTermsState[2] >> 200))),
+                PenaltyType(uint8(uint256(assets[assetId].packedTermsState[2] >> 192))),
+                FeeBasis(uint8(uint256(assets[assetId].packedTermsState[2] >> 184))),
+                ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[2] >> 176))),
+
+                address(uint160(uint256(assets[assetId].packedTermsState[4]) >> 96)),
+                address(uint160(uint256(assets[assetId].packedTermsState[5]) >> 96)),
+
+                assets[assetId].packedTermsState[6],
+
+                uint256(assets[assetId].packedTermsState[7]),
+                uint256(assets[assetId].packedTermsState[8]),
+                int256(assets[assetId].packedTermsState[17]),
+                int256(assets[assetId].packedTermsState[18]),
+                int256(assets[assetId].packedTermsState[19]),
+                int256(assets[assetId].packedTermsState[20]),
+                int256(assets[assetId].packedTermsState[21]),
+                int256(assets[assetId].packedTermsState[22]),
+                int256(assets[assetId].packedTermsState[23]),
+                int256(assets[assetId].packedTermsState[24]),
+                int256(assets[assetId].packedTermsState[25]),
+                int256(assets[assetId].packedTermsState[26]),
+                int256(assets[assetId].packedTermsState[27]),
+                int256(assets[assetId].packedTermsState[28]),
+                int256(assets[assetId].packedTermsState[29]),
+                int256(assets[assetId].packedTermsState[30]),
+                int256(assets[assetId].packedTermsState[31]),
+                int256(assets[assetId].packedTermsState[32]),
+                int256(assets[assetId].packedTermsState[33]),
+
+                IP(
+                    uint256(assets[assetId].packedTermsState[34] >> 24),
+                    P(uint8(uint256(assets[assetId].packedTermsState[34] >> 16))),
+                    (assets[assetId].packedTermsState[34] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                ),
+                IP(
+                    uint256(assets[assetId].packedTermsState[35] >> 24),
+                    P(uint8(uint256(assets[assetId].packedTermsState[35] >> 16))),
+                    (assets[assetId].packedTermsState[35] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                ),
+                ContractReference(
+                    assets[assetId].packedTermsState[36],
+                    ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[37] >> 16))),
+                    ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[37] >> 8)))
+                ),
+                ContractReference(
+                    assets[assetId].packedTermsState[38],
+                    ContractReferenceType(uint8(uint256(assets[assetId].packedTermsState[39] >> 16))),
+                    ContractReferenceRole(uint8(uint256(assets[assetId].packedTermsState[39] >> 8)))
+                )
+            )
         );
 
         // derive lifecycleTerms
