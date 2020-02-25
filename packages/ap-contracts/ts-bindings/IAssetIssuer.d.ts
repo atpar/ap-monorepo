@@ -48,7 +48,6 @@ export class IAssetIssuer extends Contract {
           contractReferenceRole: number | string;
         };
       };
-      expirationDate: number | string;
       ownership: {
         creatorObligor: string;
         creatorBeneficiary: string;

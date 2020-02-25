@@ -12,7 +12,6 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
         bytes32 termsHash;
         bytes32 templateId;
         CustomTerms customTerms;
-        uint256 expirationDate;
         AssetOwnership ownership;
         address engine;
         address actor;

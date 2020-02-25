@@ -929,7 +929,6 @@ function getDefaultDraftData(terms, templateId, customTerms, ownership, engine, 
     termsHash: getTermsHash(terms),
     templateId: Web3Utils.toHex(templateId),
     customTerms: customTerms,
-    expirationDate: '10000000000',
     ownership: ownership,
     engine: engine,
     actor: actor
