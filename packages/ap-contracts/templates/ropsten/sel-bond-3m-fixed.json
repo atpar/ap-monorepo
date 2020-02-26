@@ -1,5 +1,5 @@
 {
-    "templateId": "0x926d1e3884135bb1f28ae898c01791962a4cc0d4f63479eb9a2539791e01c651",
+    "templateId": "0xc5c2c4b5d5864fef2b96b372b020fbaaaa317ebe824d089ae60ee79937767c03",
     "productPresetId": "",
     "name": "Seller 3M-Bond",
     "label": "Seller 3-Month Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x8f12a7B4d25f5d67f5f7d6B8E11067Fa3A40B806",
+        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -32,14 +32,23 @@
         "cycleAnchorDateOfScalingIndexOffset": 0,
         "cycleAnchorDateOfFeeOffset": 0,
         "cycleAnchorDateOfPrincipalRedemptionOffset": 0,
+        "notionalPrincipal": 0,
+        "nominalInterestRate": 0,
         "feeAccrued": 0,
         "accruedInterest": 0,
         "rateMultiplier": 0,
+        "rateSpread": 0,
         "feeRate": 0,
         "nextResetRate": 0,
         "penaltyRate": 0,
+        "premiumDiscountAtIED": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
+        "coverageOfCreditEnhancement": 0,
+        "lifeCap": 0,
+        "lifeFloor": 0,
+        "periodCap": 0,
+        "periodFloor": 0,
         "cycleOfInterestPayment": {
             "i": 1,
             "p": 2,
@@ -79,8 +88,6 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        },
-        "periodCap": 0,
-        "periodFloor": 0
+        }
     }
 }
