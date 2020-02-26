@@ -100,14 +100,6 @@ contract VerifyOrder is SharedTypes {
         return keccak256(abi.encode(terms));
     }
 
-    function hashSchedules(TemplateSchedules memory templateSchedules)
-        internal
-        pure
-        returns (bytes32)
-    {
-        return keccak256(abi.encode(templateSchedules));
-    }
-
     function hashOwnership(AssetOwnership memory ownership)
         internal
         pure

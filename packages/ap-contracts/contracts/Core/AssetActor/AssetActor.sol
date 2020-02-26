@@ -111,6 +111,7 @@ contract AssetActor is
 
         // revert if the scheduleTime of the next event is in the future
         require(
+            // solium-disable-next-line
             scheduleTime <= block.timestamp,
             "AssetActor.progress: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
@@ -207,6 +208,7 @@ contract AssetActor is
 
         // if anchorDate is not set, use block.timestamp
         if (customTerms.anchorDate == uint256(0)) {
+            // solium-disable-next-line
             customTerms.anchorDate = block.timestamp;
         }
 
@@ -315,10 +317,7 @@ contract AssetActor is
         if (isUnscheduledEventType(eventType)) return;
 
         // increment schedule index by deriving schedule index from the event type
-        assetRegistry.incrementScheduleIndex(
-            assetId,
-            deriveScheduleIndexFromEventType(eventType)
-        );
+        assetRegistry.incrementScheduleIndex(assetId);
     }
 
     /**
@@ -344,6 +343,7 @@ contract AssetActor is
             if (isSet) return bytes32(resetRate);
         } else if (eventType == EventType.CE) {
             // get current timestamp
+            // solium-disable-next-line
             return bytes32(block.timestamp);
         } else if (eventType == EventType.XD) {
             // get the remaining notionalPrincipal from the underlying

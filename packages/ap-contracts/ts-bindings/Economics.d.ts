@@ -343,15 +343,9 @@ export class Economics extends Contract {
 
     getNextEvent(assetId: string | number[]): TransactionObject<string>;
 
-    getScheduleIndex(
-      assetId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<string>;
+    getScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
-    incrementScheduleIndex(
-      assetId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<void>;
+    incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
 
     setState(
       assetId: string | number[],
@@ -394,11 +388,9 @@ export class Economics extends Contract {
   events: {
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
-      scheduleId: string;
       scheduleIndex: string;
       0: string;
       1: string;
-      2: string;
     }>;
     UpdatedState: ContractEvent<{
       assetId: string;

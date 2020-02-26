@@ -27,8 +27,4 @@ contract ScheduleUtils is SharedTypes {
 
         return false;
     }
-
-    function deriveScheduleIndexFromEventType(EventType eventType) internal pure returns (uint8) {
-        return (isCyclicEventType(eventType) ? uint8(eventType) : NON_CYCLIC_INDEX);
-    }
 }

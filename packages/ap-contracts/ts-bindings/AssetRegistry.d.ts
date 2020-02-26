@@ -79,11 +79,6 @@ export class AssetRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
-    incrementScheduleIndex(
-      assetId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<void>;
-
     setCounterpartyBeneficiary(
       assetId: string | number[],
       newCounterpartyBeneficiary: string
@@ -250,6 +245,8 @@ export class AssetRegistry extends Contract {
       executionAmount: string;
     }>;
 
+    incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
+
     getActorAddress(assetId: string | number[]): TransactionObject<string>;
 
     getNextEvent(assetId: string | number[]): TransactionObject<string>;
@@ -395,10 +392,7 @@ export class AssetRegistry extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
-    getScheduleIndex(
-      assetId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<string>;
+    getScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -528,11 +522,9 @@ export class AssetRegistry extends Contract {
     }>;
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
-      scheduleId: string;
       scheduleIndex: string;
       0: string;
       1: string;
-      2: string;
     }>;
     UpdatedState: ContractEvent<{
       assetId: string;
