@@ -1,5 +1,5 @@
 {
-    "templateId": "0x0a0a54614ec1ce36a5689086f8fe68933b9589a36466b74d3a53f1b29a52a46d",
+    "templateId": "0x560bc24a7b3ca9cecbf0adf97a742616f1f2084c0b6999d6017c32f2499bbacc",
     "productPresetId": "",
     "name": "Buyer 3M CDS",
     "label": "Buyer 3-Months Single-Entity Credit Default Swap",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 3,
-        "currency": "0x7F047518e36af0c42164B996aBe70d88Cd5A9d5C",
+        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -32,14 +32,23 @@
         "cycleAnchorDateOfScalingIndexOffset": 0,
         "cycleAnchorDateOfFeeOffset": 0,
         "cycleAnchorDateOfPrincipalRedemptionOffset": 0,
+        "notionalPrincipal": 0,
+        "nominalInterestRate": 0,
         "feeAccrued": 0,
         "accruedInterest": 0,
         "rateMultiplier": 0,
+        "rateSpread": 0,
         "feeRate": 0,
         "nextResetRate": 0,
         "penaltyRate": 0,
+        "premiumDiscountAtIED": 0,
         "priceAtPurchaseDate": 0,
         "nextPrincipalRedemptionPayment": 0,
+        "coverageOfCreditEnhancement": 0,
+        "lifeCap": 0,
+        "lifeFloor": 0,
+        "periodCap": 0,
+        "periodFloor": 0,
         "cycleOfInterestPayment": {
             "i": 0,
             "p": 0,
@@ -79,8 +88,6 @@
             "i": 0,
             "p": 0,
             "isSet": false
-        },
-        "periodCap": 0,
-        "periodFloor": 0
+        }
     }
 }

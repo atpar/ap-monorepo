@@ -44,18 +44,25 @@ export class ITemplateRegistry extends Contract {
       marketObjectCodeRateReset: string;
       statusDateOffset: string;
       maturityDateOffset: string;
+      notionalPrincipal: string;
+      nominalInterestRate: string;
       feeAccrued: string;
       accruedInterest: string;
       rateMultiplier: string;
+      rateSpread: string;
       feeRate: string;
       nextResetRate: string;
       penaltyRate: string;
+      premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
       nextPrincipalRedemptionPayment: string;
-      gracePeriod: { i: string; p: string; isSet: boolean };
-      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      coverageOfCreditEnhancement: string;
+      lifeCap: string;
+      lifeFloor: string;
       periodCap: string;
       periodFloor: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
     }>;
 
     getEventAtIndex(
@@ -85,22 +92,29 @@ export class ITemplateRegistry extends Contract {
         marketObjectCodeRateReset: string | number[];
         statusDateOffset: number | string;
         maturityDateOffset: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
         feeAccrued: number | string;
         accruedInterest: number | string;
         rateMultiplier: number | string;
+        rateSpread: number | string;
         feeRate: number | string;
         nextResetRate: number | string;
         penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        periodCap: number | string;
-        periodFloor: number | string;
       },
       templateSchedules: {
         nonCyclicSchedule: (string | number[])[];

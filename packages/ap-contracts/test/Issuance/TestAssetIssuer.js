@@ -192,7 +192,7 @@ contract('AssetIssuer', (accounts) => {
     };
     const termsCEC = { ...CECCollateralTerms, maturityDate: this.terms.maturityDate };
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
-    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
+    const collateralAmount = (new BigNumber(this.customTerms.overwrittenTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
     // encode collateralToken and collateralAmount in object of second contract reference
     termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
       this.PaymentTokenInstance.address,
@@ -281,7 +281,7 @@ contract('AssetIssuer', (accounts) => {
     // encode underlying assetId in object of first contract reference
     termsCEC.contractReference_1.object = web3.utils.toHex(underlyingAssetId);
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
-    const collateralAmount = (new BigNumber(this.customTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
+    const collateralAmount = (new BigNumber(this.customTerms.overwrittenTerms.notionalPrincipal)).plus(web3.utils.toWei('100').toString());
     // encode collateralToken and collateralAmount in object of second contract reference
     termsCEC.contractReference_2.object = await this.AssetIssuerInstance.encodeCollateralAsObject(
       this.PaymentTokenInstance.address,

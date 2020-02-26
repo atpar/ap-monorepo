@@ -7,15 +7,9 @@ pragma solidity ^0.5.2;
  */
 contract ACTUSTypes {
 
-    // int256 constant INT256_MIN = int256((uint256(1) << 255));
-    // int256 constant INT256_MAX = int256(~((uint256(1) << 255)));
-    // uint256 constant UINT256_MIN = 0;
-    // uint256 constant UINT256_MAX = ~uint256(0);
-    // int256 constant DOUBLE_NULL = INT256_MIN;
-
+    // constants used throughout
     uint256 constant public PRECISION = 18;
     int256 constant public ONE_POINT_ZERO = 1 * 10 ** 18;
-
     uint256 constant MAX_CYCLE_SIZE = 16;
     uint256 constant MAX_EVENT_SCHEDULE_SIZE = 64; // 4x MAX_CYCLE_SIZE for IP, RR, FP and SC
 
@@ -101,8 +95,6 @@ contract ACTUSTypes {
         PenaltyType penaltyType;
         FeeBasis feeBasis;
         ContractPerformance creditEventTypeCovered;
-        ContractReference contractReference_1;
-        ContractReference contractReference_2;
 
         address currency;
         address settlementCurrency;
@@ -125,14 +117,16 @@ contract ACTUSTypes {
         int256 priceAtPurchaseDate;
         int256 nextPrincipalRedemptionPayment;
         int256 coverageOfCreditEnhancement;
-
-        IP gracePeriod;
-        IP delinquencyPeriod;
-
         int256 lifeCap;
         int256 lifeFloor;
         int256 periodCap;
         int256 periodFloor;
+
+        IP gracePeriod;
+        IP delinquencyPeriod;
+
+        ContractReference contractReference_1;
+        ContractReference contractReference_2;
     }
 
     // Subset of the ACTUS terms object (contains only attributes which are used in the schedule generation)
@@ -175,9 +169,6 @@ contract ACTUSTypes {
         FeeBasis feeBasis;
         ContractPerformance creditEventTypeCovered;
 
-        ContractReference contractReference_1;
-        ContractReference contractReference_2;
-
         address currency;
         address settlementCurrency;
 
@@ -211,6 +202,10 @@ contract ACTUSTypes {
         int256 priceAtPurchaseDate;
         int256 nextPrincipalRedemptionPayment;
         int256 coverageOfCreditEnhancement;
+        int256 lifeCap;
+        int256 lifeFloor;
+        int256 periodCap;
+        int256 periodFloor;
 
         IPS cycleOfInterestPayment;
         IPS cycleOfRateReset;
@@ -221,9 +216,7 @@ contract ACTUSTypes {
         IP gracePeriod;
         IP delinquencyPeriod;
 
-        int256 lifeCap;
-        int256 lifeFloor;
-        int256 periodCap;
-        int256 periodFloor;
+        ContractReference contractReference_1;
+        ContractReference contractReference_2;
     }
 }

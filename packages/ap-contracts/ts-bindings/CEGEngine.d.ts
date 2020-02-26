@@ -32,16 +32,7 @@ export class CEGEngine extends Contract {
       }
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    computeStateForEvent(
+    computePayoffForEvent(
       terms: {
         calendar: number | string;
         contractRole: number | string;
@@ -52,16 +43,6 @@ export class CEGEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -80,16 +61,95 @@ export class CEGEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+      },
+      state: {
+        contractPerformance: number | string;
+        statusDate: number | string;
+        nonPerformingDate: number | string;
+        maturityDate: number | string;
+        executionDate: number | string;
+        notionalPrincipal: number | string;
+        accruedInterest: number | string;
+        feeAccrued: number | string;
+        nominalInterestRate: number | string;
+        interestScalingMultiplier: number | string;
+        notionalScalingMultiplier: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        executionAmount: number | string;
+      },
+      _event: string | number[],
+      externalData: string | number[]
+    ): TransactionObject<string>;
+
+    computeStateForEvent(
+      terms: {
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        feeAccrued: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        feeRate: number | string;
+        nextResetRate: number | string;
+        penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
         periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -124,6 +184,15 @@ export class CEGEngine extends Contract {
       executionAmount: string;
     }>;
 
+    ONE_POINT_ZERO(): TransactionObject<string>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     computeEventTimeForEvent(
@@ -138,16 +207,6 @@ export class CEGEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -166,89 +225,30 @@ export class CEGEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       }
     ): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
-
-    computePayoffForEvent(
-      terms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-      },
-      state: {
-        contractPerformance: number | string;
-        statusDate: number | string;
-        nonPerformingDate: number | string;
-        maturityDate: number | string;
-        executionDate: number | string;
-        notionalPrincipal: number | string;
-        accruedInterest: number | string;
-        feeAccrued: number | string;
-        nominalInterestRate: number | string;
-        interestScalingMultiplier: number | string;
-        notionalScalingMultiplier: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
-      },
-      _event: string | number[],
-      externalData: string | number[]
-    ): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -265,16 +265,6 @@ export class CEGEngine extends Contract {
       penaltyType: number | string;
       feeBasis: number | string;
       creditEventTypeCovered: number | string;
-      contractReference_1: {
-        object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
-      };
-      contractReference_2: {
-        object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
-      };
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string | number[];
@@ -293,16 +283,26 @@ export class CEGEngine extends Contract {
       priceAtPurchaseDate: number | string;
       nextPrincipalRedemptionPayment: number | string;
       coverageOfCreditEnhancement: number | string;
+      lifeCap: number | string;
+      lifeFloor: number | string;
+      periodCap: number | string;
+      periodFloor: number | string;
       gracePeriod: { i: number | string; p: number | string; isSet: boolean };
       delinquencyPeriod: {
         i: number | string;
         p: number | string;
         isSet: boolean;
       };
-      lifeCap: number | string;
-      lifeFloor: number | string;
-      periodCap: number | string;
-      periodFloor: number | string;
+      contractReference_1: {
+        object: string | number[];
+        contractReferenceType: number | string;
+        contractReferenceRole: number | string;
+      };
+      contractReference_2: {
+        object: string | number[];
+        contractReferenceType: number | string;
+        contractReferenceRole: number | string;
+      };
     }): TransactionObject<{
       contractPerformance: string;
       statusDate: string;
@@ -444,16 +444,6 @@ export class CEGEngine extends Contract {
         penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
@@ -472,16 +462,26 @@ export class CEGEngine extends Contract {
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;

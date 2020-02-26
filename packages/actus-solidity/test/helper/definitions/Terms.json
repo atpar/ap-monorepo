@@ -9,8 +9,6 @@
   "penaltyType",
   "feeBasis",
   "creditEventTypeCovered",
-  "contractReference_1",
-  "contractReference_2",
   "currency",
   "settlementCurrency",
   "creatorID",
@@ -41,6 +39,10 @@
   "priceAtPurchaseDate",
   "nextPrincipalRedemptionPayment",
   "coverageOfCreditEnhancement",
+  "lifeCap",
+  "lifeFloor",
+  "periodCap",
+  "periodFloor",
   "cycleOfInterestPayment",
   "cycleOfRateReset",
   "cycleOfScalingIndex",
@@ -48,8 +50,6 @@
   "cycleOfPrincipalRedemption",
   "gracePeriod",
   "delinquencyPeriod",
-  "lifeCap",
-  "lifeFloor",
-  "periodCap",
-  "periodFloor"
+  "contractReference_1",
+  "contractReference_2"
 ]

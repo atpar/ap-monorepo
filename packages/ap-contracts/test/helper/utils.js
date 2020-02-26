@@ -1,3 +1,5 @@
+const Web3Utils = require('web3-utils');
+
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('@atpar/actus-solidity/test/helper/parser');
 
 const { deriveTemplateId } = require('./orderUtils');
@@ -5,8 +7,9 @@ const { deriveTemplateId } = require('./orderUtils');
 const TemplateTerms = require('./definitions/TemplateTerms.json');
 const CustomTerms = require('./definitions/CustomTerms.json');
 const GeneratingTerms = require('./definitions/GeneratingTerms.json');
+const LifecycleTerms = require('@atpar/actus-solidity/test/helper/definitions/LifecycleTerms.json');
 
-
+const ZeroTerms = require('./ZeroLifecycleTerms.json');
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
@@ -45,19 +48,22 @@ function parseTermsToTemplateTerms (terms) {
 }
 
 function parseTermsToCustomTerms (terms) {
-  const customTerms = {};
+  const templateTerms = parseTermsToTemplateTerms(terms);
+  const anchorDate = terms.contractDealDate;
+  const overwrittenAttributes = {};
+  Object.keys(terms)
+    .filter((attribute) => {
+      return (
+        !templateTerms[(attribute.includes('Date') ? attribute + 'Offset' : attribute)]
+        && ZeroTerms[attribute]
+        && ZeroTerms[attribute] != terms[attribute]
+      );
+    })
+    .map((attribute) => { 
+      overwrittenAttributes[attribute] = terms[attribute] 
+    });
 
-  for (const attribute of CustomTerms) {
-    if (attribute === 'anchorDate') {
-      // define anchor date as contract deal date
-      customTerms[attribute] = terms['contractDealDate'];
-      continue;
-    }
-
-    customTerms[attribute] = terms[attribute];
-  }
-
-  return customTerms;
+  return encodeCustomTerms(anchorDate, overwrittenAttributes);
 }
 
 function parseExtendedTemplateTermsToTemplateTerms (extendedTemplateTerms) {
@@ -181,7 +187,27 @@ function removeNullEvents (events) {
   return compactEvents;
 }
 
+function encodeCustomTerms (anchorDate, overwrittenAttributes) {
+  let overwrittenAttributesMap = '';
+  const overwrittenTerms = { ...ZeroTerms, ...overwrittenAttributes };
+
+  LifecycleTerms.forEach((attribute) => {
+    // set attributes map
+    if (overwrittenAttributes[attribute]) {
+      overwrittenAttributesMap = '1' + overwrittenAttributesMap;
+    } else {
+      overwrittenAttributesMap = '0' + overwrittenAttributesMap;
+    }
+  });
+
+  // convert from binary string to number
+  overwrittenAttributesMap = parseInt(overwrittenAttributesMap, 2);
+  
+  return { anchorDate, overwrittenAttributesMap, overwrittenTerms };
+}
+
 module.exports = {
+  encodeCustomTerms,
   normalizeDates,
   parseTermsToTemplateTerms,
   parseTermsToCustomTerms,

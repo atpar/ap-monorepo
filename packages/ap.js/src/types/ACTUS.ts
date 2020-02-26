@@ -58,9 +58,6 @@ export interface Terms {
   feeBasis: string | number;
   creditEventTypeCovered: string | number;
   
-  contractReference_1: ContractReference;
-  contractReference_2: ContractReference;
-  
   currency: string;
   settlementCurrency: string;
 
@@ -94,6 +91,10 @@ export interface Terms {
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
   coverageOfCreditEnhancement: number | string;
+  lifeCap: number | string;
+  lifeFloor: number | string;
+  periodCap: number | string;
+  periodFloor: number | string;
 
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
@@ -104,10 +105,8 @@ export interface Terms {
   gracePeriod: IP;
   delinquencyPeriod: IP;
 
-  lifeCap: number | string;
-  lifeFloor: number | string;
-  periodCap: number | string;
-  periodFloor: number | string;
+  contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
 }
 
 export interface LifecycleTerms {
@@ -120,9 +119,6 @@ export interface LifecycleTerms {
   penaltyType: string | number;
   feeBasis: string | number;
   creditEventTypeCovered: string | number;
-
-  contractReference_1: ContractReference;
-  contractReference_2: ContractReference;
 
   currency: string;
   settlementCurrency: string;
@@ -145,14 +141,16 @@ export interface LifecycleTerms {
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
   coverageOfCreditEnhancement: number | string;
-
-  gracePeriod: IP;
-  delinquencyPeriod: IP;
-
   lifeCap: number | string;
   lifeFloor: number | string;
   periodCap: number | string;
   periodFloor: number | string;
+
+  gracePeriod: IP;
+  delinquencyPeriod: IP;
+
+  contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
 }
 
 export interface GeneratingTerms {
@@ -183,15 +181,8 @@ export interface GeneratingTerms {
 
 export interface CustomTerms {
   anchorDate: string | number;
-  notionalPrincipal: number | string;
-  nominalInterestRate: number | string;
-  premiumDiscountAtIED: number | string;
-  rateSpread: number | string;
-  lifeCap: number | string;
-  lifeFloor: number | string;
-  coverageOfCreditEnhancement: number | string;
-  contractReference_1: ContractReference;
-  contractReference_2: ContractReference;
+  overwrittenAttributesMap: string;
+  overwrittenTerms: LifecycleTerms;
 }
 
 export interface TemplateTerms {
@@ -204,29 +195,35 @@ export interface TemplateTerms {
   penaltyType: string | number;
   feeBasis: string | number;
   creditEventTypeCovered: string | number;
-  
+
   currency: string;
   settlementCurrency: string;
-  
+
   marketObjectCodeRateReset: string | number[];
-  
+
   statusDateOffset: number | string;
   maturityDateOffset: number | string;
 
+  notionalPrincipal: number | string;
+  nominalInterestRate: number | string;
   feeAccrued: number | string;
   accruedInterest: number | string;
   rateMultiplier: number | string;
+  rateSpread: number | string;
   feeRate: number | string;
   nextResetRate: number | string;
   penaltyRate: number | string;
+  premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
+  coverageOfCreditEnhancement: number | string;
+  lifeCap: number | string;
+  lifeFloor: number | string;
+  periodCap: number | string;
+  periodFloor: number | string;
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
-
-  periodCap: number | string;
-  periodFloor: number | string;
 }
 
 export interface ExtendedTemplateTerms {
@@ -246,6 +243,7 @@ export interface ExtendedTemplateTerms {
 
   creatorID: string | number[];
   counterpartyID: string | number[];
+
   marketObjectCodeRateReset: string | number[];
   
   contractDealDateOffset: number | string;
@@ -261,14 +259,23 @@ export interface ExtendedTemplateTerms {
   cycleAnchorDateOfFeeOffset: number | string;
   cycleAnchorDateOfPrincipalRedemptionOffset: number | string;
 
+  notionalPrincipal: number | string;
+  nominalInterestRate: number | string;
   feeAccrued: number | string;
   accruedInterest: number | string;
   rateMultiplier: number | string;
+  rateSpread: number | string;
   feeRate: number | string;
   nextResetRate: number | string;
   penaltyRate: number | string;
+  premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
+  coverageOfCreditEnhancement: number | string;
+  lifeCap: number | string;
+  lifeFloor: number | string;
+  periodCap: number | string;
+  periodFloor: number | string;
 
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
@@ -278,7 +285,4 @@ export interface ExtendedTemplateTerms {
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
-
-  periodCap: number | string;
-  periodFloor: number | string;
 }
