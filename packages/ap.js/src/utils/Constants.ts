@@ -21,10 +21,10 @@ export const EMPTY_LIFECYCLE_TERMS: LifecycleTerms = {
   feeBasis: '0',
   creditEventTypeCovered: '0',
 
-  currency: '',
-  settlementCurrency: '',
+  currency: ZERO_ADDRESS,
+  settlementCurrency: ZERO_ADDRESS,
 
-  marketObjectCodeRateReset: '',
+  marketObjectCodeRateReset: ZERO_BYTES32,
 
   statusDate: '0',
   maturityDate: '0',

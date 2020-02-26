@@ -1,6 +1,11 @@
 import * as web3Utils from 'web3-utils';
 import web3EthAbi from 'web3-eth-abi';
 
+import CustomTermsABI from '@atpar/ap-contracts/test/helper/abis/CustomTermsABI.json';
+import TermsABI from '@atpar/ap-contracts/test/helper/abis/TermsABI.json';
+import TemplateTermsABI from '@atpar/ap-contracts/test/helper/abis/TemplateTermsABI.json';
+import TemplateScheduleABI from '@atpar/ap-contracts/test/helper/abis/TemplateScheduleABI.json';
+
 import {
   Terms,
   CustomTerms,
@@ -12,11 +17,6 @@ import {
   EnhancementOrderDataAsTypedData
 } from '../types';
 import { ZERO_ADDRESS } from './Constants';
-
-import CustomTermsABI from './CustomTermsABI.json';
-import TermsABI from './TermsABI.json';
-import TemplateTermsABI from './TemplateTermsABI.json';
-import TemplateScheduleABI from './TemplateScheduleABI.json';
 
 
 export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules: any): string {

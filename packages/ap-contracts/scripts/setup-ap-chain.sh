@@ -20,7 +20,7 @@ ganache_pid=$!
 
 sleep 1
 
-npx --quiet truffle compile --all
+npx --quiet truffle compile
 npx --quiet truffle migrate --network ap-chain
 
 echo "✓ ready"

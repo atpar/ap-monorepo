@@ -1,4 +1,4 @@
-{  
+{
   "components": [
     {
       "name": "calendar",
@@ -57,6 +57,14 @@
       "type": "uint256"
     },
     {
+      "name": "notionalPrincipal",
+      "type": "int256"
+    },
+    {
+      "name": "nominalInterestRate",
+      "type": "int256"
+    },
+    {
       "name": "feeAccrued",
       "type": "int256"
     },
@@ -66,6 +74,10 @@
     },
     {
       "name": "rateMultiplier",
+      "type": "int256"
+    },
+    {
+      "name": "rateSpread",
       "type": "int256"
     },
     {
@@ -81,11 +93,27 @@
       "type": "int256"
     },
     {
+      "name": "premiumDiscountAtIED",
+      "type": "int256"
+    },
+    {
       "name": "priceAtPurchaseDate",
       "type": "int256"
     },
     {
       "name": "nextPrincipalRedemptionPayment",
+      "type": "int256"
+    },
+    {
+      "name": "coverageOfCreditEnhancement",
+      "type": "int256"
+    },
+    {
+      "name": "lifeCap",
+      "type": "int256"
+    },
+    {
+      "name": "lifeFloor",
       "type": "int256"
     },
     {
@@ -133,6 +161,6 @@
       "type": "tuple"
     }
   ],
-  "name": "terms",
+  "name": "TemplateTerms",
   "type": "tuple"
 }
