@@ -8,6 +8,7 @@ import "../SharedTypes.sol";
  * @title TemplateRegistryStorage
  * @notice Describes the storage of the TemplateRegistry.
  * Contains getter and setter methods for encoding, decoding data to optimize gas cost
+ * Circumvents storing default values by relying on the characteristic of mappings returning zero for not set values.
  */
 contract TemplateRegistryStorage is SharedTypes {
 
@@ -47,42 +48,42 @@ contract TemplateRegistryStorage is SharedTypes {
 
         if (enums != bytes32(0)) templates[templateId].packedTerms[1] = enums;
 
-        if (terms.currency != address(0)) templates[templateId].packedTerms[4] = bytes32(uint256(terms.currency) << 96);
-        if (terms.settlementCurrency != address(0)) templates[templateId].packedTerms[5] = bytes32(uint256(terms.settlementCurrency) << 96);
+        if (terms.currency != address(0)) templates[templateId].packedTerms[2] = bytes32(uint256(terms.currency) << 96);
+        if (terms.settlementCurrency != address(0)) templates[templateId].packedTerms[3] = bytes32(uint256(terms.settlementCurrency) << 96);
 
-        if (terms.marketObjectCodeRateReset != bytes32(0)) templates[templateId].packedTerms[6] = bytes32(terms.marketObjectCodeRateReset);
+        if (terms.marketObjectCodeRateReset != bytes32(0)) templates[templateId].packedTerms[4] = bytes32(terms.marketObjectCodeRateReset);
 
-        if (terms.statusDateOffset != uint256(0)) templates[templateId].packedTerms[7] = bytes32(terms.statusDateOffset);
-        if (terms.maturityDateOffset != uint256(0)) templates[templateId].packedTerms[8] = bytes32(terms.maturityDateOffset);
+        if (terms.statusDateOffset != uint256(0)) templates[templateId].packedTerms[5] = bytes32(terms.statusDateOffset);
+        if (terms.maturityDateOffset != uint256(0)) templates[templateId].packedTerms[6] = bytes32(terms.maturityDateOffset);
 
-        if (terms.notionalPrincipal != int256(0)) templates[templateId].packedTerms[17] = bytes32(terms.notionalPrincipal);
-        if (terms.nominalInterestRate != int256(0)) templates[templateId].packedTerms[18] = bytes32(terms.nominalInterestRate);
-        if (terms.feeAccrued != int256(0)) templates[templateId].packedTerms[19] = bytes32(terms.feeAccrued);
-        if (terms.accruedInterest != int256(0)) templates[templateId].packedTerms[20] = bytes32(terms.accruedInterest);
-        if (terms.rateMultiplier != int256(0)) templates[templateId].packedTerms[21] = bytes32(terms.rateMultiplier);
-        if (terms.rateSpread != int256(0)) templates[templateId].packedTerms[22] = bytes32(terms.rateSpread);
-        if (terms.feeRate != int256(0)) templates[templateId].packedTerms[23] = bytes32(terms.feeRate);
-        if (terms.nextResetRate != int256(0)) templates[templateId].packedTerms[24] = bytes32(terms.nextResetRate);
-        if (terms.penaltyRate != int256(0)) templates[templateId].packedTerms[25] = bytes32(terms.penaltyRate);
-        if (terms.premiumDiscountAtIED != int256(0)) templates[templateId].packedTerms[26] = bytes32(terms.premiumDiscountAtIED);
-        if (terms.priceAtPurchaseDate != int256(0)) templates[templateId].packedTerms[27] = bytes32(terms.priceAtPurchaseDate);
+        if (terms.notionalPrincipal != int256(0)) templates[templateId].packedTerms[7] = bytes32(terms.notionalPrincipal);
+        if (terms.nominalInterestRate != int256(0)) templates[templateId].packedTerms[8] = bytes32(terms.nominalInterestRate);
+        if (terms.feeAccrued != int256(0)) templates[templateId].packedTerms[9] = bytes32(terms.feeAccrued);
+        if (terms.accruedInterest != int256(0)) templates[templateId].packedTerms[10] = bytes32(terms.accruedInterest);
+        if (terms.rateMultiplier != int256(0)) templates[templateId].packedTerms[11] = bytes32(terms.rateMultiplier);
+        if (terms.rateSpread != int256(0)) templates[templateId].packedTerms[12] = bytes32(terms.rateSpread);
+        if (terms.feeRate != int256(0)) templates[templateId].packedTerms[13] = bytes32(terms.feeRate);
+        if (terms.nextResetRate != int256(0)) templates[templateId].packedTerms[14] = bytes32(terms.nextResetRate);
+        if (terms.penaltyRate != int256(0)) templates[templateId].packedTerms[15] = bytes32(terms.penaltyRate);
+        if (terms.premiumDiscountAtIED != int256(0)) templates[templateId].packedTerms[16] = bytes32(terms.premiumDiscountAtIED);
+        if (terms.priceAtPurchaseDate != int256(0)) templates[templateId].packedTerms[17] = bytes32(terms.priceAtPurchaseDate);
         // solium-disable-next-line
-        if (terms.nextPrincipalRedemptionPayment != int256(0)) templates[templateId].packedTerms[28] = bytes32(terms.nextPrincipalRedemptionPayment);
+        if (terms.nextPrincipalRedemptionPayment != int256(0)) templates[templateId].packedTerms[18] = bytes32(terms.nextPrincipalRedemptionPayment);
         // solium-disable-next-line
-        if (terms.coverageOfCreditEnhancement != int256(0)) templates[templateId].packedTerms[29] = bytes32(terms.coverageOfCreditEnhancement);
-        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[30] = bytes32(terms.lifeCap);
-        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[31] = bytes32(terms.lifeFloor);
-        if (terms.periodCap != int256(0)) templates[templateId].packedTerms[32] = bytes32(terms.periodCap);
-        if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[33] = bytes32(terms.periodFloor);
+        if (terms.coverageOfCreditEnhancement != int256(0)) templates[templateId].packedTerms[19] = bytes32(terms.coverageOfCreditEnhancement);
+        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[20] = bytes32(terms.lifeCap);
+        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[21] = bytes32(terms.lifeFloor);
+        if (terms.periodCap != int256(0)) templates[templateId].packedTerms[22] = bytes32(terms.periodCap);
+        if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[23] = bytes32(terms.periodFloor);
 
         if (terms.gracePeriod.isSet) {
-            templates[templateId].packedTerms[34] =
+            templates[templateId].packedTerms[24] =
                 bytes32(uint256(terms.gracePeriod.i)) << 24 |
                 bytes32(uint256(terms.gracePeriod.p)) << 16 |
                 bytes32(uint256(1)) << 8;
         }
         if (terms.delinquencyPeriod.isSet) {
-            templates[templateId].packedTerms[35] =
+            templates[templateId].packedTerms[25] =
                 bytes32(uint256(terms.delinquencyPeriod.i)) << 24 |
                 bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
                 bytes32(uint256(1)) << 8;
@@ -153,13 +154,23 @@ contract TemplateRegistryStorage is SharedTypes {
             FeeBasis(uint8(uint256(templates[templateId].packedTerms[1] >> 184))),
             ContractPerformance(uint8(uint256(templates[templateId].packedTerms[1] >> 176))),
 
-            address(uint160(uint256(templates[templateId].packedTerms[4]) >> 96)),
-            address(uint160(uint256(templates[templateId].packedTerms[5]) >> 96)),
+            address(uint160(uint256(templates[templateId].packedTerms[2]) >> 96)),
+            address(uint160(uint256(templates[templateId].packedTerms[3]) >> 96)),
 
-            templates[templateId].packedTerms[6],
+            templates[templateId].packedTerms[4],
 
-            uint256(templates[templateId].packedTerms[7]),
-            uint256(templates[templateId].packedTerms[8]),
+            uint256(templates[templateId].packedTerms[5]),
+            uint256(templates[templateId].packedTerms[6]),
+            int256(templates[templateId].packedTerms[7]),
+            int256(templates[templateId].packedTerms[8]),
+            int256(templates[templateId].packedTerms[9]),
+            int256(templates[templateId].packedTerms[10]),
+            int256(templates[templateId].packedTerms[11]),
+            int256(templates[templateId].packedTerms[12]),
+            int256(templates[templateId].packedTerms[13]),
+            int256(templates[templateId].packedTerms[14]),
+            int256(templates[templateId].packedTerms[15]),
+            int256(templates[templateId].packedTerms[16]),
             int256(templates[templateId].packedTerms[17]),
             int256(templates[templateId].packedTerms[18]),
             int256(templates[templateId].packedTerms[19]),
@@ -167,26 +178,16 @@ contract TemplateRegistryStorage is SharedTypes {
             int256(templates[templateId].packedTerms[21]),
             int256(templates[templateId].packedTerms[22]),
             int256(templates[templateId].packedTerms[23]),
-            int256(templates[templateId].packedTerms[24]),
-            int256(templates[templateId].packedTerms[25]),
-            int256(templates[templateId].packedTerms[26]),
-            int256(templates[templateId].packedTerms[27]),
-            int256(templates[templateId].packedTerms[28]),
-            int256(templates[templateId].packedTerms[29]),
-            int256(templates[templateId].packedTerms[30]),
-            int256(templates[templateId].packedTerms[31]),
-            int256(templates[templateId].packedTerms[32]),
-            int256(templates[templateId].packedTerms[33]),
 
             IP(
-                uint256(templates[templateId].packedTerms[34] >> 24),
-                P(uint8(uint256(templates[templateId].packedTerms[34] >> 16))),
-                (templates[templateId].packedTerms[34] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(templates[templateId].packedTerms[24] >> 24),
+                P(uint8(uint256(templates[templateId].packedTerms[24] >> 16))),
+                (templates[templateId].packedTerms[24] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(templates[templateId].packedTerms[35] >> 24),
-                P(uint8(uint256(templates[templateId].packedTerms[35] >> 16))),
-                (templates[templateId].packedTerms[35] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(templates[templateId].packedTerms[25] >> 24),
+                P(uint8(uint256(templates[templateId].packedTerms[25] >> 16))),
+                (templates[templateId].packedTerms[25] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             )
         );
     }
