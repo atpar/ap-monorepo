@@ -9,7 +9,7 @@ import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketOb
 import TemplateRegistryArtifact from '@atpar/ap-contracts/artifacts/TemplateRegistry.min.json';
 import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
 import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/TokenizationFactory.min.json';
-import FDT_ERC20ExtensionArtifact from '@atpar/ap-contracts/artifacts/FDT_ERC20Extension.min.json';
+import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 
 import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
@@ -25,7 +25,7 @@ import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObje
 import { TemplateRegistry } from '@atpar/ap-contracts/ts-bindings/TemplateRegistry';
 import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/TokenizationFactory';
-import { FDT_ERC20Extension } from '@atpar/ap-contracts/ts-bindings/FDT_ERC20Extension';
+import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 
 import { AddressBook, isAddressBook } from '../types';
@@ -34,7 +34,7 @@ import { AddressBook, isAddressBook } from '../types';
 export class Contracts {
 
   private _engine: IEngine;
-  private _distributor: FDT_ERC20Extension;
+  private _distributor: VanillaFDT;
   private _erc20: ERC20;
 
   public annEngine: ANNEngine;
@@ -87,7 +87,7 @@ export class Contracts {
     // @ts-ignore
     this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory) as TokenizationFactory;
     // @ts-ignore
-    this._distributor = new web3.eth.Contract(FDT_ERC20ExtensionArtifact.abi) as FDT_ERC20Extension;
+    this._distributor = new web3.eth.Contract(VanillaFDTArtifact.abi) as VanillaFDT;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi) as ERC20;
   }
@@ -123,9 +123,9 @@ export class Contracts {
   /**
    * Instantiates distributor contract (FDT) by with a provided address and returns the instance.
    * @param {string} address address of the distributor (FDT) 
-   * @returns {FDT_ERC20Extension} Instance of FDT_ERC20Extension
+   * @returns {VanillaFDT} Instance of VanillaFDT
    */
-  public distributor(address: string): FDT_ERC20Extension {
+  public distributor(address: string): VanillaFDT {
     const distributor = this._distributor.clone();
     distributor.options.address = address;
 
