@@ -1,11 +1,9 @@
-const Web3Utils = require('web3-utils');
-
 const { parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('@atpar/actus-solidity/test/helper/parser');
 
 const { deriveTemplateId } = require('./orderUtils');
+const { sortEvents, removeNullEvents } = require('./scheduleUtils');
 
 const TemplateTerms = require('./definitions/TemplateTerms.json');
-const CustomTerms = require('./definitions/CustomTerms.json');
 const GeneratingTerms = require('./definitions/GeneratingTerms.json');
 const LifecycleTerms = require('@atpar/actus-solidity/test/helper/definitions/LifecycleTerms.json');
 
@@ -13,7 +11,7 @@ const ZeroTerms = require('./ZeroLifecycleTerms.json');
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
-const ZERO_OFFSET = '1'; // '0xFFFFFFFFFFFFFFFF';
+const ZERO_OFFSET = '1';
 
 
 function normalizeDate (anchorDate, date) {
@@ -131,29 +129,30 @@ function deriveTerms(terms) {
   }
 }
 
-async function generateTemplateSchedules(engineContractInstance, generatingTerms) {
-  return {
-    nonCyclicSchedule: await engineContractInstance.computeNonCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate),
-    cyclicIPSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 8),
-    cyclicPRSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 15),
-    cyclicSCSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 19),
-    cyclicRRSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 18),
-    cyclicFPSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 4),
-    cyclicPYSchedule: await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 11),
-  };
+async function generateTemplateSchedule(engineContractInstance, generatingTerms) {
+  const events = [];
+  events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 8)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 15)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 19)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 18)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 4)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 11)));
+
+  return sortEvents(removeNullEvents(events));
 }
 
 // used for registering templates after migrations
 async function registerTemplate(instances, template) {
   const templateTerms = parseExtendedTemplateTermsToTemplateTerms(template.extendedTemplateTerms);
   const generatingTerms = deriveGeneratingTermsFromExtendedTemplateTerms(template.extendedTemplateTerms);
-  const templateSchedules = await generateTemplateSchedules(
+  const templateSchedules = await generateTemplateSchedule(
     getEngineContractInstanceForContractType(instances, template.extendedTemplateTerms.contractType),
     generatingTerms
   );
 
-  await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
-  const templateId = deriveTemplateId(templateTerms, templateSchedules); // tx.logs[0].args.templateId;
+  await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedule);
+  const templateId = deriveTemplateId(templateTerms, templateSchedule); // tx.logs[0].args.templateId;
 
   return templateId;
 }
@@ -163,28 +162,17 @@ async function registerTemplate(instances, template) {
 // this method is not needed anymore
 async function registerTemplateFromTerms(instances, terms) {
   const { generatingTerms, templateTerms } = deriveTerms(terms);
-  const templateSchedules = await generateTemplateSchedules(
+  const templateSchedule = await generateTemplateSchedule(
     getEngineContractInstanceForContractType(instances, terms.contractType),
     generatingTerms
   );
 
-  const tx = await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+  const tx = await instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedule);
   
   return tx.logs[0].args.templateId;
   
-  // const templateId = deriveTemplateId(templateTerms, templateSchedules);
+  // const templateId = deriveTemplateId(templateTerms, templateSchedule);
   // return templateId;
-}
-
-function removeNullEvents (events) {
-  const compactEvents = [];
-
-  for (const event of events) {
-    if (event === ZERO_BYTES32) { continue; }
-    compactEvents.push(event);
-  }
-
-  return compactEvents;
 }
 
 function encodeCustomTerms (anchorDate, overwrittenAttributes) {
@@ -212,7 +200,7 @@ module.exports = {
   parseTermsToTemplateTerms,
   parseTermsToCustomTerms,
   getEngineContractInstanceForContractType,
-  generateTemplateSchedules,
+  generateTemplateSchedule,
   registerTemplate,
   registerTemplateFromTerms,
   deriveTerms,

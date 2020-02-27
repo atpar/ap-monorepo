@@ -93,7 +93,16 @@ contract TemplateRegistryStorage is SharedTypes {
     function encodeAndSetSchedule(bytes32 templateId, bytes32[] memory templateSchedule)
         internal
     {
-        for (uint256 i = 0; i < MAX_EVENT_SCHEDULE_SIZE; i++) {
+        require(
+            templateSchedule.length != 0,
+            "TemplateRegistry.encodeAndSetSchedule: EMPTY_SCHEDULE"
+        );
+        require(
+            templateSchedule.length < MAX_EVENT_SCHEDULE_SIZE,
+            "TemplateRegistry.encodeAndSetSchedule: MAX_EVENT_SCHEDULE_SIZE"
+        );
+
+        for (uint256 i = 0; i < templateSchedule.length; i++) {
             if (templateSchedule[i] == bytes32(0)) break;
             templates[templateId].templateSchedule.events[i] = templateSchedule[i];
             templates[templateId].templateSchedule.length = i + 1;

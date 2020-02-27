@@ -43,14 +43,14 @@ function deriveTemplateId (templateTerms, templateSchedules) {
     templateTerms
   ));
 
-  const templateSchedulesHash = Web3Utils.keccak256(_encodeParameter(
+  const templateScheduleHash = Web3Utils.keccak256(_encodeParameter(
     TemplateScheduleABI,
     templateSchedules
   ));
 
   return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     ['bytes32', 'bytes32'],
-    [templateTermsHash, templateSchedulesHash]
+    [templateTermsHash, templateScheduleHash]
   ));
 }
 
