@@ -5,14 +5,12 @@ import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 
 contract SharedTypes is ACTUSTypes {
 
-    // define maximum of uint8 as schedule index for the non-cyclic schedulee
-    uint8 constant NON_CYCLIC_INDEX = ~uint8(0);
-    // define maximum of uint64 (0xFFFFFFFFFFFFFFFF) as offset == anchorDate,
+    // define 1 as offset == anchorDate,
     // since offset == 0 is interpreted as a not set date value and not shifted
-    uint256 constant ZERO_OFFSET = 1; // uint256(~uint64(0));
+    uint256 constant ZERO_OFFSET = 1;
 
     struct TemplateSchedule {
-        mapping(uint256 => bytes32) templateSchedule;
+        mapping(uint256 => bytes32) events;
         uint256 length;
     }
 
@@ -21,16 +19,6 @@ contract SharedTypes is ACTUSTypes {
         address creatorBeneficiary;
         address counterpartyObligor;
         address counterpartyBeneficiary;
-    }
-
-    struct TemplateSchedules {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] nonCyclicSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicIPSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPRSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicRRSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicPYSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicSCSchedule;
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] cyclicFPSchedule;
     }
 
     struct TemplateTerms {

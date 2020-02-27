@@ -21,10 +21,9 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         AssetOwnership ownership;
         mapping (int8 => address) cashflowBeneficiaries;
         bytes32 templateId;
-        mapping(uint8 => uint256) nextEventIndex;
+        uint256 nextScheduleIndex;
         mapping (uint8 => bytes32) packedTermsState;
         uint256 overwrittenAttributesMap;
-        uint256 eventId;
         address engine;
         address actor;
     }
@@ -56,8 +55,8 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             assetId: _assetId,
             ownership: _ownership,
             templateId: _templateId,
+            nextScheduleIndex: 0,
             overwrittenAttributesMap: customTerms.overwrittenAttributesMap,
-            eventId: 0,
             engine: _engine,
             actor: _actor
         });
@@ -107,9 +106,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         if (customTerms.overwrittenTerms.penaltyRate != int256(0)) assets[assetId].packedTermsState[16] = bytes32(customTerms.overwrittenTerms.penaltyRate);
         if (customTerms.overwrittenTerms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[17] = bytes32(customTerms.overwrittenTerms.premiumDiscountAtIED);
         if (customTerms.overwrittenTerms.priceAtPurchaseDate != int256(0)) assets[assetId].packedTermsState[18] = bytes32(customTerms.overwrittenTerms.priceAtPurchaseDate);
-        // solium-disable-next-line
         if (customTerms.overwrittenTerms.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[19] = bytes32(customTerms.overwrittenTerms.nextPrincipalRedemptionPayment);
-        // solium-disable-next-line
         if (customTerms.overwrittenTerms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[20] = bytes32(customTerms.overwrittenTerms.coverageOfCreditEnhancement);
         if (customTerms.overwrittenTerms.lifeCap != int256(0)) assets[assetId].packedTermsState[21] = bytes32(customTerms.overwrittenTerms.lifeCap);
         if (customTerms.overwrittenTerms.lifeFloor != int256(0)) assets[assetId].packedTermsState[22] = bytes32(customTerms.overwrittenTerms.lifeFloor);

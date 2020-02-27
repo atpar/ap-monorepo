@@ -9,7 +9,7 @@ const {
 } = require('../../helper/blockchain');
 
 const { deriveTemplateId } = require('../../helper/orderUtils');
-const { deriveTerms, generateTemplateSchedules, getEngineContractInstanceForContractType } = require('../../helper/utils');
+const { deriveTerms, generateTemplateSchedule, getEngineContractInstanceForContractType } = require('../../helper/utils');
 
 const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
@@ -51,14 +51,12 @@ contract('AssetActor', (accounts) => {
 
     // register template
     const { lifecycleTerms, customTerms, generatingTerms, templateTerms } = deriveTerms(terms);
-    const templateSchedules = await generateTemplateSchedules(
+    // only want RR events in the schedules
+    const templateSchedule = (await generateTemplateSchedule(
       getEngineContractInstanceForContractType(this.instances, terms.contractType),
       generatingTerms
-    ); 
-    // only want RR events in the schedules
-    templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
-    templateSchedules.nonCyclicSchedule = templateSchedules.cyclicPYSchedule;
-    const tx = await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedules);
+    )).filter((event) => event.startsWith('0x12')); 
+    const tx = await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedule);
     const templateId = tx.logs[0].args.templateId;
     
     // store template

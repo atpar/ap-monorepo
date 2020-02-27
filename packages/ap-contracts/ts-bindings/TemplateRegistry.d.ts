@@ -21,8 +21,6 @@ export class TemplateRegistry extends Contract {
   );
   clone(): TemplateRegistry;
   methods: {
-    templates(arg0: string | number[]): TransactionObject<boolean>;
-
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
@@ -67,19 +65,12 @@ export class TemplateRegistry extends Contract {
 
     getEventAtIndex(
       templateId: string | number[],
-      scheduleId: number | string,
       index: number | string
     ): TransactionObject<string>;
 
-    getScheduleLength(
-      templateId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<string>;
+    getScheduleLength(templateId: string | number[]): TransactionObject<string>;
 
-    getSchedule(
-      templateId: string | number[],
-      scheduleId: number | string
-    ): TransactionObject<string[]>;
+    getSchedule(templateId: string | number[]): TransactionObject<string[]>;
 
     registerTemplate(
       terms: {
@@ -121,15 +112,7 @@ export class TemplateRegistry extends Contract {
           isSet: boolean;
         };
       },
-      templateSchedules: {
-        nonCyclicSchedule: (string | number[])[];
-        cyclicIPSchedule: (string | number[])[];
-        cyclicPRSchedule: (string | number[])[];
-        cyclicRRSchedule: (string | number[])[];
-        cyclicPYSchedule: (string | number[])[];
-        cyclicSCSchedule: (string | number[])[];
-        cyclicFPSchedule: (string | number[])[];
-      }
+      templateSchedule: (string | number[])[]
     ): TransactionObject<void>;
   };
   events: {

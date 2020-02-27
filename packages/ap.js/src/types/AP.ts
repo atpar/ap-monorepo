@@ -22,16 +22,6 @@ export interface AssetOwnership {
   counterpartyBeneficiary: string;
 }
 
-export interface TemplateSchedule {
-  nonCyclicSchedule: string[];
-  cyclicIPSchedule: string[];
-  cyclicPRSchedule: string[];
-  cyclicSCSchedule: string[];
-  cyclicRRSchedule: string[];
-  cyclicFPSchedule: string[];
-  cyclicPYSchedule: string[];
-}
-
 // @todo add type checks
 export function isAddressBook (obj: any): obj is AddressBook {
   if (!obj) { return false; }
