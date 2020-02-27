@@ -155,11 +155,11 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
-     * @notice Returns the index of the last processed event for a schedule of an asset.
+     * @notice Returns the index of the next event to be processed for a schedule of an asset.
      * @param assetId id of the asset
      * @return Index
      */
-    function getScheduleIndex(bytes32 assetId) external view returns (uint256) {
+    function getNextScheduleIndex(bytes32 assetId) external view returns (uint256) {
         return assets[assetId].nextScheduleIndex;
     }
 

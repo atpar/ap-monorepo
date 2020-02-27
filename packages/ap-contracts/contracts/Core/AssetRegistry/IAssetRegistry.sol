@@ -32,7 +32,7 @@ contract IAssetRegistry is AssetRegistryStorage {
 
     function getNextEvent (bytes32 assetId) external view returns (bytes32);
 
-    function getScheduleIndex(bytes32 assetId) external view returns (uint256);
+    function getNextScheduleIndex(bytes32 assetId) external view returns (uint256);
 
     function incrementScheduleIndex(bytes32 assetId) external;
 
