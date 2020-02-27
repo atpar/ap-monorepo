@@ -253,36 +253,36 @@ contract ANNEngine is BaseEngine, STF, POF {
      * @param externalData external data needed for STF evaluation (e.g. rate for RR events)
      * @return the resulting contract state
      */
-	function stateTransitionFunction(
-		LifecycleTerms memory terms,
-		State memory state,
-		bytes32 _event,
-		bytes32 externalData
-	)
-		private
-		pure
-		returns (State memory)
-	{
-		(EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+    function stateTransitionFunction(
+        LifecycleTerms memory terms,
+        State memory state,
+        bytes32 _event,
+        bytes32 externalData
+    )
+        private
+        pure
+        returns (State memory)
+    {
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
         /*
-		 * Note:
-		 * not supported: IPCB events, PRD events
-		 */
-		if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
-		//if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.TD) return STF_PAM_TD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.CE) return STF_PAM_CE(terms, state, scheduleTime, externalData);
+         * Note:
+         * not supported: IPCB events, PRD events
+         */
+        if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
+        //if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.TD) return STF_PAM_TD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.CE) return STF_PAM_CE(terms, state, scheduleTime, externalData);
 
         revert("ANNEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
     }
@@ -310,30 +310,30 @@ contract ANNEngine is BaseEngine, STF, POF {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-		/*
-		 * Note: all ANN payoff functions that rely on NAM/LAM have been replaced by PAM
-		 * actus-solidity currently doesn't support interestCalculationBase, thus we can use PAM
-		 *
-		 * There is a reference to a POF_ANN_PR function which was added because PAM doesn't have PR Events in ACTUS 1.0
-		 * and NAM, which ANN refers to in the specification, is not yet supported
-		 *
-		 * not supported: IPCB events, PRD events
-		 */
-		if (eventType == EventType.AD) return 0; // Analysis Event
-		if (eventType == EventType.IPCI) return 0; // Interest Capitalization Event
-		if (eventType == EventType.RRF) return 0; // Rate Reset Fixed
-		if (eventType == EventType.RR) return 0; // Rate Reset Variable
-		if (eventType == EventType.SC) return 0; // Scaling Index Revision
-		if (eventType == EventType.CE) return 0; // Credit Event
-		if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData); // Fee Payment
-		if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData); // Intital Exchange
-		if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData); // Interest Payment
-		if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData); // Principal Prepayment
-		//if (eventType == EventType.PRD) return POF_PAM_PRD(terms, state, scheduleTime, externalData); // Purchase
-		if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData); // Principal Redemption
-		if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData); // Maturity
-		if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData); // Penalty Payment
-		if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData); // Termination
+        /*
+         * Note: all ANN payoff functions that rely on NAM/LAM have been replaced by PAM
+         * actus-solidity currently doesn't support interestCalculationBase, thus we can use PAM
+         *
+         * There is a reference to a POF_ANN_PR function which was added because PAM doesn't have PR Events in ACTUS 1.0
+         * and NAM, which ANN refers to in the specification, is not yet supported
+         *
+         * not supported: IPCB events, PRD events
+         */
+        if (eventType == EventType.AD) return 0; // Analysis Event
+        if (eventType == EventType.IPCI) return 0; // Interest Capitalization Event
+        if (eventType == EventType.RRF) return 0; // Rate Reset Fixed
+        if (eventType == EventType.RR) return 0; // Rate Reset Variable
+        if (eventType == EventType.SC) return 0; // Scaling Index Revision
+        if (eventType == EventType.CE) return 0; // Credit Event
+        if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData); // Fee Payment
+        if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData); // Intital Exchange
+        if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData); // Interest Payment
+        if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData); // Principal Prepayment
+        //if (eventType == EventType.PRD) return POF_PAM_PRD(terms, state, scheduleTime, externalData); // Purchase
+        if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData); // Principal Redemption
+        if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData); // Maturity
+        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData); // Penalty Payment
+        if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData); // Termination
 
         revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }

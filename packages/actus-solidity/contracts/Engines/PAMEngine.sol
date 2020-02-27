@@ -290,20 +290,20 @@ contract PAMEngine is BaseEngine, STF, POF {
          * Note:
          * Not supported: PRD events
          */
-		if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
-		//if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.MD) return STF_PAM_PR(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.TD) return STF_PAM_TD(terms, state, scheduleTime, externalData);
-		if (eventType == EventType.CE)  return STF_PAM_CE(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
+        //if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return STF_PAM_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.TD) return STF_PAM_TD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.CE)  return STF_PAM_CE(terms, state, scheduleTime, externalData);
 
         revert("PAMEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
     }
@@ -331,25 +331,25 @@ contract PAMEngine is BaseEngine, STF, POF {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-		/*
-		 * Note: PAM contracts don't have IPCB and PR events.
+        /*
+         * Note: PAM contracts don't have IPCB and PR events.
          * Not supported: PRD events
-		 */
+         */
 
-		if (eventType == EventType.AD) return 0; // Analysis Event
-		if (eventType == EventType.IPCI) return 0; // Interest Capitalization Event
-		if (eventType == EventType.RRF) return 0; // Rate Reset Fixed
-		if (eventType == EventType.RR) return 0; // Rate Reset Variable
-		if (eventType == EventType.SC) return 0; // Scaling Index Revision
-		if (eventType == EventType.CE) return 0; // Credit Event
-		if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData); // Fee Payment
-		if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData); // Intital Exchange
-		if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData); // Interest Payment
-		if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData); // Principal Prepayment
-		//if (eventType == EventType.PRD) return POF_PAM_PRD(terms, state, scheduleTime, externalData); // Purchase
-		if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData); // Maturity
-		if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData); // Penalty Payment
-		if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData); // Termination
+        if (eventType == EventType.AD) return 0; // Analysis Event
+        if (eventType == EventType.IPCI) return 0; // Interest Capitalization Event
+        if (eventType == EventType.RRF) return 0; // Rate Reset Fixed
+        if (eventType == EventType.RR) return 0; // Rate Reset Variable
+        if (eventType == EventType.SC) return 0; // Scaling Index Revision
+        if (eventType == EventType.CE) return 0; // Credit Event
+        if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData); // Fee Payment
+        if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData); // Intital Exchange
+        if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData); // Interest Payment
+        if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData); // Principal Prepayment
+        //if (eventType == EventType.PRD) return POF_PAM_PRD(terms, state, scheduleTime, externalData); // Purchase
+        if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData); // Maturity
+        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData); // Penalty Payment
+        if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData); // Termination
 
         revert("PAMEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }
