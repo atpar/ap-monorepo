@@ -1,5 +1,5 @@
 {
-    "templateId": "0x2c41532294fd0dd389c940cfc704765c51f265f3c142c6db37c2eb9498b991f9",
+    "templateId": "0x56213f6735da50c02aece290823c43b75bfdcc87eaf7db0180996035d811c72e",
     "productPresetId": "",
     "name": "Seller 2W-Bond",
     "label": "Seller 2-Weeks Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "currency": "0x9a73562D6Ea487988Ad96a3D6BA9AF416937191B",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",

@@ -1,5 +1,5 @@
 {
-    "templateId": "0xc5c2c4b5d5864fef2b96b372b020fbaaaa317ebe824d089ae60ee79937767c03",
+    "templateId": "0x907a7935b9880b55a4850f3a09878a390d7f92bf7775605539ae4cb60a238d77",
     "productPresetId": "",
     "name": "Seller 3M-Bond",
     "label": "Seller 3-Month Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "currency": "0xa5b3405E558861b1F3D5920E66CaAca147577e7D",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",

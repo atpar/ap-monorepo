@@ -1,5 +1,5 @@
 {
-    "templateId": "0xb7f9974063aabe332718cceafc5f7b2a4298cbcd58bb811b7e7bf89ff1dcfe0c",
+    "templateId": "0x10d1fbb108196208770eef147b7fd72ab4820bfbb9c7f9c7da7f7f2d4a69ab3b",
     "productPresetId": "",
     "name": "Buyer Variable 3M-Bond",
     "label": "Buyer 3-Month Variable-Rate Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x77A94244ED2F9137ee2BB6A71D79C3188f86c3Cd",
+        "currency": "0xa5b3405E558861b1F3D5920E66CaAca147577e7D",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
