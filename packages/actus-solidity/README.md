@@ -12,6 +12,11 @@ Contains banking-grade financial logic such as ACTUS day-count & end-of-month co
 ### Engines
 Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine implements the state transition & payoff functions and the schedule generation logic for an ACTUS Contract Type. Engines are stateless smart contracts, thus can be used on-chain as well as off-chain (e.g. by using the EVM as a TEE).
 
+### Basic workflow
+1. Define an ACTUS term sheet depending on the financial contract you want to model and derive the `LifecycleTerms` object from that
+2. Compute EventType-specific schedules via `computeNonCyclicScheduleSegment()` and `computeCyclicScheduleSegment()` (you may combine the schedules into one schedule for easier handling) as well as the initial state of the asset via `computeInitialState()` via the corresponding Engine contract
+3. Evaluate each event in the schedule by computing its payoff via `computePayoffForEvent()` and the resulting state via `computeStateForEvent` (note: the payoff has to be computed from the previous state - always compute payoff first then the  state)
+
 ## Development
 
 ### Requirements
