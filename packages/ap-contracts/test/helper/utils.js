@@ -146,7 +146,7 @@ async function generateTemplateSchedule(engineContractInstance, generatingTerms)
 async function registerTemplate(instances, template) {
   const templateTerms = parseExtendedTemplateTermsToTemplateTerms(template.extendedTemplateTerms);
   const generatingTerms = deriveGeneratingTermsFromExtendedTemplateTerms(template.extendedTemplateTerms);
-  const templateSchedules = await generateTemplateSchedule(
+  const templateSchedule = await generateTemplateSchedule(
     getEngineContractInstanceForContractType(instances, template.extendedTemplateTerms.contractType),
     generatingTerms
   );

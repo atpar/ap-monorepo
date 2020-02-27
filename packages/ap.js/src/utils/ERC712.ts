@@ -4,7 +4,6 @@ import web3EthAbi from 'web3-eth-abi';
 import CustomTermsABI from '@atpar/ap-contracts/test/helper/abis/CustomTermsABI.json';
 import TermsABI from '@atpar/ap-contracts/test/helper/abis/TermsABI.json';
 import TemplateTermsABI from '@atpar/ap-contracts/test/helper/abis/TemplateTermsABI.json';
-import TemplateScheduleABI from '@atpar/ap-contracts/test/helper/abis/TemplateScheduleABI.json';
 
 import {
   Terms,
@@ -19,14 +18,15 @@ import {
 import { ZERO_ADDRESS } from './Constants';
 
 
-export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedules: any): string {
+export function deriveTemplateId(templateTerms: TemplateTerms, templateSchedule: string[]): string {
   const templateTermsHash = web3Utils.keccak256(_encodeParameter(TemplateTermsABI, templateTerms));
-  const templateSchedulesHash = web3Utils.keccak256(_encodeParameter(TemplateScheduleABI, templateSchedules));
+  // @ts-ignore
+  const templateScheduleHash = web3Utils.keccak256(web3EthAbi.encodeParameters(['bytes32[]'], [templateSchedule]));
 
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameters(
     ['bytes32', 'bytes32'],
-    [templateTermsHash, templateSchedulesHash]
+    [templateTermsHash, templateScheduleHash]
   ));
 }
 

@@ -2,16 +2,15 @@ const Web3Utils = require('web3-utils');
 const Web3EthAbi = require('web3-eth-abi');
 
 const TemplateTermsABI = require('./abis/TemplateTermsABI');
-const TemplateScheduleABI = require('./abis/TemplateScheduleABI');
 const CustomTermsABI = require('./abis/CustomTermsABI');
 const TermsABI = require('./abis/TermsABI');
 
 
-function _encodeParameter (paramType, paramValue) {
-  return Web3EthAbi.encodeParameter(paramType, _toTuple(paramType, paramValue));
+function encodeParameter (paramType, paramValue) {
+  return Web3EthAbi.encodeParameter(paramType, toTuple(paramType, paramValue));
 }
 
-function _toTuple(paramType, paramValue) {
+function toTuple(paramType, paramValue) {
   if (!paramType || paramValue == null || !paramType.name) {
     throw new Error('Provided paramValues does not match paramType.');
   }
@@ -24,7 +23,7 @@ function _toTuple(paramType, paramValue) {
     }
     for (const compParamType of paramType.components) {
       if (!compParamType.name) { throw new Error('Malformed paramValue. Expected key name to  exist.'); }
-      tuple.push(_toTuple(compParamType, paramValue[compParamType.name]));
+      tuple.push(toTuple(compParamType, paramValue[compParamType.name]));
     }
   } else if (paramType.type.includes('[]')) {
     for (const value of paramValue) {
@@ -37,15 +36,15 @@ function _toTuple(paramType, paramValue) {
   return tuple;
 }
 
-function deriveTemplateId (templateTerms, templateSchedules) {
-  const templateTermsHash = Web3Utils.keccak256(_encodeParameter(
+function deriveTemplateId (templateTerms, templateSchedule) {
+  const templateTermsHash = Web3Utils.keccak256(encodeParameter(
     TemplateTermsABI,
     templateTerms
   ));
 
-  const templateScheduleHash = Web3Utils.keccak256(_encodeParameter(
-    TemplateScheduleABI,
-    templateSchedules
+  const templateScheduleHash = Web3Utils.keccak256(Web3EthAbi.encodeParameters(
+    ['bytes32[]'],
+    [templateSchedule]
   ));
 
   return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
@@ -55,14 +54,14 @@ function deriveTemplateId (templateTerms, templateSchedules) {
 }
 
 function getCustomTermsHash (customTerms) {
-  return Web3Utils.keccak256(_encodeParameter(
+  return Web3Utils.keccak256(encodeParameter(
     CustomTermsABI,
     customTerms
   ));
 }
 
 function getTermsHash (terms) {
-  return Web3Utils.keccak256(_encodeParameter(
+  return Web3Utils.keccak256(encodeParameter(
     TermsABI,
     terms
   ));
