@@ -2,8 +2,6 @@
 
 Solidity implementation of **ACTUS** Contract Types (https://www.actusfrf.org/algorithmic-standard)
 
-Demo: [**ACTUS Solidity Calculator**](https://www.atpar.io/actus-solidity-tool/dist/index.html) running on Görli Testnet.
-
 ## Smart Contracts
 
 ### Core
@@ -15,7 +13,7 @@ Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine imp
 ### Basic workflow
 1. Define an ACTUS term sheet depending on the financial contract you want to model and derive the `LifecycleTerms` object from that
 2. Compute EventType-specific schedules via `computeNonCyclicScheduleSegment()` and `computeCyclicScheduleSegment()` (you may combine the schedules into one schedule for easier handling) as well as the initial state of the asset via `computeInitialState()` via the corresponding Engine contract
-3. Evaluate each event in the schedule by computing its payoff via `computePayoffForEvent()` and the resulting state via `computeStateForEvent` (note: the payoff has to be computed from the previous state - always compute payoff first then the  state)
+3. Evaluate each event in the schedule by computing its payoff via `computePayoffForEvent()` and the resulting state via `computeStateForEvent()` (note: the payoff has to be computed from the previous state - always compute payoff first then the  state)
 
 ## Development
 
