@@ -47,6 +47,7 @@ contract('TokenizationFactory', (accounts) => {
       'FDT',
       initialSupply,
       "0x0000000000000000000000000000000000000001",
+      creatorBeneficiary,
       { from: creatorBeneficiary }
     );
 
@@ -73,6 +74,7 @@ contract('TokenizationFactory', (accounts) => {
       'FDT',
       initialSupply,
       "0x0000000000000000000000000000000000000001",
+      counterpartyBeneficiary,
       { from: counterpartyBeneficiary }
     );
 

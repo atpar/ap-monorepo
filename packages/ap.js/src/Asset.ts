@@ -187,7 +187,13 @@ export class Asset {
     
     const { currency } = await this.getTerms();
 
-    const tx = await this.ap.contracts.tokenizationFactory.methods.createERC20Distributor(name, symbol, initialSupply, currency).send(
+    const tx = await this.ap.contracts.tokenizationFactory.methods.createERC20Distributor(
+      name,
+      symbol,
+      initialSupply,
+      currency,
+      this.ap.signer.account
+    ).send(
       { from: this.ap.signer.account, gas: 2000000}
     );
 

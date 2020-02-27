@@ -2,11 +2,10 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
 
 import "../Core/AssetRegistry/IAssetRegistry.sol";
 import "../external/SimpleRestrictedFDT.sol";
-
+import "../external/VanillaFDT.sol";
 
 
 /**
@@ -35,7 +34,8 @@ contract TokenizationFactory {
         string memory name,
         string memory symbol,
         uint256 initialSupply,
-        IERC20 token
+        IERC20 token,
+        address owner
     )
         public
     {
@@ -44,14 +44,9 @@ contract TokenizationFactory {
             "TokenizationFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
         );
 
-        FDT_ERC20Extension distributor = new FDT_ERC20Extension(name, symbol, token);
+        VanillaFDT distributor = new VanillaFDT(name, symbol, token, owner, initialSupply);
 
-        require(
-            distributor.mint(msg.sender, initialSupply),
-            "TokenizationFactory.createERC20Distributor: Could not mint initial supply"
-        );
-
-        emit DeployedDistributor(address(distributor), msg.sender);
+        emit DeployedDistributor(address(distributor), owner);
     }
 
     /**
@@ -65,7 +60,8 @@ contract TokenizationFactory {
         string memory name,
         string memory symbol,
         uint256 initialSupply,
-        IERC20 token
+        IERC20 token,
+        address owner
     )
         public
     {
@@ -74,7 +70,7 @@ contract TokenizationFactory {
             "TokenizationFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
         );
 
-        SimpleRestrictedFDT distributor = new SimpleRestrictedFDT(name, symbol, token, msg.sender, initialSupply);
+        SimpleRestrictedFDT distributor = new SimpleRestrictedFDT(name, symbol, token, owner, initialSupply);
 
         emit DeployedDistributor(address(distributor), msg.sender);
     }

@@ -27,14 +27,16 @@ export class TokenizationFactory extends Contract {
       name: string,
       symbol: string,
       initialSupply: number | string,
-      token: string
+      token: string,
+      owner: string
     ): TransactionObject<void>;
 
     createRestrictedERC20Distributor(
       name: string,
       symbol: string,
       initialSupply: number | string,
-      token: string
+      token: string,
+      owner: string
     ): TransactionObject<void>;
   };
   events: {

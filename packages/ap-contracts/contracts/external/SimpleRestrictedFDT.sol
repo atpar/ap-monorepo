@@ -2,8 +2,8 @@ pragma solidity ^0.5.2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
 import "funds-distribution-token/contracts/FundsDistributionToken.sol";
+import "funds-distribution-token/contracts/IFundsDistributionToken.sol";
 
 
 /**
@@ -267,6 +267,7 @@ contract ERC1404 is IERC20 {
 }
 
 contract SimpleRestrictedFDT is
+    IFundsDistributionToken,
     FundsDistributionToken,
     ERC1404,
     Whitelistable,
