@@ -1,13 +1,17 @@
 import Web3 from 'web3';
 
 import IEngineArtifact from '@atpar/ap-contracts/artifacts/IEngine.min.json';
+import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json';
+import CEGEngineArtifact from '@atpar/ap-contracts/artifacts/CEGEngine.min.json';
+import CECEngineArtifact from '@atpar/ap-contracts/artifacts/CECEngine.min.json';
+import PAMEngineArtifact from '@atpar/ap-contracts/artifacts/PAMEngine.min.json';
 import AssetActorArtifact from '@atpar/ap-contracts/artifacts/AssetActor.min.json';
 import AssetIssuerArtifact from '@atpar/ap-contracts/artifacts/AssetIssuer.min.json';
 import AssetRegistryArtifact from '@atpar/ap-contracts/artifacts/AssetRegistry.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
 import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketObjectRegistry.min.json';
-import TemplateRegistryArtifact from '@atpar/ap-contracts/artifacts/TemplateRegistry.min.json';
 import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
+import TemplateRegistryArtifact from '@atpar/ap-contracts/artifacts/TemplateRegistry.min.json';
 import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/TokenizationFactory.min.json';
 import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
@@ -22,8 +26,8 @@ import { AssetRegistry } from '@atpar/ap-contracts/ts-bindings/AssetRegistry';
 import { AssetIssuer } from '@atpar/ap-contracts/ts-bindings/AssetIssuer';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObjectRegistry';
-import { TemplateRegistry } from '@atpar/ap-contracts/ts-bindings/TemplateRegistry';
 import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
+import { TemplateRegistry } from '@atpar/ap-contracts/ts-bindings/TemplateRegistry';
 import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/TokenizationFactory';
 import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
@@ -61,35 +65,35 @@ export class Contracts {
     if (!isAddressBook(addressBook)) { throw new Error('INITIALIZATION_ERROR: Malformed AddressBook.'); }
 
     // @ts-ignore
-    this._engine = new web3.eth.Contract(IEngineArtifact.abi) as IEngine;
+    this._engine = new web3.eth.Contract(IEngineArtifact.abi, undefined, { data: IEngineArtifact.bytecode }) as IEngine;
     // @ts-ignore
-    this.annEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.ANNEngine) as ANNEngine;
+    this.annEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
     // @ts-ignore
-    this.pamEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.PAMEngine) as PAMEngine;
+    this.pamEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
     // @ts-ignore
-    this.cegEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CEGEngine) as CEGEngine;
+    this.cegEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CEGEngine, { data: CEGEngineArtifact.bytecode }) as CEGEngine;
     // @ts-ignore
-    this.cecEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CECEngine) as CECEngine;
+    this.cecEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CECEngine, { data: CECEngineArtifact.bytecode }) as CECEngine;
     // @ts-ignore
-    this.assetActor = new web3.eth.Contract(AssetActorArtifact.abi, addressBook.AssetActor) as AssetActor;
+    this.assetActor = new web3.eth.Contract(AssetActorArtifact.abi, addressBook.AssetActor, { data: AssetActorArtifact.bytecode }) as AssetActor;
     // @ts-ignore
-    this.assetIssuer = new web3.eth.Contract(AssetIssuerArtifact.abi, addressBook.AssetIssuer) as AssetIssuer;
+    this.assetIssuer = new web3.eth.Contract(AssetIssuerArtifact.abi, addressBook.AssetIssuer, { data: AssetIssuerArtifact.bytecode }) as AssetIssuer;
     // @ts-ignore
-    this.assetRegistry = new web3.eth.Contract(AssetRegistryArtifact.abi, addressBook.AssetRegistry) as AssetRegistry;
+    this.assetRegistry = new web3.eth.Contract(AssetRegistryArtifact.abi, addressBook.AssetRegistry, { data: AssetRegistryArtifact.bytecode }) as AssetRegistry;
     // @ts-ignore
-    this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian) as Custodian;
+    this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
-    this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry) as MarketObjectRegistry,
+    this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry, { data: MarketObjectRegistryArtifact.bytecode }) as MarketObjectRegistry,
     // @ts-ignore
-    this.templateRegistry = new web3.eth.Contract(TemplateRegistryArtifact.abi, addressBook.TemplateRegistry) as TemplateRegistry;
+    this.templateRegistry = new web3.eth.Contract(TemplateRegistryArtifact.abi, addressBook.TemplateRegistry, { data: TemplateRegistryArtifact.bytecode }) as TemplateRegistry;
     // @ts-ignore
-    this.signedMath = new web3.eth.Contract(SignedMathArtifact.abi, addressBook.SignedMath) as SignedMath;
+    this.signedMath = new web3.eth.Contract(SignedMathArtifact.abi, addressBook.SignedMath, { data: SignedMathArtifact.bytecode }) as SignedMath;
     // @ts-ignore
-    this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory) as TokenizationFactory;
+    this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory, { data: TokenizationFactoryArtifact.bytecode }) as TokenizationFactory;
     // @ts-ignore
-    this._distributor = new web3.eth.Contract(VanillaFDTArtifact.abi) as VanillaFDT;
+    this._distributor = new web3.eth.Contract(VanillaFDTArtifact.abi, undefined, { data: VanillaFDTArtifact.bytecode }) as VanillaFDT;
     // @ts-ignore
-    this._erc20 = new web3.eth.Contract(ERC20Artifact.abi) as ERC20;
+    this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
   }
 
   /**

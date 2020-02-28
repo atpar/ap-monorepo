@@ -60,6 +60,8 @@ export class AssetRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
+    getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
+
     setFinalizedState(
       assetId: string | number[],
       state: {
@@ -391,8 +393,6 @@ export class AssetRegistry extends Contract {
     templateRegistry(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
-
-    getScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,

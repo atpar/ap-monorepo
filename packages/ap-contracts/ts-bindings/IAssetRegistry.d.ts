@@ -373,7 +373,7 @@ export class IAssetRegistry extends Contract {
 
     getNextEvent(assetId: string | number[]): TransactionObject<string>;
 
-    getScheduleIndex(assetId: string | number[]): TransactionObject<string>;
+    getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
 
