@@ -9,7 +9,7 @@ import "./AssetRegistryStorage.sol";
  */
 contract Economics is AssetRegistryStorage {
 
-    event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 scheduleIndex);
+    event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 nextScheduleIndex);
 
     event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
 
