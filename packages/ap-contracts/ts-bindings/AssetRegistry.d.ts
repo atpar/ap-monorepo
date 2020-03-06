@@ -522,7 +522,7 @@ export class AssetRegistry extends Contract {
     }>;
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
-      scheduleIndex: string;
+      nextScheduleIndex: string;
       0: string;
       1: string;
     }>;

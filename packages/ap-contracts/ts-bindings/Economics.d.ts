@@ -388,7 +388,7 @@ export class Economics extends Contract {
   events: {
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
-      scheduleIndex: string;
+      nextScheduleIndex: string;
       0: string;
       1: string;
     }>;
