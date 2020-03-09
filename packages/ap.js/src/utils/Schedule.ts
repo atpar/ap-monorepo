@@ -48,6 +48,7 @@ export async function computeTemplateScheduleFromExtendedTemplateTerms(
   const templateSchedule = [];
 
   templateSchedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(generatingTerms, 0, maturityDate).call()));
+  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 7).call()));
   templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 8).call()));
   templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 15).call()));
   templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 19).call()));
