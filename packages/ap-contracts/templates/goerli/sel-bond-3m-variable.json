@@ -1,5 +1,5 @@
 {
-    "templateId": "0x968774a9e62dd29e4ddfb0839f804363e568695a8d937ab3db9ff4d584b12ee4",
+    "templateId": "0x8ed8fdd21d8586c0c59cc090856a80e5d49f2c97df4144eb69f0e73ee3a6203f",
     "productPresetId": "",
     "name": "Seller Variable 3M-Bond",
     "label": "Seller 3-Month Variable-Rate Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x9a73562D6Ea487988Ad96a3D6BA9AF416937191B",
+        "currency": "0xdcA8243C021AD8DcD540374cA4c956b2CF8E91Ba",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "creatorID": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
