@@ -286,3 +286,37 @@ export interface ExtendedTemplateTerms {
   gracePeriod: IP;
   delinquencyPeriod: IP;
 }
+
+export function isIP(obj: any): obj is IP {
+  if (!obj) { return false; }
+  if (obj.i == undefined || (typeof obj.i !== 'number' && typeof obj.i !== 'string')) { return false; }
+  if (obj.p == undefined || (typeof obj.p !== 'number' && typeof obj.p !== 'string')) { return false; }
+  if (obj.isSet == undefined || typeof obj.isSet !== 'boolean') { return false; }
+
+  return true;
+}
+
+export function isIPS(obj: any): obj is IPS {
+  if (!obj) { return false; }
+  if (obj.i == undefined || (typeof obj.i !== 'number' && typeof obj.i !== 'string')) { return false; }
+  if (obj.p == undefined || (typeof obj.p !== 'number' && typeof obj.p !== 'string')) { return false; }
+  if (obj.s == undefined || (typeof obj.s !== 'number' && typeof obj.s !== 'string')) { return false; }
+  if (obj.isSet == undefined || typeof obj.isSet !== 'boolean') { return false; }
+
+  return true;
+}
+
+export function isContractReference(obj: any): obj is ContractReference {
+  if (!obj) { return false; }
+  if (obj.object == undefined || typeof obj.object !== 'string') { return false; }
+  if (
+    obj.contractReferenceType == undefined
+    || (typeof obj.contractReferenceType !== 'number' && typeof obj.contractReferenceType !== 'string')
+  ) { return false; }
+  if (
+    obj.contractReferenceRole == undefined
+    || (typeof obj.contractReferenceRole !== 'number' && typeof obj.contractReferenceRole !== 'string')
+  ) { return false; }
+
+  return true;
+}
