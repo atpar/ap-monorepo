@@ -359,8 +359,8 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.creatorID == undefined || typeof obj.creatorID !== 'string') { return false; }
   if (obj.counterpartyID == undefined || typeof obj.counterpartyID !== 'string') { return false; }
   
-  if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string' || typeof obj.marketObjectCodeRateReset !== 'object') { return false; }
-  
+  if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
+
   if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
@@ -373,7 +373,7 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.cycleAnchorDateOfScalingIndex == undefined || typeof obj.cycleAnchorDateOfScalingIndex !== 'number' && typeof obj.cycleAnchorDateOfScalingIndex !== 'string') { return false; }
   if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
   if (obj.cycleAnchorDateOfPrincipalRedemption == undefined || typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'number' && typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'string') { return false; }
-  
+
   if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
@@ -391,16 +391,16 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
   if (obj.periodCap == undefined || typeof obj.periodCap !== 'number' && typeof obj.periodCap !== 'string') { return false; }
   if (obj.periodFloor == undefined || typeof obj.periodFloor !== 'number' && typeof obj.periodFloor !== 'string') { return false; }
-  
+
   if (!isIPS(obj.cycleOfInterestPayment)) { return false; }
   if (!isIPS(obj.cycleOfRateReset)) { return false; }
   if (!isIPS(obj.cycleOfScalingIndex)) { return false; }
   if (!isIPS(obj.cycleOfFee)) { return false; }
   if (!isIPS(obj.cycleOfPrincipalRedemption)) { return false; }
-  
+
   if (!isIP(obj.gracePeriod)) { return false; }
   if (!isIP(obj.delinquencyPeriod)) { return false; }
-  
+
   if (!isContractReference(obj.contractReference_1)) { return false; }
   if (!isContractReference(obj.contractReference_2)) { return false; }
 
@@ -456,7 +456,7 @@ export function isLifecycleTerms (obj: any): obj is LifecycleTerms {
 
 export function isGeneratingTerms (obj: any): obj is GeneratingTerms {
   if (!obj) { return false; }
-  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' || typeof obj.scalingEffect !== 'number') { return false; }
+  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
  
   if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
