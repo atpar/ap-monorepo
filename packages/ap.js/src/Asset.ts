@@ -182,7 +182,7 @@ export class Asset {
     const { creatorBeneficiary, counterpartyBeneficiary } = await this.getOwnership();
     
     if (![creatorBeneficiary, counterpartyBeneficiary].includes(this.ap.signer.account)) {
-      throw(new Error('EXECUTION_ERROR: The default account needs to be a beneficiary!'));
+      throw(new Error('The default account needs to be a beneficiary.'));
     }
     
     const { currency } = await this.getTerms();

@@ -64,7 +64,7 @@ export class Signer {
       unfilledTypedData = getEnhancementOrderDataAsTypedData(orderDataOrEnhancementOrderData, false, this.verifyingContractAddress);
       filledTypedData = getEnhancementOrderDataAsTypedData(orderDataOrEnhancementOrderData, true, this.verifyingContractAddress);
     } else {
-      throw new Error('EXECUTION_ERROR: Is not OrderData or EnhancementOrderData.');
+      throw new Error('Malformed OrderData or EnhancementOrderData provided.');
     }
 
     if (!this._validateSignature(
@@ -130,7 +130,7 @@ export class Signer {
         return signature;
       } catch (error) {
         if (!(String(error.message.toString()).includes('Method eth_signTypedData not supported.'))) { 
-          throw(new Error('NOT_DEFINED_ERROR: eth_signTypedData and eth_signTypedData_v3 not provided by web3 provider.'));
+          throw(new Error('Mehtods eth_signTypedData and eth_signTypedData_v3 are not provided by web3 provider.'));
         }
         throw error; 
       }

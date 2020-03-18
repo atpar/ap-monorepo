@@ -1,4 +1,4 @@
-import { TemplateTerms, ExtendedTemplateTerms } from './types';
+import { TemplateTerms, ExtendedTemplateTerms, isExtendedTemplateTerms } from './types';
 
 import { AP } from './index';
 
@@ -43,6 +43,10 @@ export class Template {
     ap: AP,
     extendedTemplateTerms: ExtendedTemplateTerms
   ): Promise<Template> {
+    if (!isExtendedTemplateTerms(extendedTemplateTerms)) {
+      throw new Error('Malformed extendedTemplateTerms provided.');
+    }
+
     const engine = ap.contracts.engine(extendedTemplateTerms.contractType);
     const templateTerms = ap.utils.conversion.deriveTemplateTermsFromExtendedTemplateTerms(extendedTemplateTerms);
     const templateSchedule = await ap.utils.schedule.computeTemplateScheduleFromExtendedTemplateTerms(engine, extendedTemplateTerms);
@@ -80,6 +84,10 @@ export class Template {
     ap: AP,
     extendedTemplateTerms: ExtendedTemplateTerms
   ): Promise<Template> {
+    if (!isExtendedTemplateTerms(extendedTemplateTerms)) {
+      throw new Error('Malformed extendedTemplateTerms provided.');
+    }
+
     const engine = ap.contracts.engine(extendedTemplateTerms.contractType);
     const templateTerms = ap.utils.conversion.deriveTemplateTermsFromExtendedTemplateTerms(extendedTemplateTerms);
     const templateSchedule = await ap.utils.schedule.computeTemplateScheduleFromExtendedTemplateTerms(engine, extendedTemplateTerms);
@@ -88,7 +96,7 @@ export class Template {
     const registeredTemplateEvents = await ap.contracts.templateRegistry.getPastEvents('RegisteredTemplate', { filter: { templateId }});
 
     if (registeredTemplateEvents.length === 0) {
-      throw new Error('INITIALIZATION_ERROR: No template found for provided terms.'); 
+      throw new Error('No template found for provided terms.'); 
     }
 
     return new Template(ap, templateId);

@@ -46,7 +46,7 @@ describe('OrderClass', (): void => {
     const malformedOrderData = JSON.parse(JSON.stringify(orderData));
     malformedOrderData.creatorSignature = '0x00000000000000f7a834717ed40eed767a810d6b69c191340c54018c9d6e4f47414083f69d4400be2d0e610eb7fe59e6e5e28b0fd8bc727ea8bb4ebef654000000'
 
-    await expect(Order.load(apCP, malformedOrderData)).rejects.toThrow('EXECUTION_ERROR: Signatures are invalid.');
+    await expect(Order.load(apCP, malformedOrderData)).rejects.toThrow('Signatures are invalid.');
   });
 
   it('should verify and sign order on behalf of the counterparty', async (): Promise<void> => {

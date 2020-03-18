@@ -15,6 +15,14 @@ import {
 import { EMPTY_LIFECYCLE_TERMS } from './Constants';
 
 
+export const isoToUnix = (date: string): string => (
+  String((new Date(date + 'Z')).getTime() / 1000)
+);
+
+export const unixToISO = (unix: string | number): string => (
+  new Date(Number(unix) * 1000).toISOString()
+);
+
 export const toHex = (mixed: any): any => (
   (String(mixed).startsWith('0x')) ? mixed : web3Utils.toHex(mixed)
 );

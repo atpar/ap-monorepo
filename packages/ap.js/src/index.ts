@@ -42,7 +42,7 @@ export class AP {
         || !event.returnValues.assetId 
         || !event.returnValues.creator 
         || !event.returnValues.counterparty
-      ) { throw new Error('EXECUTION_ERROR: Malformed event returned.'); }
+      ) { throw new Error('Malformed event returned.'); }
 
       if (
         event.returnValues.creator !== this.signer.account &&
@@ -95,14 +95,14 @@ export class AP {
     addressBook?: APTypes.AddressBook
   ): Promise<AP> {        
     if (!(await web3.eth.net.isListening())) { 
-      throw(new Error('CONNECTION_ERROR: Could not establish connection.'));
+      throw(new Error('Could not establish connection to Ethereum node.'));
     }
 
-    if (!addressBook) {
+    if (addressBook == undefined) {
       const netId = await web3.eth.net.getId();
       // @ts-ignore
-      if (!Deployments[netId]) {
-        throw new Error('INITIALIZATION_ERROR: Contracts are not deployed on current network.');
+      if (Deployments[netId] == undefined) {
+        throw new Error('Contracts are not deployed on current network.');
       }
       // @ts-ignore
       addressBook = Deployments[netId] as AddressBook;

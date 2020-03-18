@@ -62,7 +62,7 @@ export class Contracts {
    * @returns {Promise<Contracts>} Promise yielding the Contracts instance
    */
   public constructor (web3: Web3, addressBook: AddressBook) {
-    if (!isAddressBook(addressBook)) { throw new Error('INITIALIZATION_ERROR: Malformed AddressBook.'); }
+    if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
     // @ts-ignore
     this._engine = new web3.eth.Contract(IEngineArtifact.abi, undefined, { data: IEngineArtifact.bytecode }) as IEngine;

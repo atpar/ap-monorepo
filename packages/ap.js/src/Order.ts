@@ -1,5 +1,5 @@
 import { AP } from '.';
-import { OrderParams, OrderData, isOrderData } from './types';
+import { OrderParams, OrderData, isOrderData, isOrderParams } from './types';
 import { EMPTY_ENHANCEMENT_PARAMS, ZERO_ADDRESS } from './utils/Constants';
 
 
@@ -29,7 +29,7 @@ export class Order {
       this.orderData.counterpartySignature = await this.ap.signer.signOrderAsTaker(this.orderData);
     } else {
       throw(new Error(
-        'EXECUTION_ERROR: Addresses of obligors do not match current account'
+        'Addresses of obligors do not match current account.'
       ));
     }
   }
@@ -39,7 +39,7 @@ export class Order {
    */
   public async issueAssetFromOrder (): Promise<void> {
     if (!this.orderData.creatorSignature || !this.orderData.counterpartySignature) {
-      throw(new Error('EXECUTION_ERROR: Can not issue asset from unfilled order. Signature is missing!'));
+      throw(new Error('Can not issue asset from unfilled order. Signature is missing.'));
     }
 
     await this.ap.contracts.assetIssuer.methods.issueFromOrder(this.orderData).send({ from: this.ap.signer.account, gas: 5000000 });
@@ -61,11 +61,11 @@ export class Order {
    */
   public static async load (ap: AP, orderData: OrderData): Promise<Order> {
     if (!isOrderData(orderData)) { 
-      throw(new Error('EXECUTION_ERROR: Invalid OrderData!')); 
+      throw(new Error('Malformed orderData provided.')); 
     }
 
     if (!(ap.signer.validateSignatures(orderData))) {
-      throw(new Error('EXECUTION_ERROR: Signatures are invalid.'));
+      throw(new Error('Signatures are invalid.'));
     }
 
     return new Order(ap, orderData);
@@ -78,6 +78,10 @@ export class Order {
    * @returns {Order}
    */
   public static create (ap: AP, orderParams: OrderParams): Order {
+    if (!isOrderParams(orderParams)) {
+      throw new Error('Malformed orderParams provided.');
+    }
+
     const enhancementOrder_1 = (orderParams.enhancement_1) ? {
       termsHash: orderParams.enhancement_1.termsHash,
       templateId: orderParams.enhancement_1.templateId,
