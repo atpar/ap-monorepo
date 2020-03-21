@@ -341,9 +341,11 @@ export class AssetActor extends Contract {
       assetId: string;
       eventType: string;
       scheduleTime: string;
+      payoff: string;
       0: string;
       1: string;
       2: string;
+      3: string;
     }>;
     Status: ContractEvent<{
       assetId: string;

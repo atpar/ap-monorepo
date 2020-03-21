@@ -35,8 +35,7 @@ contract AssetActor is
     Ownable
 {
 
-    event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime);
-
+    event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
 
@@ -175,7 +174,7 @@ contract AssetActor is
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
-        emit ProgressedAsset(assetId, eventType, scheduleTime);
+        emit ProgressedAsset(assetId, eventType, scheduleTime, payoff);
     }
 
     /**
