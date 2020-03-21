@@ -15,6 +15,7 @@ import TemplateRegistryArtifact from '@atpar/ap-contracts/artifacts/TemplateRegi
 import TokenizationFactoryArtifact from '@atpar/ap-contracts/artifacts/TokenizationFactory.min.json';
 import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
+import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
 
 import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
@@ -29,8 +30,9 @@ import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObje
 import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { TemplateRegistry } from '@atpar/ap-contracts/ts-bindings/TemplateRegistry';
 import { TokenizationFactory } from '@atpar/ap-contracts/ts-bindings/TokenizationFactory';
-import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
+import { ERC1404 } from '@atpar/ap-contracts/ts-bindings/ERC1404';
+import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
 
 import { AddressBook, isAddressBook } from '../types';
 
@@ -38,8 +40,9 @@ import { AddressBook, isAddressBook } from '../types';
 export class Contracts {
 
   private _engine: IEngine;
-  private _distributor: VanillaFDT;
   private _erc20: ERC20;
+  private _erc1404: ERC1404;
+  private _erc2222: VanillaFDT;
 
   public annEngine: ANNEngine;
   public pamEngine: PAMEngine;
@@ -91,9 +94,11 @@ export class Contracts {
     // @ts-ignore
     this.tokenizationFactory = new web3.eth.Contract(TokenizationFactoryArtifact.abi, addressBook.TokenizationFactory, { data: TokenizationFactoryArtifact.bytecode }) as TokenizationFactory;
     // @ts-ignore
-    this._distributor = new web3.eth.Contract(VanillaFDTArtifact.abi, undefined, { data: VanillaFDTArtifact.bytecode }) as VanillaFDT;
-    // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
+    // @ts-ignore
+    this._erc1404 = new web3.eth.Contract(ERC1404Artifact.abi, undefined, { data: ERC1404Artifact.bytecode }) as ERC1404;
+    // @ts-ignore
+    this._erc2222 = new web3.eth.Contract(VanillaFDTArtifact.abi, undefined, { data: VanillaFDTArtifact.bytecode }) as VanillaFDT;
   }
 
   /**
@@ -125,21 +130,41 @@ export class Contracts {
   }
 
   /**
-   * Instantiates distributor contract (FDT) by with a provided address and returns the instance.
-   * @param {string} address address of the distributor (FDT) 
-   * @returns {VanillaFDT} Instance of VanillaFDT
+   * Instantiates an ERC20 token contract with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address  address of the deployed token contract
+   * @returns {ERC20} Instance of ERC20
    */
-  public distributor(address: string): VanillaFDT {
-    const distributor = this._distributor.clone();
-    distributor.options.address = address;
-
-    return distributor;
-  }
-
   public erc20(address: string): ERC20 {
     const erc20 = this._erc20.clone();
     erc20.options.address = address;
 
     return erc20;
+  }
+
+  /**
+   * Instantiates an ERC1404 token contract with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address  address of the deployed token contract
+   * @returns {ERC1404} Instance of ERC1404
+   */
+  public erc1404(address: string): ERC1404 {
+    const erc1404 = this._erc1404.clone();
+    erc1404.options.address = address;
+
+    return erc1404;
+  }
+
+  /**
+   * Instantiates an ERC2222 token contract (VanillaFDT) with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address address of the deployed token contract
+   * @returns {ERC2222} Instance of VanillaFDT (ERC2222)
+   */
+  public erc2222(address: string): VanillaFDT {
+    const erc2222 = this._erc2222.clone();
+    erc2222.options.address = address;
+
+    return erc2222;
   }
 }
