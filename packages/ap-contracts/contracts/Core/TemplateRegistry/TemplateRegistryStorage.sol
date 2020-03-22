@@ -13,9 +13,14 @@ import "../SharedTypes.sol";
 contract TemplateRegistryStorage is SharedTypes {
 
     struct Template {
-        mapping (uint256 => bytes32) packedTerms;
-        TemplateSchedule templateSchedule;
+        // boolean indicating that template exists
         bool isSet;
+        // the schedule of the template
+        TemplateSchedule templateSchedule;
+        // tightly packed, encoded TemplateTerms
+        // bytes32(0) used as default value for each attribute
+        // storage id => bytes32 encoded value
+        mapping (uint256 => bytes32) packedTerms;
     }
 
     mapping (bytes32 => Template) templates;
@@ -28,7 +33,10 @@ contract TemplateRegistryStorage is SharedTypes {
     )
         internal
     {
-        templates[templateId] = Template({ templateSchedule: TemplateSchedule({ length: 0 }), isSet: true });
+        templates[templateId] = Template({
+            isSet: true,
+            templateSchedule: TemplateSchedule({ length: 0 })
+        });
 
         encodeAndSetTerms(templateId, terms);
         encodeAndSetSchedule(templateId, templateSchedule);

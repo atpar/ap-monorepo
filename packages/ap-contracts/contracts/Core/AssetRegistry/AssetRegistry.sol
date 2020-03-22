@@ -45,13 +45,13 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     )
         public
     {
-        // revert if an asset with the provided assetId already exists
+        // revert if an asset with the specified assetId already exists
         require(
-            assets[assetId].assetId == bytes32(0),
+            assets[assetId].isSet == false,
             "AssetRegistry.registerAsset: ENTRY_ALREADY_EXISTS"
         );
 
-        // storage the asset
+        // store the asset
         setAsset(
             assetId,
             ownership,

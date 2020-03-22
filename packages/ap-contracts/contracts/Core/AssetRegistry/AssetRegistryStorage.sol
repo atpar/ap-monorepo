@@ -17,17 +17,31 @@ import "../SharedTypes.sol";
 contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
 
     struct Asset {
-        bytes32 assetId;
-        AssetOwnership ownership;
-        mapping (int8 => address) cashflowBeneficiaries;
+        // boolean indicating that asset exists / is registered
+        bool isSet;
+        // Id of template registered in the TemplateRegistry
         bytes32 templateId;
+        // pointer to index of the next event in the template schedule
         uint256 nextScheduleIndex;
-        mapping (uint8 => bytes32) packedTermsState;
+        // binary encoded map of the LifecycleTerms attributes which overwrite the values defined in TemplateTerms
         uint256 overwrittenAttributesMap;
+        // address of the ACTUS Engine used for computing the State and the Payoff of the asset
         address engine;
+        // address of the Asset Actor which is allowed to update the State of the asset
         address actor;
+        // ownership of the asset
+        AssetOwnership ownership;
+        // granular ownership of the event type specific cashflows
+        // per default owners are beneficiaries defined in ownership object
+        // cashflow id (:= (EventType index + 1) * direction) => owner
+        mapping (int8 => address) cashflowBeneficiaries;
+        // tightly packed, encoded LifecycleTerms and State values of the asset
+        // bytes32(0) used as default value for each attribute
+        // storage id => bytes32 encoded value
+        mapping (uint8 => bytes32) packedTermsState;
     }
 
+    // AssetId => Asset
     mapping (bytes32 => Asset) assets;
 
     ITemplateRegistry public templateRegistry;
@@ -52,13 +66,13 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         internal
     {
         assets[_assetId] = Asset({
-            assetId: _assetId,
-            ownership: _ownership,
+            isSet: true,
             templateId: _templateId,
             nextScheduleIndex: 0,
             overwrittenAttributesMap: customTerms.overwrittenAttributesMap,
             engine: _engine,
-            actor: _actor
+            actor: _actor,
+            ownership: _ownership
         });
 
         encodeAndSetTerms(_assetId, customTerms);
