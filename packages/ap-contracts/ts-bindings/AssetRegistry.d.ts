@@ -528,7 +528,7 @@ export class AssetRegistry extends Contract {
         counterpartyBeneficiary: string;
       },
       templateId: string | number[],
-      customTerms: {
+      terms: {
         anchorDate: number | string;
         overwrittenAttributesMap: number | string;
         overwrittenTerms: {
@@ -601,7 +601,8 @@ export class AssetRegistry extends Contract {
         executionAmount: number | string;
       },
       engine: string,
-      actor: string
+      actor: string,
+      root: string
     ): TransactionObject<void>;
   };
   events: {

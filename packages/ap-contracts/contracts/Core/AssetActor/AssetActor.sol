@@ -191,7 +191,7 @@ contract AssetActor is
      * @param ownership ownership of the asset
      * @param templateId id of the financial template to use
      * @param customTerms asset specific terms
-     * @param engineAddress address of the ACTUS engine used for the spec. ContractType
+     * @param engine address of the ACTUS engine used for the spec. ContractType
      * @return true on success
      */
     function initialize(
@@ -199,14 +199,15 @@ contract AssetActor is
         AssetOwnership memory ownership,
         bytes32 templateId,
         CustomTerms memory customTerms,
-        address engineAddress
+        address engine,
+        address root
     )
         public
         onlyRegisteredIssuer
         returns (bool)
     {
         require(
-            assetId != bytes32(0) && engineAddress != address(0),
+            assetId != bytes32(0) && engine != address(0),
             "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
         );
 
@@ -217,7 +218,7 @@ contract AssetActor is
         }
 
         // compute the initial state of the asset using the LifecycleTerms
-        State memory initialState = IEngine(engineAddress).computeInitialState(
+        State memory initialState = IEngine(engine).computeInitialState(
             deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(templateId),
                 customTerms
@@ -231,8 +232,9 @@ contract AssetActor is
             templateId,
             customTerms,
             initialState,
-            engineAddress,
-            address(this)
+            engine,
+            address(this),
+            root
         );
 
         return true;

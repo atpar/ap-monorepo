@@ -351,7 +351,8 @@ contract AssetIssuer is
                 ownership,
                 templateId,
                 customTerms,
-                engine
+                engine,
+                address(0)
             ),
             "AssetIssuer.issueAsset: EXECUTION_ERROR"
         );

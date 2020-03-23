@@ -583,7 +583,8 @@ export class IAssetRegistry extends Contract {
         executionAmount: number | string;
       },
       engine: string,
-      actor: string
+      actor: string,
+      root: string
     ): TransactionObject<void>;
 
     checkAccess(

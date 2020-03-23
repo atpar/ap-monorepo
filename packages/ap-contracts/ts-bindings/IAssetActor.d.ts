@@ -93,7 +93,8 @@ export class IAssetActor extends Contract {
           };
         };
       },
-      engine: string
+      engine: string,
+      root: string
     ): TransactionObject<boolean>;
   };
   events: {

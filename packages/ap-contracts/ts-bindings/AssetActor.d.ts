@@ -333,7 +333,8 @@ export class AssetActor extends Contract {
           };
         };
       },
-      engineAddress: string
+      engine: string,
+      root: string
     ): TransactionObject<boolean>;
   };
   events: {

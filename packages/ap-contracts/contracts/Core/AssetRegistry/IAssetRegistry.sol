@@ -59,7 +59,8 @@ contract IAssetRegistry is AssetRegistryStorage {
         CustomTerms memory customTerms,
         State memory state,
         address engine,
-        address actor
+        address actor,
+        address root
     )
         public;
 
