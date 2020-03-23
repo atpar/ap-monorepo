@@ -34,7 +34,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
             "AssetRegistry.setCreatorBeneficiary: ENTRY_DOES_NOT_EXIST"
         );
         require(
-            msg.sender == prevCreatorBeneficiary || checkAccess(assetId, msg.sig, msg.sender),
+            msg.sender == prevCreatorBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCreatorBeneficiary: UNAUTHORIZED_SENDER"
         );
 
@@ -62,7 +62,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
             "AssetRegistry.setCounterpartyBeneficiary: ENTRY_DOES_NOT_EXIST"
         );
         require(
-            msg.sender == prevCounterpartyBeneficiary || checkAccess(assetId, msg.sig, msg.sender),
+            msg.sender == prevCounterpartyBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCounterpartyBeneficiary: UNAUTHORIZED_SENDER"
         );
 
@@ -95,18 +95,20 @@ contract Ownership is AssetRegistryStorage, AccessControl {
         if (prevBeneficiary == address(0)) {
             if (cashflowId > 0) {
                 require(
-                    msg.sender == prevBeneficiary || checkAccess(assetId, msg.sig, msg.sender),
+                    msg.sender == assets[assetId].ownership.creatorBeneficiary
+                    || hasAccess(assetId, msg.sig, msg.sender),
                     "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
                 );
             } else {
                 require(
-                    msg.sender == prevBeneficiary || checkAccess(assetId, msg.sig, msg.sender),
+                    msg.sender == assets[assetId].ownership.counterpartyBeneficiary
+                    || hasAccess(assetId, msg.sig, msg.sender),
                     "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
                 );
             }
         } else {
             require(
-                msg.sender == prevBeneficiary || checkAccess(assetId, msg.sig, msg.sender),
+                msg.sender == prevBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
                 "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
             );
         }
@@ -130,7 +132,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
      */
     function setCreatorObligor (bytes32 assetId, address newCreatorObligor) external {
         require(
-            checkAccess(assetId, msg.sig, msg.sender),
+            hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCreatorObligor: UNAUTHORIZED_SENDER"
         );
 
@@ -150,7 +152,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
      */
     function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor) external {
         require(
-            checkAccess(assetId, msg.sig, msg.sender),
+            hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCounterpartyObligor: UNAUTHORIZED_SENDER"
         );
 

@@ -76,6 +76,12 @@ export class AssetRegistry extends Contract {
       account: string
     ): TransactionObject<void>;
 
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     setFinalizedState(
@@ -510,12 +516,6 @@ export class AssetRegistry extends Contract {
       assetId: string | number[],
       cashflowId: number | string
     ): TransactionObject<string>;
-
-    checkAccess(
-      assetId: string | number[],
-      methodSignature: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
 

@@ -587,7 +587,7 @@ export class IAssetRegistry extends Contract {
       root: string
     ): TransactionObject<void>;
 
-    checkAccess(
+    hasAccess(
       assetId: string | number[],
       methodSignature: string | number[],
       account: string

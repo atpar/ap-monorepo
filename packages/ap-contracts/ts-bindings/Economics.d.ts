@@ -27,6 +27,12 @@ export class Economics extends Contract {
       account: string
     ): TransactionObject<void>;
 
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
       templateTerms: {
         calendar: number | string;
@@ -260,12 +266,6 @@ export class Economics extends Contract {
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
-
-    checkAccess(
-      assetId: string | number[],
-      methodSignature: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
 
     getTerms(
       assetId: string | number[]

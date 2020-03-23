@@ -1,7 +1,7 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getComplexTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms, ZERO_BYTES32 } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms, ZERO_BYTES32, ZERO_ADDRESS } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
@@ -73,13 +73,14 @@ contract('AssetRegistry', (accounts) => {
       this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
-      actor
+      actor,
+      ZERO_ADDRESS
     );
     
     const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(web3.utils.toHex(this.assetId));
     
     function parseTerms (array) {
       return array.map((value) => {
@@ -120,7 +121,8 @@ contract('AssetRegistry', (accounts) => {
         this.customTerms,
         this.state,
         this.PAMEngineInstance.address,
-        actor
+        actor,
+        ZERO_ADDRESS
       ),
       'AssetRegistry.registerAsset: ' + ENTRY_ALREADY_EXISTS
     );
@@ -140,7 +142,7 @@ contract('AssetRegistry', (accounts) => {
         web3.utils.toHex(this.assetId), 
         this.state,
       ),
-      'AssetRegistry.onlyDesignatedActor: ' + UNAUTHORIZED_SENDER
+      'AssetRegistry.isAuthorized: ' + UNAUTHORIZED_SENDER
     );
   });
 

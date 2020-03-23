@@ -64,7 +64,7 @@ contract IAssetRegistry is AssetRegistryStorage {
     )
         public;
 
-    function checkAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool);
+    function hasAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool);
 
     function grantAccess (bytes32 assetId, bytes4 methodSignature, address account) public;
 

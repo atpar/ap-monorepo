@@ -19,10 +19,10 @@ contract Economics is AssetRegistryStorage, AccessControl {
     event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
 
 
-    modifier hasAccess(bytes32 assetId) {
+    modifier isAuthorized(bytes32 assetId) {
         require(
-            msg.sender == assets[assetId].actor || checkAccess(assetId, msg.sig, msg.sender),
-            "AssetRegistry.hasAccess: UNAUTHORIZED_SENDER"
+            msg.sender == assets[assetId].actor || hasAccess(assetId, msg.sig, msg.sender),
+            "AssetRegistry.isAuthorized: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -172,7 +172,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      */
-    function incrementScheduleIndex(bytes32 assetId) external hasAccess (assetId) {
+    function incrementScheduleIndex(bytes32 assetId) external isAuthorized (assetId) {
         uint256 scheduleIndex = assets[assetId].nextScheduleIndex;
 
         if (scheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId)) {
@@ -190,7 +190,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param terms new CustomTerms
      */
-    function setCustomTerms(bytes32 assetId, CustomTerms memory terms) public hasAccess (assetId) {
+    function setCustomTerms(bytes32 assetId, CustomTerms memory terms) public isAuthorized (assetId) {
         encodeAndSetTerms(assetId, terms);
 
         emit UpdatedCustomTerms(assetId);
@@ -202,7 +202,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setState(bytes32 assetId, State memory state) public hasAccess (assetId) {
+    function setState(bytes32 assetId, State memory state) public isAuthorized (assetId) {
         encodeAndSetState(assetId, state);
 
         emit UpdatedState(assetId, state.statusDate);
@@ -214,7 +214,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setFinalizedState(bytes32 assetId, State memory state) public hasAccess (assetId) {
+    function setFinalizedState(bytes32 assetId, State memory state) public isAuthorized (assetId) {
         encodeAndSetFinalizedState(assetId, state);
 
         emit UpdatedFinalizedState(assetId, state.statusDate);
@@ -227,7 +227,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param anchorDate new anchor date of the asset
      */
-    function setAnchorDate(bytes32 assetId, uint256 anchorDate) public hasAccess (assetId) {
+    function setAnchorDate(bytes32 assetId, uint256 anchorDate) public isAuthorized (assetId) {
         uint256 prevAnchorDate = decodeAndGetAnchorDate(assetId);
 
         encodeAndSetAnchorDate(assetId, anchorDate);
@@ -241,7 +241,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param engine new engine address
      */
-    function setEngine(bytes32 assetId, address engine) public hasAccess (assetId) {
+    function setEngine(bytes32 assetId, address engine) public isAuthorized (assetId) {
         address prevEngine = assets[assetId].engine;
 
         assets[assetId].engine = engine;
@@ -254,7 +254,7 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param actor address of the Actor contract
      */
-    function setActor(bytes32 assetId, address actor) public hasAccess (assetId) {
+    function setActor(bytes32 assetId, address actor) public isAuthorized (assetId) {
         address prevActor = assets[assetId].actor;
 
         assets[assetId].actor = actor;

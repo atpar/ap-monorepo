@@ -22,7 +22,7 @@ contract AccessControl is AssetRegistryStorage {
    * @param account address of the account to check the access
    * @return true if allowed access
    */
-  function checkAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool) {
+  function hasAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool) {
     return (
       assets[assetId].access[methodSignature][account] || assets[assetId].access[ROOT_ACCESS][account]
     );
@@ -37,7 +37,7 @@ contract AccessControl is AssetRegistryStorage {
    */
   function grantAccess (bytes32 assetId, bytes4 methodSignature, address account) public {
     require(
-      checkAccess(assetId, msg.sig, msg.sender),
+      hasAccess(assetId, msg.sig, msg.sender),
       "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"
     );
 
@@ -55,7 +55,7 @@ contract AccessControl is AssetRegistryStorage {
    */
   function revokeAccess (bytes32 assetId, bytes4 methodSignature, address account) public {
     require(
-      checkAccess(assetId, msg.sig, msg.sender),
+      hasAccess(assetId, msg.sig, msg.sender),
       "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"
     );
 

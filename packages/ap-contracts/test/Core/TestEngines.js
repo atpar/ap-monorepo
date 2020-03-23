@@ -2,7 +2,7 @@ const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
 
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain');
-const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
+const { deriveTerms, registerTemplateFromTerms, ZERO_ADDRESS } = require('../helper/utils');
 
 
 contract('AssetActor', (accounts) => {
@@ -44,7 +44,8 @@ contract('AssetActor', (accounts) => {
       ownership,
       web3.utils.toHex(templateId),
       customTerms,
-      this.ANNEngineInstance.address
+      this.ANNEngineInstance.address,
+      ZERO_ADDRESS
     );
 
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
@@ -72,7 +73,8 @@ contract('AssetActor', (accounts) => {
       ownership,
       web3.utils.toHex(templateId),
       customTerms,
-      this.ANNEngineInstance.address
+      this.ANNEngineInstance.address,
+      ZERO_ADDRESS
     );
 
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));

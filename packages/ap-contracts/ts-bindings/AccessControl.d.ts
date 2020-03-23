@@ -249,7 +249,7 @@ export class AccessControl extends Contract {
       scheduleTime: number | string
     ): TransactionObject<string>;
 
-    checkAccess(
+    hasAccess(
       assetId: string | number[],
       methodSignature: string | number[],
       account: string

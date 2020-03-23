@@ -3,7 +3,7 @@ const { expectEvent } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
-const { deriveTerms, registerTemplateFromTerms } = require('../../helper/utils');
+const { deriveTerms, registerTemplateFromTerms, ZERO_ADDRESS } = require('../../helper/utils');
 
 const AssetActor = artifacts.require('AssetActor');
 
@@ -60,13 +60,14 @@ contract('AssetActor', (accounts) => {
       this.ownership,
       web3.utils.toHex(this.templateId),
       this.customTerms,
-      this.PAMEngineInstance.address
+      this.PAMEngineInstance.address,
+      ZERO_ADDRESS
     );
 
     // const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
     const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(web3.utils.toHex(this.assetId));
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(web3.utils.toHex(this.assetId));
 
     // assert.deepEqual(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate'].toString());
     assert.deepEqual(storedState, this.state);
