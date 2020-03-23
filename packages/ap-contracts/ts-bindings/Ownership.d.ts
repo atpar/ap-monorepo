@@ -21,6 +21,12 @@ export class Ownership extends Contract {
   );
   clone(): Ownership;
   methods: {
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
     deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
       templateTerms: {
         calendar: number | string;
@@ -164,6 +170,12 @@ export class Ownership extends Contract {
       };
     }>;
 
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -249,6 +261,12 @@ export class Ownership extends Contract {
       scheduleTime: number | string
     ): TransactionObject<string>;
 
+    checkAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     setCreatorBeneficiary(
       assetId: string | number[],
       newCreatorBeneficiary: string
@@ -263,6 +281,16 @@ export class Ownership extends Contract {
       assetId: string | number[],
       cashflowId: number | string,
       beneficiary: string
+    ): TransactionObject<void>;
+
+    setCreatorObligor(
+      assetId: string | number[],
+      newCreatorObligor: string
+    ): TransactionObject<void>;
+
+    setCounterpartyObligor(
+      assetId: string | number[],
+      newCounterpartyObligor: string
     ): TransactionObject<void>;
 
     getOwnership(
@@ -280,9 +308,17 @@ export class Ownership extends Contract {
     ): TransactionObject<string>;
   };
   events: {
+    UpdatedObligor: ContractEvent<{
+      assetId: string;
+      prevObligor: string;
+      newObligor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     UpdatedBeneficiary: ContractEvent<{
       assetId: string;
-      oldBeneficiary: string;
+      prevBeneficiary: string;
       newBeneficiary: string;
       0: string;
       1: string;
@@ -291,12 +327,34 @@ export class Ownership extends Contract {
     UpdatedCashflowBeneficiary: ContractEvent<{
       assetId: string;
       cashflowId: string;
-      oldBeneficiary: string;
+      prevBeneficiary: string;
       newBeneficiary: string;
       0: string;
       1: string;
       2: string;
       3: string;
+    }>;
+    SetRootAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      0: string;
+      1: string;
+    }>;
+    GrantedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    RevokedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

@@ -84,7 +84,7 @@ contract AssetActor is
     function progress(bytes32 assetId) public {
         LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
         State memory state = assetRegistry.getState(assetId);
-        address engineAddress = assetRegistry.getEngineAddress(assetId);
+        address engineAddress = assetRegistry.getEngine(assetId);
 
         // revert if the asset is not registered in the AssetRegistry or malformed
         require(
@@ -174,7 +174,12 @@ contract AssetActor is
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
-        emit ProgressedAsset(assetId, eventType, scheduleTime, payoff);
+        emit ProgressedAsset(
+            assetId,
+            eventType,
+            scheduleTime,
+            payoff
+        );
     }
 
     /**

@@ -35,6 +35,9 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         // per default owners are beneficiaries defined in ownership object
         // cashflow id (:= (EventType index + 1) * direction) => owner
         mapping (int8 => address) cashflowBeneficiaries;
+        // method level access control - stores which address can a specific method
+        // method signature => address => has access
+        mapping (bytes4 => mapping (address => bool)) access;
         // tightly packed, encoded LifecycleTerms and State values of the asset
         // bytes32(0) used as default value for each attribute
         // storage id => bytes32 encoded value
@@ -81,12 +84,19 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
     }
 
     /**
+     * @dev Encode and set the anchorDate of the customTerms
+     */
+    function encodeAndSetAnchorDate(bytes32 assetId, uint256 anchorDate) internal {
+        assets[assetId].packedTermsState[1] = bytes32(anchorDate);
+    }
+
+    /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
     function encodeAndSetTerms(bytes32 assetId, CustomTerms memory customTerms) internal {
-        if (customTerms.anchorDate != uint256(0)) assets[assetId].packedTermsState[1] = bytes32(customTerms.anchorDate);
+        assets[assetId].packedTermsState[1] = bytes32(customTerms.anchorDate);
 
         bytes32 enums =
             bytes32(uint256(uint8(customTerms.overwrittenTerms.calendar))) << 240 |

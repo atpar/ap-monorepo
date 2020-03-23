@@ -6,6 +6,10 @@ import "./AssetRegistryStorage.sol";
 
 contract IAssetRegistry is AssetRegistryStorage {
 
+    function setCreatorObligor (bytes32 assetId, address newCreatorObligor) external;
+
+    function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor) external;
+
     function setCreatorBeneficiary(bytes32 assetId, address newCreatorBeneficiary) external;
 
     function setCounterpartyBeneficiary(bytes32 assetId, address newCounterpartyBeneficiary) external;
@@ -24,9 +28,9 @@ contract IAssetRegistry is AssetRegistryStorage {
 
     function getAnchorDate(bytes32 assetId) external view returns (uint256);
 
-    function getEngineAddress(bytes32 assetId) external view returns (address);
+    function getEngine(bytes32 assetId) external view returns (address);
 
-    function getActorAddress(bytes32 assetId) external view returns (address);
+    function getActor(bytes32 assetId) external view returns (address);
 
     function getTemplateId(bytes32 assetId) external view returns (bytes32);
 
@@ -36,9 +40,17 @@ contract IAssetRegistry is AssetRegistryStorage {
 
     function incrementScheduleIndex(bytes32 assetId) external;
 
+    function setCustomTerms(bytes32 assetId, CustomTerms memory terms) public;
+
     function setState(bytes32 assetId, State memory state) public;
 
     function setFinalizedState(bytes32 assetId, State memory state) public;
+    
+    function setAnchorDate(bytes32 assetId, uint256 anchorDate) public;
+
+    function setEngine(bytes32 assetId, address engine) public;
+
+    function setActor(bytes32 assetId, address actor) public;
 
     function registerAsset(
         bytes32 assetId,
@@ -50,4 +62,10 @@ contract IAssetRegistry is AssetRegistryStorage {
         address actor
     )
         public;
+
+    function checkAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool);
+
+    function grantAccess (bytes32 assetId, bytes4 methodSignature, address account) public;
+
+    function revokeAccess (bytes32 assetId, bytes4 methodSignature, address account) public;
 }

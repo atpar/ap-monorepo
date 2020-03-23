@@ -2,24 +2,27 @@ pragma solidity ^0.5.2;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
+import "./AccessControl.sol";
 
 
 /**
  * @title Economics
  */
-contract Economics is AssetRegistryStorage {
+contract Economics is AssetRegistryStorage, AccessControl {
 
     event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 nextScheduleIndex);
-
+    event UpdatedCustomTerms(bytes32 indexed assetId);
     event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
-
     event UpdatedFinalizedState(bytes32 indexed assetId, uint256 statusDate);
+    event UpdatedAnchorDate(bytes32 indexed assetId, uint256 prevAnchorDate, uint256 anchorDate);
+    event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);
+    event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
 
 
-    modifier onlyDesignatedActor(bytes32 assetId) {
+    modifier hasAccess(bytes32 assetId) {
         require(
-            assets[assetId].actor == msg.sender,
-            "AssetRegistry.onlyDesignatedActor: UNAUTHORIZED_SENDER"
+            msg.sender == assets[assetId].actor || checkAccess(assetId, msg.sig, msg.sender),
+            "AssetRegistry.hasAccess: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -65,7 +68,7 @@ contract Economics is AssetRegistryStorage {
      * @param assetId id of the asset
      * @return address of the engine of the asset
      */
-    function getEngineAddress(bytes32 assetId) external view returns (address) {
+    function getEngine(bytes32 assetId) external view returns (address) {
         return assets[assetId].engine;
     }
 
@@ -74,7 +77,7 @@ contract Economics is AssetRegistryStorage {
      * @param assetId id of the asset
      * @return address of the asset actor
      */
-    function getActorAddress(bytes32 assetId) external view returns (address) {
+    function getActor(bytes32 assetId) external view returns (address) {
         return assets[assetId].actor;
     }
 
@@ -166,12 +169,10 @@ contract Economics is AssetRegistryStorage {
     /**
      * @notice Increments the index of a schedule of an asset.
      * (if max index is reached the index will be left unchanged)
+     * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      */
-    function incrementScheduleIndex(bytes32 assetId)
-        external
-        onlyDesignatedActor (assetId)
-    {
+    function incrementScheduleIndex(bytes32 assetId) external hasAccess (assetId) {
         uint256 scheduleIndex = assets[assetId].nextScheduleIndex;
 
         if (scheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId)) {
@@ -184,12 +185,24 @@ contract Economics is AssetRegistryStorage {
     }
 
     /**
+     * @notice Set the custom terms of the asset
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param terms new CustomTerms
+     */
+    function setCustomTerms(bytes32 assetId, CustomTerms memory terms) public hasAccess (assetId) {
+        encodeAndSetTerms(assetId, terms);
+
+        emit UpdatedCustomTerms(assetId);
+    }
+
+    /**
      * @notice Sets next state of an asset.
-     * @dev Can only be updated by the assets actor.
+     * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
+    function setState(bytes32 assetId, State memory state) public hasAccess (assetId) {
         encodeAndSetState(assetId, state);
 
         emit UpdatedState(assetId, state.statusDate);
@@ -197,13 +210,55 @@ contract Economics is AssetRegistryStorage {
 
     /**
      * @notice Sets next finalized state of an asset.
-     * @dev Can only be updated by the assets actor.
+     * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setFinalizedState(bytes32 assetId, State memory state) public onlyDesignatedActor (assetId) {
+    function setFinalizedState(bytes32 assetId, State memory state) public hasAccess (assetId) {
         encodeAndSetFinalizedState(assetId, state);
 
         emit UpdatedFinalizedState(assetId, state.statusDate);
+    }
+
+    /**
+     * @notice Set the anchor date which should used going forward to derive dates from the template
+     * (used e.g. for pausing the asset).
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param anchorDate new anchor date of the asset
+     */
+    function setAnchorDate(bytes32 assetId, uint256 anchorDate) public hasAccess (assetId) {
+        uint256 prevAnchorDate = decodeAndGetAnchorDate(assetId);
+
+        encodeAndSetAnchorDate(assetId, anchorDate);
+
+        emit UpdatedAnchorDate(assetId, prevAnchorDate, anchorDate);
+    }
+
+    /**
+     * @notice Set the engine address which should be used for the asset going forward.
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param engine new engine address
+     */
+    function setEngine(bytes32 assetId, address engine) public hasAccess (assetId) {
+        address prevEngine = assets[assetId].engine;
+
+        assets[assetId].engine = engine;
+
+        emit UpdatedEngine(assetId, prevEngine, engine);
+    }
+
+    /**
+     * @notice Set the address of the Actor contract which should be going forward.
+     * @param assetId id of the asset
+     * @param actor address of the Actor contract
+     */
+    function setActor(bytes32 assetId, address actor) public hasAccess (assetId) {
+        address prevActor = assets[assetId].actor;
+
+        assets[assetId].actor = actor;
+
+        emit UpdatedActor(assetId, prevActor, actor);
     }
 }
