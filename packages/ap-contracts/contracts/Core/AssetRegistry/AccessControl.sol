@@ -23,7 +23,9 @@ contract AccessControl is AssetRegistryStorage {
    * @return true if allowed access
    */
   function checkAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool) {
-    return (assets[assetId].access[methodSignature][account] == true);
+    return (
+      assets[assetId].access[methodSignature][account] || assets[assetId].access[ROOT_ACCESS][account]
+    );
   }
 
   /**
