@@ -21,9 +21,9 @@ export class Owned extends Contract {
   );
   clone(): Owned;
   methods: {
-    owner(): TransactionObject<string>;
-
     newOwner(): TransactionObject<string>;
+
+    owner(): TransactionObject<string>;
 
     transferOwnership(_newOwner: string): TransactionObject<void>;
 

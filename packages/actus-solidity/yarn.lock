@@ -5447,10 +5447,10 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-openzeppelin-solidity@^2.1.2:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-2.4.0.tgz#5f0a7b30571c45493449166e57b947203415349d"
-  integrity sha512-533gc5jkspxW5YT0qJo02Za5q1LHwXK9CJCc48jNj/22ncNM/3M/3JfWLqfpB90uqLwOKOovpl0JfaMQTR+gXQ==
+openzeppelin-solidity@3.0.0-beta.0:
+  version "3.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-3.0.0-beta.0.tgz#9be6d4ffc1975a13e01594c1ad9bcc70eec58e65"
+  integrity sha512-lwCPDIj2CMBcUGOHAMtJbWn2Rb1R6pJJeH/Gzari/VEt5XwgU/fWVo9TRjWyE9KBhH+36mlSKpCaskzvn+KMZw==
 
 openzeppelin-test-helpers@^0.1.2:
   version "0.1.5"
@@ -7415,10 +7415,10 @@ truffle-security@^1.4.4:
     tiny-async-pool "^1.0.4"
     uuid "^3.3.3"
 
-truffle@^5.1.2:
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.2.tgz#516f28126fdb623bd5eff20c665b2f2bfbaa4eba"
-  integrity sha512-VfNdtk/dh8zj9onE/q8A7SSrFyqPqz61W+sx5FrUK++BbSE7N09/6z2F/VORuDykPmFaujtYKt8iNoD3Htfeww==
+truffle@5.1.13:
+  version "5.1.13"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.13.tgz#f0a071342616f23a52bceaedae4feaec0bc4d549"
+  integrity sha512-d+DKgNE389/WmSb68sDu/DnMpex18bx7edw4waSEESdynwTgocsPFumgWqzmmUTxjnaRAScPC7oA5X6ZVSKwLQ==
   dependencies:
     app-module-path "^2.2.0"
     mocha "5.2.0"

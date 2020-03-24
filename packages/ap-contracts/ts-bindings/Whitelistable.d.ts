@@ -21,26 +21,26 @@ export class Whitelistable extends Contract {
   );
   clone(): Whitelistable;
   methods: {
-    isAdministrator(addressToTest: string): TransactionObject<boolean>;
-
-    removeAdmin(adminToRemove: string): TransactionObject<void>;
-
     addAdmin(adminToAdd: string): TransactionObject<void>;
 
-    renounceOwnership(): TransactionObject<void>;
+    addressWhitelists(arg0: string): TransactionObject<string>;
 
     administrators(arg0: string): TransactionObject<boolean>;
 
-    owner(): TransactionObject<string>;
+    isAdministrator(addressToTest: string): TransactionObject<boolean>;
 
     isOwner(): TransactionObject<boolean>;
-
-    addressWhitelists(arg0: string): TransactionObject<string>;
 
     outboundWhitelistsEnabled(
       arg0: number | string,
       arg1: number | string
     ): TransactionObject<boolean>;
+
+    owner(): TransactionObject<string>;
+
+    removeAdmin(adminToRemove: string): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
@@ -79,18 +79,6 @@ export class Whitelistable extends Contract {
       1: string;
       2: string;
     }>;
-    OutboundWhitelistUpdated: ContractEvent<{
-      updatedBy: string;
-      sourceWhitelist: string;
-      destinationWhitelist: string;
-      from: boolean;
-      to: boolean;
-      0: string;
-      1: string;
-      2: string;
-      3: boolean;
-      4: boolean;
-    }>;
     AdminAdded: ContractEvent<{
       addedAdmin: string;
       addedBy: string;
@@ -102,6 +90,18 @@ export class Whitelistable extends Contract {
       removedBy: string;
       0: string;
       1: string;
+    }>;
+    OutboundWhitelistUpdated: ContractEvent<{
+      updatedBy: string;
+      sourceWhitelist: string;
+      destinationWhitelist: string;
+      from: boolean;
+      to: boolean;
+      0: string;
+      1: string;
+      2: string;
+      3: boolean;
+      4: boolean;
     }>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;

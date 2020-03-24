@@ -21,38 +21,87 @@ export class SimpleRestrictedFDT extends Contract {
   );
   clone(): SimpleRestrictedFDT;
   methods: {
-    withdrawnFundsOf(_owner: string): TransactionObject<string>;
+    FAILURE_NON_WHITELIST(): TransactionObject<string>;
+
+    FAILURE_NON_WHITELIST_MESSAGE(): TransactionObject<string>;
+
+    SUCCESS_CODE(): TransactionObject<string>;
+
+    SUCCESS_MESSAGE(): TransactionObject<string>;
+
+    UNKNOWN_ERROR(): TransactionObject<string>;
+
+    accumulativeFundsOf(_owner: string): TransactionObject<string>;
+
+    addAdmin(adminToAdd: string): TransactionObject<void>;
 
     addToWhitelist(
       addressToAdd: string,
       whitelist: number | string
     ): TransactionObject<void>;
 
-    name(): TransactionObject<string>;
+    addressWhitelists(arg0: string): TransactionObject<string>;
+
+    administrators(arg0: string): TransactionObject<boolean>;
+
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     approve(
       spender: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
-    isAdministrator(addressToTest: string): TransactionObject<boolean>;
+    balanceOf(account: string): TransactionObject<string>;
 
-    SUCCESS_CODE(): TransactionObject<string>;
-
-    removeAdmin(adminToRemove: string): TransactionObject<void>;
-
-    totalSupply(): TransactionObject<string>;
-
-    FAILURE_NON_WHITELIST(): TransactionObject<string>;
-
-    isRestrictionEnabled(): TransactionObject<boolean>;
+    checkWhitelistAllowed(
+      sender: string,
+      receiver: string
+    ): TransactionObject<boolean>;
 
     decimals(): TransactionObject<string>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string
+    ): TransactionObject<boolean>;
+
+    disableRestrictions(): TransactionObject<void>;
+
+    fundsToken(): TransactionObject<string>;
+
+    fundsTokenBalance(): TransactionObject<string>;
 
     increaseAllowance(
       spender: string,
       addedValue: number | string
     ): TransactionObject<boolean>;
+
+    isAdministrator(addressToTest: string): TransactionObject<boolean>;
+
+    isOwner(): TransactionObject<boolean>;
+
+    isRestrictionEnabled(): TransactionObject<boolean>;
+
+    name(): TransactionObject<string>;
+
+    outboundWhitelistsEnabled(
+      arg0: number | string,
+      arg1: number | string
+    ): TransactionObject<boolean>;
+
+    owner(): TransactionObject<string>;
+
+    removeAdmin(adminToRemove: string): TransactionObject<void>;
+
+    removeFromWhitelist(addressToRemove: string): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
+
+    symbol(): TransactionObject<string>;
+
+    totalSupply(): TransactionObject<string>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
     updateOutboundWhitelistEnabled(
       sourceWhitelist: number | string,
@@ -60,66 +109,9 @@ export class SimpleRestrictedFDT extends Contract {
       newEnabledValue: boolean
     ): TransactionObject<void>;
 
-    mint(account: string, amount: number | string): TransactionObject<boolean>;
-
     withdrawableFundsOf(_owner: string): TransactionObject<string>;
 
-    accumulativeFundsOf(_owner: string): TransactionObject<string>;
-
-    fundsToken(): TransactionObject<string>;
-
-    addAdmin(adminToAdd: string): TransactionObject<void>;
-
-    balanceOf(account: string): TransactionObject<string>;
-
-    renounceOwnership(): TransactionObject<void>;
-
-    administrators(arg0: string): TransactionObject<boolean>;
-
-    removeFromWhitelist(addressToRemove: string): TransactionObject<void>;
-
-    owner(): TransactionObject<string>;
-
-    isOwner(): TransactionObject<boolean>;
-
-    addressWhitelists(arg0: string): TransactionObject<string>;
-
-    checkWhitelistAllowed(
-      sender: string,
-      receiver: string
-    ): TransactionObject<boolean>;
-
-    symbol(): TransactionObject<string>;
-
-    UNKNOWN_ERROR(): TransactionObject<string>;
-
-    addMinter(account: string): TransactionObject<void>;
-
-    renounceMinter(): TransactionObject<void>;
-
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: number | string
-    ): TransactionObject<boolean>;
-
-    fundsTokenBalance(): TransactionObject<string>;
-
-    isMinter(account: string): TransactionObject<boolean>;
-
-    FAILURE_NON_WHITELIST_MESSAGE(): TransactionObject<string>;
-
-    disableRestrictions(): TransactionObject<void>;
-
-    allowance(owner: string, spender: string): TransactionObject<string>;
-
-    SUCCESS_MESSAGE(): TransactionObject<string>;
-
-    outboundWhitelistsEnabled(
-      arg0: number | string,
-      arg1: number | string
-    ): TransactionObject<boolean>;
-
-    transferOwnership(newOwner: string): TransactionObject<void>;
+    withdrawnFundsOf(_owner: string): TransactionObject<string>;
 
     detectTransferRestriction(
       from: string,
@@ -144,7 +136,6 @@ export class SimpleRestrictedFDT extends Contract {
     updateFundsReceived(): TransactionObject<void>;
   };
   events: {
-    RestrictionsDisabled: ContractEvent<string>;
     AddressAddedToWhitelist: ContractEvent<{
       addedAddress: string;
       whitelist: string;
@@ -161,18 +152,6 @@ export class SimpleRestrictedFDT extends Contract {
       1: string;
       2: string;
     }>;
-    OutboundWhitelistUpdated: ContractEvent<{
-      updatedBy: string;
-      sourceWhitelist: string;
-      destinationWhitelist: string;
-      from: boolean;
-      to: boolean;
-      0: string;
-      1: string;
-      2: string;
-      3: boolean;
-      4: boolean;
-    }>;
     AdminAdded: ContractEvent<{
       addedAdmin: string;
       addedBy: string;
@@ -184,22 +163,6 @@ export class SimpleRestrictedFDT extends Contract {
       removedBy: string;
       0: string;
       1: string;
-    }>;
-    OwnershipTransferred: ContractEvent<{
-      previousOwner: string;
-      newOwner: string;
-      0: string;
-      1: string;
-    }>;
-    MinterAdded: ContractEvent<string>;
-    MinterRemoved: ContractEvent<string>;
-    Transfer: ContractEvent<{
-      from: string;
-      to: string;
-      value: string;
-      0: string;
-      1: string;
-      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
@@ -220,6 +183,33 @@ export class SimpleRestrictedFDT extends Contract {
       fundsWithdrawn: string;
       0: string;
       1: string;
+    }>;
+    OutboundWhitelistUpdated: ContractEvent<{
+      updatedBy: string;
+      sourceWhitelist: string;
+      destinationWhitelist: string;
+      from: boolean;
+      to: boolean;
+      0: string;
+      1: string;
+      2: string;
+      3: boolean;
+      4: boolean;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
+    }>;
+    RestrictionsDisabled: ContractEvent<string>;
+    Transfer: ContractEvent<{
+      from: string;
+      to: string;
+      value: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

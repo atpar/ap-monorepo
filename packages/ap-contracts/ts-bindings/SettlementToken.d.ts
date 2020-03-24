@@ -13,19 +13,31 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ERC20Interface extends Contract {
+export class SettlementToken extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ERC20Interface;
+  clone(): SettlementToken;
   methods: {
+    acceptOwnership(): TransactionObject<void>;
+
+    decimals(): TransactionObject<string>;
+
+    name(): TransactionObject<string>;
+
+    newOwner(): TransactionObject<string>;
+
+    owner(): TransactionObject<string>;
+
+    symbol(): TransactionObject<string>;
+
+    transferOwnership(_newOwner: string): TransactionObject<void>;
+
     totalSupply(): TransactionObject<string>;
 
     balanceOf(tokenOwner: string): TransactionObject<string>;
-
-    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
 
     transfer(to: string, tokens: number | string): TransactionObject<boolean>;
 
@@ -39,6 +51,21 @@ export class ERC20Interface extends Contract {
       to: string,
       tokens: number | string
     ): TransactionObject<boolean>;
+
+    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
+
+    approveAndCall(
+      spender: string,
+      tokens: number | string,
+      data: string | number[]
+    ): TransactionObject<boolean>;
+
+    drip(receiver: string, tokens: number | string): TransactionObject<void>;
+
+    transferAnyERC20Token(
+      tokenAddress: string,
+      tokens: number | string
+    ): TransactionObject<boolean>;
   };
   events: {
     Approval: ContractEvent<{
@@ -48,6 +75,12 @@ export class ERC20Interface extends Contract {
       0: string;
       1: string;
       2: string;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      _from: string;
+      _to: string;
+      0: string;
+      1: string;
     }>;
     Transfer: ContractEvent<{
       from: string;

@@ -13,87 +13,14 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class AssetActor extends Contract {
+export class AccessControl extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): AssetActor;
+  clone(): AccessControl;
   methods: {
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
-    assetRegistry(): TransactionObject<string>;
-
-    computeEventTimeForEvent(
-      _event: string | number[],
-      terms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-      }
-    ): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
       templateTerms: {
         calendar: number | string;
@@ -237,127 +164,131 @@ export class AssetActor extends Contract {
       };
     }>;
 
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
     ): TransactionObject<string>;
+
+    ONE_POINT_ZERO(): TransactionObject<string>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    computeEventTimeForEvent(
+      _event: string | number[],
+      terms: {
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        feeAccrued: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        feeRate: number | string;
+        nextResetRate: number | string;
+        penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+      }
+    ): TransactionObject<string>;
+
+    templateRegistry(): TransactionObject<string>;
+
+    PRECISION(): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
-
-    isOwner(): TransactionObject<boolean>;
-
-    issuers(arg0: string): TransactionObject<boolean>;
-
-    marketObjectRegistry(): TransactionObject<string>;
-
-    owner(): TransactionObject<string>;
-
-    renounceOwnership(): TransactionObject<void>;
-
-    templateRegistry(): TransactionObject<string>;
-
-    transferOwnership(newOwner: string): TransactionObject<void>;
-
-    registerIssuer(issuer: string): TransactionObject<void>;
-
-    progress(assetId: string | number[]): TransactionObject<void>;
-
-    initialize(
+    hasAccess(
       assetId: string | number[],
-      ownership: {
-        creatorObligor: string;
-        creatorBeneficiary: string;
-        counterpartyObligor: string;
-        counterpartyBeneficiary: string;
-      },
-      templateId: string | number[],
-      customTerms: {
-        anchorDate: number | string;
-        overwrittenAttributesMap: number | string;
-        overwrittenTerms: {
-          calendar: number | string;
-          contractRole: number | string;
-          dayCountConvention: number | string;
-          businessDayConvention: number | string;
-          endOfMonthConvention: number | string;
-          scalingEffect: number | string;
-          penaltyType: number | string;
-          feeBasis: number | string;
-          creditEventTypeCovered: number | string;
-          currency: string;
-          settlementCurrency: string;
-          marketObjectCodeRateReset: string | number[];
-          statusDate: number | string;
-          maturityDate: number | string;
-          notionalPrincipal: number | string;
-          nominalInterestRate: number | string;
-          feeAccrued: number | string;
-          accruedInterest: number | string;
-          rateMultiplier: number | string;
-          rateSpread: number | string;
-          feeRate: number | string;
-          nextResetRate: number | string;
-          penaltyRate: number | string;
-          premiumDiscountAtIED: number | string;
-          priceAtPurchaseDate: number | string;
-          nextPrincipalRedemptionPayment: number | string;
-          coverageOfCreditEnhancement: number | string;
-          lifeCap: number | string;
-          lifeFloor: number | string;
-          periodCap: number | string;
-          periodFloor: number | string;
-          gracePeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          delinquencyPeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          contractReference_1: {
-            object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
-          };
-          contractReference_2: {
-            object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
-          };
-        };
-      },
-      engineAddress: string
+      methodSignature: string | number[],
+      account: string
     ): TransactionObject<boolean>;
+
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
   };
   events: {
-    OwnershipTransferred: ContractEvent<{
-      previousOwner: string;
-      newOwner: string;
+    SetRootAccess: ContractEvent<{
+      assetId: string;
+      account: string;
       0: string;
       1: string;
     }>;
-    ProgressedAsset: ContractEvent<{
+    GrantedAccess: ContractEvent<{
       assetId: string;
-      eventType: string;
-      scheduleTime: string;
-      payoff: string;
+      account: string;
+      methodSignature: string;
       0: string;
       1: string;
       2: string;
-      3: string;
     }>;
-    Status: ContractEvent<{
+    RevokedAccess: ContractEvent<{
       assetId: string;
-      statusMessage: string;
+      account: string;
+      methodSignature: string;
       0: string;
       1: string;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

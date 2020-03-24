@@ -13,7 +13,7 @@ const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
 const TokenizationFactory = artifacts.require('TokenizationFactory');
-const TestToken = artifacts.require('TestToken');
+const SettlementToken = artifacts.require('SettlementToken');
 
 const { registerTemplate } = require('../test/helper/utils');
 
@@ -84,9 +84,9 @@ module.exports = async (deployer, network) => {
       TokenizationFactory: ${TokenizationFactory.address}
   `);
 
-  // deploy test token (necessary for registering templates on testnets)
-  await deployer.deploy(TestToken);
-  console.log('    Deployed test token: ' + TestToken.address);
+  // deploy settlement token (necessary for registering templates on testnets)
+  await deployer.deploy(SettlementToken);
+  console.log('    Deployed Settlement Token: ' + SettlementToken.address);
   console.log('');
 
   // registering standard templates (skip for local)

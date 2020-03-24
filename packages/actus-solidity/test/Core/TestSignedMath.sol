@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
@@ -10,7 +10,7 @@ contract TestSignedMath {
 
     using SignedMath for int256;
 
-    SignedMath instance;
+    address instance;
 
     int256 constant INT256_MIN = int256((uint256(1) << 255));
     int256 constant INT256_MAX = int256(~((uint256(1) << 255)));
@@ -20,7 +20,7 @@ contract TestSignedMath {
 
 
     constructor() public {
-        instance = SignedMath(DeployedAddresses.SignedMath());
+        instance = DeployedAddresses.SignedMath();
     }
 
     function testFloatMult_NO_OVERFLOW() public {

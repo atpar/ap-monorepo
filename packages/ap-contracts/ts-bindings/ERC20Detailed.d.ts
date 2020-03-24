@@ -21,27 +21,27 @@ export class ERC20Detailed extends Contract {
   );
   clone(): ERC20Detailed;
   methods: {
+    allowance(owner: string, spender: string): TransactionObject<string>;
+
     approve(
       spender: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
-    totalSupply(): TransactionObject<string>;
-
-    transferFrom(
-      sender: string,
-      recipient: string,
-      amount: number | string
-    ): TransactionObject<boolean>;
-
     balanceOf(account: string): TransactionObject<string>;
+
+    totalSupply(): TransactionObject<string>;
 
     transfer(
       recipient: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
-    allowance(owner: string, spender: string): TransactionObject<string>;
+    transferFrom(
+      sender: string,
+      recipient: string,
+      amount: number | string
+    ): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
 
@@ -50,17 +50,17 @@ export class ERC20Detailed extends Contract {
     decimals(): TransactionObject<string>;
   };
   events: {
-    Transfer: ContractEvent<{
-      from: string;
-      to: string;
+    Approval: ContractEvent<{
+      owner: string;
+      spender: string;
       value: string;
       0: string;
       1: string;
       2: string;
     }>;
-    Approval: ContractEvent<{
-      owner: string;
-      spender: string;
+    Transfer: ContractEvent<{
+      from: string;
+      to: string;
       value: string;
       0: string;
       1: string;

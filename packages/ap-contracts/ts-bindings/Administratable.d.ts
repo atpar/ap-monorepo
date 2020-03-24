@@ -21,13 +21,13 @@ export class Administratable extends Contract {
   );
   clone(): Administratable;
   methods: {
-    renounceOwnership(): TransactionObject<void>;
-
     administrators(arg0: string): TransactionObject<boolean>;
+
+    isOwner(): TransactionObject<boolean>;
 
     owner(): TransactionObject<string>;
 
-    isOwner(): TransactionObject<boolean>;
+    renounceOwnership(): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 

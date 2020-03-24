@@ -1,15 +1,15 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "funds-distribution-token/contracts/FundsDistributionToken.sol";
-import "funds-distribution-token/contracts/IFundsDistributionToken.sol";
+import "./FDT/FundsDistributionToken.sol";
+import "./FDT/IFundsDistributionToken.sol";
 
 
 /**
-This contract allows a list of administrators to be tracked.  This list can then be enforced
-on functions with administrative permissions.  Only the owner of the contract should be allowed
-to modify the administrator list.
+ * This contract allows a list of administrators to be tracked. This list can then be enforced
+ * on functions with administrative permissions.  Only the owner of the contract should be allowed
+ * to modify the administrator list.
  */
 contract Administratable is Ownable {
     // The mapping to track administrator accounts - true is reserved for admin addresses.
@@ -244,7 +244,7 @@ contract Restrictable is Ownable {
     }
 }
 
-contract ERC1404 is IERC20 {
+abstract contract ERC1404 is IERC20 {
     /// @notice Detects if a transfer will be reverted and if so returns an appropriate reference code
     /// @param from Sending address
     /// @param to Receiving address
@@ -254,6 +254,7 @@ contract ERC1404 is IERC20 {
     function detectTransferRestriction(address from, address to, uint256 value)
         public
         view
+        virtual
         returns (uint8);
 
     /// @notice Returns a human-readable message for a given restriction code
@@ -263,6 +264,7 @@ contract ERC1404 is IERC20 {
     function messageForTransferRestriction(uint8 restrictionCode)
         public
         view
+        virtual
         returns (string memory);
 }
 
@@ -310,7 +312,6 @@ contract SimpleRestrictedFDT is
         );
 
         fundsToken = _fundsToken;
-        _addMinter(owner);
         _transferOwnership(owner);
         _mint(owner, initialAmount);
     }
@@ -322,6 +323,7 @@ contract SimpleRestrictedFDT is
     function detectTransferRestriction(address from, address to, uint256)
         public
         view
+        override
         returns (uint8)
     {
         // If the restrictions have been disabled by the owner, then just return success
@@ -353,6 +355,7 @@ contract SimpleRestrictedFDT is
     function messageForTransferRestriction(uint8 restrictionCode)
         public
         view
+        override
         returns (string memory)
     {
         if (restrictionCode == SUCCESS_CODE) {
@@ -385,6 +388,7 @@ contract SimpleRestrictedFDT is
     function transfer(address to, uint256 value)
         public
         notRestricted(msg.sender, to, value)
+        override(IERC20, ERC20)
         returns (bool success)
     {
         success = super.transfer(to, value);
@@ -396,6 +400,7 @@ contract SimpleRestrictedFDT is
     function transferFrom(address from, address to, uint256 value)
         public
         notRestricted(from, to, value)
+        override(IERC20, ERC20)
         returns (bool success)
     {
         success = super.transferFrom(from, to, value);
@@ -404,7 +409,7 @@ contract SimpleRestrictedFDT is
     /**
 	 * @notice Withdraws all available funds for a token holder
 	 */
-    function withdrawFunds() external {
+    function withdrawFunds() external override {
         uint256 withdrawableFunds = _prepareWithdraw();
 
         require(

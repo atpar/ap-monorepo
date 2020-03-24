@@ -1,9 +1,9 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "funds-distribution-token/contracts/FundsDistributionToken.sol";
-import "funds-distribution-token/contracts/IFundsDistributionToken.sol";
+import "./FDT/FundsDistributionToken.sol";
+import "./FDT/IFundsDistributionToken.sol";
 
 
 contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable {
@@ -42,7 +42,6 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
         );
 
         fundsToken = _fundsToken;
-        _addMinter(owner);
         _transferOwnership(owner);
         _mint(owner, initialAmount);
     }
@@ -50,21 +49,21 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
     /**
       Overrides the parent class token transfer function to enforce restrictions.
       */
-    function transfer(address to, uint256 value) public returns (bool) {
+    function transfer(address to, uint256 value) public override returns (bool) {
         return super.transfer(to, value);
     }
 
     /**
       Overrides the parent class token transferFrom function to enforce restrictions.
       */
-    function transferFrom(address from, address to, uint256 value) public returns (bool) {
+    function transferFrom(address from, address to, uint256 value) public override returns (bool) {
         return super.transferFrom(from, to, value);
     }
 
     /**
      * @notice Withdraws all available funds for a token holder
      */
-    function withdrawFunds() external {
+    function withdrawFunds() external override {
         uint256 withdrawableFunds = _prepareWithdraw();
 
         require(
