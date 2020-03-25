@@ -23,13 +23,13 @@ export class MarketObjectRegistry extends Contract {
   methods: {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
-    renounceOwnership(): TransactionObject<void>;
-
-    owner(): TransactionObject<string>;
+    PRECISION(): TransactionObject<string>;
 
     isOwner(): TransactionObject<boolean>;
 
-    PRECISION(): TransactionObject<string>;
+    owner(): TransactionObject<string>;
+
+    renounceOwnership(): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
@@ -57,9 +57,9 @@ export class MarketObjectRegistry extends Contract {
     ): TransactionObject<string>;
   };
   events: {
-    UpdatedMarketObjectProvider: ContractEvent<{
-      marketObjectId: string;
-      provider: string;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
       0: string;
       1: string;
     }>;
@@ -69,9 +69,9 @@ export class MarketObjectRegistry extends Contract {
       0: string;
       1: string;
     }>;
-    OwnershipTransferred: ContractEvent<{
-      previousOwner: string;
-      newOwner: string;
+    UpdatedMarketObjectProvider: ContractEvent<{
+      marketObjectId: string;
+      provider: string;
       0: string;
       1: string;
     }>;

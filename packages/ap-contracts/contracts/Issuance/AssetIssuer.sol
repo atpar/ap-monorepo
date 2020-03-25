@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
@@ -23,7 +23,6 @@ contract AssetIssuer is
     IAssetIssuer
 {
     event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
-
     event IssuedAsset(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
 
     ICustodian public custodian;
@@ -31,7 +30,13 @@ contract AssetIssuer is
     IAssetRegistry public assetRegistry;
 
 
-    constructor(ICustodian _custodian, ITemplateRegistry _templateRegistry, IAssetRegistry _assetRegistry) public {
+    constructor(
+        ICustodian _custodian,
+        ITemplateRegistry _templateRegistry,
+        IAssetRegistry _assetRegistry
+    )
+        public
+    {
         custodian = _custodian;
         templateRegistry = _templateRegistry;
         assetRegistry = _assetRegistry;
@@ -39,6 +44,7 @@ contract AssetIssuer is
 
     function issueFromDraft(Draft memory draft)
         public
+        override
     {
         (
             bytes32 assetId,
@@ -132,6 +138,7 @@ contract AssetIssuer is
      */
     function issueFromOrder(Order memory order)
         public
+        override
     {
         // verify signatures of order (and enhancement orders)
         require(

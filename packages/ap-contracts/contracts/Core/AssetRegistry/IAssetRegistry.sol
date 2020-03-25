@@ -1,44 +1,100 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
 
 
-contract IAssetRegistry is AssetRegistryStorage {
+abstract contract IAssetRegistry is AssetRegistryStorage {
 
-    function setCreatorBeneficiary(bytes32 assetId, address newCreatorBeneficiary) external;
+    function setCreatorBeneficiary(bytes32 assetId, address newCreatorBeneficiary)
+        external
+        virtual;
 
-    function setCounterpartyBeneficiary(bytes32 assetId, address newCounterpartyBeneficiary) external;
+    function setCounterpartyBeneficiary(bytes32 assetId, address newCounterpartyBeneficiary)
+        external
+        virtual;
 
-    function setBeneficiaryForCashflowId(bytes32 assetId, int8 cashflowId, address beneficiary) external;
+    function setBeneficiaryForCashflowId(bytes32 assetId, int8 cashflowId, address beneficiary)
+        external
+        virtual;
 
-    function getOwnership(bytes32 assetId) external view returns (AssetOwnership memory);
+    function getOwnership(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (AssetOwnership memory);
 
-    function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId) external view returns (address);
+    function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
+        external
+        view
+        virtual
+        returns (address);
 
-    function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory);
+    function getTerms(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (LifecycleTerms memory);
 
-    function getState(bytes32 assetId) external view returns (State memory);
+    function getState(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (State memory);
 
-    function getFinalizedState(bytes32 assetId) external view returns (State memory);
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (State memory);
 
-    function getAnchorDate(bytes32 assetId) external view returns (uint256);
+    function getAnchorDate(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (uint256);
 
-    function getEngineAddress(bytes32 assetId) external view returns (address);
+    function getEngineAddress(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (address);
 
-    function getActorAddress(bytes32 assetId) external view returns (address);
+    function getActorAddress(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (address);
 
-    function getTemplateId(bytes32 assetId) external view returns (bytes32);
+    function getTemplateId(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (bytes32);
 
-    function getNextEvent (bytes32 assetId) external view returns (bytes32);
+    function getNextEvent (bytes32 assetId)
+        external
+        view
+        virtual
+        returns (bytes32);
 
-    function getNextScheduleIndex(bytes32 assetId) external view returns (uint256);
+    function getNextScheduleIndex(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (uint256);
 
-    function incrementScheduleIndex(bytes32 assetId) external;
+    function incrementScheduleIndex(bytes32 assetId)
+        external
+        virtual;
 
-    function setState(bytes32 assetId, State memory state) public;
+    function setState(bytes32 assetId, State memory state)
+        public
+        virtual;
 
-    function setFinalizedState(bytes32 assetId, State memory state) public;
+    function setFinalizedState(bytes32 assetId, State memory state)
+        public
+        virtual;
 
     function registerAsset(
         bytes32 assetId,
@@ -49,5 +105,6 @@ contract IAssetRegistry is AssetRegistryStorage {
         address engine,
         address actor
     )
-        public;
+        public
+        virtual;
 }

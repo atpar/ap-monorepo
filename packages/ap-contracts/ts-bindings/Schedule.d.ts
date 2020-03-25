@@ -23,14 +23,7 @@ export class Schedule extends Contract {
   methods: {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
+    PRECISION(): TransactionObject<string>;
 
     computeEventTimeForEvent(
       _event: string | number[],
@@ -85,12 +78,19 @@ export class Schedule extends Contract {
       }
     ): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<string>;
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
 
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
   };
   events: {
     allEvents: (

@@ -1,13 +1,14 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
+import "./IAssetRegistry.sol";
 
 
 /**
  * @title Ownership
  */
-contract Ownership is AssetRegistryStorage {
+abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
 
     event UpdatedBeneficiary(bytes32 assetId, address oldBeneficiary, address newBeneficiary);
 
@@ -24,6 +25,7 @@ contract Ownership is AssetRegistryStorage {
         address newCreatorBeneficiary
     )
         external
+        override
     {
         require(
             assets[assetId].ownership.creatorBeneficiary != address(0),
@@ -49,6 +51,7 @@ contract Ownership is AssetRegistryStorage {
         address newCounterpartyBeneficiary
     )
         external
+        override
     {
         require(
             assets[assetId].ownership.counterpartyBeneficiary != address(0),
@@ -76,6 +79,7 @@ contract Ownership is AssetRegistryStorage {
         address beneficiary
     )
         external
+        override
     {
         require(
             cashflowId != 0,
@@ -119,6 +123,7 @@ contract Ownership is AssetRegistryStorage {
     function getOwnership(bytes32 assetId)
         external
         view
+        override
         returns (AssetOwnership memory)
     {
         return assets[assetId].ownership;
@@ -133,6 +138,7 @@ contract Ownership is AssetRegistryStorage {
     function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
         external
         view
+        override
         returns (address)
     {
         return assets[assetId].cashflowBeneficiaries[cashflowId];

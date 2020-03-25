@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -30,6 +30,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         address provider
     )
         public
+        override
         onlyOwner
     {
         marketObjectProviders[marketObjectId] = provider;
@@ -50,6 +51,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         int256 dataPoint
     )
         public
+        override
     {
         require(
             msg.sender == marketObjectProviders[marketObjectId],
@@ -74,6 +76,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
     )
         public
         view
+        override
         returns (int256, bool)
     {
         return (
@@ -91,6 +94,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
     function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
         public
         view
+        override
         returns (uint256)
     {
         return marketObjectLastUpdatedAt[marketObjectId];

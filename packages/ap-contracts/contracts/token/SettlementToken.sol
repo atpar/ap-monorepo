@@ -1,4 +1,5 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
+
 
 library SafeMath {
     function add(uint a, uint b) internal pure returns (uint c) {
@@ -20,24 +21,24 @@ library SafeMath {
 }
 
 
-contract ERC20Interface {
-    function totalSupply() public view returns (uint);
-    function balanceOf(address tokenOwner) public view returns (uint balance);
-    function allowance(address tokenOwner, address spender) public view returns (uint remaining);
-    function transfer(address to, uint tokens) public returns (bool success);
-    function approve(address spender, uint tokens) public returns (bool success);
-    function transferFrom(address from, address to, uint tokens) public returns (bool success);
+abstract contract ERC20Interface {
+    function totalSupply() public view virtual returns (uint);
+    function balanceOf(address tokenOwner) public view virtual returns (uint balance);
+    function allowance(address tokenOwner, address spender) public view virtual returns (uint remaining);
+    function transfer(address to, uint tokens) public virtual returns (bool success);
+    function approve(address spender, uint tokens) public virtual returns (bool success);
+    function transferFrom(address from, address to, uint tokens) public virtual returns (bool success);
 
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 }
 
-contract FaucetInterface {
-    function drip(address receiver, uint tokens) public;
+abstract contract FaucetInterface {
+    function drip(address receiver, uint tokens) public virtual;
 }
 
-contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) public;
+abstract contract ApproveAndCallFallBack {
+    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) public virtual;
 }
 
 contract Owned {
@@ -66,7 +67,7 @@ contract Owned {
     }
 }
 
-contract TestToken is ERC20Interface, FaucetInterface, Owned {
+contract SettlementToken is ERC20Interface, FaucetInterface, Owned {
     using SafeMath for uint;
 
     string public symbol;
@@ -85,31 +86,31 @@ contract TestToken is ERC20Interface, FaucetInterface, Owned {
         balances[owner] = _totalSupply;
         emit Transfer(address(0), owner, _totalSupply);
     }
-    function totalSupply() public view returns (uint) {
+    function totalSupply() public view override returns (uint) {
         return _totalSupply.sub(balances[address(0)]);
     }
-    function balanceOf(address tokenOwner) public view returns (uint balance) {
+    function balanceOf(address tokenOwner) public view override returns (uint balance) {
         return balances[tokenOwner];
     }
-    function transfer(address to, uint tokens) public returns (bool success) {
+    function transfer(address to, uint tokens) public override returns (bool success) {
         balances[msg.sender] = balances[msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         emit Transfer(msg.sender, to, tokens);
         return true;
     }
-    function approve(address spender, uint tokens) public returns (bool success) {
+    function approve(address spender, uint tokens) public override returns (bool success) {
         allowed[msg.sender][spender] = tokens;
         emit Approval(msg.sender, spender, tokens);
         return true;
     }
-    function transferFrom(address from, address to, uint tokens) public returns (bool success) {
+    function transferFrom(address from, address to, uint tokens) public override returns (bool success) {
         balances[from] = balances[from].sub(tokens);
         allowed[from][msg.sender] = allowed[from][msg.sender].sub(tokens);
         balances[to] = balances[to].add(tokens);
         emit Transfer(from, to, tokens);
         return true;
     }
-    function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
+    function allowance(address tokenOwner, address spender) public view override returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
     function approveAndCall(address spender, uint tokens, bytes memory data) public returns (bool success) {
@@ -124,16 +125,21 @@ contract TestToken is ERC20Interface, FaucetInterface, Owned {
         emit Transfer(address(0), tokenOwner, tokens);
         return true;
     }
-    function drip(address receiver, uint tokens) public {
+    function drip(address receiver, uint tokens) public override {
         mint(receiver, tokens);
     }
-
-    function () external payable {
+    fallback () external payable {
         mint(msg.sender, 1000 * 10**uint(decimals));
         if (msg.value > 0) {
             msg.sender.transfer(msg.value);
         }
     }
+    // receive () external payable {
+    //     mint(msg.sender, 1000 * 10**uint(decimals));
+    //     if (msg.value > 0) {
+    //         msg.sender.transfer(msg.value);
+    //     }
+    // }
     function transferAnyERC20Token(address tokenAddress, uint tokens) public onlyOwner returns (bool success) {
         return ERC20Interface(tokenAddress).transfer(owner, tokens);
     }

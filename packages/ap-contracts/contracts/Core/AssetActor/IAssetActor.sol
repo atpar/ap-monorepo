@@ -1,12 +1,14 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../SharedTypes.sol";
 
 
-contract IAssetActor is SharedTypes {
+abstract contract IAssetActor is SharedTypes {
 
-    function progress(bytes32 assetId) external;
+    function progress(bytes32 assetId)
+        external
+        virtual;
 
     function initialize(
         bytes32 assetId,
@@ -16,5 +18,6 @@ contract IAssetActor is SharedTypes {
         address engine
     )
         public
+        virtual
         returns (bool);
 }

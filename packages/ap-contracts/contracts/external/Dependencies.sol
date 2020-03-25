@@ -1,12 +1,9 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 
 import "@atpar/actus-solidity/contracts/Engines/ANNEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/PAMEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CEGEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CECEngine.sol";
-import "funds-distribution-token/contracts/extensions/FDT_ETHExtension.sol";
-import "funds-distribution-token/contracts/extensions/FDT_ERC20Extension.sol";
-import "funds-distribution-token/contracts/external/tokens/ERC20SampleToken.sol";
 
 
 contract Dependencies {}

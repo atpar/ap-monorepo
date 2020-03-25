@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/Core.sol";
@@ -10,7 +10,7 @@ import "./IEngine.sol";
  * @notice Implements computeStateForEvent and computePayoffForEvent for all Engines.
  * All Engine contracts have to inherit from BaseEngine and implement all abstract methods.
  */
-contract BaseEngine is Core, IEngine {
+abstract contract BaseEngine is Core, IEngine {
 
     /**
      * Applys an event to the current state of a contract and returns the resulting contract state.
@@ -28,6 +28,7 @@ contract BaseEngine is Core, IEngine {
     )
         public
         pure
+        override
         returns (State memory)
     {
         return stateTransitionFunction(
@@ -54,6 +55,7 @@ contract BaseEngine is Core, IEngine {
     )
         public
         pure
+        override
         returns (int256)
     {
         // if alternative settlementCurrency is set then apply fxRate to payoff
@@ -90,8 +92,9 @@ contract BaseEngine is Core, IEngine {
         bytes32 _event,
         bytes32 externalData
     )
-        private
+        internal
         pure
+        virtual
         returns (State memory);
 
     /**
@@ -110,7 +113,8 @@ contract BaseEngine is Core, IEngine {
         bytes32 _event,
         bytes32 externalData
     )
-        private
+        internal
         pure
+        virtual
         returns (int256);
 }

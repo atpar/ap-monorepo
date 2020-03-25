@@ -21,6 +21,21 @@ export class AssetIssuer extends Contract {
   );
   clone(): AssetIssuer;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<string>;
+
+    PRECISION(): TransactionObject<string>;
+
+    assetRegistry(): TransactionObject<string>;
+
+    custodian(): TransactionObject<string>;
+
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
     deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
       templateTerms: {
         calendar: number | string;
@@ -164,27 +179,12 @@ export class AssetIssuer extends Contract {
       };
     }>;
 
-    custodian(): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
     ): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    assetRegistry(): TransactionObject<string>;
-
     templateRegistry(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
 
     issueFromDraft(draft: {
       termsHash: string | number[];

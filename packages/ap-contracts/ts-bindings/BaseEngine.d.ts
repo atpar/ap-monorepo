@@ -21,6 +21,10 @@ export class BaseEngine extends Contract {
   );
   clone(): BaseEngine;
   methods: {
+    ONE_POINT_ZERO(): TransactionObject<string>;
+
+    PRECISION(): TransactionObject<string>;
+
     adjustEndOfMonthConvention(
       eomc: number | string,
       startTime: number | string,
@@ -32,7 +36,7 @@ export class BaseEngine extends Contract {
       }
     ): TransactionObject<string>;
 
-    computeNonCyclicScheduleSegment(
+    computeCyclicScheduleSegment(
       terms: {
         scalingEffect: number | string;
         contractDealDate: number | string;
@@ -85,8 +89,62 @@ export class BaseEngine extends Contract {
         };
       },
       segmentStart: number | string,
-      segmentEnd: number | string
+      segmentEnd: number | string,
+      eventType: number | string
     ): TransactionObject<string[]>;
+
+    computeEventTimeForEvent(
+      _event: string | number[],
+      terms: {
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        feeAccrued: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        feeRate: number | string;
+        nextResetRate: number | string;
+        penaltyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        coverageOfCreditEnhancement: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          contractReferenceType: number | string;
+          contractReferenceRole: number | string;
+        };
+      }
+    ): TransactionObject<string>;
 
     computeInitialState(terms: {
       calendar: number | string;
@@ -152,7 +210,7 @@ export class BaseEngine extends Contract {
       executionAmount: string;
     }>;
 
-    computeCyclicScheduleSegment(
+    computeNonCyclicScheduleSegment(
       terms: {
         scalingEffect: number | string;
         contractDealDate: number | string;
@@ -205,11 +263,8 @@ export class BaseEngine extends Contract {
         };
       },
       segmentStart: number | string,
-      segmentEnd: number | string,
-      eventType: number | string
+      segmentEnd: number | string
     ): TransactionObject<string[]>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
 
     decodeEvent(
       _event: string | number[]
@@ -218,60 +273,12 @@ export class BaseEngine extends Contract {
       1: string;
     }>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
-
-    computeEventTimeForEvent(
-      _event: string | number[],
-      terms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        contractReference_1: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
-        };
-      }
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
     ): TransactionObject<string>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     isEventScheduled(
       _event: string | number[],
@@ -356,13 +363,6 @@ export class BaseEngine extends Contract {
         executionAmount: number | string;
       }
     ): TransactionObject<boolean>;
-
-    PRECISION(): TransactionObject<string>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
 
     computeStateForEvent(
       terms: {

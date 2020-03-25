@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/ACTUSTypes.sol";
@@ -8,7 +8,7 @@ import "../Core/ACTUSTypes.sol";
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-contract IEngine is ACTUSTypes {
+abstract contract IEngine is ACTUSTypes {
 
     /**
      * @notice Initialize contract state space based on the contract terms.
@@ -18,6 +18,7 @@ contract IEngine is ACTUSTypes {
     function computeInitialState(LifecycleTerms memory terms)
         public
         pure
+        virtual
         returns (State memory);
 
     /**
@@ -36,6 +37,7 @@ contract IEngine is ACTUSTypes {
     )
         public
         pure
+        virtual
         returns (State memory);
 
     /**
@@ -54,6 +56,7 @@ contract IEngine is ACTUSTypes {
     )
         public
         pure
+        virtual
         returns (int256);
 
     /**
@@ -71,6 +74,7 @@ contract IEngine is ACTUSTypes {
     )
         public
         pure
+        virtual
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
 
     /**
@@ -90,6 +94,7 @@ contract IEngine is ACTUSTypes {
     )
         public
         pure
+        virtual
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
 
     /**
@@ -111,5 +116,6 @@ contract IEngine is ACTUSTypes {
     )
         public
         pure
+        virtual
         returns (bool);
 }
