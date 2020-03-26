@@ -85,7 +85,7 @@ contract('AssetIssuer', (accounts) => {
 
     const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(assetId);
     
     assert.equal(storedEngineAddress, orderData.engine);
     assert.equal(storedOwnership.creatorObligor, creator);
@@ -138,7 +138,7 @@ contract('AssetIssuer', (accounts) => {
   
     // const storedTerms = await this.AssetRegistryInstance.getTerms(assetId);
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(assetId);
   
     // assert.equal(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress, orderData.engine);
@@ -157,7 +157,7 @@ contract('AssetIssuer', (accounts) => {
     const assetId_1 = getAssetIdFromOrderData(orderData.enhancementOrder_1);
     // const storedTerms_1 = await this.AssetRegistryInstance.getTerms(assetId_1);
     const storedOwnership_1 = await this.AssetRegistryInstance.getOwnership(assetId_1);
-    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngineAddress(assetId_1);
+    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngine(assetId_1);
 
     // assert.equal(storedTerms_1['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress_1, orderData.enhancementOrder_1.engine);
@@ -170,7 +170,7 @@ contract('AssetIssuer', (accounts) => {
     const assetId_2 = getAssetIdFromOrderData(orderData.enhancementOrder_2);
     // const storedTerms_2 = await this.AssetRegistryInstance.getTerms(assetId_2);
     const storedOwnership_2 = await this.AssetRegistryInstance.getOwnership(assetId_2);
-    const storedEngineAddress_2 = await this.AssetRegistryInstance.getEngineAddress(assetId_2);
+    const storedEngineAddress_2 = await this.AssetRegistryInstance.getEngine(assetId_2);
 
     // assert.equal(storedTerms_2['initialExchangeDate'], this.terms['initialExchangeDate']);
     assert.equal(storedEngineAddress_2, orderData.enhancementOrder_2.engine);
@@ -224,7 +224,7 @@ contract('AssetIssuer', (accounts) => {
   
     const assetId = getAssetIdFromOrderData(orderData);
     const storedOwnership = await this.AssetRegistryInstance.getOwnership(assetId);
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(assetId);
     assert.equal(storedEngineAddress, orderData.engine);
     assert.equal(storedOwnership.creatorObligor, creator);
     assert.equal(storedOwnership.creatorBeneficiary, creator);
@@ -245,7 +245,7 @@ contract('AssetIssuer', (accounts) => {
       )
     );
     const storedOwnership_1 = await this.AssetRegistryInstance.getOwnership(assetId_1);
-    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngineAddress(assetId_1);
+    const storedEngineAddress_1 = await this.AssetRegistryInstance.getEngine(assetId_1);
     assert.equal(storedEngineAddress_1, orderData.enhancementOrder_1.engine);
     assert.equal(storedOwnership_1.creatorObligor, creator);
     assert.equal(storedOwnership_1.creatorBeneficiary, creator);
@@ -311,7 +311,7 @@ contract('AssetIssuer', (accounts) => {
       )
     );
 
-    const storedEngineAddressCEC = await this.AssetRegistryInstance.getEngineAddress(assetIdCEC);
+    const storedEngineAddressCEC = await this.AssetRegistryInstance.getEngine(assetIdCEC);
 
     assert.equal(storedEngineAddressCEC, orderDataCEC.engine);
 
@@ -326,7 +326,7 @@ contract('AssetIssuer', (accounts) => {
 
     const tx = await this.AssetIssuerInstance.issueFromDraft(draftData);
     const assetId = tx.logs[0].args.assetId;
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngineAddress(assetId);
+    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(assetId);
 
     assert.equal(storedEngineAddress, draftData.engine);
   });

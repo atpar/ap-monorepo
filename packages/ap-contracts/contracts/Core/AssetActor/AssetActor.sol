@@ -84,7 +84,7 @@ contract AssetActor is
     function progress(bytes32 assetId) public override {
         LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
         State memory state = assetRegistry.getState(assetId);
-        address engineAddress = assetRegistry.getEngineAddress(assetId);
+        address engineAddress = assetRegistry.getEngine(assetId);
 
         // revert if the asset is not registered in the AssetRegistry or malformed
         require(
@@ -174,7 +174,12 @@ contract AssetActor is
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
-        emit ProgressedAsset(assetId, eventType, scheduleTime, payoff);
+        emit ProgressedAsset(
+            assetId,
+            eventType,
+            scheduleTime,
+            payoff
+        );
     }
 
     /**
@@ -186,7 +191,7 @@ contract AssetActor is
      * @param ownership ownership of the asset
      * @param templateId id of the financial template to use
      * @param customTerms asset specific terms
-     * @param engineAddress address of the ACTUS engine used for the spec. ContractType
+     * @param engine address of the ACTUS engine used for the spec. ContractType
      * @return true on success
      */
     function initialize(
@@ -194,7 +199,8 @@ contract AssetActor is
         AssetOwnership memory ownership,
         bytes32 templateId,
         CustomTerms memory customTerms,
-        address engineAddress
+        address engine,
+        address root
     )
         public
         onlyRegisteredIssuer
@@ -202,7 +208,7 @@ contract AssetActor is
         returns (bool)
     {
         require(
-            assetId != bytes32(0) && engineAddress != address(0),
+            assetId != bytes32(0) && engine != address(0),
             "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
         );
 
@@ -213,7 +219,7 @@ contract AssetActor is
         }
 
         // compute the initial state of the asset using the LifecycleTerms
-        State memory initialState = IEngine(engineAddress).computeInitialState(
+        State memory initialState = IEngine(engine).computeInitialState(
             deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(templateId),
                 customTerms
@@ -227,8 +233,9 @@ contract AssetActor is
             templateId,
             customTerms,
             initialState,
-            engineAddress,
-            address(this)
+            engine,
+            address(this),
+            root
         );
 
         return true;

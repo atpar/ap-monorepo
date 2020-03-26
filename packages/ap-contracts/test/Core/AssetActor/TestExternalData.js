@@ -9,7 +9,7 @@ const {
 } = require('../../helper/blockchain');
 
 const { deriveTemplateId } = require('../../helper/orderUtils');
-const { deriveTerms, generateTemplateSchedule, getEngineContractInstanceForContractType } = require('../../helper/utils');
+const { deriveTerms, generateTemplateSchedule, getEngineContractInstanceForContractType, ZERO_ADDRESS } = require('../../helper/utils');
 
 const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
 
@@ -68,7 +68,8 @@ contract('AssetActor', (accounts) => {
       ownership,
       web3.utils.toHex(templateId),
       customTerms,
-      this.PAMEngineInstance.address
+      this.PAMEngineInstance.address,
+      ZERO_ADDRESS
     );
 
     const initialState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));

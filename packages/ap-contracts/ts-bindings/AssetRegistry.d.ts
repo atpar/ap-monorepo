@@ -245,7 +245,7 @@ export class AssetRegistry extends Contract {
       scheduleTime: number | string
     ): TransactionObject<string>;
 
-    getActorAddress(assetId: string | number[]): TransactionObject<string>;
+    getActor(assetId: string | number[]): TransactionObject<string>;
 
     getAnchorDate(assetId: string | number[]): TransactionObject<string>;
 
@@ -254,7 +254,7 @@ export class AssetRegistry extends Contract {
       cashflowId: number | string
     ): TransactionObject<string>;
 
-    getEngineAddress(assetId: string | number[]): TransactionObject<string>;
+    getEngine(assetId: string | number[]): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
@@ -357,7 +357,35 @@ export class AssetRegistry extends Contract {
       };
     }>;
 
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
+
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
+    setActor(
+      assetId: string | number[],
+      actor: string
+    ): TransactionObject<void>;
+
+    setAnchorDate(
+      assetId: string | number[],
+      anchorDate: number | string
+    ): TransactionObject<void>;
 
     setBeneficiaryForCashflowId(
       assetId: string | number[],
@@ -370,9 +398,85 @@ export class AssetRegistry extends Contract {
       newCounterpartyBeneficiary: string
     ): TransactionObject<void>;
 
+    setCounterpartyObligor(
+      assetId: string | number[],
+      newCounterpartyObligor: string
+    ): TransactionObject<void>;
+
     setCreatorBeneficiary(
       assetId: string | number[],
       newCreatorBeneficiary: string
+    ): TransactionObject<void>;
+
+    setCreatorObligor(
+      assetId: string | number[],
+      newCreatorObligor: string
+    ): TransactionObject<void>;
+
+    setCustomTerms(
+      assetId: string | number[],
+      terms: {
+        anchorDate: number | string;
+        overwrittenAttributesMap: number | string;
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
+      }
+    ): TransactionObject<void>;
+
+    setEngine(
+      assetId: string | number[],
+      engine: string
     ): TransactionObject<void>;
 
     setFinalizedState(
@@ -424,7 +528,7 @@ export class AssetRegistry extends Contract {
         counterpartyBeneficiary: string;
       },
       templateId: string | number[],
-      customTerms: {
+      terms: {
         anchorDate: number | string;
         overwrittenAttributesMap: number | string;
         overwrittenTerms: {
@@ -497,10 +601,19 @@ export class AssetRegistry extends Contract {
         executionAmount: number | string;
       },
       engine: string,
-      actor: string
+      actor: string,
+      root: string
     ): TransactionObject<void>;
   };
   events: {
+    GrantedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
       nextScheduleIndex: string;
@@ -508,9 +621,39 @@ export class AssetRegistry extends Contract {
       1: string;
     }>;
     RegisteredAsset: ContractEvent<string>;
+    RevokedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    SetRootAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      0: string;
+      1: string;
+    }>;
+    UpdatedActor: ContractEvent<{
+      assetId: string;
+      prevActor: string;
+      newActor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedAnchorDate: ContractEvent<{
+      assetId: string;
+      prevAnchorDate: string;
+      anchorDate: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     UpdatedBeneficiary: ContractEvent<{
       assetId: string;
-      oldBeneficiary: string;
+      prevBeneficiary: string;
       newBeneficiary: string;
       0: string;
       1: string;
@@ -519,18 +662,35 @@ export class AssetRegistry extends Contract {
     UpdatedCashflowBeneficiary: ContractEvent<{
       assetId: string;
       cashflowId: string;
-      oldBeneficiary: string;
+      prevBeneficiary: string;
       newBeneficiary: string;
       0: string;
       1: string;
       2: string;
       3: string;
     }>;
+    UpdatedCustomTerms: ContractEvent<string>;
+    UpdatedEngine: ContractEvent<{
+      assetId: string;
+      prevEngine: string;
+      newEngine: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     UpdatedFinalizedState: ContractEvent<{
       assetId: string;
       statusDate: string;
       0: string;
       1: string;
+    }>;
+    UpdatedObligor: ContractEvent<{
+      assetId: string;
+      prevObligor: string;
+      newObligor: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     UpdatedState: ContractEvent<{
       assetId: string;

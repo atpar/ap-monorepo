@@ -106,7 +106,7 @@ module.exports = async (deployer, network) => {
   for (const templateFileName of fs.readdirSync(path.resolve(__dirname, pathToTemplates))) {
     if (!templateFileName.includes('.json')) { continue; }
     const template = JSON.parse(fs.readFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), 'utf8'));
-    template.extendedTemplateTerms.currency = TestToken.address;
+    template.extendedTemplateTerms.currency = SettlementToken.address;
     template.templateId = await registerTemplate(instances, template);
     console.log('      ' + template.name + ': ' + template.templateId);
     fs.writeFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), JSON.stringify(template, null, 4), 'utf8');

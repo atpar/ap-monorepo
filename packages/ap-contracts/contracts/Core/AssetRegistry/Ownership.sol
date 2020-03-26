@@ -2,21 +2,23 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
+import "./AccessControl.sol";
 import "./IAssetRegistry.sol";
 
 
 /**
  * @title Ownership
  */
-abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
+abstract contract Ownership is AssetRegistryStorage, IAssetRegistry, AccessControl {
 
-    event UpdatedBeneficiary(bytes32 assetId, address oldBeneficiary, address newBeneficiary);
-
-    event UpdatedCashflowBeneficiary(bytes32 assetId, int8 cashflowId, address oldBeneficiary, address newBeneficiary);
+    event UpdatedObligor (bytes32 assetId, address prevObligor, address newObligor);
+    event UpdatedBeneficiary(bytes32 assetId, address prevBeneficiary, address newBeneficiary);
+    event UpdatedCashflowBeneficiary(bytes32 assetId, int8 cashflowId, address prevBeneficiary, address newBeneficiary);
 
 
     /**
      * @notice Update the address of the default beneficiary of cashflows going to the creator.
+     * @dev Can only be updated by the current creator beneficiary or by an authorized account.
      * @param assetId id of the asset
      * @param newCreatorBeneficiary address of the new beneficiary
      */
@@ -27,22 +29,25 @@ abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
         external
         override
     {
+        address prevCreatorBeneficiary = assets[assetId].ownership.creatorBeneficiary;
+
         require(
-            assets[assetId].ownership.creatorBeneficiary != address(0),
+            prevCreatorBeneficiary != address(0),
             "AssetRegistry.setCreatorBeneficiary: ENTRY_DOES_NOT_EXIST"
         );
         require(
-            msg.sender == assets[assetId].ownership.creatorBeneficiary,
+            msg.sender == prevCreatorBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCreatorBeneficiary: UNAUTHORIZED_SENDER"
         );
 
         assets[assetId].ownership.creatorBeneficiary = newCreatorBeneficiary;
 
-        emit UpdatedBeneficiary(assetId, msg.sender, newCreatorBeneficiary);
+        emit UpdatedBeneficiary(assetId, prevCreatorBeneficiary, newCreatorBeneficiary);
     }
 
     /**
      * @notice Updates the address of the default beneficiary of cashflows going to the counterparty.
+     * @dev Can only be updated by the current counterparty beneficiary or by an authorized account.
      * @param assetId id of the asset
      * @param newCounterpartyBeneficiary address of the new beneficiary
      */
@@ -53,22 +58,25 @@ abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
         external
         override
     {
+        address prevCounterpartyBeneficiary = assets[assetId].ownership.counterpartyBeneficiary;
+
         require(
-            assets[assetId].ownership.counterpartyBeneficiary != address(0),
+            prevCounterpartyBeneficiary != address(0),
             "AssetRegistry.setCounterpartyBeneficiary: ENTRY_DOES_NOT_EXIST"
         );
         require(
-            msg.sender == assets[assetId].ownership.counterpartyBeneficiary,
+            msg.sender == prevCounterpartyBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCounterpartyBeneficiary: UNAUTHORIZED_SENDER"
         );
 
         assets[assetId].ownership.counterpartyBeneficiary = newCounterpartyBeneficiary;
 
-        emit UpdatedBeneficiary(assetId, msg.sender, newCounterpartyBeneficiary);
+        emit UpdatedBeneficiary(assetId, prevCounterpartyBeneficiary, newCounterpartyBeneficiary);
     }
 
     /**
      * @notice Registers the address of the owner of specific claims of the asset.
+     * @dev Can only be updated by the current beneficiary or by an authorized account.
      * @param assetId id of the asset
      * @param cashflowId id of the specific claims for which to register the owner
      * @param beneficiary the address of the owner
@@ -86,21 +94,25 @@ abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
             "AssetRegistry.setBeneficiaryForCashflowId: INVALID_CASHFLOWID"
         );
 
-        if (assets[assetId].cashflowBeneficiaries[cashflowId] == address(0)) {
+        address prevBeneficiary = assets[assetId].cashflowBeneficiaries[cashflowId];
+
+        if (prevBeneficiary == address(0)) {
             if (cashflowId > 0) {
                 require(
-                    msg.sender == assets[assetId].ownership.creatorBeneficiary,
+                    msg.sender == assets[assetId].ownership.creatorBeneficiary
+                    || hasAccess(assetId, msg.sig, msg.sender),
                     "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
                 );
             } else {
                 require(
-                    msg.sender == assets[assetId].ownership.counterpartyBeneficiary,
+                    msg.sender == assets[assetId].ownership.counterpartyBeneficiary
+                    || hasAccess(assetId, msg.sig, msg.sender),
                     "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
                 );
             }
         } else {
             require(
-                msg.sender == assets[assetId].cashflowBeneficiaries[cashflowId],
+                msg.sender == prevBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
                 "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
             );
         }
@@ -110,9 +122,55 @@ abstract contract Ownership is AssetRegistryStorage, IAssetRegistry {
         emit UpdatedCashflowBeneficiary(
             assetId,
             cashflowId,
-            msg.sender,
+            prevBeneficiary,
             beneficiary
         );
+    }
+
+    /**
+     * @notice Update the address of the obligor which has to fulfill obligations
+     * for the creator of the asset.
+     * @dev Can only be updated by an authorized account.
+     * @param assetId id of the asset
+     * @param newCreatorObligor address of the new creator obligor
+     */
+    function setCreatorObligor (bytes32 assetId, address newCreatorObligor)
+        external
+        override
+    {
+        require(
+            hasAccess(assetId, msg.sig, msg.sender),
+            "AssetRegistry.setCreatorObligor: UNAUTHORIZED_SENDER"
+        );
+
+        address prevCreatorObligor = assets[assetId].ownership.creatorObligor;
+
+        assets[assetId].ownership.creatorObligor = newCreatorObligor;
+
+        emit UpdatedObligor(assetId, prevCreatorObligor, newCreatorObligor);
+    }
+
+    /**
+     * @notice Update the address of the counterparty which has to fulfill obligations
+     * for the counterparty of the asset.
+     * @dev Can only be updated by an authorized account.
+     * @param assetId id of the asset
+     * @param newCounterpartyObligor address of the new counterparty obligor
+     */
+    function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor)
+        external
+        override
+    {
+        require(
+            hasAccess(assetId, msg.sig, msg.sender),
+            "AssetRegistry.setCounterpartyObligor: UNAUTHORIZED_SENDER"
+        );
+
+        address prevCounterpartyObligor = assets[assetId].ownership.counterpartyObligor;
+
+        assets[assetId].ownership.counterpartyObligor = newCounterpartyObligor;
+
+        emit UpdatedObligor(assetId, prevCounterpartyObligor, newCounterpartyObligor);
     }
 
     /**

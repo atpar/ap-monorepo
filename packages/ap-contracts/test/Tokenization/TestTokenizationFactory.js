@@ -37,6 +37,7 @@ contract('TokenizationFactory', (accounts) => {
       this.customTerms,
       this.state,
       this.PAMEngineInstance.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     );
   });

@@ -29,7 +29,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
      * @param assetId id of the asset
      * @param ownership ownership of the asset
      * @param templateId id of the financial template to use
-     * @param customTerms asset specific terms
+     * @param terms asset specific terms (CustomTerms)
      * @param state initial state of the asset
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
@@ -38,10 +38,11 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
         bytes32 assetId,
         AssetOwnership memory ownership,
         bytes32 templateId,
-        CustomTerms memory customTerms,
+        CustomTerms memory terms,
         State memory state,
         address engine,
-        address actor
+        address actor,
+        address root
     )
         public
         override
@@ -57,11 +58,16 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
             assetId,
             ownership,
             templateId,
-            customTerms,
+            terms,
             state,
             engine,
             actor
         );
+
+        // set external root if specified
+        if (root != address(0)) {
+            setDefaultRoot(assetId, root);
+        }
 
         emit RegisteredAsset(assetId);
     }

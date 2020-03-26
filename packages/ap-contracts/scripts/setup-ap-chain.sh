@@ -12,10 +12,16 @@ shutdown_ganache() {
   fi
 }
 
-# throw if port is already in use
-# deploy deterministically
 echo "Starting new ganache-cli instance."
-npx --quiet ganache-cli -p "$ganache_port" -i 1994 -e 5000000000 -d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" 1>/dev/null &
+npx --quiet ganache-cli \
+  --port "$ganache_port" \
+  --networkId "1994" \
+  --gasPrice "8000000" \
+  --gasLimit "8000000" \
+  --defaultBalanceEther "5000000000" \
+  --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
+  1>/dev/null &
+
 ganache_pid=$!
 
 sleep 1

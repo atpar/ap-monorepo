@@ -249,6 +249,16 @@ export class IAssetRegistry extends Contract {
 
     templateRegistry(): TransactionObject<string>;
 
+    setCreatorObligor(
+      assetId: string | number[],
+      newCreatorObligor: string
+    ): TransactionObject<void>;
+
+    setCounterpartyObligor(
+      assetId: string | number[],
+      newCounterpartyObligor: string
+    ): TransactionObject<void>;
+
     setCreatorBeneficiary(
       assetId: string | number[],
       newCreatorBeneficiary: string
@@ -365,9 +375,9 @@ export class IAssetRegistry extends Contract {
 
     getAnchorDate(assetId: string | number[]): TransactionObject<string>;
 
-    getEngineAddress(assetId: string | number[]): TransactionObject<string>;
+    getEngine(assetId: string | number[]): TransactionObject<string>;
 
-    getActorAddress(assetId: string | number[]): TransactionObject<string>;
+    getActor(assetId: string | number[]): TransactionObject<string>;
 
     getTemplateId(assetId: string | number[]): TransactionObject<string>;
 
@@ -413,6 +423,82 @@ export class IAssetRegistry extends Contract {
         nextPrincipalRedemptionPayment: number | string;
         executionAmount: number | string;
       }
+    ): TransactionObject<void>;
+
+    setCustomTerms(
+      assetId: string | number[],
+      terms: {
+        anchorDate: number | string;
+        overwrittenAttributesMap: number | string;
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
+      }
+    ): TransactionObject<void>;
+
+    setAnchorDate(
+      assetId: string | number[],
+      anchorDate: number | string
+    ): TransactionObject<void>;
+
+    setEngine(
+      assetId: string | number[],
+      engine: string
+    ): TransactionObject<void>;
+
+    setActor(
+      assetId: string | number[],
+      actor: string
     ): TransactionObject<void>;
 
     registerAsset(
@@ -497,7 +583,26 @@ export class IAssetRegistry extends Contract {
         executionAmount: number | string;
       },
       engine: string,
-      actor: string
+      actor: string,
+      root: string
+    ): TransactionObject<void>;
+
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
     ): TransactionObject<void>;
   };
   events: {

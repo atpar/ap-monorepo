@@ -261,6 +261,18 @@ export class Economics extends Contract {
       counterpartyBeneficiary: string;
     }>;
 
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
+
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     registerAsset(
       assetId: string | number[],
       ownership: {
@@ -343,7 +355,14 @@ export class Economics extends Contract {
         executionAmount: number | string;
       },
       engine: string,
-      actor: string
+      actor: string,
+      root: string
+    ): TransactionObject<void>;
+
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
     ): TransactionObject<void>;
 
     setBeneficiaryForCashflowId(
@@ -357,9 +376,19 @@ export class Economics extends Contract {
       newCounterpartyBeneficiary: string
     ): TransactionObject<void>;
 
+    setCounterpartyObligor(
+      assetId: string | number[],
+      newCounterpartyObligor: string
+    ): TransactionObject<void>;
+
     setCreatorBeneficiary(
       assetId: string | number[],
       newCreatorBeneficiary: string
+    ): TransactionObject<void>;
+
+    setCreatorObligor(
+      assetId: string | number[],
+      newCreatorObligor: string
     ): TransactionObject<void>;
 
     templateRegistry(): TransactionObject<string>;
@@ -450,9 +479,9 @@ export class Economics extends Contract {
 
     getAnchorDate(assetId: string | number[]): TransactionObject<string>;
 
-    getEngineAddress(assetId: string | number[]): TransactionObject<string>;
+    getEngine(assetId: string | number[]): TransactionObject<string>;
 
-    getActorAddress(assetId: string | number[]): TransactionObject<string>;
+    getActor(assetId: string | number[]): TransactionObject<string>;
 
     getTemplateId(assetId: string | number[]): TransactionObject<string>;
 
@@ -461,6 +490,67 @@ export class Economics extends Contract {
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
+
+    setCustomTerms(
+      assetId: string | number[],
+      terms: {
+        anchorDate: number | string;
+        overwrittenAttributesMap: number | string;
+        overwrittenTerms: {
+          calendar: number | string;
+          contractRole: number | string;
+          dayCountConvention: number | string;
+          businessDayConvention: number | string;
+          endOfMonthConvention: number | string;
+          scalingEffect: number | string;
+          penaltyType: number | string;
+          feeBasis: number | string;
+          creditEventTypeCovered: number | string;
+          currency: string;
+          settlementCurrency: string;
+          marketObjectCodeRateReset: string | number[];
+          statusDate: number | string;
+          maturityDate: number | string;
+          notionalPrincipal: number | string;
+          nominalInterestRate: number | string;
+          feeAccrued: number | string;
+          accruedInterest: number | string;
+          rateMultiplier: number | string;
+          rateSpread: number | string;
+          feeRate: number | string;
+          nextResetRate: number | string;
+          penaltyRate: number | string;
+          premiumDiscountAtIED: number | string;
+          priceAtPurchaseDate: number | string;
+          nextPrincipalRedemptionPayment: number | string;
+          coverageOfCreditEnhancement: number | string;
+          lifeCap: number | string;
+          lifeFloor: number | string;
+          periodCap: number | string;
+          periodFloor: number | string;
+          gracePeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          delinquencyPeriod: {
+            i: number | string;
+            p: number | string;
+            isSet: boolean;
+          };
+          contractReference_1: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+          contractReference_2: {
+            object: string | number[];
+            contractReferenceType: number | string;
+            contractReferenceRole: number | string;
+          };
+        };
+      }
+    ): TransactionObject<void>;
 
     setState(
       assetId: string | number[],
@@ -499,13 +589,75 @@ export class Economics extends Contract {
         executionAmount: number | string;
       }
     ): TransactionObject<void>;
+
+    setAnchorDate(
+      assetId: string | number[],
+      anchorDate: number | string
+    ): TransactionObject<void>;
+
+    setEngine(
+      assetId: string | number[],
+      engine: string
+    ): TransactionObject<void>;
+
+    setActor(
+      assetId: string | number[],
+      actor: string
+    ): TransactionObject<void>;
   };
   events: {
+    GrantedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
       nextScheduleIndex: string;
       0: string;
       1: string;
+    }>;
+    RevokedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    SetRootAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      0: string;
+      1: string;
+    }>;
+    UpdatedActor: ContractEvent<{
+      assetId: string;
+      prevActor: string;
+      newActor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedAnchorDate: ContractEvent<{
+      assetId: string;
+      prevAnchorDate: string;
+      anchorDate: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedCustomTerms: ContractEvent<string>;
+    UpdatedEngine: ContractEvent<{
+      assetId: string;
+      prevEngine: string;
+      newEngine: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     UpdatedFinalizedState: ContractEvent<{
       assetId: string;

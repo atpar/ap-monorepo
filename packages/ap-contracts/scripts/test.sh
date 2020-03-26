@@ -14,8 +14,18 @@ shutdown_ganache() {
 
 if ! nc -z localhost 8545 
 then
-  echo "Starting new ganache-cli instance." # 1231006505
-  ganache-cli -p "$ganache_port" --time "2009-01-03T18:15:05" -e 5000000000 1>/dev/null &
+  echo "Starting new ganache-cli instance."
+
+  ganache-cli \
+  --port "$ganache_port" \
+  --networkId "1994" \
+  --gasPrice "8000000" \
+  --gasLimit "8000000" \
+  --time "2009-01-03T18:15:05" \
+  --defaultBalanceEther "5000000000" \
+  --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
+  1>/dev/null &
+
   ganache_pid=$!
 fi
 
