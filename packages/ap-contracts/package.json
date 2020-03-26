@@ -62,7 +62,7 @@
     "ethlint": "^1.2.3",
     "ganache-cli": "^6.4.3",
     "openzeppelin-test-helpers": "^0.1.2",
-    "solidity-coverage": "^0.7.0-beta.3",
+    "solidity-coverage": "^0.7.2",
     "truffle": "5.1.13",
     "typechain": "^1.0.5",
     "typechain-target-web3-v1": "^1.0.4"
