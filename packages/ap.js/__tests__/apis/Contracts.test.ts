@@ -49,7 +49,7 @@ describe('Contracts', (): void => {
     ).toBe(true);    
   });
 
-  it('should return instance of FDT_ERC20Extension for a given address', async (): Promise<void> => {
+  it('should return instance of ERC2222 for a given address', async (): Promise<void> => {
     expect(
       contracts.erc2222('0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
     ).toBe(true);

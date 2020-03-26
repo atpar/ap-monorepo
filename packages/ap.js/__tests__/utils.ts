@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ERC20SampleTokenArtifact = require('@atpar/ap-contracts/artifacts/ERC20SampleToken.min.json');
+const SettlementToken = require('@atpar/ap-contracts/artifacts/SettlementToken.min.json');
 
 import { AP, APTypes, Order, Template } from '../src';
 
@@ -24,8 +24,8 @@ export async function getDefaultTerms (): Promise<Terms> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const account = (await web3.eth.getAccounts())[0];
 
-  let sampleToken = new web3.eth.Contract(ERC20SampleTokenArtifact.abi);
-  sampleToken = await sampleToken.deploy({ data: ERC20SampleTokenArtifact.bytecode }).send({ from: account, gas: 2000000 });
+  let sampleToken = new web3.eth.Contract(SettlementToken.abi);
+  sampleToken = await sampleToken.deploy({ data: SettlementToken.bytecode }).send({ from: account, gas: 2000000 });
 
   const terms: Terms = DefaultTerms;
   terms.currency = sampleToken.options.address;
