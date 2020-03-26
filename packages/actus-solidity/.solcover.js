@@ -1,6 +1,8 @@
 module.exports = {
-  skipFiles: ['external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol'],
-  skipFiles: ['test/TestPOF.sol'],
-  skipFiles: ['test/TestSTF.sol'],
-  skipFiles: ['Migrations.sol']
+  skipFiles: [
+    'external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol',
+    'test/TestPOF.sol',
+    'test/TestSTF.sol',
+    'Migrations.sol'
+  ]
 };
