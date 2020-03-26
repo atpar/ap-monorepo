@@ -6,6 +6,12 @@ import "./AssetRegistryStorage.sol";
 
 abstract contract IAssetRegistry is AssetRegistryStorage {
 
+    function isRegistered(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (bool);
+
     function setCreatorObligor (bytes32 assetId, address newCreatorObligor)
         external
         virtual;

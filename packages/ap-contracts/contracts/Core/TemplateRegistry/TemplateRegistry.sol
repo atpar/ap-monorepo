@@ -16,6 +16,20 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
 
 
     /**
+     * @notice Returns true if there is a template registered for a given templateId
+     * @param templateId id of the template
+     * @return true if template exists
+     */
+    function isRegistered(bytes32 templateId)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return templates[templateId].isSet;
+    }
+
+    /**
      * @notice Returns the terms of a template.
      * @param templateId id of the template
      * @return TemplateTerms

@@ -6,6 +6,12 @@ import "./TemplateRegistryStorage.sol";
 
 abstract contract ITemplateRegistry is TemplateRegistryStorage {
 
+    function isRegistered(bytes32 templateId)
+        external
+        view
+        virtual
+        returns (bool);
+
     function getTemplateTerms(bytes32 templateId)
         external
         view

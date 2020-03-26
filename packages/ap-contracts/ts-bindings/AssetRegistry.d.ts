@@ -519,6 +519,8 @@ export class AssetRegistry extends Contract {
 
     templateRegistry(): TransactionObject<string>;
 
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
     registerAsset(
       assetId: string | number[],
       ownership: {

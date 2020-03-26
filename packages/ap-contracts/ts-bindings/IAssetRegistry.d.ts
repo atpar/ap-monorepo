@@ -249,6 +249,8 @@ export class IAssetRegistry extends Contract {
 
     templateRegistry(): TransactionObject<string>;
 
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
     setCreatorObligor(
       assetId: string | number[],
       newCreatorObligor: string

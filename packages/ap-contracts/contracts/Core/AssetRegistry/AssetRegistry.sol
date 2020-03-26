@@ -22,6 +22,20 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
     {}
 
     /**
+     * @notice Returns if there is an asset registerd for a given assetId
+     * @param assetId id of the asset
+     * @return true if asset exist
+     */
+    function isRegistered(bytes32 assetId)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return assets[assetId].isSet;
+    }
+
+    /**
      * @notice Stores the addresses of the owners (owner of creator-side payment obligations,
      * owner of creator-side payment claims), terms and the initial state of an asset
      * and sets the address of the actor (address of account which is allowed to update the state).

@@ -25,6 +25,8 @@ export class ITemplateRegistry extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    isRegistered(templateId: string | number[]): TransactionObject<boolean>;
+
     getTemplateTerms(
       templateId: string | number[]
     ): TransactionObject<{

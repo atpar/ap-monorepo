@@ -273,6 +273,8 @@ export class Economics extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
     registerAsset(
       assetId: string | number[],
       ownership: {

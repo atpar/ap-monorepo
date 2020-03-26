@@ -359,6 +359,8 @@ export class AccessControl extends Contract {
 
     incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
 
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
     registerAsset(
       assetId: string | number[],
       ownership: {

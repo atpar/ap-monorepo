@@ -125,8 +125,9 @@ contract AssetActor is
                 assetRegistry.getState(terms.contractReference_1.object)
             ) == false
         ) {
-            // skip the unscheduled event by incrementing the corresponding schedule index
+            // skip the stale event by incrementing the corresponding schedule index
             updateScheduleIndex(assetId, eventType);
+            emit Status(assetId, "SKIPPED_STALE_EVENT");
             return;
         }
 
