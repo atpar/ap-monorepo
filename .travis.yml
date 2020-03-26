@@ -3,8 +3,7 @@ group: beta
 language: node_js
 node_js: '8'
 cache: yarn
-before_install:
-- export NODE_OPTIONS=–max_old_space_size=4096
+before_install: export NODE_OPTIONS="--max-old-space-size=4076"
 install: yarn
 script:
 - yarn bootstrap
