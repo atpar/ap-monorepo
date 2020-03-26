@@ -21,11 +21,11 @@ export class Restrictable extends Contract {
   );
   clone(): Restrictable;
   methods: {
-    renounceOwnership(): TransactionObject<void>;
+    isOwner(): TransactionObject<boolean>;
 
     owner(): TransactionObject<string>;
 
-    isOwner(): TransactionObject<boolean>;
+    renounceOwnership(): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
@@ -34,13 +34,13 @@ export class Restrictable extends Contract {
     disableRestrictions(): TransactionObject<void>;
   };
   events: {
-    RestrictionsDisabled: ContractEvent<string>;
     OwnershipTransferred: ContractEvent<{
       previousOwner: string;
       newOwner: string;
       0: string;
       1: string;
     }>;
+    RestrictionsDisabled: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

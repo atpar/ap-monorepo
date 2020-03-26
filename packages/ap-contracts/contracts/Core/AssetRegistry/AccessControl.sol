@@ -1,10 +1,11 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
+import "./IAssetRegistry.sol";
 
 
-contract AccessControl is AssetRegistryStorage {
+abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
 
   event SetRootAccess(bytes32 indexed assetId, address indexed account);
   event GrantedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);
@@ -22,7 +23,11 @@ contract AccessControl is AssetRegistryStorage {
    * @param account address of the account to check the access
    * @return true if allowed access
    */
-  function hasAccess (bytes32 assetId, bytes4 methodSignature, address account) public returns (bool) {
+  function hasAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    public
+    override
+    returns (bool)
+  {
     return (
       assets[assetId].access[methodSignature][account] || assets[assetId].access[ROOT_ACCESS][account]
     );
@@ -35,7 +40,10 @@ contract AccessControl is AssetRegistryStorage {
    * @param methodSignature function / method signature (4 byte keccak256 hash of the method selector)
    * @param account address of the account to grant access to
    */
-  function grantAccess (bytes32 assetId, bytes4 methodSignature, address account) public {
+  function grantAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    public
+    override
+  {
     require(
       hasAccess(assetId, msg.sig, msg.sender),
       "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"
@@ -53,7 +61,10 @@ contract AccessControl is AssetRegistryStorage {
    * @param methodSignature function / method signature (4 byte keccak256 hash of the method selector)
    * @param account address of the account to revoke access for
    */
-  function revokeAccess (bytes32 assetId, bytes4 methodSignature, address account) public {
+  function revokeAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    public
+    override
+  {
     require(
       hasAccess(assetId, msg.sig, msg.sender),
       "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../SharedTypes.sol";
@@ -117,7 +117,11 @@ contract TemplateRegistryStorage is SharedTypes {
         }
     }
 
-    function decodeAndGetTerms(bytes32 templateId) internal view returns (TemplateTerms memory) {
+    function decodeAndGetTerms(bytes32 templateId)
+        internal
+        view
+        returns (TemplateTerms memory)
+    {
         return TemplateTerms(
             Calendar(uint8(uint256(templates[templateId].packedTerms[1] >> 240))),
             ContractRole(uint8(uint256(templates[templateId].packedTerms[1] >> 232))),

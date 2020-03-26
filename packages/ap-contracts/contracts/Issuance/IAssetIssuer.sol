@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
@@ -6,7 +6,7 @@ import "../Core/AssetActor/IAssetActor.sol";
 import "./VerifyOrder.sol";
 
 
-contract IAssetIssuer is SharedTypes, VerifyOrder {
+abstract contract IAssetIssuer is SharedTypes, VerifyOrder {
 
     struct Draft {
         bytes32 termsHash;
@@ -18,7 +18,11 @@ contract IAssetIssuer is SharedTypes, VerifyOrder {
     }
 
 
-    function issueFromDraft(Draft memory draft) public;
+    function issueFromDraft(Draft memory draft)
+        public
+        virtual;
 
-    function issueFromOrder(Order memory order) public;
+    function issueFromOrder(Order memory order)
+        public
+        virtual;
 }

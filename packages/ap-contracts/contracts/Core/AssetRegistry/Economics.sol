@@ -1,14 +1,15 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
 import "./AccessControl.sol";
+import "./IAssetRegistry.sol";
 
 
 /**
  * @title Economics
  */
-contract Economics is AssetRegistryStorage, AccessControl {
+abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessControl {
 
     event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 nextScheduleIndex);
     event UpdatedCustomTerms(bytes32 indexed assetId);
@@ -32,7 +33,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return terms of the asset
      */
-    function getTerms(bytes32 assetId) external view returns (LifecycleTerms memory) {
+    function getTerms(bytes32 assetId)
+        external
+        view
+        override
+        returns (LifecycleTerms memory)
+    {
         return decodeAndGetTerms(assetId);
     }
 
@@ -41,7 +47,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return state of the asset
      */
-    function getState(bytes32 assetId) external view returns (State memory) {
+    function getState(bytes32 assetId)
+        external
+        view
+        override
+        returns (State memory)
+    {
         return decodeAndGetState(assetId);
     }
 
@@ -50,7 +61,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return state of the asset
      */
-    function getFinalizedState(bytes32 assetId) external view returns (State memory) {
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        override
+        returns (State memory)
+    {
         return decodeAndGetFinalizedState(assetId);
     }
 
@@ -59,7 +75,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return Anchor date
      */
-    function getAnchorDate(bytes32 assetId) external view returns (uint256) {
+    function getAnchorDate(bytes32 assetId)
+        external
+        view
+        override
+        returns (uint256)
+    {
         return decodeAndGetAnchorDate(assetId);
     }
 
@@ -68,7 +89,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return address of the engine of the asset
      */
-    function getEngine(bytes32 assetId) external view returns (address) {
+    function getEngine(bytes32 assetId)
+        external
+        view
+        override
+        returns (address)
+    {
         return assets[assetId].engine;
     }
 
@@ -77,7 +103,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return address of the asset actor
      */
-    function getActor(bytes32 assetId) external view returns (address) {
+    function getActor(bytes32 assetId)
+        external
+        view
+        override
+        returns (address)
+    {
         return assets[assetId].actor;
     }
 
@@ -86,7 +117,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return id of the template
      */
-    function getTemplateId(bytes32 assetId) external view returns (bytes32) {
+    function getTemplateId(bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes32)
+    {
         return assets[assetId].templateId;
     }
 
@@ -97,7 +133,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return event
      */
-    function getNextEvent (bytes32 assetId) external view returns (bytes32) {
+    function getNextEvent (bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes32)
+    {
         LifecycleTerms memory terms = decodeAndGetTerms(assetId);
 
         // Underlying
@@ -162,7 +203,12 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @return Index
      */
-    function getNextScheduleIndex(bytes32 assetId) external view returns (uint256) {
+    function getNextScheduleIndex(bytes32 assetId)
+        external
+        view
+        override
+        returns (uint256)
+    {
         return assets[assetId].nextScheduleIndex;
     }
 
@@ -172,7 +218,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      */
-    function incrementScheduleIndex(bytes32 assetId) external isAuthorized (assetId) {
+    function incrementScheduleIndex(bytes32 assetId)
+        external
+        override
+        isAuthorized (assetId)
+    {
         uint256 scheduleIndex = assets[assetId].nextScheduleIndex;
 
         if (scheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId)) {
@@ -190,7 +240,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param terms new CustomTerms
      */
-    function setCustomTerms(bytes32 assetId, CustomTerms memory terms) public isAuthorized (assetId) {
+    function setCustomTerms(bytes32 assetId, CustomTerms memory terms)
+        public
+        override
+        isAuthorized (assetId)
+    {
         encodeAndSetTerms(assetId, terms);
 
         emit UpdatedCustomTerms(assetId);
@@ -202,7 +256,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setState(bytes32 assetId, State memory state) public isAuthorized (assetId) {
+    function setState(bytes32 assetId, State memory state)
+        public
+        override
+        isAuthorized (assetId)
+    {
         encodeAndSetState(assetId, state);
 
         emit UpdatedState(assetId, state.statusDate);
@@ -214,7 +272,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setFinalizedState(bytes32 assetId, State memory state) public isAuthorized (assetId) {
+    function setFinalizedState(bytes32 assetId, State memory state)
+        public
+        override
+        isAuthorized (assetId)
+    {
         encodeAndSetFinalizedState(assetId, state);
 
         emit UpdatedFinalizedState(assetId, state.statusDate);
@@ -227,7 +289,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param anchorDate new anchor date of the asset
      */
-    function setAnchorDate(bytes32 assetId, uint256 anchorDate) public isAuthorized (assetId) {
+    function setAnchorDate(bytes32 assetId, uint256 anchorDate)
+        public
+        override
+        isAuthorized (assetId)
+    {
         uint256 prevAnchorDate = decodeAndGetAnchorDate(assetId);
 
         encodeAndSetAnchorDate(assetId, anchorDate);
@@ -241,7 +307,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param engine new engine address
      */
-    function setEngine(bytes32 assetId, address engine) public isAuthorized (assetId) {
+    function setEngine(bytes32 assetId, address engine)
+        public
+        override
+        isAuthorized (assetId)
+    {
         address prevEngine = assets[assetId].engine;
 
         assets[assetId].engine = engine;
@@ -254,7 +324,11 @@ contract Economics is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param actor address of the Actor contract
      */
-    function setActor(bytes32 assetId, address actor) public isAuthorized (assetId) {
+    function setActor(bytes32 assetId, address actor)
+        public
+        override
+        isAuthorized (assetId)
+    {
         address prevActor = assets[assetId].actor;
 
         assets[assetId].actor = actor;

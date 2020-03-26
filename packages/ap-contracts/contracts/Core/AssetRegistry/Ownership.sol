@@ -1,14 +1,15 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
 import "./AccessControl.sol";
+import "./IAssetRegistry.sol";
 
 
 /**
  * @title Ownership
  */
-contract Ownership is AssetRegistryStorage, AccessControl {
+abstract contract Ownership is AssetRegistryStorage, IAssetRegistry, AccessControl {
 
     event UpdatedObligor (bytes32 assetId, address prevObligor, address newObligor);
     event UpdatedBeneficiary(bytes32 assetId, address prevBeneficiary, address newBeneficiary);
@@ -26,6 +27,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
         address newCreatorBeneficiary
     )
         external
+        override
     {
         address prevCreatorBeneficiary = assets[assetId].ownership.creatorBeneficiary;
 
@@ -54,6 +56,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
         address newCounterpartyBeneficiary
     )
         external
+        override
     {
         address prevCounterpartyBeneficiary = assets[assetId].ownership.counterpartyBeneficiary;
 
@@ -84,6 +87,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
         address beneficiary
     )
         external
+        override
     {
         require(
             cashflowId != 0,
@@ -130,7 +134,10 @@ contract Ownership is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param newCreatorObligor address of the new creator obligor
      */
-    function setCreatorObligor (bytes32 assetId, address newCreatorObligor) external {
+    function setCreatorObligor (bytes32 assetId, address newCreatorObligor)
+        external
+        override
+    {
         require(
             hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCreatorObligor: UNAUTHORIZED_SENDER"
@@ -150,7 +157,10 @@ contract Ownership is AssetRegistryStorage, AccessControl {
      * @param assetId id of the asset
      * @param newCounterpartyObligor address of the new counterparty obligor
      */
-    function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor) external {
+    function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor)
+        external
+        override
+    {
         require(
             hasAccess(assetId, msg.sig, msg.sender),
             "AssetRegistry.setCounterpartyObligor: UNAUTHORIZED_SENDER"
@@ -171,6 +181,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
     function getOwnership(bytes32 assetId)
         external
         view
+        override
         returns (AssetOwnership memory)
     {
         return assets[assetId].ownership;
@@ -185,6 +196,7 @@ contract Ownership is AssetRegistryStorage, AccessControl {
     function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
         external
         view
+        override
         returns (address)
     {
         return assets[assetId].cashflowBeneficiaries[cashflowId];

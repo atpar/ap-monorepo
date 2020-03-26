@@ -44,17 +44,17 @@ export class IERC20 extends Contract {
     ): TransactionObject<boolean>;
   };
   events: {
-    Transfer: ContractEvent<{
-      from: string;
-      to: string;
+    Approval: ContractEvent<{
+      owner: string;
+      spender: string;
       value: string;
       0: string;
       1: string;
       2: string;
     }>;
-    Approval: ContractEvent<{
-      owner: string;
-      spender: string;
+    Transfer: ContractEvent<{
+      from: string;
+      to: string;
       value: string;
       0: string;
       1: string;

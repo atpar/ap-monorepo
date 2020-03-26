@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -81,7 +81,7 @@ contract AssetActor is
      * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
      */
-    function progress(bytes32 assetId) public {
+    function progress(bytes32 assetId) public override {
         LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
         State memory state = assetRegistry.getState(assetId);
         address engineAddress = assetRegistry.getEngine(assetId);
@@ -204,6 +204,7 @@ contract AssetActor is
     )
         public
         onlyRegisteredIssuer
+        override
         returns (bool)
     {
         require(

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./AssetRegistryStorage.sol";
@@ -45,6 +45,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
         address root
     )
         public
+        override
     {
         // revert if an asset with the specified assetId already exists
         require(

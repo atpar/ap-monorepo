@@ -21,14 +21,37 @@ export class FundsDistributionToken extends Contract {
   );
   clone(): FundsDistributionToken;
   methods: {
-    name(): TransactionObject<string>;
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     approve(
       spender: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
+    balanceOf(account: string): TransactionObject<string>;
+
+    decimals(): TransactionObject<string>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string
+    ): TransactionObject<boolean>;
+
+    increaseAllowance(
+      spender: string,
+      addedValue: number | string
+    ): TransactionObject<boolean>;
+
+    name(): TransactionObject<string>;
+
+    symbol(): TransactionObject<string>;
+
     totalSupply(): TransactionObject<string>;
+
+    transfer(
+      recipient: string,
+      amount: number | string
+    ): TransactionObject<boolean>;
 
     transferFrom(
       sender: string,
@@ -38,37 +61,6 @@ export class FundsDistributionToken extends Contract {
 
     withdrawFunds(): TransactionObject<void>;
 
-    decimals(): TransactionObject<string>;
-
-    increaseAllowance(
-      spender: string,
-      addedValue: number | string
-    ): TransactionObject<boolean>;
-
-    mint(account: string, amount: number | string): TransactionObject<boolean>;
-
-    balanceOf(account: string): TransactionObject<string>;
-
-    symbol(): TransactionObject<string>;
-
-    addMinter(account: string): TransactionObject<void>;
-
-    renounceMinter(): TransactionObject<void>;
-
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: number | string
-    ): TransactionObject<boolean>;
-
-    transfer(
-      recipient: string,
-      amount: number | string
-    ): TransactionObject<boolean>;
-
-    isMinter(account: string): TransactionObject<boolean>;
-
-    allowance(owner: string, spender: string): TransactionObject<string>;
-
     withdrawableFundsOf(_owner: string): TransactionObject<string>;
 
     withdrawnFundsOf(_owner: string): TransactionObject<string>;
@@ -76,16 +68,6 @@ export class FundsDistributionToken extends Contract {
     accumulativeFundsOf(_owner: string): TransactionObject<string>;
   };
   events: {
-    MinterAdded: ContractEvent<string>;
-    MinterRemoved: ContractEvent<string>;
-    Transfer: ContractEvent<{
-      from: string;
-      to: string;
-      value: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
@@ -105,6 +87,14 @@ export class FundsDistributionToken extends Contract {
       fundsWithdrawn: string;
       0: string;
       1: string;
+    }>;
+    Transfer: ContractEvent<{
+      from: string;
+      to: string;
+      value: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

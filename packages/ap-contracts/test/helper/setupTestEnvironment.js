@@ -11,7 +11,7 @@ const Custodian = artifacts.require('Custodian');
 const TemplateRegistry = artifacts.require('TemplateRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
-const ERC20SampleToken = artifacts.require('ERC20SampleToken');
+const SettlementToken = artifacts.require('SettlementToken');
 
 
 async function setupTestEnvironment (accounts) {
@@ -69,7 +69,7 @@ function getComplexTerms () {
 }
 
 async function deployPaymentToken(owner, holders) {
-  const PaymentTokenInstance = await ERC20SampleToken.new({ from: owner });
+  const PaymentTokenInstance = await SettlementToken.new({ from: owner });
 
   for (holder of holders) {
     await PaymentTokenInstance.transfer(holder, web3.utils.toWei('5000'), { from: owner });

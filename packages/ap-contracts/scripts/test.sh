@@ -19,7 +19,6 @@ then
   ganache-cli \
   --port "$ganache_port" \
   --networkId "1994" \
-  --allowUnlimitedContractSize \
   --gasPrice "8000000" \
   --gasLimit "8000000" \
   --time "2009-01-03T18:15:05" \

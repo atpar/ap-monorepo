@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/Core.sol";
@@ -24,6 +24,7 @@ contract ANNEngine is BaseEngine, STF, POF {
     function computeInitialState(LifecycleTerms memory terms)
         public
         pure
+        override
         returns (State memory)
     {
         State memory state;
@@ -59,6 +60,7 @@ contract ANNEngine is BaseEngine, STF, POF {
     )
         public
         pure
+        override
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
@@ -112,6 +114,7 @@ contract ANNEngine is BaseEngine, STF, POF {
     )
         public
         pure
+        override
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
@@ -237,6 +240,7 @@ contract ANNEngine is BaseEngine, STF, POF {
     )
         public
         pure
+        override
         returns (bool)
     {
         return true;
@@ -259,8 +263,9 @@ contract ANNEngine is BaseEngine, STF, POF {
         bytes32 _event,
         bytes32 externalData
     )
-        private
+        internal
         pure
+        override
         returns (State memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
@@ -304,8 +309,9 @@ contract ANNEngine is BaseEngine, STF, POF {
         bytes32 _event,
         bytes32 externalData
     )
-        private
+        internal
         pure
+        override
         returns (int256)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);

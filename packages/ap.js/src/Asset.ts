@@ -55,7 +55,7 @@ export class Asset {
    * @returns {Promise<string>}
    */
   public async getActorAddress (): Promise<string> {
-    return this.ap.contracts.assetRegistry.methods.getActorAddress(this.assetId).call();
+    return this.ap.contracts.assetRegistry.methods.getActor(this.assetId).call();
   }
 
   /**
@@ -63,7 +63,7 @@ export class Asset {
    * @returns {Promise<string>}
    */
   public async getEngineAddress (): Promise<string> {
-    return this.ap.contracts.assetRegistry.methods.getEngineAddress(this.assetId).call();
+    return this.ap.contracts.assetRegistry.methods.getEngine(this.assetId).call();
   }
 
   /**

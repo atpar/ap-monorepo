@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
@@ -16,16 +16,14 @@ import "./ICustodian.sol";
  */
 contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
-    event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
+    using SafeMath for uint256;
 
+    event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
     event ReturnedCollateral(bytes32 indexed assetId, address collateralizer, uint256 returnedAmount);
 
     address public assetActor;
     IAssetRegistry public assetRegistry;
-
     mapping(bytes32 => bool) collateral;
-
-    using SafeMath for uint256;
 
 
     constructor(address _assetActor, IAssetRegistry _assetRegistry) public {
@@ -49,6 +47,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         AssetOwnership memory ownership
     )
         public
+        override
         returns (bool)
     {
         require(
@@ -110,6 +109,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         bytes32 assetId
     )
         public
+        override
         returns (bool)
     {
         require(

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./ITemplateRegistry.sol";
@@ -20,7 +20,12 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param templateId id of the template
      * @return TemplateTerms
      */
-    function getTemplateTerms(bytes32 templateId) external view returns (TemplateTerms memory) {
+    function getTemplateTerms(bytes32 templateId)
+        external
+        view
+        override
+        returns (TemplateTerms memory)
+    {
         return (decodeAndGetTerms(templateId));
     }
 
@@ -30,7 +35,12 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param index index of the event to return
      * @return Event
      */
-    function getEventAtIndex(bytes32 templateId, uint256 index) external view returns (bytes32) {
+    function getEventAtIndex(bytes32 templateId, uint256 index)
+        external
+        view
+        override
+        returns (bytes32)
+    {
         return templates[templateId].templateSchedule.events[index];
     }
 
@@ -39,7 +49,12 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param templateId id of the template
      * @return Length of the schedule
      */
-    function getScheduleLength(bytes32 templateId) external view returns (uint256) {
+    function getScheduleLength(bytes32 templateId)
+        external
+        view
+        override
+        returns (uint256)
+    {
         return templates[templateId].templateSchedule.length;
     }
 
@@ -49,9 +64,13 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param templateId id of the template
      * @return the schedule
      */
-    function getSchedule(bytes32 templateId) external view returns (bytes32[] memory schedule) {
+    function getSchedule(bytes32 templateId)
+        external
+        view
+        returns (bytes32[] memory)
+    {
         uint256 scheduleLength = templates[templateId].templateSchedule.length;
-        schedule = new bytes32[](scheduleLength);
+        bytes32[] memory schedule = new bytes32[](scheduleLength);
 
         for (uint256 i = 0; i < scheduleLength; i++) {
             schedule[i] = templates[templateId].templateSchedule.events[i];
@@ -67,7 +86,10 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param terms set of TemplateTerms
      * @param templateSchedule templateSchedule which encodes offsets for ScheduleTime relative to an AnchorDate + EventType
      */
-    function registerTemplate(TemplateTerms memory terms, bytes32[] memory templateSchedule) public {
+    function registerTemplate(TemplateTerms memory terms, bytes32[] memory templateSchedule)
+        public
+        override
+    {
         // derive the templateId from the hash of the provided TemplateTerms and TemplateSchedule
         bytes32 templateId = keccak256(
             abi.encode(

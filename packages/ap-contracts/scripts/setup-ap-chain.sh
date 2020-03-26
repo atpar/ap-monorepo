@@ -12,13 +12,10 @@ shutdown_ganache() {
   fi
 }
 
-# throw if port is already in use
-# deploy deterministically
 echo "Starting new ganache-cli instance."
 npx --quiet ganache-cli \
   --port "$ganache_port" \
   --networkId "1994" \
-  --allowUnlimitedContractSize \
   --gasPrice "8000000" \
   --gasLimit "8000000" \
   --defaultBalanceEther "5000000000" \
