@@ -273,8 +273,6 @@ export const deriveTermsFromExtendedTemplateTermsAndCustomTerms = (
   currency: isOverwritten(overwrittenAttributesMap, 9) ? overwrittenTerms.currency : extendedTemplateTerms.currency,
   settlementCurrency: isOverwritten(overwrittenAttributesMap, 10) ? overwrittenTerms.settlementCurrency : extendedTemplateTerms.settlementCurrency,
 
-  creatorID: extendedTemplateTerms.creatorID,
-  counterpartyID: extendedTemplateTerms.counterpartyID,
   marketObjectCodeRateReset: isOverwritten(overwrittenAttributesMap, 11) ? overwrittenTerms.marketObjectCodeRateReset : extendedTemplateTerms.marketObjectCodeRateReset,
 
   contractDealDate: denormalizeDate(anchorDate, extendedTemplateTerms.contractDealDateOffset),
@@ -430,8 +428,6 @@ export const deriveExtendedTemplateTermsFromTerms = (terms: Terms): ExtendedTemp
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
-  creatorID: terms.creatorID,
-  counterpartyID: terms.counterpartyID,
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
   contractDealDateOffset: normalizeDate(terms.contractDealDate, terms.contractDealDate),

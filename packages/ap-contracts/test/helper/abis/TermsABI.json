@@ -49,14 +49,6 @@
       "type": "address"
     },
     {
-      "name": "creatorID",
-      "type": "bytes32"
-    },
-    {
-      "name": "counterpartyID",
-      "type": "bytes32"
-    },
-    {
       "name": "marketObjectCodeRateReset",
       "type": "bytes32"
     },

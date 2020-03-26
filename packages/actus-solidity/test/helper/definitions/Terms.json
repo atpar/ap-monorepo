@@ -11,8 +11,6 @@
   "creditEventTypeCovered",
   "currency",
   "settlementCurrency",
-  "creatorID",
-  "counterpartyID",
   "marketObjectCodeRateReset",
   "contractDealDate",
   "statusDate",

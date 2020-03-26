@@ -61,8 +61,6 @@ export interface Terms {
   currency: string;
   settlementCurrency: string;
 
-  creatorID: string | number[];
-  counterpartyID: string | number[];
   marketObjectCodeRateReset: string | number[];
   
   contractDealDate: number | string;
@@ -240,9 +238,6 @@ export interface ExtendedTemplateTerms {
   
   currency: string;
   settlementCurrency: string;
-
-  creatorID: string | number[];
-  counterpartyID: string | number[];
 
   marketObjectCodeRateReset: string | number[];
   
@@ -552,9 +547,6 @@ export function isExtendedTemplateTerms (obj: any): obj is ExtendedTemplateTerms
   
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
-  
-  if (obj.creatorID == undefined || typeof obj.creatorID !== 'string') { return false; }
-  if (obj.counterpartyID == undefined || typeof obj.counterpartyID !== 'string') { return false; }
   
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
   

@@ -54,9 +54,6 @@ export const EMPTY_TERMS: Terms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  counterpartyID: ZERO_BYTES32,
-  creatorID: ZERO_BYTES32,
-
   marketObjectCodeRateReset: ZERO_BYTES32,
 
   contractDealDate: '0',
@@ -228,9 +225,6 @@ export const EMPTY_EXTENDED_TEMPLATE_TERMS: ExtendedTemplateTerms = {
 
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
-
-  counterpartyID: ZERO_BYTES32,
-  creatorID: ZERO_BYTES32,
 
   marketObjectCodeRateReset: ZERO_BYTES32,
 

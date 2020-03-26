@@ -172,8 +172,6 @@ contract ACTUSTypes {
         address currency;
         address settlementCurrency;
 
-        bytes32 creatorID;
-        bytes32 counterpartyID;
         bytes32 marketObjectCodeRateReset;
 
         uint256 contractDealDate;
