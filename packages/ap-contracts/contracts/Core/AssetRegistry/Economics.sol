@@ -163,8 +163,11 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
                 // solium-disable-next-line
                 uint256 nextScheduleTimeOffset = block.timestamp;
                 return encodeEvent(nextEventType, nextScheduleTimeOffset);
-            // if not check if performance of underlying asset is covered by this asset
-            } else if (underlyingState.contractPerformance == terms.creditEventTypeCovered) {
+            // if not check if performance of underlying asset is covered by this asset (PF excluded)
+            } else if (
+                terms.creditEventTypeCovered != ContractPerformance.PF
+                && underlyingState.contractPerformance == terms.creditEventTypeCovered
+            ) {
                 // insert ExecutionDate event
                 EventType nextEventType = EventType.XD;
                 // solium-disable-next-line
