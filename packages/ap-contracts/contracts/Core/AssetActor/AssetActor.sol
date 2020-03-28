@@ -194,6 +194,12 @@ contract AssetActor is
         State memory state = assetRegistry.getState(assetId);
         address engineAddress = assetRegistry.getEngine(assetId);
 
+        // revert if msg.sender is not authorized to update the asset
+        require(
+            assetRegistry.hasAccess(assetId, assetRegistry.setState.selector, msg.sender),
+            "AssetActor.progress: UNAUTHORIZED_SENDER"
+        );
+
         // revert if the asset is not registered in the AssetRegistry or malformed
         require(
             terms.statusDate != uint256(0) && state.statusDate != uint256(0) && engineAddress != address(0),
