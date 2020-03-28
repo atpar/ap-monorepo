@@ -25,7 +25,9 @@ export class IAssetActor extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
-    progress(
+    progress(assetId: string | number[]): TransactionObject<void>;
+
+    progressWith(
       assetId: string | number[],
       _event: string | number[]
     ): TransactionObject<void>;

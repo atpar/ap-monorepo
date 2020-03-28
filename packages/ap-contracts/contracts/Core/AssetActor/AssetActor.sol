@@ -184,12 +184,10 @@ contract AssetActor is
     }
 
     /**
-     * @notice Proceeds with the next state of the asset based on the terms, the last state,
-     * market object data and the settlement status of current obligation (payoff).
      * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
      */
-    function progress(bytes32 assetId, bytes32 _event) public override {
+    function progressWith(bytes32 assetId, bytes32 _event) public override {
         LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
         State memory state = assetRegistry.getState(assetId);
         address engineAddress = assetRegistry.getEngine(assetId);
@@ -264,7 +262,6 @@ contract AssetActor is
             payoff == int256(0),
             "AssetActor.progress: SETTLEMENT_IS_NOT_SUPPORTED"
         );
-
 
         // store the resulting state
         assetRegistry.setState(assetId, state);
