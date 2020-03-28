@@ -92,7 +92,7 @@ contract AssetActor is
             "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
         );
 
-        // skip progression if asset defaulted
+        // block progression if asset defaulted
         require(
             state.contractPerformance != ContractPerformance.DF,
             "AssetActor.progress: ASSET_IS_IN_DEFAULT"
@@ -171,6 +171,94 @@ contract AssetActor is
                 getExternalDataForSTF(ceEvent, terms)
             );
         }
+
+        // store the resulting state
+        assetRegistry.setState(assetId, state);
+
+        emit ProgressedAsset(
+            assetId,
+            eventType,
+            scheduleTime,
+            payoff
+        );
+    }
+
+    /**
+     * @notice Proceeds with the next state of the asset based on the terms, the last state,
+     * market object data and the settlement status of current obligation (payoff).
+     * @dev Emits ProgressedAsset if the state of the asset was updated.
+     * @param assetId id of the asset
+     */
+    function progress(bytes32 assetId, bytes32 _event) public override {
+        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
+        State memory state = assetRegistry.getState(assetId);
+        address engineAddress = assetRegistry.getEngine(assetId);
+
+        // revert if the asset is not registered in the AssetRegistry or malformed
+        require(
+            terms.statusDate != uint256(0) && state.statusDate != uint256(0) && engineAddress != address(0),
+            "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+        );
+
+        // block progression if asset is not performant
+        require(
+            state.contractPerformance == ContractPerformance.PF,
+            "AssetActor.progress: ASSET_IS_NOT_PERFORMANT"
+        );
+
+        // parse the event type and schedule time for the provided event
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        // TODO restrict allowed EventTypes
+        // revert if EventType is not allowed
+        require(
+            eventType != EventType.AD,
+            "AssetActor.progress: UNSUPPORTED_EVENT_TYPE"
+        );
+
+        // revert if the scheduleTime of the provided event is in between now and the next scheduled event
+        (, uint256 scheduleTimeOfFollowingEvent) = decodeEvent(assetRegistry.getNextEvent(assetId));
+        require(
+            // solium-disable-next-line
+            block.timestamp <= scheduleTime && scheduleTime < scheduleTimeOfFollowingEvent,
+            "AssetActor.progress: EVENT_IS_NOT_SCHEDULED"
+        );
+
+        // check if event is still scheduled under the current states of the asset and the underlying asset
+        if (
+            IEngine(engineAddress).isEventScheduled(
+                _event,
+                terms,
+                state,
+                (terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE),
+                assetRegistry.getState(terms.contractReference_1.object)
+            ) == false
+        ) {
+            // skip the stale event
+            emit Status(assetId, "SKIPPED_STALE_EVENT");
+            return;
+        }
+
+        // get external data for the provided event
+        // compute payoff and the provided state by applying the event to the current state
+        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForPOF(_event, terms)
+        );
+        state = IEngine(engineAddress).computeStateForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForSTF(_event, terms)
+        );
+
+        require(
+            payoff == int256(0),
+            "AssetActor.progress: SETTLEMENT_IS_NOT_SUPPORTED"
+        );
+
 
         // store the resulting state
         assetRegistry.setState(assetId, state);
