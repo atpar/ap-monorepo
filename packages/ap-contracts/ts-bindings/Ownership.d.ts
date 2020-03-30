@@ -271,9 +271,17 @@ export class Ownership extends Contract {
       executionAmount: string;
     }>;
 
-    getNextEvent(assetId: string | number[]): TransactionObject<string>;
-
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
+
+    getNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    getNextUnderlyingEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    getPendingEvent(assetId: string | number[]): TransactionObject<string>;
 
     getState(
       assetId: string | number[]
@@ -355,9 +363,18 @@ export class Ownership extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
-    incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
-
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
+    popNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    popPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    pushPendingEvent(
+      assetId: string | number[],
+      pendingEvent: string | number[]
+    ): TransactionObject<void>;
 
     registerAsset(
       assetId: string | number[],

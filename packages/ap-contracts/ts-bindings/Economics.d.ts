@@ -487,11 +487,28 @@ export class Economics extends Contract {
 
     getTemplateId(assetId: string | number[]): TransactionObject<string>;
 
-    getNextEvent(assetId: string | number[]): TransactionObject<string>;
+    getPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    pushPendingEvent(
+      assetId: string | number[],
+      pendingEvent: string | number[]
+    ): TransactionObject<void>;
+
+    popPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    getNextUnderlyingEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
 
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
-    incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
+    getNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    popNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
 
     setCustomTerms(
       assetId: string | number[],
