@@ -77,5 +77,8 @@ function parseEventSchedule (encodedEventSchedule) {
 
 module.exports = {
   sortEvents,
-  removeNullEvents
+  removeNullEvents,
+  decodeEvent,
+  encodeEvent,
+  parseEventSchedule
 }

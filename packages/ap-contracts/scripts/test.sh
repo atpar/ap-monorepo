@@ -12,7 +12,7 @@ shutdown_ganache() {
   fi
 }
 
-if ! nc -z localhost 8545 
+if ! nc -z localhost 8545
 then
   echo "Starting new ganache-cli instance."
 

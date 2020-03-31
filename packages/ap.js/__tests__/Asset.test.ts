@@ -50,7 +50,7 @@ describe('Asset', (): void => {
 
   it('should retrieve the next event of the asset', async (): Promise<void> => {
     const asset = await Asset.load(apRC, assetId);
-    const event = await asset.getNextEvent();
+    const event = await asset.getNextScheduledEvent();
     const { eventType, scheduleTime } = apRC.utils.schedule.decodeEvent(event);
 
     expect(Number(eventType) > 0 && Number(scheduleTime) > 0).toBe(true);
@@ -58,7 +58,7 @@ describe('Asset', (): void => {
 
   it('should retrieve the next payment data of the asset', async (): Promise<void> => {
     const asset = await Asset.load(apRC, assetId);
-    const payoff = await asset.getNextPayment();
+    const payoff = await asset.getNextScheduledPayment();
 
     expect(Number(payoff.amount) > 0).toBe(true);
   });
@@ -78,11 +78,11 @@ describe('Asset', (): void => {
 
   it('should progress the asset state', async (): Promise<void> => {
     const asset = await Asset.load(apRC, assetId);
-    const event = apRC.utils.schedule.decodeEvent(await asset.getNextEvent());
+    const event = apRC.utils.schedule.decodeEvent(await asset.getNextScheduledEvent());
 
     await jumpToBlockTime(event.scheduleTime);
 
-    await asset.approveNextPayment();
+    await asset.approveNextScheduledPayment();
     const tx = await asset.progress();
 
     expect(tx.events.ProgressedAsset.returnValues.eventType).toBe(event.eventType);
