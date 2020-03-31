@@ -27,6 +27,11 @@ export class IAssetActor extends Contract {
 
     progress(assetId: string | number[]): TransactionObject<void>;
 
+    progressWith(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<void>;
+
     initialize(
       assetId: string | number[],
       ownership: {

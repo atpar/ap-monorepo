@@ -276,9 +276,15 @@ export class AccessControl extends Contract {
       executionAmount: string;
     }>;
 
-    getNextEvent(assetId: string | number[]): TransactionObject<string>;
-
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
+
+    getNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    getNextUnderlyingEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
 
     getOwnership(
       assetId: string | number[]
@@ -288,6 +294,8 @@ export class AccessControl extends Contract {
       counterpartyObligor: string;
       counterpartyBeneficiary: string;
     }>;
+
+    getPendingEvent(assetId: string | number[]): TransactionObject<string>;
 
     getState(
       assetId: string | number[]
@@ -357,9 +365,18 @@ export class AccessControl extends Contract {
       };
     }>;
 
-    incrementScheduleIndex(assetId: string | number[]): TransactionObject<void>;
-
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
+    popNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    popPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    pushPendingEvent(
+      assetId: string | number[],
+      pendingEvent: string | number[]
+    ): TransactionObject<void>;
 
     registerAsset(
       assetId: string | number[],

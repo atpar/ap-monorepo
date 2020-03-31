@@ -126,80 +126,100 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
         return assets[assetId].templateId;
     }
 
+    function getPendingEvent (bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes32)
+    {
+        return assets[assetId].pendingEvent;
+    }
+
+    function pushPendingEvent (bytes32 assetId, bytes32 pendingEvent)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].pendingEvent = pendingEvent;
+    }
+
+    function popPendingEvent (bytes32 assetId)
+        external
+        override
+        isAuthorized (assetId)
+        returns (bytes32)
+    {
+        bytes32 pendingEvent = assets[assetId].pendingEvent;
+        assets[assetId].pendingEvent = bytes32(0);
+
+        return pendingEvent;
+    }
+
     /**
-     * @notice Returns the next event to process by checking for the earliest schedule time
-     * for each upcoming event of each schedule (non-cyclic, cyclic schedules). If the underlying
-     * of the asset changes in performance to a covered performance, it returns the ExecutionDate event.
-     * @param assetId id of the asset
-     * @return event
+     * @notice If the underlying of the asset changes in performance to a covered performance,
+     * it returns the ExecutionDate event.
      */
-    function getNextEvent (bytes32 assetId)
+    function getNextUnderlyingEvent (bytes32 assetId)
         external
         view
         override
         returns (bytes32)
     {
         LifecycleTerms memory terms = decodeAndGetTerms(assetId);
+        State memory state = decodeAndGetState(assetId);
 
-        // Underlying
+        // check for CVE
         if (
             terms.contractReference_1.object != bytes32(0)
             && terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE
         ) {
-            State memory state = decodeAndGetState(assetId);
             bytes32 underlyingAssetId = terms.contractReference_1.object;
             State memory underlyingState = decodeAndGetState(underlyingAssetId);
-            LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);
 
             require(
                 underlyingState.statusDate != uint256(0),
-                "AssetActor.getNextEvent: ENTRY_DOES_NOT_EXIST"
+                "AssetActor.getNextObservedEvent: ENTRY_DOES_NOT_EXIST"
             );
 
             // check if ExecutionDate has been triggered
             if (state.executionAmount > 0) {
                 // insert SettlementDate event
-                EventType nextEventType = EventType.STD;
-                // solium-disable-next-line
-                uint256 nextScheduleTimeOffset = block.timestamp;
-                return encodeEvent(nextEventType, nextScheduleTimeOffset);
+                return encodeEvent(
+                    EventType.STD,
+                    // solium-disable-next-line
+                    block.timestamp
+                );
             // if not check if performance of underlying asset is covered by this asset (PF excluded)
             } else if (
                 terms.creditEventTypeCovered != ContractPerformance.PF
                 && underlyingState.contractPerformance == terms.creditEventTypeCovered
             ) {
                 // insert ExecutionDate event
-                EventType nextEventType = EventType.XD;
-                // solium-disable-next-line
-                uint256 nextScheduleTimeOffset = block.timestamp;
                 // derive scheduleTimeOffset from performance
                 if (underlyingState.contractPerformance == ContractPerformance.DL) {
-                    nextScheduleTimeOffset = underlyingState.nonPerformingDate;
+                    return encodeEvent(
+                        EventType.XD,
+                        underlyingState.nonPerformingDate
+                    );
                 } else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
-                    nextScheduleTimeOffset = getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate);
+                    LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);
+                    return encodeEvent(
+                        EventType.XD,
+                        getTimestampPlusPeriod(underlyingTerms.gracePeriod, underlyingState.nonPerformingDate)
+                    );
                 } else if (underlyingState.contractPerformance == ContractPerformance.DF) {
-                    nextScheduleTimeOffset = getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate);
+                    LifecycleTerms memory underlyingTerms = decodeAndGetTerms(underlyingAssetId);
+                    return encodeEvent(
+                        EventType.XD,
+                        getTimestampPlusPeriod(underlyingTerms.delinquencyPeriod, underlyingState.nonPerformingDate)
+                    );
                 }
-                return encodeEvent(nextEventType, nextScheduleTimeOffset);
             }
         }
 
-        // TemplateSchedule events
-        if (templateRegistry.getScheduleLength(assets[assetId].templateId) > 0) {
-            bytes32 _event = templateRegistry.getEventAtIndex(
-                assets[assetId].templateId,
-                assets[assetId].nextScheduleIndex
-            );
-            (EventType nextEventType, uint256 nextScheduleTimeOffset) = decodeEvent(_event);
-
-            return encodeEvent(
-                nextEventType,
-                applyAnchorDateToOffset(decodeAndGetAnchorDate(assetId), nextScheduleTimeOffset)
-            );
-        }
-
-        return encodeEvent(EventType(0), uint256(0));
+        return encodeEvent(EventType(0), 0);
     }
+
 
     /**
      * @notice Returns the index of the next event to be processed for a schedule of an asset.
@@ -216,25 +236,61 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
     }
 
     /**
+     * @notice Returns the next event to process.
+     * @param assetId id of the asset
+     * @return event
+     */
+    function getNextScheduledEvent (bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes32)
+    {
+        if (templateRegistry.getScheduleLength(assets[assetId].templateId) == 0) {
+            return encodeEvent(EventType(0), 0);
+        }
+        
+        bytes32 _event = templateRegistry.getEventAtIndex(
+            assets[assetId].templateId,
+            assets[assetId].nextScheduleIndex
+        );
+        (EventType nextEventType, uint256 nextScheduleTimeOffset) = decodeEvent(_event);
+
+        return encodeEvent(
+            nextEventType,
+            applyAnchorDateToOffset(decodeAndGetAnchorDate(assetId), nextScheduleTimeOffset)
+        );
+    }
+
+    /**
      * @notice Increments the index of a schedule of an asset.
      * (if max index is reached the index will be left unchanged)
      * @dev Can only be updated by the assets actor or by an authorized account.
      * @param assetId id of the asset
      */
-    function incrementScheduleIndex(bytes32 assetId)
+    function popNextScheduledEvent(bytes32 assetId)
         external
         override
         isAuthorized (assetId)
+        returns (bytes32)
     {
-        uint256 scheduleIndex = assets[assetId].nextScheduleIndex;
-
-        if (scheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId)) {
-            return;
+        if (assets[assetId].nextScheduleIndex == templateRegistry.getScheduleLength(assets[assetId].templateId)) {
+            return encodeEvent(EventType(0), 0);
         }
 
-        assets[assetId].nextScheduleIndex = scheduleIndex + 1;
+        bytes32 _event = templateRegistry.getEventAtIndex(
+            assets[assetId].templateId,
+            assets[assetId].nextScheduleIndex
+        );
+        (EventType nextEventType, uint256 nextScheduleTimeOffset) = decodeEvent(_event);
 
+        assets[assetId].nextScheduleIndex += 1;
         emit IncrementedScheduleIndex(assetId, assets[assetId].nextScheduleIndex);
+
+        return encodeEvent(
+            nextEventType,
+            applyAnchorDateToOffset(decodeAndGetAnchorDate(assetId), nextScheduleTimeOffset)
+        );
     }
 
     /**

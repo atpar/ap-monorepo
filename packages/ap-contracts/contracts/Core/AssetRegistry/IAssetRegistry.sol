@@ -86,7 +86,22 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         virtual
         returns (bytes32);
 
-    function getNextEvent (bytes32 assetId)
+    function getPendingEvent (bytes32 assetId)
+        external
+        view
+        virtual
+        returns (bytes32);
+
+    function pushPendingEvent (bytes32 assetId, bytes32 pendingEvent)
+        external
+        virtual;
+
+    function popPendingEvent (bytes32 assetId)
+        external
+        virtual
+        returns (bytes32);
+
+    function getNextUnderlyingEvent (bytes32 assetId)
         external
         view
         virtual
@@ -98,9 +113,16 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         virtual
         returns (uint256);
 
-    function incrementScheduleIndex(bytes32 assetId)
+    function getNextScheduledEvent (bytes32 assetId)
         external
-        virtual;
+        view
+        virtual
+        returns (bytes32);
+
+    function popNextScheduledEvent(bytes32 assetId)
+        external
+        virtual
+        returns (bytes32);
 
     function setState(bytes32 assetId, State memory state)
         public

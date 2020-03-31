@@ -10,6 +10,10 @@ abstract contract IAssetActor is SharedTypes {
         external
         virtual;
 
+    function progressWith(bytes32 assetId, bytes32 _event)
+        external
+        virtual;
+
     function initialize(
         bytes32 assetId,
         AssetOwnership memory ownership,

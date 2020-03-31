@@ -90,6 +90,14 @@ export class Asset {
   public async getTemplateId (): Promise<string> {
     return this.ap.contracts.assetRegistry.methods.getTemplateId(this.assetId).call();
   }
+
+  /**
+   * Returns the current pending event (event which could not be settled)
+   * @returns {Promise<string>} Promise yielding the pending event
+   */
+  public async getPendingEvent (): Promise<string> {
+    return await this.ap.contracts.assetRegistry.methods.getPendingEvent(this.assetId).call();
+  }
  
   /**
    * Returns the schedule derived from the terms of the asset.
@@ -107,23 +115,31 @@ export class Asset {
   }
 
   /**
-   * Returns the next event to be processed of the asset
+   * Returns the next scheduled event to be processed of the asset (derived from the schedule of the template)
    * @returns {Promise<string>} Promise yielding the next event
    */
-  public async getNextEvent (): Promise<string> {
-    return await this.ap.contracts.assetRegistry.methods.getNextEvent(this.assetId).call();
+  public async getNextScheduledEvent (): Promise<string> {
+    return await this.ap.contracts.assetRegistry.methods.getNextScheduledEvent(this.assetId).call();
   }
 
   /**
-   * Returns payment information for the next event
+   * Returns the next underlying event to be processed of the asset
+   * @returns {Promise<string>} Promise yielding the next event
+   */
+  public async getNextUnderlyingEvent (): Promise<string> {
+    return await this.ap.contracts.assetRegistry.methods.getNextUnderlyingEvent(this.assetId).call();
+  }
+
+  /**
+   * Returns payment information for the next scheduled event
    * @returns {Promise<{amount: string; token: string; payer: string; payee: string}>} Promise yielding payment info.
    */
-  public async getNextPayment (): Promise<{amount: string; token: string; payer: string; payee: string}> {
+  public async getNextScheduledPayment (): Promise<{amount: string; token: string; payer: string; payee: string}> {
     const terms = await this.getTerms();
     const state = await this.getState();
     const ownership = await this.getOwnership();
     const engine = await this.getEngineAddress();
-    const event = await this.getNextEvent();
+    const event = await this.getNextScheduledEvent();
 
     const payoff = await this.ap.contracts.engine(engine).methods.computePayoffForEvent(
       // @ts-ignore
@@ -155,12 +171,23 @@ export class Asset {
   }
 
   /**
+   * Derives obligations by computing the next state of the asset and
+   * stores the new state if all obligation where fulfilled.
+   * @return {Promise<any>}
+   */
+  public async progressWith (event: string): Promise<any> {
+    return await this.ap.contracts.assetActor.methods.progressWith(this.assetId, event).send(
+      { from: this.ap.signer.account, gas: 750000 }
+    );
+  }
+
+  /**
    * Sets sufficient allowance for the AssetActor to transfer the next payment on the users behalf
    * @return {Promise<any>}
    */
-  public async approveNextPayment (): Promise<any> {
+  public async approveNextScheduledPayment (): Promise<any> {
     const actor = await this.getActorAddress();
-    const payment = await this.getNextPayment();
+    const payment = await this.getNextScheduledPayment();
 
     if (payment.payer !== this.ap.signer.account) { return; }
 

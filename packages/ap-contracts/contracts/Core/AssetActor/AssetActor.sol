@@ -82,105 +82,52 @@ contract AssetActor is
      * @param assetId id of the asset
      */
     function progress(bytes32 assetId) public override {
-        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
-        State memory state = assetRegistry.getState(assetId);
-        address engineAddress = assetRegistry.getEngine(assetId);
-
-        // revert if the asset is not registered in the AssetRegistry or malformed
+        // revert if the asset is not registered in the AssetRegistry
         require(
-            terms.statusDate != uint256(0) && state.statusDate != uint256(0) && engineAddress != address(0),
-            "AssetActor.progress: ENTRY_DOES_NOT_EXIST"
+            assetRegistry.isRegistered(assetId),
+            "AssetActor.progress: ASSET_DOES_NOT_EXIST"
         );
 
-        // skip progression if asset defaulted
-        require(
-            state.contractPerformance != ContractPerformance.DF,
-            "AssetActor.progress: ASSET_IS_IN_DEFAULT"
-        );
+        bytes32 _event = assetRegistry.getPendingEvent(assetId);
+        if (_event == bytes32(0)) _event = assetRegistry.getNextUnderlyingEvent(assetId);
+        if (_event == bytes32(0)) _event = assetRegistry.popNextScheduledEvent(assetId);
 
-        // get event type and schedule time for the next event
-        bytes32 _event = assetRegistry.getNextEvent(assetId);
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-
-        // revert if there is no next event
         require(
-            eventType != EventType.AD,
+            _event != bytes32(0),
             "AssetActor.progress: NO_NEXT_EVENT"
         );
 
-        // revert if the scheduleTime of the next event is in the future
+        processEvent(assetId, _event);
+    }
+
+    /**
+     * @dev Emits ProgressedAsset if the state of the asset was updated.
+     * @param assetId id of the asset
+     */
+    function progressWith(bytes32 assetId, bytes32 _event) public override {
+        // revert if msg.sender is not authorized to update the asset
         require(
-            // solium-disable-next-line
-            scheduleTime <= block.timestamp,
-            "AssetActor.progress: NEXT_EVENT_NOT_YET_SCHEDULED"
+            assetRegistry.hasAccess(assetId, assetRegistry.setState.selector, msg.sender),
+            "AssetActor.progressWith: UNAUTHORIZED_SENDER"
         );
 
-        // check if event is still scheduled under the current states of the asset and the underlying asset
-        if (
-            IEngine(engineAddress).isEventScheduled(
-                _event,
-                terms,
-                state,
-                (terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE),
-                assetRegistry.getState(terms.contractReference_1.object)
-            ) == false
-        ) {
-            // skip the stale event by incrementing the corresponding schedule index
-            updateScheduleIndex(assetId, eventType);
-            emit Status(assetId, "SKIPPED_STALE_EVENT");
-            return;
-        }
-
-        // get external data for the next event
-        // compute payoff and the next state by applying the event to the current state
-        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForPOF(_event, terms)
+        require(
+            assetRegistry.getPendingEvent(assetId) == bytes32(0),
+            "AssetActor.progressWith: FOUND_PENDING_EVENT"
         );
-        state = IEngine(engineAddress).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(_event, terms)
+        require(
+            assetRegistry.getNextUnderlyingEvent(assetId) == bytes32(0),
+            "AssetActor.progressWith: FOUND_UNDERLYING_EVENT"
         );
 
-        // try to settle payoff of event
-        // solium-disable-next-line
-        if (settlePayoffForEvent(assetId, _event, payoff, terms)) {
-            // if obligation is fulfilled increment the corresponding schedule index of the processed event
-            updateScheduleIndex(assetId, eventType);
-        } else {
-            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
-            // store the interim state of the asset (state if the current obligation was successfully settled)
-            // (if the obligation is later fulfilled before the asset reaches default,
-            // the interim state is used to derive subsequent states of the asset)
-            if (state.contractPerformance == ContractPerformance.PF) {
-                assetRegistry.setFinalizedState(assetId, state);
-            }
-
-            // create CreditEvent
-            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
-
-            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
-            state = IEngine(engineAddress).computeStateForEvent(
-                terms,
-                state,
-                ceEvent,
-                getExternalDataForSTF(ceEvent, terms)
-            );
-        }
-
-        // store the resulting state
-        assetRegistry.setState(assetId, state);
-
-        emit ProgressedAsset(
-            assetId,
-            eventType,
-            scheduleTime,
-            payoff
+        (, uint256 scheduledEventScheduleTime) = decodeEvent(assetRegistry.getNextScheduledEvent(assetId));
+        (, uint256 providedEventScheduleTime) = decodeEvent(_event);
+        require(
+            scheduledEventScheduleTime == 0 || (providedEventScheduleTime < scheduledEventScheduleTime),
+            "AssetActor.progressWith: FOUND_EARLIER_EVENT"
         );
+
+        processEvent(assetId, _event);
     }
 
     /**
@@ -240,6 +187,84 @@ contract AssetActor is
         );
 
         return true;
+    }
+
+    /**
+     * @notice Return true if event was settled
+     */
+    function processEvent(bytes32 assetId, bytes32 _event) internal {
+        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
+        State memory state = assetRegistry.getState(assetId);
+        address engineAddress = assetRegistry.getEngine(assetId);
+
+        // block progression if asset defaulted
+        require(
+            state.contractPerformance != ContractPerformance.DF,
+            "AssetActor.processEvent: ASSET_IS_IN_DEFAULT"
+        );
+
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        // revert if the scheduleTime of the next event is in the future
+        require(
+            // solium-disable-next-line
+            scheduleTime <= block.timestamp,
+            "AssetActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
+        );
+
+        // get external data for the next event
+        // compute payoff and the next state by applying the event to the current state
+        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForPOF(_event, terms)
+        );
+        state = IEngine(engineAddress).computeStateForEvent(
+            terms,
+            state,
+            _event,
+            getExternalDataForSTF(_event, terms)
+        );
+
+        // try to settle payoff of event
+        // solium-disable-next-line
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff, terms);
+
+        if (settledPayoff == false) {
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
+            // store the interim state of the asset (state if the current obligation was successfully settled)
+            // (if the obligation is later fulfilled before the asset reaches default,
+            // the interim state is used to derive subsequent states of the asset)
+            if (state.contractPerformance == ContractPerformance.PF) {
+                assetRegistry.setFinalizedState(assetId, state);
+            }
+
+            // store event as pending event for future settlement
+            assetRegistry.pushPendingEvent(assetId, _event);
+
+            // create CreditEvent
+            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
+            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
+            state = IEngine(engineAddress).computeStateForEvent(
+                terms,
+                state,
+                ceEvent,
+                getExternalDataForSTF(ceEvent, terms)
+            );
+        }
+
+        // store the resulting state
+        assetRegistry.setState(assetId, state);
+
+        emit ProgressedAsset(
+            assetId,
+            // if settlement failed a CreditEvent got processed instead
+            (settledPayoff == true) ? eventType : EventType.CE,
+            scheduleTime,
+            payoff
+        );
     }
 
     /**
@@ -310,22 +335,6 @@ contract AssetActor is
 
         // try to transfer amount due from obligor to payee
         return IERC20(token).transferFrom(payer, payee, amount);
-    }
-
-    /**
-     * @notice Updates the schedule index of the asset for a given event type.
-     */
-    function updateScheduleIndex(
-        bytes32 assetId,
-        EventType eventType
-    )
-        internal
-    {
-        // skip - for unscheduled events (e.g. CE, XD) there are no corresponding schedules
-        if (isUnscheduledEventType(eventType)) return;
-
-        // increment schedule index by deriving schedule index from the event type
-        assetRegistry.incrementScheduleIndex(assetId);
     }
 
     /**

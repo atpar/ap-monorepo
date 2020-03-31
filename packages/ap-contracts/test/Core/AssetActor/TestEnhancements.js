@@ -1,8 +1,10 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
+const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain')
+const { decodeEvent } = require('../../helper/scheduleUtils');
 const {
   getDefaultOrderDataWithEnhancement,
   getUnfilledOrderDataAsTypedData,
@@ -10,7 +12,6 @@ const {
   sign,
   getAssetIdFromOrderData
 } = require('../../helper/orderUtils');
-
 const {
   deriveTerms,
   registerTemplateFromTerms,
@@ -18,8 +19,6 @@ const {
   ZERO_BYTES32,
   ZERO_BYTES
 } = require('../../helper/utils');
-
-const CECCollateralTerms = require('../../helper/terms/cec-collateral-terms.json');
 
 
 contract('AssetActor', (accounts) => {
@@ -39,7 +38,6 @@ contract('AssetActor', (accounts) => {
     this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
-    this.underylingAssetId = 'C123';
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
       ...await getDefaultTerms(),
@@ -127,7 +125,7 @@ contract('AssetActor', (accounts) => {
     );
 
     // settle IED
-    const iedEvent = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(assetId));
+    const iedEvent = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
     const iedPayoff = await this.PAMEngineInstance.computePayoffForEvent(
       this.lifecycleTerms,
       await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId)),
@@ -139,26 +137,31 @@ contract('AssetActor', (accounts) => {
     await mineBlock(Number(await getEventTime(iedEvent, this.lifecycleTerms)));
     await this.PaymentTokenInstance.approve(this.AssetActorInstance.address, iedPayoff, { from: creatorObligor });
     await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
+    assert.equal(Number(decodeEvent(iedEvent).eventType), 5);
 
     // progress to schedule time of first IP (payoff == 0)
-    const ipEvent_1 = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(assetId));
+    const ipEvent_1 = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
     await mineBlock(Number(await getEventTime(ipEvent_1, this.lifecycleTerms)));
     await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
+    assert.equal(Number(decodeEvent(ipEvent_1).eventType), 8);
 
     // progress to post-grace period of IP
-    const ipEvent_2 = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(assetId));
+    const ipEvent_2 = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
     await mineBlock(Number(await getEventTime(ipEvent_2, this.lifecycleTerms)) + 10000000);
     await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
+    assert.equal(Number(decodeEvent(ipEvent_2).eventType), 8);
 
     // progress collateral enhancement
-    const xdEvent = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(cecAssetId));
+    const xdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(xdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
+    assert.equal(Number(decodeEvent(xdEvent).eventType), 3);
 
     // progress collateral enhancement
-    const stdEvent = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(cecAssetId));
+    const stdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
+    assert.equal(Number(decodeEvent(stdEvent).eventType), 20);
 
     // creator should have received seized collateral from custodian
     assert.equal(

@@ -73,7 +73,7 @@ contract('AssetActor', (accounts) => {
     );
 
     const initialState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
-    const _event = await this.AssetRegistryInstance.getNextEvent(web3.utils.toHex(assetId));
+    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
     const eventTime = await getEventTime(_event, terms);
     
     await mineBlock(Number(eventTime));
