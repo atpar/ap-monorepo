@@ -182,7 +182,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
             );
 
             // check if ExecutionDate has been triggered
-            if (state.executionAmount > 0) {
+            if (state.executionDate > 0) {
                 // insert SettlementDate event
                 return encodeEvent(
                     EventType.STD,
