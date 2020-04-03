@@ -510,7 +510,7 @@ contract STF is Core {
             .floatMult(timeFromLastEvent)
         );
         state.notionalPrincipal = 0;
-        state.contractPerformance = ContractPerformance.MA;
+        state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;
 
         return state;
@@ -535,7 +535,7 @@ contract STF is Core {
         state.nominalInterestRate = 0;
         state.accruedInterest = 0;
         state.feeAccrued = 0;
-        state.contractPerformance = ContractPerformance.TE;
+        state.contractPerformance = ContractPerformance.TD;
         state.statusDate = scheduleTime;
 
         return state;
@@ -899,7 +899,7 @@ contract STF is Core {
             .floatMult(timeFromLastEvent)
         );
         state.notionalPrincipal = 0.0;
-        state.contractPerformance = ContractPerformance.MA;
+        state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;
 
         return state;
@@ -1095,6 +1095,7 @@ contract STF is Core {
         returns (State memory)
     {
         state.notionalPrincipal = 0;
+        state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;
 
         return state;
@@ -1146,7 +1147,7 @@ contract STF is Core {
     {
         state.notionalPrincipal = 0;
         state.feeAccrued = 0;
-        state.contractPerformance = ContractPerformance.MA;
+        state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;
 
         return state;

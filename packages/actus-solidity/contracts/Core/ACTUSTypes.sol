@@ -35,7 +35,7 @@ contract ACTUSTypes {
     enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
     enum ClearingHouse {Y, N}
     enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
-    enum ContractPerformance {PF, DL, DQ, DF, MA, TE}
+    enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
     enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
     enum CyclePointOfInterestPayment {B, E} // or E, B?
     enum CyclePointOfRateReset {B, E}
