@@ -197,10 +197,12 @@ contract AssetActor is
         State memory state = assetRegistry.getState(assetId);
         address engineAddress = assetRegistry.getEngine(assetId);
 
-        // block progression if asset defaulted
+        // block progression if asset is has defaulted, terminated or reached maturity
         require(
-            state.contractPerformance != ContractPerformance.DF,
-            "AssetActor.processEvent: ASSET_IS_IN_DEFAULT"
+            state.contractPerformance == ContractPerformance.PF 
+            || state.contractPerformance == ContractPerformance.DL
+            || state.contractPerformance == ContractPerformance.DQ,
+            "AssetActor.processEvent: ASSET_REACHED_FINAL_STATE"
         );
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
