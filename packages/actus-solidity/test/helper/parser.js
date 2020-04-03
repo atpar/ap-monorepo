@@ -1,8 +1,7 @@
 const web3Utils = require('web3-utils');
 const BigNumber = require('bignumber.js');
 
-const EventDefinitions = require('actus-dictionary/actus-dictionary-event.json').event;
-const TermsDefinitions = require('actus-dictionary/actus-dictionary-terms.json').terms;
+const ACTUSDictionary = require('actus-dictionary/actus-dictionary.json');
 
 const Terms = require('./definitions/Terms.json');
 const LifecycleTerms = require('./definitions/LifecycleTerms.json');
@@ -24,7 +23,27 @@ const toHex = (value) => {
 }
 
 const getIndexOfAttribute = (attribute, value) => {
-  return TermsDefinitions[attribute].allowedValues.indexOf(value);
+  if (attribute === 'contractType') {
+    if (value === 'PAM') return 0;
+    if (value === 'ANN') return 1;
+    if (value === 'CEG') return 16;
+    if (value === 'CEC') return 17;
+  }
+
+  if (ACTUSDictionary.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
+  const allowedValues = ACTUSDictionary.terms[attribute].allowedValues.find((allowedValue) => allowedValue.accronym === value);
+  if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
+
+  return Number(allowedValues.option);
+}
+
+const getIndexForEventType = (eventType) => {
+  if (eventType === 'AD') return 0;
+
+  const event = Object.values(ACTUSDictionary.eventType).find((event) => event.acronym === eventType);
+  if (event == undefined) { console.log(eventType); throw new Error('Unknown event type provided.'); }
+
+  return event.sequence;
 }
 
 const toPrecision = (value) => {
@@ -84,18 +103,18 @@ const parseTermsFromObject = (terms) => {
     const value = terms[attribute];
 
     if (attribute === 'contractReference_1' || attribute === 'contractReference_2') {
-      parsedTerms[attribute] = { object: toHex(''), contractReferenceType: 0, contractReferenceRole: 0 };
-    } else if (TermsDefinitions[attribute].type === 'Enum' || TermsDefinitions[attribute].type === 'Enum[]') {
+      parsedTerms[attribute] = { object: toHex(''), _type: 0, role: 0 };
+    } else if (ACTUSDictionary.terms[attribute].type === 'Enum' || ACTUSDictionary.terms[attribute].type === 'Enum[]') {
       parsedTerms[attribute] = (value) ? getIndexOfAttribute(attribute, value) : 0;
-    } else if (TermsDefinitions[attribute].type === 'Varchar') {
+    } else if (ACTUSDictionary.terms[attribute].type === 'Varchar') {
       parsedTerms[attribute] = toHex((value) ? value : '');
-    } else if (TermsDefinitions[attribute].type === 'Real') {
+    } else if (ACTUSDictionary.terms[attribute].type === 'Real') {
       parsedTerms[attribute] = (value) ? toPrecision(value) : 0;
-    } else if (TermsDefinitions[attribute].type === 'Timestamp') {
+    } else if (ACTUSDictionary.terms[attribute].type === 'Timestamp') {
       parsedTerms[attribute] = (value) ? isoToUnix(value) : 0;
-    } else if (TermsDefinitions[attribute].type === 'Cycle') {
+    } else if (ACTUSDictionary.terms[attribute].type === 'Cycle') {
       parsedTerms[attribute] = parseCycleToIPS(value);
-    } else if (TermsDefinitions[attribute].type === 'Period') {
+    } else if (ACTUSDictionary.terms[attribute].type === 'Period') {
       parsedTerms[attribute] = parsePeriodToIP(value);
     }
   }
@@ -110,7 +129,7 @@ const parseResultsFromObject = (schedule) => {
   const parsedResults = [];
 
   for (const event of schedule) {
-    const eventTypeIndex = EventDefinitions.eventType.allowedValues.indexOf(event['eventType']);
+    const eventTypeIndex = getIndexForEventType(event['eventType']);
 
     if (eventTypeIndex === 0) { continue; } // filter out AD events
     parsedResults.push({

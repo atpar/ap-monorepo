@@ -157,7 +157,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
 
     /**
      * @notice If the underlying of the asset changes in performance to a covered performance,
-     * it returns the ExecutionDate event.
+     * it returns the exerciseDate event.
      */
     function getNextUnderlyingEvent (bytes32 assetId)
         external
@@ -171,7 +171,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
         // check for CVE
         if (
             terms.contractReference_1.object != bytes32(0)
-            && terms.contractReference_1.contractReferenceRole == ContractReferenceRole.CVE
+            && terms.contractReference_1.role == ContractReferenceRole.CVE
         ) {
             bytes32 underlyingAssetId = terms.contractReference_1.object;
             State memory underlyingState = decodeAndGetState(underlyingAssetId);
@@ -181,8 +181,8 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
                 "AssetActor.getNextObservedEvent: ENTRY_DOES_NOT_EXIST"
             );
 
-            // check if ExecutionDate has been triggered
-            if (state.executionDate > 0) {
+            // check if exerciseDate has been triggered
+            if (state.exerciseDate > 0) {
                 // insert SettlementDate event
                 return encodeEvent(
                     EventType.STD,
@@ -194,7 +194,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
                 terms.creditEventTypeCovered != ContractPerformance.PF
                 && underlyingState.contractPerformance == terms.creditEventTypeCovered
             ) {
-                // insert ExecutionDate event
+                // insert exerciseDate event
                 // derive scheduleTimeOffset from performance
                 if (underlyingState.contractPerformance == ContractPerformance.DL) {
                     return encodeEvent(

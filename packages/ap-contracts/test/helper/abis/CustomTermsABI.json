@@ -177,11 +177,11 @@
               "type": "bytes32"
             },
             {
-              "name": "contractReferenceType",
+              "name": "_type",
               "type": "uint8"
             },
             {
-              "name": "contractReferenceRole",
+              "name": "role",
               "type": "uint8"
             }
           ],
@@ -195,11 +195,11 @@
               "type": "bytes32"
             },
             {
-              "name": "contractReferenceType",
+              "name": "_type",
               "type": "uint8"
             },
             {
-              "name": "contractReferenceRole",
+              "name": "role",
               "type": "uint8"
             }
           ],

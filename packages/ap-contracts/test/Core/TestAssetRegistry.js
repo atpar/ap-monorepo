@@ -1,6 +1,6 @@
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getComplexTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment, getComplexTerms } = require('../helper/setupTestEnvironment');
 const { deriveTerms, registerTemplateFromTerms, encodeCustomTerms, ZERO_BYTES32, ZERO_ADDRESS } = require('../helper/utils');
 
 const ENTRY_ALREADY_EXISTS = 'ENTRY_ALREADY_EXISTS';
@@ -29,13 +29,13 @@ contract('AssetRegistry', (accounts) => {
       ...getComplexTerms(),
       contractReference_1: {
         object: ZERO_BYTES32,
-        contractReferenceType: 0,
-        contractReferenceRole: 0
+        _type: '0',
+        role: '0'
       },
       contractReference_2: {
         object: ZERO_BYTES32,
-        contractReferenceType: 0,
-        contractReferenceRole: 0
+        _type: '0',
+        role: '0'
       },
     };
 
@@ -45,7 +45,7 @@ contract('AssetRegistry', (accounts) => {
       dayCountConvention: '4',
       businessDayConvention: '6',
       endOfMonthConvention: '0',
-      scalingEffect: '5',
+      scalingEffect: '1',
       penaltyType: '3',
       feeBasis: '0',
       creditEventTypeCovered: '3',

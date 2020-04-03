@@ -3,7 +3,7 @@ pragma solidity ^0.6.4;
 
 /**
  * @title ACTUSTypes
- * @notice Contains all type definitions for ACTUS
+ * @notice Contains all type definitions for ACTUS. See ACTUS-Dictionary for definitions
  */
 contract ACTUSTypes {
 
@@ -29,39 +29,34 @@ contract ACTUSTypes {
         bool isSet;
     }
 
-    //               0   1   2   3   4    5     6     7   8   9  10  11  12  13   14  15   16   17  18  19   20  21  22
-    enum EventType {AD, CD, DV, XD, FP, IED, IPCB, IPCI, IP, MR, MD, PY, PD, PRF, PP, PR, PRD, RRF, RR, SC, STD, TD, CE}
-    enum Calendar {NoCalendar, MondayToFriday} // Custom: custom implementation of calendar
-    enum BusinessDayConvention {NULL, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
-    enum ClearingHouse {YES, NO} // required ?
-    enum ContractRole {RPA, RPL, LG, ST, RFL, PFL, BUY, SEL, GUA, OBL} // required ?
-    enum ContractPerformance {PF, DL, DQ, DF} // Default: PF
+    //               0    1   2   3   4    5   6   7   8     9  10   11  12  13   14  15  16  17    18  19  20   21  22
+    enum EventType {NE, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, XD, STD, AD}
+    enum Calendar {NC, MF}
+    enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
+    enum ClearingHouse {Y, N}
+    enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
+    enum ContractPerformance {PF, DL, DQ, DF, MA, TE}
     enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
-    enum CyclePointOfInterestPayment {EndOf, BeginningOf} // Default: EndOf
-    enum CyclePointOfRateReset {BeginningOf, EndOf} // Default: BeginningOf
-    enum CycleTriggerOfOptionality {IP, PR, RR}
-    enum DayCountConvention {A_AISDA, A_360, A_365, _30E_360ISDA, _30E_360, _30_360, BUS_252} // required ?
-    enum EndOfMonthConvention {EOM, SD} // Default: SD
-    enum EventLevel {P} // ?
-    enum FeeBasis {A, N} // Default: Null
-    enum InterestCalculationBase {NT, NTIED, NTL} // Default: NT
-    enum MarketObjectCodeOfRateReset {USD_SWP, USD_GOV, CHF_SWP} // Must correspond to defined set of market objects // Default: CUR ?
-    enum ObjectCodeOfPrepaymentModel {IDXY} // ?
-    enum OptionExecutionType {E, B, A} // required ?
-    enum OptionStrikeDriver {FX, IR, PR} // ?
-    enum OptionType {C, P, CP} // required ?
-    enum PenaltyType {O, A, N, I} // Default: 0
-    enum PrepaymentEffect {N, A, M} // Default: N
-    enum ScalingEffect {_000, _0N0, _00M, _0NM, I00, IN0, I0M, INM} // Default: _000
-    enum Seniority {S, J} // required ?
-    enum Unit {BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO} // required ?
+    enum CyclePointOfInterestPayment {B, E} // or E, B?
+    enum CyclePointOfRateReset {B, E}
+    enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
+    enum EndOfMonthConvention {SD, EOM}
+    enum FeeBasis {A, N}
+    enum InterestCalculationBase {NT, NTIED, NTL}
+    enum OptionExerciseType {E, B, A}
+    enum OptionType {C, P, CP}
+    enum PenaltyType {O, A, N, I}
+    enum PrepaymentEffect {N, A, M}
+    enum ScalingEffect {_000, I00, _0N0, IN0}
+    enum Seniority {S, J}
+    enum Unit {BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO}
     enum ContractReferenceType {CT, CID, MOC, LEI, CS}
     enum ContractReferenceRole {UDY, FL, SL, CVE, CVI}
 
     struct ContractReference {
         bytes32 object;
-        ContractReferenceType contractReferenceType;
-        ContractReferenceRole contractReferenceRole;
+        ContractReferenceType _type;
+        ContractReferenceRole role;
     }
 
     struct State {
@@ -70,21 +65,25 @@ contract ACTUSTypes {
         uint256 statusDate;
         uint256 nonPerformingDate;
         uint256 maturityDate;
-        uint256 executionDate;
+        uint256 exerciseDate;
+        uint256 terminationDate;
 
         int256 notionalPrincipal;
         // int256 notionalPrincipal2;
         int256 accruedInterest;
+        // int256 accruedInterest2;
         int256 feeAccrued;
         int256 nominalInterestRate;
+        // int256 nominalInterestRate2;
         // int256 interestCalculationBase;
         int256 interestScalingMultiplier;
         int256 notionalScalingMultiplier;
         int256 nextPrincipalRedemptionPayment;
-        int256 executionAmount;
+        int256 exerciseAmount;
     }
 
-    // Subset of the ACTUS terms object (contains only attributes which are used in POFs and STFs)
+    // subset of the ACTUS terms object
+    // contains only attributes which are used in POFs and STFs
     struct LifecycleTerms {
         Calendar calendar;
         ContractRole contractRole;
@@ -125,11 +124,14 @@ contract ACTUSTypes {
         IP gracePeriod;
         IP delinquencyPeriod;
 
+        // for simplification since terms are limited only two contract references
+        // - make ContractReference top level and skip ContractStructure
         ContractReference contractReference_1;
         ContractReference contractReference_2;
     }
 
-    // Subset of the ACTUS terms object (contains only attributes which are used in the schedule generation)
+    // subset of the ACTUS terms object
+    // contains only attributes which are used in the schedule generation
     struct GeneratingTerms {
         ScalingEffect scalingEffect;
 
@@ -137,7 +139,6 @@ contract ACTUSTypes {
         uint256 statusDate;
         uint256 initialExchangeDate;
         uint256 maturityDate;
-        uint256 terminationDate;
         uint256 purchaseDate;
         uint256 capitalizationEndDate;
         uint256 cycleAnchorDateOfInterestPayment;
@@ -178,7 +179,6 @@ contract ACTUSTypes {
         uint256 statusDate;
         uint256 initialExchangeDate;
         uint256 maturityDate;
-        uint256 terminationDate;
         uint256 purchaseDate;
         uint256 capitalizationEndDate;
         uint256 cycleAnchorDateOfInterestPayment;
@@ -214,6 +214,8 @@ contract ACTUSTypes {
         IP gracePeriod;
         IP delinquencyPeriod;
 
+        // for simplification since terms are limited only two contract references
+        // - make ContractReference top level and skip ContractStructure
         ContractReference contractReference_1;
         ContractReference contractReference_2;
     }

@@ -76,14 +76,6 @@ contract PAMEngine is BaseEngine, STF, POF {
             }
         }
 
-        // termination
-        if (terms.terminationDate != 0) {
-            if (isInSegment(terms.terminationDate, segmentStart, segmentEnd)) {
-                _eventSchedule[index] = encodeEvent(EventType.TD, terms.terminationDate);
-                index++;
-            }
-        }
-
         // principal redemption
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
             _eventSchedule[index] = encodeEvent(EventType.MD, terms.maturityDate);
@@ -220,7 +212,7 @@ contract PAMEngine is BaseEngine, STF, POF {
             uint256 index;
 
             // scaling
-            if ((terms.scalingEffect != ScalingEffect._000 || terms.scalingEffect != ScalingEffect._00M)
+            if ((terms.scalingEffect != ScalingEffect._000)
                 && terms.cycleAnchorDateOfScalingIndex != 0
             ) {
                 uint256[MAX_CYCLE_SIZE] memory scalingSchedule = computeDatesFromCycleSegment(
@@ -302,7 +294,7 @@ contract PAMEngine is BaseEngine, STF, POF {
         if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
         //if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.MD) return STF_PAM_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);

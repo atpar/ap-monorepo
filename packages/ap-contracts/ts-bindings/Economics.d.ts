@@ -67,13 +67,13 @@ export class Economics extends Contract {
         };
         contractReference_1: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
         contractReference_2: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
       }
     ): TransactionObject<string>;
@@ -179,13 +179,13 @@ export class Economics extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       }
@@ -223,16 +223,8 @@ export class Economics extends Contract {
       periodFloor: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      contractReference_1: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
-      contractReference_2: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
+      contractReference_1: { object: string; _type: string; role: string };
+      contractReference_2: { object: string; _type: string; role: string };
     }>;
 
     encodeCollateralAsObject(
@@ -331,13 +323,13 @@ export class Economics extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       },
@@ -346,7 +338,8 @@ export class Economics extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -354,7 +347,7 @@ export class Economics extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       },
       engine: string,
       actor: string,
@@ -431,16 +424,8 @@ export class Economics extends Contract {
       periodFloor: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      contractReference_1: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
-      contractReference_2: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
+      contractReference_1: { object: string; _type: string; role: string };
+      contractReference_2: { object: string; _type: string; role: string };
     }>;
 
     getState(
@@ -450,7 +435,8 @@ export class Economics extends Contract {
       statusDate: string;
       nonPerformingDate: string;
       maturityDate: string;
-      executionDate: string;
+      exerciseDate: string;
+      terminationDate: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -458,7 +444,7 @@ export class Economics extends Contract {
       interestScalingMultiplier: string;
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
-      executionAmount: string;
+      exerciseAmount: string;
     }>;
 
     getFinalizedState(
@@ -468,7 +454,8 @@ export class Economics extends Contract {
       statusDate: string;
       nonPerformingDate: string;
       maturityDate: string;
-      executionDate: string;
+      exerciseDate: string;
+      terminationDate: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -476,7 +463,7 @@ export class Economics extends Contract {
       interestScalingMultiplier: string;
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
-      executionAmount: string;
+      exerciseAmount: string;
     }>;
 
     getAnchorDate(assetId: string | number[]): TransactionObject<string>;
@@ -559,13 +546,13 @@ export class Economics extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       }
@@ -578,7 +565,8 @@ export class Economics extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -586,7 +574,7 @@ export class Economics extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       }
     ): TransactionObject<void>;
 
@@ -597,7 +585,8 @@ export class Economics extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -605,7 +594,7 @@ export class Economics extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       }
     ): TransactionObject<void>;
 

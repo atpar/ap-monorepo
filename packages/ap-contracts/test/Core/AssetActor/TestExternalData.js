@@ -55,7 +55,7 @@ contract('AssetActor', (accounts) => {
     const templateSchedule = (await generateTemplateSchedule(
       getEngineContractInstanceForContractType(this.instances, terms.contractType),
       generatingTerms
-    )).filter((event) => event.startsWith('0x12')); 
+    )).filter((event) => event.startsWith('0x0c'));
     const tx = await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedule);
     const templateId = tx.logs[0].args.templateId;
     

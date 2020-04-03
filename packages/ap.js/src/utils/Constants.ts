@@ -19,8 +19,8 @@ export const EMPTY_IPS: IPS = { i: '0', p: '0', s: '0', isSet: false };
 
 export const EMPTY_CONTRACT_REFERENCE: ContractReference = {
   object: ZERO_BYTES32,
-  contractReferenceType: '0',
-  contractReferenceRole: '0'
+  _type: '0',
+  role: '0'
 };
 
 export const EMPTY_STATE: State = {
@@ -28,7 +28,8 @@ export const EMPTY_STATE: State = {
   statusDate: '0',
   nonPerformingDate: '0',
   maturityDate: '0',
-  executionDate: '0',
+  exerciseDate: '0',
+  terminationDate: '0',
   notionalPrincipal: '0',
   accruedInterest: '0',
   feeAccrued: '0',
@@ -36,7 +37,7 @@ export const EMPTY_STATE: State = {
   interestScalingMultiplier: '0',
   notionalScalingMultiplier: '0',
   nextPrincipalRedemptionPayment: '0',
-  executionAmount: '0',
+  exerciseAmount: '0',
 };
 
 export const EMPTY_TERMS: Terms = {
@@ -60,7 +61,6 @@ export const EMPTY_TERMS: Terms = {
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
-  terminationDate: '0',
   purchaseDate: '0',
   capitalizationEndDate: '0',
   cycleAnchorDateOfInterestPayment: '0',
@@ -107,7 +107,6 @@ export const EMPTY_GENERATING_TERMS: GeneratingTerms = {
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
-  terminationDate: '0',
   purchaseDate: '0',
   capitalizationEndDate: '0',
   cycleAnchorDateOfInterestPayment: '0',
@@ -232,7 +231,6 @@ export const EMPTY_EXTENDED_TEMPLATE_TERMS: ExtendedTemplateTerms = {
   statusDateOffset: '0',
   initialExchangeDateOffset: '0',
   maturityDateOffset: '0',
-  terminationDateOffset: '0',
   purchaseDateOffset: '0',
   capitalizationEndDateOffset: '0',
   cycleAnchorDateOfInterestPaymentOffset: '0',

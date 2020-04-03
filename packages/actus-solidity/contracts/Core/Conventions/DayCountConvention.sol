@@ -31,22 +31,21 @@ contract DayCountConvention is ACTUSTypes {
         pure
         returns (int256)
     {
-        require(endTimestamp >= startTimestamp, "Core.yearFraction: UNMET_CONDITION");
-        if (ipdc == DayCountConvention.A_AISDA) {
-            return actualActualISDA(startTimestamp, endTimestamp);
-        } else if (ipdc == DayCountConvention.A_360) {
+        require(endTimestamp >= startTimestamp, "Core.yearFraction: START_NOT_BEFORE_END");
+        if (ipdc == DayCountConvention.AA) {
+            return actualActual(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.A360) {
             return actualThreeSixty(startTimestamp, endTimestamp);
-        } else if (ipdc == DayCountConvention.A_365) {
+        } else if (ipdc == DayCountConvention.A365) {
             return actualThreeSixtyFive(startTimestamp, endTimestamp);
-        } else if (ipdc == DayCountConvention._30E_360) {
+        } else if (ipdc == DayCountConvention._30E360) {
             return thirtyEThreeSixty(startTimestamp, endTimestamp);
-        } else if (ipdc == DayCountConvention._30E_360ISDA) {
+        } else if (ipdc == DayCountConvention._30E360ISDA) {
             return thirtyEThreeSixtyISDA(startTimestamp, endTimestamp, maturityDate);
-        } else if (ipdc == DayCountConvention.BUS_252) {
+        } else if (ipdc == DayCountConvention._28E336) {
             // not implemented yet
-            return int256(1 ** PRECISION);
+            revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_SUPPORTED.");
         } else {
-            // support 1/1 explicitly ?
             revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_FOUND.");
         }
     }
@@ -54,7 +53,7 @@ contract DayCountConvention is ACTUSTypes {
     /**
      * ISDA A/A day count convention
      */
-    function actualActualISDA(uint256 startTime, uint256 endTime)
+    function actualActual(uint256 startTime, uint256 endTime)
         internal
         pure
         returns (int256)

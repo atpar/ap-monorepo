@@ -132,12 +132,16 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         // calculate amount to return
         uint256 notExecutedAmount;
         // if XD was triggerd
-        if (state.executionDate > uint256(0)) {
+        if (state.exerciseDate != uint256(0)) {
             notExecutedAmount = collateralAmount.sub(
-                (state.executionAmount >= 0) ? uint256(state.executionAmount) : uint256(-1 * state.executionAmount)
+                (state.exerciseAmount >= 0) ? uint256(state.exerciseAmount) : uint256(-1 * state.exerciseAmount)
             );
-        // if XD was not triggered and reached maturity
-        } else if (state.executionDate == uint256(0) && state.statusDate >= state.maturityDate) {
+        // if XD was not triggered and (reached maturity or was terminated)
+        } else if (
+            state.exerciseDate == uint256(0)
+            // TODO: replace maturityDate check with ContractPerformance == MA check
+            && (state.statusDate >= state.maturityDate || state.contractPerformance == ContractPerformance.TE)
+        ) {
             notExecutedAmount = collateralAmount;
         // throw if XD was not triggered and maturity is not reached
         } else {

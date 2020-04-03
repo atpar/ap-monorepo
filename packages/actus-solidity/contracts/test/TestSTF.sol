@@ -194,6 +194,23 @@ contract TestSTF is STF {
         );
     }
 
+    function _STF_PAM_MD (
+        LifecycleTerms memory terms,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 externalData
+    )
+    public
+    pure
+    returns(State memory) {
+        return STF_PAM_MD(
+            terms,
+            state,
+            scheduleTime,
+            externalData
+        );
+    }
+
     function _STF_PAM_TD (
         LifecycleTerms memory terms,
         State memory state,

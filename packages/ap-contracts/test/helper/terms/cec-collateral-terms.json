@@ -16,7 +16,6 @@
   "statusDate": 0,
   "initialExchangeDate": 0,
   "maturityDate": 0,
-  "terminationDate": 0,
   "purchaseDate": 0,
   "capitalizationEndDate": 0,
   "cycleAnchorDateOfInterestPayment": 0,
@@ -50,12 +49,12 @@
   "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
   "contractReference_1": { 
     "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "contractReferenceType": 1,
-    "contractReferenceRole": 3
+    "_type": 1,
+    "role": 3
   },
   "contractReference_2": { 
     "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "contractReferenceType": 0,
-    "contractReferenceRole": 4
+    "_type": 0,
+    "role": 4
   }
 }

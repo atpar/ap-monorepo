@@ -156,15 +156,15 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         if (customTerms.overwrittenTerms.contractReference_1.object != bytes32(0)) {
             assets[assetId].packedTermsState[27] = bytes32(customTerms.overwrittenTerms.contractReference_1.object);
             assets[assetId].packedTermsState[28] =
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.contractReferenceType)) << 16 |
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.contractReferenceRole)) << 8;
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1._type)) << 16 |
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.role)) << 8;
 
         }
         if (customTerms.overwrittenTerms.contractReference_2.object != bytes32(0)) {
             assets[assetId].packedTermsState[29] = bytes32(customTerms.overwrittenTerms.contractReference_2.object);
             assets[assetId].packedTermsState[30] =
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceType)) << 16 |
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.contractReferenceRole)) << 8;
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2._type)) << 16 |
+                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.role)) << 8;
 
         }
     }
@@ -181,17 +181,18 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[102] = bytes32(state.statusDate);
         if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[103] = bytes32(state.nonPerformingDate);
         if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[104] = bytes32(state.maturityDate);
-        if (state.executionDate != uint256(0)) assets[assetId].packedTermsState[105] = bytes32(state.executionDate);
+        if (state.exerciseDate != uint256(0)) assets[assetId].packedTermsState[105] = bytes32(state.exerciseDate);
+        if (state.terminationDate != uint256(0)) assets[assetId].packedTermsState[106] = bytes32(state.terminationDate);
 
-        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[106] = bytes32(state.notionalPrincipal);
-        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.accruedInterest);
-        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.feeAccrued);
-        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.nominalInterestRate);
-        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.interestScalingMultiplier);
-        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[111] = bytes32(state.notionalScalingMultiplier);
+        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.notionalPrincipal);
+        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.accruedInterest);
+        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.feeAccrued);
+        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.nominalInterestRate);
+        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[111] = bytes32(state.interestScalingMultiplier);
+        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[112] = bytes32(state.notionalScalingMultiplier);
         // solium-disable-next-line
-        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[112] = bytes32(state.nextPrincipalRedemptionPayment);
-        if (state.executionAmount != int256(0)) assets[assetId].packedTermsState[113] = bytes32(state.executionAmount);
+        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[113] = bytes32(state.nextPrincipalRedemptionPayment);
+        if (state.exerciseAmount != int256(0)) assets[assetId].packedTermsState[114] = bytes32(state.exerciseAmount);
     }
 
     /**
@@ -206,17 +207,18 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[152] = bytes32(state.statusDate);
         if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[153] = bytes32(state.nonPerformingDate);
         if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[154] = bytes32(state.maturityDate);
-        if (state.executionDate != uint256(0)) assets[assetId].packedTermsState[155] = bytes32(state.executionDate);
+        if (state.exerciseDate != uint256(0)) assets[assetId].packedTermsState[155] = bytes32(state.exerciseDate);
+        if (state.terminationDate != uint256(0)) assets[assetId].packedTermsState[156] = bytes32(state.terminationDate);
 
-        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[156] = bytes32(state.notionalPrincipal);
-        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[157] = bytes32(state.accruedInterest);
-        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[158] = bytes32(state.feeAccrued);
-        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[159] = bytes32(state.nominalInterestRate);
-        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[160] = bytes32(state.interestScalingMultiplier);
-        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[161] = bytes32(state.notionalScalingMultiplier);
+        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[157] = bytes32(state.notionalPrincipal);
+        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[158] = bytes32(state.accruedInterest);
+        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[159] = bytes32(state.feeAccrued);
+        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[160] = bytes32(state.nominalInterestRate);
+        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[161] = bytes32(state.interestScalingMultiplier);
+        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[162] = bytes32(state.notionalScalingMultiplier);
         // solium-disable-next-line
-        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[162] = bytes32(state.nextPrincipalRedemptionPayment);
-        if (state.executionAmount != int256(0)) assets[assetId].packedTermsState[163] = bytes32(state.executionAmount);
+        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[163] = bytes32(state.nextPrincipalRedemptionPayment);
+        if (state.exerciseAmount != int256(0)) assets[assetId].packedTermsState[164] = bytes32(state.exerciseAmount);
     }
 
     /**
@@ -313,15 +315,16 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             uint256(assets[assetId].packedTermsState[103]),
             uint256(assets[assetId].packedTermsState[104]),
             uint256(assets[assetId].packedTermsState[105]),
+            uint256(assets[assetId].packedTermsState[106]),
 
-            int256(assets[assetId].packedTermsState[106]),
             int256(assets[assetId].packedTermsState[107]),
             int256(assets[assetId].packedTermsState[108]),
             int256(assets[assetId].packedTermsState[109]),
             int256(assets[assetId].packedTermsState[110]),
             int256(assets[assetId].packedTermsState[111]),
             int256(assets[assetId].packedTermsState[112]),
-            int256(assets[assetId].packedTermsState[113])
+            int256(assets[assetId].packedTermsState[113]),
+            int256(assets[assetId].packedTermsState[114])
         );
     }
 
@@ -336,15 +339,16 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             uint256(assets[assetId].packedTermsState[153]),
             uint256(assets[assetId].packedTermsState[154]),
             uint256(assets[assetId].packedTermsState[155]),
+            uint256(assets[assetId].packedTermsState[156]),
 
-            int256(assets[assetId].packedTermsState[156]),
             int256(assets[assetId].packedTermsState[157]),
             int256(assets[assetId].packedTermsState[158]),
             int256(assets[assetId].packedTermsState[159]),
             int256(assets[assetId].packedTermsState[160]),
             int256(assets[assetId].packedTermsState[161]),
             int256(assets[assetId].packedTermsState[162]),
-            int256(assets[assetId].packedTermsState[163])
+            int256(assets[assetId].packedTermsState[163]),
+            int256(assets[assetId].packedTermsState[164])
         );
     }
 }

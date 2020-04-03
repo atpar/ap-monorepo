@@ -16,7 +16,6 @@
   "statusDate": 1,
   "initialExchangeDate": 1,
   "maturityDate": 1,
-  "terminationDate": 1,
   "purchaseDate": 1,
   "capitalizationEndDate": 1,
   "cycleAnchorDateOfInterestPayment": 1,
@@ -51,13 +50,13 @@
   "contractReference_1":
   { 
      "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
-     "contractReferenceType": 1,
-     "contractReferenceRole": 1 
+     "_type": 1,
+     "role": 1 
   },
   "contractReference_2":
   { 
     "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "contractReferenceType": 1,
-    "contractReferenceRole": 1 
+    "_type": 1,
+    "role": 1 
   }
 }

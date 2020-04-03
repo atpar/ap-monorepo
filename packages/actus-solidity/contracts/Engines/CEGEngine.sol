@@ -151,7 +151,7 @@ contract CEGEngine is BaseEngine, STF, POF {
             // FP, MD events only scheduled up to execution of the Guarantee
             if (
                 (eventType == EventType.FP || eventType == EventType.MD)
-                && underlyingState.executionAmount > int256(0)
+                && underlyingState.exerciseAmount > int256(0)
             ) {
                 return false;
             }

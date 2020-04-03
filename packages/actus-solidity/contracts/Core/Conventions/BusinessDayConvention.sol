@@ -89,7 +89,7 @@ contract BusinessDayConvention is ACTUSTypes {
         pure
         returns (uint256)
     {
-        if (calendar == Calendar.MondayToFriday) {
+        if (calendar == Calendar.MF) {
             if (BokkyPooBahsDateTimeLibrary.getDayOfWeek(timestamp) == 6) {
                 return BokkyPooBahsDateTimeLibrary.addDays(timestamp, 2);
             } else if (BokkyPooBahsDateTimeLibrary.getDayOfWeek(timestamp) == 7) {
@@ -108,7 +108,7 @@ contract BusinessDayConvention is ACTUSTypes {
         pure
         returns (uint256)
     {
-        if (calendar == Calendar.MondayToFriday) {
+        if (calendar == Calendar.MF) {
             if (BokkyPooBahsDateTimeLibrary.getDayOfWeek(timestamp) == 6) {
                 return BokkyPooBahsDateTimeLibrary.subDays(timestamp, 1);
             } else if (BokkyPooBahsDateTimeLibrary.getDayOfWeek(timestamp) == 7) {

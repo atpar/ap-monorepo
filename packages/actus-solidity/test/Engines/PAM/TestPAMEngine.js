@@ -25,13 +25,13 @@ contract('PAMEngine', () => {
       generatingTerms,
       segmentStart,
       segmentEnd,
-      4 // FP
+      2 // FP
     ));
     _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      7 // IPCI
+      9 // IPCI
     ));
     _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
@@ -43,13 +43,13 @@ contract('PAMEngine', () => {
       generatingTerms,
       segmentStart,
       segmentEnd,
-      15 // PR
+      3 // PR
     ));
     _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
-      18 // RR
+      12 // RR
     ));
     
     

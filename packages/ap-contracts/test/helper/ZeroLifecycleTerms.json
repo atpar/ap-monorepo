@@ -48,12 +48,12 @@
 
 	"contractReference_1": {
 		"object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-		"contractReferenceType": 0,
-		"contractReferenceRole": 0
+		"_type": 0,
+		"role": 0
 	},
 	"contractReference_2": {
 		"object": "0x0000000000000000000000000000000000000000000000000000000000000000",
-		"contractReferenceType": 0,
-		"contractReferenceRole": 0
+		"_type": 0,
+		"role": 0
 	}
 }

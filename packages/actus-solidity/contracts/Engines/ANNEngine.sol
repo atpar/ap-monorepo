@@ -80,14 +80,6 @@ contract ANNEngine is BaseEngine, STF, POF {
             }
         }
 
-        // termination
-        if (terms.terminationDate != 0) {
-            if (isInSegment(terms.terminationDate, segmentStart, segmentEnd)) {
-                _eventSchedule[index] = encodeEvent(EventType.TD, terms.terminationDate);
-                index++;
-            }
-        }
-
         // principal redemption at maturity
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true)  {
             _eventSchedule[index] = encodeEvent(EventType.MD, terms.maturityDate);

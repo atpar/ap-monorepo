@@ -69,10 +69,6 @@
       "type": "uint256"
     },
     {
-      "name": "terminationDate",
-      "type": "uint256"
-    },
-    {
       "name": "purchaseDate",
       "type": "uint256"
     },
@@ -321,11 +317,11 @@
           "type": "bytes32"
         },
         {
-          "name": "contractReferenceType",
+          "name": "_type",
           "type": "uint8"
         },
         {
-          "name": "contractReferenceRole",
+          "name": "role",
           "type": "uint8"
         }
       ],
@@ -339,11 +335,11 @@
           "type": "bytes32"
         },
         {
-          "name": "contractReferenceType",
+          "name": "_type",
           "type": "uint8"
         },
         {
-          "name": "contractReferenceRole",
+          "name": "role",
           "type": "uint8"
         }
       ],

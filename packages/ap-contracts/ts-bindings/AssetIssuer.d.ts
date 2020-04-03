@@ -123,13 +123,13 @@ export class AssetIssuer extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       }
@@ -167,16 +167,8 @@ export class AssetIssuer extends Contract {
       periodFloor: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      contractReference_1: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
-      contractReference_2: {
-        object: string;
-        contractReferenceType: string;
-        contractReferenceRole: string;
-      };
+      contractReference_1: { object: string; _type: string; role: string };
+      contractReference_2: { object: string; _type: string; role: string };
     }>;
 
     encodeCollateralAsObject(
@@ -236,13 +228,13 @@ export class AssetIssuer extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       };
@@ -306,13 +298,13 @@ export class AssetIssuer extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       };
@@ -375,13 +367,13 @@ export class AssetIssuer extends Contract {
             };
             contractReference_1: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
             contractReference_2: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
           };
         };
@@ -446,13 +438,13 @@ export class AssetIssuer extends Contract {
             };
             contractReference_1: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
             contractReference_2: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
           };
         };

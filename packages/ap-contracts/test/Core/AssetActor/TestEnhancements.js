@@ -137,7 +137,7 @@ contract('AssetActor', (accounts) => {
     await mineBlock(Number(await getEventTime(iedEvent, this.lifecycleTerms)));
     await this.PaymentTokenInstance.approve(this.AssetActorInstance.address, iedPayoff, { from: creatorObligor });
     await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
-    assert.equal(Number(decodeEvent(iedEvent).eventType), 5);
+    assert.equal(Number(decodeEvent(iedEvent).eventType), 1);
 
     // progress to schedule time of first IP (payoff == 0)
     const ipEvent_1 = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
@@ -155,13 +155,13 @@ contract('AssetActor', (accounts) => {
     const xdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(xdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(xdEvent).eventType), 3);
+    assert.equal(Number(decodeEvent(xdEvent).eventType), 20);
 
     // progress collateral enhancement
     const stdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(stdEvent).eventType), 20);
+    assert.equal(Number(decodeEvent(stdEvent).eventType), 21);
 
     // creator should have received seized collateral from custodian
     assert.equal(

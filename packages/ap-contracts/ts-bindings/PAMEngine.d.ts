@@ -78,13 +78,13 @@ export class PAMEngine extends Contract {
         };
         contractReference_1: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
         contractReference_2: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
       }
     ): TransactionObject<string>;
@@ -130,13 +130,13 @@ export class PAMEngine extends Contract {
         };
         contractReference_1: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
         contractReference_2: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
       },
       state: {
@@ -144,7 +144,8 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -152,7 +153,7 @@ export class PAMEngine extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -199,13 +200,13 @@ export class PAMEngine extends Contract {
         };
         contractReference_1: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
         contractReference_2: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
       },
       state: {
@@ -213,7 +214,8 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -221,7 +223,7 @@ export class PAMEngine extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -230,7 +232,8 @@ export class PAMEngine extends Contract {
       statusDate: string;
       nonPerformingDate: string;
       maturityDate: string;
-      executionDate: string;
+      exerciseDate: string;
+      terminationDate: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -238,7 +241,7 @@ export class PAMEngine extends Contract {
       interestScalingMultiplier: string;
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
-      executionAmount: string;
+      exerciseAmount: string;
     }>;
 
     decodeEvent(
@@ -295,20 +298,21 @@ export class PAMEngine extends Contract {
       };
       contractReference_1: {
         object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
+        _type: number | string;
+        role: number | string;
       };
       contractReference_2: {
         object: string | number[];
-        contractReferenceType: number | string;
-        contractReferenceRole: number | string;
+        _type: number | string;
+        role: number | string;
       };
     }): TransactionObject<{
       contractPerformance: string;
       statusDate: string;
       nonPerformingDate: string;
       maturityDate: string;
-      executionDate: string;
+      exerciseDate: string;
+      terminationDate: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -316,7 +320,7 @@ export class PAMEngine extends Contract {
       interestScalingMultiplier: string;
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
-      executionAmount: string;
+      exerciseAmount: string;
     }>;
 
     computeNonCyclicScheduleSegment(
@@ -326,7 +330,6 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        terminationDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -382,7 +385,6 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        terminationDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -474,13 +476,13 @@ export class PAMEngine extends Contract {
         };
         contractReference_1: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
         contractReference_2: {
           object: string | number[];
-          contractReferenceType: number | string;
-          contractReferenceRole: number | string;
+          _type: number | string;
+          role: number | string;
         };
       },
       state: {
@@ -488,7 +490,8 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -496,7 +499,7 @@ export class PAMEngine extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       },
       hasUnderlying: boolean,
       underlyingState: {
@@ -504,7 +507,8 @@ export class PAMEngine extends Contract {
         statusDate: number | string;
         nonPerformingDate: number | string;
         maturityDate: number | string;
-        executionDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -512,7 +516,7 @@ export class PAMEngine extends Contract {
         interestScalingMultiplier: number | string;
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        executionAmount: number | string;
+        exerciseAmount: number | string;
       }
     ): TransactionObject<boolean>;
   };

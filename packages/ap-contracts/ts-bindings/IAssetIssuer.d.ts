@@ -75,13 +75,13 @@ export class IAssetIssuer extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       };
@@ -145,13 +145,13 @@ export class IAssetIssuer extends Contract {
           };
           contractReference_1: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
           contractReference_2: {
             object: string | number[];
-            contractReferenceType: number | string;
-            contractReferenceRole: number | string;
+            _type: number | string;
+            role: number | string;
           };
         };
       };
@@ -214,13 +214,13 @@ export class IAssetIssuer extends Contract {
             };
             contractReference_1: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
             contractReference_2: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
           };
         };
@@ -285,13 +285,13 @@ export class IAssetIssuer extends Contract {
             };
             contractReference_1: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
             contractReference_2: {
               object: string | number[];
-              contractReferenceType: number | string;
-              contractReferenceRole: number | string;
+              _type: number | string;
+              role: number | string;
             };
           };
         };

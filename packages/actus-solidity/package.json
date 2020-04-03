@@ -48,7 +48,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "devDependencies": {
-    "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
+    "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git#dev",
     "bignumber.js": "^7.2.1",
     "coveralls": "^3.0.9",
     "csvtojson": "^2.0.8",

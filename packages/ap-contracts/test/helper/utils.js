@@ -132,13 +132,13 @@ function deriveTerms(terms) {
 async function generateTemplateSchedule(engineContractInstance, generatingTerms) {
   const events = [];
   events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 7)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 2)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 3)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 6)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 8)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 15)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 19)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 18)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 4)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 11)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 9)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 12)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(generatingTerms, 0, generatingTerms.maturityDate, 17)));
 
   return sortEvents(removeNullEvents(events));
 }

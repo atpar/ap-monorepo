@@ -269,7 +269,7 @@ contract POF is Core {
         pure
         returns(int256)
     {
-        return state.executionAmount + state.feeAccrued;
+        return state.exerciseAmount + state.feeAccrued;
     }
 
     /**

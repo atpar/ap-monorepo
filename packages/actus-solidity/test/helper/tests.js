@@ -72,15 +72,16 @@ function assertEqualStates(newState, expectedState){
   assert.equal(newState[1], expectedState.statusDate, "Difference in 'statusDate'");
   assert.equal(newState[2], expectedState.nonPerformingDate, "Difference in 'nonPerformingDate'");
   assert.equal(newState[3], expectedState.maturityDate, "Difference in 'maturityDate'");
-  assert.equal(newState[4], expectedState.executionDate, "Difference in 'executionDate'");
-  assert.equal(newState[5], expectedState.notionalPrincipal, "Difference in 'notionalPrincipal'");
-  assert.equal(newState[6], expectedState.accruedInterest, "Difference in 'accruedInterest'");
-  assert.equal(newState[7], expectedState.feeAccrued, "Difference in 'feeAccrued'");
-  assert.equal(newState[8], expectedState.nominalInterestRate, "Difference in 'nominalInterestRate'");
-  assert.equal(newState[9], expectedState.interestScalingMultiplier, "Difference in 'interestScalingMultiplier'");
-  assert.equal(newState[10], expectedState.notionalScalingMultiplier, "Difference in 'notionalScalingMultiplier'");
-  assert.equal(newState[11], expectedState.nextPrincipalRedemptionPayment, "Difference in 'nextPrincipalRedemptionPayment'");
-  assert.equal(newState[12], expectedState.executionAmount, "Difference in 'executionAmount'");
+  assert.equal(newState[4], expectedState.exerciseDate, "Difference in 'exerciseDate'");
+  assert.equal(newState[5], expectedState.exerciseDate, "Difference in 'terminationDate'");
+  assert.equal(newState[6], expectedState.notionalPrincipal, "Difference in 'notionalPrincipal'");
+  assert.equal(newState[7], expectedState.accruedInterest, "Difference in 'accruedInterest'");
+  assert.equal(newState[8], expectedState.feeAccrued, "Difference in 'feeAccrued'");
+  assert.equal(newState[9], expectedState.nominalInterestRate, "Difference in 'nominalInterestRate'");
+  assert.equal(newState[10], expectedState.interestScalingMultiplier, "Difference in 'interestScalingMultiplier'");
+  assert.equal(newState[11], expectedState.notionalScalingMultiplier, "Difference in 'notionalScalingMultiplier'");
+  assert.equal(newState[12], expectedState.nextPrincipalRedemptionPayment, "Difference in 'nextPrincipalRedemptionPayment'");
+  assert.equal(newState[13], expectedState.exerciseAmount, "Difference in 'exerciseAmount'");
 }
 
 function getDefaultState () {
@@ -89,7 +90,8 @@ function getDefaultState () {
     statusDate: 0,
     nonPerformingDate: 0,
     maturityDate: 31536000, // (1 year from 0)
-    executionDate: 31536000, 
+    exerciseDate: 31536000, 
+    terminationDate: 31536000, 
     notionalPrincipal: web3.utils.toWei("1000000"),
     accruedInterest: web3.utils.toWei("100"),
     feeAccrued: web3.utils.toWei("10"),
@@ -97,7 +99,7 @@ function getDefaultState () {
     interestScalingMultiplier: web3.utils.toWei("1.1"),
     notionalScalingMultiplier: web3.utils.toWei("0.9"),
     nextPrincipalRedemptionPayment: web3.utils.toWei("2500"),
-    executionAmount: web3.utils.toWei("5000")
+    exerciseAmount: web3.utils.toWei("5000")
   }
 }
 
