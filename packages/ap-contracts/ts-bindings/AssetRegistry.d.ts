@@ -363,6 +363,11 @@ export class AssetRegistry extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     popNextScheduledEvent(
       assetId: string | number[]
     ): TransactionObject<string>;

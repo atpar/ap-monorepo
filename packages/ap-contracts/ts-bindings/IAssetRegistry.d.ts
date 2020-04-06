@@ -601,6 +601,11 @@ export class IAssetRegistry extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     grantAccess(
       assetId: string | number[],
       methodSignature: string | number[],

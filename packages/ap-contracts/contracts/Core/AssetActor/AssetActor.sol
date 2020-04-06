@@ -107,7 +107,7 @@ contract AssetActor is
     function progressWith(bytes32 assetId, bytes32 _event) public override {
         // revert if msg.sender is not authorized to update the asset
         require(
-            assetRegistry.hasAccess(assetId, assetRegistry.setState.selector, msg.sender),
+            assetRegistry.hasRootAccess(assetId, msg.sender),
             "AssetActor.progressWith: UNAUTHORIZED_SENDER"
         );
 

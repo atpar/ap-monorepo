@@ -265,6 +265,11 @@ export class Economics extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     registerAsset(

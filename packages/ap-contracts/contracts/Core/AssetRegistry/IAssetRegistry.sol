@@ -166,6 +166,11 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         virtual
         returns (bool);
 
+    function hasRootAccess(bytes32 assetId, address account)
+        public
+        virtual
+        returns (bool);
+
     function grantAccess(bytes32 assetId, bytes4 methodSignature, address account)
         public
         virtual;
