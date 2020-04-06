@@ -75,7 +75,7 @@ contract ACTUSTypes {
         int256 feeAccrued;
         int256 nominalInterestRate;
         // int256 nominalInterestRate2;
-        // int256 interestCalculationBase;
+        // int256 interestCalculationBaseAmount;
         int256 interestScalingMultiplier;
         int256 notionalScalingMultiplier;
         int256 nextPrincipalRedemptionPayment;
