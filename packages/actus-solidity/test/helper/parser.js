@@ -31,7 +31,7 @@ const getIndexOfAttribute = (attribute, value) => {
   }
 
   if (ACTUSDictionary.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
-  const allowedValues = ACTUSDictionary.terms[attribute].allowedValues.find((allowedValue) => allowedValue.accronym === value);
+  const allowedValues = ACTUSDictionary.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
   if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
 
   return Number(allowedValues.option);
@@ -40,7 +40,7 @@ const getIndexOfAttribute = (attribute, value) => {
 const getIndexForEventType = (eventType) => {
   if (eventType === 'AD') return 0;
 
-  const event = Object.values(ACTUSDictionary.eventType).find((event) => event.acronym === eventType);
+  const event = Object.values(ACTUSDictionary.event.eventType.allowedValues).find((event) => event.acronym === eventType);
   if (event == undefined) { console.log(eventType); throw new Error('Unknown event type provided.'); }
 
   return event.sequence;

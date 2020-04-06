@@ -25,13 +25,13 @@ library SignedMath {
     {
         if (a == 0 || b == 0) return 0;
 
-        require(!(a == -1 && b == INT256_MIN), "FloatMath.floatMult: OVERFLOW_DETECTED");
+        require(!(a == -1 && b == INT256_MIN), "SignedMath.floatMult: OVERFLOW_DETECTED");
         int256 c = a * b;
-        require(c / a == b, "FloatMath.floatMult: OVERFLOW_DETECTED");
+        require(c / a == b, "SignedMath.floatMult: OVERFLOW_DETECTED");
 
         // normalize (divide by MULTIPLICATOR)
         int256 d = c / int256(MULTIPLICATOR);
-        require(d != 0, "FloatMath.floatMult: CANNOT_REPRESENT_GRANULARITY");
+        require(d != 0, "SignedMath.floatMult: CANNOT_REPRESENT_GRANULARITY");
 
         return d;
     }
@@ -41,16 +41,16 @@ library SignedMath {
         pure
         returns (int256)
     {
-        require(b != 0, "FloatMath.floatDiv: DIVIDED_BY_ZERO");
+        require(b != 0, "SignedMath.floatDiv: DIVIDED_BY_ZERO");
 
         // normalize (multiply by MULTIPLICATOR)
         if (a == 0) return 0;
         int256 c = a * int256(MULTIPLICATOR);
-        require(c / a == int256(MULTIPLICATOR), "FloatMath.floatDiv: OVERFLOW_DETECTED");
+        require(c / a == int256(MULTIPLICATOR), "SignedMath.floatDiv: OVERFLOW_DETECTED");
 
-        require(!(b == -1 && a == INT256_MIN), "FloatMATH.floatDiv: OVERFLOW_DETECTED");
+        require(!(b == -1 && a == INT256_MIN), "SignedMath.floatDiv: OVERFLOW_DETECTED");
         int256 d = c / b;
-        require(d != 0, "FloatMath.floatDiv: CANNOT_REPRESENT_GRANULARITY");
+        require(d != 0, "SignedMath.floatDiv: CANNOT_REPRESENT_GRANULARITY");
 
         return d;
     }
