@@ -168,10 +168,10 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
         LifecycleTerms memory terms = decodeAndGetTerms(assetId);
         State memory state = decodeAndGetState(assetId);
 
-        // check for CVE
+        // check for COVE
         if (
             terms.contractReference_1.object != bytes32(0)
-            && terms.contractReference_1.role == ContractReferenceRole.CVE
+            && terms.contractReference_1.role == ContractReferenceRole.COVE
         ) {
             bytes32 underlyingAssetId = terms.contractReference_1.object;
             State memory underlyingState = decodeAndGetState(underlyingAssetId);

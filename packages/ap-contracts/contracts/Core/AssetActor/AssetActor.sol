@@ -297,7 +297,7 @@ contract AssetActor is
 
         // get the token address either from currency attribute or from the second contract reference
         address token = terms.currency;
-        if (terms.contractReference_2.role == ContractReferenceRole.CVI) {
+        if (terms.contractReference_2.role == ContractReferenceRole.COVI) {
             (token, ) = decodeCollateralObject(terms.contractReference_2.object);
         }
 
@@ -366,7 +366,7 @@ contract AssetActor is
             return bytes32(block.timestamp);
         } else if (eventType == EventType.XD) {
             // get the remaining notionalPrincipal from the underlying
-            if (terms.contractReference_1.role == ContractReferenceRole.CVE) {
+            if (terms.contractReference_1.role == ContractReferenceRole.COVE) {
                 State memory underlyingState = assetRegistry.getState(terms.contractReference_1.object);
                 return bytes32(underlyingState.notionalPrincipal);
             }

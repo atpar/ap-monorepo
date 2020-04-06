@@ -67,7 +67,7 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(draft.termsHash, block.timestamp));
 
         // check if first contract reference in terms references an underlying asset
-        if (draft.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.CVE) {
+        if (draft.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.COVE) {
             require(
                 draft.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
                 "AssetIssuer.finalizeDraft: INVALID_OBJECT"
@@ -75,7 +75,7 @@ contract AssetIssuer is
         }
 
         // check if second contract reference in terms contains a reference to collateral
-        if (draft.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.CVI) {
+        if (draft.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.COVI) {
             require(
                 draft.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
                 "AssetIssuer.finalizeDraft: INVALID_OBJECT"
@@ -206,7 +206,7 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature));
 
         // check if first contract reference in terms references an underlying asset
-        if (order.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.CVE) {
+        if (order.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.COVE) {
             require(
                 order.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
                 "AssetIssuer.finalizeOrder: INVALID_OBJECT"
@@ -214,7 +214,7 @@ contract AssetIssuer is
         }
 
         // check if second contract reference in terms contains a reference to collateral
-        if (order.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.CVI) {
+        if (order.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.COVI) {
             require(
                 order.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
                 "AssetIssuer.finalizeOrder: INVALID_OBJECT"
@@ -279,7 +279,7 @@ contract AssetIssuer is
         bytes32 assetId = keccak256(abi.encode(enhancementOrder.creatorSignature, enhancementOrder.counterpartySignature));
 
         // check if first contract reference in enhancement terms references an underlying asset
-        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.CVE) {
+        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.COVE) {
             // derive assetId of underlying and set as object in the first contract reference
             enhancementOrder.customTerms.overwrittenTerms.contractReference_1.object = keccak256(
                 abi.encode(order.creatorSignature, order.counterpartySignature)
@@ -287,7 +287,7 @@ contract AssetIssuer is
         }
 
         // check if second contract reference in enhancement terms contain a reference to collateral
-        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.CVI) {
+        if (enhancementOrder.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.COVI) {
             // derive assetId
             assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature, address(custodian)));
 

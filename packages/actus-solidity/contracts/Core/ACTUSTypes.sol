@@ -50,8 +50,8 @@ contract ACTUSTypes {
     enum ScalingEffect {_000, I00, _0N0, IN0}
     enum Seniority {S, J}
     enum Unit {BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO}
-    enum ContractReferenceType {CT, CID, MOC, LEI, CS}
-    enum ContractReferenceRole {UDY, FL, SL, CVE, CVI}
+    enum ContractReferenceType {CNT, CID, MOC, EID, CST}
+    enum ContractReferenceRole {UDL, FIL, SEL, COVE, COVI}
 
     struct ContractReference {
         bytes32 object;

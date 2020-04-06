@@ -23,13 +23,6 @@ const toHex = (value) => {
 }
 
 const getIndexOfAttribute = (attribute, value) => {
-  if (attribute === 'contractType') {
-    if (value === 'PAM') return 0;
-    if (value === 'ANN') return 1;
-    if (value === 'CEG') return 16;
-    if (value === 'CEC') return 17;
-  }
-
   if (ACTUSDictionary.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
   const allowedValues = ACTUSDictionary.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
   if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
