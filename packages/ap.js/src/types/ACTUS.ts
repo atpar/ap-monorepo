@@ -352,9 +352,6 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
   
-  if (obj.creatorID == undefined || typeof obj.creatorID !== 'string') { return false; }
-  if (obj.counterpartyID == undefined || typeof obj.counterpartyID !== 'string') { return false; }
-  
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
 
   if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
