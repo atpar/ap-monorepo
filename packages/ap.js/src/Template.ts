@@ -93,9 +93,9 @@ export class Template {
     const templateSchedule = await ap.utils.schedule.computeTemplateScheduleFromExtendedTemplateTerms(engine, extendedTemplateTerms);
 
     const templateId = ap.utils.erc712.deriveTemplateId(templateTerms, templateSchedule);
-    const registeredTemplateEvents = await ap.contracts.templateRegistry.getPastEvents('RegisteredTemplate', { filter: { templateId }});
+    const isRegistered = await ap.contracts.templateRegistry.methods.isRegistered(templateId).call();
 
-    if (registeredTemplateEvents.length === 0) {
+    if (isRegistered === false) {
       throw new Error('No template found for provided terms.'); 
     }
 
