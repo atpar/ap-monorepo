@@ -199,11 +199,16 @@ contract AssetActor is
 
         // block progression if asset is has defaulted, terminated or reached maturity
         require(
-            state.contractPerformance == ContractPerformance.PF 
+            state.contractPerformance == ContractPerformance.PF
             || state.contractPerformance == ContractPerformance.DL
             || state.contractPerformance == ContractPerformance.DQ,
             "AssetActor.processEvent: ASSET_REACHED_FINAL_STATE"
         );
+
+        // get finalized state if asset is not performant
+        if (state.contractPerformance != ContractPerformance.PF) {
+            state = assetRegistry.getFinalizedState(assetId);
+        }
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
