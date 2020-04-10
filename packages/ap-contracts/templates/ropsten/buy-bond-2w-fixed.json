@@ -1,5 +1,5 @@
 {
-    "templateId": "0xb999e5df70ed8753bbe53ce48d6470cd6ab3a3208710110321ec2103bde7ba71",
+    "templateId": "0xf027f18ea930aa6ff021754fb8f85657300299d90ee964e23b3d995755ba43f1",
     "productPresetId": "",
     "name": "Buyer 2W-Bond",
     "label": "Buyer 2-Weeks Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x4049826bd6fBb810fa52232A17c71Ac24B790A58",
+        "currency": "0xb1A48450cb3A055d03065214018FF455B8CC8fe4",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "contractDealDateOffset": 1,
