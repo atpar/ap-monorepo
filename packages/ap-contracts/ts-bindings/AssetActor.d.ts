@@ -331,7 +331,7 @@ export class AssetActor extends Contract {
         };
       },
       engine: string,
-      root: string
+      admin: string
     ): TransactionObject<boolean>;
   };
   events: {

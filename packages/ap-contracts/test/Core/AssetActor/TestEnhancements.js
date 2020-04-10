@@ -87,8 +87,8 @@ contract('AssetActor', (accounts) => {
 
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
-      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS,
+      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, ZERO_ADDRESS
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);

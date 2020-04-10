@@ -286,6 +286,7 @@ export const EMPTY_ENHANCEMENT_PARAMS = {
   customTerms: EMPTY_CUSTOM_TERMS,
   ownership: EMPTY_OWNERSHIP,
   engine: ZERO_ADDRESS,
+  admin: ZERO_ADDRESS,
   creatorSignature: ZERO_BYTES,
   counterpartySignature: ZERO_BYTES,
   salt: Math.floor(Math.random() * 1000000)

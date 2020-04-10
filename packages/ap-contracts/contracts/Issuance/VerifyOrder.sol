@@ -25,6 +25,7 @@ contract VerifyOrder is SharedTypes {
         CustomTerms customTerms;
         AssetOwnership ownership;
         address engine;
+        address admin;
         bytes creatorSignature;
         bytes counterpartySignature;
         uint256 salt;
@@ -37,7 +38,7 @@ contract VerifyOrder is SharedTypes {
         uint256 expirationDate;
         AssetOwnership ownership;
         address engine;
-        address actor;
+        address admin;
         EnhancementOrder enhancementOrder_1;
         EnhancementOrder enhancementOrder_2;
         bytes creatorSignature;
@@ -51,15 +52,15 @@ contract VerifyOrder is SharedTypes {
 
     // signed by the creator of the Order which includes the Enhancement Order
     bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
+        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,address admin,uint256 salt)"
     );
 
     bytes32 constant ENHANCEMENT_ORDER_TYPEHASH = keccak256(
-        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,bytes32 ownershipHash,address engine,uint256 salt)"
+        "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,bytes32 ownershipHash,address engine,address admin,uint256 salt)"
     );
 
     bytes32 constant ORDER_TYPEHASH = keccak256(
-        "Order(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,uint256 expirationDate,bytes32 ownershipHash,address engine,address actor,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
+        "Order(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,uint256 expirationDate,bytes32 ownershipHash,address engine,address admin,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
     );
 
     bytes32 DOMAIN_SEPARATOR;
@@ -120,6 +121,7 @@ contract VerifyOrder is SharedTypes {
                 enhancementOrder.templateId,
                 hashCustomTerms(enhancementOrder.customTerms),
                 enhancementOrder.engine,
+                enhancementOrder.admin,
                 enhancementOrder.salt
             )
         );
@@ -145,6 +147,7 @@ contract VerifyOrder is SharedTypes {
                     )
                 ),
                 enhancementOrder.engine,
+                enhancementOrder.admin,
                 enhancementOrder.salt
             )
         );
@@ -163,6 +166,7 @@ contract VerifyOrder is SharedTypes {
                 hashCustomTerms(enhancementOrder.customTerms),
                 hashOwnership(enhancementOrder.ownership),
                 enhancementOrder.engine,
+                enhancementOrder.admin,
                 enhancementOrder.salt
             )
         );
@@ -189,7 +193,7 @@ contract VerifyOrder is SharedTypes {
                     )
                 ),
                 order.engine,
-                order.actor,
+                order.admin,
                 hashDraftEnhancementOrder(order.enhancementOrder_1),
                 hashDraftEnhancementOrder(order.enhancementOrder_2),
                 order.salt
@@ -211,7 +215,7 @@ contract VerifyOrder is SharedTypes {
                 order.expirationDate,
                 hashOwnership(order.ownership),
                 order.engine,
-                order.actor,
+                order.admin,
                 hashDraftEnhancementOrder(order.enhancementOrder_1),
                 hashDraftEnhancementOrder(order.enhancementOrder_2),
                 order.salt

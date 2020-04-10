@@ -3,11 +3,10 @@ import Web3 from 'web3';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SettlementToken = require('@atpar/ap-contracts/artifacts/SettlementToken.min.json');
 
-import { AP, APTypes, Order, Template } from '../src';
+import { AP, APTypes, Order, Template, Utils } from '../src';
 
 // @ts-ignore
 import DefaultTerms from './DefaultTerms.json';
-import { Terms } from '../src/types';
 
 
 export function getAssetIdFromOrderData(orderData: APTypes.OrderData): string {
@@ -20,14 +19,14 @@ export function getAssetIdFromOrderData(orderData: APTypes.OrderData): string {
   );
 }
 
-export async function getDefaultTerms (): Promise<Terms> {
+export async function getDefaultTerms (): Promise<APTypes.Terms> {
   const web3 = new Web3(new Web3.providers.WebsocketProvider('http://localhost:8545'));
   const account = (await web3.eth.getAccounts())[0];
 
   let sampleToken = new web3.eth.Contract(SettlementToken.abi);
   sampleToken = await sampleToken.deploy({ data: SettlementToken.bytecode }).send({ from: account, gas: 2000000 });
 
-  const terms: Terms = DefaultTerms;
+  const terms: APTypes.Terms = DefaultTerms;
   terms.currency = sampleToken.options.address;
   terms.settlementCurrency = sampleToken.options.address;
 
@@ -52,7 +51,8 @@ export async function getDefaultOrderParams (templateId: string): Promise<APType
       counterpartyBeneficiary: counterparty
     },
     expirationDate: String(terms.contractDealDate),
-    engine: ap.contracts.pamEngine.options.address
+    engine: ap.contracts.pamEngine.options.address,
+    admin: Utils.constants.ZERO_ADDRESS
   }
 }
 

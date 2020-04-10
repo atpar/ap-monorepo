@@ -92,7 +92,7 @@ export class IAssetIssuer extends Contract {
         counterpartyBeneficiary: string;
       };
       engine: string;
-      actor: string;
+      admin: string;
     }): TransactionObject<void>;
 
     issueFromOrder(order: {
@@ -163,7 +163,7 @@ export class IAssetIssuer extends Contract {
         counterpartyBeneficiary: string;
       };
       engine: string;
-      actor: string;
+      admin: string;
       enhancementOrder_1: {
         termsHash: string | number[];
         templateId: string | number[];
@@ -231,6 +231,7 @@ export class IAssetIssuer extends Contract {
           counterpartyBeneficiary: string;
         };
         engine: string;
+        admin: string;
         creatorSignature: string | number[];
         counterpartySignature: string | number[];
         salt: number | string;
@@ -302,6 +303,7 @@ export class IAssetIssuer extends Contract {
           counterpartyBeneficiary: string;
         };
         engine: string;
+        admin: string;
         creatorSignature: string | number[];
         counterpartySignature: string | number[];
         salt: number | string;

@@ -64,7 +64,7 @@ export function getOrderDataAsTypedData (
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
-        { name: 'actor', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
         { name: 'enhancementOrderHash_2', type: 'bytes32' },
         { name: 'salt', type: 'uint256' }
@@ -78,7 +78,7 @@ export function getOrderDataAsTypedData (
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
       engine: orderData.engine,
-      actor: orderData.actor,
+      admin: orderData.admin,
       enhancementOrderHash_1: enhancementOrderHash_1,
       enhancementOrderHash_2: enhancementOrderHash_2,
       salt: orderData.salt
@@ -119,6 +119,7 @@ export function getEnhancementOrderDataAsTypedData (
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
     },
@@ -129,6 +130,7 @@ export function getEnhancementOrderDataAsTypedData (
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
+      admin: enhancementOrderData.admin,
       salt: enhancementOrderData.salt
     }
   };
@@ -151,14 +153,14 @@ export function getOwnershipHash (ownership: AssetOwnership): string {
 
 export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrderData): string {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = web3Utils.keccak256(
-    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
+    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,address admin,uint256 salt)"
   );
 
   const customTermsHash = getCustomTermsHash(enhancementOrder.customTerms);
   // @ts-ignore
   return web3Utils.keccak256(web3EthAbi.encodeParameters(
     [
-      'bytes32', 'bytes32', 'bytes32', 'uint256', 'address', 'uint256'
+      'bytes32', 'bytes32', 'bytes32', 'uint256', 'address', 'address', 'uint256'
     ],
     [
       DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
@@ -166,6 +168,7 @@ export function getDraftEnhancementOrderHash (enhancementOrder: EnhancementOrder
       enhancementOrder.templateId,
       customTermsHash,
       enhancementOrder.engine,
+      enhancementOrder.admin,
       enhancementOrder.salt
     ]
   ));

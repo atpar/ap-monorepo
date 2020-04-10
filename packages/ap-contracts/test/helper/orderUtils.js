@@ -5,6 +5,10 @@ const TemplateTermsABI = require('./abis/TemplateTermsABI');
 const CustomTermsABI = require('./abis/CustomTermsABI');
 const TermsABI = require('./abis/TermsABI');
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
+const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
+
 
 function encodeParameter (paramType, paramValue) {
   return Web3EthAbi.encodeParameter(paramType, toTuple(paramType, paramValue));
@@ -81,14 +85,14 @@ function getOwnershipHash (ownership) {
 
 function getDraftEnhancementOrderHash (enhancementOrder) {
   const DRAFT_ENHANCEMENT_ORDER_TYPEHASH = Web3Utils.keccak256(
-    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,uint256 salt)"
+    "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,address admin,uint256 salt)"
   );
 
   const customTermsHash = getCustomTermsHash(enhancementOrder.customTerms);
 
   return Web3Utils.keccak256(Web3EthAbi.encodeParameters(
     [
-      'bytes32', 'bytes32', 'bytes32', 'uint256', 'address', 'uint256'
+      'bytes32', 'bytes32', 'bytes32', 'uint256', 'address', 'address', 'uint256'
     ],
     [
       DRAFT_ENHANCEMENT_ORDER_TYPEHASH,
@@ -96,6 +100,7 @@ function getDraftEnhancementOrderHash (enhancementOrder) {
       enhancementOrder.templateId,
       customTermsHash,
       enhancementOrder.engine,
+      enhancementOrder.admin,
       enhancementOrder.salt
     ]
   ));
@@ -110,8 +115,8 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
     {
       creatorObligor: orderData.ownership.creatorObligor,
       creatorBeneficiary: orderData.ownership.creatorBeneficiary,
-      counterpartyObligor: '0x0000000000000000000000000000000000000000',
-      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
     }
   );
 
@@ -136,7 +141,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
-        { name: 'actor', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
         { name: 'enhancementOrderHash_2', type: 'bytes32' },
         { name: 'salt', type: 'uint256' }
@@ -150,7 +155,7 @@ function getUnfilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
       engine: orderData.engine,
-      actor: orderData.actor,
+      admin: orderData.admin,
       enhancementOrderHash_1: enhancementOrderHash_1,
       enhancementOrderHash_2: enhancementOrderHash_2,
       salt: orderData.salt
@@ -190,7 +195,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
         { name: 'expirationDate', type: 'uint256' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
-        { name: 'actor', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'enhancementOrderHash_1', type: 'bytes32' },
         { name: 'enhancementOrderHash_2', type: 'bytes32' },
         { name: 'salt', type: 'uint256' }
@@ -204,7 +209,7 @@ function getFilledOrderDataAsTypedData (orderData, verifyingContractAddress) {
       expirationDate: orderData.expirationDate,
       ownershipHash: ownershipHash,
       engine: orderData.engine,
-      actor: orderData.actor,
+      admin: orderData.admin,
       enhancementOrderHash_1: enhancementOrderHash_1,
       enhancementOrderHash_2: enhancementOrderHash_2,
       salt: orderData.salt
@@ -222,8 +227,8 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
     {
       creatorObligor: enhancementOrderData.ownership.creatorObligor,
       creatorBeneficiary: enhancementOrderData.ownership.creatorBeneficiary,
-      counterpartyObligor: '0x0000000000000000000000000000000000000000',
-      counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+      counterpartyObligor: ZERO_ADDRESS,
+      counterpartyBeneficiary: ZERO_ADDRESS
     }
   );
 
@@ -247,6 +252,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
     },
@@ -257,6 +263,7 @@ function getUnfilledEnhancementOrderDataAsTypedData (enhancementOrderData, verif
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
+      admin: enhancementOrderData.admin,
       salt: enhancementOrderData.salt
     }
   };
@@ -290,6 +297,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
         { name: 'customTermsHash', type: 'bytes32' },
         { name: 'ownershipHash', type: 'bytes32' },
         { name: 'engine', type: 'address' },
+        { name: 'admin', type: 'address' },
         { name: 'salt', type: 'uint256' }
       ]
     },
@@ -300,6 +308,7 @@ function getFilledEnhancementOrderDataAsTypedData (enhancementOrderData, verifyi
       customTermsHash: customTermsHash,
       ownershipHash: ownershipHash,
       engine: enhancementOrderData.engine,
+      admin: enhancementOrderData.admin,
       salt: enhancementOrderData.salt
     }
   };
@@ -330,18 +339,18 @@ function sign(typedData, account) {
   });
 };
 
-function getDefaultDraftData(terms, templateId, customTerms, ownership, engine, actor) {
+function getDefaultDraftData(terms, templateId, customTerms, ownership, engine, admin) {
   return {
     termsHash: getTermsHash(terms),
     templateId: Web3Utils.toHex(templateId),
     customTerms: customTerms,
     ownership: ownership,
     engine: engine,
-    actor: actor
+    admin: admin
   }
 }
 
-function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, actor) {
+function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, admin) {
   return { 
     termsHash: getTermsHash(terms),
     templateId: Web3Utils.toHex(templateId),
@@ -349,35 +358,37 @@ function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, 
     expirationDate: '10000000000',
     ownership: ownership,
     engine: engine,
-    actor: actor,
+    admin: admin,
     enhancementOrder_1: {
-      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      termsHash: ZERO_BYTES32,
+      templateId: ZERO_BYTES32,
       customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
-        creatorObligor: '0x0000000000000000000000000000000000000000',
-        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-        counterpartyObligor: '0x0000000000000000000000000000000000000000',
-        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+        creatorObligor: ZERO_ADDRESS,
+        creatorBeneficiary: ZERO_ADDRESS,
+        counterpartyObligor: ZERO_ADDRESS,
+        counterpartyBeneficiary: ZERO_ADDRESS
       },
-      engine: '0x0000000000000000000000000000000000000000',
-      creatorSignature: '0x0',
-      counterpartySignature: '0x0',
+      engine: ZERO_ADDRESS,
+      admin: ZERO_ADDRESS,
+      creatorSignature: ZERO_BYTES,
+      counterpartySignature: ZERO_BYTES,
       salt: 0
     },
     enhancementOrder_2: {
-      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      termsHash: ZERO_BYTES32,
+      templateId: ZERO_BYTES32,
       customTerms: customTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
-        creatorObligor: '0x0000000000000000000000000000000000000000',
-        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-        counterpartyObligor: '0x0000000000000000000000000000000000000000',
-        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+        creatorObligor: ZERO_ADDRESS,
+        creatorBeneficiary: ZERO_ADDRESS,
+        counterpartyObligor: ZERO_ADDRESS,
+        counterpartyBeneficiary: ZERO_ADDRESS
       },
-      engine: '0x0000000000000000000000000000000000000000',
-      creatorSignature: '0x0',
-      counterpartySignature: '0x0',
+      engine: ZERO_ADDRESS,
+      admin: ZERO_ADDRESS,
+      creatorSignature: ZERO_BYTES,
+      counterpartySignature: ZERO_BYTES,
       salt: 0
     },
     creatorSignature: null,
@@ -387,8 +398,8 @@ function getDefaultOrderData(terms, templateId, customTerms, ownership, engine, 
 }
 
 function getDefaultOrderDataWithEnhancement(
-  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
-  enhancementTerms, enhancementTemplateId, enhancementCustomTerms, enhancementOwnership, enhancementEngine
+  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingAdmin,
+  enhancementTerms, enhancementTemplateId, enhancementCustomTerms, enhancementOwnership, enhancementEngine, enhancementAdmin
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
@@ -397,30 +408,32 @@ function getDefaultOrderDataWithEnhancement(
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
     engine: underlyingEngine,
-    actor: underlyingActor,
+    admin: underlyingAdmin,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms),
       templateId: Web3Utils.toHex(enhancementTemplateId),
       customTerms: enhancementCustomTerms,
       ownership: enhancementOwnership,
       engine: enhancementEngine,
+      admin: enhancementAdmin,
       creatorSignature: null,
       counterpartySignature: null,
       salt: Math.floor(Math.random() * 1000000)
     },
     enhancementOrder_2: {
-      termsHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      templateId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      termsHash: ZERO_BYTES32,
+      templateId: ZERO_BYTES32,
       customTerms: underlyingCustomTerms, // arbitrary terms object to satisfy abi encoder (skipped during issuance)
       ownership: {
-        creatorObligor: '0x0000000000000000000000000000000000000000',
-        creatorBeneficiary: '0x0000000000000000000000000000000000000000',
-        counterpartyObligor: '0x0000000000000000000000000000000000000000',
-        counterpartyBeneficiary: '0x0000000000000000000000000000000000000000'
+        creatorObligor: ZERO_ADDRESS,
+        creatorBeneficiary: ZERO_ADDRESS,
+        counterpartyObligor: ZERO_ADDRESS,
+        counterpartyBeneficiary: ZERO_ADDRESS
       },
-      engine: '0x0000000000000000000000000000000000000000',
-      creatorSignature: '0x0',
-      counterpartySignature: '0x0',
+      engine: ZERO_ADDRESS,
+      admin: ZERO_ADDRESS,
+      creatorSignature: ZERO_BYTES,
+      counterpartySignature: ZERO_BYTES,
       salt: 0
     },
     creatorSignature: null,
@@ -430,9 +443,9 @@ function getDefaultOrderDataWithEnhancement(
 }
 
 function getDefaultOrderDataWithEnhancements(
-  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingActor,
-  enhancementTerms_1, enhancementTemplateId_1, enhancementCustomTerms_1, enhancementOwnership_1, enhancementEngine_1,
-  enhancementTerms_2, enhancementTemplateId_2, enhancementCustomTerms_2, enhancementOwnership_2, enhancementEngine_2
+  underlyingTerms,  underlyingTemplateId, underlyingCustomTerms, underlyingOwnership, underlyingEngine, underlyingAdmin,
+  enhancementTerms_1, enhancementTemplateId_1, enhancementCustomTerms_1, enhancementOwnership_1, enhancementEngine_1, enhancementAdmin_1,
+  enhancementTerms_2, enhancementTemplateId_2, enhancementCustomTerms_2, enhancementOwnership_2, enhancementEngine_2, enhancementAdmin_2
 ) {
   return { 
     termsHash: getTermsHash(underlyingTerms),
@@ -441,13 +454,14 @@ function getDefaultOrderDataWithEnhancements(
     expirationDate: '10000000000',
     ownership: underlyingOwnership,
     engine: underlyingEngine,
-    actor: underlyingActor,
+    admin: underlyingAdmin,
     enhancementOrder_1: {
       termsHash: getTermsHash(enhancementTerms_1),
       templateId: Web3Utils.toHex(enhancementTemplateId_1),
       customTerms: enhancementCustomTerms_1,
       ownership: enhancementOwnership_1,
       engine: enhancementEngine_1,
+      admin: enhancementAdmin_1,
       creatorSignature: null,
       counterpartySignature: null,
       salt: Math.floor(Math.random() * 1000000)
@@ -458,6 +472,7 @@ function getDefaultOrderDataWithEnhancements(
       customTerms: enhancementCustomTerms_2,
       ownership: enhancementOwnership_2,
       engine: enhancementEngine_2,
+      admin: enhancementAdmin_2,
       creatorSignature: null,
       counterpartySignature: null,
       salt: Math.floor(Math.random() * 1000000)

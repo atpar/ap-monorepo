@@ -25,6 +25,8 @@ export class AssetIssuer extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    assetActor(): TransactionObject<string>;
+
     assetRegistry(): TransactionObject<string>;
 
     custodian(): TransactionObject<string>;
@@ -245,7 +247,7 @@ export class AssetIssuer extends Contract {
         counterpartyBeneficiary: string;
       };
       engine: string;
-      actor: string;
+      admin: string;
     }): TransactionObject<void>;
 
     issueFromOrder(order: {
@@ -316,7 +318,7 @@ export class AssetIssuer extends Contract {
         counterpartyBeneficiary: string;
       };
       engine: string;
-      actor: string;
+      admin: string;
       enhancementOrder_1: {
         termsHash: string | number[];
         templateId: string | number[];
@@ -384,6 +386,7 @@ export class AssetIssuer extends Contract {
           counterpartyBeneficiary: string;
         };
         engine: string;
+        admin: string;
         creatorSignature: string | number[];
         counterpartySignature: string | number[];
         salt: number | string;
@@ -455,6 +458,7 @@ export class AssetIssuer extends Contract {
           counterpartyBeneficiary: string;
         };
         engine: string;
+        admin: string;
         creatorSignature: string | number[];
         counterpartySignature: string | number[];
         salt: number | string;

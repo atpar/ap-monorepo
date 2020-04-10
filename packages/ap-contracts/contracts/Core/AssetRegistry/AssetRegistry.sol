@@ -47,6 +47,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
      * @param state initial state of the asset
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
+     * @param admin account which as admin rights (optional)
      */
     function registerAsset(
         bytes32 assetId,
@@ -56,7 +57,7 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
         State memory state,
         address engine,
         address actor,
-        address root
+        address admin
     )
         public
         override
@@ -78,9 +79,9 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
             actor
         );
 
-        // set external root if specified
-        if (root != address(0)) {
-            setDefaultRoot(assetId, root);
+        // set external admin if specified
+        if (admin != address(0)) {
+            setDefaultRoot(assetId, admin);
         }
 
         emit RegisteredAsset(assetId);

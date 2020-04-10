@@ -71,7 +71,7 @@ contract('AssetIssuer', (accounts) => {
   it('should issue an asset from an order (without enhancement orders)', async () => {
     // sign order
     const orderData = getDefaultOrderData(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
@@ -110,9 +110,9 @@ contract('AssetIssuer', (accounts) => {
     
     // sign order
     const orderData = getDefaultOrderDataWithEnhancements(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
-      this.terms, this.templateId, this.customTerms, enhancementOwnership_1, this.CEGEngineInstance.address,
-      this.terms, this.templateId, this.customTerms, enhancementOwnership_2, this.CEGEngineInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS,
+      this.terms, this.templateId, this.customTerms, enhancementOwnership_1, this.CEGEngineInstance.address, ZERO_ADDRESS,
+      this.terms, this.templateId, this.customTerms, enhancementOwnership_2, this.CEGEngineInstance.address, ZERO_ADDRESS
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
@@ -205,8 +205,8 @@ contract('AssetIssuer', (accounts) => {
     
     // sign order
     const orderData = getDefaultOrderDataWithEnhancement(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address,
-      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS,
+      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, ZERO_ADDRESS
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
@@ -259,7 +259,7 @@ contract('AssetIssuer', (accounts) => {
   it('should issue an asset from an order (as an enhancement to an existing asset)', async () => {
     // sign order
     const orderData = getDefaultOrderData(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS
     );
     const unfilledOrderAsTypedData = getUnfilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
     const filledOrderAsTypedData = getFilledOrderDataAsTypedData(orderData, this.AssetIssuerInstance.address);
@@ -294,7 +294,7 @@ contract('AssetIssuer', (accounts) => {
     const templateIdCEC = await registerTemplateFromTerms(this.instances, termsCEC);
 
     const orderDataCEC = getDefaultOrderData(
-      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, this.AssetActorInstance.address
+      termsCEC, templateIdCEC, customTermsCEC, ownershipCEC, this.CECEngineInstance.address, ZERO_ADDRESS
     );
     orderDataCEC.creatorSignature = ZERO_BYTES;
     orderDataCEC.counterpartySignature = ZERO_BYTES;
@@ -321,7 +321,7 @@ contract('AssetIssuer', (accounts) => {
 
   it('should issue an asset from a draft', async () => {
     const draftData = getDefaultDraftData(
-      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, this.AssetActorInstance.address
+      this.terms, this.templateId, this.customTerms, this.ownership, this.PAMEngineInstance.address, ZERO_ADDRESS
     );
 
     const tx = await this.AssetIssuerInstance.issueFromDraft(draftData);

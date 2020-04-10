@@ -615,7 +615,7 @@ export class AssetRegistry extends Contract {
       },
       engine: string,
       actor: string,
-      root: string
+      admin: string
     ): TransactionObject<void>;
   };
   events: {

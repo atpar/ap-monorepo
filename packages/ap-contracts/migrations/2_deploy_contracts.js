@@ -56,7 +56,8 @@ module.exports = async (deployer, network) => {
     AssetIssuer,
     Custodian.address,
     TemplateRegistry.address,
-    AssetRegistry.address
+    AssetRegistry.address,
+    AssetActor.address
   );
 
   // Tokenization

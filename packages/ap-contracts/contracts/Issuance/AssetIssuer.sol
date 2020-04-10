@@ -28,18 +28,21 @@ contract AssetIssuer is
     ICustodian public custodian;
     ITemplateRegistry public templateRegistry;
     IAssetRegistry public assetRegistry;
+    IAssetActor public assetActor;
 
 
     constructor(
         ICustodian _custodian,
         ITemplateRegistry _templateRegistry,
-        IAssetRegistry _assetRegistry
+        IAssetRegistry _assetRegistry,
+        IAssetActor _assetActor
     )
         public
     {
         custodian = _custodian;
         templateRegistry = _templateRegistry;
         assetRegistry = _assetRegistry;
+        assetActor = _assetActor;
     }
 
     function issueFromDraft(Draft memory draft)
@@ -52,11 +55,11 @@ contract AssetIssuer is
             bytes32 templateId,
             CustomTerms memory customTerms,
             address engine,
-            address actor
+            address admin
         ) = finalizeDraft(draft);
 
         issueAsset(
-            assetId, ownership, templateId, customTerms, engine, actor
+            assetId, ownership, templateId, customTerms, engine, admin
         );
     }
 
@@ -125,13 +128,13 @@ contract AssetIssuer is
             draft.templateId,
             draft.customTerms,
             draft.engine,
-            draft.actor
+            draft.admin
         );
     }
 
     /**
      * @notice Issues an asset from an order which was signed by the creator obligor and the counterparty obligor.
-     * @dev verifies both signatures and initializes by calling the specified asset actor,
+     * @dev verifies both signatures and initializes by calling the asset actor,
      * If ownership is undefined and signatures are undefined it skips signature verification.
      * (required if a Collateral enhancement is present)
      * @param order order for which to issue the asset
@@ -153,11 +156,11 @@ contract AssetIssuer is
             bytes32 templateId,
             CustomTerms memory customTerms,
             address engine,
-            address actor
+            address admin
         ) = finalizeOrder(order);
 
         issueAsset(
-            assetId, ownership, templateId, customTerms, engine, actor
+            assetId, ownership, templateId, customTerms, engine, admin
         );
 
         // check if first enhancement order is specified
@@ -168,11 +171,11 @@ contract AssetIssuer is
                 bytes32 templateId,
                 CustomTerms memory customTerms,
                 address engine,
-                address actor
+                address admin
             ) = finalizeEnhancementOrder(order.enhancementOrder_1, order);
 
             issueAsset(
-                assetId, ownership, templateId, customTerms, engine, actor
+                assetId, ownership, templateId, customTerms, engine, admin
             );
         }
 
@@ -184,11 +187,11 @@ contract AssetIssuer is
                 bytes32 templateId,
                 CustomTerms memory customTerms,
                 address engine,
-                address actor
+                address admin
             ) = finalizeEnhancementOrder(order.enhancementOrder_2, order);
 
             issueAsset(
-                assetId, ownership, templateId, customTerms, engine, actor
+                assetId, ownership, templateId, customTerms, engine, admin
             );
         }
 
@@ -264,7 +267,7 @@ contract AssetIssuer is
             order.templateId,
             order.customTerms,
             order.engine,
-            order.actor
+            order.admin
         );
     }
 
@@ -337,7 +340,7 @@ contract AssetIssuer is
             enhancementOrder.templateId,
             enhancementOrder.customTerms,
             enhancementOrder.engine,
-            order.actor
+            enhancementOrder.admin
         );
     }
 
@@ -347,19 +350,19 @@ contract AssetIssuer is
         bytes32 templateId,
         CustomTerms memory customTerms,
         address engine,
-        address actor
+        address admin
     )
         internal
     {
         // initialize the asset by calling the asset actor
         require(
-            IAssetActor(actor).initialize(
+            assetActor.initialize(
                 assetId,
                 ownership,
                 templateId,
                 customTerms,
                 engine,
-                address(0)
+                admin
             ),
             "AssetIssuer.issueAsset: EXECUTION_ERROR"
         );

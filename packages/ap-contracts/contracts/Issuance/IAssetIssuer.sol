@@ -14,7 +14,7 @@ abstract contract IAssetIssuer is SharedTypes, VerifyOrder {
         CustomTerms customTerms;
         AssetOwnership ownership;
         address engine;
-        address actor;
+        address admin;
     }
 
 

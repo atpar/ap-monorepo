@@ -21,9 +21,9 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         bool isSet;
         // Id of template registered in the TemplateRegistry
         bytes32 templateId;
-        //
+        // last event which could not be settled
         bytes32 pendingEvent;
-        // // pointer to index of the next event in the template schedule
+        // pointer to index of the next event in the template schedule
         uint256 nextScheduleIndex;
         // binary encoded map of the LifecycleTerms attributes which overwrite the values defined in TemplateTerms
         uint256 overwrittenAttributesMap;

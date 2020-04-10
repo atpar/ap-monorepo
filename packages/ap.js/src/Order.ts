@@ -88,6 +88,7 @@ export class Order {
       customTerms: orderParams.enhancement_1.customTerms,
       ownership: orderParams.enhancement_1.ownership,
       engine: orderParams.enhancement_1.engine,
+      admin: orderParams.enhancement_1.admin,
       creatorSignature: ap.utils.constants.ZERO_BYTES,
       counterpartySignature: ap.utils.constants.ZERO_BYTES,
       salt: Math.floor(Math.random() * 1000000)
@@ -99,6 +100,7 @@ export class Order {
       customTerms: orderParams.enhancement_2.customTerms,
       ownership: orderParams.enhancement_2.ownership,
       engine: orderParams.enhancement_2.engine,
+      admin: orderParams.enhancement_2.admin,
       creatorSignature: ap.utils.constants.ZERO_BYTES,
       counterpartySignature: ap.utils.constants.ZERO_BYTES,
       salt: Math.floor(Math.random() * 1000000)
@@ -111,7 +113,7 @@ export class Order {
       ownership: orderParams.ownership,
       expirationDate: orderParams.expirationDate,
       engine: orderParams.engine,
-      actor: ap.contracts.assetActor.options.address,
+      admin: orderParams.admin,
       enhancementOrder_1,
       enhancementOrder_2,
       creatorSignature: ap.utils.constants.ZERO_BYTES,

@@ -140,6 +140,7 @@ contract AssetActor is
      * @param templateId id of the financial template to use
      * @param customTerms asset specific terms
      * @param engine address of the ACTUS engine used for the spec. ContractType
+     * @param admin address of the admin of the asset (optional)
      * @return true on success
      */
     function initialize(
@@ -148,7 +149,7 @@ contract AssetActor is
         bytes32 templateId,
         CustomTerms memory customTerms,
         address engine,
-        address root
+        address admin
     )
         public
         onlyRegisteredIssuer
@@ -183,7 +184,7 @@ contract AssetActor is
             initialState,
             engine,
             address(this),
-            root
+            admin
         );
 
         return true;
