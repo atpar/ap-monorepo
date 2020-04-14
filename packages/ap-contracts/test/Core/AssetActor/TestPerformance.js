@@ -139,6 +139,7 @@ contract('AssetActor', (accounts) => {
       txHash, AssetActor, 'ProgressedAsset'
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
@@ -158,6 +159,7 @@ contract('AssetActor', (accounts) => {
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
+    assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -176,6 +178,7 @@ contract('AssetActor', (accounts) => {
       txHash, AssetActor, 'ProgressedAsset'
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
@@ -195,6 +198,7 @@ contract('AssetActor', (accounts) => {
     // compare results
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
+    assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
