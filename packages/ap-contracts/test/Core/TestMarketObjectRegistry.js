@@ -1,7 +1,3 @@
-
-
-// check if correct last update timestamp is returned
-
 const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
