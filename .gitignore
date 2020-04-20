@@ -11,6 +11,7 @@ mnemonic.js
 ref-test-results
 ref-test-terms
 
+cache/
 docs/
 
 node_modules/
