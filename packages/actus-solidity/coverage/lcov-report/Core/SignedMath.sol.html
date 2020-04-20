@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for Core/SignedMath.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">Core/</a> SignedMath.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>19/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>15/18</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>4/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>17/17</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2347×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1237×</span>
+<span class="cline-any cline-yes">1237×</span>
+<span class="cline-any cline-yes">1237×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1233×</span>
+<span class="cline-any cline-yes">1233×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1232×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">948×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">948×</span>
+<span class="cline-any cline-yes">723×</span>
+<span class="cline-any cline-yes">723×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">719×</span>
+<span class="cline-any cline-yes">719×</span>
+<span class="cline-any cline-yes">719×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">718×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">181×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">pragma solidity ^0.6.4;
+&nbsp;
+&nbsp;
+/**
+ * Advanced math library for signed integers
+ * (including floats which are represented as multiples of 10 ** 18)
+ */
+library SignedMath {
+&nbsp;
+    int256 constant private INT256_MIN = -2 ** 255;
+&nbsp;
+    uint256 constant public PRECISION = 18;
+    uint256 constant public MULTIPLICATOR = 10 ** PRECISION;
+&nbsp;
+&nbsp;
+    /**
+     * @dev The product of a and b has to be less than INT256_MAX (~10 ** 76),
+     * as devision (normalization) is performed after multiplication
+     * Upper boundary would be (10 ** 58) * (MULTIPLICATOR) == ~10 ** 76
+     */
+    function floatMult(int256 a, int256 b)
+        internal
+        pure
+        returns (int256)
+    {
+        if (a == 0 || b == 0) return 0;
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!(a == -1 &amp;&amp; b == INT256_MIN), "SignedMath.floatMult: OVERFLOW_DETECTED");
+        int256 c = a * b;
+        require(c / a == b, "SignedMath.floatMult: OVERFLOW_DETECTED");
+&nbsp;
+        // normalize (divide by MULTIPLICATOR)
+        int256 d = c / int256(MULTIPLICATOR);
+        require(d != 0, "SignedMath.floatMult: CANNOT_REPRESENT_GRANULARITY");
+&nbsp;
+        return d;
+    }
+&nbsp;
+    function floatDiv(int256 a, int256 b)
+        internal
+        pure
+        returns (int256)
+    {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(b != 0, "SignedMath.floatDiv: DIVIDED_BY_ZERO");
+&nbsp;
+        // normalize (multiply by MULTIPLICATOR)
+        if (a == 0) return 0;
+        int256 c = a * int256(MULTIPLICATOR);
+        require(c / a == int256(MULTIPLICATOR), "SignedMath.floatDiv: OVERFLOW_DETECTED");
+&nbsp;
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(!(b == -1 &amp;&amp; a == INT256_MIN), "SignedMath.floatDiv: OVERFLOW_DETECTED");
+        int256 d = c / b;
+        require(d != 0, "SignedMath.floatDiv: CANNOT_REPRESENT_GRANULARITY");
+&nbsp;
+        return d;
+    }
+&nbsp;
+    /**
+        * @dev Returns the smallest of two signed numbers.
+        */
+    function min(int256 a, int256 b) internal pure returns (int256) {
+            return a &lt;= b ? a : b;
+    }
+&nbsp;
+    /**
+        * @dev Returns the largest of two signed numbers.
+        */
+    function max(int256 a, int256 b) internal pure returns (int256) {
+            return a &gt;= b ? a : b;
+    }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Apr 20 2020 19:41:12 GMT+0200 (GMT+02:00)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

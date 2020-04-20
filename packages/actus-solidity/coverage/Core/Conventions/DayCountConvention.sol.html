@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for Core/Conventions/DayCountConvention.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../index.html">all files</a> / <a href="index.html">Core/Conventions/</a> DayCountConvention.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">94.74% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>54/57</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>20/24</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>6/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">96.15% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>50/52</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">935×</span>
+<span class="cline-any cline-yes">935×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">505×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">73×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">65×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">356×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">pragma solidity ^0.6.4;
+&nbsp;
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
+import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
+&nbsp;
+import "../ACTUSTypes.sol";
+import "../SignedMath.sol";
+&nbsp;
+&nbsp;
+/**
+ * @title DayCountConvention
+ * @notice Implements various ISDA day count conventions as specified by ACTUS
+ */
+contract DayCountConvention is ACTUSTypes {
+&nbsp;
+    using SafeMath for uint;
+    using SignedSafeMath for int;
+    using SignedMath for int;
+&nbsp;
+    /**
+     * Returns the fraction of the year between two timestamps.
+     */
+    function yearFraction(
+        uint256 startTimestamp,
+        uint256 endTimestamp,
+        DayCountConvention ipdc,
+        uint256 maturityDate
+    )
+        internal
+        pure
+        returns (int256)
+    {
+        <span class="missing-if-branch" title="else path not taken" >E</span>require(endTimestamp &gt;= startTimestamp, "Core.yearFraction: START_NOT_BEFORE_END");
+        if (ipdc == DayCountConvention.AA) {
+            return actualActual(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.A360) {
+            return actualThreeSixty(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.A365) {
+            return actualThreeSixtyFive(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention._30E360) {
+            return thirtyEThreeSixty(startTimestamp, endTimestamp);
+        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (ipdc == DayCountConvention._30E360ISDA) {
+            return thirtyEThreeSixtyISDA(startTimestamp, endTimestamp, maturityDate);
+        } else <span class="cstat-no" title="statement not covered" >if (ipdc == DayCountConvention._28E336) {</span>
+            // not implemented yet
+<span class="cstat-no" title="statement not covered" >            revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_SUPPORTED.")</span>;
+        } else {
+<span class="cstat-no" title="statement not covered" >            revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_FOUND.")</span>;
+        }
+    }
+&nbsp;
+    /**
+     * ISDA A/A day count convention
+     */
+    function actualActual(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Year = BokkyPooBahsDateTimeLibrary.getYear(startTime);
+        uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
+&nbsp;
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365;
+&nbsp;
+        if (d1Year == d2Year) {
+            return int256(BokkyPooBahsDateTimeLibrary.diffDays(startTime, endTime)).floatDiv(firstBasis);
+        }
+&nbsp;
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365;
+&nbsp;
+        int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffDays(
+            startTime,
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
+        )).floatDiv(firstBasis);
+        int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffDays(
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
+            endTime
+        )).floatDiv(secondBasis);
+&nbsp;
+        return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
+    }
+&nbsp;
+    /**
+     * ISDA A/360 day count convention
+     */
+    function actualThreeSixty(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        return (int256((endTime.sub(startTime)).div(86400)).floatDiv(360));
+    }
+&nbsp;
+    /**
+     * ISDA A/365-Fixed day count convention
+     */
+    function actualThreeSixtyFive(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        return (int256((endTime.sub(startTime)).div(86400)).floatDiv(365));
+    }
+&nbsp;
+    /**
+     * ISDA 30E/360 day count convention
+     */
+    function thirtyEThreeSixty(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Day;
+        uint256 d1Month;
+        uint256 d1Year;
+&nbsp;
+        uint256 d2Day;
+        uint256 d2Month;
+        uint256 d2Year;
+&nbsp;
+        (d1Year, d1Month, d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(startTime);
+        (d2Year, d2Month, d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(endTime);
+&nbsp;
+        if (d1Day == 31) {
+            d1Day = 30;
+        }
+&nbsp;
+        if (d2Day == 31) {
+            d2Day = 30;
+        }
+&nbsp;
+        int256 delD = int256(d2Day).sub(int256(d1Day));
+        int256 delM = int256(d2Month).sub(int256(d1Month));
+        int256 delY = int256(d2Year).sub(int256(d1Year));
+&nbsp;
+        return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+    }
+&nbsp;
+    /**
+     * ISDA 30E/360-ISDA day count convention
+     */
+    function thirtyEThreeSixtyISDA(uint256 startTime, uint256 endTime, uint256 maturityDate)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Day;
+        uint256 d1Month;
+        uint256 d1Year;
+&nbsp;
+        uint256 d2Day;
+        uint256 d2Month;
+        uint256 d2Year;
+&nbsp;
+        (d1Year, d1Month, d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(startTime);
+        (d2Year, d2Month, d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(endTime);
+&nbsp;
+        if (d1Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime)) {
+            d1Day = 30;
+        }
+&nbsp;
+        if (!(endTime == maturityDate &amp;&amp; d2Month == 2) &amp;&amp; d2Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(endTime)) {
+            d2Day = 30;
+        }
+&nbsp;
+        int256 delD = int256(d2Day).sub(int256(d1Day));
+        int256 delM = int256(d2Month).sub(int256(d1Month));
+        int256 delY = int256(d2Year).sub(int256(d1Year));
+&nbsp;
+        return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+    }
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Apr 20 2020 19:41:12 GMT+0200 (GMT+02:00)
+</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

@@ -21,23 +21,35 @@ async function setupTestEnvironment (accounts) {
   PAMEngine.numberFormat = 'String';
 
   // deploy ACTUS Solidity
-  instances.PAMEngineInstance = await PAMEngine.deployed();
-  instances.ANNEngineInstance = await ANNEngine.deployed();
-  instances.CEGEngineInstance = await CEGEngine.deployed();
-  instances.CECEngineInstance = await CECEngine.deployed();
+  instances.PAMEngineInstance = await PAMEngine.new();
+  instances.ANNEngineInstance = await ANNEngine.new();
+  instances.CEGEngineInstance = await CEGEngine.new();
+  instances.CECEngineInstance = await CECEngine.new();
 
   // deploy Core
-  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.deployed();
-  instances.TemplateRegistryInstance = await TemplateRegistry.deployed();
-  instances.AssetRegistryInstance = await AssetRegistry.deployed()
-  instances.AssetActorInstance = await AssetActor.deployed();
-  instances.CustodianInstance = await Custodian.deployed();
+  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
+  instances.TemplateRegistryInstance = await TemplateRegistry.new();
+  instances.AssetRegistryInstance = await AssetRegistry.new(instances.TemplateRegistryInstance.address)
+  instances.AssetActorInstance = await AssetActor.new(
+    instances.AssetRegistryInstance.address,
+    instances.TemplateRegistryInstance.address,
+    instances.MarketObjectRegistryInstance.address
+  );
+  instances.CustodianInstance = await Custodian.new(
+    instances.AssetActorInstance.address,
+    instances.AssetRegistryInstance.address
+  );
 
   // deploy Issuance
-  instances.AssetIssuerInstance = await AssetIssuer.deployed();
+  instances.AssetIssuerInstance = await AssetIssuer.new(
+    instances.CustodianInstance.address,
+    instances.TemplateRegistryInstance.address,
+    instances.AssetRegistryInstance.address,
+    instances.AssetActorInstance.address
+  );
 
   // deploy Tokenization
-  instances.TokenizationFactoryInstance = await TokenizationFactory.deployed();
+  instances.TokenizationFactoryInstance = await TokenizationFactory.new(instances.AssetRegistryInstance.address);
 
   await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
   await instances.AssetActorInstance.registerIssuer(admin);

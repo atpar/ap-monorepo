@@ -21,9 +21,6 @@ ganache-cli \
 ganache_pid=$!
 sleep 1
 
-# necessary otherwise contracts are not persisted for test cases in ap.js
-
-# echo "• migrating ap-contracts"
 (
 	cd packages/ap-contracts
 	truffle migrate --reset --network development | 1>/dev/null
