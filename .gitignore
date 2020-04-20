@@ -11,8 +11,11 @@ mnemonic.js
 ref-test-results
 ref-test-terms
 
+# sol-coverage
+coverage.json
 coverage/
 cache/
+
 docs/
 
 node_modules/
