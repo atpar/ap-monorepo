@@ -8,22 +8,15 @@ https://docs.actus-protocol.io/ap-contracts/overview
 
 ## Development
 
-### Requirements
-- `jq` (only for generating artifacts)
-```sh
-# requires homebrew
-brew install jq
-```
+### Requirements and Setup
+See [README](https://github.com/atpar/ap-monorepo#development) in root directory.
 
-### Run
-1. install dependencies
+### Testing
 ```sh
-# ap-contracts/
-yarn install
-```
-
-2. deploy contracts and run tests
-```sh
-# ap-contracts/
 yarn test
+```
+
+### Deploy to local ganache chain
+```sh
+yarn migrate:ap-chain
 ```
