@@ -17,30 +17,11 @@ Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine imp
 
 ## Development
 
-### Requirements
-- `node`: >=10.0.0 <11.0.0
-- `npm`: >=6.8.0
-- `yarn`: 1.16.0
-- `truffle`
-- `ganache-cli`
-- `jq` (only for generating artifacts)
+### Requirements and Setup
+See [README](https://github.com/atpar/ap-monorepo#development) in root directory.
 
-Note, install truffle and ganache-cli using npm as follows:
+### Testing
 ```sh
-npm install -g truffle
-npm install -g ganache-cli
-```
-
-### Run
-1. install dependencies
-```sh
-# contracts/
-yarn install
-```
-
-2. deploy contracts and run tests
-```sh
-# contracts/
 yarn test
 ```
 
