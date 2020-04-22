@@ -2,6 +2,7 @@ import * as web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
 import {
+  AssetOwnership,
   Terms,
   State,
   CustomTerms,
@@ -49,6 +50,10 @@ export const encodeAsBytes32 = (externalData: number | string): string => (
 
 export const decodeBytes32AsNumber = (bytes32Data: string): string => (
   web3Utils.hexToNumberString(bytes32Data)
+);
+
+export const web3ResponseToAssetOwnership = (web3Response: any): AssetOwnership => (
+  associativeArrayToObject(web3Response) as AssetOwnership
 );
 
 export const web3ResponseToLifecycleTerms = (web3Response: any): LifecycleTerms => (
