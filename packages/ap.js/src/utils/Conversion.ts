@@ -189,26 +189,47 @@ export const deriveTemplateTerms = (terms: Terms): TemplateTerms => ({
 
 export const deriveCustomTerms = (terms: Terms): CustomTerms => {
   const templateTerms = deriveTemplateTerms(terms);
-  const anchorDate = terms.contractDealDate;
-  const overwrittenAttributes = {};
-  Object.keys(terms)
-    .filter((attribute): boolean => {
-      return (
+
+  return deriveCustomTermsFromTermsAndTemplateTerms(terms, templateTerms);
+};
+
+export const deriveCustomTermsFromTermsAndTemplateTerms = (
+  terms: Terms,
+  templateTerms: TemplateTerms
+): CustomTerms => {
+  const overwrittenTerms = {};
+  let overwrittenAttributesMap = '';
+
+  Object.keys(EMPTY_LIFECYCLE_TERMS)
+    .forEach((attribute): void => {
+      const templateTermsValue = (attribute.includes('Date'))
+        // compute the actual date from the offsets for comparison
         // @ts-ignore
-        !templateTerms[(attribute.includes('Date') ? attribute + 'Offset' : attribute)]
+        ? denormalizeDate(terms.contractDealDate, templateTerms[attribute + 'Offset'])
         // @ts-ignore
-        && EMPTY_LIFECYCLE_TERMS[attribute]
-        // @ts-ignore
-        && EMPTY_LIFECYCLE_TERMS[attribute] != terms[attribute]
-      );
-    })
-    .map((attribute): void => { 
+        : templateTerms[attribute];
       // @ts-ignore
-      overwrittenAttributes[attribute] = terms[attribute] 
+      const termsValue = terms[attribute];
+      
+      // (attributes which values are either: 1. not part of TemplateTerms, 2. are not equal TemplateTerms values)
+      if ((templateTermsValue == undefined || (JSON.stringify(templateTermsValue) !== JSON.stringify(termsValue)))) {
+        // @ts-ignore
+        overwrittenTerms[attribute] = terms[attribute];
+        overwrittenAttributesMap = '1' + overwrittenAttributesMap;
+      } else {
+        // @ts-ignore
+        overwrittenTerms[attribute] = EMPTY_LIFECYCLE_TERMS[attribute];
+        overwrittenAttributesMap = '0' + overwrittenAttributesMap;
+      }
     });
 
-  return deriveCustomTermsFromOverwrittenAttributesAndAnchorDate(overwrittenAttributes, anchorDate);
-};
+  return {
+    anchorDate: terms.contractDealDate,
+    // convert from binary string to number
+    overwrittenAttributesMap: String(parseInt(overwrittenAttributesMap, 2)),
+    overwrittenTerms: overwrittenTerms as LifecycleTerms
+  };
+}
 
 // used within ap-contracts
 export const deriveLifecycleTermsFromTemplateTermsAndCustomTerms = (
@@ -321,29 +342,6 @@ export const deriveTermsFromExtendedTemplateTermsAndCustomTerms = (
   contractReference_1: overwrittenTerms.contractReference_1,
   contractReference_2: overwrittenTerms.contractReference_2
 });
-
-export const deriveCustomTermsFromOverwrittenAttributesAndAnchorDate = (
-  overwrittenAttributes: Partial<LifecycleTerms>,
-  anchorDate: string | number
-): CustomTerms => {
-  const overwrittenTerms: LifecycleTerms = { ...EMPTY_LIFECYCLE_TERMS, ...overwrittenAttributes };
-  let overwrittenAttributesMap = '';
-
-  Object.keys(EMPTY_LIFECYCLE_TERMS).forEach((attribute: string): void => {
-    // set attributes map
-    // @ts-ignore
-    if (overwrittenAttributes[attribute]) {
-      overwrittenAttributesMap = '1' + overwrittenAttributesMap;
-    } else {
-      overwrittenAttributesMap = '0' + overwrittenAttributesMap;
-    }
-  });
-
-  // convert from binary string to number
-  overwrittenAttributesMap = String(parseInt(overwrittenAttributesMap, 2));
-  
-  return { anchorDate, overwrittenAttributesMap, overwrittenTerms };
-};
 
 export const deriveTemplateTermsFromExtendedTemplateTerms = (
   extendedTemplateTerms: ExtendedTemplateTerms
