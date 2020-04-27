@@ -2,22 +2,22 @@
 dist/
 CNAME
 
-# ap-contracts
+# actus-solditiy, ap-contracts
 build/
 artifacts/
 mnemonic.js
 
-# actus-solidity
-ref-test-results
-ref-test-terms
-
 # sol-coverage
 coverage.json
 coverage/
+
+# buidler
 cache/
+test/artifacts/
 
 docs/
 
+# node
 node_modules/
 
 # yarn only

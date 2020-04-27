@@ -1,9 +1,13 @@
 usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
+// usePlugin("buidler-gas-reporter");
 usePlugin('solidity-coverage');
 
 
 module.exports = {
+  paths: {
+    artifacts: './test/artifacts'
+  },
   defaultNetwork: 'buidlerevm',
   networks: {
     localhost: {

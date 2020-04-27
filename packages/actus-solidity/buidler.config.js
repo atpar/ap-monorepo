@@ -4,6 +4,9 @@ usePlugin('solidity-coverage');
 
 
 module.exports = {
+  paths: {
+    artifacts: './test/artifacts'
+  },
   defaultNetwork: 'buidlerevm',
   networks: {
     localhost: {
