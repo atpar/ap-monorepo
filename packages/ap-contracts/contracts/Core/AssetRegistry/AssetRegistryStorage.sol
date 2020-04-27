@@ -99,9 +99,11 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
     function encodeAndSetTerms(bytes32 assetId, CustomTerms memory customTerms) internal {
-        assets[assetId].packedTermsState[1] = bytes32(customTerms.anchorDate);
-
-        bytes32 enums =
+        storeInPackedStateTerms(assetId, 1, bytes32(customTerms.anchorDate));
+ 
+        storeInPackedStateTerms(
+            assetId,
+            2,
             bytes32(uint256(uint8(customTerms.overwrittenTerms.calendar))) << 240 |
             bytes32(uint256(uint8(customTerms.overwrittenTerms.contractRole))) << 232 |
             bytes32(uint256(uint8(customTerms.overwrittenTerms.dayCountConvention))) << 224 |
@@ -110,115 +112,110 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             bytes32(uint256(uint8(customTerms.overwrittenTerms.scalingEffect))) << 200 |
             bytes32(uint256(uint8(customTerms.overwrittenTerms.penaltyType))) << 192 |
             bytes32(uint256(uint8(customTerms.overwrittenTerms.feeBasis))) << 184 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.creditEventTypeCovered))) << 176;
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.creditEventTypeCovered))) << 176
+        );
 
-        if (enums != bytes32(0)) assets[assetId].packedTermsState[2] = enums;
+        storeInPackedStateTerms(assetId, 3, bytes32(uint256(customTerms.overwrittenTerms.currency) << 96));
+        storeInPackedStateTerms(assetId, 4, bytes32(uint256(customTerms.overwrittenTerms.settlementCurrency) << 96));
 
-        if (customTerms.overwrittenTerms.currency != address(0)) assets[assetId].packedTermsState[3] = bytes32(uint256(customTerms.overwrittenTerms.currency) << 96);
-        if (customTerms.overwrittenTerms.settlementCurrency != address(0)) assets[assetId].packedTermsState[4] = bytes32(uint256(customTerms.overwrittenTerms.settlementCurrency) << 96);
+        storeInPackedStateTerms(assetId, 5, bytes32(customTerms.overwrittenTerms.marketObjectCodeRateReset));
+        storeInPackedStateTerms(assetId, 6, bytes32(customTerms.overwrittenTerms.statusDate));
+        storeInPackedStateTerms(assetId, 7, bytes32(customTerms.overwrittenTerms.maturityDate));
+        storeInPackedStateTerms(assetId, 8, bytes32(customTerms.overwrittenTerms.notionalPrincipal));
+        storeInPackedStateTerms(assetId, 9, bytes32(customTerms.overwrittenTerms.nominalInterestRate));
+        storeInPackedStateTerms(assetId, 10, bytes32(customTerms.overwrittenTerms.feeAccrued));
+        storeInPackedStateTerms(assetId, 11, bytes32(customTerms.overwrittenTerms.accruedInterest));
+        storeInPackedStateTerms(assetId, 12, bytes32(customTerms.overwrittenTerms.rateMultiplier));
+        storeInPackedStateTerms(assetId, 13, bytes32(customTerms.overwrittenTerms.rateSpread));
+        storeInPackedStateTerms(assetId, 14, bytes32(customTerms.overwrittenTerms.feeRate));
+        storeInPackedStateTerms(assetId, 15, bytes32(customTerms.overwrittenTerms.nextResetRate));
+        storeInPackedStateTerms(assetId, 16, bytes32(customTerms.overwrittenTerms.penaltyRate));
+        storeInPackedStateTerms(assetId, 17, bytes32(customTerms.overwrittenTerms.premiumDiscountAtIED));
+        storeInPackedStateTerms(assetId, 18, bytes32(customTerms.overwrittenTerms.priceAtPurchaseDate));
+        storeInPackedStateTerms(assetId, 19, bytes32(customTerms.overwrittenTerms.nextPrincipalRedemptionPayment));
+        storeInPackedStateTerms(assetId, 20, bytes32(customTerms.overwrittenTerms.coverageOfCreditEnhancement));
+        storeInPackedStateTerms(assetId, 21, bytes32(customTerms.overwrittenTerms.lifeCap));
+        storeInPackedStateTerms(assetId, 22, bytes32(customTerms.overwrittenTerms.lifeFloor));
+        storeInPackedStateTerms(assetId, 23, bytes32(customTerms.overwrittenTerms.periodCap));
+        storeInPackedStateTerms(assetId, 24, bytes32(customTerms.overwrittenTerms.periodFloor));
 
-        if (customTerms.overwrittenTerms.marketObjectCodeRateReset != bytes32(0)) assets[assetId].packedTermsState[5] = bytes32(customTerms.overwrittenTerms.marketObjectCodeRateReset);
+        storeInPackedStateTerms(
+            assetId,
+            25,
+            bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.i)) << 24 |
+            bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.p)) << 16 |
+            bytes32(uint256((customTerms.overwrittenTerms.gracePeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedStateTerms(
+            assetId,
+            26,
+            bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.i)) << 24 |
+            bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.p)) << 16 |
+            bytes32(uint256((customTerms.overwrittenTerms.delinquencyPeriod.isSet) ? 1 : 0)) << 8
+        );
 
-        if (customTerms.overwrittenTerms.statusDate != uint256(0)) assets[assetId].packedTermsState[6] = bytes32(customTerms.overwrittenTerms.statusDate);
-        if (customTerms.overwrittenTerms.maturityDate != uint256(0)) assets[assetId].packedTermsState[7] = bytes32(customTerms.overwrittenTerms.maturityDate);
-
-        if (customTerms.overwrittenTerms.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[8] = bytes32(customTerms.overwrittenTerms.notionalPrincipal);
-        if (customTerms.overwrittenTerms.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[9] = bytes32(customTerms.overwrittenTerms.nominalInterestRate);
-        if (customTerms.overwrittenTerms.feeAccrued != int256(0)) assets[assetId].packedTermsState[10] = bytes32(customTerms.overwrittenTerms.feeAccrued);
-        if (customTerms.overwrittenTerms.accruedInterest != int256(0)) assets[assetId].packedTermsState[11] = bytes32(customTerms.overwrittenTerms.accruedInterest);
-        if (customTerms.overwrittenTerms.rateMultiplier != int256(0)) assets[assetId].packedTermsState[12] = bytes32(customTerms.overwrittenTerms.rateMultiplier);
-        if (customTerms.overwrittenTerms.rateSpread != int256(0)) assets[assetId].packedTermsState[13] = bytes32(customTerms.overwrittenTerms.rateSpread);
-        if (customTerms.overwrittenTerms.feeRate != int256(0)) assets[assetId].packedTermsState[14] = bytes32(customTerms.overwrittenTerms.feeRate);
-        if (customTerms.overwrittenTerms.nextResetRate != int256(0)) assets[assetId].packedTermsState[15] = bytes32(customTerms.overwrittenTerms.nextResetRate);
-        if (customTerms.overwrittenTerms.penaltyRate != int256(0)) assets[assetId].packedTermsState[16] = bytes32(customTerms.overwrittenTerms.penaltyRate);
-        if (customTerms.overwrittenTerms.premiumDiscountAtIED != int256(0)) assets[assetId].packedTermsState[17] = bytes32(customTerms.overwrittenTerms.premiumDiscountAtIED);
-        if (customTerms.overwrittenTerms.priceAtPurchaseDate != int256(0)) assets[assetId].packedTermsState[18] = bytes32(customTerms.overwrittenTerms.priceAtPurchaseDate);
-        if (customTerms.overwrittenTerms.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[19] = bytes32(customTerms.overwrittenTerms.nextPrincipalRedemptionPayment);
-        if (customTerms.overwrittenTerms.coverageOfCreditEnhancement != int256(0)) assets[assetId].packedTermsState[20] = bytes32(customTerms.overwrittenTerms.coverageOfCreditEnhancement);
-        if (customTerms.overwrittenTerms.lifeCap != int256(0)) assets[assetId].packedTermsState[21] = bytes32(customTerms.overwrittenTerms.lifeCap);
-        if (customTerms.overwrittenTerms.lifeFloor != int256(0)) assets[assetId].packedTermsState[22] = bytes32(customTerms.overwrittenTerms.lifeFloor);
-        if (customTerms.overwrittenTerms.periodCap != int256(0)) assets[assetId].packedTermsState[23] = bytes32(customTerms.overwrittenTerms.periodCap);
-        if (customTerms.overwrittenTerms.periodFloor != int256(0)) assets[assetId].packedTermsState[24] = bytes32(customTerms.overwrittenTerms.periodFloor);
-
-        if (customTerms.overwrittenTerms.gracePeriod.isSet) {
-            assets[assetId].packedTermsState[25] =
-                bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.i)) << 24 |
-                bytes32(uint256(customTerms.overwrittenTerms.gracePeriod.p)) << 16 |
-                bytes32(uint256(1)) << 8;
-        }
-        if (customTerms.overwrittenTerms.delinquencyPeriod.isSet) {
-            assets[assetId].packedTermsState[26] =
-                bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.i)) << 24 |
-                bytes32(uint256(customTerms.overwrittenTerms.delinquencyPeriod.p)) << 16 |
-                bytes32(uint256(1)) << 8;
-        }
-
-        if (customTerms.overwrittenTerms.contractReference_1.object != bytes32(0)) {
-            assets[assetId].packedTermsState[27] = bytes32(customTerms.overwrittenTerms.contractReference_1.object);
-            assets[assetId].packedTermsState[28] =
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1._type)) << 16 |
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.role)) << 8;
-
-        }
-        if (customTerms.overwrittenTerms.contractReference_2.object != bytes32(0)) {
-            assets[assetId].packedTermsState[29] = bytes32(customTerms.overwrittenTerms.contractReference_2.object);
-            assets[assetId].packedTermsState[30] =
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2._type)) << 16 |
-                bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.role)) << 8;
-
-        }
+        storeInPackedStateTerms(
+            assetId,
+            27,
+            bytes32(customTerms.overwrittenTerms.contractReference_1.object)
+        );
+        storeInPackedStateTerms(
+            assetId,
+            28,
+            bytes32(uint256(customTerms.overwrittenTerms.contractReference_1._type)) << 16 |
+            bytes32(uint256(customTerms.overwrittenTerms.contractReference_1.role)) << 8
+        );
+        storeInPackedStateTerms(
+            assetId,
+            29,
+            bytes32(customTerms.overwrittenTerms.contractReference_2.object)
+        );
+        storeInPackedStateTerms(
+            assetId,
+            30,
+            bytes32(uint256(customTerms.overwrittenTerms.contractReference_2._type)) << 16 |
+            bytes32(uint256(customTerms.overwrittenTerms.contractReference_2.role)) << 8
+        );
     }
 
     /**
      * @dev Tightly pack and store State
      */
     function encodeAndSetState(bytes32 assetId, State memory state) internal {
-        bytes32 enums =
-            bytes32(uint256(uint8(state.contractPerformance))) << 248;
-
-        if (enums != bytes32(0)) assets[assetId].packedTermsState[101] = enums;
-
-        if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[102] = bytes32(state.statusDate);
-        if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[103] = bytes32(state.nonPerformingDate);
-        if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[104] = bytes32(state.maturityDate);
-        if (state.exerciseDate != uint256(0)) assets[assetId].packedTermsState[105] = bytes32(state.exerciseDate);
-        if (state.terminationDate != uint256(0)) assets[assetId].packedTermsState[106] = bytes32(state.terminationDate);
-
-        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[107] = bytes32(state.notionalPrincipal);
-        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[108] = bytes32(state.accruedInterest);
-        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[109] = bytes32(state.feeAccrued);
-        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[110] = bytes32(state.nominalInterestRate);
-        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[111] = bytes32(state.interestScalingMultiplier);
-        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[112] = bytes32(state.notionalScalingMultiplier);
-        // solium-disable-next-line
-        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[113] = bytes32(state.nextPrincipalRedemptionPayment);
-        if (state.exerciseAmount != int256(0)) assets[assetId].packedTermsState[114] = bytes32(state.exerciseAmount);
+        storeInPackedStateTerms(assetId, 101, bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedStateTerms(assetId, 102, bytes32(state.statusDate));
+        storeInPackedStateTerms(assetId, 103, bytes32(state.nonPerformingDate));
+        storeInPackedStateTerms(assetId, 104, bytes32(state.maturityDate));
+        storeInPackedStateTerms(assetId, 105, bytes32(state.exerciseDate));
+        storeInPackedStateTerms(assetId, 106, bytes32(state.terminationDate));
+        storeInPackedStateTerms(assetId, 107, bytes32(state.notionalPrincipal));
+        storeInPackedStateTerms(assetId, 108, bytes32(state.accruedInterest));
+        storeInPackedStateTerms(assetId, 109, bytes32(state.feeAccrued));
+        storeInPackedStateTerms(assetId, 110, bytes32(state.nominalInterestRate));
+        storeInPackedStateTerms(assetId, 111, bytes32(state.interestScalingMultiplier));
+        storeInPackedStateTerms(assetId, 112, bytes32(state.notionalScalingMultiplier));
+        storeInPackedStateTerms(assetId, 113, bytes32(state.nextPrincipalRedemptionPayment));
+        storeInPackedStateTerms(assetId, 114, bytes32(state.exerciseAmount));
     }
 
     /**
      * @dev Tightly pack and store finalized State
      */
     function encodeAndSetFinalizedState(bytes32 assetId, State memory state) internal {
-        bytes32 enums =
-            bytes32(uint256(uint8(state.contractPerformance))) << 248;
-
-        if (enums != bytes32(0)) assets[assetId].packedTermsState[151] = enums;
-
-        if (state.statusDate != uint256(0)) assets[assetId].packedTermsState[152] = bytes32(state.statusDate);
-        if (state.nonPerformingDate != uint256(0)) assets[assetId].packedTermsState[153] = bytes32(state.nonPerformingDate);
-        if (state.maturityDate != uint256(0)) assets[assetId].packedTermsState[154] = bytes32(state.maturityDate);
-        if (state.exerciseDate != uint256(0)) assets[assetId].packedTermsState[155] = bytes32(state.exerciseDate);
-        if (state.terminationDate != uint256(0)) assets[assetId].packedTermsState[156] = bytes32(state.terminationDate);
-
-        if (state.notionalPrincipal != int256(0)) assets[assetId].packedTermsState[157] = bytes32(state.notionalPrincipal);
-        if (state.accruedInterest != int256(0)) assets[assetId].packedTermsState[158] = bytes32(state.accruedInterest);
-        if (state.feeAccrued != int256(0)) assets[assetId].packedTermsState[159] = bytes32(state.feeAccrued);
-        if (state.nominalInterestRate != int256(0)) assets[assetId].packedTermsState[160] = bytes32(state.nominalInterestRate);
-        if (state.interestScalingMultiplier != int256(0)) assets[assetId].packedTermsState[161] = bytes32(state.interestScalingMultiplier);
-        if (state.notionalScalingMultiplier != int256(0)) assets[assetId].packedTermsState[162] = bytes32(state.notionalScalingMultiplier);
-        // solium-disable-next-line
-        if (state.nextPrincipalRedemptionPayment != int256(0)) assets[assetId].packedTermsState[163] = bytes32(state.nextPrincipalRedemptionPayment);
-        if (state.exerciseAmount != int256(0)) assets[assetId].packedTermsState[164] = bytes32(state.exerciseAmount);
+        storeInPackedStateTerms(assetId, 151, bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedStateTerms(assetId, 152, bytes32(state.statusDate));
+        storeInPackedStateTerms(assetId, 153, bytes32(state.nonPerformingDate));
+        storeInPackedStateTerms(assetId, 154, bytes32(state.maturityDate));
+        storeInPackedStateTerms(assetId, 155, bytes32(state.exerciseDate));
+        storeInPackedStateTerms(assetId, 156, bytes32(state.terminationDate));
+        storeInPackedStateTerms(assetId, 157, bytes32(state.notionalPrincipal));
+        storeInPackedStateTerms(assetId, 158, bytes32(state.accruedInterest));
+        storeInPackedStateTerms(assetId, 159, bytes32(state.feeAccrued));
+        storeInPackedStateTerms(assetId, 160, bytes32(state.nominalInterestRate));
+        storeInPackedStateTerms(assetId, 161, bytes32(state.interestScalingMultiplier));
+        storeInPackedStateTerms(assetId, 162, bytes32(state.notionalScalingMultiplier));
+        storeInPackedStateTerms(assetId, 163, bytes32(state.nextPrincipalRedemptionPayment));
+        storeInPackedStateTerms(assetId, 164, bytes32(state.exerciseAmount));
     }
 
     /**
@@ -350,5 +347,10 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             int256(assets[assetId].packedTermsState[163]),
             int256(assets[assetId].packedTermsState[164])
         );
+    }
+
+    function storeInPackedStateTerms(bytes32 assetId, uint8 index, bytes32 value) private {
+        if (assets[assetId].packedTermsState[index] == value) return;
+        assets[assetId].packedTermsState[index] = value;
     }
 }

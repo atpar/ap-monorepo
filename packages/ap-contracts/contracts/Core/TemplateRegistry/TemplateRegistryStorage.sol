@@ -43,7 +43,9 @@ contract TemplateRegistryStorage is SharedTypes {
     }
 
     function encodeAndSetTerms(bytes32 templateId, TemplateTerms memory terms) internal {
-        bytes32 enums =
+        storeInPackedTerms(
+            templateId,
+            1,
             bytes32(uint256(uint8(terms.calendar))) << 240 |
             bytes32(uint256(uint8(terms.contractRole))) << 232 |
             bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
@@ -52,50 +54,47 @@ contract TemplateRegistryStorage is SharedTypes {
             bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
             bytes32(uint256(uint8(terms.penaltyType))) << 192 |
             bytes32(uint256(uint8(terms.feeBasis))) << 184 |
-            bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176;
+            bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176
+        );
 
-        if (enums != bytes32(0)) templates[templateId].packedTerms[1] = enums;
+        storeInPackedTerms(templateId, 2, bytes32(uint256(terms.currency) << 96));
+        storeInPackedTerms(templateId, 3, bytes32(uint256(terms.settlementCurrency) << 96));
 
-        if (terms.currency != address(0)) templates[templateId].packedTerms[2] = bytes32(uint256(terms.currency) << 96);
-        if (terms.settlementCurrency != address(0)) templates[templateId].packedTerms[3] = bytes32(uint256(terms.settlementCurrency) << 96);
+        storeInPackedTerms(templateId, 4, bytes32(terms.marketObjectCodeRateReset));
+        storeInPackedTerms(templateId, 5, bytes32(terms.statusDateOffset));
+        storeInPackedTerms(templateId, 6, bytes32(terms.maturityDateOffset));
+        storeInPackedTerms(templateId, 7, bytes32(terms.notionalPrincipal));
+        storeInPackedTerms(templateId, 8, bytes32(terms.nominalInterestRate));
+        storeInPackedTerms(templateId, 9, bytes32(terms.feeAccrued));
+        storeInPackedTerms(templateId, 10, bytes32(terms.accruedInterest));
+        storeInPackedTerms(templateId, 11, bytes32(terms.rateMultiplier));
+        storeInPackedTerms(templateId, 12, bytes32(terms.rateSpread));
+        storeInPackedTerms(templateId, 13, bytes32(terms.feeRate));
+        storeInPackedTerms(templateId, 14, bytes32(terms.nextResetRate));
+        storeInPackedTerms(templateId, 15, bytes32(terms.penaltyRate));
+        storeInPackedTerms(templateId, 16, bytes32(terms.premiumDiscountAtIED));
+        storeInPackedTerms(templateId, 17, bytes32(terms.priceAtPurchaseDate));
+        storeInPackedTerms(templateId, 18, bytes32(terms.nextPrincipalRedemptionPayment));
+        storeInPackedTerms(templateId, 19, bytes32(terms.coverageOfCreditEnhancement));
+        storeInPackedTerms(templateId, 20, bytes32(terms.lifeCap));
+        storeInPackedTerms(templateId, 21, bytes32(terms.lifeFloor));
+        storeInPackedTerms(templateId, 22, bytes32(terms.periodCap));
+        storeInPackedTerms(templateId, 23, bytes32(terms.periodFloor));
 
-        if (terms.marketObjectCodeRateReset != bytes32(0)) templates[templateId].packedTerms[4] = bytes32(terms.marketObjectCodeRateReset);
-
-        if (terms.statusDateOffset != uint256(0)) templates[templateId].packedTerms[5] = bytes32(terms.statusDateOffset);
-        if (terms.maturityDateOffset != uint256(0)) templates[templateId].packedTerms[6] = bytes32(terms.maturityDateOffset);
-
-        if (terms.notionalPrincipal != int256(0)) templates[templateId].packedTerms[7] = bytes32(terms.notionalPrincipal);
-        if (terms.nominalInterestRate != int256(0)) templates[templateId].packedTerms[8] = bytes32(terms.nominalInterestRate);
-        if (terms.feeAccrued != int256(0)) templates[templateId].packedTerms[9] = bytes32(terms.feeAccrued);
-        if (terms.accruedInterest != int256(0)) templates[templateId].packedTerms[10] = bytes32(terms.accruedInterest);
-        if (terms.rateMultiplier != int256(0)) templates[templateId].packedTerms[11] = bytes32(terms.rateMultiplier);
-        if (terms.rateSpread != int256(0)) templates[templateId].packedTerms[12] = bytes32(terms.rateSpread);
-        if (terms.feeRate != int256(0)) templates[templateId].packedTerms[13] = bytes32(terms.feeRate);
-        if (terms.nextResetRate != int256(0)) templates[templateId].packedTerms[14] = bytes32(terms.nextResetRate);
-        if (terms.penaltyRate != int256(0)) templates[templateId].packedTerms[15] = bytes32(terms.penaltyRate);
-        if (terms.premiumDiscountAtIED != int256(0)) templates[templateId].packedTerms[16] = bytes32(terms.premiumDiscountAtIED);
-        if (terms.priceAtPurchaseDate != int256(0)) templates[templateId].packedTerms[17] = bytes32(terms.priceAtPurchaseDate);
-        // solium-disable-next-line
-        if (terms.nextPrincipalRedemptionPayment != int256(0)) templates[templateId].packedTerms[18] = bytes32(terms.nextPrincipalRedemptionPayment);
-        // solium-disable-next-line
-        if (terms.coverageOfCreditEnhancement != int256(0)) templates[templateId].packedTerms[19] = bytes32(terms.coverageOfCreditEnhancement);
-        if (terms.lifeCap != int256(0)) templates[templateId].packedTerms[20] = bytes32(terms.lifeCap);
-        if (terms.lifeFloor != int256(0)) templates[templateId].packedTerms[21] = bytes32(terms.lifeFloor);
-        if (terms.periodCap != int256(0)) templates[templateId].packedTerms[22] = bytes32(terms.periodCap);
-        if (terms.periodFloor != int256(0)) templates[templateId].packedTerms[23] = bytes32(terms.periodFloor);
-
-        if (terms.gracePeriod.isSet) {
-            templates[templateId].packedTerms[24] =
-                bytes32(uint256(terms.gracePeriod.i)) << 24 |
-                bytes32(uint256(terms.gracePeriod.p)) << 16 |
-                bytes32(uint256(1)) << 8;
-        }
-        if (terms.delinquencyPeriod.isSet) {
-            templates[templateId].packedTerms[25] =
-                bytes32(uint256(terms.delinquencyPeriod.i)) << 24 |
-                bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
-                bytes32(uint256(1)) << 8;
-        }
+        storeInPackedTerms(
+            templateId,
+            24,
+            bytes32(uint256(terms.gracePeriod.i)) << 24 |
+            bytes32(uint256(terms.gracePeriod.p)) << 16 |
+            bytes32(uint256((terms.gracePeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            templateId,
+            25,
+            bytes32(uint256(terms.delinquencyPeriod.i)) << 24 |
+            bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
+            bytes32(uint256((terms.delinquencyPeriod.isSet) ? 1 : 0)) << 8
+        );
     }
 
     function encodeAndSetSchedule(bytes32 templateId, bytes32[] memory templateSchedule)
@@ -169,5 +168,10 @@ contract TemplateRegistryStorage is SharedTypes {
                 (templates[templateId].packedTerms[25] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             )
         );
+    }
+
+    function storeInPackedTerms(bytes32 templateId, uint8 index, bytes32 value) private {
+        if (templates[templateId].packedTerms[index] == value) return;
+        templates[templateId].packedTerms[index] = value;
     }
 }
