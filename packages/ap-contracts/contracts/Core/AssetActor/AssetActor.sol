@@ -76,8 +76,9 @@ contract AssetActor is
     }
 
     /**
-     * @notice Proceeds with the next state of the asset based on the terms, the last state,
-     * market object data and the settlement status of current obligation (payoff).
+     * @notice Proceeds with the next state of the asset based on the terms, the last state, market object data
+     * and the settlement status of current obligation, derived from either a prev. pending event, an event
+     * generated based on the current state of an underlying asset or the assets schedule.
      * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
      */
@@ -88,10 +89,15 @@ contract AssetActor is
             "AssetActor.progress: ASSET_DOES_NOT_EXIST"
         );
 
-        bytes32 _event = assetRegistry.getPendingEvent(assetId);
+        // enforce order:
+        // - 1. pending event has to be processed
+        // - 2. an event which was generated based on the state of the underlying asset
+        // - 3. the next event in the schedule
+        bytes32 _event = assetRegistry.popPendingEvent(assetId);
         if (_event == bytes32(0)) _event = assetRegistry.getNextUnderlyingEvent(assetId);
         if (_event == bytes32(0)) _event = assetRegistry.popNextScheduledEvent(assetId);
 
+        // e.g. if all events in the schedule are processed
         require(
             _event != bytes32(0),
             "AssetActor.progress: NO_NEXT_EVENT"
@@ -101,8 +107,12 @@ contract AssetActor is
     }
 
     /**
+     * @notice Proceeds with the next state of the asset based on the terms, the last state, market object data
+     * and the settlement status of current obligation, derived from a provided (unscheduled) event
+     * Reverts if the provided event violates the order of events.
      * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
+     * @param _event the unscheduled event
      */
     function progressWith(bytes32 assetId, bytes32 _event) public override {
         // revert if msg.sender is not authorized to update the asset
@@ -111,6 +121,9 @@ contract AssetActor is
             "AssetActor.progressWith: UNAUTHORIZED_SENDER"
         );
 
+        // enforce order:
+        // - 1. pending event has to be processed
+        // - 2. an event which was generated based on the state of the underlying asset
         require(
             assetRegistry.getPendingEvent(assetId) == bytes32(0),
             "AssetActor.progressWith: FOUND_PENDING_EVENT"
@@ -120,6 +133,7 @@ contract AssetActor is
             "AssetActor.progressWith: FOUND_UNDERLYING_EVENT"
         );
 
+        // - 3. the scheduled event takes priority if its schedule time is early or equal to the provided event
         (, uint256 scheduledEventScheduleTime) = decodeEvent(assetRegistry.getNextScheduledEvent(assetId));
         (, uint256 providedEventScheduleTime) = decodeEvent(_event);
         require(
