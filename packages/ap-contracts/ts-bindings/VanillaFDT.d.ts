@@ -66,6 +66,12 @@ export class VanillaFDT extends Contract {
 
     withdrawnFundsOf(_owner: string): TransactionObject<string>;
 
+    withdrawFunds(): TransactionObject<void>;
+
+    updateFundsReceived(): TransactionObject<void>;
+
+    pushFunds(owners: string[]): TransactionObject<void>;
+
     transfer(to: string, value: number | string): TransactionObject<boolean>;
 
     transferFrom(
@@ -74,9 +80,9 @@ export class VanillaFDT extends Contract {
       value: number | string
     ): TransactionObject<boolean>;
 
-    withdrawFunds(): TransactionObject<void>;
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
-    updateFundsReceived(): TransactionObject<void>;
+    burn(account: string, amount: number | string): TransactionObject<boolean>;
   };
   events: {
     Approval: ContractEvent<{

@@ -113,6 +113,10 @@ export class SimpleRestrictedFDT extends Contract {
 
     withdrawnFundsOf(_owner: string): TransactionObject<string>;
 
+    withdrawFunds(): TransactionObject<void>;
+
+    updateFundsReceived(): TransactionObject<void>;
+
     detectTransferRestriction(
       from: string,
       to: string,
@@ -123,6 +127,8 @@ export class SimpleRestrictedFDT extends Contract {
       restrictionCode: number | string
     ): TransactionObject<string>;
 
+    pushFunds(owners: string[]): TransactionObject<void>;
+
     transfer(to: string, value: number | string): TransactionObject<boolean>;
 
     transferFrom(
@@ -131,9 +137,9 @@ export class SimpleRestrictedFDT extends Contract {
       value: number | string
     ): TransactionObject<boolean>;
 
-    withdrawFunds(): TransactionObject<void>;
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
-    updateFundsReceived(): TransactionObject<void>;
+    burn(account: string, amount: number | string): TransactionObject<boolean>;
   };
   events: {
     AddressAddedToWhitelist: ContractEvent<{

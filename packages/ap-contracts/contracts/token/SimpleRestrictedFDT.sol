@@ -7,7 +7,7 @@ import "./FDT/IFundsDistributionToken.sol";
 
 
 /**
- * This contract allows a list of administrators to be tracked. This list can then be enforced
+ * @notice This contract allows a list of administrators to be tracked. This list can then be enforced
  * on functions with administrative permissions.  Only the owner of the contract should be allowed
  * to modify the administrator list.
  */
@@ -20,7 +20,7 @@ contract Administratable is Ownable {
     event AdminRemoved(address indexed removedAdmin, address indexed removedBy);
 
     /**
-    Function modifier to enforce administrative permissions.
+     * @notice Function modifier to enforce administrative permissions.
      */
     modifier onlyAdministrator() {
         require(
@@ -31,14 +31,14 @@ contract Administratable is Ownable {
     }
 
     /**
-    Determine if the message sender is in the administrators list.
+     * @notice Determine if the message sender is in the administrators list.
      */
     function isAdministrator(address addressToTest) public view returns (bool) {
         return administrators[addressToTest];
     }
 
     /**
-    Add an admin to the list.  This should only be callable by the owner of the contract.
+     * @notice Add an admin to the list.  This should only be callable by the owner of the contract.
      */
     function addAdmin(address adminToAdd) public onlyOwner {
         // Verify the account is not already an admin
@@ -55,7 +55,7 @@ contract Administratable is Ownable {
     }
 
     /**
-    Remove an admin from the list.  This should only be callable by the owner of the contract.
+     * @notice Remove an admin from the list.  This should only be callable by the owner of the contract.
      */
     function removeAdmin(address adminToRemove) public onlyOwner {
         // Verify the account is an admin
@@ -73,9 +73,9 @@ contract Administratable is Ownable {
 }
 
 /**
-Keeps track of whitelists and can check if sender and reciever are configured to allow a transfer.
-Only administrators can update the whitelists.
-Any address can only be a member of one whitelist at a time.
+ * @notice Keeps track of whitelists and can check if sender and reciever are configured to allow a transfer.
+ * Only administrators can update the whitelists.
+ * Any address can only be a member of one whitelist at a time.
  */
 contract Whitelistable is Administratable {
     // Zero is reserved for indicating it is not on a whitelist
@@ -109,8 +109,8 @@ contract Whitelistable is Administratable {
     );
 
     /**
-    Sets an address's white list ID.  Only administrators should be allowed to update this.
-    If an address is on an existing whitelist, it will just get updated to the new value (removed from previous).
+     * @notice Sets an address's white list ID.  Only administrators should be allowed to update this.
+     * If an address is on an existing whitelist, it will just get updated to the new value (removed from previous).
      */
     function addToWhitelist(address addressToAdd, uint8 whitelist)
         public
@@ -140,7 +140,7 @@ contract Whitelistable is Administratable {
     }
 
     /**
-    Clears out an address's white list ID.  Only administrators should be allowed to update this.
+     * @notice Clears out an address's white list ID.  Only administrators should be allowed to update this.
      */
     function removeFromWhitelist(address addressToRemove)
         public
@@ -161,8 +161,8 @@ contract Whitelistable is Administratable {
     }
 
     /**
-    Sets the flag to indicate whether source whitelist is allowed to send to destination whitelist.
-    Only administrators should be allowed to update this.
+     * @notice Sets the flag to indicate whether source whitelist is allowed to send to destination whitelist.
+     * Only administrators should be allowed to update this.
      */
     function updateOutboundWhitelistEnabled(
         uint8 sourceWhitelist,
@@ -186,8 +186,8 @@ contract Whitelistable is Administratable {
     }
 
     /**
-    Determine if the a sender is allowed to send to the receiver.
-    The source whitelist must be enabled to send to the whitelist where the receive exists.
+     * @notice Determine if the a sender is allowed to send to the receiver.
+     * The source whitelist must be enabled to send to the whitelist where the receive exists.
      */
     function checkWhitelistAllowed(address sender, address receiver)
         public
@@ -211,9 +211,8 @@ contract Whitelistable is Administratable {
 }
 
 /**
-Restrictions start off as enabled.
-Once they are disabled, they cannot be re-enabled.
-Only the owner may disable restrictions.
+ * @notice Restrictions start off as enabled. Once they are disabled, they cannot be re-enabled.
+ * Only the owner may disable restrictions.
  */
 contract Restrictable is Ownable {
     // State variable to track whether restrictions are enabled.  Defaults to true.
@@ -223,15 +222,15 @@ contract Restrictable is Ownable {
     event RestrictionsDisabled(address indexed owner);
 
     /**
-    View function to determine if restrictions are enabled
+     * @notice View function to determine if restrictions are enabled
      */
     function isRestrictionEnabled() public view returns (bool) {
         return _restrictionsEnabled;
     }
 
     /**
-    Function to update the enabled flag on restrictions to disabled.  Only the owner should be able to call.
-    This is a permanent change that cannot be undone
+     * @notice Function to update the enabled flag on restrictions to disabled.  Only the owner should be able to call.
+     * This is a permanent change that cannot be undone
      */
     function disableRestrictions() public onlyOwner {
         require(_restrictionsEnabled, "Restrictions are already disabled.");
@@ -245,22 +244,27 @@ contract Restrictable is Ownable {
 }
 
 abstract contract ERC1404 is IERC20 {
-    /// @notice Detects if a transfer will be reverted and if so returns an appropriate reference code
-    /// @param from Sending address
-    /// @param to Receiving address
-    /// @param value Amount of tokens being transferred
-    /// @return Code by which to reference message for rejection reasoning
-    /// @dev Overwrite with your custom transfer restriction logic
+
+    /**
+     * @notice Detects if a transfer will be reverted and if so returns an appropriate reference code
+     * @param from Sending address
+     * @param to Receiving address
+     * @param value Amount of tokens being transferred
+     * @return Code by which to reference message for rejection reasoning
+     * @dev Overwrite with your custom transfer restriction logic
+     */
     function detectTransferRestriction(address from, address to, uint256 value)
         public
         view
         virtual
         returns (uint8);
 
-    /// @notice Returns a human-readable message for a given restriction code
-    /// @param restrictionCode Identifier for looking up a message
-    /// @return Text showing the restriction's reasoning
-    /// @dev Overwrite with your custom message and restrictionCode handling
+    /**
+     * @notice Returns a human-readable message for a given restriction code
+     * @param restrictionCode Identifier for looking up a message
+     * @return Text showing the restriction's reasoning
+     * @dev Overwrite with your custom message and restrictionCode handling
+     */
     function messageForTransferRestriction(uint8 restrictionCode)
         public
         view
@@ -294,7 +298,7 @@ contract SimpleRestrictedFDT is
     modifier onlyFundsToken() {
         require(
             msg.sender == address(fundsToken),
-            "FDT_ERC20Extension.onlyFundsToken: UNAUTHORIZED_SENDER"
+            "SimpleRestrictedFDT.onlyFundsToken: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -317,9 +321,41 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-  	This function detects whether a transfer should be restricted and not allowed.
-  	If the function returns SUCCESS_CODE (0) then it should be allowed.
-  	*/
+  	 * @notice Evaluates whether a transfer should be allowed or not.
+  	 */
+    modifier notRestricted(address from, address to, uint256 value) {
+        uint8 restrictionCode = detectTransferRestriction(from, to, value);
+        require(
+            restrictionCode == SUCCESS_CODE,
+            messageForTransferRestriction(restrictionCode)
+        );
+        _;
+    }
+
+    /**
+	 * @notice Withdraws all available funds for a token holder
+	 */
+    function withdrawFunds() external override {
+        _withdrawFundsFor(msg.sender);
+    }
+
+    /**
+	 * @notice Register a payment of funds in tokens. May be called directly after a deposit is made.
+	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new 
+	 * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
+	 */
+    function updateFundsReceived() external {
+        int256 newFunds = _updateFundsTokenBalance();
+
+        if (newFunds > 0) {
+            _distributeFunds(newFunds.toUint256Safe());
+        }
+    }
+
+    /**
+  	 * @notice This function detects whether a transfer should be restricted and not allowed.
+  	 * If the function returns SUCCESS_CODE (0) then it should be allowed.
+  	 */
     function detectTransferRestriction(address from, address to, uint256)
         public
         view
@@ -348,10 +384,10 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-  	This function allows a wallet or other client to get a human readable string to show
-  	a user if a transfer was restricted.  It should return enough information for the user
-  	to know why it failed.
-  	*/
+  	 * @notice This function allows a wallet or other client to get a human readable string to show
+  	 * a user if a transfer was restricted.  It should return enough information for the user
+  	 * to know why it failed.
+  	 */
     function messageForTransferRestriction(uint8 restrictionCode)
         public
         view
@@ -371,20 +407,17 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-  	Evaluates whether a transfer should be allowed or not.
-  	*/
-    modifier notRestricted(address from, address to, uint256 value) {
-        uint8 restrictionCode = detectTransferRestriction(from, to, value);
-        require(
-            restrictionCode == SUCCESS_CODE,
-            messageForTransferRestriction(restrictionCode)
-        );
-        _;
+     * @notice Withdraws funds for a set of token holders
+     */
+    function pushFunds(address[] memory owners) public {
+        for (uint256 i = 0; i < owners.length; i++) {
+            _withdrawFundsFor(owners[i]);
+        }
     }
 
     /**
-  	Overrides the parent class token transfer function to enforce restrictions.
-  	*/
+  	 * @notice Overrides the parent class token transfer function to enforce restrictions.
+  	 */
     function transfer(address to, uint256 value)
         public
         notRestricted(msg.sender, to, value)
@@ -395,8 +428,8 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-  	Overrides the parent class token transferFrom function to enforce restrictions.
-  	*/
+  	 * @notice Overrides the parent class token transferFrom function to enforce restrictions.
+  	 */
     function transferFrom(address from, address to, uint256 value)
         public
         notRestricted(from, to, value)
@@ -407,14 +440,30 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-	 * @notice Withdraws all available funds for a token holder
-	 */
-    function withdrawFunds() external override {
-        uint256 withdrawableFunds = _prepareWithdraw();
+     * @notice Exposes the ability to mint new FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function mint(address account, uint256 amount) public onlyOwner returns (bool) {
+        _mint(account, amount);
+        return true;
+    }
+
+    /**
+     * @notice Exposes the ability to burn exisiting FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function burn(address account, uint256 amount) public onlyOwner returns (bool) {
+        _burn(account, amount);
+        return true;
+    }
+
+    /**
+     * @notice Withdraws all available funds for a token holder
+     */
+    function _withdrawFundsFor(address owner) internal {
+        uint256 withdrawableFunds = _prepareWithdrawFor(owner);
 
         require(
-            fundsToken.transfer(msg.sender, withdrawableFunds),
-            "FDT_ERC20Extension.withdrawFunds: TRANSFER_FAILED"
+            fundsToken.transfer(owner, withdrawableFunds),
+            "SimpleRestrictedFDT.withdrawFunds: TRANSFER_FAILED"
         );
 
         _updateFundsTokenBalance();
@@ -431,18 +480,5 @@ contract SimpleRestrictedFDT is
         fundsTokenBalance = fundsToken.balanceOf(address(this));
 
         return int256(fundsTokenBalance).sub(int256(prevFundsTokenBalance));
-    }
-
-    /**
-	 * @notice Register a payment of funds in tokens. May be called directly after a deposit is made.
-	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new 
-	 * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
-	 */
-    function updateFundsReceived() external {
-        int256 newFunds = _updateFundsTokenBalance();
-
-        if (newFunds > 0) {
-            _distributeFunds(newFunds.toUint256Safe());
-        }
     }
 }

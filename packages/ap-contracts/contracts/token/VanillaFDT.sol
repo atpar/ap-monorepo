@@ -21,7 +21,7 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
     modifier onlyFundsToken() {
         require(
             msg.sender == address(fundsToken),
-            "FDT_ERC20Extension.onlyFundsToken: UNAUTHORIZED_SENDER"
+            "VanillaFDT.onlyFundsToken: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -47,28 +47,73 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
     }
 
     /**
-      Overrides the parent class token transfer function to enforce restrictions.
-      */
+     * @notice Withdraws all available funds for a token holder
+     */
+    function withdrawFunds() external override {
+        _withdrawFundsFor(msg.sender);
+    }
+
+    /**
+     * @notice Register a payment of funds in tokens. May be called directly after a deposit is made.
+     * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new
+     * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
+     */
+    function updateFundsReceived() external {
+        int256 newFunds = _updateFundsTokenBalance();
+
+        if (newFunds > 0) {
+            _distributeFunds(newFunds.toUint256Safe());
+        }
+    }
+
+    /**
+     * @notice Withdraws funds for a set of token holders
+     */
+    function pushFunds(address[] memory owners) public {
+        for (uint256 i = 0; i < owners.length; i++) {
+            _withdrawFundsFor(owners[i]);
+        }
+    }
+
+    /**
+     * @notice Overrides the parent class token transfer function to enforce restrictions.
+     */
     function transfer(address to, uint256 value) public override returns (bool) {
         return super.transfer(to, value);
     }
 
     /**
-      Overrides the parent class token transferFrom function to enforce restrictions.
-      */
+     * @notice Overrides the parent class token transferFrom function to enforce restrictions.
+     */
     function transferFrom(address from, address to, uint256 value) public override returns (bool) {
         return super.transferFrom(from, to, value);
     }
 
     /**
+     * @notice Exposes the ability to mint new FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function mint(address account, uint256 amount) public onlyOwner returns (bool) {
+        _mint(account, amount);
+        return true;
+    }
+
+    /**
+     * @notice Exposes the ability to burn exisiting FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function burn(address account, uint256 amount) public onlyOwner returns (bool) {
+        _burn(account, amount);
+        return true;
+    }
+
+    /**
      * @notice Withdraws all available funds for a token holder
      */
-    function withdrawFunds() external override {
-        uint256 withdrawableFunds = _prepareWithdraw();
+    function _withdrawFundsFor(address owner) internal {
+        uint256 withdrawableFunds = _prepareWithdrawFor(owner);
 
         require(
-            fundsToken.transfer(msg.sender, withdrawableFunds),
-            "FDT_ERC20Extension.withdrawFunds: TRANSFER_FAILED"
+            fundsToken.transfer(owner, withdrawableFunds),
+            "VanillaFDT.withdrawFunds: TRANSFER_FAILED"
         );
 
         _updateFundsTokenBalance();
@@ -85,18 +130,5 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
         fundsTokenBalance = fundsToken.balanceOf(address(this));
 
         return int256(fundsTokenBalance).sub(int256(prevFundsTokenBalance));
-    }
-
-    /**
-     * @notice Register a payment of funds in tokens. May be called directly after a deposit is made.
-     * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new
-     * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
-     */
-    function updateFundsReceived() external {
-        int256 newFunds = _updateFundsTokenBalance();
-
-        if (newFunds > 0) {
-            _distributeFunds(newFunds.toUint256Safe());
-        }
     }
 }

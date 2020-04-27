@@ -73,12 +73,12 @@ abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20, ERC2
 	 * @notice Prepares funds withdrawal
 	 * @dev It emits a `FundsWithdrawn` event if the amount of withdrawn ether is greater than 0.
 	 */
-	function _prepareWithdraw() internal returns (uint256) {
-		uint256 _withdrawableDividend = withdrawableFundsOf(msg.sender);
+	function _prepareWithdrawFor(address _owner) internal returns (uint256) {
+		uint256 _withdrawableDividend = withdrawableFundsOf(_owner);
 
-		withdrawnFunds[msg.sender] = withdrawnFunds[msg.sender].add(_withdrawableDividend);
+		withdrawnFunds[_owner] = withdrawnFunds[_owner].add(_withdrawableDividend);
 
-		emit FundsWithdrawn(msg.sender, _withdrawableDividend);
+		emit FundsWithdrawn(_owner, _withdrawableDividend);
 
 		return _withdrawableDividend;
 	}
