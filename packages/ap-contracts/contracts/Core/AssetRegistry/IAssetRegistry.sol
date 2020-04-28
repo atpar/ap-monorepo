@@ -124,41 +124,49 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         virtual
         returns (bytes32);
 
-    function setState(bytes32 assetId, State memory state)
-        public
+    function setState(bytes32 assetId, State calldata state)
+        external
         virtual;
 
-    function setFinalizedState(bytes32 assetId, State memory state)
-        public
+    function setFinalizedState(bytes32 assetId, State calldata state)
+        external
         virtual;
 
-    function setCustomTerms(bytes32 assetId, CustomTerms memory terms)
-        public
+    function setCustomTerms(bytes32 assetId, CustomTerms calldata terms)
+        external
         virtual;
     
     function setAnchorDate(bytes32 assetId, uint256 anchorDate)
-        public
+        external
         virtual;
 
     function setEngine(bytes32 assetId, address engine)
-        public
+        external
         virtual;
 
     function setActor(bytes32 assetId, address actor)
-        public
+        external
         virtual;
 
     function registerAsset(
         bytes32 assetId,
-        AssetOwnership memory ownership,
+        AssetOwnership calldata ownership,
         bytes32 templateId,
-        CustomTerms memory customTerms,
-        State memory state,
+        CustomTerms calldata customTerms,
+        State calldata state,
         address engine,
         address actor,
         address root
     )
-        public
+        external
+        virtual;
+
+    function grantAccess(bytes32 assetId, bytes4 methodSignature, address account)
+        external
+        virtual;
+
+    function revokeAccess(bytes32 assetId, bytes4 methodSignature, address account)
+        external
         virtual;
 
     function hasAccess(bytes32 assetId, bytes4 methodSignature, address account)
@@ -170,12 +178,4 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         public
         virtual
         returns (bool);
-
-    function grantAccess(bytes32 assetId, bytes4 methodSignature, address account)
-        public
-        virtual;
-
-    function revokeAccess(bytes32 assetId, bytes4 methodSignature, address account)
-        public
-        virtual;
 }

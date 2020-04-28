@@ -595,17 +595,6 @@ export class IAssetRegistry extends Contract {
       root: string
     ): TransactionObject<void>;
 
-    hasAccess(
-      assetId: string | number[],
-      methodSignature: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
-
-    hasRootAccess(
-      assetId: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
-
     grantAccess(
       assetId: string | number[],
       methodSignature: string | number[],
@@ -617,6 +606,17 @@ export class IAssetRegistry extends Contract {
       methodSignature: string | number[],
       account: string
     ): TransactionObject<void>;
+
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
   };
   events: {
     allEvents: (

@@ -45,8 +45,8 @@ contract AssetIssuer is
         assetActor = _assetActor;
     }
 
-    function issueFromDraft(Draft memory draft)
-        public
+    function issueFromDraft(Draft calldata draft)
+        external
         override
     {
         (
@@ -61,6 +61,73 @@ contract AssetIssuer is
         issueAsset(
             assetId, ownership, templateId, customTerms, engine, admin
         );
+    }
+
+    /**
+     * @notice Issues an asset from an order which was signed by the creator obligor and the counterparty obligor.
+     * @dev verifies both signatures and initializes by calling the asset actor,
+     * If ownership is undefined and signatures are undefined it skips signature verification.
+     * (required if a Collateral enhancement is present)
+     * (has to be public otherwise compilation error)
+     * @param order order for which to issue the asset
+     */
+    function issueFromOrder(Order memory order)
+        public
+        override
+    {
+        // verify signatures of order (and enhancement orders)
+        require(
+            assertOrderSignatures(order),
+            "AssetIssuer.issueFromOrder: INVALID_SIGNATURE"
+        );
+
+        // issue asset (underlying)
+        (
+            bytes32 assetId,
+            AssetOwnership memory ownership,
+            bytes32 templateId,
+            CustomTerms memory customTerms,
+            address engine,
+            address admin
+        ) = finalizeOrder(order);
+
+        issueAsset(
+            assetId, ownership, templateId, customTerms, engine, admin
+        );
+
+        // check if first enhancement order is specified
+        if (order.enhancementOrder_1.termsHash != bytes32(0)) {
+            (
+                bytes32 assetId,
+                AssetOwnership memory ownership,
+                bytes32 templateId,
+                CustomTerms memory customTerms,
+                address engine,
+                address admin
+            ) = finalizeEnhancementOrder(order.enhancementOrder_1, order);
+
+            issueAsset(
+                assetId, ownership, templateId, customTerms, engine, admin
+            );
+        }
+
+        // check if second enhancement order is specified
+        if (order.enhancementOrder_2.termsHash != bytes32(0)) {
+            (
+                bytes32 assetId,
+                AssetOwnership memory ownership,
+                bytes32 templateId,
+                CustomTerms memory customTerms,
+                address engine,
+                address admin
+            ) = finalizeEnhancementOrder(order.enhancementOrder_2, order);
+
+            issueAsset(
+                assetId, ownership, templateId, customTerms, engine, admin
+            );
+        }
+
+        emit ExecutedOrder(keccak256(abi.encode(order.creatorSignature)), assetId);
     }
 
     function finalizeDraft(Draft memory draft)
@@ -130,72 +197,6 @@ contract AssetIssuer is
             draft.engine,
             draft.admin
         );
-    }
-
-    /**
-     * @notice Issues an asset from an order which was signed by the creator obligor and the counterparty obligor.
-     * @dev verifies both signatures and initializes by calling the asset actor,
-     * If ownership is undefined and signatures are undefined it skips signature verification.
-     * (required if a Collateral enhancement is present)
-     * @param order order for which to issue the asset
-     */
-    function issueFromOrder(Order memory order)
-        public
-        override
-    {
-        // verify signatures of order (and enhancement orders)
-        require(
-            assertOrderSignatures(order),
-            "AssetIssuer.issueFromOrder: INVALID_SIGNATURE"
-        );
-
-        // issue asset (underlying)
-        (
-            bytes32 assetId,
-            AssetOwnership memory ownership,
-            bytes32 templateId,
-            CustomTerms memory customTerms,
-            address engine,
-            address admin
-        ) = finalizeOrder(order);
-
-        issueAsset(
-            assetId, ownership, templateId, customTerms, engine, admin
-        );
-
-        // check if first enhancement order is specified
-        if (order.enhancementOrder_1.termsHash != bytes32(0)) {
-            (
-                bytes32 assetId,
-                AssetOwnership memory ownership,
-                bytes32 templateId,
-                CustomTerms memory customTerms,
-                address engine,
-                address admin
-            ) = finalizeEnhancementOrder(order.enhancementOrder_1, order);
-
-            issueAsset(
-                assetId, ownership, templateId, customTerms, engine, admin
-            );
-        }
-
-        // check if second enhancement order is specified
-        if (order.enhancementOrder_2.termsHash != bytes32(0)) {
-            (
-                bytes32 assetId,
-                AssetOwnership memory ownership,
-                bytes32 templateId,
-                CustomTerms memory customTerms,
-                address engine,
-                address admin
-            ) = finalizeEnhancementOrder(order.enhancementOrder_2, order);
-
-            issueAsset(
-                assetId, ownership, templateId, customTerms, engine, admin
-            );
-        }
-
-        emit ExecutedOrder(keccak256(abi.encode(order.creatorSignature)), assetId);
     }
 
     /**
@@ -354,6 +355,12 @@ contract AssetIssuer is
     )
         internal
     {
+        // if anchorDate is not set, use block.timestamp
+        if (customTerms.anchorDate == uint256(0)) {
+            // solium-disable-next-line
+            customTerms.anchorDate = block.timestamp;
+        }
+
         // initialize the asset by calling the asset actor
         require(
             assetActor.initialize(

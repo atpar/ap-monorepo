@@ -29,7 +29,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         bytes32 marketObjectId,
         address provider
     )
-        public
+        external
         override
         onlyOwner
     {
@@ -50,7 +50,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         uint256 timestamp,
         int256 dataPoint
     )
-        public
+        external
         override
     {
         require(
@@ -74,7 +74,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         bytes32 marketObjectId,
         uint256 timestamp
     )
-        public
+        external
         view
         override
         returns (int256, bool)
@@ -92,7 +92,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
      * @return last updated timestamp
      */
     function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
-        public
+        external
         view
         override
         returns (uint256)

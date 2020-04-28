@@ -595,17 +595,6 @@ export class AccessControl extends Contract {
 
     templateRegistry(): TransactionObject<string>;
 
-    hasAccess(
-      assetId: string | number[],
-      methodSignature: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
-
-    hasRootAccess(
-      assetId: string | number[],
-      account: string
-    ): TransactionObject<boolean>;
-
     grantAccess(
       assetId: string | number[],
       methodSignature: string | number[],
@@ -617,6 +606,17 @@ export class AccessControl extends Contract {
       methodSignature: string | number[],
       account: string
     ): TransactionObject<void>;
+
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
   };
   events: {
     GrantedAccess: ContractEvent<{

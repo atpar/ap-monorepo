@@ -10,7 +10,7 @@ abstract contract IMarketObjectRegistry is MarketObjectRegistryStorage {
         bytes32 marketObjectId,
         address provider
     )
-        public
+        external
         virtual;
 
     function publishDataPointOfMarketObject(
@@ -18,20 +18,20 @@ abstract contract IMarketObjectRegistry is MarketObjectRegistryStorage {
         uint256 timestamp,
         int256 dataPoint
     )
-        public
+        external
         virtual;
 
     function getDataPointOfMarketObject(
         bytes32 marketObjectId,
         uint256 timestamp
     )
-        public
+        external
         view
         virtual
         returns (int256, bool);
 
     function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
-        public
+        external
         view
         virtual
         returns (uint256);

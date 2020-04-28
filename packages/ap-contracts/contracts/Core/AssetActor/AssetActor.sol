@@ -82,7 +82,7 @@ contract AssetActor is
      * @dev Emits ProgressedAsset if the state of the asset was updated.
      * @param assetId id of the asset
      */
-    function progress(bytes32 assetId) public override {
+    function progress(bytes32 assetId) external override {
         // revert if the asset is not registered in the AssetRegistry
         require(
             assetRegistry.isRegistered(assetId),
@@ -114,7 +114,7 @@ contract AssetActor is
      * @param assetId id of the asset
      * @param _event the unscheduled event
      */
-    function progressWith(bytes32 assetId, bytes32 _event) public override {
+    function progressWith(bytes32 assetId, bytes32 _event) external override {
         // revert if msg.sender is not authorized to update the asset
         require(
             assetRegistry.hasRootAccess(assetId, msg.sender),
@@ -149,6 +149,7 @@ contract AssetActor is
      * stores the initial state, the custom terms together with the ownership of the asset
      * in the AssetRegistry.
      * @dev Can only be called by a whitelisted issuer.
+     * (has to be public otherwise compilation error.)
      * @param assetId id of the asset
      * @param ownership ownership of the asset
      * @param templateId id of the financial template to use
@@ -174,12 +175,6 @@ contract AssetActor is
             assetId != bytes32(0) && engine != address(0),
             "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
         );
-
-        // if anchorDate is not set, use block.timestamp
-        if (customTerms.anchorDate == uint256(0)) {
-            // solium-disable-next-line
-            customTerms.anchorDate = block.timestamp;
-        }
 
         // compute the initial state of the asset using the LifecycleTerms
         State memory initialState = IEngine(engine).computeInitialState(

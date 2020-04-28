@@ -21,12 +21,12 @@ abstract contract BaseEngine is Core, IEngine {
      * @return the resulting contract state
      */
     function computeStateForEvent(
-        LifecycleTerms memory terms,
-        State memory state,
+        LifecycleTerms calldata terms,
+        State calldata state,
         bytes32 _event,
         bytes32 externalData
     )
-        public
+        external
         pure
         override
         returns (State memory)
@@ -48,12 +48,12 @@ abstract contract BaseEngine is Core, IEngine {
      * @return the payoff of the event
      */
     function computePayoffForEvent(
-        LifecycleTerms memory terms,
-        State memory state,
+        LifecycleTerms calldata terms,
+        State calldata state,
         bytes32 _event,
         bytes32 externalData
     )
-        public
+        external
         pure
         override
         returns (int256)

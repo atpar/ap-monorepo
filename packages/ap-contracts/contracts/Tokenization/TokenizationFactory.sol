@@ -31,13 +31,13 @@ contract TokenizationFactory {
      * @param initialSupply of distributor tokens
      */
     function createERC20Distributor(
-        string memory name,
-        string memory symbol,
+        string calldata name,
+        string calldata symbol,
         uint256 initialSupply,
         IERC20 token,
         address owner
     )
-        public
+        external
     {
         require(
             address(token) != address(0),
@@ -57,13 +57,13 @@ contract TokenizationFactory {
      * @param initialSupply of distributor tokens
      */
     function createRestrictedERC20Distributor(
-        string memory name,
-        string memory symbol,
+        string calldata name,
+        string calldata symbol,
         uint256 initialSupply,
         IERC20 token,
         address owner
     )
-        public
+        external
     {
         require(
             address(token) != address(0),

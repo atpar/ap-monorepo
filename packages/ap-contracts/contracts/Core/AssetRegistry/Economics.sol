@@ -299,8 +299,8 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param assetId id of the asset
      * @param terms new CustomTerms
      */
-    function setCustomTerms(bytes32 assetId, CustomTerms memory terms)
-        public
+    function setCustomTerms(bytes32 assetId, CustomTerms calldata terms)
+        external
         override
         isAuthorized (assetId)
     {
@@ -315,8 +315,8 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setState(bytes32 assetId, State memory state)
-        public
+    function setState(bytes32 assetId, State calldata state)
+        external
         override
         isAuthorized (assetId)
     {
@@ -331,8 +331,8 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param assetId id of the asset
      * @param state next state of the asset
      */
-    function setFinalizedState(bytes32 assetId, State memory state)
-        public
+    function setFinalizedState(bytes32 assetId, State calldata state)
+        external
         override
         isAuthorized (assetId)
     {
@@ -349,7 +349,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param anchorDate new anchor date of the asset
      */
     function setAnchorDate(bytes32 assetId, uint256 anchorDate)
-        public
+        external
         override
         isAuthorized (assetId)
     {
@@ -367,7 +367,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param engine new engine address
      */
     function setEngine(bytes32 assetId, address engine)
-        public
+        external
         override
         isAuthorized (assetId)
     {
@@ -384,7 +384,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param actor address of the Actor contract
      */
     function setActor(bytes32 assetId, address actor)
-        public
+        external
         override
         isAuthorized (assetId)
     {

@@ -43,10 +43,10 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
      */
     function lockCollateral(
         bytes32 assetId,
-        LifecycleTerms memory terms,
-        AssetOwnership memory ownership
+        LifecycleTerms calldata terms,
+        AssetOwnership calldata ownership
     )
-        public
+        external
         override
         returns (bool)
     {
@@ -108,7 +108,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
     function returnCollateral(
         bytes32 assetId
     )
-        public
+        external
         override
         returns (bool)
     {

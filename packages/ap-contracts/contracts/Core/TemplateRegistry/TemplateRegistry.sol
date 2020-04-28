@@ -100,8 +100,8 @@ contract TemplateRegistry is TemplateRegistryStorage, ITemplateRegistry {
      * @param terms set of TemplateTerms
      * @param templateSchedule templateSchedule which encodes offsets for ScheduleTime relative to an AnchorDate + EventType
      */
-    function registerTemplate(TemplateTerms memory terms, bytes32[] memory templateSchedule)
-        public
+    function registerTemplate(TemplateTerms calldata terms, bytes32[] calldata templateSchedule)
+        external
         override
     {
         // derive the templateId from the hash of the provided TemplateTerms and TemplateSchedule

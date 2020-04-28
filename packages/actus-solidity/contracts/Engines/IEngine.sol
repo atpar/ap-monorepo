@@ -15,8 +15,8 @@ abstract contract IEngine is ACTUSTypes {
      * @param terms terms of the contract
      * @return initial state of the contract
      */
-    function computeInitialState(LifecycleTerms memory terms)
-        public
+    function computeInitialState(LifecycleTerms calldata terms)
+        external
         pure
         virtual
         returns (State memory);
@@ -30,12 +30,12 @@ abstract contract IEngine is ACTUSTypes {
      * @return the resulting contract state
      */
     function computeStateForEvent(
-        LifecycleTerms memory terms,
-        State memory state,
+        LifecycleTerms calldata terms,
+        State calldata state,
         bytes32 _event,
         bytes32 externalData
     )
-        public
+        external
         pure
         virtual
         returns (State memory);
@@ -49,12 +49,12 @@ abstract contract IEngine is ACTUSTypes {
      * @return the payoff of the event
      */
     function computePayoffForEvent(
-        LifecycleTerms memory terms,
-        State memory state,
+        LifecycleTerms calldata terms,
+        State calldata state,
         bytes32 _event,
         bytes32 externalData
     )
-        public
+        external
         pure
         virtual
         returns (int256);
@@ -68,11 +68,11 @@ abstract contract IEngine is ACTUSTypes {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        GeneratingTerms memory terms,
+        GeneratingTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd
     )
-        public
+        external
         pure
         virtual
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
@@ -87,12 +87,12 @@ abstract contract IEngine is ACTUSTypes {
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        GeneratingTerms memory terms,
+        GeneratingTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd,
         EventType eventType
     )
-        public
+        external
         pure
         virtual
         returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
@@ -109,12 +109,12 @@ abstract contract IEngine is ACTUSTypes {
      */
     function isEventScheduled(
         bytes32 _event,
-        LifecycleTerms memory terms,
-        State memory state,
+        LifecycleTerms calldata terms,
+        State calldata state,
         bool hasUnderlying,
-        State memory underlyingState
+        State calldata underlyingState
     )
-        public
+        external
         pure
         virtual
         returns (bool);

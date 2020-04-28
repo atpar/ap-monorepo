@@ -18,8 +18,8 @@ abstract contract IAssetIssuer is SharedTypes, VerifyOrder {
     }
 
 
-    function issueFromDraft(Draft memory draft)
-        public
+    function issueFromDraft(Draft calldata draft)
+        external
         virtual;
 
     function issueFromOrder(Order memory order)

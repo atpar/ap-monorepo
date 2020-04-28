@@ -8,17 +8,17 @@ abstract contract ICustodian is SharedTypes {
 
     function lockCollateral(
         bytes32 assetId,
-        LifecycleTerms memory terms,
-        AssetOwnership memory ownership
+        LifecycleTerms calldata terms,
+        AssetOwnership calldata ownership
     )
-        public
+        external
         virtual
         returns (bool);
 
     function returnCollateral(
         bytes32 assetId
     )
-        public
+        external
         virtual
         returns (bool);
 }

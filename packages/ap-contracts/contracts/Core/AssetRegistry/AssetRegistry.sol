@@ -51,15 +51,15 @@ contract AssetRegistry is AssetRegistryStorage, IAssetRegistry, Economics, Owner
      */
     function registerAsset(
         bytes32 assetId,
-        AssetOwnership memory ownership,
+        AssetOwnership calldata ownership,
         bytes32 templateId,
-        CustomTerms memory terms,
-        State memory state,
+        CustomTerms calldata terms,
+        State calldata state,
         address engine,
         address actor,
         address admin
     )
-        public
+        external
         override
     {
         // revert if an asset with the specified assetId already exists

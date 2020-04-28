@@ -30,7 +30,7 @@ abstract contract ITemplateRegistry is TemplateRegistryStorage {
         virtual
         returns (uint256);
 
-    function registerTemplate(TemplateTerms memory terms, bytes32[] memory templateSchedule)
-        public
+    function registerTemplate(TemplateTerms calldata terms, bytes32[] calldata templateSchedule)
+        external
         virtual;
 }

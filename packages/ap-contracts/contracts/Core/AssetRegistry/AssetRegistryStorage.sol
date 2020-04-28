@@ -100,7 +100,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
      */
     function encodeAndSetTerms(bytes32 assetId, CustomTerms memory customTerms) internal {
         storeInPackedStateTerms(assetId, 1, bytes32(customTerms.anchorDate));
- 
+
         storeInPackedStateTerms(
             assetId,
             2,
