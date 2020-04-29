@@ -2,11 +2,7 @@ const ANNEngine = artifacts.require('ANNEngine.sol');
 
 const { getTestCases, compareTestResults  } = require('../../helper/tests');
 const { parseToTestEvent, parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('../../helper/parser');
-const {
-  decodeEvent,
-  sortEvents,
-  removeNullEvents
-} = require('../../helper/schedule');
+const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 
 contract('ANNEngine', () => {
@@ -18,38 +14,38 @@ contract('ANNEngine', () => {
     generatingTerms.cycleAnchorDateOfInterestPayment = generatingTerms.cycleAnchorDateOfPrincipalRedemption;
     generatingTerms.cycleOfInterestPayment = generatingTerms.cycleOfPrincipalRedemption;
 
-    const _eventSchedule = [];
+    const schedule = [];
       
-    _eventSchedule.push(... await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd
     ));
-    _eventSchedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       2 // FP
     ));
-    _eventSchedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
       9 // IPCI
     ));
-    _eventSchedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       8 // IP
     ));
-    _eventSchedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       3 // PR
     ));
-    _eventSchedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
@@ -57,7 +53,7 @@ contract('ANNEngine', () => {
     ));
     
     
-    return sortEvents(removeNullEvents(_eventSchedule));
+    return sortEvents(schedule);
   }
 
   before(async () => {    
@@ -70,16 +66,16 @@ contract('ANNEngine', () => {
     const generatingTerms = parseTermsToGeneratingTerms(terms);
 
     const initialState = await this.ANNEngineInstance.computeInitialState(lifecycleTerms);
-    const _eventSchedule = removeNullEvents(await computeEventScheduleSegment(
+    const schedule = await computeEventScheduleSegment(
       generatingTerms,
       generatingTerms.contractDealDate,
       generatingTerms.maturityDate
-    ));
+    );
 
     const evaluatedSchedule = [];
     let state = initialState;
 
-    for (_event of _eventSchedule) {
+    for (_event of schedule) {
       const { eventType, scheduleTime } = decodeEvent(_event);
 
       if (scheduleTime == 0) { break; }
@@ -114,15 +110,13 @@ contract('ANNEngine', () => {
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  /*
   // schedule is too long
-  it('should yield the expected evaluated contract schedule for test ANN-20002', async () => {
-    const testDetails = this.testCases['20002'];
-    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
+  // it('should yield the expected evaluated contract schedule for test ANN-20002', async () => {
+  //   const testDetails = this.testCases['20002'];
+  //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
-    compareTestResults(evaluatedSchedule, testDetails['results']);
-  });
-  */
+  //   compareTestResults(evaluatedSchedule, testDetails['results']);
+  // });
 
   it('should yield the expected evaluated contract schedule for test ANN20003', async () => {
     const testDetails = this.testCases['20003'];

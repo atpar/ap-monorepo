@@ -19,7 +19,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -34,16 +34,16 @@ contract POF is Core {
 
         return (
             state.feeAccrued
-                .add(
-                    yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
-                    .floatMult(terms.feeRate)
-                    .floatMult(state.notionalPrincipal)
+            .add(
+                yearFraction(
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
                 )
+                .floatMult(terms.feeRate)
+                .floatMult(state.notionalPrincipal)
+            )
         );
     }
 
@@ -53,9 +53,9 @@ contract POF is Core {
      */
     function POF_PAM_IED (
         LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        State memory /* state */,
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -77,7 +77,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -85,19 +85,19 @@ contract POF is Core {
     {
         return (
             state.interestScalingMultiplier
-                .floatMult(
-                    state.accruedInterest
-                    .add(
-                        yearFraction(
-                            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                            terms.dayCountConvention,
-                            terms.maturityDate
-                        )
-                        .floatMult(state.nominalInterestRate)
-                        .floatMult(state.notionalPrincipal)
+            .floatMult(
+                state.accruedInterest
+                .add(
+                    yearFraction(
+                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                        terms.dayCountConvention,
+                        terms.maturityDate
                     )
+                    .floatMult(state.nominalInterestRate)
+                    .floatMult(state.notionalPrincipal)
                 )
+            )
         );
     }
 
@@ -108,8 +108,8 @@ contract POF is Core {
     function POF_PAM_PP (
         LifecycleTerms memory terms,
         State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -126,10 +126,10 @@ contract POF is Core {
      * @return the maturity payoff for PAM contracts
      */
     function POF_PAM_MD (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -149,7 +149,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -164,24 +164,24 @@ contract POF is Core {
             return (
                 roleSign(terms.contractRole)
                 * yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
-                    .floatMult(terms.penaltyRate)
-                    .floatMult(state.notionalPrincipal)
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
+                )
+                .floatMult(terms.penaltyRate)
+                .floatMult(state.notionalPrincipal)
             );
         } else {
             return (
                 roleSign(terms.contractRole)
                 * yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
-                    .floatMult(state.notionalPrincipal)
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
+                )
+                .floatMult(state.notionalPrincipal)
             );
         }
     }
@@ -194,7 +194,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -203,17 +203,17 @@ contract POF is Core {
         return (
             roleSign(terms.contractRole)
             * terms.priceAtPurchaseDate
-                .add(state.accruedInterest)
-                .add(
-                    yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
-                    .floatMult(state.nominalInterestRate)
-                    .floatMult(state.notionalPrincipal)
+            .add(state.accruedInterest)
+            .add(
+                yearFraction(
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
                 )
+                .floatMult(state.nominalInterestRate)
+                .floatMult(state.notionalPrincipal)
+            )
         );
     }
 
@@ -226,7 +226,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -234,24 +234,24 @@ contract POF is Core {
     {
         return (
             (state.notionalScalingMultiplier * roleSign(terms.contractRole))
-                .floatMult(
-                    (roleSign(terms.contractRole) * state.notionalPrincipal)
-                    .min(
-                            roleSign(terms.contractRole)
-                            * (
-                                state.nextPrincipalRedemptionPayment
-                                - state.accruedInterest
-                                - yearFraction(
-                                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                                    terms.dayCountConvention,
-                                    terms.maturityDate
-                                )
-                                .floatMult(state.nominalInterestRate)
-                                .floatMult(state.notionalPrincipal)
-                            )
+            .floatMult(
+                (roleSign(terms.contractRole) * state.notionalPrincipal)
+                .min(
+                    roleSign(terms.contractRole)
+                    * (
+                        state.nextPrincipalRedemptionPayment
+                        - state.accruedInterest
+                        - yearFraction(
+                            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                            terms.dayCountConvention,
+                            terms.maturityDate
                         )
+                        .floatMult(state.nominalInterestRate)
+                        .floatMult(state.notionalPrincipal)
+                    )
                 )
+            )
         );
     }
 
@@ -260,10 +260,10 @@ contract POF is Core {
      * @return the settlement payoff amount for CEG contracts
      */
     function POF_CEG_STD (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -280,7 +280,7 @@ contract POF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -295,16 +295,16 @@ contract POF is Core {
 
         return (
             state.feeAccrued
-                .add(
-                    yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
-                    .floatMult(terms.feeRate)
-                    .floatMult(state.notionalPrincipal)
+            .add(
+                yearFraction(
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
                 )
+                .floatMult(terms.feeRate)
+                .floatMult(state.notionalPrincipal)
+            )
         );
     }
 }

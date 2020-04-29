@@ -10,17 +10,16 @@ import "../Core/Core.sol";
  */
 contract STF is Core {
 
-
     /**
      * State transition for PAM analysis events
      * @param state the old state
      * @return the new state
      */
     function STF_PAM_NE (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -38,7 +37,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -76,7 +75,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -109,38 +108,16 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
         state.statusDate = scheduleTime;
-
         state.accruedInterest = terms.accruedInterest;
-
-        // if (terms.cycleAnchorDateOfInterestPayment != 0 &&
-        //   terms.cycleAnchorDateOfInterestPayment < terms.initialExchangeDate
-        // ) {
-        //   state.accruedInterest = state.nominalInterestRate
-        //   .floatMult(state.notionalPrincipal)
-        //   .floatMult(
-        //     yearFraction(
-        //       terms.cycleAnchorDateOfInterestPayment,
-        //       scheduleTime,
-        //       terms.dayCountConvention,
-        //       terms.maturityDate
-        //     )
-        //   );
-        // }
 
         return state;
     }
@@ -154,7 +131,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -196,7 +173,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -229,7 +206,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -253,7 +230,7 @@ contract STF is Core {
             .floatMult(state.notionalPrincipal)
             .floatMult(timeFromLastEvent)
         );
-        state.notionalPrincipal -= 0; // riskFactor(terms.objectCodeOfPrepaymentModel, scheduleTime, state, terms) * state.notionalPrincipal;
+        // state.notionalPrincipal -= 0; // riskFactor not supported
         state.statusDate = scheduleTime;
 
         return state;
@@ -268,7 +245,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -307,7 +284,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -345,7 +322,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -390,10 +367,8 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        // int256 rate = //riskFactor(terms.marketObjectCodeOfRateReset, scheduleTime, state, terms)
-        // 	* terms.rateMultiplier + terms.rateSpread;
-
         // apply external rate, multiply with rateMultiplier and add the spread
+        // riskFactor not supported
         int256 rate = int256(uint256(externalData)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
 
         // deltaRate is the difference between the rate that includes external data, spread and multiplier and the currently active rate from the state
@@ -439,7 +414,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -465,10 +440,10 @@ contract STF is Core {
         );
 
         if ((terms.scalingEffect == ScalingEffect.I00) || (terms.scalingEffect == ScalingEffect.IN0)) {
-            state.interestScalingMultiplier = 0; // riskFactor(terms.marketObjectCodeOfScalingIndex, scheduleTime, state, terms)
+            state.interestScalingMultiplier = 0; // riskFactor not supported
         }
         if ((terms.scalingEffect == ScalingEffect._0N0) || (terms.scalingEffect == ScalingEffect.IN0)) {
-            state.notionalScalingMultiplier = 0; // riskFactor(terms.marketObjectCodeOfScalingIndex, scheduleTime, state, terms)
+            state.notionalScalingMultiplier = 0; // riskFactor not supported
         }
 
         state.statusDate = scheduleTime;
@@ -485,7 +460,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -522,10 +497,10 @@ contract STF is Core {
      * @return the new state
      */
     function STF_PAM_TD (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -591,134 +566,20 @@ contract STF is Core {
         return state;
     }
 
-    // function STF_ANN_AD (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = state.feeAccrued
-    //   .add(
-    //     terms.feeRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
-    // function STF_ANN_CD (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = state.feeAccrued
-    //   .add(
-    //     terms.feeRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.ContractPerformance = ContractPerformance.DF;
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
-    // function STF_ANN_FP (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = 0;
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
     function STF_ANN_IED (
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
         state.statusDate = scheduleTime;
-
         state.accruedInterest = terms.accruedInterest;
-
-        // if (terms.cycleAnchorDateOfInterestPayment != 0 &&
-        //   terms.cycleAnchorDateOfInterestPayment < terms.initialExchangeDate
-        // ) {
-        //   state.accruedInterest = state.nominalInterestRate
-        //   .floatMult(state.notionalPrincipal)
-        //   .floatMult(
-        //     yearFraction(
-        //       shiftCalcTime(terms.cycleAnchorDateOfInterestPayment, terms.businessDayConvention, terms.calendar),
-        //       shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-        //       terms.dayCountConvention,
-        //       terms.maturityDate
-        //     )
-        //   );
-        // }
 
         return state;
     }
@@ -727,7 +588,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -764,7 +625,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -788,44 +649,11 @@ contract STF is Core {
         return state;
     }
 
-    // function STF_ANN_PP (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = state.feeAccrued
-    //   .add(
-    //     terms.feeRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.notionalPrincipal -= 0; // riskFactor(terms.objectCodeOfPrepaymentModel, scheduleTime, state, terms) * state.notionalPrincipal;
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
     function STF_ANN_PR (
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -874,7 +702,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -905,72 +733,6 @@ contract STF is Core {
         return state;
     }
 
-    // STF_PAM_PY
-    // function STF_ANN_PY (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = state.feeAccrued
-    //   .add(
-    //     terms.feeRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
-    // function STF_ANN_RRF (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    //   int256 timeFromLastEvent = yearFraction(
-    //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     terms.dayCountConvention,
-    //     terms.maturityDate
-    //   );
-    //   state.nominalAccrued = state.nominalAccrued
-    //   .add(
-    //     state.nominalInterestRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.feeAccrued = state.feeAccrued
-    //   .add(
-    //     terms.feeRate
-    //     .floatMult(state.notionalPrincipal)
-    //     .floatMult(timeFromLastEvent)
-    //   );
-    //   state.nominalInterestRate = terms.nextResetRate;
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
     function STF_ANN_RR (
         LifecycleTerms memory terms,
         State memory state,
@@ -981,12 +743,11 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        // int256 rate = //riskFactor(terms.marketObjectCodeOfRateReset, scheduleTime, state, terms)
-        // 	* terms.rateMultiplier + terms.rateSpread;
+        // riskFactor not supported
         int256 rate = int256(externalData) * terms.rateMultiplier + terms.rateSpread;
         int256 deltaRate = rate.sub(state.nominalInterestRate);
 
-            // apply period cap/floor
+        // apply period cap/floor
         if ((terms.lifeCap < deltaRate) && (terms.lifeCap < ((-1) * terms.periodFloor))) {
             deltaRate = terms.lifeCap;
         } else if (deltaRate < ((-1) * terms.periodFloor)) {
@@ -1014,7 +775,7 @@ contract STF is Core {
             .floatMult(timeFromLastEvent)
         );
         state.nominalInterestRate = rate;
-        state.nextPrincipalRedemptionPayment = 0; // TODO: implement annuity calculator
+        state.nextPrincipalRedemptionPayment = 0; // annuity calculator not supported
         state.statusDate = scheduleTime;
 
         return state;
@@ -1024,7 +785,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -1050,10 +811,10 @@ contract STF is Core {
         );
 
         if ((terms.scalingEffect == ScalingEffect.I00) || (terms.scalingEffect == ScalingEffect.IN0)) {
-            state.interestScalingMultiplier = 0; // riskFactor(terms.marketObjectCodeOfScalingIndex, scheduleTime, state, terms)
+            state.interestScalingMultiplier = 0; // riskFactor not supported
         }
         if ((terms.scalingEffect == ScalingEffect._0N0) || (terms.scalingEffect == ScalingEffect.IN0)) {
-            state.notionalScalingMultiplier = 0; // riskFactor(terms.marketObjectCodeOfScalingIndex, scheduleTime, state, terms)
+            state.notionalScalingMultiplier = 0; // riskFactor not supported
         }
 
         state.statusDate = scheduleTime;
@@ -1061,34 +822,11 @@ contract STF is Core {
         return state;
     }
 
-    // function STF_ANN_TD (
-    //   uint256 scheduleTime,
-    //   LifecycleTerms memory terms,
-    //   State memory state
-    // )
-    //   internal
-    //   pure
-    //   returns (State memory)
-    // {
-    // //   int256 timeFromLastEvent = yearFraction(
-    // //     shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    // //     shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    // //     terms.dayCountConvention,
-    // //     terms.maturityDate
-    // //   );
-    //   state.notionalPrincipal = 0;
-    //   state.nominalAccrued = 0;
-    //   state.feeAccrued = 0;
-    //   state.statusDate = scheduleTime;
-
-    //   return state;
-    // }
-
     function STF_CEG_MD (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -1120,26 +858,26 @@ contract STF is Core {
             state.feeAccrued = roleSign(terms.contractRole) * terms.feeRate;
         } else {
             state.feeAccrued = state.feeAccrued
-                    .add(
-                        yearFraction(
-                            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                            terms.dayCountConvention,
-                            terms.maturityDate
-                        )
-                        .floatMult(terms.feeRate)
-                        .floatMult(state.notionalPrincipal)
-                    );
+            .add(
+                yearFraction(
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    terms.dayCountConvention,
+                    terms.maturityDate
+                )
+                .floatMult(terms.feeRate)
+                .floatMult(state.notionalPrincipal)
+            );
         }
 
         return state;
     }
 
     function STF_CEG_STD (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -1157,7 +895,7 @@ contract STF is Core {
         LifecycleTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -1171,10 +909,10 @@ contract STF is Core {
     }
 
     function STF_CEG_FP (
-        LifecycleTerms memory terms,
+        LifecycleTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -1185,28 +923,4 @@ contract STF is Core {
 
         return state;
     }
-
-    // function STF_CEG_TD (
-    //     LifecycleTerms memory terms,
-    //     State memory state,
-    //     uint256 scheduleTime,
-    //     bytes32 externalData
-    // )
-    //     internal
-    //     pure
-    //     returns (State memory)
-    // {
-    //     // uint256 timeFromLastEvent = yearFraction(
-    //     //   shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-    //     //   shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-    //     //   terms.dayCountConvention,
-    //     //   terms.maturityDate
-    //     // );
-    //     state.notionalPrincipal = 0;
-    //     state.accruedInterest = 0;
-    //     state.feeAccrued = 0;
-    //     state.statusDate = scheduleTime;
-
-    //     return state;
-    // }
 }

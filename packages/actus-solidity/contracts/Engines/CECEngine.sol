@@ -53,61 +53,67 @@ contract CECEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index = 0;
 
         // maturity event
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
-            _eventSchedule[index] = encodeEvent(EventType.MD, terms.maturityDate);
+            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
             index++;
         }
 
-        return _eventSchedule;
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
-     * @param terms terms of the contract
-     * @param segmentStart start timestamp of the segment
-     * @param segmentEnd end timestamp of the segement
-     * @param eventType eventType of the cyclic schedule
+     * param terms terms of the contract
+     * param segmentStart start timestamp of the segment
+     * param segmentEnd end timestamp of the segement
+     * param eventType eventType of the cyclic schedule
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
-        uint256 segmentStart,
-        uint256 segmentEnd,
-        EventType eventType
+        GeneratingTerms calldata /* terms */,
+        uint256 /* segmentStart */,
+        uint256 /* segmentEnd */,
+        EventType /* eventType */
     )
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[] memory schedule = new bytes32[](0);
 
-        return _eventSchedule;
+        return schedule;
     }
 
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
-     * @param _event event for which to check if its still scheduled
-     * @param terms terms of the contract
-     * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
-     * @param underlyingState state of the underlying (empty state object if non-existing)
+     * param _event event for which to check if its still scheduled
+     * param terms terms of the contract
+     * param state current state of the contract
+     * param hasUnderlying boolean indicating whether the contract has an underlying contract
+     * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
-        bytes32 _event,
-        LifecycleTerms calldata terms,
-        State calldata state,
-        bool hasUnderlying,
-        State calldata underlyingState
+        bytes32 /* _event */,
+        LifecycleTerms calldata /* terms */,
+        State calldata /* state */,
+        bool /* hasUnderlying */,
+        State calldata /* underlyingState */
     )
         external
         pure

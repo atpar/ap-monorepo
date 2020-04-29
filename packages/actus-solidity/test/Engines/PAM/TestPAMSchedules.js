@@ -2,55 +2,51 @@ const PAMEngine = artifacts.require('PAMEngine.sol');
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
 const { parseToTestEvent, parseTermsToLifecycleTerms, parseTermsToGeneratingTerms} = require('../../helper/parser');
-const {
-  decodeEvent,
-  sortEvents,
-  removeNullEvents
-} = require('../../helper/schedule');
+const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 contract('PAMEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
     const generatingTerms = parseTermsToGeneratingTerms(terms);
-    const _eventSchedule = [];
+    const schedule = [];
       
-    _eventSchedule.push(... await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd
     ));
-    _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       2 // FP
     ));
-    _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
       9 // IPCI
     ));
-    _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       8 // IP
     ));
-    _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       3 // PR
     ));
-    _eventSchedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
+    schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       generatingTerms,
       segmentStart,
       segmentEnd,
       12 // RR
     ));
     
-    return sortEvents(removeNullEvents(_eventSchedule));
+    return sortEvents(schedule);
   }
 
   before(async () => {    
@@ -63,18 +59,18 @@ contract('PAMEngine', () => {
     const generatingTerms = parseTermsToGeneratingTerms(terms);
 
     const initialState = await this.PAMEngineInstance.computeInitialState(lifecycleTerms);
-    const _eventSchedule = removeNullEvents(await computeEventScheduleSegment(
+    const schedule = await computeEventScheduleSegment(
       generatingTerms,
       generatingTerms.contractDealDate,
       generatingTerms.maturityDate
-    ));
+    );
 
     const evaluatedSchedule = [];
     let state = initialState;
 
     let rrIndex = 0;
 
-    for (_event of _eventSchedule) {
+    for (_event of schedule) {
       const { eventType, scheduleTime } = decodeEvent(_event);
 
       if (scheduleTime == 0) { break; }
@@ -187,7 +183,6 @@ contract('PAMEngine', () => {
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   }); 
-
   
   // TODO: Purchase/Termination not supported
   // it('should yield the expected evaluated contract schedule for test PAM10012', async () => {
@@ -195,8 +190,7 @@ contract('PAMEngine', () => {
   //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
   //   compareTestResults(evaluatedSchedule, testDetails['results']);
-  // });
-  
+  // });  
 
   // TODO: Precision Error
   // it('should yield the expected evaluated contract schedule for test PAM10013', async () => {

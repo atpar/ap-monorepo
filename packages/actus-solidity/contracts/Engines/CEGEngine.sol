@@ -54,26 +54,32 @@ contract CEGEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index = 0;
 
         // purchase
         if (terms.purchaseDate != 0) {
             if (isInSegment(terms.purchaseDate, segmentStart, segmentEnd)) {
-                _eventSchedule[index] = encodeEvent(EventType.PRD, terms.purchaseDate);
+                events[index] = encodeEvent(EventType.PRD, terms.purchaseDate);
                 index++;
             }
         }
 
         // maturity event
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
-            _eventSchedule[index] = encodeEvent(EventType.MD, terms.maturityDate);
+            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
             index++;
         }
 
-        return _eventSchedule;
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
@@ -94,13 +100,12 @@ contract CEGEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[] memory events;
+        uint256 index = 0;
 
         if (eventType == EventType.FP) {
-            uint256 index = 0;
-
             // fees
             if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
                 uint256[MAX_CYCLE_SIZE] memory feeSchedule = computeDatesFromCycleSegment(
@@ -114,29 +119,35 @@ contract CEGEngine is BaseEngine, STF, POF {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (feeSchedule[i] == 0) break;
                     if (isInSegment(feeSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    _eventSchedule[index] = encodeEvent(EventType.FP, feeSchedule[i]);
+                    events[index] = encodeEvent(EventType.FP, feeSchedule[i]);
                     index++;
                 }
             }
         }
 
-        return _eventSchedule;
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
      * @param _event event for which to check if its still scheduled
-     * @param terms terms of the contract
-     * @param state current state of the contract
+     * param terms terms of the contract
+     * param state current state of the contract
      * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 _event,
-        LifecycleTerms calldata terms,
-        State calldata state,
+        LifecycleTerms calldata /* terms */,
+        State calldata /* state */,
         bool hasUnderlying,
         State calldata underlyingState
     )
@@ -145,7 +156,7 @@ contract CEGEngine is BaseEngine, STF, POF {
         override
         returns (bool)
     {
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+        (EventType eventType,) = decodeEvent(_event);
 
         if (hasUnderlying) {
             // FP, MD events only scheduled up to execution of the Guarantee
@@ -182,8 +193,12 @@ contract CEGEngine is BaseEngine, STF, POF {
         returns (State memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-        // PRD events not supported
-        //if (eventType == EventType.PRD) return STF_CEG_PRD(terms, state, scheduleTime, externalData);
+
+        /*
+         * Note:
+         * Not supported: PRD (Purchase) events
+         */
+
         if (eventType == EventType.FP) return STF_CEG_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.XD) return STF_CEG_XD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.STD) return STF_CEG_STD(terms, state, scheduleTime, externalData);
@@ -216,9 +231,12 @@ contract CEGEngine is BaseEngine, STF, POF {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        // PRD events not supported
+        /*
+         * Note:
+         * Not supported: PRD (Purchase) events
+         */
+
         if (eventType == EventType.CE) return 0;
-        // if (eventType == EventType.PRD) return POF_CEG_PRD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.FP) return POF_CEG_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.XD) return 0;
         if (eventType == EventType.STD) return POF_CEG_STD(terms, state, scheduleTime, externalData);

@@ -30,8 +30,8 @@ contract ANNEngine is BaseEngine, STF, POF {
         State memory state;
 
         state.contractPerformance = ContractPerformance.PF;
-        state.notionalScalingMultiplier = int256(1 * 10 ** PRECISION);
-        state.interestScalingMultiplier = int256(1 * 10 ** PRECISION);
+        state.notionalScalingMultiplier = ONE_POINT_ZERO;
+        state.interestScalingMultiplier = ONE_POINT_ZERO;
         state.statusDate = terms.statusDate;
         state.maturityDate = terms.maturityDate;
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
@@ -61,32 +61,38 @@ contract ANNEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index = 0;
 
         // initial exchange
         if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
-            _eventSchedule[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
             index++;
         }
 
         // purchase
         if (terms.purchaseDate != 0) {
             if (isInSegment(terms.purchaseDate, segmentStart, segmentEnd)) {
-                _eventSchedule[index] = encodeEvent(EventType.PRD, terms.purchaseDate);
+                events[index] = encodeEvent(EventType.PRD, terms.purchaseDate);
                 index++;
             }
         }
 
         // principal redemption at maturity
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true)  {
-            _eventSchedule[index] = encodeEvent(EventType.MD, terms.maturityDate);
+            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
             index++;
         }
 
-        return _eventSchedule;
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
@@ -107,13 +113,12 @@ contract ANNEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory)
+        returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory _eventSchedule;
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
+        uint256 index = 0;
 
         if (eventType == EventType.IP) {
-            uint256 index = 0;
-
             // interest payment related (covers pre-repayment period only,
             // starting with PRANX interest is paid following the PR schedule)
             if (
@@ -132,15 +137,13 @@ contract ANNEngine is BaseEngine, STF, POF {
                     if (interestPaymentSchedule[i] == 0) break;
                     if (interestPaymentSchedule[i] <= terms.capitalizationEndDate) continue;
                     if (isInSegment(interestPaymentSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    _eventSchedule[index] = encodeEvent(EventType.IP, interestPaymentSchedule[i]);
+                    events[index] = encodeEvent(EventType.IP, interestPaymentSchedule[i]);
                     index++;
                 }
             }
         }
 
         if (eventType == EventType.IPCI) {
-            uint256 index = 0;
-
             // IPCI
             if (
                 terms.cycleOfInterestPayment.isSet == true
@@ -162,15 +165,13 @@ contract ANNEngine is BaseEngine, STF, POF {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (interestPaymentSchedule[i] == 0) break;
                     if (isInSegment(interestPaymentSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    _eventSchedule[index] = encodeEvent(EventType.IPCI, interestPaymentSchedule[i]);
+                    events[index] = encodeEvent(EventType.IPCI, interestPaymentSchedule[i]);
                     index++;
                 }
             }
         }
 
         if (eventType == EventType.FP) {
-            uint256 index = 0;
-
             // fees
             if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
                 uint256[MAX_CYCLE_SIZE] memory feeSchedule = computeDatesFromCycleSegment(
@@ -184,15 +185,13 @@ contract ANNEngine is BaseEngine, STF, POF {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (feeSchedule[i] == 0) break;
                     if (isInSegment(feeSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    _eventSchedule[index] = encodeEvent(EventType.FP, feeSchedule[i]);
+                    events[index] = encodeEvent(EventType.FP, feeSchedule[i]);
                     index++;
                 }
             }
         }
 
         if (eventType == EventType.PR) {
-            uint256 index = 0;
-
             // principal redemption
             uint256[MAX_CYCLE_SIZE] memory principalRedemptionSchedule = computeDatesFromCycleSegment(
                 terms.cycleAnchorDateOfPrincipalRedemption,
@@ -205,30 +204,36 @@ contract ANNEngine is BaseEngine, STF, POF {
             for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                 if (principalRedemptionSchedule[i] == 0) break;
                 if (isInSegment(principalRedemptionSchedule[i], segmentStart, segmentEnd) == false) continue;
-                _eventSchedule[index] = encodeEvent(EventType.PR, principalRedemptionSchedule[i]);
+                events[index] = encodeEvent(EventType.PR, principalRedemptionSchedule[i]);
                 index++;
             }
         }
 
-        return _eventSchedule;
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
-     * @param _event event for which to check if its still scheduled
-     * @param terms terms of the contract
-     * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
-     * @param underlyingState state of the underlying (empty state object if non-existing)
+     * param _event event for which to check if its still scheduled
+     * param terms terms of the contract
+     * param state current state of the contract
+     * param hasUnderlying boolean indicating whether the contract has an underlying contract
+     * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
-        bytes32 _event,
-        LifecycleTerms calldata terms,
-        State calldata state,
-        bool hasUnderlying,
-        State calldata underlyingState
+        bytes32 /* _event */,
+        LifecycleTerms calldata /* terms */,
+        State calldata /* state */,
+        bool /* hasUnderlying */,
+        State calldata /* underlyingState */
     )
         external
         pure
@@ -261,17 +266,18 @@ contract ANNEngine is BaseEngine, STF, POF {
         returns (State memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
         /*
          * Note:
-         * not supported: IPCB events, PRD events
+         * not supported: IPCB events, PRD (Purchase) events
          */
+
         if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
-        //if (eventType == EventType.PRD) return STF_PAM_PRD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
@@ -315,23 +321,23 @@ contract ANNEngine is BaseEngine, STF, POF {
          * There is a reference to a POF_ANN_PR function which was added because PAM doesn't have PR Events in ACTUS 1.0
          * and NAM, which ANN refers to in the specification, is not yet supported
          *
-         * not supported: IPCB events, PRD events
+         * not supported: IPCB events, PRD (Purchase) events
          */
-        if (eventType == EventType.AD) return 0; // Analysis Event
-        if (eventType == EventType.IPCI) return 0; // Interest Capitalization Event
-        if (eventType == EventType.RRF) return 0; // Rate Reset Fixed
-        if (eventType == EventType.RR) return 0; // Rate Reset Variable
-        if (eventType == EventType.SC) return 0; // Scaling Index Revision
-        if (eventType == EventType.CE) return 0; // Credit Event
-        if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData); // Fee Payment
-        if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData); // Intital Exchange
-        if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData); // Interest Payment
-        if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData); // Principal Prepayment
-        //if (eventType == EventType.PRD) return POF_PAM_PRD(terms, state, scheduleTime, externalData); // Purchase
-        if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData); // Principal Redemption
-        if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData); // Maturity
-        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData); // Penalty Payment
-        if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData); // Termination
+
+        if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.IPCI) return 0;
+        if (eventType == EventType.RRF) return 0;
+        if (eventType == EventType.RR) return 0;
+        if (eventType == EventType.SC) return 0;
+        if (eventType == EventType.CE) return 0;
+        if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData);
 
         revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }

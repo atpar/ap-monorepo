@@ -75,7 +75,7 @@ abstract contract IEngine is ACTUSTypes {
         external
         pure
         virtual
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
+        returns (bytes32[] memory);
 
     /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
@@ -95,7 +95,7 @@ abstract contract IEngine is ACTUSTypes {
         external
         pure
         virtual
-        returns (bytes32[MAX_EVENT_SCHEDULE_SIZE] memory);
+        returns (bytes32[] memory);
 
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the

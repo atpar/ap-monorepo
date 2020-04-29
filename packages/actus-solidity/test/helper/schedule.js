@@ -63,9 +63,7 @@ function decodeEvent (encodedEvent) {
 }
 
 function parseEventSchedule (encodedEventSchedule) {
-  return removeNullEvents(
-    encodedEventSchedule
-  ).map((encodedEvent) => decodeEvent(encodedEvent));
+  return encodedEventSchedule.map((encodedEvent) => decodeEvent(encodedEvent));
 }
 
 module.exports = { 
