@@ -177,7 +177,7 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
             State memory underlyingState = decodeAndGetState(underlyingAssetId);
 
             require(
-                underlyingState.statusDate != uint256(0),
+                assets[underlyingAssetId].isSet == true,
                 "AssetActor.getNextObservedEvent: ENTRY_DOES_NOT_EXIST"
             );
 
