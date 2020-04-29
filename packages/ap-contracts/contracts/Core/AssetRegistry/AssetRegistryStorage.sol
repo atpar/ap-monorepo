@@ -104,15 +104,15 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         storeInPackedStateTerms(
             assetId,
             2,
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.calendar))) << 240 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.contractRole))) << 232 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.dayCountConvention))) << 224 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.businessDayConvention))) << 216 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.scalingEffect))) << 200 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.feeBasis))) << 184 |
-            bytes32(uint256(uint8(customTerms.overwrittenTerms.creditEventTypeCovered))) << 176
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.calendar))) << 248 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.contractRole))) << 240 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.dayCountConvention))) << 232 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.businessDayConvention))) << 224 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.endOfMonthConvention))) << 216 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.scalingEffect))) << 208 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.penaltyType))) << 200 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.feeBasis))) << 192 |
+            bytes32(uint256(uint8(customTerms.overwrittenTerms.creditEventTypeCovered))) << 184
         );
 
         storeInPackedStateTerms(assetId, 3, bytes32(uint256(customTerms.overwrittenTerms.currency) << 96));
@@ -239,15 +239,15 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
             assets[assetId].overwrittenAttributesMap,
             // load overwritten values
             LifecycleTerms(
-                Calendar(uint8(uint256(assets[assetId].packedTermsState[2] >> 240))),
-                ContractRole(uint8(uint256(assets[assetId].packedTermsState[2] >> 232))),
-                DayCountConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 224))),
-                BusinessDayConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 216))),
-                EndOfMonthConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 208))),
-                ScalingEffect(uint8(uint256(assets[assetId].packedTermsState[2] >> 200))),
-                PenaltyType(uint8(uint256(assets[assetId].packedTermsState[2] >> 192))),
-                FeeBasis(uint8(uint256(assets[assetId].packedTermsState[2] >> 184))),
-                ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[2] >> 176))),
+                Calendar(uint8(uint256(assets[assetId].packedTermsState[2] >> 248))),
+                ContractRole(uint8(uint256(assets[assetId].packedTermsState[2] >> 240))),
+                DayCountConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 232))),
+                BusinessDayConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 224))),
+                EndOfMonthConvention(uint8(uint256(assets[assetId].packedTermsState[2] >> 216))),
+                ScalingEffect(uint8(uint256(assets[assetId].packedTermsState[2] >> 208))),
+                PenaltyType(uint8(uint256(assets[assetId].packedTermsState[2] >> 200))),
+                FeeBasis(uint8(uint256(assets[assetId].packedTermsState[2] >> 192))),
+                ContractPerformance(uint8(uint256(assets[assetId].packedTermsState[2] >> 184))),
 
                 address(uint160(uint256(assets[assetId].packedTermsState[3]) >> 96)),
                 address(uint160(uint256(assets[assetId].packedTermsState[4]) >> 96)),

@@ -46,15 +46,15 @@ contract TemplateRegistryStorage is SharedTypes {
         storeInPackedTerms(
             templateId,
             1,
-            bytes32(uint256(uint8(terms.calendar))) << 240 |
-            bytes32(uint256(uint8(terms.contractRole))) << 232 |
-            bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
-            bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
-            bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
-            bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(terms.feeBasis))) << 184 |
-            bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176
+            bytes32(uint256(uint8(terms.calendar))) << 248 |
+            bytes32(uint256(uint8(terms.contractRole))) << 240 |
+            bytes32(uint256(uint8(terms.dayCountConvention))) << 232 |
+            bytes32(uint256(uint8(terms.businessDayConvention))) << 224 |
+            bytes32(uint256(uint8(terms.endOfMonthConvention))) << 216 |
+            bytes32(uint256(uint8(terms.scalingEffect))) << 208 |
+            bytes32(uint256(uint8(terms.penaltyType))) << 200 |
+            bytes32(uint256(uint8(terms.feeBasis))) << 192 |
+            bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 184
         );
 
         storeInPackedTerms(templateId, 2, bytes32(uint256(terms.currency) << 96));
@@ -122,15 +122,15 @@ contract TemplateRegistryStorage is SharedTypes {
         returns (TemplateTerms memory)
     {
         return TemplateTerms(
-            Calendar(uint8(uint256(templates[templateId].packedTerms[1] >> 240))),
-            ContractRole(uint8(uint256(templates[templateId].packedTerms[1] >> 232))),
-            DayCountConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 224))),
-            BusinessDayConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 216))),
-            EndOfMonthConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 208))),
-            ScalingEffect(uint8(uint256(templates[templateId].packedTerms[1] >> 200))),
-            PenaltyType(uint8(uint256(templates[templateId].packedTerms[1] >> 192))),
-            FeeBasis(uint8(uint256(templates[templateId].packedTerms[1] >> 184))),
-            ContractPerformance(uint8(uint256(templates[templateId].packedTerms[1] >> 176))),
+            Calendar(uint8(uint256(templates[templateId].packedTerms[1] >> 248))),
+            ContractRole(uint8(uint256(templates[templateId].packedTerms[1] >> 240))),
+            DayCountConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 232))),
+            BusinessDayConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 224))),
+            EndOfMonthConvention(uint8(uint256(templates[templateId].packedTerms[1] >> 216))),
+            ScalingEffect(uint8(uint256(templates[templateId].packedTerms[1] >> 208))),
+            PenaltyType(uint8(uint256(templates[templateId].packedTerms[1] >> 200))),
+            FeeBasis(uint8(uint256(templates[templateId].packedTerms[1] >> 192))),
+            ContractPerformance(uint8(uint256(templates[templateId].packedTerms[1] >> 184))),
 
             address(uint160(uint256(templates[templateId].packedTerms[2]) >> 96)),
             address(uint160(uint256(templates[templateId].packedTerms[3]) >> 96)),
