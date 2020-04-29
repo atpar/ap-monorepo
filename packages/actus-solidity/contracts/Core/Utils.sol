@@ -45,7 +45,9 @@ contract Utils is ACTUSTypes, BusinessDayConvention {
         returns (uint256)
     {
         (, uint256 scheduleTime) = decodeEvent(_event);
-        return shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar);
+
+        // handle maturity date
+        return shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate);
     }
 
     /**

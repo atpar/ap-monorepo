@@ -245,7 +245,6 @@ contract AssetActor is
         );
 
         // try to settle payoff of event
-        // solium-disable-next-line
         bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff, terms);
 
         if (settledPayoff == false) {

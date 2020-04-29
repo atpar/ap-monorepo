@@ -35,12 +35,7 @@ contract POF is Core {
         return (
             state.feeAccrued
             .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                _yearFraction_POF(terms, state, scheduleTime)
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             )
@@ -88,12 +83,7 @@ contract POF is Core {
             .floatMult(
                 state.accruedInterest
                 .add(
-                    yearFraction(
-                        shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                        shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                        terms.dayCountConvention,
-                        terms.maturityDate
-                    )
+                    _yearFraction_POF(terms, state, scheduleTime)
                     .floatMult(state.nominalInterestRate)
                     .floatMult(state.notionalPrincipal)
                 )
@@ -163,24 +153,14 @@ contract POF is Core {
         } else if (terms.penaltyType == PenaltyType.N) {
             return (
                 roleSign(terms.contractRole)
-                * yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                * _yearFraction_POF(terms, state, scheduleTime)
                 .floatMult(terms.penaltyRate)
                 .floatMult(state.notionalPrincipal)
             );
         } else {
             return (
                 roleSign(terms.contractRole)
-                * yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                * _yearFraction_POF(terms, state, scheduleTime)
                 .floatMult(state.notionalPrincipal)
             );
         }
@@ -205,12 +185,7 @@ contract POF is Core {
             * terms.priceAtPurchaseDate
             .add(state.accruedInterest)
             .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                _yearFraction_POF(terms, state, scheduleTime)
                 .floatMult(state.nominalInterestRate)
                 .floatMult(state.notionalPrincipal)
             )
@@ -241,12 +216,7 @@ contract POF is Core {
                     * (
                         state.nextPrincipalRedemptionPayment
                         - state.accruedInterest
-                        - yearFraction(
-                            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                            terms.dayCountConvention,
-                            terms.maturityDate
-                        )
+                        - _yearFraction_POF(terms, state, scheduleTime)
                         .floatMult(state.nominalInterestRate)
                         .floatMult(state.notionalPrincipal)
                     )
@@ -296,15 +266,27 @@ contract POF is Core {
         return (
             state.feeAccrued
             .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                _yearFraction_POF(terms, state, scheduleTime)
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             )
+        );
+    }
+
+    function _yearFraction_POF (
+        LifecycleTerms memory terms,
+        State memory state,
+        uint256 scheduleTime
+    )
+        internal
+        pure
+        returns(int256)
+    {
+        return yearFraction(
+            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            terms.dayCountConvention,
+            terms.maturityDate
         );
     }
 }

@@ -20,7 +20,8 @@ contract BusinessDayConvention is ACTUSTypes {
     function shiftCalcTime(
         uint256 timestamp,
         BusinessDayConvention convention,
-        Calendar calendar
+        Calendar calendar,
+        uint256 maturityDate
     )
         internal
         pure
@@ -35,7 +36,7 @@ contract BusinessDayConvention is ACTUSTypes {
             return timestamp;
         }
 
-        return shiftEventTime(timestamp, convention, calendar);
+        return shiftEventTime(timestamp, convention, calendar, maturityDate);
     }
 
     /*
@@ -47,12 +48,16 @@ contract BusinessDayConvention is ACTUSTypes {
     function shiftEventTime(
         uint256 timestamp,
         BusinessDayConvention convention,
-        Calendar calendar
+        Calendar calendar,
+        uint256 maturityDate
     )
         internal
         pure
         returns (uint256)
     {
+        // do not shift if equal to maturity date
+        if (timestamp == maturityDate) return timestamp;
+
         // Shift/Calc Following, Calc/Shift following
         if (convention == BusinessDayConvention.SCF || convention == BusinessDayConvention.CSF) {
             return getClosestBusinessDaySameDayOrFollowing(timestamp, calendar);

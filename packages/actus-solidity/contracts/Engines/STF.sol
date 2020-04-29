@@ -43,12 +43,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -81,12 +76,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -137,12 +127,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.notionalPrincipal = state.notionalPrincipal
         .add(
             state.accruedInterest
@@ -179,12 +164,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = 0;
         state.feeAccrued = state.feeAccrued
         .add(
@@ -212,12 +192,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -251,12 +226,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -290,12 +260,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -328,12 +293,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -387,12 +347,7 @@ contract STF is Core {
         // math: rate = min(max(rate,lifeFloor),lifeCap)
         rate = rate.max(terms.lifeFloor).min(terms.lifeCap);
 
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -420,12 +375,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -466,12 +416,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -531,8 +476,9 @@ contract STF is Core {
         pure
         returns(State memory)
     {
+        // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar)
+            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
             : state.nonPerformingDate;
 
         uint256 currentTimestamp = uint256(externalData);
@@ -556,10 +502,12 @@ contract STF is Core {
         }
 
         if (state.nonPerformingDate == 0) {
+            // handle maturity date
             state.nonPerformingDate = shiftEventTime(
                 scheduleTime,
                 terms.businessDayConvention,
-                terms.calendar
+                terms.calendar,
+                terms.maturityDate
             );
         }
 
@@ -594,12 +542,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.accruedInterest
@@ -631,12 +574,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = 0;
         state.feeAccrued = state.feeAccrued
         .add(
@@ -659,12 +597,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -708,12 +641,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -762,12 +690,7 @@ contract STF is Core {
             rate = terms.lifeFloor;
         }
 
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -791,12 +714,7 @@ contract STF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
+        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -860,8 +778,8 @@ contract STF is Core {
             state.feeAccrued = state.feeAccrued
             .add(
                 yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar),
+                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
                     terms.dayCountConvention,
                     terms.maturityDate
                 )
@@ -922,5 +840,22 @@ contract STF is Core {
         state.statusDate = scheduleTime;
 
         return state;
+    }
+
+    function _yearFraction_STF (
+        LifecycleTerms memory terms,
+        State memory state,
+        uint256 scheduleTime
+    )
+        internal
+        pure
+        returns(int256)
+    {
+        return yearFraction(
+            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            terms.dayCountConvention,
+            terms.maturityDate
+        );
     }
 }

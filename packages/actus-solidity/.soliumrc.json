@@ -1,5 +1,5 @@
 {
-  "extends": "solium:all",
+  "extends": "solium:recommended",
   "plugins": [
     "security"
   ],
@@ -11,6 +11,7 @@
     "operator-whitespace": "off",
     "lbrace": "off",
     "no-experimental": "off",
-    "mixedcase": "off"
+    "mixedcase": "off",
+    "arg-overflow": "off"
   }
 }
