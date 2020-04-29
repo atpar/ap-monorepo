@@ -435,8 +435,8 @@ export class ANNEngine extends Contract {
     ): TransactionObject<string[]>;
 
     isEventScheduled(
-      _event: string | number[],
-      terms: {
+      arg0: string | number[],
+      arg1: {
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
@@ -485,7 +485,7 @@ export class ANNEngine extends Contract {
           role: number | string;
         };
       },
-      state: {
+      arg2: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;
@@ -501,8 +501,8 @@ export class ANNEngine extends Contract {
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
       },
-      hasUnderlying: boolean,
-      underlyingState: {
+      arg3: boolean,
+      arg4: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;

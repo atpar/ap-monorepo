@@ -469,12 +469,6 @@ export class AssetIssuer extends Contract {
     }): TransactionObject<void>;
   };
   events: {
-    ExecutedOrder: ContractEvent<{
-      orderId: string;
-      assetId: string;
-      0: string;
-      1: string;
-    }>;
     IssuedAsset: ContractEvent<{
       assetId: string;
       creator: string;

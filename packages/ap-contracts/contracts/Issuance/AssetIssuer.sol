@@ -22,7 +22,6 @@ contract AssetIssuer is
     VerifyOrder,
     IAssetIssuer
 {
-    event ExecutedOrder(bytes32 indexed orderId, bytes32 assetId);
     event IssuedAsset(bytes32 indexed assetId, address indexed creator, address indexed counterparty);
 
     ICustodian public custodian;
@@ -49,18 +48,7 @@ contract AssetIssuer is
         external
         override
     {
-        (
-            bytes32 assetId,
-            AssetOwnership memory ownership,
-            bytes32 templateId,
-            CustomTerms memory customTerms,
-            address engine,
-            address admin
-        ) = finalizeDraft(draft);
-
-        issueAsset(
-            assetId, ownership, templateId, customTerms, engine, admin
-        );
+        _issueFromDraft(draft);
     }
 
     /**
@@ -82,65 +70,28 @@ contract AssetIssuer is
         );
 
         // issue asset (underlying)
-        (
-            bytes32 assetId,
-            AssetOwnership memory ownership,
-            bytes32 templateId,
-            CustomTerms memory customTerms,
-            address engine,
-            address admin
-        ) = finalizeOrder(order);
-
-        issueAsset(
-            assetId, ownership, templateId, customTerms, engine, admin
-        );
+        _issueFromOrder(order);
 
         // check if first enhancement order is specified
         if (order.enhancementOrder_1.termsHash != bytes32(0)) {
-            (
-                bytes32 assetId,
-                AssetOwnership memory ownership,
-                bytes32 templateId,
-                CustomTerms memory customTerms,
-                address engine,
-                address admin
-            ) = finalizeEnhancementOrder(order.enhancementOrder_1, order);
-
-            issueAsset(
-                assetId, ownership, templateId, customTerms, engine, admin
-            );
+            issueFromEnhancementOrder(order.enhancementOrder_1, order);
         }
 
         // check if second enhancement order is specified
         if (order.enhancementOrder_2.termsHash != bytes32(0)) {
-            (
-                bytes32 assetId,
-                AssetOwnership memory ownership,
-                bytes32 templateId,
-                CustomTerms memory customTerms,
-                address engine,
-                address admin
-            ) = finalizeEnhancementOrder(order.enhancementOrder_2, order);
-
-            issueAsset(
-                assetId, ownership, templateId, customTerms, engine, admin
-            );
+            issueFromEnhancementOrder(order.enhancementOrder_2, order);
         }
-
-        emit ExecutedOrder(keccak256(abi.encode(order.creatorSignature)), assetId);
     }
 
-    function finalizeDraft(Draft memory draft)
-        internal
-        returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
-    {
+    function _issueFromDraft(Draft memory draft) internal {
+        // solium-disable-next-line
         bytes32 assetId = keccak256(abi.encode(draft.termsHash, block.timestamp));
 
         // check if first contract reference in terms references an underlying asset
         if (draft.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.COVE) {
             require(
                 draft.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
-                "AssetIssuer.finalizeDraft: INVALID_OBJECT"
+                "AssetIssuer.issueFromDraft: INVALID_OBJECT"
             );
         }
 
@@ -148,10 +99,11 @@ contract AssetIssuer is
         if (draft.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.COVI) {
             require(
                 draft.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
-                "AssetIssuer.finalizeDraft: INVALID_OBJECT"
+                "AssetIssuer.issueFromDraft: INVALID_OBJECT"
             );
 
             // derive assetId and terms of draft from template terms and custom terms
+            // solium-disable-next-line
             assetId = keccak256(abi.encode(draft.termsHash, address(custodian), block.timestamp));
             LifecycleTerms memory terms = deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
                 templateRegistry.getTemplateTerms(draft.templateId),
@@ -181,7 +133,7 @@ contract AssetIssuer is
                 );
             } else {
                 // only BUY, RPA and SEL, RPL allowed for CEC
-                revert("AssetIssuer.finalizeDraft: INVALID_CONTRACT_ROLES");
+                revert("AssetIssuer.issueFromDraft: INVALID_CONTRACT_ROLES");
             }
 
             // execute contractual conditions
@@ -189,7 +141,7 @@ contract AssetIssuer is
             custodian.lockCollateral(assetId, terms, draft.ownership);
         }
 
-        return (
+        issueAsset(
             assetId,
             draft.ownership,
             draft.templateId,
@@ -203,17 +155,14 @@ contract AssetIssuer is
      * @notice Executes all pre-issuance conditions (e.g. collateral requirements)
      * defined in the contract references of the order and sets the final ownership of the asset
      */
-    function finalizeOrder(Order memory order)
-        internal
-        returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
-    {
+    function _issueFromOrder(Order memory order) internal {
         bytes32 assetId = keccak256(abi.encode(order.creatorSignature, order.counterpartySignature));
 
         // check if first contract reference in terms references an underlying asset
         if (order.customTerms.overwrittenTerms.contractReference_1.role == ContractReferenceRole.COVE) {
             require(
                 order.customTerms.overwrittenTerms.contractReference_1.object != bytes32(0),
-                "AssetIssuer.finalizeOrder: INVALID_OBJECT"
+                "AssetIssuer.issueFromOrder: INVALID_OBJECT"
             );
         }
 
@@ -221,7 +170,7 @@ contract AssetIssuer is
         if (order.customTerms.overwrittenTerms.contractReference_2.role == ContractReferenceRole.COVI) {
             require(
                 order.customTerms.overwrittenTerms.contractReference_2.object != bytes32(0),
-                "AssetIssuer.finalizeOrder: INVALID_OBJECT"
+                "AssetIssuer.issueFromOrder: INVALID_OBJECT"
             );
 
             // derive assetId and terms of order from template terms and custom terms
@@ -254,7 +203,7 @@ contract AssetIssuer is
                 );
             } else {
                 // only BUY, RPA and SEL, RPL allowed for CEC
-                revert("AssetIssuer.finalizeOrder: INVALID_CONTRACT_ROLES");
+                revert("AssetIssuer.issueFromOrder: INVALID_CONTRACT_ROLES");
             }
 
             // execute contractual conditions
@@ -262,7 +211,7 @@ contract AssetIssuer is
             custodian.lockCollateral(assetId, terms, order.ownership);
         }
 
-        return (
+        issueAsset(
             assetId,
             order.ownership,
             order.templateId,
@@ -276,7 +225,7 @@ contract AssetIssuer is
      * @notice Executes all pre-issuance conditions (e.g. collateral requirements)
      * defined in the contract references of the enhancement order and sets the final ownership of the enhancement
      */
-    function finalizeEnhancementOrder(EnhancementOrder memory enhancementOrder, Order memory order)
+    function issueFromEnhancementOrder(EnhancementOrder memory enhancementOrder, Order memory order)
         internal
         returns (bytes32, AssetOwnership memory, bytes32, CustomTerms memory, address, address)
     {
@@ -323,19 +272,19 @@ contract AssetIssuer is
                 );
             } else {
                 // only BUY, RPA and SEL, RPL allowed for CEC
-                revert("AssetIssuer.finalizeEnhancementOrder: INVALID_CONTRACT_ROLES");
+                revert("AssetIssuer.issueFromEnhancementOrder: INVALID_CONTRACT_ROLES");
             }
 
             // execute contractual conditions
             require(
                 enhancementTerms.contractReference_2.object != bytes32(0),
-                "AssetIssuer.finalizeEnhancementOrder: INVALID_OBJECT"
+                "AssetIssuer.issueFromEnhancementOrder: INVALID_OBJECT"
             );
             // try transferring collateral to the custodian
             custodian.lockCollateral(assetId, enhancementTerms, enhancementOrder.ownership);
         }
 
-        return (
+        issueAsset(
             assetId,
             enhancementOrder.ownership,
             enhancementOrder.templateId,
@@ -371,7 +320,7 @@ contract AssetIssuer is
                 engine,
                 admin
             ),
-            "AssetIssuer.issueAsset: EXECUTION_ERROR"
+            "AssetIssuer.issueAsset: INITIALIZATION_ERROR"
         );
 
         emit IssuedAsset(assetId, ownership.creatorObligor, ownership.counterpartyObligor);

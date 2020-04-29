@@ -436,7 +436,7 @@ export class CEGEngine extends Contract {
 
     isEventScheduled(
       _event: string | number[],
-      terms: {
+      arg1: {
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
@@ -485,7 +485,7 @@ export class CEGEngine extends Contract {
           role: number | string;
         };
       },
-      state: {
+      arg2: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;

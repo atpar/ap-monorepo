@@ -379,7 +379,7 @@ export class CECEngine extends Contract {
     ): TransactionObject<string[]>;
 
     computeCyclicScheduleSegment(
-      terms: {
+      arg0: {
         scalingEffect: number | string;
         contractDealDate: number | string;
         statusDate: number | string;
@@ -429,14 +429,14 @@ export class CECEngine extends Contract {
           isSet: boolean;
         };
       },
-      segmentStart: number | string,
-      segmentEnd: number | string,
-      eventType: number | string
+      arg1: number | string,
+      arg2: number | string,
+      arg3: number | string
     ): TransactionObject<string[]>;
 
     isEventScheduled(
-      _event: string | number[],
-      terms: {
+      arg0: string | number[],
+      arg1: {
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
@@ -485,7 +485,7 @@ export class CECEngine extends Contract {
           role: number | string;
         };
       },
-      state: {
+      arg2: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;
@@ -501,8 +501,8 @@ export class CECEngine extends Contract {
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
       },
-      hasUnderlying: boolean,
-      underlyingState: {
+      arg3: boolean,
+      arg4: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;
