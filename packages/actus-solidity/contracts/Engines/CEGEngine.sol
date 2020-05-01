@@ -102,7 +102,7 @@ contract CEGEngine is BaseEngine, STF, POF {
         override
         returns (bytes32[] memory)
     {
-        bytes32[] memory events;
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index = 0;
 
         if (eventType == EventType.FP) {
