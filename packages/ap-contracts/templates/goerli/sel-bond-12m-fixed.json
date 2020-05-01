@@ -1,5 +1,5 @@
 {
-    "templateId": "0x55c64e5baf494be3b41cbe8d4656f578d0c4ddf1601862b1545af3649c28d6bf",
+    "templateId": "0x75778093cbee9269719305af0fc2e20b49a0a6ee6961b4fa3946fb05d272ed12",
     "productPresetId": "",
     "name": "Seller 12M-Bond",
     "label": "Seller 12-Month Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0x981C2F249051B149F58B81A4501052A129EB0780",
+        "currency": "0xb936c3E89DFa2dDEbce4a5D130FF9D87b786F98a",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "contractDealDateOffset": 1,

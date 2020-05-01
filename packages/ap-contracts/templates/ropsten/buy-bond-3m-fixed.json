@@ -1,5 +1,5 @@
 {
-    "templateId": "0x794223231249718ab305624273c100b5f7e188472d77bc97d690b08d4dd0fa0d",
+    "templateId": "0x1924d03093a44d78b7c4acb805687408ba1043093872185eca2098634a8e753c",
     "productPresetId": "",
     "name": "Buyer 3M-Bond",
     "label": "Buyer 3-Month Coupon-Bearing Bond",
@@ -15,7 +15,7 @@
         "penaltyType": 0,
         "feeBasis": 0,
         "creditEventTypeCovered": 0,
-        "currency": "0xb1A48450cb3A055d03065214018FF455B8CC8fe4",
+        "currency": "0x9b230fAa424d339C2D05d1504826dF3bfBd4919e",
         "settlementCurrency": "0x0000000000000000000000000000000000000000",
         "marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
         "contractDealDateOffset": 1,
