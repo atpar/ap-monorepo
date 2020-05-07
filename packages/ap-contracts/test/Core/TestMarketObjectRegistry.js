@@ -42,6 +42,19 @@ contract('MarketRegistry', (accounts) => {
     );
   });
 
+  it('should register a data point with an earlier timestamp for a registered market object provider', async () => {
+    const { tx: txHash } = await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+      this.marketObjectId,
+      0,
+      '0x0000000000000000000000000000000000000000000000000000000000000001',
+      { from: marketObjectProvider }
+  );
+
+    await expectEvent.inTransaction(
+      txHash, MarketObjectRegistry, 'PublishedDataPoint'
+    );
+  });
+
   it('should revert if an unregistered account tries to publish a data point', async () => {
     await shouldFail.reverting.withMessage(
       this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(

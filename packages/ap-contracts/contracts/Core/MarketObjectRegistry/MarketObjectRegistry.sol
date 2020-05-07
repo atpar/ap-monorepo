@@ -16,7 +16,7 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
 
     event UpdatedMarketObjectProvider(bytes32 indexed marketObjectId, address provider);
 
-    event PublishedDataPoint(bytes32 indexed marketObjectId, int256 dataPoint);
+    event PublishedDataPoint(bytes32 indexed marketObjectId, int256 dataPoint, uint256 timestamp);
 
 
     /**
@@ -59,9 +59,12 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         );
 
         dataPoints[marketObjectId][timestamp] = DataPoint(dataPoint, true);
-        marketObjectLastUpdatedAt[marketObjectId] = timestamp;
 
-        emit PublishedDataPoint(marketObjectId, dataPoint);
+        if (marketObjectLastUpdatedAt[marketObjectId] < timestamp) {
+            marketObjectLastUpdatedAt[marketObjectId] = timestamp;
+        }
+
+        emit PublishedDataPoint(marketObjectId, dataPoint, timestamp);
     }
 
     /**

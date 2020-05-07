@@ -66,8 +66,10 @@ export class MarketObjectRegistry extends Contract {
     PublishedDataPoint: ContractEvent<{
       marketObjectId: string;
       dataPoint: string;
+      timestamp: string;
       0: string;
       1: string;
+      2: string;
     }>;
     UpdatedMarketObjectProvider: ContractEvent<{
       marketObjectId: string;
