@@ -33,16 +33,7 @@ export class MarketObjectRegistry extends Contract {
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
-    setMarketObjectProvider(
-      marketObjectId: string | number[],
-      provider: string
-    ): TransactionObject<void>;
-
-    publishDataPointOfMarketObject(
-      marketObjectId: string | number[],
-      timestamp: number | string,
-      dataPoint: number | string
-    ): TransactionObject<void>;
+    isRegistered(marketObjectId: string | number[]): TransactionObject<boolean>;
 
     getDataPointOfMarketObject(
       marketObjectId: string | number[],
@@ -55,6 +46,21 @@ export class MarketObjectRegistry extends Contract {
     getMarketObjectLastUpdatedTimestamp(
       marketObjectId: string | number[]
     ): TransactionObject<string>;
+
+    getMarketObjectProvider(
+      marketObjectId: string | number[]
+    ): TransactionObject<string>;
+
+    setMarketObjectProvider(
+      marketObjectId: string | number[],
+      provider: string
+    ): TransactionObject<void>;
+
+    publishDataPointOfMarketObject(
+      marketObjectId: string | number[],
+      timestamp: number | string,
+      dataPoint: number | string
+    ): TransactionObject<void>;
   };
   events: {
     OwnershipTransferred: ContractEvent<{

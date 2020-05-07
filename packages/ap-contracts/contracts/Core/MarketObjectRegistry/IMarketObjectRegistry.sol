@@ -6,6 +6,24 @@ import "./MarketObjectRegistryStorage.sol";
 
 abstract contract IMarketObjectRegistry is MarketObjectRegistryStorage {
 
+    function isRegistered(bytes32 marketObjectId)
+        external
+        view
+        virtual
+        returns (bool);
+
+    function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
+        external
+        view
+        virtual
+        returns (uint256);
+
+    function getMarketObjectProvider(bytes32 marketObjectId)
+        external
+        view
+        virtual  
+        returns (address);
+
     function setMarketObjectProvider(
         bytes32 marketObjectId,
         address provider
@@ -29,10 +47,4 @@ abstract contract IMarketObjectRegistry is MarketObjectRegistryStorage {
         view
         virtual
         returns (int256, bool);
-
-    function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
-        external
-        view
-        virtual
-        returns (uint256);
 }

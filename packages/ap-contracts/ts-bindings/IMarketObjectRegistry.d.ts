@@ -25,6 +25,16 @@ export class IMarketObjectRegistry extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    isRegistered(marketObjectId: string | number[]): TransactionObject<boolean>;
+
+    getMarketObjectLastUpdatedTimestamp(
+      marketObjectId: string | number[]
+    ): TransactionObject<string>;
+
+    getMarketObjectProvider(
+      marketObjectId: string | number[]
+    ): TransactionObject<string>;
+
     setMarketObjectProvider(
       marketObjectId: string | number[],
       provider: string
@@ -43,10 +53,6 @@ export class IMarketObjectRegistry extends Contract {
       0: string;
       1: boolean;
     }>;
-
-    getMarketObjectLastUpdatedTimestamp(
-      marketObjectId: string | number[]
-    ): TransactionObject<string>;
   };
   events: {
     allEvents: (

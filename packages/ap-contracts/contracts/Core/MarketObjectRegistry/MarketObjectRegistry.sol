@@ -20,6 +20,70 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
 
 
     /**
+     * @notice @notice Returns true if there is a market object registered for a given marketObjectId
+     * @param marketObjectId id of the market object
+     * @return true if market object exists
+     */
+    function isRegistered(bytes32 marketObjectId)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return marketObjects[marketObjectId].isSet;
+    }
+
+    /**
+     * @notice Returns a data point of a market object for a given timestamp.
+     * @param marketObjectId id of the market object
+     * @param timestamp timestamp of the data point
+     * @return data point, bool indicating whether data point exists
+     */
+    function getDataPointOfMarketObject(
+        bytes32 marketObjectId,
+        uint256 timestamp
+    )
+        external
+        view
+        override
+        returns (int256, bool)
+    {
+        return (
+            marketObjects[marketObjectId].dataPoints[timestamp].dataPoint,
+            marketObjects[marketObjectId].dataPoints[timestamp].isSet
+        );
+    }
+
+    /**
+     * @notice Returns the timestamp on which the last data point for a market object
+     * was submitted.
+     * @param marketObjectId id of the market object
+     * @return last updated timestamp
+     */
+    function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return marketObjects[marketObjectId].lastUpdatedTimestamp;
+    }
+
+    /**
+     * @notice Returns the provider for a market object
+     * @param marketObjectId id of the market object
+     * @return address of provider
+     */
+    function getMarketObjectProvider(bytes32 marketObjectId)
+        external
+        view
+        override
+        returns (address)
+    {
+        return marketObjects[marketObjectId].provider;
+    }
+
+    /**
      * @notice Registers / updates a market object provider.
      * @dev Can only be called by the owner of the MarketObjectRegistry.
      * @param marketObjectId id of the market object
@@ -33,7 +97,11 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         override
         onlyOwner
     {
-        marketObjectProviders[marketObjectId] = provider;
+        marketObjects[marketObjectId].provider = provider;
+
+        if (marketObjects[marketObjectId].isSet == false) {
+            marketObjects[marketObjectId].isSet = true;
+        }
 
         emit UpdatedMarketObjectProvider(marketObjectId, provider);
     }
@@ -54,52 +122,20 @@ contract MarketObjectRegistry is MarketObjectRegistryStorage, IMarketObjectRegis
         override
     {
         require(
-            msg.sender == marketObjectProviders[marketObjectId],
+            msg.sender == marketObjects[marketObjectId].provider,
             "MarketObjectRegistry.publishMarketObject: UNAUTHORIZED_SENDER"
         );
 
-        dataPoints[marketObjectId][timestamp] = DataPoint(dataPoint, true);
+        marketObjects[marketObjectId].dataPoints[timestamp] = DataPoint(dataPoint, true);
 
-        if (marketObjectLastUpdatedAt[marketObjectId] < timestamp) {
-            marketObjectLastUpdatedAt[marketObjectId] = timestamp;
+        if (marketObjects[marketObjectId].isSet == false) {
+            marketObjects[marketObjectId].isSet = true;
+        }
+
+        if (marketObjects[marketObjectId].lastUpdatedTimestamp < timestamp) {
+            marketObjects[marketObjectId].lastUpdatedTimestamp = timestamp;
         }
 
         emit PublishedDataPoint(marketObjectId, dataPoint, timestamp);
-    }
-
-    /**
-     * @notice Returns a data point of a market object for a given timestamp.
-     * @param marketObjectId id of the market object
-     * @param timestamp timestamp of the data point
-     * @return data point, bool indicating whether data point exists
-     */
-    function getDataPointOfMarketObject(
-        bytes32 marketObjectId,
-        uint256 timestamp
-    )
-        external
-        view
-        override
-        returns (int256, bool)
-    {
-        return (
-            dataPoints[marketObjectId][timestamp].dataPoint,
-            dataPoints[marketObjectId][timestamp].isSet
-        );
-    }
-
-    /**
-     * @notice Returns the timestamp on which the last data point for a market object
-     * was submitted.
-     * @param marketObjectId id of the market object
-     * @return last updated timestamp
-     */
-    function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
-        external
-        view
-        override
-        returns (uint256)
-    {
-        return marketObjectLastUpdatedAt[marketObjectId];
     }
 }
