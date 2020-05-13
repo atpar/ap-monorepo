@@ -45,9 +45,8 @@ yarn test
 - [x] A/365 (Actual Three Sixty Five)
 - [x] 30E/360ISDA (Thirty E Three Sixty ISDA)
 - [x] 30E/360 (Thirty E Three Sixty)
-- [ ] 30/360 (Thirty Three Sixty)
 - [ ] BUS/252 (Business Two Fifty Two)
-- [x] 1/1
+- [ ] 1/1
 
 ### End-Of-Month-Conventions
 - [x] Same Day Shift
