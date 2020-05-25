@@ -23,7 +23,7 @@ contract TemplateRegistryStorage is SharedTypes {
         mapping (uint256 => bytes32) packedTerms;
     }
 
-    mapping (bytes32 => Template) templates;
+    mapping (bytes32 => Template) internal templates;
 
 
     function setTemplate(

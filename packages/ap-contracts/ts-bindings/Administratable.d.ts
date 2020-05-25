@@ -31,11 +31,11 @@ export class Administratable extends Contract {
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
-    isAdministrator(addressToTest: string): TransactionObject<boolean>;
-
     addAdmin(adminToAdd: string): TransactionObject<void>;
 
     removeAdmin(adminToRemove: string): TransactionObject<void>;
+
+    isAdministrator(addressToTest: string): TransactionObject<boolean>;
   };
   events: {
     AdminAdded: ContractEvent<{

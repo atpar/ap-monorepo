@@ -117,16 +117,6 @@ export class SimpleRestrictedFDT extends Contract {
 
     updateFundsReceived(): TransactionObject<void>;
 
-    detectTransferRestriction(
-      from: string,
-      to: string,
-      arg2: number | string
-    ): TransactionObject<string>;
-
-    messageForTransferRestriction(
-      restrictionCode: number | string
-    ): TransactionObject<string>;
-
     pushFunds(owners: string[]): TransactionObject<void>;
 
     transfer(to: string, value: number | string): TransactionObject<boolean>;
@@ -140,6 +130,16 @@ export class SimpleRestrictedFDT extends Contract {
     mint(account: string, amount: number | string): TransactionObject<boolean>;
 
     burn(account: string, amount: number | string): TransactionObject<boolean>;
+
+    detectTransferRestriction(
+      from: string,
+      to: string,
+      arg2: number | string
+    ): TransactionObject<string>;
+
+    messageForTransferRestriction(
+      restrictionCode: number | string
+    ): TransactionObject<string>;
   };
   events: {
     AddressAddedToWhitelist: ContractEvent<{

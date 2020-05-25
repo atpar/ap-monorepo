@@ -47,7 +47,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
     }
 
     // AssetId => Asset
-    mapping (bytes32 => Asset) assets;
+    mapping (bytes32 => Asset) internal assets;
 
     ITemplateRegistry public templateRegistry;
 

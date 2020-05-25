@@ -21,6 +21,10 @@ export class DayCountConvention extends Contract {
   );
   clone(): DayCountConvention;
   methods: {
+    MAX_CYCLE_SIZE(): TransactionObject<string>;
+
+    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
+
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;

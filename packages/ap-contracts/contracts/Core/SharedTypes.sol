@@ -7,7 +7,7 @@ contract SharedTypes is ACTUSTypes {
 
     // offset == 0 is interpreted as a not set date value and not shifted
     // hence we define 1 as an offset == anchorDate
-    uint256 constant ZERO_OFFSET = 1;
+    uint256 constant internal ZERO_OFFSET = 1;
 
     struct TemplateSchedule {
         // scheduleTime and EventType are tighlty packed and encoded as bytes32

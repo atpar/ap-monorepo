@@ -23,7 +23,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
     address public assetActor;
     IAssetRegistry public assetRegistry;
-    mapping(bytes32 => bool) collateral;
+    mapping(bytes32 => bool) internal collateral;
 
 
     constructor(address _assetActor, IAssetRegistry _assetRegistry) public {

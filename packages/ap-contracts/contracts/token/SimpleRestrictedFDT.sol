@@ -31,13 +31,6 @@ contract Administratable is Ownable {
     }
 
     /**
-     * @notice Determine if the message sender is in the administrators list.
-     */
-    function isAdministrator(address addressToTest) public view returns (bool) {
-        return administrators[addressToTest];
-    }
-
-    /**
      * @notice Add an admin to the list.  This should only be callable by the owner of the contract.
      */
     function addAdmin(address adminToAdd) public onlyOwner {
@@ -70,6 +63,13 @@ contract Administratable is Ownable {
         // Emit the event for any watchers.
         emit AdminRemoved(adminToRemove, msg.sender);
     }
+
+    /**
+     * @notice Determine if the message sender is in the administrators list.
+     */
+    function isAdministrator(address addressToTest) public view returns (bool) {
+        return administrators[addressToTest];
+    }
 }
 
 /**
@@ -79,7 +79,7 @@ contract Administratable is Ownable {
  */
 contract Whitelistable is Administratable {
     // Zero is reserved for indicating it is not on a whitelist
-    uint8 constant NO_WHITELIST = 0;
+    uint8 constant internal NO_WHITELIST = 0;
 
     // The mapping to keep track of which whitelist any address belongs to.
     // 0 is reserved for no whitelist and is the default for all addresses.
@@ -222,13 +222,6 @@ contract Restrictable is Ownable {
     event RestrictionsDisabled(address indexed owner);
 
     /**
-     * @notice View function to determine if restrictions are enabled
-     */
-    function isRestrictionEnabled() public view returns (bool) {
-        return _restrictionsEnabled;
-    }
-
-    /**
      * @notice Function to update the enabled flag on restrictions to disabled.  Only the owner should be able to call.
      * This is a permanent change that cannot be undone
      */
@@ -240,6 +233,13 @@ contract Restrictable is Ownable {
 
         // Trigger the event
         emit RestrictionsDisabled(msg.sender);
+    }
+
+    /**
+     * @notice View function to determine if restrictions are enabled
+     */
+    function isRestrictionEnabled() public view returns (bool) {
+        return _restrictionsEnabled;
     }
 }
 
@@ -353,6 +353,55 @@ contract SimpleRestrictedFDT is
     }
 
     /**
+     * @notice Withdraws funds for a set of token holders
+     */
+    function pushFunds(address[] memory owners) public {
+        for (uint256 i = 0; i < owners.length; i++) {
+            _withdrawFundsFor(owners[i]);
+        }
+    }
+
+    /**
+  	 * @notice Overrides the parent class token transfer function to enforce restrictions.
+  	 */
+    function transfer(address to, uint256 value)
+        public
+        notRestricted(msg.sender, to, value)
+        override(IERC20, ERC20)
+        returns (bool success)
+    {
+        success = super.transfer(to, value);
+    }
+
+    /**
+  	 * @notice Overrides the parent class token transferFrom function to enforce restrictions.
+  	 */
+    function transferFrom(address from, address to, uint256 value)
+        public
+        notRestricted(from, to, value)
+        override(IERC20, ERC20)
+        returns (bool success)
+    {
+        success = super.transferFrom(from, to, value);
+    }
+
+    /**
+     * @notice Exposes the ability to mint new FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function mint(address account, uint256 amount) public onlyOwner returns (bool) {
+        _mint(account, amount);
+        return true;
+    }
+
+    /**
+     * @notice Exposes the ability to burn exisiting FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function burn(address account, uint256 amount) public onlyOwner returns (bool) {
+        _burn(account, amount);
+        return true;
+    }
+
+    /**
   	 * @notice This function detects whether a transfer should be restricted and not allowed.
   	 * If the function returns SUCCESS_CODE (0) then it should be allowed.
   	 */
@@ -404,55 +453,6 @@ contract SimpleRestrictedFDT is
 
         // An unknown error code was passed in.
         return UNKNOWN_ERROR;
-    }
-
-    /**
-     * @notice Withdraws funds for a set of token holders
-     */
-    function pushFunds(address[] memory owners) public {
-        for (uint256 i = 0; i < owners.length; i++) {
-            _withdrawFundsFor(owners[i]);
-        }
-    }
-
-    /**
-  	 * @notice Overrides the parent class token transfer function to enforce restrictions.
-  	 */
-    function transfer(address to, uint256 value)
-        public
-        notRestricted(msg.sender, to, value)
-        override(IERC20, ERC20)
-        returns (bool success)
-    {
-        success = super.transfer(to, value);
-    }
-
-    /**
-  	 * @notice Overrides the parent class token transferFrom function to enforce restrictions.
-  	 */
-    function transferFrom(address from, address to, uint256 value)
-        public
-        notRestricted(from, to, value)
-        override(IERC20, ERC20)
-        returns (bool success)
-    {
-        success = super.transferFrom(from, to, value);
-    }
-
-    /**
-     * @notice Exposes the ability to mint new FDTs for a given account. Caller has to be the owner of the FDT.
-     */
-    function mint(address account, uint256 amount) public onlyOwner returns (bool) {
-        _mint(account, amount);
-        return true;
-    }
-
-    /**
-     * @notice Exposes the ability to burn exisiting FDTs for a given account. Caller has to be the owner of the FDT.
-     */
-    function burn(address account, uint256 amount) public onlyOwner returns (bool) {
-        _burn(account, amount);
-        return true;
     }
 
     /**

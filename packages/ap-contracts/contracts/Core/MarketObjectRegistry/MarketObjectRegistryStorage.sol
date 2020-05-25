@@ -23,5 +23,5 @@ contract MarketObjectRegistryStorage is SharedTypes {
         bool isSet;
     }
 
-    mapping(bytes32 => MarketObject) marketObjects;
+    mapping(bytes32 => MarketObject) internal marketObjects;
 }

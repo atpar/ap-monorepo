@@ -21,24 +21,24 @@ export class ERC20Interface extends Contract {
   );
   clone(): ERC20Interface;
   methods: {
-    totalSupply(): TransactionObject<string>;
-
-    balanceOf(tokenOwner: string): TransactionObject<string>;
-
-    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
-
     transfer(to: string, tokens: number | string): TransactionObject<boolean>;
-
-    approve(
-      spender: string,
-      tokens: number | string
-    ): TransactionObject<boolean>;
 
     transferFrom(
       from: string,
       to: string,
       tokens: number | string
     ): TransactionObject<boolean>;
+
+    approve(
+      spender: string,
+      tokens: number | string
+    ): TransactionObject<boolean>;
+
+    totalSupply(): TransactionObject<string>;
+
+    balanceOf(tokenOwner: string): TransactionObject<string>;
+
+    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{

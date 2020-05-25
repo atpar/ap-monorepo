@@ -21,23 +21,19 @@ export class SettlementToken extends Contract {
   );
   clone(): SettlementToken;
   methods: {
-    acceptOwnership(): TransactionObject<void>;
-
     decimals(): TransactionObject<string>;
+
+    isOwner(): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
 
-    newOwner(): TransactionObject<string>;
-
     owner(): TransactionObject<string>;
+
+    renounceOwnership(): TransactionObject<void>;
 
     symbol(): TransactionObject<string>;
 
-    transferOwnership(_newOwner: string): TransactionObject<void>;
-
-    totalSupply(): TransactionObject<string>;
-
-    balanceOf(tokenOwner: string): TransactionObject<string>;
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
     transfer(to: string, tokens: number | string): TransactionObject<boolean>;
 
@@ -52,8 +48,6 @@ export class SettlementToken extends Contract {
       tokens: number | string
     ): TransactionObject<boolean>;
 
-    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
-
     approveAndCall(
       spender: string,
       tokens: number | string,
@@ -66,6 +60,12 @@ export class SettlementToken extends Contract {
       tokenAddress: string,
       tokens: number | string
     ): TransactionObject<boolean>;
+
+    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
+
+    totalSupply(): TransactionObject<string>;
+
+    balanceOf(tokenOwner: string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{
@@ -77,8 +77,8 @@ export class SettlementToken extends Contract {
       2: string;
     }>;
     OwnershipTransferred: ContractEvent<{
-      _from: string;
-      _to: string;
+      previousOwner: string;
+      newOwner: string;
       0: string;
       1: string;
     }>;

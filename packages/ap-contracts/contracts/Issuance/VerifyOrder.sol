@@ -46,24 +46,24 @@ contract VerifyOrder is SharedTypes {
         uint256 salt;
     }
 
-    bytes32 constant EIP712DOMAIN_TYPEHASH = keccak256(
+    bytes32 constant internal EIP712DOMAIN_TYPEHASH = keccak256(
         "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
     );
 
     // signed by the creator of the Order which includes the Enhancement Order
-    bytes32 constant DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
+    bytes32 constant internal DRAFT_ENHANCEMENT_ORDER_TYPEHASH = keccak256(
         "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,address engine,address admin,uint256 salt)"
     );
 
-    bytes32 constant ENHANCEMENT_ORDER_TYPEHASH = keccak256(
+    bytes32 constant internal ENHANCEMENT_ORDER_TYPEHASH = keccak256(
         "EnhancementOrder(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,bytes32 ownershipHash,address engine,address admin,uint256 salt)"
     );
 
-    bytes32 constant ORDER_TYPEHASH = keccak256(
+    bytes32 constant internal ORDER_TYPEHASH = keccak256(
         "Order(bytes32 termsHash,bytes32 templateId,bytes32 customTermsHash,uint256 expirationDate,bytes32 ownershipHash,address engine,address admin,bytes32 enhancementOrderHash_1,bytes32 enhancementOrderHash_2,uint256 salt)"
     );
 
-    bytes32 DOMAIN_SEPARATOR;
+    bytes32 internal DOMAIN_SEPARATOR; // immutable
 
 
     constructor () public {

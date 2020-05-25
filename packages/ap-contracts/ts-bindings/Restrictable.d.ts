@@ -29,9 +29,9 @@ export class Restrictable extends Contract {
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
-    isRestrictionEnabled(): TransactionObject<boolean>;
-
     disableRestrictions(): TransactionObject<void>;
+
+    isRestrictionEnabled(): TransactionObject<boolean>;
   };
   events: {
     OwnershipTransferred: ContractEvent<{
