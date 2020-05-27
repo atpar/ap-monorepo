@@ -44,6 +44,8 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         // bytes32(0) used as default value for each attribute
         // storage id => bytes32 encoded value
         mapping (uint8 => bytes32) packedTermsState;
+        // indicates whether a specific event was settled
+        mapping (bytes32 => bool) settlement;
     }
 
     // AssetId => Asset

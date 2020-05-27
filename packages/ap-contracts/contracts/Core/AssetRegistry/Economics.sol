@@ -294,6 +294,35 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
     }
 
     /**
+     * @notice Returns true if an event of an assets schedule was settled
+     * @param assetId id of the asset
+     * @param _event event (encoded)
+     * @return true if event was settled
+     */
+    function isEventSettled(bytes32 assetId, bytes32 _event)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return assets[assetId].settlement[_event];
+    }
+
+    /**
+     * @notice Mark an event as settled
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param _event event (encoded) to be marked as settled
+     */
+    function markEventAsSettled(bytes32 assetId, bytes32 _event)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].settlement[_event] = true;
+    }
+
+    /**
      * @notice Set the custom terms of the asset
      * @dev Can only be set by authorized account.
      * @param assetId id of the asset

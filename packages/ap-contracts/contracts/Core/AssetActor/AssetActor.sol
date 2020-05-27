@@ -274,6 +274,11 @@ contract AssetActor is
         // store the resulting state
         assetRegistry.setState(assetId, state);
 
+        // mark event as settled
+        if (settledPayoff == true) {
+            assetRegistry.markEventAsSettled(assetId, _event);
+        }
+
         emit ProgressedAsset(
             assetId,
             // if settlement failed a CreditEvent got processed instead

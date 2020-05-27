@@ -112,6 +112,7 @@ contract('AssetActor', (accounts) => {
     );
 
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
       this.lifecycleTerms,
       this.state,
@@ -121,6 +122,7 @@ contract('AssetActor', (accounts) => {
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
+    assert.equal(isEventSettled, true);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -140,6 +142,7 @@ contract('AssetActor', (accounts) => {
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
@@ -160,6 +163,7 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(isEventSettled, false);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -179,6 +183,7 @@ contract('AssetActor', (accounts) => {
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
@@ -199,6 +204,7 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(isEventSettled, false);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -218,6 +224,7 @@ contract('AssetActor', (accounts) => {
     );
     const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
@@ -238,6 +245,7 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(isEventSettled, false);
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -258,6 +266,7 @@ contract('AssetActor', (accounts) => {
     const storedNextState_DL = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedNextFinalizedState_DL = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
     const storedPendingEvent_DL = await this.AssetRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
+    const isEventSettled_DL = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState_DL = await this.PAMEngineInstance.computeStateForEvent(
@@ -279,6 +288,7 @@ contract('AssetActor', (accounts) => {
     assert.equal(_event, storedPendingEvent_DL);
     assert.equal(storedNextState_DL.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_DL.statusDate, projectedNextState_DL.statusDate);
+    assert.equal(isEventSettled_DL, false);
     assert.deepEqual(storedNextState_DL, projectedNextState_DL);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
@@ -306,6 +316,7 @@ contract('AssetActor', (accounts) => {
     const storedNextState_PF = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const storedNextFinalizedState_PF = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
     const storedPendingEvent_PF = await this.AssetRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
+    const isEventSettled_PF = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState_PF = await this.PAMEngineInstance.computeStateForEvent(
@@ -327,6 +338,7 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedPendingEvent_PF, ZERO_BYTES32);
     assert.equal(storedNextState_PF.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_PF.statusDate, projectedNextState_PF.statusDate);
+    assert.equal(isEventSettled_PF, true);
     assert.deepEqual(storedNextState_PF, projectedNextState_PF);
 
     await revertToSnapshot(snapshot_asset);

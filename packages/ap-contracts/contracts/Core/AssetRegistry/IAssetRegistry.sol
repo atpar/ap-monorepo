@@ -124,6 +124,16 @@ abstract contract IAssetRegistry is AssetRegistryStorage {
         virtual
         returns (bytes32);
 
+    function isEventSettled(bytes32 assetId, bytes32 _event)
+        external
+        view
+        virtual
+        returns (bool);
+
+    function markEventAsSettled(bytes32 assetId, bytes32 _event)
+        external
+        virtual;
+
     function setState(bytes32 assetId, State calldata state)
         external
         virtual;
