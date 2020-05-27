@@ -396,6 +396,16 @@ export class IAssetRegistry extends Contract {
       assetId: string | number[]
     ): TransactionObject<string>;
 
+    isEventSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<boolean>;
+
+    markEventAsSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<void>;
+
     setState(
       assetId: string | number[],
       state: {

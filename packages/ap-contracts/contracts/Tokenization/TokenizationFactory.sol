@@ -4,8 +4,8 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../Core/AssetRegistry/IAssetRegistry.sol";
-import "../token/SimpleRestrictedFDT.sol";
-import "../token/VanillaFDT.sol";
+import "../token/FDT/SimpleRestrictedFDT.sol";
+import "../token/FDT/VanillaFDT.sol";
 
 
 /**

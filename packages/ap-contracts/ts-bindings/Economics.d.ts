@@ -506,6 +506,16 @@ export class Economics extends Contract {
       assetId: string | number[]
     ): TransactionObject<string>;
 
+    isEventSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<boolean>;
+
+    markEventAsSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<void>;
+
     setCustomTerms(
       assetId: string | number[],
       terms: {

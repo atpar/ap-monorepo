@@ -355,7 +355,17 @@ export class AccessControl extends Contract {
       contractReference_2: { object: string; _type: string; role: string };
     }>;
 
+    isEventSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<boolean>;
+
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
+    markEventAsSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<void>;
 
     popNextScheduledEvent(
       assetId: string | number[]

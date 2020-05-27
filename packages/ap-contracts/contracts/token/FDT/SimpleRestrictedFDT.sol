@@ -2,8 +2,8 @@ pragma solidity ^0.6.4;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "./FDT/FundsDistributionToken.sol";
-import "./FDT/IFundsDistributionToken.sol";
+import "./FundsDistributionToken.sol";
+import "./IFundsDistributionToken.sol";
 
 
 /**

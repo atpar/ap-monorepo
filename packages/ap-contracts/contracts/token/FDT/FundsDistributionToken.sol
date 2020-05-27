@@ -4,8 +4,8 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
-import "./SafeMathUint.sol";
-import "./SafeMathInt.sol";
+import "./math/SafeMathUint.sol";
+import "./math/SafeMathInt.sol";
 
 import "./IFundsDistributionToken.sol";
 
