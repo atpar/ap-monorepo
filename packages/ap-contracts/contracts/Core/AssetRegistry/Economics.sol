@@ -303,9 +303,12 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
         external
         view
         override
-        returns (bool)
+        returns (bool, int256)
     {
-        return assets[assetId].settlement[_event];
+        return (
+            assets[assetId].settlement[_event].isSettled,
+            assets[assetId].settlement[_event].payoff
+        );
     }
 
     /**
@@ -314,12 +317,12 @@ abstract contract Economics is AssetRegistryStorage, IAssetRegistry, AccessContr
      * @param assetId id of the asset
      * @param _event event (encoded) to be marked as settled
      */
-    function markEventAsSettled(bytes32 assetId, bytes32 _event)
+    function markEventAsSettled(bytes32 assetId, bytes32 _event, int256 _payoff)
         external
         override
         isAuthorized (assetId)
     {
-        assets[assetId].settlement[_event] = true;
+        assets[assetId].settlement[_event] = Settlement({ isSettled: true, payoff: _payoff });
     }
 
     /**
