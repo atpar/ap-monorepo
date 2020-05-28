@@ -276,7 +276,7 @@ contract AssetActor is
 
         // mark event as settled
         if (settledPayoff == true) {
-            assetRegistry.markEventAsSettled(assetId, _event);
+            assetRegistry.markEventAsSettled(assetId, _event, payoff);
         }
 
         emit ProgressedAsset(

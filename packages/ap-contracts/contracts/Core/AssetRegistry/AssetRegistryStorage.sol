@@ -16,6 +16,11 @@ import "../SharedTypes.sol";
  */
 contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
 
+    struct Settlement {
+        bool isSettled;
+        int256 payoff;
+    }
+
     struct Asset {
         // boolean indicating that asset exists / is registered
         bool isSet;
@@ -45,7 +50,7 @@ contract AssetRegistryStorage is SharedTypes, Utils, Conversions {
         // storage id => bytes32 encoded value
         mapping (uint8 => bytes32) packedTermsState;
         // indicates whether a specific event was settled
-        mapping (bytes32 => bool) settlement;
+        mapping (bytes32 => Settlement) settlement;
     }
 
     // AssetId => Asset

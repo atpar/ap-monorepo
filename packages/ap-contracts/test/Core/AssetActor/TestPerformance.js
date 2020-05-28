@@ -122,7 +122,8 @@ contract('AssetActor', (accounts) => {
 
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(isEventSettled, true);
+    assert.equal(isEventSettled[0], true );
+    assert.equal(isEventSettled[1].toString(), payoff.toFixed());
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -163,7 +164,8 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
-    assert.equal(isEventSettled, false);
+    assert.equal(isEventSettled[0], false);
+    assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -204,7 +206,8 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
-    assert.equal(isEventSettled, false);
+    assert.equal(isEventSettled[0], false);
+    assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -245,7 +248,8 @@ contract('AssetActor', (accounts) => {
     assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
-    assert.equal(isEventSettled, false);
+    assert.equal(isEventSettled[0], false);
+    assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
 
     await revertToSnapshot(snapshot_asset);
@@ -288,7 +292,8 @@ contract('AssetActor', (accounts) => {
     assert.equal(_event, storedPendingEvent_DL);
     assert.equal(storedNextState_DL.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_DL.statusDate, projectedNextState_DL.statusDate);
-    assert.equal(isEventSettled_DL, false);
+    assert.equal(isEventSettled_DL[0], false);
+    assert.equal(isEventSettled_DL[1].toString(), '0');
     assert.deepEqual(storedNextState_DL, projectedNextState_DL);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
@@ -338,7 +343,8 @@ contract('AssetActor', (accounts) => {
     assert.equal(storedPendingEvent_PF, ZERO_BYTES32);
     assert.equal(storedNextState_PF.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_PF.statusDate, projectedNextState_PF.statusDate);
-    assert.equal(isEventSettled_PF, true);
+    assert.equal(isEventSettled_PF[0], true);
+    assert.equal(isEventSettled_PF[1].toString(), payoff.toFixed());
     assert.deepEqual(storedNextState_PF, projectedNextState_PF);
 
     await revertToSnapshot(snapshot_asset);
