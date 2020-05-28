@@ -6,8 +6,7 @@ import "../Checkpoint/Checkpoint.sol";
 
 contract CheckpointedTokenStorage is Checkpoint {
 
-    // Mapping of checkpoints that relate to total supply
-    mapping(uint256 => uint256) checkpointTotalSupply;
+    Checkpoint[] checkpointTotalSupply;
 
     // Map each holder to a series of checkpoints
     mapping(address => Checkpoint[]) checkpointBalances;

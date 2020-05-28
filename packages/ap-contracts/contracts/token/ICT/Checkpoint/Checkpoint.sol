@@ -7,64 +7,74 @@ import "./CheckpointStorage.sol";
 contract Checkpoint is CheckpointStorage {
 
     // Emit when new checkpoint created
-    event CheckpointCreated(uint256 indexed _checkpointId);
+    event CheckpointCreated(uint256 indexed checkpointId);
 
     /**
      * @notice Queries a value at a defined checkpoint
-     * @param _checkpoints is array of Checkpoint objects
-     * @param _checkpointId is the Checkpoint ID to query
-     * @param _currentValue is the Current value of checkpoint
+     * @param checkpoints array of Checkpoint objects
+     * @param timestamp timestamp to retrieve the value at
      * @return uint256
      */
     function getValueAt(
-        Checkpoint[] memory _checkpoints,
-        uint256 _checkpointId,
-        uint256 _currentValue
+        Checkpoint[] storage checkpoints,
+        uint256 timestamp
     ) 
-        public
-        pure 
-        returns(uint256)
+        internal
+        view 
+        returns (uint256)
     {
-        //Checkpoint id 0 is when the token is first created - everyone has a zero balance
-        if (_checkpointId == 0) {
-            return 0;
-        }
-        if (_checkpoints.length == 0) {
-            return _currentValue;
-        }
-        if (_checkpoints[0].checkpointId >= _checkpointId) {
-            return _checkpoints[0].value;
-        }
-        if (_checkpoints[_checkpoints.length - 1].checkpointId < _checkpointId) {
-            return _currentValue;
-        }
-        if (_checkpoints[_checkpoints.length - 1].checkpointId == _checkpointId) {
-            return _checkpoints[_checkpoints.length - 1].value;
-        }
+        // initially return 0
+        if (checkpoints.length == 0) return 0;
+
+        // Shortcut for the actual value
+        if (timestamp >= checkpoints[checkpoints.length - 1].timestamp)
+            return checkpoints[checkpoints.length - 1].value;
+        if (timestamp < checkpoints[0].timestamp) return 0;
+
+        // Binary search of the value in the array
         uint256 min = 0;
-        uint256 max = _checkpoints.length - 1;
+        uint256 max = checkpoints.length - 1;
         while (max > min) {
-            uint256 mid = (max + min) / 2;
-            if (_checkpoints[mid].checkpointId == _checkpointId) {
-                max = mid;
-                break;
-            }
-            if (_checkpoints[mid].checkpointId < _checkpointId) {
-                min = mid + 1;
+            uint256 mid = (max + min + 1) / 2;
+            if (checkpoints[mid].timestamp <= timestamp) {
+                min = mid;
             } else {
-                max = mid;
+                max = mid - 1;
             }
         }
-        return _checkpoints[max].value;
+        return checkpoints[min].value;
     }
 
-    function createCheckpoint() public returns(uint256) {
-        // currentCheckpointId can only be incremented by 1 and hence it can not be overflowed
-        currentCheckpointId = currentCheckpointId + 1;
-        /*solium-disable-next-line security/no-block-members*/
-        checkpointTimes.push(now);
+    /**
+     * @notice Create a new checkpoint for a value if
+     * there does not exist a checkpoint for the current block timestamp,
+     * otherwise updates the value of the current checkpoint.
+     * @param checkpoints Checkpointed values
+     * @param value Value to be updated
+     */ 
+    function updateValueAtNow(
+        Checkpoint[] storage checkpoints,
+        uint value
+    )
+        internal
+    {
+        // create a new checkpoint if:
+        // - there are no checkpoints
+        // - the current block has a greater timestamp than the last checkpoint
+        // otherwise update value at current checkpoint
+        if (
+            checkpoints.length == 0
+            || (block.timestamp > checkpoints[checkpoints.length - 1].timestamp)
+        ) {
+            // create checkpoint with value
+            checkpoints.push(Checkpoint({ timestamp: uint128(block.timestamp), value: value }));
 
-        emit CheckpointCreated(currentCheckpointId);
-        return currentCheckpointId;
-    }  
+            emit CheckpointCreated(checkpoints.length - 1);
+            
+        } else {
+            // update value at current checkpoint
+            Checkpoint storage oldCheckPoint = checkpoints[checkpoints.length - 1];
+            oldCheckPoint.value = value;
+        }
+    }
 }

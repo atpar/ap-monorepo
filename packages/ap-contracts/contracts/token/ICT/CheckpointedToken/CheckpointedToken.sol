@@ -1,13 +1,13 @@
 pragma solidity 0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 
 import "./CheckpointedTokenStorage.sol";
 
 
-contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, ReentrancyGuard {
+contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
 
     /**
      * @notice returns an array of holders with non zero balance at a given checkpoint
@@ -80,31 +80,21 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, Reentranc
     }
 
     /**
-     * @notice Queries balances as of a defined checkpoint
+     * @notice Queries the balances of a holder at a specific timestamp
      * @param holder Holder to query balance for
-     * @param checkpointId Checkpoint ID to query as of
+     * @param timestamp Timestamp of the balance checkpoint
      */
-    function balanceOfAt(address holder, uint256 checkpointId) public view returns(uint256) {
-        require(checkpointId <= currentCheckpointId, "Invalid checkpoint");
-        return getValueAt(checkpointBalances[holder], checkpointId, balanceOf(holder));
+    function balanceOfAt(address holder, uint256 timestamp) public view returns(uint256) {
+        return getValueAt(checkpointBalances[holder], timestamp);
     }
 
     /**
-     * @notice Queries totalSupply as of a defined checkpoint
-     * @param checkpointId Checkpoint ID to query
+     * @notice Queries totalSupply at a specific timestamp
+     * @param timestamp Timestamp of the totalSupply checkpoint 
      * @return uint256
      */
-    function totalSupplyAt(uint256 checkpointId) public view returns(uint256) {
-        require(checkpointId <= currentCheckpointId, "Invalid checkpoint");
-        return checkpointTotalSupply[checkpointId];
-    }
-
-    function createTokenCheckpoint() public returns(uint256) {
-        createCheckpoint();
-
-        checkpointTotalSupply[currentCheckpointId] = totalSupply();
-        
-        return currentCheckpointId;
+    function totalSupplyAt(uint256 timestamp) public view returns(uint256) {
+        return getValueAt(checkpointTotalSupply, timestamp);
     }
 
     function _isExistingHolder(address holder) internal view returns(bool) {
@@ -130,23 +120,18 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, Reentranc
     }
 
     /**
+     * @notice Internal - adjusts totalSupply at checkpoint before a token transfer
+     */
+    function _adjustTotalSupplyCheckpoints() internal {
+        updateValueAtNow(checkpointTotalSupply, totalSupply());
+    }
+
+    /**
      * @notice Internal - adjusts token holder balance at checkpoint before a token transfer
      * @param holder address of the token holder affected
      */
     function _adjustBalanceCheckpoints(address holder) internal {
-        //No checkpoints set yet
-        if (currentCheckpointId == 0) {
-            return;
-        }
-        //No new checkpoints since last update
-        if (
-            (checkpointBalances[holder].length > 0) 
-            && (checkpointBalances[holder][checkpointBalances[holder].length - 1].checkpointId == currentCheckpointId)
-        ) {
-            return;
-        }
-        //New checkpoint, so record balance
-        checkpointBalances[holder].push(Checkpoint({checkpointId: currentCheckpointId, value: balanceOf(holder)}));
+        updateValueAtNow(checkpointBalances[holder], balanceOf(holder));
     }
 
     /**
@@ -154,17 +139,10 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, Reentranc
      * @param from sender of transfer
      * @param to receiver of transfer
      * @param value value of transfer
-     * @return bool success
      */
-    function _updateTransfer(address from, address to, uint256 value) internal nonReentrant returns(bool verified) {
-        // NB - the ordering in this function implies the following:
-        //  - holder counts are updated before transfer managers are called - i.e. transfer managers will see
-        //holder counts including the current transfer.
-        //  - checkpoints are updated after the transfer managers are called. This allows TMs to create
-        //checkpoints as though they have been created before the current transactions,
-        //  - to avoid the situation where a transfer manager transfers tokens, and this function is called recursively,
-        //the function is marked as nonReentrant. This means that no TM can transfer (or mint / burn) tokens in the execute transfer function.
+    function _updateTransfer(address from, address to, uint256 value) internal {
         _adjustHolderCount(from, to, value);
+        _adjustTotalSupplyCheckpoints();
         _adjustBalanceCheckpoints(from);
         _adjustBalanceCheckpoints(to);
     }
@@ -174,6 +152,7 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, Reentranc
         uint256 value
     )
         internal
+        override
     {
         _updateTransfer(address(0), tokenHolder, value);
         super._mint(tokenHolder, value);
@@ -199,5 +178,4 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20Mintable, Reentranc
         _updateTransfer(from, to, value);
         super._transfer(from, to, value);
     }
-
 }
