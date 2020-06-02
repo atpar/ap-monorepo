@@ -96,7 +96,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
         Deposit storage deposit = deposits[depositId];
 
         for (uint256 i = 0; i < payees.length; i++) {
-            if ((!deposit.claimed[payees[i]])) {
+            if (deposit.claimed[payees[i]] == false) {
                 transferDeposit(payees[i], deposit, depositId);
             }
         }
@@ -109,7 +109,10 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
     function claimDeposit(bytes32 depositId) public {
         Deposit storage deposit = deposits[depositId];
         
-        require(!deposit.claimed[msg.sender], "Deposit.withdrawFunds: DEPOSIT_ALREADY_CLAIMED");
+        require(
+            deposit.claimed[msg.sender] == false,
+            "Deposit.claimDeposit: DEPOSIT_ALREADY_CLAIMED"
+        );
         
         transferDeposit(msg.sender, deposit, depositId);
     }
@@ -119,14 +122,24 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
      * @param payee Address of holder
      * @param deposit Pointer to deposit in storage
      */
-    function transferDeposit(address payable payee, Deposit storage deposit, bytes32 depositId) internal {
+    function transferDeposit(
+        address payee,
+        Deposit storage deposit,
+        bytes32 depositId
+    )
+        internal
+        virtual
+    {
         uint256 claim = calculateClaimOnDeposit(payee, depositId);
      
         deposit.claimed[payee] = true;
         deposit.claimedAmount = claim.add(deposit.claimedAmount);
      
         if (claim > 0) {
-            require(IERC20(deposit.token).transfer(payee, claim), "Deposit.transferDeposit: TRANSFER_FAILED");
+            require(
+                IERC20(deposit.token).transfer(payee, claim),
+                "Deposit.transferDeposit: TRANSFER_FAILED"
+            );
         }
     }
 

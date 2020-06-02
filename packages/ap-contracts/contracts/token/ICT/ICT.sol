@@ -102,4 +102,20 @@ contract ICT is IERC20, Ownable, DepositAllocater, Utils {
         );
         super._transfer(msg.sender, to, value);
     }
+
+    function transferDeposit(
+        address payee,
+        Deposit storage deposit,
+        bytes32 depositId
+    )
+        internal
+        virtual
+        override
+    {
+        if (deposit.onlySignaled == true && deposit.signaledAmounts[payee] > 0) {
+            _burn(payee, deposit.signaledAmounts[payee]);
+        }
+
+        super.transferDeposit(payee, deposit, depositId);
+    }
 }
