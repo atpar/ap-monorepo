@@ -158,24 +158,27 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
         super._mint(tokenHolder, value);
     }
 
-    function _transfer(
-        address to,
+    function _burn(
+        address tokenHolder,
         uint256 value
-    ) 
+    )
         internal
+        override
     {
-        _updateTransfer(msg.sender, to, value);
-        super._transfer(msg.sender, to, value);
+        _updateTransfer(tokenHolder, address(0), value);
+        super._burn(tokenHolder, value);
     }
 
-    function _transferFrom(
+    function _transfer(
         address from,
         address to,
         uint256 value
     ) 
         internal
-    { 
-        _updateTransfer(from, to, value);
-        super._transfer(from, to, value);
+        virtual
+        override
+    {
+        _updateTransfer(msg.sender, to, value);
+        super._transfer(msg.sender, to, value);
     }
 }

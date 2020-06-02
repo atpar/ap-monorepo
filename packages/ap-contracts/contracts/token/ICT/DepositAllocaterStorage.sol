@@ -4,27 +4,29 @@ pragma solidity 0.6.4;
  * @title Holds the storage variable for the FDTCheckpoint (i.e ERC20, Ether)
  * @dev abstract contract
  */
-contract DepositStorage {
+contract DepositAllocaterStorage {
 
     struct Deposit {
-        // Time at which the deposit was created
-        uint256 created;
+        // Time at which the deposit is scheduled for
+        uint256 scheduledFor;
         // Deposit amount in WEI 
         uint256 amount;
         // Amount of funds claimed so far
         uint256 claimedAmount;
-        // Sum of the balances of the whitelisted token holders (only used if Deposit is marked as restricted)
-        uint256 totalBalanceOfWhitelistedHolders;
-        // Indicates whether only a subset of holders can claim their share of the deposit
-        bool isRestrictedDeposit;
+        // Sum of the signaled tokens of whitelisted token holders (only used if isWhitelisted == true)
+        uint256 totalAmountSignaled;
         // Address of the token in which the deposit is made
         address token;
+        // Indicates whether hodlers have to signal in advance to claim their share of the deposit
+        bool onlySignaled;
         // List of addresses which have withdrawn their share of funds of the deposit
         mapping (address => bool) claimed;
         // Subset of holders which can claim their share of funds of the deposit
-        mapping (address => bool) whitelistedHolders;
+        mapping (address => uint256) signaledAmounts;
     }
 
-    // event => Deposit
-    mapping(bytes32 => Deposit) public depositForEvent;
+    // depositId => Deposit
+    mapping(bytes32 => Deposit) public deposits;
+
+    mapping(address => uint256) public numberOfDepositsSignaledByHolder;
 }
