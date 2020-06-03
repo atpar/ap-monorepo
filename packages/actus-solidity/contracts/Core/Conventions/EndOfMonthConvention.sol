@@ -47,4 +47,24 @@ contract EndOfMonthConvention is ACTUSTypes {
         }
         revert("EndOfMonthConvention.adjustEndOfMonthConvention: ATTRIBUTE_NOT_FOUND.");
     }
+
+    /**
+	 * This function is for the EndOfMonthConvention.EOM convention and
+	 * shifts a timestamp to the last day of the month.
+	 * @param timestamp the timestmap to shift
+	 * @return the shifted timestamp
+	 */
+	function shiftEndOfMonth(uint256 timestamp)
+	  internal
+	  pure
+	  returns (uint256)
+	{
+		uint256 year;
+		uint256 month;
+		uint256 day;
+		(year, month, day) = BokkyPooBahsDateTimeLibrary.timestampToDate(timestamp);
+		uint256 lastDayOfMonth = BokkyPooBahsDateTimeLibrary._getDaysInMonth(year, month);
+
+		return BokkyPooBahsDateTimeLibrary.timestampFromDate(year, month, lastDayOfMonth);
+	}
 }
