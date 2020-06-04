@@ -361,13 +361,17 @@ export class Ownership extends Contract {
     isEventSettled(
       assetId: string | number[],
       _event: string | number[]
-    ): TransactionObject<boolean>;
+    ): TransactionObject<{
+      0: boolean;
+      1: string;
+    }>;
 
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     markEventAsSettled(
       assetId: string | number[],
-      _event: string | number[]
+      _event: string | number[],
+      _payoff: number | string
     ): TransactionObject<void>;
 
     popNextScheduledEvent(

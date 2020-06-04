@@ -43,7 +43,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, Utils {
         createDeposit(
             _event,
             scheduleTime,
-            false, // todo: add EventType for redemption
+            (eventType == EventType.RD),
             terms.currency
         );
     }

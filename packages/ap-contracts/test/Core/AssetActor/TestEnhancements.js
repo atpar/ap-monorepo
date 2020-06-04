@@ -155,13 +155,13 @@ contract('AssetActor', (accounts) => {
     const xdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(xdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(xdEvent).eventType), 20);
+    assert.equal(Number(decodeEvent(xdEvent).eventType), 21);
 
     // progress collateral enhancement
     const stdEvent = await this.AssetRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, lifecycleTermsCEC)));
     await this.AssetActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(stdEvent).eventType), 21);
+    assert.equal(Number(decodeEvent(stdEvent).eventType), 22);
 
     // creator should have received seized collateral from custodian
     assert.equal(
