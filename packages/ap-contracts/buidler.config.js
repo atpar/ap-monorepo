@@ -1,8 +1,16 @@
+const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-tasks/task-names');
+
+
 usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
-// usePlugin("buidler-gas-reporter");
 usePlugin('solidity-coverage');
+// usePlugin('buidler-gas-reporter');
 
+task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
+  const input = await runSuper();
+  input.settings.metadata.useLiteralContent = false;
+  return input;
+});
 
 module.exports = {
   paths: {
