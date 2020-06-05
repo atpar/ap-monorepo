@@ -33,23 +33,15 @@ contract ACTUSTypes {
     enum EventType {NE, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, XD, STD, AD}
     enum Calendar {NC, MF}
     enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
-    enum ClearingHouse {Y, N}
     enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
     enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
     enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
-    enum CyclePointOfInterestPayment {B, E} // or E, B?
-    enum CyclePointOfRateReset {B, E}
     enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
     enum EndOfMonthConvention {SD, EOM}
     enum FeeBasis {A, N}
     enum InterestCalculationBase {NT, NTIED, NTL}
-    enum OptionExerciseType {E, B, A}
-    enum OptionType {C, P, CP}
     enum PenaltyType {O, A, N, I}
-    enum PrepaymentEffect {N, A, M}
     enum ScalingEffect {_000, I00, _0N0, IN0}
-    enum Seniority {S, J}
-    enum Unit {BRL, BSH, GLN, CUU, MWH, PND, STN, TON, TRO}
     enum ContractReferenceType {CNT, CID, MOC, EID, CST}
     enum ContractReferenceRole {UDL, FIL, SEL, COVE, COVI}
 
@@ -157,7 +149,7 @@ contract ACTUSTypes {
         IP delinquencyPeriod;
     }
 
-    // ACTUS terms object
+    // ACTUS terms object (not used on-chain)
     struct Terms {
         ContractType contractType;
         Calendar calendar;
