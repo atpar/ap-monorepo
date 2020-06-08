@@ -1,21 +1,21 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Core/ACTUSTypes.sol";
+import "../../Core/ACTUSTypes.sol";
 
 
 /**
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-abstract contract IEngine {
+abstract contract IANNEngine {
 
     /**
      * @notice Initialize contract state space based on the contract terms.
      * @param terms terms of the contract
      * @return initial state of the contract
      */
-    function computeInitialState(LifecycleTerms calldata terms)
+    function computeInitialState(ANNTerms calldata terms)
         external
         pure
         virtual
@@ -30,7 +30,7 @@ abstract contract IEngine {
      * @return the resulting contract state
      */
     function computeStateForEvent(
-        LifecycleTerms calldata terms,
+        ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
         bytes32 externalData
@@ -49,7 +49,7 @@ abstract contract IEngine {
      * @return the payoff of the event
      */
     function computePayoffForEvent(
-        LifecycleTerms calldata terms,
+        ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
         bytes32 externalData
@@ -68,7 +68,7 @@ abstract contract IEngine {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
+        ANNTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd
     )
@@ -87,7 +87,7 @@ abstract contract IEngine {
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
+        ANNTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd,
         EventType eventType
@@ -109,7 +109,7 @@ abstract contract IEngine {
      */
     function isEventScheduled(
         bytes32 _event,
-        LifecycleTerms calldata terms,
+        ANNTerms calldata terms,
         State calldata state,
         bool hasUnderlying,
         State calldata underlyingState

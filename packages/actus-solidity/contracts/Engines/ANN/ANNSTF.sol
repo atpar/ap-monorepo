@@ -1,22 +1,22 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Core/Core.sol";
+import "../../Core/Core.sol";
 
 
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) currently used by all Engines
  */
-contract STF is Core {
+contract ANNSTF is Core {
 
     /**
      * State transition for PAM analysis events
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_NE (
-        LifecycleTerms memory /* terms */,
+    function STF_ANN_NE (
+        ANNTerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
@@ -33,8 +33,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_AD (
-        LifecycleTerms memory terms,
+    function STF_ANN_AD (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -66,8 +66,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_FP (
-        LifecycleTerms memory terms,
+    function STF_ANN_FP (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -90,100 +90,12 @@ contract STF is Core {
     }
 
     /**
-     * State transition for PAM initial exchange
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_PAM_IED (
-        LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.nominalInterestRate = terms.nominalInterestRate;
-        state.statusDate = scheduleTime;
-        state.accruedInterest = terms.accruedInterest;
-
-        return state;
-    }
-
-    /**
-     * State transition for PAM interest capitalization
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_PAM_IPCI (
-        LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
-        state.notionalPrincipal = state.notionalPrincipal
-        .add(
-            state.accruedInterest
-            .add(
-                state.nominalInterestRate
-                .floatMult(state.notionalPrincipal)
-                .floatMult(timeFromLastEvent)
-            )
-        );
-        state.accruedInterest = 0;
-        state.feeAccrued = state.feeAccrued
-        .add(
-            terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    /**
-     * State transition for PAM interest payment
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_PAM_IP (
-        LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
-        state.accruedInterest = 0;
-        state.feeAccrued = state.feeAccrued
-        .add(
-            terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    /**
      * State transition for PAM principal prepayment
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_PP (
-        LifecycleTerms memory terms,
+    function STF_ANN_PP (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -217,7 +129,7 @@ contract STF is Core {
      * @return the new state
      */
     function STF_PAM_PR (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -250,8 +162,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_PY (
-        LifecycleTerms memory terms,
+    function STF_ANN_PY (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -283,8 +195,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_RRF (
-        LifecycleTerms memory terms,
+    function STF_ANN_RRF (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -318,7 +230,7 @@ contract STF is Core {
      * @return the new state
      */
     function STF_PAM_RR (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -366,7 +278,7 @@ contract STF is Core {
      * @return the new state
      */
     function STF_PAM_SC (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -407,7 +319,7 @@ contract STF is Core {
      * @return the new state
      */
     function STF_PAM_MD (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -441,8 +353,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_TD (
-        LifecycleTerms memory /* terms */,
+    function STF_ANN_TD (
+        ANNTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -466,8 +378,8 @@ contract STF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_PAM_CE (
-        LifecycleTerms memory terms,
+    function STF_ANN_CE (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -515,7 +427,7 @@ contract STF is Core {
     }
 
     function STF_ANN_IED (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -533,7 +445,7 @@ contract STF is Core {
     }
 
     function STF_ANN_IPCI (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -565,7 +477,7 @@ contract STF is Core {
     }
 
     function STF_ANN_IP (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -588,7 +500,7 @@ contract STF is Core {
     }
 
     function STF_ANN_PR (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -632,7 +544,7 @@ contract STF is Core {
     }
 
     function STF_ANN_MD (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -662,7 +574,7 @@ contract STF is Core {
     }
 
     function STF_ANN_RR (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -705,7 +617,7 @@ contract STF is Core {
     }
 
     function STF_ANN_SC (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -740,114 +652,12 @@ contract STF is Core {
         return state;
     }
 
-    function STF_CEG_MD (
-        LifecycleTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.notionalPrincipal = 0;
-        state.contractPerformance = ContractPerformance.MD;
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    function STF_CEG_XD (
-        LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.statusDate = scheduleTime;
-        // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
-        state.exerciseDate = scheduleTime;
-
-        if (terms.feeBasis == FeeBasis.A) {
-            state.feeAccrued = roleSign(terms.contractRole) * terms.feeRate;
-        } else {
-            state.feeAccrued = state.feeAccrued
-            .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
-                .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
-            );
-        }
-
-        return state;
-    }
-
-    function STF_CEG_STD (
-        LifecycleTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.notionalPrincipal = 0;
-        state.feeAccrued = 0;
-        state.contractPerformance = ContractPerformance.MD;
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    function STF_CEG_PRD (
-        LifecycleTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.nominalInterestRate = terms.feeRate;
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    function STF_CEG_FP (
-        LifecycleTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.feeAccrued = 0;
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
     function _yearFraction_STF (
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime
     )
-        internal
+        private
         pure
         returns(int256)
     {

@@ -1,22 +1,27 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Engines/POF.sol";
+import "../Engines/ANN/ANNPOF.sol";
+import "../Engines/CEC/CECPOF.sol";
+import "../Engines/CEG/CEGPOF.sol";
+import "../Engines/PAM/PAMPOF.sol";
 
 
 /**
 * These helper contracts expose internal functions for unit testing.
 */
-contract TestPOF is POF {
-    function _POF_PAM_FP (
-        LifecycleTerms memory terms,
+contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
+
+    function _POF_PAM_FP(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256) {
+        public
+        pure
+        returns (int256)
+    {
         return POF_PAM_FP(
             terms,
             state,
@@ -25,15 +30,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_IED (
-        LifecycleTerms memory terms,
+    function _POF_PAM_IED(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_IED(
             terms,
@@ -43,15 +48,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_IP (
-        LifecycleTerms memory terms,
+    function _POF_PAM_IP(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_IP(
             terms,
@@ -61,15 +66,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_PP (
-        LifecycleTerms memory terms,
+    function _POF_PAM_PP(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_PP(
             terms,
@@ -79,15 +84,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_MD (
-        LifecycleTerms memory terms,
+    function _POF_PAM_MD(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_MD(
             terms,
@@ -97,15 +102,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_PY (
-        LifecycleTerms memory terms,
+    function _POF_PAM_PY(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_PY(
             terms,
@@ -115,15 +120,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_PAM_TD (
-        LifecycleTerms memory terms,
+    function _POF_PAM_TD(
+        PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_PAM_TD(
             terms,
@@ -133,15 +138,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_ANN_PR (
-        LifecycleTerms memory terms,
+    function _POF_ANN_PR(
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_ANN_PR(
             terms,
@@ -151,15 +156,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_CEG_STD (
-        LifecycleTerms memory terms,
+    function _POF_CEG_STD(
+        CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_CEG_STD(
             terms,
@@ -169,15 +174,15 @@ contract TestPOF is POF {
         );
     }
 
-    function _POF_CEG_FP (
-        LifecycleTerms memory terms,
+    function _POF_CEG_FP(
+        CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
-    public
-    pure
-    returns(int256)
+        public
+        pure
+        returns (int256)
     {
         return POF_CEG_FP(
             terms,

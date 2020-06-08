@@ -1,27 +1,90 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Core/Core.sol";
-import "./BaseEngine.sol";
-import "./IEngine.sol";
-import "./STF.sol";
-import "./POF.sol";
+import "../../Core/Core.sol";
+import "./ICECEngine.sol";
+import "./CECSTF.sol";
+import "./CECPOF.sol";
 
 
 /**
- * @title CEGEngine
+ * @title CECEngine
  * @notice Inherits from BaseEngine by implementing STFs, POFs according to the ACTUS standard for a CEC contract
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  * inputs have to be multiplied by 10 ** 18, outputs have to multplied by 10 ** -18
  */
-contract CEGEngine is BaseEngine, STF, POF {
+contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
+
+    /**
+     * Applys an event to the current state of a contract and returns the resulting contract state.
+     * @param terms terms of the contract
+     * @param state current state of the contract
+     * @param _event event to be applied to the contract state
+     * @param externalData external data needed for STF evaluation (e.g. rate for RR events)
+     * @return the resulting contract state
+     */
+    function computeStateForEvent(
+        CECTerms calldata terms,
+        State calldata state,
+        bytes32 _event,
+        bytes32 externalData
+    )
+        external
+        pure
+        override
+        returns (State memory)
+    {
+        return stateTransitionFunction(
+            terms,
+            state,
+            _event,
+            externalData
+        );
+    }
+
+    /**
+     * Evaluates the payoff for an event under the current state of the contract.
+     * @param terms terms of the contract
+     * @param state current state of the contract
+     * @param _event event for which the payoff should be evaluated
+     * @param externalData external data needed for POF evaluation (e.g. fxRate)
+     * @return the payoff of the event
+     */
+    function computePayoffForEvent(
+        CECTerms calldata terms,
+        State calldata state,
+        bytes32 _event,
+        bytes32 externalData
+    )
+        external
+        pure
+        override
+        returns (int256)
+    {
+        // if alternative settlementCurrency is set then apply fxRate to payoff
+        if (terms.settlementCurrency != address(0) && terms.currency != terms.settlementCurrency) {
+            return payoffFunction(
+                terms,
+                state,
+                _event,
+                externalData
+            ).floatMult(int256(externalData));
+        }
+
+        return payoffFunction(
+            terms,
+            state,
+            _event,
+            externalData
+        );
+    }
 
     /**
      * @notice Initialize contract state space based on the contract terms.
      * @param terms terms of the contract
      * @return initial state of the contract
      */
-    function computeInitialState(LifecycleTerms calldata terms)
+    function computeInitialState(CECTerms calldata terms)
         external
         pure
         override
@@ -33,7 +96,6 @@ contract CEGEngine is BaseEngine, STF, POF {
         state.statusDate = terms.statusDate;
         state.maturityDate = terms.maturityDate;
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.feeAccrued = terms.feeAccrued;
 
         return state;
     }
@@ -47,7 +109,7 @@ contract CEGEngine is BaseEngine, STF, POF {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
+        CECTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd
     )
@@ -58,14 +120,6 @@ contract CEGEngine is BaseEngine, STF, POF {
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index = 0;
-
-        // purchase
-        if (terms.purchaseDate != 0) {
-            if (isInSegment(terms.purchaseDate, segmentStart, segmentEnd)) {
-                events[index] = encodeEvent(EventType.PRD, terms.purchaseDate);
-                index++;
-            }
-        }
 
         // maturity event
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
@@ -85,51 +139,24 @@ contract CEGEngine is BaseEngine, STF, POF {
     /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
-     * @param terms terms of the contract
-     * @param segmentStart start timestamp of the segment
-     * @param segmentEnd end timestamp of the segement
-     * @param eventType eventType of the cyclic schedule
+     * param terms terms of the contract
+     * param segmentStart start timestamp of the segment
+     * param segmentEnd end timestamp of the segement
+     * param eventType eventType of the cyclic schedule
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
-        uint256 segmentStart,
-        uint256 segmentEnd,
-        EventType eventType
+        CECTerms calldata /* terms */,
+        uint256 /* segmentStart */,
+        uint256 /* segmentEnd */,
+        EventType /* eventType */
     )
         external
         pure
         override
         returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint256 index = 0;
-
-        if (eventType == EventType.FP) {
-            // fees
-            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
-                uint256[MAX_CYCLE_SIZE] memory feeSchedule = computeDatesFromCycleSegment(
-                    terms.cycleAnchorDateOfFee,
-                    terms.maturityDate,
-                    terms.cycleOfFee,
-                    true,
-                    segmentStart,
-                    segmentEnd
-                );
-                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
-                    if (feeSchedule[i] == 0) break;
-                    if (isInSegment(feeSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.FP, feeSchedule[i]);
-                    index++;
-                }
-            }
-        }
-
-        // remove null entries from returned array
-        bytes32[] memory schedule = new bytes32[](index);
-        for (uint256 i = 0; i < index; i++) {
-            schedule[i] = events[i];
-        }
+        bytes32[] memory schedule = new bytes32[](0);
 
         return schedule;
     }
@@ -137,37 +164,25 @@ contract CEGEngine is BaseEngine, STF, POF {
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
-     * @param _event event for which to check if its still scheduled
+     * param _event event for which to check if its still scheduled
      * param terms terms of the contract
      * param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
-     * @param underlyingState state of the underlying (empty state object if non-existing)
+     * param hasUnderlying boolean indicating whether the contract has an underlying contract
+     * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
-        bytes32 _event,
-        LifecycleTerms calldata /* terms */,
+        bytes32 /* _event */,
+        CECTerms calldata /* terms */,
         State calldata /* state */,
-        bool hasUnderlying,
-        State calldata underlyingState
+        bool /* hasUnderlying */,
+        State calldata /* underlyingState */
     )
         external
         pure
         override
         returns (bool)
     {
-        (EventType eventType,) = decodeEvent(_event);
-
-        if (hasUnderlying) {
-            // FP, MD events only scheduled up to execution of the Guarantee
-            if (
-                (eventType == EventType.FP || eventType == EventType.MD)
-                && underlyingState.exerciseAmount > int256(0)
-            ) {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -182,30 +197,23 @@ contract CEGEngine is BaseEngine, STF, POF {
      * @return the resulting contract state
      */
     function stateTransitionFunction(
-        LifecycleTerms memory terms,
+        CECTerms memory terms,
         State memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        override
         returns (State memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        /*
-         * Note:
-         * Not supported: PRD (Purchase) events
-         */
+        if (eventType == EventType.XD) return STF_CEC_XD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return STF_CEC_MD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.STD) return STF_CEC_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.CE) return STF_CEC_CE(terms, state, scheduleTime, externalData);
 
-        if (eventType == EventType.FP) return STF_CEG_FP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.XD) return STF_CEG_XD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.STD) return STF_CEG_STD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.MD) return STF_CEG_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CE) return STF_PAM_CE(terms, state, scheduleTime, externalData);
-
-        revert("CEGEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
+        revert("CECEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
     }
 
     /**
@@ -219,29 +227,22 @@ contract CEGEngine is BaseEngine, STF, POF {
      * @return the payoff of the event
      */
     function payoffFunction(
-        LifecycleTerms memory terms,
+        CECTerms memory terms,
         State memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        override
         returns (int256)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        /*
-         * Note:
-         * Not supported: PRD (Purchase) events
-         */
-
         if (eventType == EventType.CE) return 0;
-        if (eventType == EventType.FP) return POF_CEG_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.XD) return 0;
-        if (eventType == EventType.STD) return POF_CEG_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.STD) return POF_CEC_STD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return 0;
-        
-        revert("CEGEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
+
+        revert("CECEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }
 }

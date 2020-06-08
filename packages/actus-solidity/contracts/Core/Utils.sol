@@ -39,7 +39,7 @@ contract Utils is BusinessDayConventions {
      * @notice Returns the event time for a given schedule time
      * by applying the BDC specified in the terms
      */
-    function computeEventTimeForEvent(bytes32 _event, LifecycleTerms memory terms)
+    function computeEventTimeForEvent(bytes32 _event, BusinessDayConvention bdc, Calendar calendar, uint256 maturityDate)
         public
         pure
         returns (uint256)
@@ -47,7 +47,7 @@ contract Utils is BusinessDayConventions {
         (, uint256 scheduleTime) = decodeEvent(_event);
 
         // handle maturity date
-        return shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate);
+        return shiftEventTime(scheduleTime, bdc, calendar, maturityDate);
     }
 
     /**

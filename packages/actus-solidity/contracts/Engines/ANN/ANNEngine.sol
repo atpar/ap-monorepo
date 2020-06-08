@@ -1,26 +1,90 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Core/Core.sol";
-import "./BaseEngine.sol";
-import "./IEngine.sol";
-import "./STF.sol";
-import "./POF.sol";
+import "../../Core/Core.sol";
+import "./IANNEngine.sol";
+import "./ANNSTF.sol";
+import "./ANNPOF.sol";
 
 
 /**
- * @title PAMEngine
- * @notice Inherits from BaseEngine by implementing STFs, POFs according to the ACTUS standard for a PAM contract
+ * @title ANNEngine
+ * @notice Inherits from BaseEngine by implementing STFs, POFs according to the ACTUS standard for a ANN contract
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
-contract PAMEngine is BaseEngine, STF, POF {
+contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
+
+    /**
+     * Applys an event to the current state of a contract and returns the resulting contract state.
+     * @param terms terms of the contract
+     * @param state current state of the contract
+     * @param _event event to be applied to the contract state
+     * @param externalData external data needed for STF evaluation (e.g. rate for RR events)
+     * @return the resulting contract state
+     */
+    function computeStateForEvent(
+        ANNTerms calldata terms,
+        State calldata state,
+        bytes32 _event,
+        bytes32 externalData
+    )
+        external
+        pure
+        override
+        returns (State memory)
+    {
+        return stateTransitionFunction(
+            terms,
+            state,
+            _event,
+            externalData
+        );
+    }
+
+    /**
+     * Evaluates the payoff for an event under the current state of the contract.
+     * @param terms terms of the contract
+     * @param state current state of the contract
+     * @param _event event for which the payoff should be evaluated
+     * @param externalData external data needed for POF evaluation (e.g. fxRate)
+     * @return the payoff of the event
+     */
+    function computePayoffForEvent(
+        ANNTerms calldata terms,
+        State calldata state,
+        bytes32 _event,
+        bytes32 externalData
+    )
+        external
+        pure
+        override
+        returns (int256)
+    {
+        // if alternative settlementCurrency is set then apply fxRate to payoff
+        if (terms.settlementCurrency != address(0) && terms.currency != terms.settlementCurrency) {
+            return payoffFunction(
+                terms,
+                state,
+                _event,
+                externalData
+            ).floatMult(int256(externalData));
+        }
+
+        return payoffFunction(
+            terms,
+            state,
+            _event,
+            externalData
+        );
+    }
 
     /**
      * @notice Initialize contract state space based on the contract terms.
+     * todo implement annuity calculator
      * @param terms terms of the contract
-     * @return the initial state of the contract
+     * @return initial state of the contract
      */
-    function computeInitialState(LifecycleTerms calldata terms)
+    function computeInitialState(ANNTerms calldata terms)
         external
         pure
         override
@@ -33,10 +97,12 @@ contract PAMEngine is BaseEngine, STF, POF {
         state.interestScalingMultiplier = ONE_POINT_ZERO;
         state.statusDate = terms.statusDate;
         state.maturityDate = terms.maturityDate;
-        state.notionalPrincipal = terms.notionalPrincipal;
+        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
-        state.accruedInterest = terms.accruedInterest;
+        state.accruedInterest = roleSign(terms.contractRole) * terms.accruedInterest;
         state.feeAccrued = terms.feeAccrued;
+        // annuity calculator to be implemented
+        state.nextPrincipalRedemptionPayment = roleSign(terms.contractRole) * terms.nextPrincipalRedemptionPayment;
 
         return state;
     }
@@ -44,13 +110,14 @@ contract PAMEngine is BaseEngine, STF, POF {
     /**
      * @notice Computes a schedule segment of non-cyclic contract events based on the contract terms
      * and the specified timestamps.
+     * todo rate reset, scaling, interest calculation base
      * @param terms terms of the contract
      * @param segmentStart start timestamp of the segment
      * @param segmentEnd end timestamp of the segement
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
+        ANNTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd
     )
@@ -63,7 +130,7 @@ contract PAMEngine is BaseEngine, STF, POF {
         uint16 index = 0;
 
         // initial exchange
-        if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+        if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
             events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
             index++;
         }
@@ -76,8 +143,8 @@ contract PAMEngine is BaseEngine, STF, POF {
             }
         }
 
-        // principal redemption
-        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
+        // principal redemption at maturity
+        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true)  {
             events[index] = encodeEvent(EventType.MD, terms.maturityDate);
             index++;
         }
@@ -101,7 +168,7 @@ contract PAMEngine is BaseEngine, STF, POF {
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        GeneratingTerms calldata terms,
+        ANNTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd,
         EventType eventType
@@ -109,7 +176,7 @@ contract PAMEngine is BaseEngine, STF, POF {
         external
         pure
         override
-        returns(bytes32[] memory)
+        returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index = 0;
@@ -145,6 +212,7 @@ contract PAMEngine is BaseEngine, STF, POF {
                 terms.cycleOfInterestPayment.isSet == true
                 && terms.cycleAnchorDateOfInterestPayment != 0
                 && terms.capitalizationEndDate != 0
+                && terms.capitalizationEndDate < terms.cycleAnchorDateOfPrincipalRedemption
             ) {
                 IPS memory cycleOfInterestCapitalization = terms.cycleOfInterestPayment;
                 cycleOfInterestCapitalization.s = S.SHORT;
@@ -164,27 +232,6 @@ contract PAMEngine is BaseEngine, STF, POF {
                     index++;
                 }
             }
-        }
-
-        if (eventType == EventType.RR) {
-            // rate reset
-            if (terms.cycleOfRateReset.isSet == true && terms.cycleAnchorDateOfRateReset != 0) {
-                uint256[MAX_CYCLE_SIZE] memory rateResetSchedule = computeDatesFromCycleSegment(
-                    terms.cycleAnchorDateOfRateReset,
-                    terms.maturityDate,
-                    terms.cycleOfRateReset,
-                    false,
-                    segmentStart,
-                    segmentEnd
-                );
-                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
-                    if (rateResetSchedule[i] == 0) break;
-                    if (isInSegment(rateResetSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.RR, rateResetSchedule[i]);
-                    index++;
-                }
-            }
-            // ... nextRateReset
         }
 
         if (eventType == EventType.FP) {
@@ -207,25 +254,21 @@ contract PAMEngine is BaseEngine, STF, POF {
             }
         }
 
-        if (eventType == EventType.SC) {
-            // scaling
-            if ((terms.scalingEffect != ScalingEffect._000)
-                && terms.cycleAnchorDateOfScalingIndex != 0
-            ) {
-                uint256[MAX_CYCLE_SIZE] memory scalingSchedule = computeDatesFromCycleSegment(
-                    terms.cycleAnchorDateOfScalingIndex,
-                    terms.maturityDate,
-                    terms.cycleOfScalingIndex,
-                    true,
-                    segmentStart,
-                    segmentEnd
-                );
-                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
-                    if (scalingSchedule[i] == 0) break;
-                    if (isInSegment(scalingSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.SC, scalingSchedule[i]);
-                    index++;
-                }
+        if (eventType == EventType.PR) {
+            // principal redemption
+            uint256[MAX_CYCLE_SIZE] memory principalRedemptionSchedule = computeDatesFromCycleSegment(
+                terms.cycleAnchorDateOfPrincipalRedemption,
+                terms.maturityDate,
+                terms.cycleOfPrincipalRedemption,
+                false,
+                segmentStart,
+                segmentEnd
+            );
+            for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                if (principalRedemptionSchedule[i] == 0) break;
+                if (isInSegment(principalRedemptionSchedule[i], segmentStart, segmentEnd) == false) continue;
+                events[index] = encodeEvent(EventType.PR, principalRedemptionSchedule[i]);
+                index++;
             }
         }
 
@@ -250,7 +293,7 @@ contract PAMEngine is BaseEngine, STF, POF {
      */
     function isEventScheduled(
         bytes32 /* _event */,
-        LifecycleTerms calldata /* terms */,
+        ANNTerms calldata /* terms */,
         State calldata /* state */,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
@@ -275,38 +318,38 @@ contract PAMEngine is BaseEngine, STF, POF {
      * @return the resulting contract state
      */
     function stateTransitionFunction(
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        override
         returns (State memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         /*
          * Note:
-         * Not supported: PRD (Purchase) events
+         * not supported: IPCB events, PRD (Purchase) events
          */
 
-        if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.TD) return STF_PAM_TD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CE)  return STF_PAM_CE(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.AD) return STF_ANN_AD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PP) return STF_ANN_PP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PY) return STF_ANN_PY(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RRF) return STF_ANN_RRF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.TD) return STF_ANN_TD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.CE) return STF_ANN_CE(terms, state, scheduleTime, externalData);
 
-        revert("PAMEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
+        revert("ANNEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
     }
 
     /**
@@ -321,21 +364,25 @@ contract PAMEngine is BaseEngine, STF, POF {
      * @return the payoff of the event
      */
     function payoffFunction(
-        LifecycleTerms memory terms,
+        ANNTerms memory terms,
         State memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        override
         returns (int256)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         /*
-         * Note: PAM contracts don't have IPCB and PR events.
-         * Not supported: PRD (Purchase) events
+         * Note: all ANN payoff functions that rely on NAM/LAM have been replaced by PAM
+         * actus-solidity currently doesn't support interestCalculationBase, thus we can use PAM
+         *
+         * There is a reference to a POF_ANN_PR function which was added because PAM doesn't have PR Events in ACTUS 1.0
+         * and NAM, which ANN refers to in the specification, is not yet supported
+         *
+         * not supported: IPCB events, PRD (Purchase) events
          */
 
         if (eventType == EventType.AD) return 0;
@@ -344,14 +391,15 @@ contract PAMEngine is BaseEngine, STF, POF {
         if (eventType == EventType.RR) return 0;
         if (eventType == EventType.SC) return 0;
         if (eventType == EventType.CE) return 0;
-        if (eventType == EventType.FP) return POF_PAM_FP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.IED) return POF_PAM_IED(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return POF_ANN_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IED) return POF_ANN_IED(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.IP) return POF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PP) return POF_ANN_PP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.MD) return POF_ANN_MD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.PY) return POF_ANN_PY(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.TD) return POF_ANN_TD(terms, state, scheduleTime, externalData);
 
-        revert("PAMEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
+        revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }
 }

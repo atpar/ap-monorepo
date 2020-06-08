@@ -62,9 +62,8 @@ struct State {
     int256 exerciseAmount;
 }
 
-// subset of the ACTUS terms object
-// contains only attributes which are used in POFs and STFs
-struct LifecycleTerms {
+struct ANNTerms {
+    ContractType contractType;
     Calendar calendar;
     ContractRole contractRole;
     DayCountConvention dayCountConvention;
@@ -80,8 +79,17 @@ struct LifecycleTerms {
 
     bytes32 marketObjectCodeRateReset;
 
+    uint256 contractDealDate;
     uint256 statusDate;
+    uint256 initialExchangeDate;
     uint256 maturityDate;
+    uint256 purchaseDate;
+    uint256 capitalizationEndDate;
+    uint256 cycleAnchorDateOfInterestPayment;
+    uint256 cycleAnchorDateOfRateReset;
+    uint256 cycleAnchorDateOfScalingIndex;
+    uint256 cycleAnchorDateOfFee;
+    uint256 cycleAnchorDateOfPrincipalRedemption;
 
     int256 notionalPrincipal;
     int256 nominalInterestRate;
@@ -101,6 +109,12 @@ struct LifecycleTerms {
     int256 periodCap;
     int256 periodFloor;
 
+    IPS cycleOfInterestPayment;
+    IPS cycleOfRateReset;
+    IPS cycleOfScalingIndex;
+    IPS cycleOfFee;
+    IPS cycleOfPrincipalRedemption;
+
     IP gracePeriod;
     IP delinquencyPeriod;
 
@@ -110,10 +124,22 @@ struct LifecycleTerms {
     ContractReference contractReference_2;
 }
 
-// subset of the ACTUS terms object
-// contains only attributes which are used in the schedule generation
-struct GeneratingTerms {
+struct CECTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
+    PenaltyType penaltyType;
+    FeeBasis feeBasis;
+    ContractPerformance creditEventTypeCovered;
+
+    address currency;
+    address settlementCurrency;
+
+    bytes32 marketObjectCodeRateReset;
 
     uint256 contractDealDate;
     uint256 statusDate;
@@ -127,6 +153,24 @@ struct GeneratingTerms {
     uint256 cycleAnchorDateOfFee;
     uint256 cycleAnchorDateOfPrincipalRedemption;
 
+    int256 notionalPrincipal;
+    int256 nominalInterestRate;
+    int256 feeAccrued;
+    int256 accruedInterest;
+    int256 rateMultiplier;
+    int256 rateSpread;
+    int256 feeRate;
+    int256 nextResetRate;
+    int256 penaltyRate;
+    int256 premiumDiscountAtIED;
+    int256 priceAtPurchaseDate;
+    int256 nextPrincipalRedemptionPayment;
+    int256 coverageOfCreditEnhancement;
+    int256 lifeCap;
+    int256 lifeFloor;
+    int256 periodCap;
+    int256 periodFloor;
+
     IPS cycleOfInterestPayment;
     IPS cycleOfRateReset;
     IPS cycleOfScalingIndex;
@@ -135,10 +179,76 @@ struct GeneratingTerms {
 
     IP gracePeriod;
     IP delinquencyPeriod;
+
+    // for simplification since terms are limited only two contract references
+    // - make ContractReference top level and skip ContractStructure
+    ContractReference contractReference_1;
+    ContractReference contractReference_2;
 }
 
-// ACTUS terms object (not used on-chain)
-struct Terms {
+struct CEGTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    ScalingEffect scalingEffect;
+    PenaltyType penaltyType;
+    FeeBasis feeBasis;
+    ContractPerformance creditEventTypeCovered;
+
+    address currency;
+    address settlementCurrency;
+
+    bytes32 marketObjectCodeRateReset;
+
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    uint256 maturityDate;
+    uint256 purchaseDate;
+    uint256 capitalizationEndDate;
+    uint256 cycleAnchorDateOfInterestPayment;
+    uint256 cycleAnchorDateOfRateReset;
+    uint256 cycleAnchorDateOfScalingIndex;
+    uint256 cycleAnchorDateOfFee;
+    uint256 cycleAnchorDateOfPrincipalRedemption;
+
+    int256 notionalPrincipal;
+    int256 nominalInterestRate;
+    int256 feeAccrued;
+    int256 accruedInterest;
+    int256 rateMultiplier;
+    int256 rateSpread;
+    int256 feeRate;
+    int256 nextResetRate;
+    int256 penaltyRate;
+    int256 premiumDiscountAtIED;
+    int256 priceAtPurchaseDate;
+    int256 nextPrincipalRedemptionPayment;
+    int256 coverageOfCreditEnhancement;
+    int256 lifeCap;
+    int256 lifeFloor;
+    int256 periodCap;
+    int256 periodFloor;
+
+    IPS cycleOfInterestPayment;
+    IPS cycleOfRateReset;
+    IPS cycleOfScalingIndex;
+    IPS cycleOfFee;
+    IPS cycleOfPrincipalRedemption;
+
+    IP gracePeriod;
+    IP delinquencyPeriod;
+
+    // for simplification since terms are limited only two contract references
+    // - make ContractReference top level and skip ContractStructure
+    ContractReference contractReference_1;
+    ContractReference contractReference_2;
+}
+
+struct PAMTerms {
     ContractType contractType;
     Calendar calendar;
     ContractRole contractRole;
