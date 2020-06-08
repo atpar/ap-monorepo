@@ -8,7 +8,7 @@ import "../Core/ACTUSTypes.sol";
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-abstract contract IEngine is ACTUSTypes {
+abstract contract IEngine {
 
     /**
      * @notice Initialize contract state space based on the contract terms.

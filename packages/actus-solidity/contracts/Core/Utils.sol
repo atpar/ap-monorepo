@@ -4,14 +4,14 @@ pragma experimental ABIEncoderV2;
 import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "./ACTUSTypes.sol";
-import "./Conventions/BusinessDayConvention.sol";
+import "./Conventions/BusinessDayConventions.sol";
 
 
 /**
  * @title Utils
  * @notice Utility methods used throughout Core and all Engines
  */
-contract Utils is ACTUSTypes, BusinessDayConvention {
+contract Utils is BusinessDayConventions {
 
     function encodeEvent(EventType eventType, uint256 scheduleTime)
         public

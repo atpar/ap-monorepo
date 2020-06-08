@@ -2,14 +2,15 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "./ACTUSTypes.sol";
+import "./ACTUSConstants.sol";
 import "./Utils.sol";
 import "./Schedule.sol";
 
-import "./Conventions/BusinessDayConvention.sol";
-import "./Conventions/ContractDefaultConvention.sol";
-import "./Conventions/ContractRoleConvention.sol";
-import "./Conventions/DayCountConvention.sol";
-import "./Conventions/EndOfMonthConvention.sol";
+import "./Conventions/BusinessDayConventions.sol";
+import "./Conventions/ContractDefaultConventions.sol";
+import "./Conventions/ContractRoleConventions.sol";
+import "./Conventions/DayCountConventions.sol";
+import "./Conventions/EndOfMonthConventions.sol";
 
 
 /**
@@ -18,12 +19,12 @@ import "./Conventions/EndOfMonthConvention.sol";
  * and utility methods for generating event schedules
  */
 contract Core is
-    ACTUSTypes,
-    BusinessDayConvention,
-    ContractDefaultConvention,
-    ContractRoleConvention,
-    DayCountConvention,
-    EndOfMonthConvention,
+    ACTUSConstants,
+    BusinessDayConventions,
+    ContractDefaultConventions,
+    ContractRoleConventions,
+    DayCountConventions,
+    EndOfMonthConventions,
     Utils,
     Schedule
 {}

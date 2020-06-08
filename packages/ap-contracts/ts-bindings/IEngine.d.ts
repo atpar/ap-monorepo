@@ -21,14 +21,6 @@ export class IEngine extends Contract {
   );
   clone(): IEngine;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
     computeInitialState(terms: {
       calendar: number | string;
       contractRole: number | string;

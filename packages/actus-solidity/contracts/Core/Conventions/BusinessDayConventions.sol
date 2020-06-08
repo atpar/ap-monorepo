@@ -6,12 +6,12 @@ import "../ACTUSTypes.sol";
 
 
 /**
- * @title BusinessDayConvention
+ * @title BusinessDayConventions
  * @notice Contains conventions of how to handle non-business days when generating schedules of events.
  * The events schedule time can be shifted or not, if shifted it is possible that it is shifted to the next
  * or previous valid business days, etc.
  */
-contract BusinessDayConvention is ACTUSTypes {
+contract BusinessDayConventions {
 
     /**
      * @notice Used in POFs and STFs for DCFs.

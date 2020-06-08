@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "./ACTUSTypes.sol";
+import "./ACTUSConstants.sol";
 import "./Utils.sol";
 
 
@@ -11,7 +12,7 @@ import "./Utils.sol";
  * @title Schedule
  * @notice Methods related to generating event schedules.
  */
-contract Schedule is ACTUSTypes, Utils {
+contract Schedule is ACTUSConstants, Utils {
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date

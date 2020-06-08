@@ -7,10 +7,10 @@ import "../ACTUSTypes.sol";
 
 
 /**
- * @title EndOfMonthConvention
+ * @title EndOfMonthConventions
  * @notice Implements the ACTUS end of month convention.
  */
-contract EndOfMonthConvention is ACTUSTypes {
+contract EndOfMonthConventions {
 
     /**
      * This function makes an adjustment on the end of month convention.

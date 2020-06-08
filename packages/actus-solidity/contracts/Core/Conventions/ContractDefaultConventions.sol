@@ -4,9 +4,9 @@ import "../ACTUSTypes.sol";
 
 
 /**
- * @title ContractDefaultConvention
+ * @title ContractDefaultConventions
  */
-contract ContractDefaultConvention is ACTUSTypes {
+contract ContractDefaultConventions {
 
     /**
      * @notice Returns the performance indicator for a given performance

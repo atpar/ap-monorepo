@@ -9,10 +9,10 @@ import "../SignedMath.sol";
 
 
 /**
- * @title DayCountConvention
+ * @title DayCountConventions
  * @notice Implements various ISDA day count conventions as specified by ACTUS
  */
-contract DayCountConvention is ACTUSTypes {
+contract DayCountConventions {
 
     using SafeMath for uint;
     using SignedSafeMath for int;

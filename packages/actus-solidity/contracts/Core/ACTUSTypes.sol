@@ -1,214 +1,201 @@
 pragma solidity ^0.6.4;
 
 
-/**
- * @title ACTUSTypes
- * @notice Contains all type definitions for ACTUS. See ACTUS-Dictionary for definitions
- */
-contract ACTUSTypes {
+// IPS
+enum P {D, W, M, Q, H, Y} // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
+enum S {LONG, SHORT} // S=[+=long stub,- short stub, {} if S empty then - for short stub]
+struct IPS {
+    uint256 i; // I=Integer
+    P p;
+    S s;
+    bool isSet;
+}
 
-    // constants used throughout
-    uint256 constant public PRECISION = 18;
-    int256 constant public ONE_POINT_ZERO = 1 * 10 ** 18;
-    uint256 constant public MAX_CYCLE_SIZE = 120;
-    uint256 constant public MAX_EVENT_SCHEDULE_SIZE = 120;
+struct IP {
+    uint256 i;
+    P p;
+    bool isSet;
+}
 
-    // IPS
-    enum P {D, W, M, Q, H, Y} // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
-    enum S {LONG, SHORT} // S=[+=long stub,- short stub, {} if S empty then - for short stub]
-    struct IPS {
-        uint256 i; // I=Integer
-        P p;
-        S s;
-        bool isSet;
-    }
+//               0    1   2   3   4    5   6   7   8     9  10   11  12  13   14  15  16  17    18  19  20   21  22
+enum EventType {NE, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, XD, STD, AD}
+enum Calendar {NC, MF}
+enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
+enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
+enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
+enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
+enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
+enum EndOfMonthConvention {SD, EOM}
+enum FeeBasis {A, N}
+enum InterestCalculationBase {NT, NTIED, NTL}
+enum PenaltyType {O, A, N, I}
+enum ScalingEffect {_000, I00, _0N0, IN0}
+enum ContractReferenceType {CNT, CID, MOC, EID, CST}
+enum ContractReferenceRole {UDL, FIL, SEL, COVE, COVI}
 
-    struct IP {
-        uint256 i;
-        P p;
-        bool isSet;
-    }
+struct ContractReference {
+    bytes32 object;
+    ContractReferenceType _type;
+    ContractReferenceRole role;
+}
 
-    //               0    1   2   3   4    5   6   7   8     9  10   11  12  13   14  15  16  17    18  19  20   21  22
-    enum EventType {NE, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, XD, STD, AD}
-    enum Calendar {NC, MF}
-    enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
-    enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
-    enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
-    enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC} // required ?
-    enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
-    enum EndOfMonthConvention {SD, EOM}
-    enum FeeBasis {A, N}
-    enum InterestCalculationBase {NT, NTIED, NTL}
-    enum PenaltyType {O, A, N, I}
-    enum ScalingEffect {_000, I00, _0N0, IN0}
-    enum ContractReferenceType {CNT, CID, MOC, EID, CST}
-    enum ContractReferenceRole {UDL, FIL, SEL, COVE, COVI}
+struct State {
+    ContractPerformance contractPerformance;
 
-    struct ContractReference {
-        bytes32 object;
-        ContractReferenceType _type;
-        ContractReferenceRole role;
-    }
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
 
-    struct State {
-        ContractPerformance contractPerformance;
+    int256 notionalPrincipal;
+    // int256 notionalPrincipal2;
+    int256 accruedInterest;
+    // int256 accruedInterest2;
+    int256 feeAccrued;
+    int256 nominalInterestRate;
+    // int256 nominalInterestRate2;
+    // int256 interestCalculationBaseAmount;
+    int256 interestScalingMultiplier;
+    int256 notionalScalingMultiplier;
+    int256 nextPrincipalRedemptionPayment;
+    int256 exerciseAmount;
+}
 
-        uint256 statusDate;
-        uint256 nonPerformingDate;
-        uint256 maturityDate;
-        uint256 exerciseDate;
-        uint256 terminationDate;
+// subset of the ACTUS terms object
+// contains only attributes which are used in POFs and STFs
+struct LifecycleTerms {
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    ScalingEffect scalingEffect;
+    PenaltyType penaltyType;
+    FeeBasis feeBasis;
+    ContractPerformance creditEventTypeCovered;
 
-        int256 notionalPrincipal;
-        // int256 notionalPrincipal2;
-        int256 accruedInterest;
-        // int256 accruedInterest2;
-        int256 feeAccrued;
-        int256 nominalInterestRate;
-        // int256 nominalInterestRate2;
-        // int256 interestCalculationBaseAmount;
-        int256 interestScalingMultiplier;
-        int256 notionalScalingMultiplier;
-        int256 nextPrincipalRedemptionPayment;
-        int256 exerciseAmount;
-    }
+    address currency;
+    address settlementCurrency;
 
-    // subset of the ACTUS terms object
-    // contains only attributes which are used in POFs and STFs
-    struct LifecycleTerms {
-        Calendar calendar;
-        ContractRole contractRole;
-        DayCountConvention dayCountConvention;
-        BusinessDayConvention businessDayConvention;
-        EndOfMonthConvention endOfMonthConvention;
-        ScalingEffect scalingEffect;
-        PenaltyType penaltyType;
-        FeeBasis feeBasis;
-        ContractPerformance creditEventTypeCovered;
+    bytes32 marketObjectCodeRateReset;
 
-        address currency;
-        address settlementCurrency;
+    uint256 statusDate;
+    uint256 maturityDate;
 
-        bytes32 marketObjectCodeRateReset;
+    int256 notionalPrincipal;
+    int256 nominalInterestRate;
+    int256 feeAccrued;
+    int256 accruedInterest;
+    int256 rateMultiplier;
+    int256 rateSpread;
+    int256 feeRate;
+    int256 nextResetRate;
+    int256 penaltyRate;
+    int256 premiumDiscountAtIED;
+    int256 priceAtPurchaseDate;
+    int256 nextPrincipalRedemptionPayment;
+    int256 coverageOfCreditEnhancement;
+    int256 lifeCap;
+    int256 lifeFloor;
+    int256 periodCap;
+    int256 periodFloor;
 
-        uint256 statusDate;
-        uint256 maturityDate;
+    IP gracePeriod;
+    IP delinquencyPeriod;
 
-        int256 notionalPrincipal;
-        int256 nominalInterestRate;
-        int256 feeAccrued;
-        int256 accruedInterest;
-        int256 rateMultiplier;
-        int256 rateSpread;
-        int256 feeRate;
-        int256 nextResetRate;
-        int256 penaltyRate;
-        int256 premiumDiscountAtIED;
-        int256 priceAtPurchaseDate;
-        int256 nextPrincipalRedemptionPayment;
-        int256 coverageOfCreditEnhancement;
-        int256 lifeCap;
-        int256 lifeFloor;
-        int256 periodCap;
-        int256 periodFloor;
+    // for simplification since terms are limited only two contract references
+    // - make ContractReference top level and skip ContractStructure
+    ContractReference contractReference_1;
+    ContractReference contractReference_2;
+}
 
-        IP gracePeriod;
-        IP delinquencyPeriod;
+// subset of the ACTUS terms object
+// contains only attributes which are used in the schedule generation
+struct GeneratingTerms {
+    ScalingEffect scalingEffect;
 
-        // for simplification since terms are limited only two contract references
-        // - make ContractReference top level and skip ContractStructure
-        ContractReference contractReference_1;
-        ContractReference contractReference_2;
-    }
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    uint256 maturityDate;
+    uint256 purchaseDate;
+    uint256 capitalizationEndDate;
+    uint256 cycleAnchorDateOfInterestPayment;
+    uint256 cycleAnchorDateOfRateReset;
+    uint256 cycleAnchorDateOfScalingIndex;
+    uint256 cycleAnchorDateOfFee;
+    uint256 cycleAnchorDateOfPrincipalRedemption;
 
-    // subset of the ACTUS terms object
-    // contains only attributes which are used in the schedule generation
-    struct GeneratingTerms {
-        ScalingEffect scalingEffect;
+    IPS cycleOfInterestPayment;
+    IPS cycleOfRateReset;
+    IPS cycleOfScalingIndex;
+    IPS cycleOfFee;
+    IPS cycleOfPrincipalRedemption;
 
-        uint256 contractDealDate;
-        uint256 statusDate;
-        uint256 initialExchangeDate;
-        uint256 maturityDate;
-        uint256 purchaseDate;
-        uint256 capitalizationEndDate;
-        uint256 cycleAnchorDateOfInterestPayment;
-        uint256 cycleAnchorDateOfRateReset;
-        uint256 cycleAnchorDateOfScalingIndex;
-        uint256 cycleAnchorDateOfFee;
-        uint256 cycleAnchorDateOfPrincipalRedemption;
+    IP gracePeriod;
+    IP delinquencyPeriod;
+}
 
-        IPS cycleOfInterestPayment;
-        IPS cycleOfRateReset;
-        IPS cycleOfScalingIndex;
-        IPS cycleOfFee;
-        IPS cycleOfPrincipalRedemption;
+// ACTUS terms object (not used on-chain)
+struct Terms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    ScalingEffect scalingEffect;
+    PenaltyType penaltyType;
+    FeeBasis feeBasis;
+    ContractPerformance creditEventTypeCovered;
 
-        IP gracePeriod;
-        IP delinquencyPeriod;
-    }
+    address currency;
+    address settlementCurrency;
 
-    // ACTUS terms object (not used on-chain)
-    struct Terms {
-        ContractType contractType;
-        Calendar calendar;
-        ContractRole contractRole;
-        DayCountConvention dayCountConvention;
-        BusinessDayConvention businessDayConvention;
-        EndOfMonthConvention endOfMonthConvention;
-        ScalingEffect scalingEffect;
-        PenaltyType penaltyType;
-        FeeBasis feeBasis;
-        ContractPerformance creditEventTypeCovered;
+    bytes32 marketObjectCodeRateReset;
 
-        address currency;
-        address settlementCurrency;
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    uint256 maturityDate;
+    uint256 purchaseDate;
+    uint256 capitalizationEndDate;
+    uint256 cycleAnchorDateOfInterestPayment;
+    uint256 cycleAnchorDateOfRateReset;
+    uint256 cycleAnchorDateOfScalingIndex;
+    uint256 cycleAnchorDateOfFee;
+    uint256 cycleAnchorDateOfPrincipalRedemption;
 
-        bytes32 marketObjectCodeRateReset;
+    int256 notionalPrincipal;
+    int256 nominalInterestRate;
+    int256 feeAccrued;
+    int256 accruedInterest;
+    int256 rateMultiplier;
+    int256 rateSpread;
+    int256 feeRate;
+    int256 nextResetRate;
+    int256 penaltyRate;
+    int256 premiumDiscountAtIED;
+    int256 priceAtPurchaseDate;
+    int256 nextPrincipalRedemptionPayment;
+    int256 coverageOfCreditEnhancement;
+    int256 lifeCap;
+    int256 lifeFloor;
+    int256 periodCap;
+    int256 periodFloor;
 
-        uint256 contractDealDate;
-        uint256 statusDate;
-        uint256 initialExchangeDate;
-        uint256 maturityDate;
-        uint256 purchaseDate;
-        uint256 capitalizationEndDate;
-        uint256 cycleAnchorDateOfInterestPayment;
-        uint256 cycleAnchorDateOfRateReset;
-        uint256 cycleAnchorDateOfScalingIndex;
-        uint256 cycleAnchorDateOfFee;
-        uint256 cycleAnchorDateOfPrincipalRedemption;
+    IPS cycleOfInterestPayment;
+    IPS cycleOfRateReset;
+    IPS cycleOfScalingIndex;
+    IPS cycleOfFee;
+    IPS cycleOfPrincipalRedemption;
 
-        int256 notionalPrincipal;
-        int256 nominalInterestRate;
-        int256 feeAccrued;
-        int256 accruedInterest;
-        int256 rateMultiplier;
-        int256 rateSpread;
-        int256 feeRate;
-        int256 nextResetRate;
-        int256 penaltyRate;
-        int256 premiumDiscountAtIED;
-        int256 priceAtPurchaseDate;
-        int256 nextPrincipalRedemptionPayment;
-        int256 coverageOfCreditEnhancement;
-        int256 lifeCap;
-        int256 lifeFloor;
-        int256 periodCap;
-        int256 periodFloor;
+    IP gracePeriod;
+    IP delinquencyPeriod;
 
-        IPS cycleOfInterestPayment;
-        IPS cycleOfRateReset;
-        IPS cycleOfScalingIndex;
-        IPS cycleOfFee;
-        IPS cycleOfPrincipalRedemption;
-
-        IP gracePeriod;
-        IP delinquencyPeriod;
-
-        // for simplification since terms are limited only two contract references
-        // - make ContractReference top level and skip ContractStructure
-        ContractReference contractReference_1;
-        ContractReference contractReference_2;
-    }
+    // for simplification since terms are limited only two contract references
+    // - make ContractReference top level and skip ContractStructure
+    ContractReference contractReference_1;
+    ContractReference contractReference_2;
 }

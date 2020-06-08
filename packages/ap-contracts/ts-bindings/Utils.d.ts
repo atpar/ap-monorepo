@@ -21,14 +21,6 @@ export class Utils extends Contract {
   );
   clone(): Utils;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
     encodeEvent(
       eventType: number | string,
       scheduleTime: number | string

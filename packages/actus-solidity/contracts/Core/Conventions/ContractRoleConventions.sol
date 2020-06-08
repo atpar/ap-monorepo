@@ -4,9 +4,9 @@ import "../ACTUSTypes.sol";
 
 
 /**
- * @title ContractRoleConvention
+ * @title ContractRoleConventions
  */
-contract ContractRoleConvention is ACTUSTypes {
+contract ContractRoleConventions {
 
     /**
      * Returns the role sign for a given Contract Role.
