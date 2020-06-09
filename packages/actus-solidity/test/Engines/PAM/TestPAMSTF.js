@@ -1,22 +1,14 @@
 const { toWei } = require('web3-utils');
 
-const TestSTF = artifacts.require('TestSTF.sol');
+const TestSTF = artifacts.require('TestPAMSTF.sol');
 const PAMEngine = artifacts.require('PAMEngine.sol');
-const ANNEngine = artifacts.require('ANNEngine.sol');
-const CEGEngine = artifacts.require('CEGEngine.sol');
-const { getDefaultTestTerms, getDefaultState, assertEqualStates} = require('../helper/tests');
+const { getDefaultTestTerms, getDefaultState, assertEqualStates} = require('../../helper/tests');
 
 
-contract('TestSTF', () => {
+contract('TestPAMSTF', () => {
   before(async () => {       
     this.PAMEngineInstance = await PAMEngine.new(); 
     this.PAMTerms = await getDefaultTestTerms('PAM');
-
-    this.ANNEngineInstance = await ANNEngine.new(); 
-    this.ANNTerms = await getDefaultTestTerms('ANN');
-
-    this.CEGEngineInstance = await CEGEngine.new(); 
-    this.CEGTerms = await getDefaultTestTerms('ANN'); // TODO: create default test cases for CEG
 
     this.TestSTF = await TestSTF.new();
   });
