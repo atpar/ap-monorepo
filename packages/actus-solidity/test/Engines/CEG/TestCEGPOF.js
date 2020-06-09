@@ -4,8 +4,8 @@ const { getDefaultTestTerms } = require('../../helper/tests');
 
 
 contract('TestCEGPOF', () => {
-  before(async () => {       
-    this.CEGEngineInstance = await CEGEngine.new(); 
+  before(async () => {
+    this.CEGEngineInstance = await CEGEngine.new();
     this.CEGTerms = await getDefaultTestTerms('CEG'); // TODO: create default test cases for CEG
 
     this.TestPOF = await TestPOF.new();
@@ -26,10 +26,10 @@ contract('TestCEGPOF', () => {
 
 
     const payoff = await this.TestPOF._POF_CEG_STD(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
+      this.CEGTerms,
+      state,
+      scheduleTime,
+      externalData
     );
     assert.equal(payoff.toString(), '100005000000000000000000');
   });
@@ -55,9 +55,9 @@ contract('TestCEGPOF', () => {
   //   assert.equal(payoff.toString(), '-100000000000000000000000');
   // });
 
-/*
-  * TEST POF_CEG_FP
-  */
+  /*
+    * TEST POF_CEG_FP
+    */
 
   // feeBasis.A
   it('CEG fee basis A: should yield a fee of 5', async () => {
@@ -68,13 +68,13 @@ contract('TestCEGPOF', () => {
     this.CEGTerms.feeBasis = 0; // FeeBasis.A
     this.CEGTerms.feeRate = web3.utils.toWei('5'); // set fixed fee
     this.CEGTerms.contractRole = 0; //RPA -> roleSign = 1
-    
+
     const payoff = await this.TestPOF._POF_CEG_FP(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.CEGTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '5000000000000000000');
   });
 
@@ -94,15 +94,15 @@ contract('TestCEGPOF', () => {
 
     this.CEGTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
-    
+
     const payoff = await this.TestPOF._POF_CEG_FP(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.CEGTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '10100000000000000000000');
   });
-  
+
 
 });

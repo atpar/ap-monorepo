@@ -12,7 +12,7 @@ contract('ANNEngine', () => {
     terms.cycleOfInterestPayment = terms.cycleOfPrincipalRedemption;
 
     const schedule = [];
-      
+
     schedule.push(... await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
       terms,
       segmentStart,
@@ -48,11 +48,11 @@ contract('ANNEngine', () => {
       segmentEnd,
       12 // RR
     ));
-    
+
     return sortEvents(schedule);
   }
 
-  before(async () => {        
+  before(async () => {
     this.ANNEngineInstance = await ANNEngine.new();
     this.terms = await getDefaultTestTerms('ANN');
   });
@@ -62,7 +62,7 @@ contract('ANNEngine', () => {
     assert.isTrue(Number(initialState['statusDate']) === Number(this.terms['statusDate']));
   });
 
-  it('should yield the next next contract state and the contract events', async() => {
+  it('should yield the next next contract state and the contract events', async () => {
     const initialState = await this.ANNEngineInstance.computeInitialState(this.terms);
     const schedule = await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
       this.terms,
@@ -91,7 +91,7 @@ contract('ANNEngine', () => {
     let timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 4;
 
     schedule.push(... await computeEventScheduleSegment(
-      this.terms, 
+      this.terms,
       statusDate,
       timestamp
     ));
@@ -100,22 +100,22 @@ contract('ANNEngine', () => {
     timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 2;
 
     schedule.push(... await computeEventScheduleSegment(
-    this.terms, 
-    statusDate,
+      this.terms,
+      statusDate,
       timestamp
     ));
-    
+
     statusDate = timestamp;
     timestamp = this.terms['maturityDate'];
 
     schedule.push(... await computeEventScheduleSegment(
-      this.terms, 
+      this.terms,
       statusDate,
       timestamp
     ));
-    
+
     schedule = parseEventSchedule(sortEvents(schedule));
-    
+
     assert.isTrue(schedule.toString() === completeEventSchedule.toString());
   });
 
