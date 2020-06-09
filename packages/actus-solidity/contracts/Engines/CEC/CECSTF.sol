@@ -25,41 +25,6 @@ contract CECSTF is Core {
         pure
         returns(State memory)
     {
-        // handle maturity date
-        uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            : state.nonPerformingDate;
-
-        uint256 currentTimestamp = uint256(externalData);
-
-        bool isInGracePeriod = false;
-        if (terms.gracePeriod.isSet) {
-            uint256 graceDate = getTimestampPlusPeriod(terms.gracePeriod, nonPerformingDate);
-            if (currentTimestamp <= graceDate) {
-                state.contractPerformance = ContractPerformance.DL;
-                isInGracePeriod = true;
-            }
-        }
-
-        if (terms.delinquencyPeriod.isSet && !isInGracePeriod) {
-            uint256 delinquencyDate = getTimestampPlusPeriod(terms.delinquencyPeriod, nonPerformingDate);
-            if (currentTimestamp <= delinquencyDate) {
-                state.contractPerformance = ContractPerformance.DQ;
-            } else {
-                state.contractPerformance = ContractPerformance.DF;
-            }
-        }
-
-        if (state.nonPerformingDate == 0) {
-            // handle maturity date
-            state.nonPerformingDate = shiftEventTime(
-                scheduleTime,
-                terms.businessDayConvention,
-                terms.calendar,
-                terms.maturityDate
-            );
-        }
-
         return state;
     }
 

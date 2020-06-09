@@ -1,25 +1,22 @@
-const { toWei } = require("web3-utils");
+const { toWei } = require('web3-utils');
 
 const TestSTF = artifacts.require('TestSTF.sol');
 const PAMEngine = artifacts.require('PAMEngine.sol');
 const ANNEngine = artifacts.require('ANNEngine.sol');
 const CEGEngine = artifacts.require('CEGEngine.sol');
 const { getDefaultTestTerms, getDefaultState, assertEqualStates} = require('../helper/tests');
-const { parseTermsToLifecycleTerms } = require('../helper/parser');
+
 
 contract('TestSTF', () => {
   before(async () => {       
     this.PAMEngineInstance = await PAMEngine.new(); 
     this.PAMTerms = await getDefaultTestTerms('PAM');
-    this.PAMLifecycleTerms = parseTermsToLifecycleTerms(this.PAMTerms);
 
     this.ANNEngineInstance = await ANNEngine.new(); 
     this.ANNTerms = await getDefaultTestTerms('ANN');
-    this.ANNLifecycleTerms = parseTermsToLifecycleTerms(this.ANNTerms);
 
     this.CEGEngineInstance = await CEGEngine.new(); 
     this.CEGTerms = await getDefaultTestTerms('ANN'); // TODO: create default test cases for CEG
-    this.CEGLifecycleTerms = parseTermsToLifecycleTerms(this.CEGTerms);
 
     this.TestSTF = await TestSTF.new();
   });
@@ -30,21 +27,21 @@ contract('TestSTF', () => {
   */
   it('PAM Analysis Event STF', async () => {
     const oldState = getDefaultState();
-    const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
-    this.PAMLifecycleTerms.feeRate = toWei("0.01");
-    this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-    this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+    this.PAMTerms.feeRate = toWei('0.01');
+    this.PAMTerms.dayCountConvention = 2; // A_365
+    this.PAMTerms.businessDayConvention = 0; // NULL
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
     expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei("2010");
+    expectedState.feeAccrued = toWei('2010');
     expectedState.statusDate = 6307200;
 
     const newState = await this.TestSTF._STF_PAM_AD(
-      this.PAMLifecycleTerms, 
+      this.PAMTerms, 
       oldState, 
       scheduleTime, 
       externalData 
@@ -58,22 +55,22 @@ contract('TestSTF', () => {
   */
    it('PAM Fee Payment STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
   expectedState.accruedInterest = toWei('10100');
-  expectedState.feeAccrued = toWei("0");
+  expectedState.feeAccrued = toWei('0');
   expectedState.statusDate = 6307200;
 
   const newState = await this.TestSTF._STF_PAM_FP(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -87,15 +84,15 @@ contract('TestSTF', () => {
   */
    it('PAM Initial Exchange STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei('0.05');
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
-  this.PAMLifecycleTerms.notionalPrincipal = toWei('1000000'); // NULL
-  this.PAMLifecycleTerms.accruedInterest = toWei('0')
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.notionalPrincipal = toWei('1000000'); // NULL
+  this.PAMTerms.accruedInterest = toWei('0')
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -105,7 +102,7 @@ contract('TestSTF', () => {
   expectedState.accruedInterest = toWei('0')
 
   const newState = await this.TestSTF._STF_PAM_IED(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -119,14 +116,14 @@ contract('TestSTF', () => {
   */
    it('PAM Interest Capitalization STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
-  this.PAMLifecycleTerms.notionalPrincipal = toWei('1000000')
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.notionalPrincipal = toWei('1000000')
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -137,7 +134,7 @@ contract('TestSTF', () => {
 
 
   const newState = await this.TestSTF._STF_PAM_IPCI(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -151,13 +148,13 @@ contract('TestSTF', () => {
   */
    it('PAM Interest Payment STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -166,7 +163,7 @@ contract('TestSTF', () => {
   expectedState.statusDate = 6307200;
 
   const newState = await this.TestSTF._STF_PAM_IP(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -180,13 +177,13 @@ contract('TestSTF', () => {
   */
    it('PAM Principal Payment STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -197,7 +194,7 @@ contract('TestSTF', () => {
 
 
   const newState = await this.TestSTF._STF_PAM_PP(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -211,13 +208,13 @@ contract('TestSTF', () => {
   */
    it('PAM Princiapl Redemption STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -228,7 +225,7 @@ contract('TestSTF', () => {
 
 
   const newState = await this.TestSTF._STF_PAM_PR(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -242,13 +239,13 @@ contract('TestSTF', () => {
   */
    it('PAM Princiapl Redemption STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -258,7 +255,7 @@ contract('TestSTF', () => {
 
 
   const newState = await this.TestSTF._STF_PAM_PY(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -272,14 +269,14 @@ contract('TestSTF', () => {
   */
    it('PAM Fixed Rate Reset STF', async () => {
   const oldState = getDefaultState();
-  const externalData = "0x0000000000000000000000000000000000000000000000000000000000000000";
+  const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
   const scheduleTime = 6307200; // .2 years
 
-  this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
-  this.PAMLifecycleTerms.nextResetRate = toWei('0.06')
+  this.PAMTerms.feeRate = toWei('0.01');
+  this.PAMTerms.nominalInterestRate = toWei('0.05');
+  this.PAMTerms.dayCountConvention = 2; // A_365
+  this.PAMTerms.businessDayConvention = 0; // NULL
+  this.PAMTerms.nextResetRate = toWei('0.06')
 
   // Construct expected state from default state
   const expectedState = getDefaultState();
@@ -290,7 +287,7 @@ contract('TestSTF', () => {
 
 
   const newState = await this.TestSTF._STF_PAM_RRF(
-    this.PAMLifecycleTerms, 
+    this.PAMTerms, 
     oldState, 
     scheduleTime, 
     externalData 
@@ -308,16 +305,16 @@ contract('TestSTF', () => {
   // const externalData = web3.utils.hexToBytes('0x00000000000000000000000000000000000000000000000000d529ae9e860000'); //0.6
   // const scheduleTime = 6307200; // .2 years
 
-  // this.PAMLifecycleTerms.feeRate = toWei("0.01");
-  // this.PAMLifecycleTerms.nominalInterestRate = toWei("0.05");
-  // this.PAMLifecycleTerms.dayCountConvention = 2; // A_365
-  // this.PAMLifecycleTerms.businessDayConvention = 0; // NULL
-  // this.PAMLifecycleTerms.rateSpread = toWei('0.001');
-  // this.PAMLifecycleTerms.rateMultiplier = toWei('1.001');
-  // this.PAMLifecycleTerms.lifeCap = toWei('0.1');
-  // this.PAMLifecycleTerms.lifeFloor = toWei('0.01');
-  // this.PAMLifecycleTerms.periodCap = toWei('0.02')
-  // this.PAMLifecycleTerms.periodFloor = toWei('-0.02');
+  // this.PAMTerms.feeRate = toWei('0.01');
+  // this.PAMTerms.nominalInterestRate = toWei('0.05');
+  // this.PAMTerms.dayCountConvention = 2; // A_365
+  // this.PAMTerms.businessDayConvention = 0; // NULL
+  // this.PAMTerms.rateSpread = toWei('0.001');
+  // this.PAMTerms.rateMultiplier = toWei('1.001');
+  // this.PAMTerms.lifeCap = toWei('0.1');
+  // this.PAMTerms.lifeFloor = toWei('0.01');
+  // this.PAMTerms.periodCap = toWei('0.02')
+  // this.PAMTerms.periodFloor = toWei('-0.02');
   
   // // Construct expected state from default state
   // const expectedState = getDefaultState();
@@ -330,7 +327,7 @@ contract('TestSTF', () => {
 
   // console.log(oldState)
   // const newState = await this.TestSTF._STF_PAM_RR(
-  //   this.PAMLifecycleTerms, 
+  //   this.PAMTerms, 
   //   oldState, 
   //   scheduleTime, 
   //   externalData 

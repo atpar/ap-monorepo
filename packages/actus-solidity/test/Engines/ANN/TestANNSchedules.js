@@ -1,28 +1,26 @@
 const ANNEngine = artifacts.require('ANNEngine.sol');
 
 const { getTestCases, compareTestResults  } = require('../../helper/tests');
-const { parseToTestEvent, parseTermsToLifecycleTerms, parseTermsToGeneratingTerms } = require('../../helper/parser');
+const { parseToTestEvent } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 
 contract('ANNEngine', () => {
   
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
-    const generatingTerms = parseTermsToGeneratingTerms(terms);
-
     // fix for new schedule generation
-    generatingTerms.cycleAnchorDateOfInterestPayment = generatingTerms.cycleAnchorDateOfPrincipalRedemption;
-    generatingTerms.cycleOfInterestPayment = generatingTerms.cycleOfPrincipalRedemption;
+    terms.cycleAnchorDateOfInterestPayment = terms.cycleAnchorDateOfPrincipalRedemption;
+    terms.cycleOfInterestPayment = terms.cycleOfPrincipalRedemption;
 
     const schedule = [];
       
     schedule.push(... await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       2 // FP
@@ -34,19 +32,19 @@ contract('ANNEngine', () => {
       9 // IPCI
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       8 // IP
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       3 // PR
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       12 // RR
@@ -62,14 +60,11 @@ contract('ANNEngine', () => {
   })
 
   const evaluateEventSchedule = async (terms) => {
-    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
-    const generatingTerms = parseTermsToGeneratingTerms(terms);
-
-    const initialState = await this.ANNEngineInstance.computeInitialState(lifecycleTerms);
+    const initialState = await this.ANNEngineInstance.computeInitialState(terms);
     const schedule = await computeEventScheduleSegment(
-      generatingTerms,
-      generatingTerms.contractDealDate,
-      generatingTerms.maturityDate
+      terms,
+      terms.contractDealDate,
+      terms.maturityDate
     );
 
     const evaluatedSchedule = [];
@@ -81,13 +76,13 @@ contract('ANNEngine', () => {
       if (scheduleTime == 0) { break; }
 
       const payoff = await this.ANNEngineInstance.computePayoffForEvent(
-        lifecycleTerms,
+        terms,
         state,
         _event,
         web3.utils.toHex(scheduleTime)
       );
       const nextState = await this.ANNEngineInstance.computeStateForEvent(
-        lifecycleTerms, 
+        terms, 
         state, 
         _event, 
         web3.utils.toHex(scheduleTime)
@@ -95,7 +90,12 @@ contract('ANNEngine', () => {
       
       state = nextState;
 
-      const eventTime = await this.ANNEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms);
+      const eventTime = await this.ANNEngineInstance.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        terms.maturityDate
+      );
 
       evaluatedSchedule.push(parseToTestEvent(eventType, eventTime, payoff, state));
     }

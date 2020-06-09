@@ -1,11 +1,12 @@
 const web3Utils = require('web3-utils');
 const BigNumber = require('bignumber.js');
 
-const ACTUSDictionary = require('actus-dictionary/actus-dictionary.json');
+const ACTUS_DICTIONARY = require('actus-dictionary/actus-dictionary.json');
 
-const Terms = require('./definitions/Terms.json');
-const LifecycleTerms = require('./definitions/LifecycleTerms.json');
-const GeneratingTerms = require('./definitions/GeneratingTerms.json');
+const ANN_TERMS = require('./definitions/ANNTerms.json');
+const CEC_TERMS = require('./definitions/CECTerms.json');
+const CEG_TERMS = require('./definitions/CEGTerms.json');
+const PAM_TERMS = require('./definitions/PAMTerms.json');
 
 const PRECISION = 18; // solidity precision
 
@@ -23,8 +24,8 @@ const toHex = (value) => {
 }
 
 const getIndexOfAttribute = (attribute, value) => {
-  if (ACTUSDictionary.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
-  const allowedValues = ACTUSDictionary.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
+  if (ACTUS_DICTIONARY.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
+  const allowedValues = ACTUS_DICTIONARY.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
   if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
 
   return Number(allowedValues.option);
@@ -33,7 +34,7 @@ const getIndexOfAttribute = (attribute, value) => {
 const getIndexForEventType = (eventType) => {
   if (eventType === 'AD') return 0;
 
-  const event = Object.values(ACTUSDictionary.event.eventType.allowedValues).find((event) => event.acronym === eventType);
+  const event = Object.values(ACTUS_DICTIONARY.event.eventType.allowedValues).find((event) => event.acronym === eventType);
   if (event == undefined) { console.log(eventType); throw new Error('Unknown event type provided.'); }
 
   return event.sequence;
@@ -89,33 +90,26 @@ const parsePeriodToIP = (period) => {
   return { i: i, p: p, isSet: true };
 }
 
-const parseTermsFromObject = (terms) => {
-  const parsedTerms = {};
+const parseAttributeValue = (attribute, value) => {
+  if (attribute === 'contractReference_1' || attribute === 'contractReference_2') {
+    return { object: toHex(''), _type: 0, role: 0 };
+  } else if (attribute === 'currency' || attribute === 'settlementCurrency') {
+    return '0x0000000000000000000000000000000000000000';
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Enum' || ACTUS_DICTIONARY.terms[attribute].type === 'Enum[]') {
+    return (value) ? getIndexOfAttribute(attribute, value) : 0;
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Varchar') {
+    return toHex((value) ? value : '');
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Real') {
+    return (value) ? toPrecision(value) : 0;
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Timestamp') {
+    return (value) ? isoToUnix(value) : 0;
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Cycle') {
+    return parseCycleToIPS(value);
+  } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Period') {
+    return parsePeriodToIP(value);
+  } 
 
-  for (const attribute of Terms) {
-    const value = terms[attribute];
-
-    if (attribute === 'contractReference_1' || attribute === 'contractReference_2') {
-      parsedTerms[attribute] = { object: toHex(''), _type: 0, role: 0 };
-    } else if (ACTUSDictionary.terms[attribute].type === 'Enum' || ACTUSDictionary.terms[attribute].type === 'Enum[]') {
-      parsedTerms[attribute] = (value) ? getIndexOfAttribute(attribute, value) : 0;
-    } else if (ACTUSDictionary.terms[attribute].type === 'Varchar') {
-      parsedTerms[attribute] = toHex((value) ? value : '');
-    } else if (ACTUSDictionary.terms[attribute].type === 'Real') {
-      parsedTerms[attribute] = (value) ? toPrecision(value) : 0;
-    } else if (ACTUSDictionary.terms[attribute].type === 'Timestamp') {
-      parsedTerms[attribute] = (value) ? isoToUnix(value) : 0;
-    } else if (ACTUSDictionary.terms[attribute].type === 'Cycle') {
-      parsedTerms[attribute] = parseCycleToIPS(value);
-    } else if (ACTUSDictionary.terms[attribute].type === 'Period') {
-      parsedTerms[attribute] = parsePeriodToIP(value);
-    }
-  }
-
-  parsedTerms['currency'] = '0x0000000000000000000000000000000000000000';
-  parsedTerms['settlementCurrency'] = '0x0000000000000000000000000000000000000000';
-
-  return parsedTerms;
+  return undefined;
 }
 
 const parseResultsFromObject = (schedule) => {  
@@ -149,34 +143,71 @@ function parseToTestEvent (eventType, eventTime, payoff, state) {
   };
 }
 
-function parseTermsToLifecycleTerms (terms) {
-  const lifecycleTerms = {};
+const parseANNTermsFromObject = (terms) => {
+  const parsedTerms = {};
 
-  for (const attribute of LifecycleTerms) {
-    lifecycleTerms[attribute] = terms[attribute];
+  for (const attribute of ANN_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
   }
 
-  return lifecycleTerms;
+  return parsedTerms;
 }
 
-function parseTermsToGeneratingTerms (terms) {
-  const generatingTerms = {};
+const parseCECTermsFromObject = (terms) => {
+  const parsedTerms = {};
 
-  for (const attribute of GeneratingTerms) {
-    generatingTerms[attribute] = terms[attribute];
+  for (const attribute of CEC_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
   }
 
-  return generatingTerms;
+  return parsedTerms;
+}
+
+const parseCEGTermsFromObject = (terms) => {
+  const parsedTerms = {};
+
+  for (const attribute of CEG_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+  }
+
+  return parsedTerms;
+}
+
+
+const parsePAMTermsFromObject = (terms) => { 
+  const parsedTerms = {};
+
+  for (const attribute of PAM_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+  }
+
+  return parsedTerms;
+}
+
+const parseTermsFromObject = (contract, terms) => {
+  if (contract === 'ANN') {
+    return parseANNTermsFromObject(terms);
+  } else if (contract === 'CEC') {
+    return parseCECTermsFromObject(terms);
+  } else if (contract === 'CEG') {
+    return parseCEGTermsFromObject(terms);
+  } else if (contract === 'PAM') {
+    return parsePAMTermsFromObject(terms);
+  }
+
+  throw new Error('Could not parse Terms. Unsupported contract type.');
 }
 
 module.exports = { 
-  parseTermsFromObject, 
-  parseResultsFromObject, 
+  parseANNTermsFromObject,
+  parseCECTermsFromObject,
+  parseCEGTermsFromObject,
+  parsePAMTermsFromObject,
+  parseTermsFromObject,
+  parseResultsFromObject,
   parseToTestEvent,
-  parseTermsToLifecycleTerms,
-  parseTermsToGeneratingTerms,
-  fromPrecision, 
-  unixToISO, 
-  roundToDecimals, 
+  fromPrecision,
+  unixToISO,
+  roundToDecimals,
   numberOfDecimals
 }
