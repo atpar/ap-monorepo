@@ -1,28 +1,24 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Engines/ANN/ANNPOF.sol";
-import "../Engines/CEC/CECPOF.sol";
-import "../Engines/CEG/CEGPOF.sol";
-import "../Engines/PAM/PAMPOF.sol";
-
+import "../../Engines/ANN/ANNPOF.sol";
 
 /**
 * These helper contracts expose internal functions for unit testing.
 */
-contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
+contract TestANNPOF is ANNPOF {
 
-    function _POF_PAM_FP(
-        PAMTerms memory terms,
+    function _POF_ANN_FP (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_FP(
+        return POF_ANN_FP(
             terms,
             state,
             scheduleTime,
@@ -30,17 +26,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_IED(
-        PAMTerms memory terms,
+    function _POF_ANN_IED (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_IED(
+         return POF_ANN_IED(
             terms,
             state,
             scheduleTime,
@@ -48,17 +44,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_IP(
-        PAMTerms memory terms,
+    function _POF_ANN_IP (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_IP(
+         return POF_ANN_IP(
             terms,
             state,
             scheduleTime,
@@ -66,17 +62,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_PP(
-        PAMTerms memory terms,
+    function _POF_ANN_PP (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_PP(
+         return POF_ANN_PP(
             terms,
             state,
             scheduleTime,
@@ -84,17 +80,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_MD(
-        PAMTerms memory terms,
+    function _POF_ANN_MD (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_MD(
+         return POF_ANN_MD(
             terms,
             state,
             scheduleTime,
@@ -102,17 +98,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_PY(
-        PAMTerms memory terms,
+    function _POF_ANN_PY (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_PY(
+         return POF_ANN_PY(
             terms,
             state,
             scheduleTime,
@@ -120,17 +116,17 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_PAM_TD(
-        PAMTerms memory terms,
+    function _POF_ANN_TD (
+        ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (int256)
+        returns(int256)
     {
-        return POF_PAM_TD(
+         return POF_ANN_TD(
             terms,
             state,
             scheduleTime,
@@ -156,39 +152,4 @@ contract TestPOF is ANNPOF, CECPOF, CEGPOF, PAMPOF {
         );
     }
 
-    function _POF_CEG_STD(
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (int256)
-    {
-        return POF_CEG_STD(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
-    function _POF_CEG_FP(
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (int256)
-    {
-        return POF_CEG_FP(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
 }

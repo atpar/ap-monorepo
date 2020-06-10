@@ -8,7 +8,7 @@ contract('PAMEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
     const schedule = [];
-      
+
     schedule.push(... await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
       terms,
       segmentStart,
@@ -44,12 +44,12 @@ contract('PAMEngine', () => {
       segmentEnd,
       12 // RR
     ));
-    
-    
+
+
     return sortEvents(schedule);
   }
 
-  before(async () => {        
+  before(async () => {
     this.PAMEngineInstance = await PAMEngine.new();
     this.terms = await getDefaultTestTerms('PAM');
   });
@@ -59,7 +59,7 @@ contract('PAMEngine', () => {
     assert.isTrue(Number(initialState['statusDate']) === Number(this.terms['statusDate']));
   });
 
-  it('should yield the next next contract state and the contract events', async() => {
+  it('should yield the next next contract state and the contract events', async () => {
     const initialState = await this.PAMEngineInstance.computeInitialState(this.terms);
     const schedule = await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
       this.terms,
@@ -88,7 +88,7 @@ contract('PAMEngine', () => {
     let timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 4;
 
     schedule.push(... await computeEventScheduleSegment(
-      this.terms, 
+      this.terms,
       statusDate,
       timestamp
     ));
@@ -97,22 +97,22 @@ contract('PAMEngine', () => {
     timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 2;
 
     schedule.push(... await computeEventScheduleSegment(
-    this.terms, 
-    statusDate,
+      this.terms,
+      statusDate,
       timestamp
     ));
-    
+
     statusDate = timestamp;
     timestamp = this.terms['maturityDate'];
 
     schedule.push(... await computeEventScheduleSegment(
-      this.terms, 
+      this.terms,
       statusDate,
       timestamp
     ));
-    
+
     schedule = parseEventSchedule(sortEvents(schedule));
-    
+
     assert.isTrue(schedule.toString() === completeEventSchedule.toString());
   });
 

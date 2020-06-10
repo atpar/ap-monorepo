@@ -1,16 +1,31 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../Engines/ANN/ANNSTF.sol";
-import "../Engines/CEC/CECSTF.sol";
-import "../Engines/CEG/CEGSTF.sol";
-import "../Engines/PAM/PAMSTF.sol";
-
+import "../../Engines/PAM/PAMSTF.sol";
 
 /**
 * These helper contracts expose internal functions for unit testing.
 */
-contract TestSTF is ANNSTF, CECSTF, CEGSTF, PAMSTF {
+contract TestPAMSTF is PAMSTF {
+
+
+    function _STF_PAM_NE(
+        PAMTerms memory terms,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 externalData
+    )
+        public
+        pure
+        returns (State memory)
+    {
+        return STF_PAM_NE(
+            terms,
+            state,
+            scheduleTime,
+            externalData
+        );
+    }
 
     function _STF_PAM_AD(
         PAMTerms memory terms,

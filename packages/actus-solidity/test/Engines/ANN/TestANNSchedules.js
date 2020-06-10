@@ -1,19 +1,19 @@
 const ANNEngine = artifacts.require('ANNEngine.sol');
 
-const { getTestCases, compareTestResults  } = require('../../helper/tests');
+const { getTestCases, compareTestResults } = require('../../helper/tests');
 const { parseToTestEvent } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 
 contract('ANNEngine', () => {
-  
+
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
     // fix for new schedule generation
     terms.cycleAnchorDateOfInterestPayment = terms.cycleAnchorDateOfPrincipalRedemption;
     terms.cycleOfInterestPayment = terms.cycleOfPrincipalRedemption;
 
     const schedule = [];
-      
+
     schedule.push(... await this.ANNEngineInstance.computeNonCyclicScheduleSegment(
       terms,
       segmentStart,
@@ -49,12 +49,12 @@ contract('ANNEngine', () => {
       segmentEnd,
       12 // RR
     ));
-    
-    
+
+
     return sortEvents(schedule);
   }
 
-  before(async () => {    
+  before(async () => {
     this.ANNEngineInstance = await ANNEngine.new();
     this.testCases = await getTestCases('ANN');
   })
@@ -82,12 +82,12 @@ contract('ANNEngine', () => {
         web3.utils.toHex(scheduleTime)
       );
       const nextState = await this.ANNEngineInstance.computeStateForEvent(
-        terms, 
-        state, 
-        _event, 
+        terms,
+        state,
+        _event,
         web3.utils.toHex(scheduleTime)
       );
-      
+
       state = nextState;
 
       const eventTime = await this.ANNEngineInstance.computeEventTimeForEvent(
@@ -121,7 +121,7 @@ contract('ANNEngine', () => {
   it('should yield the expected evaluated contract schedule for test ANN20003', async () => {
     const testDetails = this.testCases['20003'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
-    
+
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
@@ -131,7 +131,7 @@ contract('ANNEngine', () => {
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
- 
+
   it('should yield the expected evaluated contract schedule for test ANN20005', async () => {
     const testDetails = this.testCases['20005'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
@@ -311,17 +311,17 @@ contract('ANNEngine', () => {
   });
   */
 
- it('should yield the expected evaluated contract schedule for test ANN20031', async () => {
-  const testDetails = this.testCases['20031'];
-  const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
+  it('should yield the expected evaluated contract schedule for test ANN20031', async () => {
+    const testDetails = this.testCases['20031'];
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
-  compareTestResults(evaluatedSchedule, testDetails['results']);
+    compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
   it('should yield the expected evaluated contract schedule for test ANN20032', async () => {
     const testDetails = this.testCases['20032'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
-  
+
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 });

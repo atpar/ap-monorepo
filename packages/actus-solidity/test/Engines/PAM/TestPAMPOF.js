@@ -1,20 +1,12 @@
-const TestPOF = artifacts.require('TestPOF.sol');
+const TestPOF = artifacts.require('TestPAMPOF.sol');
 const PAMEngine = artifacts.require('PAMEngine.sol');
-const ANNEngine = artifacts.require('ANNEngine.sol');
-const CEGEngine = artifacts.require('CEGEngine.sol');
-const { getDefaultTestTerms } = require('../helper/tests');
+const { getDefaultTestTerms } = require('../../helper/tests');
 
 
-contract('TestPOF', () => {
-  before(async () => {       
-    this.PAMEngineInstance = await PAMEngine.new(); 
+contract('TestPAMPOF', () => {
+  before(async () => {
+    this.PAMEngineInstance = await PAMEngine.new();
     this.PAMTerms = await getDefaultTestTerms('PAM');
-
-    this.ANNEngineInstance = await ANNEngine.new(); 
-    this.ANNTerms = await getDefaultTestTerms('ANN');
-
-    this.CEGEngineInstance = await CEGEngine.new(); 
-    this.CEGTerms = await getDefaultTestTerms('CEG'); // TODO: create default test cases for CEG
 
     this.TestPOF = await TestPOF.new();
   });
@@ -32,13 +24,13 @@ contract('TestPOF', () => {
     this.PAMTerms.feeBasis = 0; // FeeBasis.A
     this.PAMTerms.feeRate = web3.utils.toWei('5'); // set fixed fee
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
-    
+
     const payoff = await this.TestPOF._POF_PAM_FP(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '5000000000000000000');
   });
 
@@ -58,13 +50,13 @@ contract('TestPOF', () => {
 
     this.PAMTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
-    
+
     const payoff = await this.TestPOF._POF_PAM_FP(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '10100000000000000000000');
   });
 
@@ -82,11 +74,11 @@ contract('TestPOF', () => {
     this.PAMTerms.premiumDiscountAtIED = web3.utils.toWei('100'); // premiumDiscountAtIED = 100
 
     const payoff = await this.TestPOF._POF_PAM_IED(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '-1000100000000000000000000');
   });
 
@@ -110,11 +102,11 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_IP(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '20200000000000000000000');
   });
 
@@ -132,11 +124,11 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_PP(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '1000000000000000000000000');
   });
 
@@ -184,11 +176,11 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_MD(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '1100000000000000000000000');
   });
 
@@ -207,11 +199,11 @@ contract('TestPOF', () => {
     this.PAMTerms.penaltyRate = web3.utils.toWei('1000');
 
     const payoff = await this.TestPOF._POF_PAM_PY(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '1000000000000000000000');
   });
 
@@ -235,11 +227,11 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_PY(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '20000000000000000000000');
   });
 
@@ -262,11 +254,11 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_PY(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
+      this.PAMTerms,
+      state,
+      scheduleTime,
+      externalData
+    );
     assert.equal(payoff.toString(), '200000000000000000000000');
   });
 
@@ -293,141 +285,15 @@ contract('TestPOF', () => {
     state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_TD(
-      this.PAMTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
-    assert.equal(payoff.toString(), '110100000000000000000000');
-  });    
-  
-  /*
-  * TEST POF_ANN_PR
-  */
-
-  it('Should yield a termination principal prepayment of -100100', async () => {
-    const state = await this.ANNEngineInstance.computeInitialState(this.ANNTerms);
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-
-    // used data
-    state[11] = web3.utils.toWei('1.1'); // notionalScalingMultiplier
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
-    state[12] = web3.utils.toWei('1000'); // nextPrinipalRedemptionPayment
-    state[7] = web3.utils.toWei('100'); // accruedInterest
-
-
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
-    const scheduleTime = 6307200; // .2 years
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
-    this.ANNTerms.businessDayConvention = 0; // NULL
-    this.ANNTerms.calendar = 0; // NoCalendar
-    this.ANNTerms.dayCountConvention = 2; // A_365
-    this.ANNTerms.maturityDate = 31536000; // 1 year
-    state[1] = '0'; // statusDate = 0
-    state[9] = web3.utils.toWei('0.05'); // nominalInterestRate
-
-    const payoff = await this.TestPOF._POF_ANN_PR(
-      this.ANNTerms, 
-      state, 
+      this.PAMTerms,
+      state,
       scheduleTime,
-      externalData 
-      );
-    assert.equal(payoff.toString(), '-10010000000000000000000');
-  });
-
-  /*
-  * TEST POF_CEG_STD
-  */
-
-  it('Should yield a settlement payoff of 100005', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    // used data
-    state[13] = web3.utils.toWei('100000'); // exerciseAmount
-    state[8] = web3.utils.toWei('5'); // feeAccrued
-
-
-    const payoff = await this.TestPOF._POF_CEG_STD(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
+      externalData
     );
-    assert.equal(payoff.toString(), '100005000000000000000000');
+    assert.equal(payoff.toString(), '110100000000000000000000');
   });
 
-  /*
-  * TEST POF_CEG_PRD
-  */
-  // it('Should yield a purchase payoff of -100000', async () => {
-  //   const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
-  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-  //   const scheduleTime = 6307200; // .2 years
 
-  //   // used data
-  //   this.CEGTerms.contractRole = 0; //RPA -> roleSign = 1
-  //   this.CEGTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
 
-  //   const payoff = await this.TestPOF._POF_CEG_PRD(
-  //     this.CEGTerms, 
-  //     state, 
-  //     scheduleTime, 
-  //     externalData 
-  //     );
-  //   assert.equal(payoff.toString(), '-100000000000000000000000');
-  // });
-
-/*
-  * TEST POF_CEG_FP
-  */
-
-  // feeBasis.A
-  it('CEG fee basis A: should yield a fee of 5', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 0;
-
-    this.CEGTerms.feeBasis = 0; // FeeBasis.A
-    this.CEGTerms.feeRate = web3.utils.toWei('5'); // set fixed fee
-    this.CEGTerms.contractRole = 0; //RPA -> roleSign = 1
-    
-    const payoff = await this.TestPOF._POF_CEG_FP(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
-    assert.equal(payoff.toString(), '5000000000000000000');
-  });
-
-  // feeBasis.N
-  it('CEG fee basis N: should yield a fee of 10100', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.CEGTerms.feeBasis = 1; // FeeBasis.N
-    state[8] = web3.utils.toWei('100'); // feeAccrued = 100
-    state[1] = '0'; // statusDate = 0
-    this.CEGTerms.businessDayConvention = 0; // NULL
-    this.CEGTerms.calendar = 0; // NoCalendar
-    this.CEGTerms.dayCountConvention = 2; // A_365
-    this.CEGTerms.maturityDate = 31536000; // 1 year
-
-    this.CEGTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
-    
-    const payoff = await this.TestPOF._POF_CEG_FP(
-      this.CEGTerms, 
-      state, 
-      scheduleTime, 
-      externalData 
-      );
-    assert.equal(payoff.toString(), '10100000000000000000000');
-  });
-  
 
 });
