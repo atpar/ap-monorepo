@@ -2,13 +2,14 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/ACTUSTypes.sol";
+import "../IEngine.sol";
 
 
 /**
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-abstract contract ICEGEngine {
+abstract contract ICEGEngine is IEngine {
 
     /**
      * @notice Initialize contract state space based on the contract terms.

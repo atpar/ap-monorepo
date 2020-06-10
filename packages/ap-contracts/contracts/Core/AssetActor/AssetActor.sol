@@ -27,7 +27,6 @@ import "./IAssetActor.sol";
  * to settle the current outstanding payoff on behalf of the obligor.
  */
 contract AssetActor is
-    SharedTypes,
     Utils,
     ScheduleUtils,
     Conversions,
@@ -152,8 +151,7 @@ contract AssetActor is
      * (has to be public otherwise compilation error.)
      * @param assetId id of the asset
      * @param ownership ownership of the asset
-     * @param templateId id of the financial template to use
-     * @param customTerms asset specific terms
+     * @param terms asset specific terms
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
      * @return true on success
@@ -161,8 +159,7 @@ contract AssetActor is
     function initialize(
         bytes32 assetId,
         AssetOwnership memory ownership,
-        bytes32 templateId,
-        CustomTerms memory customTerms,
+        PAMTerms memory terms,
         address engine,
         address admin
     )
@@ -176,20 +173,14 @@ contract AssetActor is
             "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
         );
 
-        // compute the initial state of the asset using the LifecycleTerms
-        State memory initialState = IEngine(engine).computeInitialState(
-            deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
-                templateRegistry.getTemplateTerms(templateId),
-                customTerms
-            )
-        );
+        // compute the initial state of the asset using PAMTerms
+        State memory initialState = IPAMEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
         assetRegistry.registerAsset(
             assetId,
             ownership,
-            templateId,
-            customTerms,
+            terms,
             initialState,
             engine,
             address(this),
@@ -203,9 +194,7 @@ contract AssetActor is
      * @notice Return true if event was settled
      */
     function processEvent(bytes32 assetId, bytes32 _event) internal {
-        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
         State memory state = assetRegistry.getState(assetId);
-        address engineAddress = assetRegistry.getEngine(assetId);
 
         // block progression if asset is has defaulted, terminated or reached maturity
         require(
@@ -231,27 +220,16 @@ contract AssetActor is
 
         // get external data for the next event
         // compute payoff and the next state by applying the event to the current state
-        int256 payoff = IEngine(engineAddress).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForPOF(_event, terms)
-        );
-        state = IEngine(engineAddress).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(_event, terms)
-        );
+        (State memory nextState, int256 payoff) = computeStateAndPayoffForEvent(assetId, state, _event);
 
         // try to settle payoff of event
-        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff, terms);
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff, token);
 
         if (settledPayoff == false) {
             // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
-            // store the interim state of the asset (state if the current obligation was successfully settled)
+            // store the last performant state of the asset
             // (if the obligation is later fulfilled before the asset reaches default,
-            // the interim state is used to derive subsequent states of the asset)
+            // the last performant state is used to derive subsequent states of the asset)
             if (state.contractPerformance == ContractPerformance.PF) {
                 assetRegistry.setFinalizedState(assetId, state);
             }
@@ -263,16 +241,11 @@ contract AssetActor is
             bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
 
             // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
-            state = IEngine(engineAddress).computeStateForEvent(
-                terms,
-                state,
-                ceEvent,
-                getExternalDataForSTF(ceEvent, terms)
-            );
+            (nextState, ) = computeStateAndPayoffForEvent(assetId, nextState, ceEvent);
         }
 
         // store the resulting state
-        assetRegistry.setState(assetId, state);
+        assetRegistry.setState(assetId, nextState);
 
         // mark event as settled
         if (settledPayoff == true) {
@@ -301,7 +274,7 @@ contract AssetActor is
         bytes32 assetId,
         bytes32 _event,
         int256 payoff,
-        LifecycleTerms memory terms
+        address token
     )
         internal
         returns (bool)
@@ -356,6 +329,35 @@ contract AssetActor is
 
         // try to transfer amount due from obligor to payee
         return IERC20(token).transferFrom(payer, payee, amount);
+    }
+
+    function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
+        internal
+        returns (State memory, int256)
+    {
+        address engineAddress = assetRegistry.getEngine(assetId);
+        ContractType contractType = IEngine(engineAddress).contractType();
+
+        if (contractType == ContractType.PAM) {
+            PAMTerms memory terms = assetRegistry.getPAMTerms(assetId);
+
+            int256 payoff = IPAMEngine(engineAddress).computePayoffForEvent(
+                terms,
+                state,
+                _event,
+                getExternalDataForPOF(_event, terms)
+            );
+            state = IPAMEngine(engineAddress).computeStateForEvent(
+                terms,
+                state,
+                _event,
+                getExternalDataForSTF(_event, terms)
+            );
+
+            return (state, payoff);
+        }
+
+        revert("AssetActor.computePayoffAndStateForEvent: UNSUPPORTED_CONTRACT_TYPE");
     }
 
     /**

@@ -14,6 +14,10 @@ import "./ANNPOF.sol";
  */
 contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
 
+    function contractType() pure returns (ContractType) {
+        return ContractType.ANN;
+    }
+
     /**
      * Applys an event to the current state of a contract and returns the resulting contract state.
      * @param terms terms of the contract

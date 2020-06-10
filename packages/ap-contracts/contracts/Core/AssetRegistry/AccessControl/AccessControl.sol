@@ -1,11 +1,11 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "./AssetRegistryStorage.sol";
-import "./IAssetRegistry.sol";
+import "../AssetRegistryStorage.sol";
+import "../IAccessControl.sol";
 
 
-abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
+abstract contract AccessControl is AssetRegistryStorage, IAccessControl {
 
     event SetRootAccess(bytes32 indexed assetId, address indexed account);
     event GrantedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);
@@ -23,7 +23,7 @@ abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
      * @param methodSignature function / method signature (4 byte keccak256 hash of the method selector)
      * @param account address of the account to grant access to
      */
-    function grantAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    function grantAccess(bytes32 assetId, bytes4 methodSignature, address account)
         external
         override
     {
@@ -44,7 +44,7 @@ abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
      * @param methodSignature function / method signature (4 byte keccak256 hash of the method selector)
      * @param account address of the account to revoke access for
      */
-    function revokeAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    function revokeAccess(bytes32 assetId, bytes4 methodSignature, address account)
         external
         override
     {
@@ -65,7 +65,7 @@ abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
      * @param account address of the account for which to check access
      * @return true if allowed access
      */
-    function hasAccess (bytes32 assetId, bytes4 methodSignature, address account)
+    function hasAccess(bytes32 assetId, bytes4 methodSignature, address account)
         public
         override
         returns (bool)
@@ -81,7 +81,7 @@ abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
      * @param account address of the account for which to check root acccess
      * @return  true if has root access
      */
-    function hasRootAccess (bytes32 assetId, address account)
+    function hasRootAccess(bytes32 assetId, address account)
         public
         override
         returns (bool)
@@ -95,7 +95,7 @@ abstract contract AccessControl is AssetRegistryStorage, IAssetRegistry {
      * @param assetId id of the asset
      * @param account address of the account to set as the root
      */
-    function setDefaultRoot (bytes32 assetId, address account) internal {
+    function setDefaultRoot(bytes32 assetId, address account) internal {
         assets[assetId].access[ROOT_ACCESS][account] = true;
 
         emit SetRootAccess(assetId, account);

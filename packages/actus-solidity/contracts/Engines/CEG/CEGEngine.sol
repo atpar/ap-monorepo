@@ -15,6 +15,10 @@ import "./CEGPOF.sol";
  */
 contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
 
+    function contractType() pure returns (ContractType) {
+        return ContractType.CEG;
+    }
+
     /**
      * Applys an event to the current state of a contract and returns the resulting contract state.
      * @param terms terms of the contract

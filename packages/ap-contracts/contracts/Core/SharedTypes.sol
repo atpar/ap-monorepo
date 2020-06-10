@@ -14,6 +14,20 @@ struct TemplateSchedule {
     uint256 length;
 }
 
+struct Schedule {
+    // scheduleTime and EventType are tighlty packed and encoded as bytes32
+    // in the context of a Template scheduleTime is defined as an offset in seconds
+    // respective to an anchorDate which is defined in the CustomTerms of the asset which references this template
+    // index of event => bytes32 encoded event
+    mapping(uint256 => bytes32) events;
+    // the length of the schedule, used to determine the end of the schedule
+    uint256 length;
+    // pointer to index of the next event in the schedule
+    uint256 nextScheduleIndex;
+    // last event which could not be settled
+    bytes32 pendingEvent;
+}
+
 struct AssetOwnership {
     // account which has to fulfill all obligations for the creator side
     address creatorObligor;

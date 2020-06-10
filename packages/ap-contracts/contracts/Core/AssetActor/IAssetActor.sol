@@ -18,7 +18,7 @@ abstract contract IAssetActor is SharedTypes {
         bytes32 assetId,
         AssetOwnership memory ownership,
         bytes32 templateId,
-        CustomTerms memory customTerms,
+        PAMTerms memory terms,
         address engine,
         address root
     )
