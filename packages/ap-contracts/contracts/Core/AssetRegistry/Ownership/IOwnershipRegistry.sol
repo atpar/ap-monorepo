@@ -4,37 +4,22 @@ pragma experimental ABIEncoderV2;
 import "../../SharedTypes.sol";
 
 
-abstract contract IOwnership {
+interface IOwnershipRegistry {
 
     function setCreatorObligor (bytes32 assetId, address newCreatorObligor)
-        external
-        virtual;
+        external;
 
     function setCounterpartyObligor (bytes32 assetId, address newCounterpartyObligor)
-        external
-        virtual;
+        external;
 
     function setCreatorBeneficiary(bytes32 assetId, address newCreatorBeneficiary)
-        external
-        virtual;
+        external;
 
     function setCounterpartyBeneficiary(bytes32 assetId, address newCounterpartyBeneficiary)
-        external
-        virtual;
-
-    function setBeneficiaryForCashflowId(bytes32 assetId, int8 cashflowId, address beneficiary)
-        external
-        virtual;
+        external;
 
     function getOwnership(bytes32 assetId)
         external
         view
-        virtual
         returns (AssetOwnership memory);
-
-    function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
-        external
-        view
-        virtual
-        returns (address);
 }

@@ -1,14 +1,15 @@
 pragma solidity ^0.6.4;
 
-import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
+import "../../SharedTypes.sol";
+import "../AssetRegistryStorage.sol";
 
 
 library PAMEncoder {
 
-    function storeInPackedTerms(Asset storage asset, uint8 index, bytes32 value) private {
+    function storeInPackedTerms(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
         // skip if value did not change
-        if (asset.packedTerms[index] == value) return;
-        asset.packedTerms[index] = value;
+        if (asset.packedTerms[attributeKey] == value) return;
+        asset.packedTerms[attributeKey] = value;
     }
     
     /**
@@ -28,8 +29,7 @@ library PAMEncoder {
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
             bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
             bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(terms.feeBasis))) << 184 |
-            bytes32(uint256(uint8(terms.creditEventTypeCovered))) << 176
+            bytes32(uint256(uint8(terms.feeBasis))) << 184
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -112,29 +112,6 @@ library PAMEncoder {
             bytes32(uint256(terms.cycleOfFee.s)) << 8 |
             bytes32(uint256((terms.cycleOfFee.isSet) ? 1 : 0))
         );
-
-        storeInPackedTerms(
-            asset,
-            "contractReference_1_object",
-            bytes32(terms.contractReference_1.object)
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_1_type_role",
-            bytes32(uint256(terms.contractReference_1._type)) << 16 |
-            bytes32(uint256(terms.contractReference_1.role)) << 8
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_2_object",
-            bytes32(terms.contractReference_2.object)
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_2_type_role",
-            bytes32(uint256(terms.contractReference_2._type)) << 16 |
-            bytes32(uint256(terms.contractReference_2.role)) << 8
-        );
     }
 
     /**
@@ -151,7 +128,6 @@ library PAMEncoder {
             ScalingEffect(uint8(uint256(asset.packedTerms["enums"] >> 200))),
             PenaltyType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
             FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 184))),
-            ContractPerformance(uint8(uint256(asset.packedTerms["enums"] >> 176))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
@@ -220,17 +196,6 @@ library PAMEncoder {
                 P(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 16))),
                 S(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 8))),
                 (asset.packedTerms["cycleAnchorDateOfFee"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-
-            ContractReference(
-                asset.packedTerms["contractReference_1_object"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
-            ),
-            ContractReference(
-                asset.packedTerms["contractReference_2_object"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             )
         );
     }
@@ -258,10 +223,8 @@ library PAMEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 192));
         } else if (attributeKey == bytes32("feeBasis")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 184));
-        } else if (attributeKey == bytes32("contractPerformance")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 176));
         } else {
-            return uint8(0)
+            return uint8(0);
         }
     }
 
@@ -270,13 +233,21 @@ library PAMEncoder {
         view
         returns (address)
     {
-        if (attributeKey === bytes32("currency")) {
+        if (attributeKey == bytes32("currency")) {
             return address(uint160(uint256(asset.packedTerms["currency"]) >> 96));
-        } else if (attributeKey === bytes32("settlementCurrency")) {
+        } else if (attributeKey == bytes32("settlementCurrency")) {
             return address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96));
         } else {
             return address(0);
         }   
+    }
+
+    function decodeAndGetBytes32ValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+        internal
+        view
+        returns (bytes32)
+    {
+        return asset.packedTerms[attributeKey];
     }
 
     function decodeAndGetUIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
@@ -308,7 +279,7 @@ library PAMEncoder {
                 uint256(asset.packedTerms[attributeKey] >> 24),
                 P(uint8(uint256(asset.packedTerms[attributeKey] >> 16))),
                 (asset.packedTerms[attributeKey] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
+            );
         } else {
             return IP(0, P(0), false);
         }
@@ -336,29 +307,15 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         internal
-        view
+        pure
         returns (ContractReference memory)
     {
-        if (attributeKey == bytes32("contractReference_1")) {
-            return ContractReference(
-                asset.packedTerms["contractReference_1_object"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
-            );
-        } else if (attributeKey == bytes32("contractReference_2")) {
-            return ContractReference(
-                asset.packedTerms["contractReference_2_object"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
-            );
-        } else {
-            return ContractReference(
-                bytes32(0),
-                ContractReferenceRole(0),
-                ContractReferenceType(0)
-            );
-        }
+        return ContractReference(
+            bytes32(0),
+            ContractReferenceType(0),
+            ContractReferenceRole(0)
+        );
     }
 }

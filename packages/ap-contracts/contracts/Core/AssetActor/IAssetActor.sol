@@ -4,25 +4,55 @@ pragma experimental ABIEncoderV2;
 import "../SharedTypes.sol";
 
 
-abstract contract IAssetActor is SharedTypes {
+interface IAssetActor {
 
     function progress(bytes32 assetId)
-        external
-        virtual;
+        external;
 
     function progressWith(bytes32 assetId, bytes32 _event)
-        external
-        virtual;
+        external;
+
+    // function initialize(
+    //     bytes32 assetId,
+    //     ANNTerms memory terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership memory ownership,
+    //     address engine,
+    //     address root
+    // )
+    //     public
+    //     returns (bool);
+
+    // function initialize(
+    //     bytes32 assetId,
+    //     CECTerms memory terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership memory ownership,
+    //     address engine,
+    //     address root
+    // )
+    //     public
+    //     returns (bool);
+
+    // function initialize(
+    //     bytes32 assetId,
+    //     CEGTerms memory terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership memory ownership,
+    //     address engine,
+    //     address root
+    // )
+    //     public
+    //     returns (bool);
 
     function initialize(
         bytes32 assetId,
-        AssetOwnership memory ownership,
-        bytes32 templateId,
-        PAMTerms memory terms,
+        PAMTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
         address engine,
         address root
     )
-        public
-        virtual
+        external
         returns (bool);
 }

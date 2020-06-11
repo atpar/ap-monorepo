@@ -3,17 +3,16 @@ pragma experimental ABIEncoderV2;
 
 import "../AssetRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
-import "./IOwnership.sol";
+import "./IOwnershipRegistry.sol";
 
 
 /**
- * @title Ownership
+ * @title OwnershipRegistry
  */
-abstract contract Ownership is AssetRegistryStorage, IOwnership, AccessControl {
+contract OwnershipRegistry is AssetRegistryStorage, AccessControl, IOwnershipRegistry {
 
     event UpdatedObligor (bytes32 assetId, address prevObligor, address newObligor);
     event UpdatedBeneficiary(bytes32 assetId, address prevBeneficiary, address newBeneficiary);
-    event UpdatedCashflowBeneficiary(bytes32 assetId, int8 cashflowId, address prevBeneficiary, address newBeneficiary);
 
 
     /**
@@ -75,59 +74,6 @@ abstract contract Ownership is AssetRegistryStorage, IOwnership, AccessControl {
     }
 
     /**
-     * @notice Registers the address of the owner of specific claims of the asset.
-     * @dev Can only be updated by the current beneficiary or by an authorized account.
-     * @param assetId id of the asset
-     * @param cashflowId id of the specific claims for which to register the owner
-     * @param beneficiary the address of the owner
-     */
-    function setBeneficiaryForCashflowId(
-        bytes32 assetId,
-        int8 cashflowId,
-        address beneficiary
-    )
-        external
-        override
-    {
-        require(
-            cashflowId != 0,
-            "AssetRegistry.setBeneficiaryForCashflowId: INVALID_CASHFLOWID"
-        );
-
-        address prevBeneficiary = assets[assetId].cashflowBeneficiaries[cashflowId];
-
-        if (prevBeneficiary == address(0)) {
-            if (cashflowId > 0) {
-                require(
-                    msg.sender == assets[assetId].ownership.creatorBeneficiary
-                    || hasAccess(assetId, msg.sig, msg.sender),
-                    "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
-                );
-            } else {
-                require(
-                    msg.sender == assets[assetId].ownership.counterpartyBeneficiary
-                    || hasAccess(assetId, msg.sig, msg.sender),
-                    "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
-                );
-            }
-        } else {
-            require(
-                msg.sender == prevBeneficiary || hasAccess(assetId, msg.sig, msg.sender),
-                "AssetRegistry.setBeneficiaryForCashflowId: UNAUTHORIZED_SENDER"
-            );
-        }
-
-        assets[assetId].cashflowBeneficiaries[cashflowId] = beneficiary;
-
-        emit UpdatedCashflowBeneficiary(
-            assetId,
-            cashflowId,
-            prevBeneficiary,
-            beneficiary
-        );
-    }
-
-    /**
      * @notice Update the address of the obligor which has to fulfill obligations
      * for the creator of the asset.
      * @dev Can only be updated by an authorized account.
@@ -185,20 +131,5 @@ abstract contract Ownership is AssetRegistryStorage, IOwnership, AccessControl {
         returns (AssetOwnership memory)
     {
         return assets[assetId].ownership;
-    }
-
-    /**
-     * @notice Retrieves the registered address of the owner of specific future claims from an asset.
-     * @param assetId id of the asset
-     * @param cashflowId the identifier of the specific claims owned by the registerd address
-     * @return address of the beneficiary corresponding to the given cashflowId
-     */
-    function getCashflowBeneficiary(bytes32 assetId, int8 cashflowId)
-        external
-        view
-        override
-        returns (address)
-    {
-        return assets[assetId].cashflowBeneficiaries[cashflowId];
     }
 }

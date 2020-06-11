@@ -3,7 +3,7 @@ pragma solidity ^0.6.4;
 import "./SharedTypes.sol";
 
 
-contract ScheduleUtils is SharedTypes {
+contract ScheduleUtils {
 
     function isUnscheduledEventType(EventType eventType)
         internal

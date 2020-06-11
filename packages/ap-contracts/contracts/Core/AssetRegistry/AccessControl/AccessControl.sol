@@ -2,10 +2,10 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../AssetRegistryStorage.sol";
-import "../IAccessControl.sol";
+import "./IAccessControl.sol";
 
 
-abstract contract AccessControl is AssetRegistryStorage, IAccessControl {
+contract AccessControl is AssetRegistryStorage, IAccessControl {
 
     event SetRootAccess(bytes32 indexed assetId, address indexed account);
     event GrantedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);
@@ -15,6 +15,14 @@ abstract contract AccessControl is AssetRegistryStorage, IAccessControl {
     // Method signature == bytes4(0) := Access to all methods defined in the Asset Registry contract
     bytes4 constant ROOT_ACCESS = bytes4(0);
 
+
+    modifier isAuthorized(bytes32 assetId) {
+        require(
+            msg.sender == assets[assetId].actor || hasAccess(assetId, msg.sig, msg.sender),
+            "AssetRegistry.isAuthorized: UNAUTHORIZED_SENDER"
+        );
+        _;
+    }
 
     /**
      * @notice Grant access to an account to call a specific method on a specific asset.

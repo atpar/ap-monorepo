@@ -1,14 +1,15 @@
 pragma solidity ^0.6.4;
 
-import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
+import "../../SharedTypes.sol";
+import "../AssetRegistryStorage.sol";
 
 
 library StateEncoder {
 
-    function storeInPackedState(Asset storage asset, uint8 index, bytes32 value) private {
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
         // skip if value did not change
-        if (asset.packedState[index] == value) return;
-        asset.packedState[index] = value;
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
     }
 
     /**
@@ -93,6 +94,21 @@ library StateEncoder {
             int256(asset.packedState["F_nextPrincipalRedemptionPayment"]),
             int256(asset.packedState["F_exerciseAmount"])
         );
+    }
+
+
+    function decodeAndGetEnumValueForStateAttribute(Asset storage asset, bytes32 attributeKey)
+        internal
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
     }
 
     function decodeAndGetUIntValueForForStateAttribute(Asset storage asset, bytes32 attributeKey)

@@ -2,27 +2,47 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Core/SharedTypes.sol";
-import "../Core/AssetActor/IAssetActor.sol";
-import "./VerifyOrder.sol";
 
 
-abstract contract IAssetIssuer is SharedTypes, VerifyOrder {
+interface IAssetIssuer {
 
-    struct Draft {
-        bytes32 termsHash;
-        bytes32 templateId;
-        CustomTerms customTerms;
-        AssetOwnership ownership;
-        address engine;
-        address admin;
-    }
+    // function issueAsset(
+    //     bytes32 termsHash,
+    //     ANNTerms calldata terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership calldata ownership,
+    //     address engine,
+    //     address admin
+    // )
+    //     external;
 
+    // function issueAsset(
+    //     bytes32 termsHash,
+    //     CECTerms calldata terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership calldata ownership,
+    //     address engine,
+    //     address admin
+    // )
+    //     external;
 
-    function issueFromDraft(Draft calldata draft)
-        external
-        virtual;
+    // function issueAsset(
+    //     bytes32 termsHash,
+    //     CEGTerms calldata terms,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership calldata ownership,
+    //     address engine,
+    //     address admin
+    // )
+    //     external;
 
-    function issueFromOrder(Order memory order)
-        public
-        virtual;
+    function issueAsset(
+        bytes32 termsHash,
+        PAMTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
+        address engine,
+        address admin
+    )
+        external;
 }

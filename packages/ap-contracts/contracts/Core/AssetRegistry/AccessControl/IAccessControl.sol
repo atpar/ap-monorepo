@@ -2,23 +2,19 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 
-abstract contract IAccessControl {
+interface IAccessControl {
 
     function grantAccess(bytes32 assetId, bytes4 methodSignature, address account)
-        external
-        virtual;
+        external;
 
     function revokeAccess(bytes32 assetId, bytes4 methodSignature, address account)
-        external
-        virtual;
+        external;
 
     function hasAccess(bytes32 assetId, bytes4 methodSignature, address account)
-        public
-        virtual
+        external
         returns (bool);
 
     function hasRootAccess(bytes32 assetId, address account)
-        public
-        virtual
+        external
         returns (bool);
 }

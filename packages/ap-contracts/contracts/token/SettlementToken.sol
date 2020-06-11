@@ -4,24 +4,24 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
-abstract contract ERC20Interface {
+interface ERC20Interface {
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     
-    function transfer(address to, uint tokens) public virtual returns (bool success);
-    function transferFrom(address from, address to, uint tokens) public virtual returns (bool success);
-    function approve(address spender, uint tokens) public virtual returns (bool success);
-    function totalSupply() public view virtual returns (uint);
-    function balanceOf(address tokenOwner) public view virtual returns (uint balance);
-    function allowance(address tokenOwner, address spender) public view virtual returns (uint remaining);
+    function transfer(address to, uint tokens) external returns (bool success);
+    function transferFrom(address from, address to, uint tokens) external returns (bool success);
+    function approve(address spender, uint tokens) external returns (bool success);
+    function totalSupply() external view returns (uint);
+    function balanceOf(address tokenOwner) external view returns (uint balance);
+    function allowance(address tokenOwner, address spender) external view returns (uint remaining);
 }
 
-abstract contract FaucetInterface {
-    function drip(address receiver, uint tokens) public virtual;
+interface FaucetInterface {
+    function drip(address receiver, uint tokens) external;
 }
 
-abstract contract ApproveAndCallFallBack {
-    function receiveApproval(address from, uint256 tokens, address token, bytes memory data) public virtual;
+interface ApproveAndCallFallBack {
+    function receiveApproval(address from, uint256 tokens, address token, bytes calldata data) external;
 }
 
 contract SettlementToken is ERC20Interface, FaucetInterface, Ownable {

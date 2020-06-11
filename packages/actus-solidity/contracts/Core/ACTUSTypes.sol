@@ -149,11 +149,6 @@ struct ANNTerms {
     IPS cycleOfPrincipalRedemption;
     // IPS cycleOfOptionality; // not implemented
     // IPS cycleOfInterestCalculationBase; // not implemented
-
-    // for simplification since terms are limited only two contract references
-    // - make ContractReference top level and skip ContractStructure
-    ContractReference contractReference_1;
-    ContractReference contractReference_2;
 }
 
 struct CECTerms {
@@ -297,9 +292,4 @@ struct PAMTerms {
     IPS cycleOfScalingIndex;
     IPS cycleOfFee;
     // IPS cycleOfOptionality; // not implemented
-
-    // for simplification since terms are limited only two contract references
-    // - make ContractReference top level and skip ContractStructure
-    ContractReference contractReference_1;
-    ContractReference contractReference_2;
 }

@@ -5,13 +5,15 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
-import "@atpar/actus-solidity/contracts/Engines/IEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/CEC/ICECEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 
 import "../SharedTypes.sol";
 import "../ScheduleUtils.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../TemplateRegistry/ITemplateRegistry.sol";
 import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
 import "./IAssetActor.sol";
 
@@ -39,7 +41,6 @@ contract AssetActor is
 
 
     IAssetRegistry public assetRegistry;
-    ITemplateRegistry public templateRegistry;
     IMarketObjectRegistry public marketObjectRegistry;
 
     mapping(address => bool) public issuers;
@@ -55,13 +56,11 @@ contract AssetActor is
 
     constructor (
         IAssetRegistry _assetRegistry,
-        ITemplateRegistry _templateRegistry,
         IMarketObjectRegistry _marketObjectRegistry
     )
         public
     {
         assetRegistry = _assetRegistry;
-        templateRegistry = _templateRegistry;
         marketObjectRegistry = _marketObjectRegistry;
     }
 
@@ -158,12 +157,13 @@ contract AssetActor is
      */
     function initialize(
         bytes32 assetId,
-        AssetOwnership memory ownership,
-        PAMTerms memory terms,
+        PAMTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
         address engine,
         address admin
     )
-        public
+        external
         onlyRegisteredIssuer
         override
         returns (bool)
@@ -179,9 +179,10 @@ contract AssetActor is
         // register the asset in the AssetRegistry
         assetRegistry.registerAsset(
             assetId,
-            ownership,
             terms,
             initialState,
+            schedule,
+            ownership,
             engine,
             address(this),
             admin
@@ -223,7 +224,7 @@ contract AssetActor is
         (State memory nextState, int256 payoff) = computeStateAndPayoffForEvent(assetId, state, _event);
 
         // try to settle payoff of event
-        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff, token);
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
 
         if (settledPayoff == false) {
             // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
@@ -268,13 +269,11 @@ contract AssetActor is
      * @param assetId id of the asset which the payment relates to
      * @param _event _event to settle the payoff for
      * @param payoff payoff of the event
-     * @param terms terms of the asset
      */
     function settlePayoffForEvent(
         bytes32 assetId,
         bytes32 _event,
-        int256 payoff,
-        address token
+        int256 payoff
     )
         internal
         returns (bool)
@@ -288,20 +287,20 @@ contract AssetActor is
         if (payoff == 0) return true;
 
         // get the token address either from currency attribute or from the second contract reference
-        address token = terms.currency;
-        if (terms.contractReference_2.role == ContractReferenceRole.COVI) {
-            (token, ) = decodeCollateralObject(terms.contractReference_2.object);
+        address token = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
+            assetId,
+            "contractReference_2"
+        );
+        if (contractReference_2.role == ContractReferenceRole.COVI) {
+            (token, ) = decodeCollateralObject(contractReference_2.object);
         }
 
         AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
-        // derive cashflowId to determine ownership of the cashflow
-        (EventType eventType, ) = decodeEvent(_event);
-        int8 cashflowId = (payoff > 0) ? int8(uint8(eventType) + 1) : int8(uint8(eventType) + 1) * -1;
-        address payee = assetRegistry.getCashflowBeneficiary(assetId, cashflowId);
-        address payer;
-
         // determine the payee and payer of the payment by checking the sign of the payoff
+        address payee;
+        address payer;
         if (payoff > 0) {
             // only allow for the obligor to settle the payment
             payer = ownership.counterpartyObligor;
@@ -333,10 +332,11 @@ contract AssetActor is
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
         internal
+        view
         returns (State memory, int256)
     {
         address engineAddress = assetRegistry.getEngine(assetId);
-        ContractType contractType = IEngine(engineAddress).contractType();
+        ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));
 
         if (contractType == ContractType.PAM) {
             PAMTerms memory terms = assetRegistry.getPAMTerms(assetId);
@@ -345,13 +345,13 @@ contract AssetActor is
                 terms,
                 state,
                 _event,
-                getExternalDataForPOF(_event, terms)
+                getExternalDataForPOF(assetId, _event)
             );
             state = IPAMEngine(engineAddress).computeStateForEvent(
                 terms,
                 state,
                 _event,
-                getExternalDataForSTF(_event, terms)
+                getExternalDataForSTF(assetId, _event)
             );
 
             return (state, payoff);
@@ -365,8 +365,8 @@ contract AssetActor is
      * used for evaluating the STF for a given event.
      */
     function getExternalDataForSTF(
-        bytes32 _event,
-        LifecycleTerms memory terms
+        bytes32 assetId,
+        bytes32 _event
     )
         internal
         view
@@ -377,7 +377,7 @@ contract AssetActor is
         if (eventType == EventType.RR) {
             // get rate from MOR
             (int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
-                terms.marketObjectCodeRateReset,
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
                 scheduleTime
             );
             if (isSet) return bytes32(resetRate);
@@ -387,9 +387,14 @@ contract AssetActor is
             return bytes32(block.timestamp);
         } else if (eventType == EventType.XD) {
             // get the remaining notionalPrincipal from the underlying
-            if (terms.contractReference_1.role == ContractReferenceRole.COVE) {
-                State memory underlyingState = assetRegistry.getState(terms.contractReference_1.object);
-                return bytes32(underlyingState.notionalPrincipal);
+            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_1"
+            );
+            if (contractReference_1.role == ContractReferenceRole.COVE) {
+                return bytes32(
+                    assetRegistry.getIntValueForStateAttribute(contractReference_1.object, "notionalPrincipal")
+                );
             }
         }
 
@@ -401,8 +406,8 @@ contract AssetActor is
      * used for evaluating the POF for a given event.
      */
     function getExternalDataForPOF(
-        bytes32 _event,
-        LifecycleTerms memory terms
+        bytes32 assetId,
+        bytes32 _event
     )
         internal
         view
@@ -410,10 +415,13 @@ contract AssetActor is
     {
         (, uint256  scheduleTime) = decodeEvent(_event);
 
-        if (terms.currency != terms.settlementCurrency) {
+        address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        address settlementCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "settlementCurrency");
+
+        if (currency != settlementCurrency) {
             // get FX rate
             (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
-                keccak256(abi.encode(terms.currency, terms.settlementCurrency)),
+                keccak256(abi.encode(currency, settlementCurrency)),
                 scheduleTime
             );
             if (isSet) return bytes32(fxRate);

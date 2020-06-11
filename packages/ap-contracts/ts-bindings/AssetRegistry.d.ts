@@ -21,65 +21,11 @@ export class AssetRegistry extends Contract {
   );
   clone(): AssetRegistry;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
     computeEventTimeForEvent(
       _event: string | number[],
-      terms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDate: number | string;
-        maturityDate: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        contractReference_1: {
-          object: string | number[];
-          _type: number | string;
-          role: number | string;
-        };
-        contractReference_2: {
-          object: string | number[];
-          _type: number | string;
-          role: number | string;
-        };
-      }
+      bdc: number | string,
+      calendar: number | string,
+      maturityDate: number | string
     ): TransactionObject<string>;
 
     decodeCollateralObject(
@@ -96,141 +42,6 @@ export class AssetRegistry extends Contract {
       1: string;
     }>;
 
-    deriveLifecycleTermsFromCustomTermsAndTemplateTerms(
-      templateTerms: {
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDateOffset: number | string;
-        maturityDateOffset: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-      },
-      terms: {
-        anchorDate: number | string;
-        overwrittenAttributesMap: number | string;
-        overwrittenTerms: {
-          calendar: number | string;
-          contractRole: number | string;
-          dayCountConvention: number | string;
-          businessDayConvention: number | string;
-          endOfMonthConvention: number | string;
-          scalingEffect: number | string;
-          penaltyType: number | string;
-          feeBasis: number | string;
-          creditEventTypeCovered: number | string;
-          currency: string;
-          settlementCurrency: string;
-          marketObjectCodeRateReset: string | number[];
-          statusDate: number | string;
-          maturityDate: number | string;
-          notionalPrincipal: number | string;
-          nominalInterestRate: number | string;
-          feeAccrued: number | string;
-          accruedInterest: number | string;
-          rateMultiplier: number | string;
-          rateSpread: number | string;
-          feeRate: number | string;
-          nextResetRate: number | string;
-          penaltyRate: number | string;
-          premiumDiscountAtIED: number | string;
-          priceAtPurchaseDate: number | string;
-          nextPrincipalRedemptionPayment: number | string;
-          coverageOfCreditEnhancement: number | string;
-          lifeCap: number | string;
-          lifeFloor: number | string;
-          periodCap: number | string;
-          periodFloor: number | string;
-          gracePeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          delinquencyPeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          contractReference_1: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
-          contractReference_2: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
-        };
-      }
-    ): TransactionObject<{
-      calendar: string;
-      contractRole: string;
-      dayCountConvention: string;
-      businessDayConvention: string;
-      endOfMonthConvention: string;
-      scalingEffect: string;
-      penaltyType: string;
-      feeBasis: string;
-      creditEventTypeCovered: string;
-      currency: string;
-      settlementCurrency: string;
-      marketObjectCodeRateReset: string;
-      statusDate: string;
-      maturityDate: string;
-      notionalPrincipal: string;
-      nominalInterestRate: string;
-      feeAccrued: string;
-      accruedInterest: string;
-      rateMultiplier: string;
-      rateSpread: string;
-      feeRate: string;
-      nextResetRate: string;
-      penaltyRate: string;
-      premiumDiscountAtIED: string;
-      priceAtPurchaseDate: string;
-      nextPrincipalRedemptionPayment: string;
-      coverageOfCreditEnhancement: string;
-      lifeCap: string;
-      lifeFloor: string;
-      periodCap: string;
-      periodFloor: string;
-      gracePeriod: { i: string; p: string; isSet: boolean };
-      delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      contractReference_1: { object: string; _type: string; role: string };
-      contractReference_2: { object: string; _type: string; role: string };
-    }>;
-
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
@@ -241,18 +52,42 @@ export class AssetRegistry extends Contract {
       scheduleTime: number | string
     ): TransactionObject<string>;
 
-    getActor(assetId: string | number[]): TransactionObject<string>;
-
-    getAnchorDate(assetId: string | number[]): TransactionObject<string>;
-
-    getCashflowBeneficiary(
+    getAddressValueForTermsAttribute(
       assetId: string | number[],
-      cashflowId: number | string
+      attribute: string | number[]
     ): TransactionObject<string>;
 
-    getEngine(assetId: string | number[]): TransactionObject<string>;
+    getBytes32ValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getContractReferenceValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ object: string; _type: string; role: string }>;
+
+    getCycleValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ i: string; p: string; s: string; isSet: boolean }>;
+
+    getEnumValueForStateAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getEnumValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    getEventAtIndex(
+      assetId: string | number[],
+      index: number | string
+    ): TransactionObject<string>;
 
     getFinalizedState(
       assetId: string | number[]
@@ -273,13 +108,19 @@ export class AssetRegistry extends Contract {
       exerciseAmount: string;
     }>;
 
+    getIntValueForForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getIntValueForStateAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
     getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
 
     getNextScheduledEvent(
-      assetId: string | number[]
-    ): TransactionObject<string>;
-
-    getNextUnderlyingEvent(
       assetId: string | number[]
     ): TransactionObject<string>;
 
@@ -292,7 +133,70 @@ export class AssetRegistry extends Contract {
       counterpartyBeneficiary: string;
     }>;
 
+    getPAMTerms(
+      assetId: string | number[]
+    ): TransactionObject<{
+      contractType: string;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      currency: string;
+      settlementCurrency: string;
+      marketObjectCodeRateReset: string;
+      contractDealDate: string;
+      statusDate: string;
+      initialExchangeDate: string;
+      maturityDate: string;
+      purchaseDate: string;
+      capitalizationEndDate: string;
+      cycleAnchorDateOfInterestPayment: string;
+      cycleAnchorDateOfRateReset: string;
+      cycleAnchorDateOfScalingIndex: string;
+      cycleAnchorDateOfFee: string;
+      notionalPrincipal: string;
+      nominalInterestRate: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      rateSpread: string;
+      nextResetRate: string;
+      feeRate: string;
+      feeAccrued: string;
+      penaltyRate: string;
+      delinquencyRate: string;
+      premiumDiscountAtIED: string;
+      priceAtPurchaseDate: string;
+      lifeCap: string;
+      lifeFloor: string;
+      periodCap: string;
+      periodFloor: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      cycleOfInterestPayment: {
+        i: string;
+        p: string;
+        s: string;
+        isSet: boolean;
+      };
+      cycleOfRateReset: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfScalingIndex: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
+    }>;
+
     getPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    getPeriodValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ i: string; p: string; isSet: boolean }>;
+
+    getSchedule(assetId: string | number[]): TransactionObject<string[]>;
+
+    getScheduleLength(assetId: string | number[]): TransactionObject<string>;
 
     getState(
       assetId: string | number[]
@@ -313,47 +217,15 @@ export class AssetRegistry extends Contract {
       exerciseAmount: string;
     }>;
 
-    getTemplateId(assetId: string | number[]): TransactionObject<string>;
+    getUIntValueForForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
 
-    getTerms(
-      assetId: string | number[]
-    ): TransactionObject<{
-      calendar: string;
-      contractRole: string;
-      dayCountConvention: string;
-      businessDayConvention: string;
-      endOfMonthConvention: string;
-      scalingEffect: string;
-      penaltyType: string;
-      feeBasis: string;
-      creditEventTypeCovered: string;
-      currency: string;
-      settlementCurrency: string;
-      marketObjectCodeRateReset: string;
-      statusDate: string;
-      maturityDate: string;
-      notionalPrincipal: string;
-      nominalInterestRate: string;
-      feeAccrued: string;
-      accruedInterest: string;
-      rateMultiplier: string;
-      rateSpread: string;
-      feeRate: string;
-      nextResetRate: string;
-      penaltyRate: string;
-      premiumDiscountAtIED: string;
-      priceAtPurchaseDate: string;
-      nextPrincipalRedemptionPayment: string;
-      coverageOfCreditEnhancement: string;
-      lifeCap: string;
-      lifeFloor: string;
-      periodCap: string;
-      periodFloor: string;
-      gracePeriod: { i: string; p: string; isSet: boolean };
-      delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      contractReference_1: { object: string; _type: string; role: string };
-      contractReference_2: { object: string; _type: string; role: string };
-    }>;
+    getUintValueForStateAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
 
     grantAccess(
       assetId: string | number[],
@@ -403,22 +275,6 @@ export class AssetRegistry extends Contract {
       account: string
     ): TransactionObject<void>;
 
-    setActor(
-      assetId: string | number[],
-      actor: string
-    ): TransactionObject<void>;
-
-    setAnchorDate(
-      assetId: string | number[],
-      anchorDate: number | string
-    ): TransactionObject<void>;
-
-    setBeneficiaryForCashflowId(
-      assetId: string | number[],
-      cashflowId: number | string,
-      beneficiary: string
-    ): TransactionObject<void>;
-
     setCounterpartyBeneficiary(
       assetId: string | number[],
       newCounterpartyBeneficiary: string
@@ -439,72 +295,6 @@ export class AssetRegistry extends Contract {
       newCreatorObligor: string
     ): TransactionObject<void>;
 
-    setCustomTerms(
-      assetId: string | number[],
-      terms: {
-        anchorDate: number | string;
-        overwrittenAttributesMap: number | string;
-        overwrittenTerms: {
-          calendar: number | string;
-          contractRole: number | string;
-          dayCountConvention: number | string;
-          businessDayConvention: number | string;
-          endOfMonthConvention: number | string;
-          scalingEffect: number | string;
-          penaltyType: number | string;
-          feeBasis: number | string;
-          creditEventTypeCovered: number | string;
-          currency: string;
-          settlementCurrency: string;
-          marketObjectCodeRateReset: string | number[];
-          statusDate: number | string;
-          maturityDate: number | string;
-          notionalPrincipal: number | string;
-          nominalInterestRate: number | string;
-          feeAccrued: number | string;
-          accruedInterest: number | string;
-          rateMultiplier: number | string;
-          rateSpread: number | string;
-          feeRate: number | string;
-          nextResetRate: number | string;
-          penaltyRate: number | string;
-          premiumDiscountAtIED: number | string;
-          priceAtPurchaseDate: number | string;
-          nextPrincipalRedemptionPayment: number | string;
-          coverageOfCreditEnhancement: number | string;
-          lifeCap: number | string;
-          lifeFloor: number | string;
-          periodCap: number | string;
-          periodFloor: number | string;
-          gracePeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          delinquencyPeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          contractReference_1: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
-          contractReference_2: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
-        };
-      }
-    ): TransactionObject<void>;
-
-    setEngine(
-      assetId: string | number[],
-      engine: string
-    ): TransactionObject<void>;
-
     setFinalizedState(
       assetId: string | number[],
       state: {
@@ -522,6 +312,80 @@ export class AssetRegistry extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+      }
+    ): TransactionObject<void>;
+
+    setPAMTerms(
+      assetId: string | number[],
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        capitalizationEndDate: number | string;
+        cycleAnchorDateOfInterestPayment: number | string;
+        cycleAnchorDateOfRateReset: number | string;
+        cycleAnchorDateOfScalingIndex: number | string;
+        cycleAnchorDateOfFee: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        nextResetRate: number | string;
+        feeRate: number | string;
+        feeAccrued: number | string;
+        penaltyRate: number | string;
+        delinquencyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfInterestPayment: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfRateReset: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfScalingIndex: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
       }
     ): TransactionObject<void>;
 
@@ -545,74 +409,78 @@ export class AssetRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
-    templateRegistry(): TransactionObject<string>;
-
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     registerAsset(
       assetId: string | number[],
-      ownership: {
-        creatorObligor: string;
-        creatorBeneficiary: string;
-        counterpartyObligor: string;
-        counterpartyBeneficiary: string;
-      },
-      templateId: string | number[],
       terms: {
-        anchorDate: number | string;
-        overwrittenAttributesMap: number | string;
-        overwrittenTerms: {
-          calendar: number | string;
-          contractRole: number | string;
-          dayCountConvention: number | string;
-          businessDayConvention: number | string;
-          endOfMonthConvention: number | string;
-          scalingEffect: number | string;
-          penaltyType: number | string;
-          feeBasis: number | string;
-          creditEventTypeCovered: number | string;
-          currency: string;
-          settlementCurrency: string;
-          marketObjectCodeRateReset: string | number[];
-          statusDate: number | string;
-          maturityDate: number | string;
-          notionalPrincipal: number | string;
-          nominalInterestRate: number | string;
-          feeAccrued: number | string;
-          accruedInterest: number | string;
-          rateMultiplier: number | string;
-          rateSpread: number | string;
-          feeRate: number | string;
-          nextResetRate: number | string;
-          penaltyRate: number | string;
-          premiumDiscountAtIED: number | string;
-          priceAtPurchaseDate: number | string;
-          nextPrincipalRedemptionPayment: number | string;
-          coverageOfCreditEnhancement: number | string;
-          lifeCap: number | string;
-          lifeFloor: number | string;
-          periodCap: number | string;
-          periodFloor: number | string;
-          gracePeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          delinquencyPeriod: {
-            i: number | string;
-            p: number | string;
-            isSet: boolean;
-          };
-          contractReference_1: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
-          contractReference_2: {
-            object: string | number[];
-            _type: number | string;
-            role: number | string;
-          };
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        capitalizationEndDate: number | string;
+        cycleAnchorDateOfInterestPayment: number | string;
+        cycleAnchorDateOfRateReset: number | string;
+        cycleAnchorDateOfScalingIndex: number | string;
+        cycleAnchorDateOfFee: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        nextResetRate: number | string;
+        feeRate: number | string;
+        feeAccrued: number | string;
+        penaltyRate: number | string;
+        delinquencyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfInterestPayment: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfRateReset: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfScalingIndex: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
         };
       },
       state: {
@@ -631,10 +499,35 @@ export class AssetRegistry extends Contract {
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
       },
+      schedule: (string | number[])[],
+      ownership: {
+        creatorObligor: string;
+        creatorBeneficiary: string;
+        counterpartyObligor: string;
+        counterpartyBeneficiary: string;
+      },
       engine: string,
       actor: string,
       admin: string
     ): TransactionObject<void>;
+
+    getEngine(assetId: string | number[]): TransactionObject<string>;
+
+    getActor(assetId: string | number[]): TransactionObject<string>;
+
+    setEngine(
+      assetId: string | number[],
+      engine: string
+    ): TransactionObject<void>;
+
+    setActor(
+      assetId: string | number[],
+      actor: string
+    ): TransactionObject<void>;
+
+    getNextUnderlyingEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
   };
   events: {
     GrantedAccess: ContractEvent<{
@@ -674,14 +567,6 @@ export class AssetRegistry extends Contract {
       1: string;
       2: string;
     }>;
-    UpdatedAnchorDate: ContractEvent<{
-      assetId: string;
-      prevAnchorDate: string;
-      anchorDate: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
     UpdatedBeneficiary: ContractEvent<{
       assetId: string;
       prevBeneficiary: string;
@@ -690,17 +575,6 @@ export class AssetRegistry extends Contract {
       1: string;
       2: string;
     }>;
-    UpdatedCashflowBeneficiary: ContractEvent<{
-      assetId: string;
-      cashflowId: string;
-      prevBeneficiary: string;
-      newBeneficiary: string;
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-    }>;
-    UpdatedCustomTerms: ContractEvent<string>;
     UpdatedEngine: ContractEvent<{
       assetId: string;
       prevEngine: string;
@@ -729,6 +603,7 @@ export class AssetRegistry extends Contract {
       0: string;
       1: string;
     }>;
+    UpdatedTerms: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

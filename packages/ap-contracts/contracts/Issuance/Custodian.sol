@@ -43,7 +43,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
      */
     function lockCollateral(
         bytes32 assetId,
-        LifecycleTerms calldata terms,
+        CECTerms calldata terms,
         AssetOwnership calldata ownership
     )
         external
@@ -117,17 +117,18 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
             "Custodian.returnCollateral: ENTRY_DOES_NOT_EXIST"
         );
 
-        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
+        ContractRole contractRole = ContractRole(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
+        ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(assetId, "contractReference_2");
         State memory state = assetRegistry.getState(assetId);
         AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
 
         // derive address of collateralizer
-        address collateralizer = (terms.contractRole == ContractRole.BUY)
+        address collateralizer = (contractRole == ContractRole.BUY)
             ? ownership.counterpartyBeneficiary
             : ownership.creatorBeneficiary;
 
         // decode token address and amount of collateral
-        (address collateralToken, uint256 collateralAmount) = decodeCollateralObject(terms.contractReference_2.object);
+        (address collateralToken, uint256 collateralAmount) = decodeCollateralObject(contractReference_2.object);
 
         // calculate amount to return
         uint256 notExecutedAmount;

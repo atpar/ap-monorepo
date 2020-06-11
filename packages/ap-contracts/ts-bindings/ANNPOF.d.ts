@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ScheduleUtils extends Contract {
+export class ANNPOF extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ScheduleUtils;
+  clone(): ANNPOF;
   methods: {
     MAX_CYCLE_SIZE(): TransactionObject<string>;
 
@@ -28,6 +28,38 @@ export class ScheduleUtils extends Contract {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
+
+    adjustEndOfMonthConvention(
+      eomc: number | string,
+      startTime: number | string,
+      cycle: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      }
+    ): TransactionObject<string>;
+
+    computeEventTimeForEvent(
+      _event: string | number[],
+      bdc: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
+    ): TransactionObject<string>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
   };
   events: {
     allEvents: (
