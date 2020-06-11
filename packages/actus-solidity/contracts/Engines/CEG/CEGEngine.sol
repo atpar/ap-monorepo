@@ -15,7 +15,7 @@ import "./CEGPOF.sol";
  */
 contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
 
-    function contractType() pure returns (ContractType) {
+    function contractType() external pure override returns (ContractType) {
         return ContractType.CEG;
     }
 

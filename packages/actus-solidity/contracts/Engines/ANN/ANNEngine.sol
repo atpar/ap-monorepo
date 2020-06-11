@@ -14,7 +14,7 @@ import "./ANNPOF.sol";
  */
 contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
 
-    function contractType() pure returns (ContractType) {
+    function contractType() external pure override returns (ContractType) {
         return ContractType.ANN;
     }
 

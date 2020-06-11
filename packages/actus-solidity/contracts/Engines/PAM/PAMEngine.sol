@@ -14,7 +14,7 @@ import "./PAMPOF.sol";
  */
 contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
 
-    function contractType() pure returns (ContractType) {
+    function contractType() external pure override returns (ContractType) {
         return ContractType.PAM;
     }
 

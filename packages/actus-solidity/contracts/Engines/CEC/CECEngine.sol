@@ -15,7 +15,7 @@ import "./CECPOF.sol";
  */
 contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
 
-    function contractType() pure returns (ContractType) {
+    function contractType() external pure override returns (ContractType) {
         return ContractType.CEC;
     }
 

@@ -9,7 +9,7 @@ import "../IEngine.sol";
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-abstract contract IPAMEngine is IEngine {
+interface IPAMEngine is IEngine {
 
     /**
      * @notice Initialize contract state space based on the contract terms.
@@ -19,7 +19,6 @@ abstract contract IPAMEngine is IEngine {
     function computeInitialState(PAMTerms calldata terms)
         external
         pure
-        virtual
         returns (State memory);
 
     /**
@@ -38,7 +37,6 @@ abstract contract IPAMEngine is IEngine {
     )
         external
         pure
-        virtual
         returns (State memory);
 
     /**
@@ -57,7 +55,6 @@ abstract contract IPAMEngine is IEngine {
     )
         external
         pure
-        virtual
         returns (int256);
 
     /**
@@ -75,7 +72,6 @@ abstract contract IPAMEngine is IEngine {
     )
         external
         pure
-        virtual
         returns (bytes32[] memory);
 
     /**
@@ -95,7 +91,6 @@ abstract contract IPAMEngine is IEngine {
     )
         external
         pure
-        virtual
         returns (bytes32[] memory);
 
     /**
@@ -117,6 +112,5 @@ abstract contract IPAMEngine is IEngine {
     )
         external
         pure
-        virtual
         returns (bool);
 }

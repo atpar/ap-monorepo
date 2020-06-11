@@ -16,10 +16,10 @@ contract CECSTF is Core {
      * @return the new state
      */
     function STF_CEC_CE (
-        CECTerms memory terms,
+        CECTerms memory /* terms */,
         State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
+        uint256 /* scheduleTime */,
+        bytes32 /* externalData */
     )
         internal
         pure
