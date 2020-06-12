@@ -1,10 +1,10 @@
 pragma solidity ^0.6.4;
 
-import "../../SharedTypes.sol";
-import "../AssetRegistryStorage.sol";
+import "../../../SharedTypes.sol";
+import "../../BaseRegistryStorage.sol";
 
 
-library ANNEncoder {
+library PAMEncoder {
 
     function storeInPackedTerms(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
         // skip if value did not change
@@ -17,7 +17,7 @@ library ANNEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetANNTerms(Asset storage asset, ANNTerms memory terms) internal {
+    function encodeAndSetPAMTerms(Asset storage asset, PAMTerms memory terms) internal {
         storeInPackedTerms(
             asset,
             "enums",
@@ -47,7 +47,6 @@ library ANNEncoder {
         storeInPackedTerms(asset, "cycleAnchorDateOfRateReset", bytes32(terms.cycleAnchorDateOfRateReset));
         storeInPackedTerms(asset, "cycleAnchorDateOfScalingIndex", bytes32(terms.cycleAnchorDateOfScalingIndex));
         storeInPackedTerms(asset, "cycleAnchorDateOfFee", bytes32(terms.cycleAnchorDateOfFee));
-        storeInPackedTerms(asset, "cycleAnchorDateOfPrincipalRedemp", bytes32(terms.cycleAnchorDateOfPrincipalRedemption));
 
         storeInPackedTerms(asset, "notionalPrincipal", bytes32(terms.notionalPrincipal));
         storeInPackedTerms(asset, "nominalInterestRate", bytes32(terms.nominalInterestRate));
@@ -61,7 +60,6 @@ library ANNEncoder {
         storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
         storeInPackedTerms(asset, "premiumDiscountAtIED", bytes32(terms.premiumDiscountAtIED));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
-        storeInPackedTerms(asset, "nextPrincipalRedemptionPayment", bytes32(terms.nextPrincipalRedemptionPayment));
         storeInPackedTerms(asset, "lifeCap", bytes32(terms.lifeCap));
         storeInPackedTerms(asset, "lifeFloor", bytes32(terms.lifeFloor));
         storeInPackedTerms(asset, "periodCap", bytes32(terms.periodCap));
@@ -114,21 +112,13 @@ library ANNEncoder {
             bytes32(uint256(terms.cycleOfFee.s)) << 8 |
             bytes32(uint256((terms.cycleOfFee.isSet) ? 1 : 0))
         );
-        storeInPackedTerms(
-            asset,
-            "cycleOfPrincipalRedemption",
-            bytes32(uint256(terms.cycleOfPrincipalRedemption.i)) << 24 |
-            bytes32(uint256(terms.cycleOfPrincipalRedemption.p)) << 16 |
-            bytes32(uint256(terms.cycleOfPrincipalRedemption.s)) << 8 |
-            bytes32(uint256((terms.cycleOfPrincipalRedemption.isSet) ? 1 : 0))
-        );
     }
 
     /**
-     * @dev Decode and loads ANNTerms
+     * @dev Decode and loads PAMTerms
      */
-    function decodeAndGetANNTerms(Asset storage asset) internal view returns (ANNTerms memory) {
-        return ANNTerms(
+    function decodeAndGetPAMTerms(Asset storage asset) internal view returns (PAMTerms memory) {
+        return PAMTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
             ContractRole(uint8(uint256(asset.packedTerms["enums"] >> 232))),
@@ -154,7 +144,6 @@ library ANNEncoder {
             uint256(asset.packedTerms["cycleAnchorDateOfRateReset"]),
             uint256(asset.packedTerms["cycleAnchorDateOfScalingIndex"]),
             uint256(asset.packedTerms["cycleAnchorDateOfFee"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfPrincipalRedemp"]),
 
             int256(asset.packedTerms["notionalPrincipal"]),
             int256(asset.packedTerms["nominalInterestRate"]),
@@ -168,7 +157,6 @@ library ANNEncoder {
             int256(asset.packedTerms["delinquencyRate"]),
             int256(asset.packedTerms["premiumDiscountAtIED"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
-            int256(asset.packedTerms["nextPrincipalRedemptionPayment"]),
             int256(asset.packedTerms["lifeCap"]),
             int256(asset.packedTerms["lifeFloor"]),
             int256(asset.packedTerms["periodCap"]),
@@ -208,22 +196,16 @@ library ANNEncoder {
                 P(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 16))),
                 S(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 8))),
                 (asset.packedTerms["cycleAnchorDateOfFee"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-            IPS(
-                uint256(asset.packedTerms["cycleOfPrincipalRedemption"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfPrincipalRedemption"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfPrincipalRedemption"] >> 8))),
-                (asset.packedTerms["cycleOfPrincipalRedemption"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             )
         );
     }
 
-    function decodeAndGetEnumValueForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetEnumValueForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (uint8)
     {
-        if (attributeKey == "contractType") {
+        if (attributeKey == bytes32("contractType")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 248));
         } else if (attributeKey == bytes32("calendar")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 240));
@@ -246,7 +228,7 @@ library ANNEncoder {
         }
     }
 
-    function decodeAndGetAddressValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetAddressValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (address)
@@ -260,7 +242,7 @@ library ANNEncoder {
         }   
     }
 
-    function decodeAndGetBytes32ValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetBytes32ValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (bytes32)
@@ -268,7 +250,7 @@ library ANNEncoder {
         return asset.packedTerms[attributeKey];
     }
 
-    function decodeAndGetUIntValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetUIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (uint256)
@@ -276,7 +258,7 @@ library ANNEncoder {
         return uint256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetIntValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (int256)
@@ -284,7 +266,7 @@ library ANNEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetPeriodValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetPeriodValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (IP memory)
@@ -303,7 +285,7 @@ library ANNEncoder {
         }
     }
 
-    function decodeAndGetCycleValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetCycleValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (IPS memory)
@@ -313,7 +295,6 @@ library ANNEncoder {
             || attributeKey == bytes32("cycleAnchorDateOfRateReset")
             || attributeKey == bytes32("cycleAnchorDateOfScalingIndex")
             || attributeKey == bytes32("cycleAnchorDateOfFee")
-            || attributeKey == bytes32("cycleOfPrincipalRedemption")
         ) {
             return IPS(
                 uint256(asset.packedTerms[attributeKey] >> 24),
@@ -326,7 +307,7 @@ library ANNEncoder {
         }
     }
 
-    function decodeAndGetContractReferenceValueForANNAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         internal
         pure
         returns (ContractReference memory)

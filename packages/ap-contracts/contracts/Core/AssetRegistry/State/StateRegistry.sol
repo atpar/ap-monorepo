@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
 import "./IStateRegistry.sol";
 
@@ -9,7 +9,7 @@ import "./IStateRegistry.sol";
 /**
  * @title StateRegistry
  */
-contract StateRegistry is AssetRegistryStorage, AccessControl, IStateRegistry {
+contract StateRegistry is BaseRegistryStorage, AccessControl, IStateRegistry {
 
     event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
     event UpdatedFinalizedState(bytes32 indexed assetId, uint256 statusDate);

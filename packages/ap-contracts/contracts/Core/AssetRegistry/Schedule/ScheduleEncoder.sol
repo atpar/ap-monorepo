@@ -1,6 +1,6 @@
 pragma solidity ^0.6.4;
 
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 
 
 library ScheduleEncoder {

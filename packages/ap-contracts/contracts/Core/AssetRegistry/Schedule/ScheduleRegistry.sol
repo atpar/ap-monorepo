@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
 import "../Terms/TermsRegistry.sol";
 import "../State/StateRegistry.sol";
@@ -11,8 +11,8 @@ import "./IScheduleRegistry.sol";
 /**
  * @title ScheduleRegistry
  */
-contract ScheduleRegistry is
-    AssetRegistryStorage,
+abstract contract ScheduleRegistry is
+    BaseRegistryStorage,
     AccessControl,
     TermsRegistry,
     StateRegistry,

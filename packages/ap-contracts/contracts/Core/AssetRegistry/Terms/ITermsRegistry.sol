@@ -6,26 +6,6 @@ import "../../SharedTypes.sol";
 
 interface ITermsRegistry {
 
-    function getANNTerms(bytes32 assetId)
-        external
-        view
-        returns (ANNTerms memory);
-
-    // function getCECTerms(bytes32 assetId)
-    //     external;
-    //     view
-    //     returns (CECTerms memory);
-
-    // function getCEGTerms(bytes32 assetId)
-    //     external;
-    //     view
-    //     returns (CEGTerms memory);
-
-    function getPAMTerms(bytes32 assetId)
-        external
-        view
-        returns (PAMTerms memory);
-
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         external
         view
@@ -65,16 +45,4 @@ interface ITermsRegistry {
         external
         view
         returns (ContractReference memory);
-
-    function setANNTerms(bytes32 assetId, ANNTerms calldata terms)
-        external;
-
-    // function setCECTerms(bytes32 assetId, CECTerms calldata terms)
-    //     external;
-
-    // function setCEGTerms(bytes32 assetId, CEGTerms calldata terms)
-    //     external;
-
-    function setPAMTerms(bytes32 assetId, PAMTerms calldata terms)
-        external;
 }

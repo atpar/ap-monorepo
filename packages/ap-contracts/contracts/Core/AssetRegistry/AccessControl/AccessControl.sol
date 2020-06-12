@@ -1,11 +1,11 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 import "./IAccessControl.sol";
 
 
-contract AccessControl is AssetRegistryStorage, IAccessControl {
+contract AccessControl is BaseRegistryStorage, IAccessControl {
 
     event SetRootAccess(bytes32 indexed assetId, address indexed account);
     event GrantedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);

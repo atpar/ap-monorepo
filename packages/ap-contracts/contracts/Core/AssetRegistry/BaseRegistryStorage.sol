@@ -5,11 +5,8 @@ import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 
 import "../Conversions.sol";
 import "../SharedTypes.sol";
-
 import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleEncoder.sol";
-import "./Terms/ANNEncoder.sol";
-import "./Terms/PAMEncoder.sol";
 
 
 struct Settlement {
@@ -48,15 +45,13 @@ struct Asset {
 }
 
 /**
- * @title AssetRegistryStorage
+ * @title BaseRegistryStorage
  * @notice Describes the storage of the AssetRegistry
  * Contains getter and setter methods for encoding, decoding data to optimize gas cost.
  * Circumvents storing default values by relying on the characteristic of mappings returning zero for not set values.
  */
-contract AssetRegistryStorage is Utils, Conversions {
+abstract contract BaseRegistryStorage is Utils, Conversions {
 
-    using ANNEncoder for Asset;
-    using PAMEncoder for Asset;
     using StateEncoder for Asset;
     using ScheduleEncoder for Asset;
 

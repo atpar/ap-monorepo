@@ -13,7 +13,10 @@ import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 import "../SharedTypes.sol";
 import "../ScheduleUtils.sol";
 import "../Conversions.sol";
+import "../AssetRegistry/IAssetIdRegistry.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
+import "../AssetRegistry/IANNRegistry.sol";
+import "../AssetRegistry/IPAMRegistry.sol";
 import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
 import "./IAssetActor.sol";
 
@@ -40,7 +43,10 @@ contract AssetActor is
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
 
+    IAssetIdRegistry public assetIdRegistry;
     IAssetRegistry public assetRegistry;
+    IANNRegistry public annRegistry;
+    IPAMRegistry public pamRegistry;
     IMarketObjectRegistry public marketObjectRegistry;
 
     mapping(address => bool) public issuers;
@@ -55,11 +61,15 @@ contract AssetActor is
     }
 
     constructor (
-        IAssetRegistry _assetRegistry,
+        IAssetIdRegistry _assetIdRegistry,
+        IANNRegistry _annRegistry,
+        IPAMRegistry _assetRegistry,
         IMarketObjectRegistry _marketObjectRegistry
     )
         public
     {
+        assetIdRegistry = _assetIdRegistry;
+        annRegistry = _annRegistry;
         assetRegistry = _assetRegistry;
         marketObjectRegistry = _marketObjectRegistry;
     }
@@ -177,7 +187,7 @@ contract AssetActor is
         State memory initialState = IANNEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
-        assetRegistry.registerAsset(
+        annRegistry.registerAsset(
             assetId,
             terms,
             initialState,
@@ -226,7 +236,7 @@ contract AssetActor is
         State memory initialState = IPAMEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
-        assetRegistry.registerAsset(
+        pamRegistry.registerAsset(
             assetId,
             terms,
             initialState,
@@ -388,7 +398,7 @@ contract AssetActor is
         ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));
 
         if (contractType == ContractType.PAM) {
-            PAMTerms memory terms = assetRegistry.getPAMTerms(assetId);
+            PAMTerms memory terms = pamRegistry.getTerms(assetId);
 
             int256 payoff = IPAMEngine(engineAddress).computePayoffForEvent(
                 terms,

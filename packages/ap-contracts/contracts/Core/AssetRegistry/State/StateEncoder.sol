@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 
 import "../../SharedTypes.sol";
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 
 
 library StateEncoder {

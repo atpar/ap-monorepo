@@ -3,27 +3,26 @@ pragma experimental ABIEncoderV2;
 
 import "../SharedTypes.sol";
 
-import "./AssetRegistryStorage.sol";
-import "./IAssetRegistry.sol";
+import "./BaseRegistryStorage.sol";
+import "./IBaseRegistry.sol";
+import "./Ownership/OwnershipRegistry.sol";
 import "./Terms/TermsRegistry.sol";
 import "./State/StateRegistry.sol";
 import "./Schedule/ScheduleRegistry.sol";
-import "./Ownership/OwnershipRegistry.sol";
 
 
 /**
- * @title AssetRegistry
+ * @title BaseRegistry
  * @notice Registry for ACTUS Protocol assets
  */
-contract AssetRegistry is
-    AssetRegistryStorage,
+abstract contract BaseRegistry is
+    BaseRegistryStorage,
     TermsRegistry,
     StateRegistry,
     ScheduleRegistry,
     OwnershipRegistry,
-    IAssetRegistry 
+    IBaseRegistry
 {
-
     event RegisteredAsset(bytes32 assetId);
     event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);
     event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
@@ -31,7 +30,7 @@ contract AssetRegistry is
 
     constructor()
         public
-        AssetRegistryStorage()
+        BaseRegistryStorage()
     {}
 
     /**
@@ -46,118 +45,6 @@ contract AssetRegistry is
         returns (bool)
     {
         return assets[assetId].isSet;
-    }
-
-    /**
-     * @notice
-     * @param assetId id of the asset
-     * @param terms asset specific terms (ANNTerms)
-     * @param state initial state of the asset
-     * @param schedule schedule of the asset
-     * @param ownership ownership of the asset
-     * @param engine ACTUS Engine of the asset
-     * @param actor account which is allowed to update the asset state
-     * @param admin account which as admin rights (optional)
-     */
-    function registerAsset(
-        bytes32 assetId,
-        ANNTerms calldata terms,
-        State calldata state,
-        bytes32[] calldata schedule,
-        AssetOwnership calldata ownership,
-        address engine,
-        address actor,
-        address admin
-    )
-        external
-        override
-    {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-        assets[assetId].encodeAndSetANNTerms(terms);
-    }
-
-    // /**
-    //  * @notice
-    //  * @param assetId id of the asset
-    //  * @param terms asset specific terms (CECTerms)
-    //  * @param state initial state of the asset
-    //  * @param schedule schedule of the asset
-    //  * @param ownership ownership of the asset
-    //  * @param engine ACTUS Engine of the asset
-    //  * @param actor account which is allowed to update the asset state
-    //  * @param admin account which as admin rights (optional)
-    //  */
-    // function registerAsset(
-    //     bytes32 assetId,
-    //     CECTerms calldata terms,
-    //     State calldata state,
-    //     bytes32[] calldata schedule,
-    //     AssetOwnership calldata ownership,
-    //     address engine,
-    //     address actor,
-    //     address admin
-    // )
-    //     external
-    //     override
-    // {
-    //     setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-    //     assets[assetId].encodeAndSetCECTerms(terms);
-    // }
-
-    // /**
-    //  * @notice
-    //  * @param assetId id of the asset
-    //  * @param terms asset specific terms (CEGTerms)
-    //  * @param state initial state of the asset
-    //  * @param schedule schedule of the asset
-    //  * @param ownership ownership of the asset
-    //  * @param engine ACTUS Engine of the asset
-    //  * @param actor account which is allowed to update the asset state
-    //  * @param admin account which as admin rights (optional)
-    //  */
-    // function registerAsset(
-    //     bytes32 assetId,
-    //     CEGTerms calldata terms,
-    //     State calldata state,
-    //     bytes32[] calldata schedule,
-    //     AssetOwnership calldata ownership,
-    //     address engine,
-    //     address actor,
-    //     address admin
-    // )
-    //     external
-    //     override
-    // {
-    //     setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-    //     assets[assetId].encodeAndSetCEGTerms(terms);
-    // }
-
-    /**
-     * @notice
-     * @param assetId id of the asset
-     * @param terms asset specific terms (PAMTerms)
-     * @param state initial state of the asset
-     * @param schedule schedule of the asset
-     * @param ownership ownership of the asset
-     * @param engine ACTUS Engine of the asset
-     * @param actor account which is allowed to update the asset state
-     * @param admin account which as admin rights (optional)
-     */
-    function registerAsset(
-        bytes32 assetId,
-        PAMTerms calldata terms,
-        State calldata state,
-        bytes32[] calldata schedule,
-        AssetOwnership calldata ownership,
-        address engine,
-        address actor,
-        address admin
-    )
-        external
-        override
-    {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-        assets[assetId].encodeAndSetPAMTerms(terms);
     }
 
     /**
@@ -189,7 +76,7 @@ contract AssetRegistry is
         // revert if an asset with the specified assetId already exists
         require(
             asset.isSet == false,
-            "AssetRegistry.setAsset: ASSET_ALREADY_EXISTS"
+            "BaseRegistry.setAsset: ASSET_ALREADY_EXISTS"
         );
 
         asset.isSet = true;

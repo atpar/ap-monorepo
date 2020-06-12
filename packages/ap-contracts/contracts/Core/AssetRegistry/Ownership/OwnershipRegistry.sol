@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../AssetRegistryStorage.sol";
+import "../BaseRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
 import "./IOwnershipRegistry.sol";
 
@@ -9,7 +9,7 @@ import "./IOwnershipRegistry.sol";
 /**
  * @title OwnershipRegistry
  */
-contract OwnershipRegistry is AssetRegistryStorage, AccessControl, IOwnershipRegistry {
+contract OwnershipRegistry is BaseRegistryStorage, AccessControl, IOwnershipRegistry {
 
     event UpdatedObligor (bytes32 assetId, address prevObligor, address newObligor);
     event UpdatedBeneficiary(bytes32 assetId, address prevBeneficiary, address newBeneficiary);
