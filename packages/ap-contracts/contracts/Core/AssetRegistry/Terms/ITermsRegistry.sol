@@ -6,10 +6,10 @@ import "../../SharedTypes.sol";
 
 interface ITermsRegistry {
 
-    // function getANNTerms(bytes32 assetId)
-    //     external;
-    //     view
-    //     returns (ANNTerms memory);
+    function getANNTerms(bytes32 assetId)
+        external
+        view
+        returns (ANNTerms memory);
 
     // function getCECTerms(bytes32 assetId)
     //     external;
@@ -66,8 +66,8 @@ interface ITermsRegistry {
         view
         returns (ContractReference memory);
 
-    // function setANNTerms(bytes32 assetId, ANNTerms calldata terms)
-    //     external;
+    function setANNTerms(bytes32 assetId, ANNTerms calldata terms)
+        external;
 
     // function setCECTerms(bytes32 assetId, CECTerms calldata terms)
     //     external;

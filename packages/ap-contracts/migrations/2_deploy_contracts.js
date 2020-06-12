@@ -7,15 +7,15 @@ const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
 const SignedMath = artifacts.require('SignedMath');
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const PAMEncoder = artifacts.require('PAMEncoder');
+const StateEncoder = artifacts.require('StateEncoder');
+const ScheduleEncoder = artifacts.require('ScheduleEncoder');
 const AssetRegistry = artifacts.require('AssetRegistry');
-const TemplateRegistry = artifacts.require('TemplateRegistry');
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
 const TokenizationFactory = artifacts.require('TokenizationFactory');
 const SettlementToken = artifacts.require('SettlementToken');
-
-const { registerTemplate } = require('../test/helper/utils');
 
 
 module.exports = async (deployer, network) => {
@@ -33,16 +33,18 @@ module.exports = async (deployer, network) => {
   instances.CECEngineInstance = await deployer.deploy(CECEngine);
 
   // Core
+  instances.PAMEncoderInstance = await deployer.deploy(PAMEncoder);
+  await deployer.link(PAMEncoder, AssetRegistry);
+  instances.StateEncoderInstance = await deployer.deploy(StateEncoder);
+  await deployer.link(StateEncoder, AssetRegistry);
+  instances.ScheduleEncoderInstance = await deployer.deploy(ScheduleEncoder);
+  await deployer.link(ScheduleEncoder, AssetRegistry);
+  instances.AssetRegistryInstance = await deployer.deploy(AssetRegistry);
+  
   instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
-  instances.TemplateRegistryInstance = await deployer.deploy(TemplateRegistry);
-  instances.AssetRegistryInstance = await deployer.deploy(
-    AssetRegistry,
-    TemplateRegistry.address
-  );
   instances.AssetActorInstance = await deployer.deploy(
     AssetActor,
     AssetRegistry.address,
-    TemplateRegistry.address,
     MarketObjectRegistry.address
   );
   instances.CustodianInstance = await deployer.deploy(
@@ -55,7 +57,6 @@ module.exports = async (deployer, network) => {
   instances.AssetIssuerInstance = await deployer.deploy(
     AssetIssuer,
     Custodian.address,
-    TemplateRegistry.address,
     AssetRegistry.address,
     AssetActor.address
   );
@@ -79,9 +80,11 @@ module.exports = async (deployer, network) => {
       CEGEngine: ${CEGEngine.address}
       Custodian: ${Custodian.address}
       MarketObjectRegistry: ${MarketObjectRegistry.address}
+      PAMEncoder: ${PAMEncoder.address}
       PAMEngine: ${PAMEngine.address}
-      TemplateRegistry: ${TemplateRegistry.address}
+      ScheduleEncoder: ${ScheduleEncoder.address}
       SignedMath: ${SignedMath.address}
+      StateEncoder: ${StateEncoder.address}
       TokenizationFactory: ${TokenizationFactory.address}
   `);
 
@@ -89,29 +92,6 @@ module.exports = async (deployer, network) => {
   await deployer.deploy(SettlementToken);
   console.log('    Deployed Settlement Token: ' + SettlementToken.address);
   console.log('');
-
-  // registering standard templates (skip for local)
-  const pathToTemplates = (network === 'ap-chain')
-    ? '../templates/ap-chain/'
-    : (network === 'goerli')
-      ? '../templates/goerli/'
-      : (network === 'ropsten')
-        ? '../templates/ropsten/'
-        : null;
-
-  if (!pathToTemplates) { return; } 
-
-  console.log('    Registering standard templates on network \'' + network + '\':');
-  console.log('');
-
-  for (const templateFileName of fs.readdirSync(path.resolve(__dirname, pathToTemplates))) {
-    if (!templateFileName.includes('.json')) { continue; }
-    const template = JSON.parse(fs.readFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), 'utf8'));
-    template.extendedTemplateTerms.currency = SettlementToken.address;
-    template.templateId = await registerTemplate(instances, template);
-    console.log('      ' + template.name + ': ' + template.templateId);
-    fs.writeFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), JSON.stringify(template, null, 4), 'utf8');
-  }
 
   // update address for ap-chain or goerli deployment
   const deployments = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../', 'deployments.json'), 'utf8'));
@@ -124,9 +104,11 @@ module.exports = async (deployer, network) => {
     "CEGEngine": CEGEngine.address,
     "Custodian": Custodian.address,
     "MarketObjectRegistry": MarketObjectRegistry.address,
+    "PAMEncoder": PAMEncoder.address,
     "PAMEngine": PAMEngine.address,
-    "TemplateRegistry": TemplateRegistry.address,
+    "ScheduleEncoder": ScheduleEncoder.address,
     "SignedMath": SignedMath.address,
+    "StateEncoder": StateEncoder.address,
     "TokenizationFactory": TokenizationFactory.address
   }
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');

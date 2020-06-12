@@ -8,7 +8,6 @@ const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
-const TemplateRegistry = artifacts.require('TemplateRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
 const SettlementToken = artifacts.require('SettlementToken');
@@ -27,12 +26,10 @@ async function setupTestEnvironment (accounts) {
   instances.CECEngineInstance = await CECEngine.new();
 
   // deploy Core
+  instances.AssetRegistryInstance = await AssetRegistry.new()
   instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
-  instances.TemplateRegistryInstance = await TemplateRegistry.new();
-  instances.AssetRegistryInstance = await AssetRegistry.new(instances.TemplateRegistryInstance.address)
   instances.AssetActorInstance = await AssetActor.new(
     instances.AssetRegistryInstance.address,
-    instances.TemplateRegistryInstance.address,
     instances.MarketObjectRegistryInstance.address
   );
   instances.CustodianInstance = await Custodian.new(
@@ -43,7 +40,6 @@ async function setupTestEnvironment (accounts) {
   // deploy Issuance
   instances.AssetIssuerInstance = await AssetIssuer.new(
     instances.CustodianInstance.address,
-    instances.TemplateRegistryInstance.address,
     instances.AssetRegistryInstance.address,
     instances.AssetActorInstance.address
   );
@@ -57,8 +53,16 @@ async function setupTestEnvironment (accounts) {
   return instances;
 }
 
+function parseToContractTerms(contract, terms) {
+  return require('@atpar/actus-solidity/test/helper/parser').parseTermsFromObject(contract, terms);
+}
+
 async function getDefaultTerms () {
   return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms('PAM');
+}
+
+function getZeroTerms () {
+  return require('./terms/zero-terms.json');
 }
 
 function getComplexTerms () {
@@ -77,7 +81,9 @@ async function deployPaymentToken(owner, holders) {
 
 module.exports = {
   setupTestEnvironment,
+  parseToContractTerms,
   getDefaultTerms,
+  getZeroTerms,
   getComplexTerms,
   deployPaymentToken
 };

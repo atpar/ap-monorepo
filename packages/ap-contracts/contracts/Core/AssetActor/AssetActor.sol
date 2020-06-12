@@ -142,6 +142,55 @@ contract AssetActor is
         processEvent(assetId, _event);
     }
 
+        /**
+     * @notice Derives the initial state of the asset from the provided custom terms and
+     * stores the initial state, the custom terms together with the ownership of the asset
+     * in the AssetRegistry.
+     * @dev Can only be called by a whitelisted issuer.
+     * (has to be public otherwise compilation error.)
+     * @param assetId id of the asset
+     * @param ownership ownership of the asset
+     * @param terms asset specific terms
+     * @param engine address of the ACTUS engine used for the spec. ContractType
+     * @param admin address of the admin of the asset (optional)
+     * @return true on success
+     */
+    function initialize(
+        bytes32 assetId,
+        ANNTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
+        address engine,
+        address admin
+    )
+        external
+        onlyRegisteredIssuer
+        override
+        returns (bool)
+    {
+        require(
+            assetId != bytes32(0) && engine != address(0),
+            "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
+        );
+
+        // compute the initial state of the asset using PAMTerms
+        State memory initialState = IANNEngine(engine).computeInitialState(terms);
+
+        // register the asset in the AssetRegistry
+        assetRegistry.registerAsset(
+            assetId,
+            terms,
+            initialState,
+            schedule,
+            ownership,
+            engine,
+            address(this),
+            admin
+        );
+
+        return true;
+    }
+
     /**
      * @notice Derives the initial state of the asset from the provided custom terms and
      * stores the initial state, the custom terms together with the ownership of the asset

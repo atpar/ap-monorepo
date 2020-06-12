@@ -53,6 +53,7 @@ export class IAssetActor extends Contract {
         cycleAnchorDateOfRateReset: number | string;
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
+        cycleAnchorDateOfPrincipalRedemption: number | string;
         notionalPrincipal: number | string;
         nominalInterestRate: number | string;
         accruedInterest: number | string;
@@ -65,6 +66,7 @@ export class IAssetActor extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -94,6 +96,12 @@ export class IAssetActor extends Contract {
           isSet: boolean;
         };
         cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfPrincipalRedemption: {
           i: number | string;
           p: number | string;
           s: number | string;

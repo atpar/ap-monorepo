@@ -339,11 +339,11 @@ function sign(typedData, account) {
   });
 };
 
-function getDefaultDraftData(terms, templateId, customTerms, ownership, engine, admin) {
+function getDefaultDraftData(terms, schedule, ownership, engine, admin) {
   return {
-    termsHash: getTermsHash(terms),
-    templateId: Web3Utils.toHex(templateId),
-    customTerms: customTerms,
+    termsHash: ZERO_BYTES32, // getTermsHash(terms),
+    terms: terms,
+    schedule: schedule,
     ownership: ownership,
     engine: engine,
     admin: admin

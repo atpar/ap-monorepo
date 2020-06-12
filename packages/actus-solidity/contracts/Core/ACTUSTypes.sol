@@ -130,7 +130,7 @@ struct ANNTerms {
     // int256 scalingIndexAtStatusDate; // not implemented
     // int256 marketValueObserved; // not implemented
     int256 nextPrincipalRedemptionPayment;
-    int256 coverageOfCreditEnhancement;
+    // int256 coverageOfCreditEnhancement;
     // int256 interestCalculationBaseAmount; // not implemented
     int256 lifeCap;
     int256 lifeFloor;

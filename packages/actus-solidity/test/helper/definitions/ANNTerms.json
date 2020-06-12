@@ -35,7 +35,6 @@
   "premiumDiscountAtIED",
   "priceAtPurchaseDate",
   "nextPrincipalRedemptionPayment",
-  "coverageOfCreditEnhancement",
   "lifeCap",
   "lifeFloor",
   "periodCap",
@@ -46,7 +45,5 @@
   "cycleOfRateReset",
   "cycleOfScalingIndex",
   "cycleOfFee",
-  "cycleOfPrincipalRedemption",
-  "contractReference_1",
-  "contractReference_2"
+  "cycleOfPrincipalRedemption"
 ]

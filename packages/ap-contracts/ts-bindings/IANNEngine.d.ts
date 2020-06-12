@@ -60,7 +60,6 @@ export class IANNEngine extends Contract {
       premiumDiscountAtIED: number | string;
       priceAtPurchaseDate: number | string;
       nextPrincipalRedemptionPayment: number | string;
-      coverageOfCreditEnhancement: number | string;
       lifeCap: number | string;
       lifeFloor: number | string;
       periodCap: number | string;
@@ -156,7 +155,6 @@ export class IANNEngine extends Contract {
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -271,7 +269,6 @@ export class IANNEngine extends Contract {
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -371,7 +368,6 @@ export class IANNEngine extends Contract {
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -455,7 +451,6 @@ export class IANNEngine extends Contract {
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -541,7 +536,6 @@ export class IANNEngine extends Contract {
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;

@@ -22,7 +22,7 @@ module.exports = {
       url: 'http://127.0.0.1:8545'
     },
     buidlerevm: {
-      allowUnlimitedContractSize: false,
+      allowUnlimitedContractSize: true, // false
       initialDate: '2009-01-03T18:15:05' // for ACTUS test cases
     }
   },

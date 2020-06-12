@@ -38,35 +38,35 @@ contract AssetIssuer is
         assetActor = _assetActor;
     }
 
-    // function issueAsset(
-    //     bytes32 termsHash,
-    //     ANNTerms calldata terms,
-    //     bytes32[] calldata schedule,
-    //     AssetOwnership calldata ownership,
-    //     address engine,
-    //     address admin
-    // )
-    //     external
-    //     override
-    // {
-    //     // solium-disable-next-line
-    //     bytes32 assetId = keccak256(abi.encode(termsHash, block.timestamp));
+    function issueAsset(
+        bytes32 termsHash,
+        ANNTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
+        address engine,
+        address admin
+    )
+        external
+        override
+    {
+        // solium-disable-next-line
+        bytes32 assetId = keccak256(abi.encode(termsHash, block.timestamp));
 
-    //     // initialize the asset by calling the asset actor
-    //     require(
-    //         assetActor.initialize(
-    //             assetId,
-    //             terms,
-    //             schedule,
-    //             ownership,
-    //             engine,
-    //             admin
-    //         ),
-    //         "AssetIssuer.issuePAM: INITIALIZATION_ERROR"
-    //     );
+        // initialize the asset by calling the asset actor
+        require(
+            assetActor.initialize(
+                assetId,
+                terms,
+                schedule,
+                ownership,
+                engine,
+                admin
+            ),
+            "AssetIssuer.issueAsset: INITIALIZATION_ERROR"
+        );
 
-    //     emit IssuedAsset(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
-    // }
+        emit IssuedAsset(assetId, ownership.creatorObligor, ownership.counterpartyObligor);
+    }
 
     // function issueAsset(
     //     bytes32 termsHash,

@@ -12,16 +12,16 @@ interface IAssetActor {
     function progressWith(bytes32 assetId, bytes32 _event)
         external;
 
-    // function initialize(
-    //     bytes32 assetId,
-    //     ANNTerms memory terms,
-    //     bytes32[] calldata schedule,
-    //     AssetOwnership memory ownership,
-    //     address engine,
-    //     address root
-    // )
-    //     public
-    //     returns (bool);
+    function initialize(
+        bytes32 assetId,
+        ANNTerms calldata terms,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
+        address engine,
+        address root
+    )
+        external
+        returns (bool);
 
     // function initialize(
     //     bytes32 assetId,

@@ -23,6 +23,42 @@ interface IAssetRegistry is
 
     function registerAsset(
         bytes32 assetId,
+        ANNTerms calldata terms,
+        State calldata state,
+        bytes32[] calldata schedule,
+        AssetOwnership calldata ownership,
+        address engine,
+        address actor,
+        address root
+    )
+        external;
+
+    // function registerAsset(
+    //     bytes32 assetId,
+    //     CECTerms calldata terms,
+    //     State calldata state,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership calldata ownership,
+    //     address engine,
+    //     address actor,
+    //     address root
+    // )
+    //     external;
+
+    // function registerAsset(
+    //     bytes32 assetId,
+    //     CEGTerms calldata terms,
+    //     State calldata state,
+    //     bytes32[] calldata schedule,
+    //     AssetOwnership calldata ownership,
+    //     address engine,
+    //     address actor,
+    //     address root
+    // )
+    //     external;
+
+    function registerAsset(
+        bytes32 assetId,
         PAMTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,

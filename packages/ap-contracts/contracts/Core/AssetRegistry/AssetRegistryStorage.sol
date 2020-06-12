@@ -8,6 +8,7 @@ import "../SharedTypes.sol";
 
 import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleEncoder.sol";
+import "./Terms/ANNEncoder.sol";
 import "./Terms/PAMEncoder.sol";
 
 
@@ -54,6 +55,7 @@ struct Asset {
  */
 contract AssetRegistryStorage is Utils, Conversions {
 
+    using ANNEncoder for Asset;
     using PAMEncoder for Asset;
     using StateEncoder for Asset;
     using ScheduleEncoder for Asset;

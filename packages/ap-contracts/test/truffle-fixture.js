@@ -8,7 +8,6 @@ const AssetRegistry = artifacts.require('AssetRegistry')
 const AssetActor = artifacts.require('AssetActor');
 const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
-const TemplateRegistry = artifacts.require('TemplateRegistry');
 const TokenizationFactory = artifacts.require('TokenizationFactory')
 
 
@@ -26,15 +25,12 @@ module.exports = async (accounts) => {
   CECEngine.setAsDeployed(CECEngineInstance);
 
   // deploy Core
+  const AssetRegistryInstance = await AssetRegistry.new()
+  AssetRegistry.setAsDeployed(AssetRegistryInstance);
   const MarketObjectRegistryInstance = await MarketObjectRegistry.new();
   MarketObjectRegistry.setAsDeployed(MarketObjectRegistryInstance);
-  const TemplateRegistryInstance = await TemplateRegistry.new();
-  TemplateRegistry.setAsDeployed(TemplateRegistryInstance);
-  const AssetRegistryInstance = await AssetRegistry.new(TemplateRegistryInstance.address)
-  AssetRegistry.setAsDeployed(AssetRegistryInstance);
   const AssetActorInstance = await AssetActor.new(
     AssetRegistryInstance.address,
-    TemplateRegistryInstance.address,
     MarketObjectRegistryInstance.address
   );
   AssetActor.setAsDeployed(AssetActorInstance);
@@ -47,7 +43,6 @@ module.exports = async (accounts) => {
   // deploy Issuance
   const AssetIssuerInstance = await AssetIssuer.new(
     CustodianInstance.address,
-    TemplateRegistryInstance.address,
     AssetRegistryInstance.address,
     AssetActorInstance.address
   );

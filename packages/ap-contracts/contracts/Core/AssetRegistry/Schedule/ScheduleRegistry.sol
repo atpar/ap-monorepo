@@ -3,13 +3,21 @@ pragma experimental ABIEncoderV2;
 
 import "../AssetRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
+import "../Terms/TermsRegistry.sol";
+import "../State/StateRegistry.sol";
 import "./IScheduleRegistry.sol";
 
 
 /**
  * @title ScheduleRegistry
  */
-abstract contract ScheduleRegistry is AssetRegistryStorage, AccessControl, IScheduleRegistry {
+contract ScheduleRegistry is
+    AssetRegistryStorage,
+    AccessControl,
+    TermsRegistry,
+    StateRegistry,
+    IScheduleRegistry
+{
 
     event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 nextScheduleIndex);
 
@@ -96,9 +104,6 @@ abstract contract ScheduleRegistry is AssetRegistryStorage, AccessControl, ISche
         return pendingEvent;
     }
 
-    
-
-
     /**
      * @notice Returns the index of the next event to be processed for a schedule of an asset.
      * @param assetId id of the asset
@@ -111,6 +116,71 @@ abstract contract ScheduleRegistry is AssetRegistryStorage, AccessControl, ISche
         returns (uint256)
     {
         return assets[assetId].schedule.nextScheduleIndex;
+    }
+
+    /**
+     * @notice If the underlying of the asset changes in performance to a covered performance,
+     * it returns the exerciseDate event.
+     */
+    function getNextUnderlyingEvent(bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes32)
+    {
+        ContractReference memory contractReference_1 = getContractReferenceValueForTermsAttribute(assetId, "contractReference_1");
+        State memory state = assets[assetId].decodeAndGetState();
+
+        // check for COVE
+        if (contractReference_1.object != bytes32(0) && contractReference_1.role == ContractReferenceRole.COVE) {
+            bytes32 underlyingAssetId = contractReference_1.object;
+            Asset storage underlyingAsset = assets[underlyingAssetId];
+
+            require(
+                underlyingAsset.isSet == true,
+                "AssetActor.getNextObservedEvent: ENTRY_DOES_NOT_EXIST"
+            );
+
+            State memory underlyingState = underlyingAsset.decodeAndGetState();
+            ContractPerformance creditEventTypeCovered = ContractPerformance(getEnumValueForTermsAttribute(assetId, "creditEventTypeCovered"));
+
+            // check if exerciseDate has been triggered
+            if (state.exerciseDate > 0) {
+                // insert SettlementDate event
+                return encodeEvent(
+                    EventType.STD,
+                    // solium-disable-next-line
+                    block.timestamp
+                );
+            // if not check if performance of underlying asset is covered by this asset (PF excluded)
+            } else if (
+                creditEventTypeCovered != ContractPerformance.PF
+                && underlyingState.contractPerformance == creditEventTypeCovered
+            ) {
+                // insert exerciseDate event
+                // derive scheduleTimeOffset from performance
+                if (underlyingState.contractPerformance == ContractPerformance.DL) {
+                    return encodeEvent(
+                        EventType.XD,
+                        underlyingState.nonPerformingDate
+                    );
+                } else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
+                    IP memory underlyingGracePeriod = getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
+                    return encodeEvent(
+                        EventType.XD,
+                        getTimestampPlusPeriod(underlyingGracePeriod, underlyingState.nonPerformingDate)
+                    );
+                } else if (underlyingState.contractPerformance == ContractPerformance.DF) {
+                    IP memory underlyingDelinquencyPeriod = getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
+                    return encodeEvent(
+                        EventType.XD,
+                        getTimestampPlusPeriod(underlyingDelinquencyPeriod, underlyingState.nonPerformingDate)
+                    );
+                }
+            }
+        }
+
+        return encodeEvent(EventType(0), 0);
     }
 
     /**

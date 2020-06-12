@@ -42,7 +42,5 @@
   "cycleOfInterestPayment",
   "cycleOfRateReset",
   "cycleOfScalingIndex",
-  "cycleOfFee",
-  "contractReference_1",
-  "contractReference_2"
+  "cycleOfFee"
 ]
