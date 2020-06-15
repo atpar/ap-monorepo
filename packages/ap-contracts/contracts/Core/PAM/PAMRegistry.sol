@@ -1,19 +1,18 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../SharedTypes.sol";
-
-import "./BaseRegistry.sol";
-import "./Terms/ANN/ANNTermsRegistry.sol";
-import "./IANNRegistry.sol";
+import "../Base/SharedTypes.sol";
+import "../Base/AssetRegistry/BaseRegistry.sol";
+import "./PAMTermsRegistry.sol";
+import "./IPAMRegistry.sol";
 
 
 /**
- * @title ANNRegistry
+ * @title PAMRegistry
  * @notice Registry for ACTUS Protocol assets
  */
-contract ANNRegistry is BaseRegistry, ANNTermsRegistry, IANNRegistry {
-
+contract PAMRegistry is BaseRegistry, PAMTermsRegistry, IPAMRegistry {
+    
     constructor()
         public
         BaseRegistry()
@@ -22,7 +21,7 @@ contract ANNRegistry is BaseRegistry, ANNTermsRegistry, IANNRegistry {
     /**
      * @notice
      * @param assetId id of the asset
-     * @param terms asset specific terms (ANNTerms)
+     * @param terms asset specific terms (PAMTerms)
      * @param state initial state of the asset
      * @param schedule schedule of the asset
      * @param ownership ownership of the asset
@@ -32,7 +31,7 @@ contract ANNRegistry is BaseRegistry, ANNTermsRegistry, IANNRegistry {
      */
     function registerAsset(
         bytes32 assetId,
-        ANNTerms calldata terms,
+        PAMTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
@@ -44,6 +43,6 @@ contract ANNRegistry is BaseRegistry, ANNTermsRegistry, IANNRegistry {
         override
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-        assets[assetId].encodeAndSetANNTerms(terms);
+        assets[assetId].encodeAndSetPAMTerms(terms);
     }
 }

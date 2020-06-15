@@ -5,17 +5,17 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
-import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
 
-import "./BaseActor.sol";
-import "../AssetRegistry/IANNRegistry.sol";
+import "../Base/AssetActor/BaseActor.sol";
+import "./ICEGRegistry.sol";
 
 
 /**
- * @title ANNActor
+ * @title CEGActor
  * @notice TODO
  */
-contract ANNActor is BaseActor {
+contract CEGActor is BaseActor {
 
     constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
         public
@@ -33,7 +33,7 @@ contract ANNActor is BaseActor {
      * @param admin address of the admin of the asset (optional)
      */
     function initialize(
-        ANNTerms calldata terms,
+        CEGTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -43,18 +43,28 @@ contract ANNActor is BaseActor {
         onlyRegisteredIssuer
     {
         require(
-            engine != address(0) && IEngine(engine).contractType() == ContractType.ANN,
+            engine != address(0) && IEngine(engine).contractType() == ContractType.CEG,
             "ANNActor.initialize: CONTRACT_TYPE_OF_ENGINE_UNSUPPORTED"
         );
 
         // solium-disable-next-line
         bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
 
+        // check if first contract reference in terms references an underlying asset
+        if (terms.contractReference_1.role == ContractReferenceRole.COVE) {
+            require(
+                terms.contractReference_1.object != bytes32(0),
+                "CEGACtor.initialize: INVALID_CONTRACT_REFERENCE_1_OBJECT"
+            );
+        }
+
+        // todo add guarantee validation logic for contract reference 2
+
         // compute the initial state of the asset
-        State memory initialState = IANNEngine(engine).computeInitialState(terms);
+        State memory initialState = ICEGEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
-        IANNRegistry(address(assetRegistry)).registerAsset(
+        ICEGRegistry(address(assetRegistry)).registerAsset(
             assetId,
             terms,
             initialState,
@@ -65,7 +75,7 @@ contract ANNActor is BaseActor {
             admin
         );
 
-        emit InitializedAsset(assetId, ContractType.ANN, ownership.creatorObligor, ownership.counterpartyObligor);
+        emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
@@ -74,19 +84,16 @@ contract ANNActor is BaseActor {
         override
         returns (State memory, int256)
     {
-        // ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));        
-        // revert("ANNActor.computePayoffAndStateForEvent: UNSUPPORTED_CONTRACT_TYPE");
-
         address engine = assetRegistry.getEngine(assetId);
-        ANNTerms memory terms = IANNRegistry(address(assetRegistry)).getTerms(assetId);
+        CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
 
-        int256 payoff = IANNEngine(engine).computePayoffForEvent(
+        int256 payoff = ICEGEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
             getExternalDataForPOF(assetId, _event)
         );
-        state = IANNEngine(engine).computeStateForEvent(
+        state = ICEGEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,

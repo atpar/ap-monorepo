@@ -6,19 +6,16 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 
-import "./BaseActor.sol";
-import "../AssetRegistry/IPAMRegistry.sol";
+import "../Base/AssetActor/BaseActor.sol";
+import "./IANNRegistry.sol";
 
 
 /**
- * @title PAMActor
+ * @title ANNActor
  * @notice TODO
  */
-contract PAMActor is BaseActor {
+contract ANNActor is BaseActor {
 
     constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
         public
@@ -36,7 +33,7 @@ contract PAMActor is BaseActor {
      * @param admin address of the admin of the asset (optional)
      */
     function initialize(
-        PAMTerms calldata terms,
+        ANNTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -46,7 +43,7 @@ contract PAMActor is BaseActor {
         onlyRegisteredIssuer
     {
         require(
-            engine != address(0) && IEngine(engine).contractType() == ContractType.PAM,
+            engine != address(0) && IEngine(engine).contractType() == ContractType.ANN,
             "ANNActor.initialize: CONTRACT_TYPE_OF_ENGINE_UNSUPPORTED"
         );
 
@@ -54,10 +51,10 @@ contract PAMActor is BaseActor {
         bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
 
         // compute the initial state of the asset
-        State memory initialState = IPAMEngine(engine).computeInitialState(terms);
+        State memory initialState = IANNEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
-        IPAMRegistry(address(assetRegistry)).registerAsset(
+        IANNRegistry(address(assetRegistry)).registerAsset(
             assetId,
             terms,
             initialState,
@@ -68,7 +65,7 @@ contract PAMActor is BaseActor {
             admin
         );
 
-        emit InitializedAsset(assetId, ContractType.PAM, ownership.creatorObligor, ownership.counterpartyObligor);
+        emit InitializedAsset(assetId, ContractType.ANN, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
@@ -77,16 +74,19 @@ contract PAMActor is BaseActor {
         override
         returns (State memory, int256)
     {
-        address engine = assetRegistry.getEngine(assetId);
-        PAMTerms memory terms = IPAMRegistry(address(assetRegistry)).getTerms(assetId);
+        // ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));        
+        // revert("ANNActor.computePayoffAndStateForEvent: UNSUPPORTED_CONTRACT_TYPE");
 
-        int256 payoff = IPAMEngine(engine).computePayoffForEvent(
+        address engine = assetRegistry.getEngine(assetId);
+        ANNTerms memory terms = IANNRegistry(address(assetRegistry)).getTerms(assetId);
+
+        int256 payoff = IANNEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
             getExternalDataForPOF(assetId, _event)
         );
-        state = IPAMEngine(engine).computeStateForEvent(
+        state = IANNEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,

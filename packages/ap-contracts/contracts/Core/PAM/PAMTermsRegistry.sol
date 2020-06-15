@@ -3,9 +3,9 @@ pragma experimental ABIEncoderV2;
 
 import "@atpar/actus-solidity/contracts/Engines/IEngine.sol";
 
-import "../../BaseRegistryStorage.sol";
-import "../../AccessControl/AccessControl.sol";
-import "../TermsRegistry.sol";
+import "../Base/AssetRegistry/BaseRegistryStorage.sol";
+import "../Base/AssetRegistry/AccessControl/AccessControl.sol";
+import "../Base/AssetRegistry/Terms/TermsRegistry.sol";
 import "./PAMEncoder.sol";
 import "./IPAMTermsRegistry.sol";
 

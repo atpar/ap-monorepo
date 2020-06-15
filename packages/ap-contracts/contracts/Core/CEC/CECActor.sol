@@ -7,9 +7,9 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 import "@atpar/actus-solidity/contracts/Engines/CEC/ICECEngine.sol";
 
-import "./BaseActor.sol";
-import "../AssetRegistry/ICECRegistry.sol";
-import "../ICustodian.sol";
+import "../Base/AssetActor/BaseActor.sol";
+import "../Base/Custodian/ICustodian.sol";
+import "./ICECRegistry.sol";
 
 
 /**

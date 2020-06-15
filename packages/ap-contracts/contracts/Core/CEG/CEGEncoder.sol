@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 
-import "../../../SharedTypes.sol";
-import "../../BaseRegistryStorage.sol";
+import "../Base/SharedTypes.sol";
+import "../Base/AssetRegistry/BaseRegistryStorage.sol";
 
 
 library CEGEncoder {

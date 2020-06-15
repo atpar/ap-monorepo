@@ -1,16 +1,16 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../SharedTypes.sol";
-import "./Terms/CEC/ICECTermsRegistry.sol";
+import "../Base/SharedTypes.sol";
+import "./IANNTermsRegistry.sol";
 // import "./IAssetRegistry.sol";
 
 
-interface ICECRegistry is ICECTermsRegistry {
+interface IANNRegistry is IANNTermsRegistry {
 
     function registerAsset(
         bytes32 assetId,
-        CECTerms calldata terms,
+        ANNTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,

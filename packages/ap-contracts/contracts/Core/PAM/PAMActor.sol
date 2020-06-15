@@ -5,17 +5,20 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
+import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 
-import "./BaseActor.sol";
-import "../AssetRegistry/ICEGRegistry.sol";
+import "../Base/AssetActor/BaseActor.sol";
+import "./IPAMRegistry.sol";
 
 
 /**
- * @title CEGActor
+ * @title PAMActor
  * @notice TODO
  */
-contract CEGActor is BaseActor {
+contract PAMActor is BaseActor {
 
     constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
         public
@@ -33,7 +36,7 @@ contract CEGActor is BaseActor {
      * @param admin address of the admin of the asset (optional)
      */
     function initialize(
-        CEGTerms calldata terms,
+        PAMTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -43,28 +46,18 @@ contract CEGActor is BaseActor {
         onlyRegisteredIssuer
     {
         require(
-            engine != address(0) && IEngine(engine).contractType() == ContractType.CEG,
+            engine != address(0) && IEngine(engine).contractType() == ContractType.PAM,
             "ANNActor.initialize: CONTRACT_TYPE_OF_ENGINE_UNSUPPORTED"
         );
 
         // solium-disable-next-line
         bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
 
-        // check if first contract reference in terms references an underlying asset
-        if (terms.contractReference_1.role == ContractReferenceRole.COVE) {
-            require(
-                terms.contractReference_1.object != bytes32(0),
-                "CEGACtor.initialize: INVALID_CONTRACT_REFERENCE_1_OBJECT"
-            );
-        }
-
-        // todo add guarantee validation logic for contract reference 2
-
         // compute the initial state of the asset
-        State memory initialState = ICEGEngine(engine).computeInitialState(terms);
+        State memory initialState = IPAMEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
-        ICEGRegistry(address(assetRegistry)).registerAsset(
+        IPAMRegistry(address(assetRegistry)).registerAsset(
             assetId,
             terms,
             initialState,
@@ -75,7 +68,7 @@ contract CEGActor is BaseActor {
             admin
         );
 
-        emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
+        emit InitializedAsset(assetId, ContractType.PAM, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
@@ -85,15 +78,15 @@ contract CEGActor is BaseActor {
         returns (State memory, int256)
     {
         address engine = assetRegistry.getEngine(assetId);
-        CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
+        PAMTerms memory terms = IPAMRegistry(address(assetRegistry)).getTerms(assetId);
 
-        int256 payoff = ICEGEngine(engine).computePayoffForEvent(
+        int256 payoff = IPAMEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
             getExternalDataForPOF(assetId, _event)
         );
-        state = ICEGEngine(engine).computeStateForEvent(
+        state = IPAMEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,

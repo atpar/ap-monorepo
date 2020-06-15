@@ -1,7 +1,7 @@
 pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
-import "../../../SharedTypes.sol";
+import "../Base/SharedTypes.sol";
 
 
 interface ICEGTermsRegistry {
