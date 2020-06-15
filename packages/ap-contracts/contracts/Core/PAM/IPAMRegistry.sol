@@ -2,11 +2,10 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
-import "./IPAMTermsRegistry.sol";
-// import "./IAssetRegistry.sol";
+import "../Base/AssetRegistry/IAssetRegistry.sol";
 
 
-interface IPAMRegistry is IPAMTermsRegistry {
+interface IPAMRegistry is IAssetRegistry {
 
     function registerAsset(
         bytes32 assetId,
@@ -18,5 +17,13 @@ interface IPAMRegistry is IPAMTermsRegistry {
         address actor,
         address admin
     )
+        external;
+    
+    function getTerms(bytes32 assetId)
+        external
+        view
+        returns (PAMTerms memory);
+
+    function setTerms(bytes32 assetId, PAMTerms calldata terms)
         external;
 }

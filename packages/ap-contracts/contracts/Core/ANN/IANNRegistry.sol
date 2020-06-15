@@ -2,11 +2,10 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
-import "./IANNTermsRegistry.sol";
-// import "./IAssetRegistry.sol";
+import "../Base/AssetRegistry/IAssetRegistry.sol";
 
 
-interface IANNRegistry is IANNTermsRegistry {
+interface IANNRegistry is IAssetRegistry {
 
     function registerAsset(
         bytes32 assetId,
@@ -18,5 +17,13 @@ interface IANNRegistry is IANNTermsRegistry {
         address actor,
         address admin
     )
+        external;
+
+    function getTerms(bytes32 assetId)
+        external
+        view
+        returns (ANNTerms memory);
+
+    function setTerms(bytes32 assetId, ANNTerms calldata terms)
         external;
 }
