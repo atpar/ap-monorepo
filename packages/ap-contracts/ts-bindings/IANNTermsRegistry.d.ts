@@ -13,27 +13,18 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class TemplateRegistry extends Contract {
+export class IANNTermsRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): TemplateRegistry;
+  clone(): IANNTermsRegistry;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
-    isRegistered(templateId: string | number[]): TransactionObject<boolean>;
-
-    getTemplateTerms(
-      templateId: string | number[]
+    getTerms(
+      assetId: string | number[]
     ): TransactionObject<{
+      contractType: string;
       calendar: string;
       contractRole: string;
       dayCountConvention: string;
@@ -42,44 +33,60 @@ export class TemplateRegistry extends Contract {
       scalingEffect: string;
       penaltyType: string;
       feeBasis: string;
-      creditEventTypeCovered: string;
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string;
-      statusDateOffset: string;
-      maturityDateOffset: string;
+      contractDealDate: string;
+      statusDate: string;
+      initialExchangeDate: string;
+      maturityDate: string;
+      purchaseDate: string;
+      capitalizationEndDate: string;
+      cycleAnchorDateOfInterestPayment: string;
+      cycleAnchorDateOfRateReset: string;
+      cycleAnchorDateOfScalingIndex: string;
+      cycleAnchorDateOfFee: string;
+      cycleAnchorDateOfPrincipalRedemption: string;
       notionalPrincipal: string;
       nominalInterestRate: string;
-      feeAccrued: string;
       accruedInterest: string;
       rateMultiplier: string;
       rateSpread: string;
-      feeRate: string;
       nextResetRate: string;
+      feeRate: string;
+      feeAccrued: string;
       penaltyRate: string;
+      delinquencyRate: string;
       premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
       nextPrincipalRedemptionPayment: string;
-      coverageOfCreditEnhancement: string;
       lifeCap: string;
       lifeFloor: string;
       periodCap: string;
       periodFloor: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      cycleOfInterestPayment: {
+        i: string;
+        p: string;
+        s: string;
+        isSet: boolean;
+      };
+      cycleOfRateReset: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfScalingIndex: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfPrincipalRedemption: {
+        i: string;
+        p: string;
+        s: string;
+        isSet: boolean;
+      };
     }>;
 
-    getEventAtIndex(
-      templateId: string | number[],
-      index: number | string
-    ): TransactionObject<string>;
-
-    getScheduleLength(templateId: string | number[]): TransactionObject<string>;
-
-    getSchedule(templateId: string | number[]): TransactionObject<string[]>;
-
-    registerTemplate(
+    setTerms(
+      assetId: string | number[],
       terms: {
+        contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
@@ -88,25 +95,33 @@ export class TemplateRegistry extends Contract {
         scalingEffect: number | string;
         penaltyType: number | string;
         feeBasis: number | string;
-        creditEventTypeCovered: number | string;
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
-        statusDateOffset: number | string;
-        maturityDateOffset: number | string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        capitalizationEndDate: number | string;
+        cycleAnchorDateOfInterestPayment: number | string;
+        cycleAnchorDateOfRateReset: number | string;
+        cycleAnchorDateOfScalingIndex: number | string;
+        cycleAnchorDateOfFee: number | string;
+        cycleAnchorDateOfPrincipalRedemption: number | string;
         notionalPrincipal: number | string;
         nominalInterestRate: number | string;
-        feeAccrued: number | string;
         accruedInterest: number | string;
         rateMultiplier: number | string;
         rateSpread: number | string;
-        feeRate: number | string;
         nextResetRate: number | string;
+        feeRate: number | string;
+        feeAccrued: number | string;
         penaltyRate: number | string;
+        delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
-        coverageOfCreditEnhancement: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -117,12 +132,40 @@ export class TemplateRegistry extends Contract {
           p: number | string;
           isSet: boolean;
         };
-      },
-      templateSchedule: (string | number[])[]
+        cycleOfInterestPayment: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfRateReset: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfScalingIndex: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfPrincipalRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+      }
     ): TransactionObject<void>;
   };
   events: {
-    RegisteredTemplate: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

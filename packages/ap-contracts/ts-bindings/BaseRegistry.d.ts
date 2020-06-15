@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ScheduleRegistry extends Contract {
+export class BaseRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ScheduleRegistry;
+  clone(): BaseRegistry;
   methods: {
     computeEventTimeForEvent(
       _event: string | number[],
@@ -84,6 +84,11 @@ export class ScheduleRegistry extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
+    getEventAtIndex(
+      assetId: string | number[],
+      index: number | string
+    ): TransactionObject<string>;
+
     getFinalizedState(
       assetId: string | number[]
     ): TransactionObject<{
@@ -113,10 +118,35 @@ export class ScheduleRegistry extends Contract {
       attribute: string | number[]
     ): TransactionObject<string>;
 
+    getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
+
+    getNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    getNextUnderlyingEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    getOwnership(
+      assetId: string | number[]
+    ): TransactionObject<{
+      creatorObligor: string;
+      creatorBeneficiary: string;
+      counterpartyObligor: string;
+      counterpartyBeneficiary: string;
+    }>;
+
+    getPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
     getPeriodValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<{ i: string; p: string; isSet: boolean }>;
+
+    getSchedule(assetId: string | number[]): TransactionObject<string[]>;
+
+    getScheduleLength(assetId: string | number[]): TransactionObject<string>;
 
     getState(
       assetId: string | number[]
@@ -166,10 +196,55 @@ export class ScheduleRegistry extends Contract {
       account: string
     ): TransactionObject<boolean>;
 
+    isEventSettled(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<{
+      0: boolean;
+      1: string;
+    }>;
+
+    markEventAsSettled(
+      assetId: string | number[],
+      _event: string | number[],
+      _payoff: number | string
+    ): TransactionObject<void>;
+
+    popNextScheduledEvent(
+      assetId: string | number[]
+    ): TransactionObject<string>;
+
+    popPendingEvent(assetId: string | number[]): TransactionObject<string>;
+
+    pushPendingEvent(
+      assetId: string | number[],
+      pendingEvent: string | number[]
+    ): TransactionObject<void>;
+
     revokeAccess(
       assetId: string | number[],
       methodSignature: string | number[],
       account: string
+    ): TransactionObject<void>;
+
+    setCounterpartyBeneficiary(
+      assetId: string | number[],
+      newCounterpartyBeneficiary: string
+    ): TransactionObject<void>;
+
+    setCounterpartyObligor(
+      assetId: string | number[],
+      newCounterpartyObligor: string
+    ): TransactionObject<void>;
+
+    setCreatorBeneficiary(
+      assetId: string | number[],
+      newCreatorBeneficiary: string
+    ): TransactionObject<void>;
+
+    setCreatorObligor(
+      assetId: string | number[],
+      newCreatorObligor: string
     ): TransactionObject<void>;
 
     setFinalizedState(
@@ -212,50 +287,20 @@ export class ScheduleRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
-    getEventAtIndex(
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
+
+    getEngine(assetId: string | number[]): TransactionObject<string>;
+
+    getActor(assetId: string | number[]): TransactionObject<string>;
+
+    setEngine(
       assetId: string | number[],
-      index: number | string
-    ): TransactionObject<string>;
-
-    getScheduleLength(assetId: string | number[]): TransactionObject<string>;
-
-    getSchedule(assetId: string | number[]): TransactionObject<string[]>;
-
-    getPendingEvent(assetId: string | number[]): TransactionObject<string>;
-
-    pushPendingEvent(
-      assetId: string | number[],
-      pendingEvent: string | number[]
+      engine: string
     ): TransactionObject<void>;
 
-    popPendingEvent(assetId: string | number[]): TransactionObject<string>;
-
-    getNextScheduleIndex(assetId: string | number[]): TransactionObject<string>;
-
-    getNextUnderlyingEvent(
-      assetId: string | number[]
-    ): TransactionObject<string>;
-
-    getNextScheduledEvent(
-      assetId: string | number[]
-    ): TransactionObject<string>;
-
-    popNextScheduledEvent(
-      assetId: string | number[]
-    ): TransactionObject<string>;
-
-    isEventSettled(
+    setActor(
       assetId: string | number[],
-      _event: string | number[]
-    ): TransactionObject<{
-      0: boolean;
-      1: string;
-    }>;
-
-    markEventAsSettled(
-      assetId: string | number[],
-      _event: string | number[],
-      _payoff: number | string
+      actor: string
     ): TransactionObject<void>;
   };
   events: {
@@ -273,6 +318,7 @@ export class ScheduleRegistry extends Contract {
       0: string;
       1: string;
     }>;
+    RegisteredAsset: ContractEvent<string>;
     RevokedAccess: ContractEvent<{
       assetId: string;
       account: string;
@@ -287,11 +333,43 @@ export class ScheduleRegistry extends Contract {
       0: string;
       1: string;
     }>;
+    UpdatedActor: ContractEvent<{
+      assetId: string;
+      prevActor: string;
+      newActor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedBeneficiary: ContractEvent<{
+      assetId: string;
+      prevBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedEngine: ContractEvent<{
+      assetId: string;
+      prevEngine: string;
+      newEngine: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
     UpdatedFinalizedState: ContractEvent<{
       assetId: string;
       statusDate: string;
       0: string;
       1: string;
+    }>;
+    UpdatedObligor: ContractEvent<{
+      assetId: string;
+      prevObligor: string;
+      newObligor: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     UpdatedState: ContractEvent<{
       assetId: string;

@@ -126,10 +126,9 @@ library CECEncoder {
         }
     }
 
-    // TODO Remove this?
-    function decodeAndGetAddressValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetAddressValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         internal
-        view
+        pure
         returns (address)
     {
         return address(0);
@@ -159,19 +158,17 @@ library CECEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    // TODO Remove this?
-    function decodeAndGetPeriodValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetPeriodValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         internal
-        view
+        pure
         returns (IP memory)
     {
         return IP(0, P(0), false);
     }
 
-    // TODO Remove this?
-    function decodeAndGetCycleValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetCycleValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         internal
-        view
+        pure
         returns (IPS memory)
     {
         return IPS(0, P(0), S(0), false);
@@ -179,7 +176,7 @@ library CECEncoder {
 
     function decodeAndGetContractReferenceValueForCECAttribute(Asset storage asset , bytes32 attributeKey )
         internal
-        pure
+        view
         returns (ContractReference memory)
     {
         if (attributeKey == bytes32("contractReference_1")) {

@@ -13,16 +13,71 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class IAssetIssuer extends Contract {
+export class PAMActor extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): IAssetIssuer;
+  clone(): PAMActor;
   methods: {
-    issueAsset(
-      termsHash: string | number[],
+    assetRegistry(): TransactionObject<string>;
+
+    computeEventTimeForEvent(
+      _event: string | number[],
+      bdc: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
+    ): TransactionObject<string>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    isOwner(): TransactionObject<boolean>;
+
+    issuers(arg0: string): TransactionObject<boolean>;
+
+    marketObjectRegistry(): TransactionObject<string>;
+
+    owner(): TransactionObject<string>;
+
+    progress(assetId: string | number[]): TransactionObject<void>;
+
+    progressWith(
+      assetId: string | number[],
+      _event: string | number[]
+    ): TransactionObject<void>;
+
+    registerIssuer(issuer: string): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
+    initialize(
       terms: {
         contractType: number | string;
         calendar: number | string;
@@ -46,7 +101,6 @@ export class IAssetIssuer extends Contract {
         cycleAnchorDateOfRateReset: number | string;
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
-        cycleAnchorDateOfPrincipalRedemption: number | string;
         notionalPrincipal: number | string;
         nominalInterestRate: number | string;
         accruedInterest: number | string;
@@ -59,7 +113,6 @@ export class IAssetIssuer extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -94,12 +147,6 @@ export class IAssetIssuer extends Contract {
           s: number | string;
           isSet: boolean;
         };
-        cycleOfPrincipalRedemption: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
       },
       schedule: (string | number[])[],
       ownership: {
@@ -113,6 +160,38 @@ export class IAssetIssuer extends Contract {
     ): TransactionObject<void>;
   };
   events: {
+    InitializedAsset: ContractEvent<{
+      assetId: string;
+      contractType: string;
+      creator: string;
+      counterparty: string;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
+    }>;
+    ProgressedAsset: ContractEvent<{
+      assetId: string;
+      eventType: string;
+      scheduleTime: string;
+      payoff: string;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+    }>;
+    Status: ContractEvent<{
+      assetId: string;
+      statusMessage: string;
+      0: string;
+      1: string;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

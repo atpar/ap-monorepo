@@ -267,7 +267,7 @@ library CEGEncoder {
 
     function decodeAndGetContractReferenceValueForCEGAttribute(Asset storage asset , bytes32 attributeKey )
         internal
-        pure
+        view
         returns (ContractReference memory)
     {
         if (attributeKey == bytes32("contractReference_1")) {

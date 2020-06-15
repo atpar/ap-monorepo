@@ -4,8 +4,8 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "../Core/AssetRegistry/IAssetRegistry.sol";
-import "../token/FDT/SimpleRestrictedFDT.sol";
-import "../token/FDT/VanillaFDT.sol";
+import "./SimpleRestrictedFDT.sol";
+import "./VanillaFDT.sol";
 
 
 /**
@@ -14,14 +14,8 @@ import "../token/FDT/VanillaFDT.sol";
  */
 contract TokenizationFactory {
 
-    IAssetRegistry public assetRegistry;
-
-
     event DeployedDistributor(address distributor, address creator);
 
-    constructor(IAssetRegistry _assetRegistry) public {
-        assetRegistry = _assetRegistry;
-    }
 
     /**
      * deploys a new tokenized distributor contract for a specified ERC20 token

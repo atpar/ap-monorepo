@@ -13,42 +13,70 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class AssetIssuer extends Contract {
+export class IPAMTermsRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): AssetIssuer;
+  clone(): IPAMTermsRegistry;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
-    assetActor(): TransactionObject<string>;
-
-    assetRegistry(): TransactionObject<string>;
-
-    custodian(): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
+    getTerms(
+      assetId: string | number[]
     ): TransactionObject<{
-      0: string;
-      1: string;
+      contractType: string;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      scalingEffect: string;
+      penaltyType: string;
+      feeBasis: string;
+      currency: string;
+      settlementCurrency: string;
+      marketObjectCodeRateReset: string;
+      contractDealDate: string;
+      statusDate: string;
+      initialExchangeDate: string;
+      maturityDate: string;
+      purchaseDate: string;
+      capitalizationEndDate: string;
+      cycleAnchorDateOfInterestPayment: string;
+      cycleAnchorDateOfRateReset: string;
+      cycleAnchorDateOfScalingIndex: string;
+      cycleAnchorDateOfFee: string;
+      notionalPrincipal: string;
+      nominalInterestRate: string;
+      accruedInterest: string;
+      rateMultiplier: string;
+      rateSpread: string;
+      nextResetRate: string;
+      feeRate: string;
+      feeAccrued: string;
+      penaltyRate: string;
+      delinquencyRate: string;
+      premiumDiscountAtIED: string;
+      priceAtPurchaseDate: string;
+      lifeCap: string;
+      lifeFloor: string;
+      periodCap: string;
+      periodFloor: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      cycleOfInterestPayment: {
+        i: string;
+        p: string;
+        s: string;
+        isSet: boolean;
+      };
+      cycleOfRateReset: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfScalingIndex: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
     }>;
 
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
-
-    issueAsset(
-      termsHash: string | number[],
+    setTerms(
+      assetId: string | number[],
       terms: {
         contractType: number | string;
         calendar: number | string;
@@ -72,7 +100,6 @@ export class AssetIssuer extends Contract {
         cycleAnchorDateOfRateReset: number | string;
         cycleAnchorDateOfScalingIndex: number | string;
         cycleAnchorDateOfFee: number | string;
-        cycleAnchorDateOfPrincipalRedemption: number | string;
         notionalPrincipal: number | string;
         nominalInterestRate: number | string;
         accruedInterest: number | string;
@@ -85,7 +112,6 @@ export class AssetIssuer extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -120,33 +146,10 @@ export class AssetIssuer extends Contract {
           s: number | string;
           isSet: boolean;
         };
-        cycleOfPrincipalRedemption: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-      },
-      schedule: (string | number[])[],
-      ownership: {
-        creatorObligor: string;
-        creatorBeneficiary: string;
-        counterpartyObligor: string;
-        counterpartyBeneficiary: string;
-      },
-      engine: string,
-      admin: string
+      }
     ): TransactionObject<void>;
   };
   events: {
-    IssuedAsset: ContractEvent<{
-      assetId: string;
-      creator: string;
-      counterparty: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

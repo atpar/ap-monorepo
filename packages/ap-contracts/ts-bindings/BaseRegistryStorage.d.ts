@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class AssetRegistryStorage extends Contract {
+export class BaseRegistryStorage extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): AssetRegistryStorage;
+  clone(): BaseRegistryStorage;
   methods: {
     computeEventTimeForEvent(
       _event: string | number[],

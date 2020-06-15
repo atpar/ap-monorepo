@@ -13,110 +13,92 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ITemplateRegistry extends Contract {
+export class ICEGTermsRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ITemplateRegistry;
+  clone(): ICEGTermsRegistry;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
-
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
-
-    ONE_POINT_ZERO(): TransactionObject<string>;
-
-    PRECISION(): TransactionObject<string>;
-
-    isRegistered(templateId: string | number[]): TransactionObject<boolean>;
-
-    getTemplateTerms(
-      templateId: string | number[]
+    getTerms(
+      assetId: string | number[]
     ): TransactionObject<{
+      contractType: string;
       calendar: string;
       contractRole: string;
       dayCountConvention: string;
       businessDayConvention: string;
       endOfMonthConvention: string;
-      scalingEffect: string;
-      penaltyType: string;
       feeBasis: string;
       creditEventTypeCovered: string;
       currency: string;
       settlementCurrency: string;
-      marketObjectCodeRateReset: string;
-      statusDateOffset: string;
-      maturityDateOffset: string;
+      contractDealDate: string;
+      statusDate: string;
+      maturityDate: string;
+      purchaseDate: string;
+      cycleAnchorDateOfFee: string;
       notionalPrincipal: string;
-      nominalInterestRate: string;
+      delinquencyRate: string;
       feeAccrued: string;
-      accruedInterest: string;
-      rateMultiplier: string;
-      rateSpread: string;
       feeRate: string;
-      nextResetRate: string;
-      penaltyRate: string;
-      premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
-      nextPrincipalRedemptionPayment: string;
       coverageOfCreditEnhancement: string;
-      lifeCap: string;
-      lifeFloor: string;
-      periodCap: string;
-      periodFloor: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
+      contractReference_1: { object: string; _type: string; role: string };
+      contractReference_2: { object: string; _type: string; role: string };
     }>;
 
-    getEventAtIndex(
-      templateId: string | number[],
-      index: number | string
-    ): TransactionObject<string>;
-
-    getScheduleLength(templateId: string | number[]): TransactionObject<string>;
-
-    registerTemplate(
+    setTerms(
+      assetId: string | number[],
       terms: {
+        contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         creditEventTypeCovered: number | string;
         currency: string;
         settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        statusDateOffset: number | string;
-        maturityDateOffset: number | string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        cycleAnchorDateOfFee: number | string;
         notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
+        delinquencyRate: number | string;
         feeAccrued: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
         feeRate: number | string;
-        nextResetRate: number | string;
-        penaltyRate: number | string;
-        premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
         coverageOfCreditEnhancement: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
         };
-      },
-      templateSchedule: (string | number[])[]
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      }
     ): TransactionObject<void>;
   };
   events: {

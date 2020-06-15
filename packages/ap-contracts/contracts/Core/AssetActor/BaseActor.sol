@@ -5,24 +5,17 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
-import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/CEC/ICECEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
-import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
 
 import "../SharedTypes.sol";
 import "../ScheduleUtils.sol";
 import "../Conversions.sol";
-import "../AssetRegistry/IAssetIdRegistry.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../AssetRegistry/IANNRegistry.sol";
-import "../AssetRegistry/IPAMRegistry.sol";
 import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
 import "./IAssetActor.sol";
 
 
 /**
- * @title AssetActor
+ * @title BaseActor
  * @notice As the centerpiece of the ACTUS Protocol it is responsible for managing the
  * lifecycle of assets registered through the AssetRegistry. It acts as the executive of AP
  * by initializing the state of the asset and by processing the assets schedule as specified
@@ -31,7 +24,7 @@ import "./IAssetActor.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-contract AssetActor is
+abstract contract BaseActor is
     Utils,
     ScheduleUtils,
     Conversions,
@@ -39,14 +32,12 @@ contract AssetActor is
     Ownable
 {
 
+    event InitializedAsset(bytes32 indexed assetId, ContractType contractType, address creator, address counterparty);
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
 
-    IAssetIdRegistry public assetIdRegistry;
     IAssetRegistry public assetRegistry;
-    IANNRegistry public annRegistry;
-    IPAMRegistry public pamRegistry;
     IMarketObjectRegistry public marketObjectRegistry;
 
     mapping(address => bool) public issuers;
@@ -61,15 +52,11 @@ contract AssetActor is
     }
 
     constructor (
-        IAssetIdRegistry _assetIdRegistry,
-        IANNRegistry _annRegistry,
-        IPAMRegistry _assetRegistry,
+        IAssetRegistry _assetRegistry,
         IMarketObjectRegistry _marketObjectRegistry
     )
         public
     {
-        assetIdRegistry = _assetIdRegistry;
-        annRegistry = _annRegistry;
         assetRegistry = _assetRegistry;
         marketObjectRegistry = _marketObjectRegistry;
     }
@@ -150,104 +137,6 @@ contract AssetActor is
         );
 
         processEvent(assetId, _event);
-    }
-
-        /**
-     * @notice Derives the initial state of the asset from the provided custom terms and
-     * stores the initial state, the custom terms together with the ownership of the asset
-     * in the AssetRegistry.
-     * @dev Can only be called by a whitelisted issuer.
-     * (has to be public otherwise compilation error.)
-     * @param assetId id of the asset
-     * @param ownership ownership of the asset
-     * @param terms asset specific terms
-     * @param engine address of the ACTUS engine used for the spec. ContractType
-     * @param admin address of the admin of the asset (optional)
-     * @return true on success
-     */
-    function initialize(
-        bytes32 assetId,
-        ANNTerms calldata terms,
-        bytes32[] calldata schedule,
-        AssetOwnership calldata ownership,
-        address engine,
-        address admin
-    )
-        external
-        onlyRegisteredIssuer
-        override
-        returns (bool)
-    {
-        require(
-            assetId != bytes32(0) && engine != address(0),
-            "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
-        );
-
-        // compute the initial state of the asset using PAMTerms
-        State memory initialState = IANNEngine(engine).computeInitialState(terms);
-
-        // register the asset in the AssetRegistry
-        annRegistry.registerAsset(
-            assetId,
-            terms,
-            initialState,
-            schedule,
-            ownership,
-            engine,
-            address(this),
-            admin
-        );
-
-        return true;
-    }
-
-    /**
-     * @notice Derives the initial state of the asset from the provided custom terms and
-     * stores the initial state, the custom terms together with the ownership of the asset
-     * in the AssetRegistry.
-     * @dev Can only be called by a whitelisted issuer.
-     * (has to be public otherwise compilation error.)
-     * @param assetId id of the asset
-     * @param ownership ownership of the asset
-     * @param terms asset specific terms
-     * @param engine address of the ACTUS engine used for the spec. ContractType
-     * @param admin address of the admin of the asset (optional)
-     * @return true on success
-     */
-    function initialize(
-        bytes32 assetId,
-        PAMTerms calldata terms,
-        bytes32[] calldata schedule,
-        AssetOwnership calldata ownership,
-        address engine,
-        address admin
-    )
-        external
-        onlyRegisteredIssuer
-        override
-        returns (bool)
-    {
-        require(
-            assetId != bytes32(0) && engine != address(0),
-            "AssetActor.initialize: INVALID_FUNCTION_PARAMETERS"
-        );
-
-        // compute the initial state of the asset using PAMTerms
-        State memory initialState = IPAMEngine(engine).computeInitialState(terms);
-
-        // register the asset in the AssetRegistry
-        pamRegistry.registerAsset(
-            assetId,
-            terms,
-            initialState,
-            schedule,
-            ownership,
-            engine,
-            address(this),
-            admin
-        );
-
-        return true;
     }
 
     /**
@@ -392,32 +281,8 @@ contract AssetActor is
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
         internal
         view
-        returns (State memory, int256)
-    {
-        address engineAddress = assetRegistry.getEngine(assetId);
-        ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));
-
-        if (contractType == ContractType.PAM) {
-            PAMTerms memory terms = pamRegistry.getTerms(assetId);
-
-            int256 payoff = IPAMEngine(engineAddress).computePayoffForEvent(
-                terms,
-                state,
-                _event,
-                getExternalDataForPOF(assetId, _event)
-            );
-            state = IPAMEngine(engineAddress).computeStateForEvent(
-                terms,
-                state,
-                _event,
-                getExternalDataForSTF(assetId, _event)
-            );
-
-            return (state, payoff);
-        }
-
-        revert("AssetActor.computePayoffAndStateForEvent: UNSUPPORTED_CONTRACT_TYPE");
-    }
+        virtual
+        returns (State memory, int256);
 
     /**
      * @notice Retrieves external data (such as market object data, block time, underlying asset state)

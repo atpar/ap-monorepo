@@ -2,10 +2,11 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../SharedTypes.sol";
+import "./Terms/ANN/IANNTermsRegistry.sol";
 // import "./IAssetRegistry.sol";
 
 
-interface IANNRegistry {
+interface IANNRegistry is IANNTermsRegistry {
 
     function registerAsset(
         bytes32 assetId,

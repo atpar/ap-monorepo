@@ -13,21 +13,29 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class BusinessDayConvention extends Contract {
+export class IBaseRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): BusinessDayConvention;
+  clone(): IBaseRegistry;
   methods: {
-    MAX_CYCLE_SIZE(): TransactionObject<string>;
+    isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
-    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
+    getEngine(assetId: string | number[]): TransactionObject<string>;
 
-    ONE_POINT_ZERO(): TransactionObject<string>;
+    getActor(assetId: string | number[]): TransactionObject<string>;
 
-    PRECISION(): TransactionObject<string>;
+    setEngine(
+      assetId: string | number[],
+      engine: string
+    ): TransactionObject<void>;
+
+    setActor(
+      assetId: string | number[],
+      actor: string
+    ): TransactionObject<void>;
   };
   events: {
     allEvents: (

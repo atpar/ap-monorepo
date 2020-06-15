@@ -29,9 +29,4 @@ struct Schedule {
     bytes32 pendingEvent;
 }
 
-contract SharedTypes is ACTUSConstants {
-
-    // offset == 0 is interpreted as a not set date value and not shifted
-    // hence we define 1 as an offset == anchorDate
-    uint256 constant internal ZERO_OFFSET = 1;
-}
+// contract SharedTypes is ACTUSConstants {}

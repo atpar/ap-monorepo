@@ -21,8 +21,6 @@ export class TokenizationFactory extends Contract {
   );
   clone(): TokenizationFactory;
   methods: {
-    assetRegistry(): TransactionObject<string>;
-
     createERC20Distributor(
       name: string,
       symbol: string,

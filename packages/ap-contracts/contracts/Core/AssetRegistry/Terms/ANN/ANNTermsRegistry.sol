@@ -45,7 +45,16 @@ contract ANNTermsRegistry is BaseRegistryStorage, AccessControl, TermsRegistry, 
     {
         assets[assetId].encodeAndSetANNTerms(terms);
         emit UpdatedTerms(assetId);
-    }   
+    }
+
+    function getTermsAsBytes(bytes32 assetId)
+        external
+        view
+        override
+        returns (bytes memory)
+    {
+        return abi.encode(assets[assetId].decodeAndGetANNTerms());
+    }
 
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public

@@ -2,15 +2,15 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../SharedTypes.sol";
-import "./Terms/PAM/IPAMTermsRegistry.sol";
+import "./Terms/CEG/ICEGTermsRegistry.sol";
 // import "./IAssetRegistry.sol";
 
 
-interface IPAMRegistry is IPAMTermsRegistry {
+interface ICEGRegistry is ICEGTermsRegistry {
 
     function registerAsset(
         bytes32 assetId,
-        PAMTerms calldata terms,
+        CEGTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,

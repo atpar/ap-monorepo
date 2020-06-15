@@ -9,6 +9,12 @@ abstract contract TermsRegistry {
     event UpdatedTerms(bytes32 indexed assetId);
 
 
+    function getTermsAsBytes(bytes32 assetId)
+        external
+        view
+        virtual
+        returns (bytes memory);
+
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
