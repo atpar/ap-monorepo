@@ -46,7 +46,7 @@ abstract contract BaseActor is
     modifier onlyRegisteredIssuer {
         require(
             issuers[msg.sender],
-            "AssetActor.onlyRegisteredIssuer: UNAUTHORIZED_SENDER"
+            "BaseActor.onlyRegisteredIssuer: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -81,7 +81,7 @@ abstract contract BaseActor is
         // revert if the asset is not registered in the AssetRegistry
         require(
             assetRegistry.isRegistered(assetId),
-            "AssetActor.progress: ASSET_DOES_NOT_EXIST"
+            "BaseActor.progress: ASSET_DOES_NOT_EXIST"
         );
 
         // enforce order:
@@ -95,7 +95,7 @@ abstract contract BaseActor is
         // e.g. if all events in the schedule are processed
         require(
             _event != bytes32(0),
-            "AssetActor.progress: NO_NEXT_EVENT"
+            "BaseActor.progress: NO_NEXT_EVENT"
         );
 
         processEvent(assetId, _event);
@@ -113,7 +113,7 @@ abstract contract BaseActor is
         // revert if msg.sender is not authorized to update the asset
         require(
             assetRegistry.hasRootAccess(assetId, msg.sender),
-            "AssetActor.progressWith: UNAUTHORIZED_SENDER"
+            "BaseActor.progressWith: UNAUTHORIZED_SENDER"
         );
 
         // enforce order:
@@ -121,11 +121,11 @@ abstract contract BaseActor is
         // - 2. an event which was generated based on the state of the underlying asset
         require(
             assetRegistry.getPendingEvent(assetId) == bytes32(0),
-            "AssetActor.progressWith: FOUND_PENDING_EVENT"
+            "BaseActor.progressWith: FOUND_PENDING_EVENT"
         );
         require(
             assetRegistry.getNextUnderlyingEvent(assetId) == bytes32(0),
-            "AssetActor.progressWith: FOUND_UNDERLYING_EVENT"
+            "BaseActor.progressWith: FOUND_UNDERLYING_EVENT"
         );
 
         // - 3. the scheduled event takes priority if its schedule time is early or equal to the provided event
@@ -133,7 +133,7 @@ abstract contract BaseActor is
         (, uint256 providedEventScheduleTime) = decodeEvent(_event);
         require(
             scheduledEventScheduleTime == 0 || (providedEventScheduleTime < scheduledEventScheduleTime),
-            "AssetActor.progressWith: FOUND_EARLIER_EVENT"
+            "BaseActor.progressWith: FOUND_EARLIER_EVENT"
         );
 
         processEvent(assetId, _event);
@@ -150,7 +150,7 @@ abstract contract BaseActor is
             state.contractPerformance == ContractPerformance.PF
             || state.contractPerformance == ContractPerformance.DL
             || state.contractPerformance == ContractPerformance.DQ,
-            "AssetActor.processEvent: ASSET_REACHED_FINAL_STATE"
+            "BaseActor.processEvent: ASSET_REACHED_FINAL_STATE"
         );
 
         // get finalized state if asset is not performant
@@ -164,7 +164,7 @@ abstract contract BaseActor is
         require(
             // solium-disable-next-line
             scheduleTime <= block.timestamp,
-            "AssetActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
+            "BaseActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
 
         // get external data for the next event
@@ -228,7 +228,7 @@ abstract contract BaseActor is
     {
         require(
             assetId != bytes32(0) && _event != bytes32(0),
-            "AssetActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
+            "BaseActor.settlePayoffForEvent: INVALID_FUNCTION_PARAMETERS"
         );
 
         // return if there is no amount due

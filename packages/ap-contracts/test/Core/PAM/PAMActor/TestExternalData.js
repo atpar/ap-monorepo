@@ -1,20 +1,13 @@
 const { expectEvent } = require('openzeppelin-test-helpers');
-const AssetActor = artifacts.require('AssetActor');
 
-const { setupTestEnvironment } = require('../../helper/setupTestEnvironment');
-const { 
-  createSnapshot, 
-  revertToSnapshot, 
-  mineBlock
-} = require('../../helper/blockchain');
+const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
+const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
 
-const { deriveTemplateId } = require('../../helper/orderUtils');
-const { deriveTerms, generateTemplateSchedule, getEngineContractInstanceForContractType, ZERO_ADDRESS } = require('../../helper/utils');
-
-const ExternalDataTerms = require('../../helper/terms/external-data-terms.json');
+const PAMActor = artifacts.require('PAMActor');
 
 
-contract('AssetActor', (accounts) => {
+contract('PAMActor', (accounts) => {
 
   const creatorObligor = accounts[1];
   const creatorBeneficiary = accounts[2];
@@ -24,13 +17,43 @@ contract('AssetActor', (accounts) => {
   let snapshot;
   let snapshot_asset;
   
-  const getEventTime = async (_event, lifecycleTerms) => {
-    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms));
+  const getEventTime = async (_event, terms) => {
+    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
+      _event,
+      terms.businessDayConvention,
+      terms.calendar,
+      terms.maturityDate
+    ));
   }
 
   before(async () => {
     this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+
+    this.ownership = {
+      creatorObligor, 
+      creatorBeneficiary, 
+      counterpartyObligor, 
+      counterpartyBeneficiary
+    };
+    // schedule with RR
+    this.terms = require('../../../helper/terms/PAMTerms-external-data.json');
+  
+    // only want RR events in the schedules
+    this.schedule = (await generateSchedule(this.PAMEngineInstance, this.terms)).filter((event) => event.startsWith('0x0c'));
+  
+    const tx = await this.PAMActorInstance.initialize(
+      this.terms,
+      this.schedule,
+      this.ownership,
+      this.PAMEngineInstance.address,
+      ZERO_ADDRESS
+    );
+
+    this.assetId = tx.logs[0].args.assetId;
+    this.state = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+
+    this.resetRate = web3.utils.toWei('0'); // TODO: investigate overflow if set to non zero
 
     snapshot = await createSnapshot();
   });
@@ -40,71 +63,38 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with external rate', async () => {
-    const ownership = {
-      creatorObligor, 
-      creatorBeneficiary, 
-      counterpartyObligor, 
-      counterpartyBeneficiary
-    };
-    // schedule with RR
-    const terms = ExternalDataTerms;
-
-    // register template
-    const { lifecycleTerms, customTerms, generatingTerms, templateTerms } = deriveTerms(terms);
-    // only want RR events in the schedules
-    const templateSchedule = (await generateTemplateSchedule(
-      getEngineContractInstanceForContractType(this.instances, terms.contractType),
-      generatingTerms
-    )).filter((event) => event.startsWith('0x0c'));
-    const tx = await this.instances.TemplateRegistryInstance.registerTemplate(templateTerms, templateSchedule);
-    const templateId = tx.logs[0].args.templateId;
-    
-    // store template
-    const assetId = 'External Data Asset';
-    const resetRate = 500000
-
-    await this.AssetActorInstance.initialize(
-      web3.utils.toHex(assetId),
-      ownership,
-      web3.utils.toHex(templateId),
-      customTerms,
-      this.PAMEngineInstance.address,
-      ZERO_ADDRESS
-    );
-
-    const initialState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(assetId));
-    const eventTime = await getEventTime(_event, terms);
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.terms);
     
     await mineBlock(Number(eventTime));
     
     await this.MarketObjectRegistryInstance.setMarketObjectProvider(
-      terms.marketObjectCodeRateReset,
+      this.terms.marketObjectCodeRateReset,
       accounts[0]
-      );
+    );
       
     await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
-      terms.marketObjectCodeRateReset,
+      this.terms.marketObjectCodeRateReset,
       eventTime,
-      resetRate
+      this.resetRate
     );
         
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(assetId));
+    const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'ProgressedAsset'
+      txHash, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(assetId));
+    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      lifecycleTerms,
-      initialState,
+      this.terms,
+      this.state,
       _event,
-      web3.utils.toHex(resetRate)
+      web3.utils.toHex(this.resetRate)
     );
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), assetId);
+    assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.deepEqual(storedNextState, projectedNextState);
 
