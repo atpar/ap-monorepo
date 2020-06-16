@@ -1,10 +1,9 @@
 const BigNumber = require('bignumber.js');
 const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
-const CECCollateralTerms = require('../helper/terms/cec-collateral-terms.json');
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../helper/setupTestEnvironment');
-const { deriveTerms, registerTemplateFromTerms } = require('../helper/utils');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../helper/blockchain')
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
+const { generateSchedule } = require('../../helper/utils');
+const { createSnapshot, revertToSnapshot } = require('../../helper/blockchain')
 
 const Custodian = artifacts.require('Custodian');
 
@@ -18,7 +17,8 @@ contract('Custodian', (accounts) => {
     // deploy test ERC20 token
     this.PaymentTokenInstance = await deployPaymentToken(accounts[0], accounts);
 
-    this.assetId = 'C123';
+    this.assetId = 'CEC_01';
+
     this.ownership = {
       creatorObligor: accounts[1],
       creatorBeneficiary: accounts[2],
@@ -26,13 +26,7 @@ contract('Custodian', (accounts) => {
       counterpartyBeneficiary: accounts[4]
     };
 
-    const defaultTerms = await getDefaultTerms();
-    this.terms = {
-      ...CECCollateralTerms,
-      maturityDate: defaultTerms.maturityDate,
-      statusDate: defaultTerms.statusDate,
-      contractDealDate: defaultTerms.contractDealDate
-    };
+    this.terms = require('../../helper/terms/CECTerms-collateral.json');
 
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
@@ -43,21 +37,18 @@ contract('Custodian', (accounts) => {
       this.collateralAmount
     );
 
-    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
+    this.state = await this.CECEngineInstance.computeInitialState(this.terms);
 
-    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
-
-    // register template
-    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
+    this.schedule = await generateSchedule(this.CECEngineInstance, this.terms);
     
-    await this.AssetRegistryInstance.registerAsset(
+    await this.CECRegistryInstance.registerAsset(
       web3.utils.toHex(this.assetId),
-      this.ownership,
-      this.templateId,
-      this.customTerms,
+      this.terms,
       this.state,
-      this.PAMEngineInstance.address,
-      this.AssetActorInstance.address,
+      this.schedule,
+      this.ownership,
+      this.CECEngineInstance.address,
+      this.CECActorInstance.address,
       accounts[0]
     );
 
@@ -76,10 +67,9 @@ contract('Custodian', (accounts) => {
       { from: this.ownership.counterpartyBeneficiary }
     );
 
-
     const { tx: txHash } = await this.CustodianInstance.lockCollateral(
       web3.utils.toHex(this.assetId),
-      this.lifecycleTerms,
+      this.terms,
       this.ownership
     );
 
@@ -103,7 +93,7 @@ contract('Custodian', (accounts) => {
     );
     await this.CustodianInstance.lockCollateral(
       web3.utils.toHex(this.assetId),
-      this.lifecycleTerms,
+      this.terms,
       this.ownership
     );
     
@@ -115,7 +105,7 @@ contract('Custodian', (accounts) => {
     state[4] = state.exerciseDate;
     state[13] = state.exerciseAmount;
 
-    await this.AssetRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
+    await this.CECRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
     
     const { tx: txHash } = await this.CustodianInstance.returnCollateral(web3.utils.toHex(this.assetId));
 
@@ -139,7 +129,7 @@ contract('Custodian', (accounts) => {
     );
     await this.CustodianInstance.lockCollateral(
       web3.utils.toHex(this.assetId),
-      this.lifecycleTerms,
+      this.terms,
       this.ownership
     );
     
@@ -147,7 +137,7 @@ contract('Custodian', (accounts) => {
     state.contractPerformance = '4';
     state[0] = state.contractPerformance;
 
-    await this.AssetRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
+    await this.CECRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
     
     const { tx: txHash } = await this.CustodianInstance.returnCollateral(web3.utils.toHex(this.assetId));
 
@@ -171,7 +161,7 @@ contract('Custodian', (accounts) => {
     );
     await this.CustodianInstance.lockCollateral(
       web3.utils.toHex(this.assetId),
-      this.lifecycleTerms,
+      this.terms,
       this.ownership
     );
     
