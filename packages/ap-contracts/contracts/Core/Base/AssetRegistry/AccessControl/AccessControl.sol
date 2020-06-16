@@ -19,7 +19,7 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
     modifier isAuthorized(bytes32 assetId) {
         require(
             msg.sender == assets[assetId].actor || hasAccess(assetId, msg.sig, msg.sender),
-            "AssetRegistry.isAuthorized: UNAUTHORIZED_SENDER"
+            "AccessControl.isAuthorized: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -37,7 +37,7 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
     {
         require(
             hasAccess(assetId, msg.sig, msg.sender),
-            "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"
+            "AccessControl.revokeAccess: UNAUTHORIZED_SENDER"
         );
 
         assets[assetId].access[methodSignature][account] = true;
@@ -58,7 +58,7 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
     {
         require(
             hasAccess(assetId, msg.sig, msg.sender),
-            "AssetRegistry.revokeAccess: UNAUTHORIZED_SENDER"
+            "AccessControl.revokeAccess: UNAUTHORIZED_SENDER"
         );
 
         assets[assetId].access[methodSignature][account] = false;

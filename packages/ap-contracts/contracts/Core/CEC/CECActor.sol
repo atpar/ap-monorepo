@@ -18,15 +18,11 @@ import "./ICECRegistry.sol";
  */
 contract CECActor is BaseActor {
 
-    ICustodian public custodian;
 
-
-    constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry, ICustodian _custodian)
+    constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
         public
         BaseActor(assetRegistry, marketObjectRegistry)
-    {
-        custodian = _custodian;
-    }
+    {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -41,7 +37,8 @@ contract CECActor is BaseActor {
         CECTerms calldata terms,
         bytes32[] calldata schedule,
         address engine,
-        address admin
+        address admin,
+        address custodian
     )
         external
         onlyRegisteredIssuer
@@ -102,7 +99,7 @@ contract CECActor is BaseActor {
 
             // execute contractual conditions
             // try transferring collateral to the custodian
-            custodian.lockCollateral(assetId, terms, ownership);
+            ICustodian(custodian).lockCollateral(assetId, terms, ownership);
         }
 
         // compute the initial state of the asset

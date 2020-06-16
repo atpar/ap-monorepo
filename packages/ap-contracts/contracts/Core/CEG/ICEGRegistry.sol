@@ -2,11 +2,10 @@ pragma solidity ^0.6.4;
 pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
-import "./ICEGTermsRegistry.sol";
-// import "./IAssetRegistry.sol";
+import "../Base/AssetRegistry/IAssetRegistry.sol";
 
 
-interface ICEGRegistry is ICEGTermsRegistry {
+interface ICEGRegistry is IAssetRegistry {
 
     function registerAsset(
         bytes32 assetId,
@@ -18,5 +17,13 @@ interface ICEGRegistry is ICEGTermsRegistry {
         address actor,
         address admin
     )
+        external;
+
+    function getTerms(bytes32 assetId)
+        external
+        view
+        returns (CEGTerms memory);
+
+    function setTerms(bytes32 assetId, CEGTerms calldata terms)
         external;
 }

@@ -6,7 +6,7 @@ import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 import "../Conversions.sol";
-import "../AssetRegistry/IAssetRegistry.sol";
+import "../../CEC/ICECRegistry.sol";
 import "./ICustodian.sol";
 
 
@@ -21,14 +21,14 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
     event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
     event ReturnedCollateral(bytes32 indexed assetId, address collateralizer, uint256 returnedAmount);
 
-    address public assetActor;
-    IAssetRegistry public assetRegistry;
+    address public cecActor;
+    ICECRegistry public cecRegistry;
     mapping(bytes32 => bool) internal collateral;
 
 
-    constructor(address _assetActor, IAssetRegistry _assetRegistry) public {
-        assetActor = _assetActor;
-        assetRegistry = _assetRegistry;
+    constructor(address _cecActor, ICECRegistry _cecRegistry) public {
+        cecActor = _cecActor;
+        cecRegistry = _cecRegistry;
     }
 
     /**
@@ -82,9 +82,9 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         );
 
         // set allowance for AssetActor to later transfer collateral when XD is triggered
-        uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
+        uint256 allowance = IERC20(collateralToken).allowance(address(this), cecActor);
         require(
-            IERC20(collateralToken).approve(assetActor, allowance.add(collateralAmount)),
+            IERC20(collateralToken).approve(cecActor, allowance.add(collateralAmount)),
             "Custodian.lockCollateral: INCREASING_ALLOWANCE_FAILED"
         );
 
@@ -117,10 +117,10 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
             "Custodian.returnCollateral: ENTRY_DOES_NOT_EXIST"
         );
 
-        ContractRole contractRole = ContractRole(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
-        ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(assetId, "contractReference_2");
-        State memory state = assetRegistry.getState(assetId);
-        AssetOwnership memory ownership = assetRegistry.getOwnership(assetId);
+        ContractRole contractRole = ContractRole(cecRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
+        ContractReference memory contractReference_2 = cecRegistry.getContractReferenceValueForTermsAttribute(assetId, "contractReference_2");
+        State memory state = cecRegistry.getState(assetId);
+        AssetOwnership memory ownership = cecRegistry.getOwnership(assetId);
 
         // derive address of collateralizer
         address collateralizer = (contractRole == ContractRole.BUY)
@@ -149,9 +149,9 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         }
 
         // reset allowance for AssetActor
-        uint256 allowance = IERC20(collateralToken).allowance(address(this), assetActor);
+        uint256 allowance = IERC20(collateralToken).allowance(address(this), cecActor);
         require(
-            IERC20(collateralToken).approve(assetActor, allowance.sub(notExecutedAmount)),
+            IERC20(collateralToken).approve(cecActor, allowance.sub(notExecutedAmount)),
             "Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
         );
 

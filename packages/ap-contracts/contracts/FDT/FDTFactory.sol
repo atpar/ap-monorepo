@@ -9,10 +9,10 @@ import "./VanillaFDT.sol";
 
 
 /**
- * @title TokenizationFactory
+ * @title FDTFactory
  * @notice Factory for deploying FDT contracts
  */
-contract TokenizationFactory {
+contract FDTFactory {
 
     event DeployedDistributor(address distributor, address creator);
 
@@ -35,7 +35,7 @@ contract TokenizationFactory {
     {
         require(
             address(token) != address(0),
-            "TokenizationFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
+            "FDTFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
         );
 
         VanillaFDT distributor = new VanillaFDT(name, symbol, token, owner, initialSupply);
@@ -61,7 +61,7 @@ contract TokenizationFactory {
     {
         require(
             address(token) != address(0),
-            "TokenizationFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
+            "FDTFactory.createERC20Distributor: INVALID_FUNCTION_PARAMETERS"
         );
 
         SimpleRestrictedFDT distributor = new SimpleRestrictedFDT(name, symbol, token, owner, initialSupply);

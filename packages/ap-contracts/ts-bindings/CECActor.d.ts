@@ -30,8 +30,6 @@ export class CECActor extends Contract {
       maturityDate: number | string
     ): TransactionObject<string>;
 
-    custodian(): TransactionObject<string>;
-
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -107,7 +105,8 @@ export class CECActor extends Contract {
       },
       schedule: (string | number[])[],
       engine: string,
-      admin: string
+      admin: string,
+      custodian: string
     ): TransactionObject<void>;
   };
   events: {

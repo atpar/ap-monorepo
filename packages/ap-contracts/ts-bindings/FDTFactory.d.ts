@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class TokenizationFactory extends Contract {
+export class FDTFactory extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): TokenizationFactory;
+  clone(): FDTFactory;
   methods: {
     createERC20Distributor(
       name: string,

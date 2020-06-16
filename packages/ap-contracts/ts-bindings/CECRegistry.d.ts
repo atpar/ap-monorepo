@@ -13,35 +13,46 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ICEGRegistry extends Contract {
+export class CECRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ICEGRegistry;
+  clone(): CECRegistry;
   methods: {
+    computeEventTimeForEvent(
+      _event: string | number[],
+      bdc: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    decodeCollateralObject(
+      object: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    decodeEvent(
+      _event: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
+
+    encodeCollateralAsObject(
+      collateralToken: string,
+      collateralAmount: number | string
+    ): TransactionObject<string>;
+
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
+    ): TransactionObject<string>;
+
     getActor(assetId: string | number[]): TransactionObject<string>;
-
-    getAddressValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<string>;
-
-    getBytes32ValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<string>;
-
-    getContractReferenceValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<{ object: string; _type: string; role: string }>;
-
-    getCycleValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<{ i: string; p: string; s: string; isSet: boolean }>;
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
 
@@ -50,10 +61,7 @@ export class ICEGRegistry extends Contract {
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getEnumValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<string>;
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     getEventAtIndex(
       assetId: string | number[],
@@ -78,11 +86,6 @@ export class ICEGRegistry extends Contract {
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
     }>;
-
-    getIntValueForForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<string>;
 
     getIntValueForStateAttribute(
       assetId: string | number[],
@@ -110,11 +113,6 @@ export class ICEGRegistry extends Contract {
 
     getPendingEvent(assetId: string | number[]): TransactionObject<string>;
 
-    getPeriodValueForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<{ i: string; p: string; isSet: boolean }>;
-
     getSchedule(assetId: string | number[]): TransactionObject<string[]>;
 
     getScheduleLength(assetId: string | number[]): TransactionObject<string>;
@@ -137,13 +135,6 @@ export class ICEGRegistry extends Contract {
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
     }>;
-
-    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
-
-    getUIntValueForForTermsAttribute(
-      assetId: string | number[],
-      attribute: string | number[]
-    ): TransactionObject<string>;
 
     getUintValueForStateAttribute(
       assetId: string | number[],
@@ -279,33 +270,13 @@ export class ICEGRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        contractDealDate: number | string;
+        feeBasis: number | string;
         statusDate: number | string;
         maturityDate: number | string;
-        purchaseDate: number | string;
-        cycleAnchorDateOfFee: number | string;
         notionalPrincipal: number | string;
-        delinquencyRate: number | string;
-        feeAccrued: number | string;
         feeRate: number | string;
-        priceAtPurchaseDate: number | string;
         coverageOfCreditEnhancement: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        cycleOfFee: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
         contractReference_1: {
           object: string | number[];
           _type: number | string;
@@ -354,24 +325,13 @@ export class ICEGRegistry extends Contract {
       dayCountConvention: string;
       businessDayConvention: string;
       endOfMonthConvention: string;
-      feeBasis: string;
       creditEventTypeCovered: string;
-      currency: string;
-      settlementCurrency: string;
-      contractDealDate: string;
+      feeBasis: string;
       statusDate: string;
       maturityDate: string;
-      purchaseDate: string;
-      cycleAnchorDateOfFee: string;
       notionalPrincipal: string;
-      delinquencyRate: string;
-      feeAccrued: string;
       feeRate: string;
-      priceAtPurchaseDate: string;
       coverageOfCreditEnhancement: string;
-      gracePeriod: { i: string; p: string; isSet: boolean };
-      delinquencyPeriod: { i: string; p: string; isSet: boolean };
-      cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
       contractReference_1: { object: string; _type: string; role: string };
       contractReference_2: { object: string; _type: string; role: string };
     }>;
@@ -385,33 +345,13 @@ export class ICEGRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        feeBasis: number | string;
         creditEventTypeCovered: number | string;
-        currency: string;
-        settlementCurrency: string;
-        contractDealDate: number | string;
+        feeBasis: number | string;
         statusDate: number | string;
         maturityDate: number | string;
-        purchaseDate: number | string;
-        cycleAnchorDateOfFee: number | string;
         notionalPrincipal: number | string;
-        delinquencyRate: number | string;
-        feeAccrued: number | string;
         feeRate: number | string;
-        priceAtPurchaseDate: number | string;
         coverageOfCreditEnhancement: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        cycleOfFee: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
         contractReference_1: {
           object: string | number[];
           _type: number | string;
@@ -424,8 +364,124 @@ export class ICEGRegistry extends Contract {
         };
       }
     ): TransactionObject<void>;
+
+    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
+
+    getEnumValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getAddressValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getBytes32ValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getUIntValueForForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getIntValueForForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<string>;
+
+    getPeriodValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ i: string; p: string; isSet: boolean }>;
+
+    getCycleValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ i: string; p: string; s: string; isSet: boolean }>;
+
+    getContractReferenceValueForTermsAttribute(
+      assetId: string | number[],
+      attribute: string | number[]
+    ): TransactionObject<{ object: string; _type: string; role: string }>;
   };
   events: {
+    GrantedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    IncrementedScheduleIndex: ContractEvent<{
+      assetId: string;
+      nextScheduleIndex: string;
+      0: string;
+      1: string;
+    }>;
+    RegisteredAsset: ContractEvent<string>;
+    RevokedAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      methodSignature: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    SetRootAccess: ContractEvent<{
+      assetId: string;
+      account: string;
+      0: string;
+      1: string;
+    }>;
+    UpdatedActor: ContractEvent<{
+      assetId: string;
+      prevActor: string;
+      newActor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedBeneficiary: ContractEvent<{
+      assetId: string;
+      prevBeneficiary: string;
+      newBeneficiary: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedEngine: ContractEvent<{
+      assetId: string;
+      prevEngine: string;
+      newEngine: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedFinalizedState: ContractEvent<{
+      assetId: string;
+      statusDate: string;
+      0: string;
+      1: string;
+    }>;
+    UpdatedObligor: ContractEvent<{
+      assetId: string;
+      prevObligor: string;
+      newObligor: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedState: ContractEvent<{
+      assetId: string;
+      statusDate: string;
+      0: string;
+      1: string;
+    }>;
+    UpdatedTerms: ContractEvent<string>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

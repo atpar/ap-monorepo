@@ -21,9 +21,9 @@ export class Custodian extends Contract {
   );
   clone(): Custodian;
   methods: {
-    assetActor(): TransactionObject<string>;
+    cecActor(): TransactionObject<string>;
 
-    assetRegistry(): TransactionObject<string>;
+    cecRegistry(): TransactionObject<string>;
 
     decodeCollateralObject(
       object: string | number[]

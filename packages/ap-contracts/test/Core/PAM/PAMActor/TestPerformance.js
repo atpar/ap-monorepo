@@ -1,14 +1,14 @@
 const BigNumber = require('bignumber.js');
 const { expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../helper/blockchain');
-const { deriveTerms, registerTemplateFromTerms, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../helper/utils');
+const { setupTestEnvironment, getDefaultTerms, deployPaymentToken, parseToContractTerms } = require('../../../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
+const { generateSchedule, parseTerms, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils');
 
-const AssetActor = artifacts.require('AssetActor');
+const PAMActor = artifacts.require('PAMActor');
 
 
-contract('AssetActor', (accounts) => {
+contract('PAMActor', (accounts) => {
 
   const creatorObligor = accounts[1];
   const creatorBeneficiary = accounts[2];
@@ -18,15 +18,19 @@ contract('AssetActor', (accounts) => {
   let snapshot;
   let snapshot_asset;
   
-  const getEventTime = async (_event, lifecycleTerms) => {
-    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms));
+  const getEventTime = async (_event, terms) => {
+    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
+      _event,
+      terms.businessDayConvention,
+      terms.calendar,
+      terms.maturityDate
+    ));
   }
 
   before(async () => {
     this.instances = await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
-    this.assetId = 'C123';
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
       ...await getDefaultTerms(),
@@ -35,17 +39,17 @@ contract('AssetActor', (accounts) => {
     };
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor,[counterpartyBeneficiary]);
+    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor, [counterpartyBeneficiary]);
+
     // set address of payment token as currency in terms
     this.terms.currency = this.PaymentTokenInstance.address;
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
-    // register template
-    ({ lifecycleTerms: this.lifecycleTerms, customTerms: this.customTerms } = deriveTerms(this.terms));
-    this.templateId = await registerTemplateFromTerms(this.instances, this.terms);
+    this.schedule = await generateSchedule(this.PAMEngineInstance, this.terms);
+    this.state = await this.PAMEngineInstance.computeInitialState(this.terms);
 
-    this.state = await this.PAMEngineInstance.computeInitialState(this.lifecycleTerms);
+    this.assetId;
 
     snapshot = await createSnapshot();
   });
@@ -55,21 +59,26 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should initialize an asset', async () => {
-    await this.AssetActorInstance.initialize(
-      web3.utils.toHex(this.assetId),
+    const tx = await this.PAMActorInstance.initialize(
+      this.terms,
+      this.schedule,
       this.ownership,
-      web3.utils.toHex(this.templateId),
-      this.customTerms,
       this.PAMEngineInstance.address,
       ZERO_ADDRESS
     );
 
-    // const storedTerms = await this.AssetRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
-    const storedState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedOwnership = await this.AssetRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
-    const storedEngineAddress = await this.AssetRegistryInstance.getEngine(web3.utils.toHex(this.assetId));
+    await expectEvent.inTransaction(
+      tx.tx, PAMActor, 'InitializedAsset'
+    );
 
-    // assert.deepEqual(storedTerms['initialExchangeDate'], this.terms['initialExchangeDate'].toString());
+    this.assetId =  tx.logs[0].args.assetId;
+
+    const storedTerms = await this.PAMRegistryInstance.getTerms(web3.utils.toHex(this.assetId));
+    const storedState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedOwnership = await this.PAMRegistryInstance.getOwnership(web3.utils.toHex(this.assetId));
+    const storedEngineAddress = await this.PAMRegistryInstance.getEngine(web3.utils.toHex(this.assetId));
+
+    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values(this.terms)));
     assert.deepEqual(storedState, this.state);
     assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.address);
 
@@ -82,11 +91,11 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state with contract status equal to PF', async () => {
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.lifecycleTerms)
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.terms)
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
-      this.lifecycleTerms, 
+      this.terms, 
       this.state, 
       _event,
       web3.utils.toHex(eventTime)
@@ -96,31 +105,31 @@ contract('AssetActor', (accounts) => {
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.approve(
-      this.AssetActorInstance.address,
+      this.PAMActorInstance.address,
       value,
       { from: creatorObligor }
     );
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const { tx: txHash } = await this.AssetActorInstance.progress(
+    const { tx: txHash } = await this.PAMActorInstance.progress(
       web3.utils.toHex(this.assetId), 
       { from: creatorObligor }
     );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'ProgressedAsset'
+      txHash, PAMActor, 'ProgressedAsset'
     );
 
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
     );
 
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(isEventSettled[0], true );
     assert.equal(isEventSettled[1].toString(), payoff.toFixed());
@@ -131,23 +140,23 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state transitioning from PF to DL', async () => {
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.lifecycleTerms);
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state
     await mineBlock(eventTime);
 
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'ProgressedAsset'
+      txHash, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
-    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState = await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
@@ -161,7 +170,7 @@ contract('AssetActor', (accounts) => {
     projectedNextState[0] = '1';
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
     assert.equal(isEventSettled[0], false);
@@ -173,23 +182,23 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state transitioning from PF to DQ', async () => {
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state to after grace period
     await mineBlock(Number(eventTime) + 3000000);
 
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'ProgressedAsset'
+      txHash, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
-    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState = await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
@@ -203,7 +212,7 @@ contract('AssetActor', (accounts) => {
     projectedNextState[0] = '2';
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
     assert.equal(isEventSettled[0], false);
@@ -215,23 +224,23 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state transitioning from PF to DF', async () => {
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state to after deliquency period
     await mineBlock(Number(eventTime) + 30000000);
 
-    const { tx: txHash } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, AssetActor, 'ProgressedAsset'
+      txHash, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedNextFinalizedState = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
-    const isEventSettled = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState = await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
@@ -245,7 +254,7 @@ contract('AssetActor', (accounts) => {
     projectedNextState[0] = '3';
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId), this.assetId);
+    assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
     assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
     assert.equal(isEventSettled[0], false);
@@ -257,24 +266,24 @@ contract('AssetActor', (accounts) => {
   });
 
   it('should process next state transitioning from DL to PF', async () => {
-    const _event = await this.AssetRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.lifecycleTerms);
+    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state
     await mineBlock(eventTime);
 
-    const { tx: txHash_DL } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { tx: txHash_DL } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { args: { 0: emittedAssetId_DL } } = await expectEvent.inTransaction(
-      txHash_DL, AssetActor, 'ProgressedAsset'
+      txHash_DL, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState_DL = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedNextFinalizedState_DL = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
-    const storedPendingEvent_DL = await this.AssetRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
-    const isEventSettled_DL = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState_DL = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState_DL = await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const storedPendingEvent_DL = await this.PAMRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
+    const isEventSettled_DL = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState_DL = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
@@ -288,7 +297,7 @@ contract('AssetActor', (accounts) => {
     projectedNextState_DL[0] = '1';
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId_DL), this.assetId);
+    assert.equal(emittedAssetId_DL, this.assetId);
     assert.equal(_event, storedPendingEvent_DL);
     assert.equal(storedNextState_DL.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_DL.statusDate, projectedNextState_DL.statusDate);
@@ -297,7 +306,7 @@ contract('AssetActor', (accounts) => {
     assert.deepEqual(storedNextState_DL, projectedNextState_DL);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
-      this.lifecycleTerms, 
+      this.terms, 
       this.state, 
       _event,
       web3.utils.toHex(eventTime)
@@ -307,25 +316,25 @@ contract('AssetActor', (accounts) => {
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.approve(
-      this.AssetActorInstance.address,
+      this.PAMActorInstance.address,
       value,
       { from: creatorObligor }
     );
     
-    // const { tx: txHash_PF } = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
-    const tx = await this.AssetActorInstance.progress(web3.utils.toHex(this.assetId));
+    // const { tx: txHash_PF } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
+    const tx = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
     const { tx: txHash_PF } = tx;
     const { args: { 0: emittedAssetId_PF } } = await expectEvent.inTransaction(
-      txHash_PF, AssetActor, 'ProgressedAsset'
+      txHash_PF, PAMActor, 'ProgressedAsset'
     );
-    const storedNextState_PF = await this.AssetRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const storedNextFinalizedState_PF = await this.AssetRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
-    const storedPendingEvent_PF = await this.AssetRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
-    const isEventSettled_PF = await this.AssetRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const storedNextState_PF = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextFinalizedState_PF = await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId));
+    const storedPendingEvent_PF = await this.PAMRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
+    const isEventSettled_PF = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
     const projectedNextState_PF = await this.PAMEngineInstance.computeStateForEvent(
-      this.lifecycleTerms,
+      this.terms,
       this.state,
       _event,
       web3.utils.toHex(eventTime)
@@ -339,7 +348,7 @@ contract('AssetActor', (accounts) => {
     projectedNextState_PF[0] = '0';
 
     // compare results
-    assert.equal(web3.utils.hexToUtf8(emittedAssetId_PF), this.assetId);
+    assert.equal(emittedAssetId_PF, this.assetId);
     assert.equal(storedPendingEvent_PF, ZERO_BYTES32);
     assert.equal(storedNextState_PF.statusDate, eventTime);
     assert.equal(storedNextFinalizedState_PF.statusDate, projectedNextState_PF.statusDate);

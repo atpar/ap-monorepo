@@ -180,7 +180,7 @@ abstract contract BaseActor is
             // (if the obligation is later fulfilled before the asset reaches default,
             // the last performant state is used to derive subsequent states of the asset)
             if (state.contractPerformance == ContractPerformance.PF) {
-                assetRegistry.setFinalizedState(assetId, state);
+                assetRegistry.setFinalizedState(assetId, nextState); // state ???
             }
 
             // store event as pending event for future settlement
