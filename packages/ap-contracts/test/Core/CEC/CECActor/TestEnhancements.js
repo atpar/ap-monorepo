@@ -30,7 +30,7 @@ contract('CECActor', (accounts) => {
 
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
-      ...await getDefaultTerms(),
+      ...await getDefaultTerms("CEC"),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
