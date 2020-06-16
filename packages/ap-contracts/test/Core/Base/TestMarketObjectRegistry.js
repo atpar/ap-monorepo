@@ -1,6 +1,6 @@
 const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
+const { setupTestEnvironment } = require('../../helper/setupTestEnvironment');
 
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
 
