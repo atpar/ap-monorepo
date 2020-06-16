@@ -192,22 +192,22 @@ library ANNEncoder {
                 (asset.packedTerms["cycleOfInterestPayment"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleAnchorDateOfRateReset"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleAnchorDateOfRateReset"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleAnchorDateOfRateReset"] >> 8))),
-                (asset.packedTerms["cycleAnchorDateOfRateReset"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfRateReset"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfRateReset"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfRateReset"] >> 8))),
+                (asset.packedTerms["cycleOfRateReset"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleAnchorDateOfScalingIndex"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleAnchorDateOfScalingIndex"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleAnchorDateOfScalingIndex"] >> 8))),
-                (asset.packedTerms["cycleAnchorDateOfScalingIndex"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfScalingIndex"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfScalingIndex"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfScalingIndex"] >> 8))),
+                (asset.packedTerms["cycleOfScalingIndex"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleAnchorDateOfFee"] >> 8))),
-                (asset.packedTerms["cycleAnchorDateOfFee"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfFee"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfFee"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfFee"] >> 8))),
+                (asset.packedTerms["cycleOfFee"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
                 uint256(asset.packedTerms["cycleOfPrincipalRedemption"] >> 24),
@@ -310,9 +310,9 @@ library ANNEncoder {
     {
         if (
             attributeKey == bytes32("cycleOfInterestPayment")
-            || attributeKey == bytes32("cycleAnchorDateOfRateReset")
-            || attributeKey == bytes32("cycleAnchorDateOfScalingIndex")
-            || attributeKey == bytes32("cycleAnchorDateOfFee")
+            || attributeKey == bytes32("cycleRateReset")
+            || attributeKey == bytes32("cycleScalingIndex")
+            || attributeKey == bytes32("cycleFee")
             || attributeKey == bytes32("cycleOfPrincipalRedemption")
         ) {
             return IPS(
