@@ -138,7 +138,7 @@ abstract contract ScheduleRegistry is
 
             require(
                 underlyingAsset.isSet == true,
-                "AssetActor.getNextObservedEvent: ENTRY_DOES_NOT_EXIST"
+                "AssetActor.getNextUnderlyingEvent: UNDERLYING_ASSET_DOES_NOT_EXIST"
             );
 
             State memory underlyingState = underlyingAsset.decodeAndGetState();

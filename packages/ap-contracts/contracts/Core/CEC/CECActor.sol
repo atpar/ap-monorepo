@@ -32,13 +32,16 @@ contract CECActor is BaseActor {
      * @param schedule schedule of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
+     * @param custodian address of the custodian of the collateral
+     * @param underlyingRegistry address of the asset registry where the underlying asset is stored
      */
     function initialize(
         CECTerms calldata terms,
         bytes32[] calldata schedule,
         address engine,
         address admin,
-        address custodian
+        address custodian,
+        address underlyingRegistry
     )
         external
         onlyRegisteredIssuer
@@ -75,7 +78,7 @@ contract CECActor is BaseActor {
             bytes32 underlyingAssetId = terms.contractReference_1.object;
             // get contract role and ownership of referenced underlying asset
             ContractRole underlyingContractRole = ContractRole(assetRegistry.getEnumValueForTermsAttribute(underlyingAssetId, "contractRole"));
-            AssetOwnership memory underlyingAssetOwnership = assetRegistry.getOwnership(underlyingAssetId);
+            AssetOwnership memory underlyingAssetOwnership = IAssetRegistry(underlyingRegistry).getOwnership(underlyingAssetId);
 
             // set ownership of draft according to contract role of underlying
             if (terms.contractRole == ContractRole.BUY && underlyingContractRole == ContractRole.RPA) {
