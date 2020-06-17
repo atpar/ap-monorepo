@@ -68,8 +68,8 @@ function parseToContractTerms(contract, terms) {
   return require('@atpar/actus-solidity/test/helper/parser').parseTermsFromObject(contract, terms);
 }
 
-async function getDefaultTerms () {
-  return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms('PAM');
+async function getDefaultTerms (contract) {
+  return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms(contract);
 }
 
 function getZeroTerms () {

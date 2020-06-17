@@ -1,5 +1,5 @@
 const { expectEvent, shouldFail } = require('openzeppelin-test-helpers');
-const PAMActor = artifacts.require('PAMActor');
+const ANNActor = artifacts.require('ANNActor');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, ZERO_BYTES32, parseTerms } = require('../../../helper/utils');
@@ -7,7 +7,7 @@ const { encodeEvent } = require('../../../helper/scheduleUtils');
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
 
 
-contract('PAMActor', (accounts) => {
+contract('ANNActor', (accounts) => {
 
   const admin = accounts[0];
   const creatorObligor = accounts[1];
@@ -18,7 +18,7 @@ contract('PAMActor', (accounts) => {
   let snapshot;
   
   const getEventTime = async (_event, terms) => {
-    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
+    return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
       _event,
       terms.businessDayConvention,
       terms.calendar,
@@ -33,7 +33,7 @@ contract('PAMActor', (accounts) => {
     this.assetId;
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
-      ...await getDefaultTerms("PAM"),
+      ...await getDefaultTerms("ANN"),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
@@ -45,7 +45,7 @@ contract('PAMActor', (accounts) => {
     this.terms.settlementCurrency = this.PaymentTokenInstance.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
-    this.schedule = await generateSchedule(this.PAMEngineInstance, this.terms);
+    this.schedule = await generateSchedule(this.ANNEngineInstance, this.terms);
 
     snapshot = await createSnapshot();
   });
@@ -55,34 +55,34 @@ contract('PAMActor', (accounts) => {
   });
 
   it('should process next state for an unscheduled event', async () => {
-    const tx = await this.PAMActorInstance.initialize(
+    const tx = await this.ANNActorInstance.initialize(
       this.terms,
       this.schedule,
       this.ownership,
-      this.PAMEngineInstance.address,
+      this.ANNEngineInstance.address,
       admin
     );
 
     this.assetId = tx.logs[0].args.assetId;
 
-    const initialState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const initialState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const event = encodeEvent(8, Number(this.terms.contractDealDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
     
     await mineBlock(Number(eventTime));
 
-    const { tx: txHash } = await this.PAMActorInstance.progressWith(
+    const { tx: txHash } = await this.ANNActorInstance.progressWith(
       web3.utils.toHex(this.assetId),
       event,
       { from: admin }
     );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, PAMActor, 'ProgressedAsset'
+      txHash, ANNActor, 'ProgressedAsset'
     );
-    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const storedNextState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
     // compute expected next state
-    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
+    const projectedNextState = await this.ANNEngineInstance.computeStateForEvent(
       this.terms,
       initialState,
       event,
@@ -96,21 +96,21 @@ contract('PAMActor', (accounts) => {
   });
 
   it('should not process next state for an unscheduled event with a later schedule time', async () => {
-    await this.PAMActorInstance.initialize(
+    await this.ANNActorInstance.initialize(
       this.terms,
       this.schedule,
       this.ownership,
-      this.PAMEngineInstance.address,
+      this.ANNEngineInstance.address,
       admin
     );
 
-    const event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(event, this.terms);
     
     await mineBlock(Number(eventTime));
 
     await shouldFail.reverting.withMessage(
-      this.PAMActorInstance.progressWith(
+      this.ANNActorInstance.progressWith(
         web3.utils.toHex(this.assetId),
         event,
         { from: admin }
