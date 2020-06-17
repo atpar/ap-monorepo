@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 
+import IAssetActorArtifact from '@atpar/ap-contracts/artifacts/IAssetActor.min.json';
 import IAssetRegistryArtifact from '@atpar/ap-contracts/artifacts/IAssetRegistry.min.json';
 import IEngineArtifact from '@atpar/ap-contracts/artifacts/IEngine.min.json';
 import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json';
@@ -21,6 +22,7 @@ import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
 import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
 
+import { IAssetActor } from '@atpar/ap-contracts/ts-bindings/IAssetActor';
 import { IAssetRegistry } from '@atpar/ap-contracts/ts-bindings/IAssetRegistry';
 import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
@@ -47,8 +49,9 @@ import { AddressBook, isAddressBook } from '../types';
 
 export class Contracts {
 
-  private _engine: IEngine;
+  private _assetActor: IAssetActor;
   private _assetRegistry: IAssetRegistry;
+  private _engine: IEngine;
   private _erc20: ERC20;
   private _erc1404: ERC1404;
   private _erc2222: VanillaFDT;
@@ -81,6 +84,8 @@ export class Contracts {
   public constructor (web3: Web3, addressBook: AddressBook) {
     if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
+    // @ts-ignore
+    this._assetActor = new web3.eth.Contract(IAssetActor.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
     // @ts-ignore
     this._assetRegistry = new web3.eth.Contract(IAssetRegistry.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
     // @ts-ignore
@@ -177,6 +182,34 @@ export class Contracts {
     
     assetRegistry.options.address = address;
     return assetRegistry;
+  }
+
+  /**
+   * Instantiates the asset actor contract by with a provided address or contract type  and returns the instance.
+   * @param {string} addressOrContractType address of the asset actor or a supported contract type
+   * @returns {IAssetActor} Instance of IAssetActor
+   */
+  public assetActor (addressOrContractType: string | number): IAssetActor  {
+    const assetActor = this._assetActor.clone();
+    let address = String(addressOrContractType);
+
+    if (!String(addressOrContractType).startsWith('0x')) {
+      const contractType = String(addressOrContractType);
+      if (contractType === '0') {
+        address = this.annActor.options.address;
+      } else if (contractType === '17') {
+        address = this.cecActor.options.address;
+      } else if (contractType === '16') {
+        address = this.cegActor.options.address;
+      } else if (contractType === '1') {
+        address = this.pamActor.options.address;
+      } else {
+        throw new Error('Could return AssetActor contract instance. Unsupported contract type provided.');
+      }
+    }
+    
+    assetActor.options.address = address;
+    return assetActor;
   }
 
   /**
