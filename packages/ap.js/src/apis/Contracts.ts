@@ -85,11 +85,7 @@ export class Contracts {
     if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
     // @ts-ignore
-    this._assetActor = new web3.eth.Contract(IAssetActor.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
-    // @ts-ignore
     this._assetRegistry = new web3.eth.Contract(IAssetRegistry.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
-    // @ts-ignore
-    this._engine = new web3.eth.Contract(IEngineArtifact.abi, undefined, { data: IEngineArtifact.bytecode }) as IEngine;
     // @ts-ignore
     this.annEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
     // @ts-ignore
@@ -130,86 +126,86 @@ export class Contracts {
 
   /**
    * Instantiates ACTUS engine contract by with a provided address or contract type  and returns the instance.
-   * @param {string} addressOrContractType address of the engine or a supported contract type
-   * @returns {IEngine} Instance of IEngine
+   * @param {string} contractType a supported contract type
+   * @param {string} address address of the contract type specific engine
+   * @returns {ANNEngine | CECEngine | CEGEngine | PAMEngine} Instance of contract type specific engine
    */
-  public engine (addressOrContractType: string | number): IEngine {
-    const engine = this._engine.clone();
-    let address = String(addressOrContractType);
-
-    if (!String(addressOrContractType).startsWith('0x')) {
-      const contractType = String(addressOrContractType);
-      if (contractType === '0') {
-        address = this.pamEngine.options.address;
-      } else if (contractType === '1') {
-        address = this.annEngine.options.address;
-      } else if (contractType === '16') {
-        address = this.cegEngine.options.address;
-      } else if (contractType === '17') {
-        address = this.cecEngine.options.address;
-      } else {
-        throw new Error('Could return Engine contract instance. Unsupported contract type provided.');
-      }
+  public engine (contractType: string | number, address: string): ANNEngine | CECEngine | CEGEngine | PAMEngine {
+    if (contractType === '0') {
+      const pamEngine = this.pamEngine.clone();
+      pamEngine.options.address = address;
+      return pamEngine;
+    } else if (contractType === '1') {
+      const annEngine = this.annEngine.clone();
+      annEngine.options.address = address;
+      return annEngine;
+    } else if (contractType === '16') {
+      const cegEngine = this.cegEngine.clone();
+      cegEngine.options.address = address;
+      return cegEngine;
+    } else if (contractType === '17') {
+      const cecEngine = this.cecEngine.clone();
+      cecEngine.options.address = address;
+      return cecEngine;
+    } else {
+      throw new Error('Could return engine contract instance. Unsupported contract type provided.');
     }
-    
-    engine.options.address = address;
-    return engine;
   }
 
   /**
-   * Instantiates the asset registry contract by with a provided address or contract type  and returns the instance.
-   * @param {string} addressOrContractType address of the asset registry or a supported contract type
-   * @returns {IAssetRegistry} Instance of IAssetRegistry
+   * Instantiates asset registry contract by with a provided address or contract type  and returns the instance.
+   * @param {string} contractType a supported contract type
+   * * @param {string} address address of the contract type specific registry
+   * @returns {ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
    */
-  public assetRegistry (addressOrContractType: string | number): IAssetRegistry  {
-    const assetRegistry = this._assetRegistry.clone();
-    let address = String(addressOrContractType);
-
-    if (!String(addressOrContractType).startsWith('0x')) {
-      const contractType = String(addressOrContractType);
-      if (contractType === '0') {
-        address = this.annRegistry.options.address;
-      } else if (contractType === '17') {
-        address = this.cecRegistry.options.address;
-      } else if (contractType === '16') {
-        address = this.cegRegistry.options.address;
-      } else if (contractType === '1') {
-        address = this.pamRegistry.options.address;
-      } else {
-        throw new Error('Could return AssetRegistry contract instance. Unsupported contract type provided.');
-      }
+  public assetRegistry (contractType: string | number, address: string): ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+    if (contractType === '0') {
+      const pamRegistry = this.pamRegistry.clone();
+      pamRegistry.options.address = address;
+      return pamRegistry;
+    } else if (contractType === '1') {
+      const annRegistry = this.annRegistry.clone();
+      annRegistry.options.address = address;
+      return annRegistry;
+    } else if (contractType === '16') {
+      const cegRegistry = this.cegRegistry.clone();
+      cegRegistry.options.address = address;
+      return cegRegistry;
+    } else if (contractType === '17') {
+      const cecRegistry = this.cecRegistry.clone();
+      cecRegistry.options.address = address;
+      return cecRegistry;
+    } else {
+      throw new Error('Could return asset contract contract instance. Unsupported contract type provided.');
     }
-    
-    assetRegistry.options.address = address;
-    return assetRegistry;
   }
 
   /**
-   * Instantiates the asset actor contract by with a provided address or contract type  and returns the instance.
-   * @param {string} addressOrContractType address of the asset actor or a supported contract type
-   * @returns {IAssetActor} Instance of IAssetActor
+   * Instantiates asset actor contract by with a provided address or contract type  and returns the instance.
+   * @param {string} contractType a supported contract type
+   * * @param {string} address address of the contract type specific asset actor
+   * @returns {ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
    */
-  public assetActor (addressOrContractType: string | number): IAssetActor  {
-    const assetActor = this._assetActor.clone();
-    let address = String(addressOrContractType);
-
-    if (!String(addressOrContractType).startsWith('0x')) {
-      const contractType = String(addressOrContractType);
-      if (contractType === '0') {
-        address = this.annActor.options.address;
-      } else if (contractType === '17') {
-        address = this.cecActor.options.address;
-      } else if (contractType === '16') {
-        address = this.cegActor.options.address;
-      } else if (contractType === '1') {
-        address = this.pamActor.options.address;
-      } else {
-        throw new Error('Could return AssetActor contract instance. Unsupported contract type provided.');
-      }
+  public assetActor (contractType: string | number, address: string): ANNActor | CECActor | CEGActor | PAMActor {
+    if (contractType === '0') {
+      const pamActor = this.pamActor.clone();
+      pamActor.options.address = address;
+      return pamActor;
+    } else if (contractType === '1') {
+      const annActor = this.annActor.clone();
+      annActor.options.address = address;
+      return annActor;
+    } else if (contractType === '16') {
+      const cegActor = this.cegActor.clone();
+      cegActor.options.address = address;
+      return cegActor;
+    } else if (contractType === '17') {
+      const cecActor = this.cecActor.clone();
+      cecActor.options.address = address;
+      return cecActor;
+    } else {
+      throw new Error('Could return asset actor contract instance. Unsupported contract type provided.');
     }
-    
-    assetActor.options.address = address;
-    return assetActor;
   }
 
   /**
