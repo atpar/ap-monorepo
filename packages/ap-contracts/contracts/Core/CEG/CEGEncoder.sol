@@ -86,6 +86,11 @@ library CEGEncoder {
             "contractReference_1_object",
             terms.contractReference_1.object
         );
+        storeInPackedTerms(
+            asset,
+            "contractReference_1_object2",
+            terms.contractReference_1.object2
+        );
 
         storeInPackedTerms(
             asset,
@@ -98,6 +103,11 @@ library CEGEncoder {
             asset,
             "contractReference_2_object",
             terms.contractReference_2.object
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_object2",
+            terms.contractReference_2.object2
         );
     }
 
@@ -153,11 +163,13 @@ library CEGEncoder {
 
             ContractReference(
                 asset.packedTerms["contractReference_1_object"],
+                asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
             ),
             ContractReference(
                 asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             )
@@ -274,17 +286,20 @@ library CEGEncoder {
         if (attributeKey == bytes32("contractReference_1")) {
             return ContractReference(
                 asset.packedTerms["contractReference_1_object"],
+                asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
             );
         } else if (attributeKey == bytes32("contractReference_2")) {
             return ContractReference(
                 asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             );
         } else {
             return ContractReference(
+                bytes32(0),
                 bytes32(0),
                 ContractReferenceType(0),
                 ContractReferenceRole(0)

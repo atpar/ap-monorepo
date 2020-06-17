@@ -334,6 +334,7 @@ library ANNEncoder {
     {
         return ContractReference(
             bytes32(0),
+            bytes32(0),
             ContractReferenceType(0),
             ContractReferenceRole(0)
         );

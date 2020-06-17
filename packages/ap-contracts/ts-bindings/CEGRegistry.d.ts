@@ -299,11 +299,13 @@ export class CEGRegistry extends Contract {
         };
         contractReference_1: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };
         contractReference_2: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };
@@ -363,8 +365,18 @@ export class CEGRegistry extends Contract {
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
       cycleOfFee: { i: string; p: string; s: string; isSet: boolean };
-      contractReference_1: { object: string; _type: string; role: string };
-      contractReference_2: { object: string; _type: string; role: string };
+      contractReference_1: {
+        object: string;
+        object2: string;
+        _type: string;
+        role: string;
+      };
+      contractReference_2: {
+        object: string;
+        object2: string;
+        _type: string;
+        role: string;
+      };
     }>;
 
     setTerms(
@@ -405,11 +417,13 @@ export class CEGRegistry extends Contract {
         };
         contractReference_1: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };
         contractReference_2: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };
@@ -456,7 +470,12 @@ export class CEGRegistry extends Contract {
     getContractReferenceValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
-    ): TransactionObject<{ object: string; _type: string; role: string }>;
+    ): TransactionObject<{
+      object: string;
+      object2: string;
+      _type: string;
+      role: string;
+    }>;
   };
   events: {
     GrantedAccess: ContractEvent<{

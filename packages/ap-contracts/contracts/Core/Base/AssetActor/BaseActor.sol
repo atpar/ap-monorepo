@@ -317,8 +317,14 @@ abstract contract BaseActor is
                 "contractReference_1"
             );
             if (contractReference_1.role == ContractReferenceRole.COVE) {
+                bytes32 underlyingAssetId = contractReference_1.object;
+                address underlyingRegistry = address(uint160(uint256(contractReference_1.object2)));
+                require(
+                    IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
+                    "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
+                );
                 return bytes32(
-                    assetRegistry.getIntValueForStateAttribute(contractReference_1.object, "notionalPrincipal")
+                    IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
         }

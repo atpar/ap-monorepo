@@ -94,11 +94,13 @@ export class CECActor extends Contract {
         coverageOfCreditEnhancement: number | string;
         contractReference_1: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };
         contractReference_2: {
           object: string | number[];
+          object2: string | number[];
           _type: number | string;
           role: number | string;
         };

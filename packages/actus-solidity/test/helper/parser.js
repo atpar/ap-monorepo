@@ -92,7 +92,7 @@ const parsePeriodToIP = (period) => {
 
 const parseAttributeValue = (attribute, value) => {
   if (attribute === 'contractReference_1' || attribute === 'contractReference_2') {
-    return { object: toHex(''), _type: 0, role: 0 };
+    return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
   } else if (attribute === 'currency' || attribute === 'settlementCurrency') {
     return '0x0000000000000000000000000000000000000000';
   } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Enum' || ACTUS_DICTIONARY.terms[attribute].type === 'Enum[]') {

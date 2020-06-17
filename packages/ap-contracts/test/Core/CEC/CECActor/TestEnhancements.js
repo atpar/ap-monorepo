@@ -30,7 +30,7 @@ contract('CECActor', (accounts) => {
 
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
-      ...await getDefaultTerms("CEC"),
+      ...await getDefaultTerms('PAM'),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
@@ -74,6 +74,7 @@ contract('CECActor', (accounts) => {
     termsCEC.statusDate = this.terms.statusDate;
     // encode address of underlying in object of first contract reference
     termsCEC.contractReference_1.object = this.assetId;
+    termsCEC.contractReference_1.object2 = web3.utils.padLeft(this.PAMRegistryInstance.address, '64'); // workaround for solc bug (replace with bytes)
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
     const collateralAmount = (new BigNumber(this.terms.notionalPrincipal)).plus(overCollateral);
@@ -139,13 +140,13 @@ contract('CECActor', (accounts) => {
     assert.equal(Number(decodeEvent(ipEvent_2).eventType), 8);
 
     // progress collateral enhancement
-    const xdEvent = await this.PAMRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
+    const xdEvent = await this.CECRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(xdEvent, termsCEC)));
     await this.CECActorInstance.progress(web3.utils.toHex(cecAssetId));
     assert.equal(Number(decodeEvent(xdEvent).eventType), 20);
 
     // progress collateral enhancement
-    const stdEvent = await this.PAMRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
+    const stdEvent = await this.CECRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, termsCEC)));
     await this.CECActorInstance.progress(web3.utils.toHex(cecAssetId));
     assert.equal(Number(decodeEvent(stdEvent).eventType), 21);

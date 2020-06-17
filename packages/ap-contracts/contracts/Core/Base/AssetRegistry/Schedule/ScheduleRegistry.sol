@@ -3,9 +3,12 @@ pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
 import "../BaseRegistryStorage.sol";
+import "../IBaseRegistry.sol";
 import "../AccessControl/AccessControl.sol";
 import "../Terms/TermsRegistry.sol";
+import "../Terms/ITermsRegistry.sol";
 import "../State/StateRegistry.sol";
+import "../State/IStateRegistry.sol";
 import "./IScheduleRegistry.sol";
 
 
@@ -135,15 +138,16 @@ abstract contract ScheduleRegistry is
         // check for COVE
         if (contractReference_1.object != bytes32(0) && contractReference_1.role == ContractReferenceRole.COVE) {
             bytes32 underlyingAssetId = contractReference_1.object;
-            Asset storage underlyingAsset = assets[underlyingAssetId];
+            address underlyingRegistry = address(uint160(uint256(contractReference_1.object2))); // workaround for solc bug (replace with bytes)
 
             require(
-                underlyingAsset.isSet == true,
+                IBaseRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
                 "AssetActor.getNextUnderlyingEvent: UNDERLYING_ASSET_DOES_NOT_EXIST"
             );
 
-            State memory underlyingState = underlyingAsset.decodeAndGetState();
             ContractPerformance creditEventTypeCovered = ContractPerformance(getEnumValueForTermsAttribute(assetId, "creditEventTypeCovered"));
+            ContractPerformance underlyingContractPerformance = ContractPerformance(IStateRegistry(underlyingRegistry).getEnumValueForStateAttribute(underlyingAssetId, "contractPerformance"));
+            uint256 underlyingNonPerformingDate = IStateRegistry(underlyingRegistry).getUintValueForStateAttribute(underlyingAssetId, "nonPerformingDate");
 
             // check if exerciseDate has been triggered
             if (state.exerciseDate > 0) {
@@ -156,26 +160,26 @@ abstract contract ScheduleRegistry is
             // if not check if performance of underlying asset is covered by this asset (PF excluded)
             } else if (
                 creditEventTypeCovered != ContractPerformance.PF
-                && underlyingState.contractPerformance == creditEventTypeCovered
+                && underlyingContractPerformance == creditEventTypeCovered
             ) {
                 // insert exerciseDate event
                 // derive scheduleTimeOffset from performance
-                if (underlyingState.contractPerformance == ContractPerformance.DL) {
+                if (underlyingContractPerformance == ContractPerformance.DL) {
                     return encodeEvent(
                         EventType.XD,
-                        underlyingState.nonPerformingDate
+                        underlyingNonPerformingDate
                     );
-                } else if (underlyingState.contractPerformance == ContractPerformance.DQ) {
-                    IP memory underlyingGracePeriod = getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
+                } else if (underlyingContractPerformance == ContractPerformance.DQ) {
+                    IP memory underlyingGracePeriod = ITermsRegistry(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
                     return encodeEvent(
                         EventType.XD,
-                        getTimestampPlusPeriod(underlyingGracePeriod, underlyingState.nonPerformingDate)
+                        getTimestampPlusPeriod(underlyingGracePeriod, underlyingNonPerformingDate)
                     );
-                } else if (underlyingState.contractPerformance == ContractPerformance.DF) {
-                    IP memory underlyingDelinquencyPeriod = getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
+                } else if (underlyingContractPerformance == ContractPerformance.DF) {
+                    IP memory underlyingDelinquencyPeriod = ITermsRegistry(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
                     return encodeEvent(
                         EventType.XD,
-                        getTimestampPlusPeriod(underlyingDelinquencyPeriod, underlyingState.nonPerformingDate)
+                        getTimestampPlusPeriod(underlyingDelinquencyPeriod, underlyingNonPerformingDate)
                     );
                 }
             }

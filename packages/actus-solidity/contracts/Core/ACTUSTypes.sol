@@ -47,6 +47,7 @@ enum ScalingEffect {_000, I00, _0N0, IN0}
 
 struct ContractReference {
     bytes32 object;
+    bytes32 object2; // workaround for solc bug (replace object and object2 with single bytes attribute)
     ContractReferenceType _type;
     ContractReferenceRole role;
 }

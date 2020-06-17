@@ -65,7 +65,12 @@ export class ScheduleRegistry extends Contract {
     getContractReferenceValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
-    ): TransactionObject<{ object: string; _type: string; role: string }>;
+    ): TransactionObject<{
+      object: string;
+      object2: string;
+      _type: string;
+      role: string;
+    }>;
 
     getCycleValueForTermsAttribute(
       assetId: string | number[],
