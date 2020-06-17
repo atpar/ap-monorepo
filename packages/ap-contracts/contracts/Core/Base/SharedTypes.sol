@@ -1,4 +1,4 @@
-pragma solidity ^0.6.4;
+pragma solidity ^0.6.10;
 
 import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 import "@atpar/actus-solidity/contracts/Core/ACTUSConstants.sol";

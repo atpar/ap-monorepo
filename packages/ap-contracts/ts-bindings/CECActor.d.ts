@@ -106,7 +106,8 @@ export class CECActor extends Contract {
       schedule: (string | number[])[],
       engine: string,
       admin: string,
-      custodian: string
+      custodian: string,
+      underlyingRegistry: string
     ): TransactionObject<void>;
   };
   events: {
