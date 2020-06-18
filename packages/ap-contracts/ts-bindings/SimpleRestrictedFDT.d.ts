@@ -78,8 +78,6 @@ export class SimpleRestrictedFDT extends Contract {
 
     isAdministrator(addressToTest: string): TransactionObject<boolean>;
 
-    isOwner(): TransactionObject<boolean>;
-
     isRestrictionEnabled(): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;

@@ -23,8 +23,6 @@ export class Administratable extends Contract {
   methods: {
     administrators(arg0: string): TransactionObject<boolean>;
 
-    isOwner(): TransactionObject<boolean>;
-
     owner(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;

@@ -1,22 +1,21 @@
 const PAMEngine = artifacts.require('PAMEngine.sol');
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
-const { parseToTestEvent, parseTermsToLifecycleTerms, parseTermsToGeneratingTerms} = require('../../helper/parser');
+const { parseToTestEvent } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 contract('PAMEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
-    const generatingTerms = parseTermsToGeneratingTerms(terms);
     const schedule = [];
       
     schedule.push(... await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       2 // FP
@@ -28,19 +27,19 @@ contract('PAMEngine', () => {
       9 // IPCI
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       8 // IP
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       3 // PR
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
-      generatingTerms,
+      terms,
       segmentStart,
       segmentEnd,
       12 // RR
@@ -55,14 +54,11 @@ contract('PAMEngine', () => {
   });
 
   const evaluateEventSchedule = async (terms, externalDataObject) => {
-    const lifecycleTerms = parseTermsToLifecycleTerms(terms);
-    const generatingTerms = parseTermsToGeneratingTerms(terms);
-
-    const initialState = await this.PAMEngineInstance.computeInitialState(lifecycleTerms);
+    const initialState = await this.PAMEngineInstance.computeInitialState(terms);
     const schedule = await computeEventScheduleSegment(
-      generatingTerms,
-      generatingTerms.contractDealDate,
-      generatingTerms.maturityDate
+      terms,
+      terms.contractDealDate,
+      terms.maturityDate
     );
 
     const evaluatedSchedule = [];
@@ -83,14 +79,14 @@ contract('PAMEngine', () => {
       }
 
       const payoff = await this.PAMEngineInstance.computePayoffForEvent(
-        lifecycleTerms,
+        terms,
         state,
         _event,
         web3.utils.toHex(externalData)
       );
       
       const nextState = await this.PAMEngineInstance.computeStateForEvent(
-        lifecycleTerms, 
+        terms, 
         state, 
         _event, 
         web3.utils.padLeft(web3.utils.toHex(externalData),64)
@@ -99,7 +95,12 @@ contract('PAMEngine', () => {
       state = nextState;
       if (eventType == 16) {console.log(payoff, nextState)}
         
-      const eventTime = await this.PAMEngineInstance.computeEventTimeForEvent(_event, lifecycleTerms);
+      const eventTime = await this.PAMEngineInstance.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        terms.maturityDate
+      );
 
       evaluatedSchedule.push(parseToTestEvent(eventType, eventTime, payoff, state));
     }

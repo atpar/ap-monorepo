@@ -29,8 +29,6 @@ export class Whitelistable extends Contract {
 
     isAdministrator(addressToTest: string): TransactionObject<boolean>;
 
-    isOwner(): TransactionObject<boolean>;
-
     outboundWhitelistsEnabled(
       arg0: number | string,
       arg1: number | string

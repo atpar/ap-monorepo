@@ -1,3 +1,11 @@
+import { ANNEngine } from "@atpar/ap-contracts/ts-bindings/ANNEngine";
+import { CECEngine } from "@atpar/ap-contracts/ts-bindings/CECEngine";
+import { CEGEngine } from "@atpar/ap-contracts/ts-bindings/CEGEngine";
+import { PAMEngine } from "@atpar/ap-contracts/ts-bindings/PAMEngine";
+
+// Union Types
+export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine;
+export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
@@ -8,9 +16,6 @@ export const IP_SCHEDULE_ID = '8';
 export const IPCI_SCHEDULE_ID = '9';
 export const RR_SCHEDULE_ID = '12';
 export const SC_SCHEDULE_ID = '17';
-
-// define zero offset (1) as offset == anchorDate
-export const ZERO_OFFSET = '1';
 
 // IPS
 export interface IPS { 
@@ -28,6 +33,7 @@ export interface IP {
 
 export interface ContractReference {
   object: string | number[];
+  object2: string | number[];
   _type: number | string;
   role: number | string;
 }
@@ -87,6 +93,7 @@ export interface Terms {
   feeRate: number | string;
   nextResetRate: number | string;
   penaltyRate: number | string;
+  delinquencyRate: number | string;
   premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
@@ -109,7 +116,8 @@ export interface Terms {
   contractReference_2: ContractReference;
 }
 
-export interface LifecycleTerms {
+export interface ANNTerms {
+  contractType: string | number;
   calendar: string | number;
   contractRole: string | number;
   dayCountConvention: string | number;
@@ -118,43 +126,11 @@ export interface LifecycleTerms {
   scalingEffect: string | number;
   penaltyType: string | number;
   feeBasis: string | number;
-  creditEventTypeCovered: string | number;
-
+  
   currency: string;
   settlementCurrency: string;
 
   marketObjectCodeRateReset: string | number[];
-
-  statusDate: number | string;
-  maturityDate: number | string;
-
-  notionalPrincipal: number | string;
-  nominalInterestRate: number | string;
-  feeAccrued: number | string;
-  accruedInterest: number | string;
-  rateMultiplier: number | string;
-  rateSpread: number | string;
-  feeRate: number | string;
-  nextResetRate: number | string;
-  penaltyRate: number | string;
-  premiumDiscountAtIED: number | string;
-  priceAtPurchaseDate: number | string;
-  nextPrincipalRedemptionPayment: number | string;
-  coverageOfCreditEnhancement: number | string;
-  lifeCap: number | string;
-  lifeFloor: number | string;
-  periodCap: number | string;
-  periodFloor: number | string;
-
-  gracePeriod: IP;
-  delinquencyPeriod: IP;
-
-  contractReference_1: ContractReference;
-  contractReference_2: ContractReference;
-}
-
-export interface GeneratingTerms {
-  scalingEffect: string | number;
   
   contractDealDate: number | string;
   statusDate: number | string;
@@ -168,54 +144,20 @@ export interface GeneratingTerms {
   cycleAnchorDateOfFee: number | string;
   cycleAnchorDateOfPrincipalRedemption: number | string;
 
-  cycleOfInterestPayment: IPS;
-  cycleOfRateReset: IPS;
-  cycleOfScalingIndex: IPS;
-  cycleOfFee: IPS;
-  cycleOfPrincipalRedemption: IPS;
-
-  gracePeriod: IP;
-  delinquencyPeriod: IP;
-}
-
-export interface CustomTerms {
-  anchorDate: string | number;
-  overwrittenAttributesMap: string;
-  overwrittenTerms: LifecycleTerms;
-}
-
-export interface TemplateTerms {
-  calendar: string | number;
-  contractRole: string | number;
-  dayCountConvention: string | number;
-  businessDayConvention: string | number;
-  endOfMonthConvention: string | number;
-  scalingEffect: string | number;
-  penaltyType: string | number;
-  feeBasis: string | number;
-  creditEventTypeCovered: string | number;
-
-  currency: string;
-  settlementCurrency: string;
-
-  marketObjectCodeRateReset: string | number[];
-
-  statusDateOffset: number | string;
-  maturityDateOffset: number | string;
-
   notionalPrincipal: number | string;
   nominalInterestRate: number | string;
-  feeAccrued: number | string;
   accruedInterest: number | string;
   rateMultiplier: number | string;
   rateSpread: number | string;
-  feeRate: number | string;
   nextResetRate: number | string;
+  feeRate: number | string;
+  feeAccrued: number | string;
   penaltyRate: number | string;
+  delinquencyRate: number | string;
   premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
-  coverageOfCreditEnhancement: number | string;
+
   lifeCap: number | string;
   lifeFloor: number | string;
   periodCap: number | string;
@@ -223,9 +165,71 @@ export interface TemplateTerms {
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
+
+  cycleOfInterestPayment: IPS;
+  cycleOfRateReset: IPS;
+  cycleOfScalingIndex: IPS;
+  cycleOfFee: IPS;
+  cycleOfPrincipalRedemption: IPS;
 }
 
-export interface ExtendedTemplateTerms {
+export interface CECTerms {
+  contractType: string | number;
+  calendar: string | number;
+  contractRole: string | number;
+  dayCountConvention: string | number;
+  businessDayConvention: string | number;
+  endOfMonthConvention: string | number;
+  feeBasis: string | number;
+  creditEventTypeCovered: string | number;
+  
+  statusDate: number | string;
+  maturityDate: number | string;
+
+  notionalPrincipal: number | string;
+  feeRate: number | string;
+  coverageOfCreditEnhancement: number | string;
+
+  contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
+}
+
+export interface CEGTerms {
+  contractType: string | number;
+  calendar: string | number;
+  contractRole: string | number;
+  dayCountConvention: string | number;
+  businessDayConvention: string | number;
+  endOfMonthConvention: string | number;
+  feeBasis: string | number;
+  creditEventTypeCovered: string | number;
+  
+  currency: string;
+  settlementCurrency: string;
+  
+  contractDealDate: number | string;
+  statusDate: number | string;
+  maturityDate: number | string;
+  purchaseDate: number | string;
+  cycleAnchorDateOfFee: number | string;
+
+  notionalPrincipal: number | string;
+  delinquencyRate: number | string;
+  feeAccrued: number | string;
+  feeRate: number | string;
+  priceAtPurchaseDate: number | string;
+  coverageOfCreditEnhancement: number | string;
+
+  gracePeriod: IP;
+  delinquencyPeriod: IP;
+
+  cycleOfFee: IPS;
+
+  contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
+}
+
+export interface PAMTerms {
   contractType: string | number;
   calendar: string | number;
   contractRole: string | number;
@@ -235,52 +239,50 @@ export interface ExtendedTemplateTerms {
   scalingEffect: string | number;
   penaltyType: string | number;
   feeBasis: string | number;
-  creditEventTypeCovered: string | number;
   
   currency: string;
   settlementCurrency: string;
 
   marketObjectCodeRateReset: string | number[];
   
-  contractDealDateOffset: number | string;
-  statusDateOffset: number | string;
-  initialExchangeDateOffset: number | string;
-  maturityDateOffset: number | string;
-  purchaseDateOffset: number | string;
-  capitalizationEndDateOffset: number | string;
-  cycleAnchorDateOfInterestPaymentOffset: number | string;
-  cycleAnchorDateOfRateResetOffset: number | string;
-  cycleAnchorDateOfScalingIndexOffset: number | string;
-  cycleAnchorDateOfFeeOffset: number | string;
-  cycleAnchorDateOfPrincipalRedemptionOffset: number | string;
+  contractDealDate: number | string;
+  statusDate: number | string;
+  initialExchangeDate: number | string;
+  maturityDate: number | string;
+  purchaseDate: number | string;
+  capitalizationEndDate: number | string;
+  cycleAnchorDateOfInterestPayment: number | string;
+  cycleAnchorDateOfRateReset: number | string;
+  cycleAnchorDateOfScalingIndex: number | string;
+  cycleAnchorDateOfFee: number | string;
 
   notionalPrincipal: number | string;
   nominalInterestRate: number | string;
-  feeAccrued: number | string;
   accruedInterest: number | string;
   rateMultiplier: number | string;
   rateSpread: number | string;
-  feeRate: number | string;
   nextResetRate: number | string;
+  feeRate: number | string;
+  feeAccrued: number | string;
   penaltyRate: number | string;
+  delinquencyRate: number | string;
   premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
-  nextPrincipalRedemptionPayment: number | string;
-  coverageOfCreditEnhancement: number | string;
+
   lifeCap: number | string;
   lifeFloor: number | string;
   periodCap: number | string;
   periodFloor: number | string;
 
+  gracePeriod: IP;
+  delinquencyPeriod: IP;
+
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
   cycleOfScalingIndex: IPS;
   cycleOfFee: IPS;
-  cycleOfPrincipalRedemption: IPS;
-
-  gracePeriod: IP;
-  delinquencyPeriod: IP;
 }
+
 
 export function isIP(obj: any): obj is IP {
   if (!obj) { return false; }
@@ -399,136 +401,7 @@ export function isTerms (obj: any): obj is Terms {
   return true;
 }
 
-export function isLifecycleTerms (obj: any): obj is LifecycleTerms {
-  if (!obj) { return false; }
-  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
-  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
-  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
-  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
-  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
-  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
-  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
-  if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
-  if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
-  
-  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
-  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
-  
-  if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
-  
-  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
-  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
-  
-  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
-  if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
-  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
-  if (obj.rateMultiplier == undefined || typeof obj.rateMultiplier !== 'number' && typeof obj.rateMultiplier !== 'string') { return false; }
-  if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
-  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
-  if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
-  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
-  if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
-  if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
-  if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
-  if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
-  if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
-  if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
-  if (obj.periodCap == undefined || typeof obj.periodCap !== 'number' && typeof obj.periodCap !== 'string') { return false; }
-  if (obj.periodFloor == undefined || typeof obj.periodFloor !== 'number' && typeof obj.periodFloor !== 'string') { return false; }
-  
-  if (!isIP(obj.gracePeriod)) { return false; }
-  if (!isIP(obj.delinquencyPeriod)) { return false; }
-  
-  if (!isContractReference(obj.contractReference_1)) { return false; }
-  if (!isContractReference(obj.contractReference_2)) { return false; }
-
-  return true;
-}
-
-export function isGeneratingTerms (obj: any): obj is GeneratingTerms {
-  if (!obj) { return false; }
-  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
- 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
-  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
-  if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
-  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
-  if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
-  if (obj.capitalizationEndDate == undefined || typeof obj.capitalizationEndDate !== 'number' && typeof obj.capitalizationEndDate !== 'string') { return false; }
- 
-  if (obj.cycleAnchorDateOfInterestPayment == undefined || typeof obj.cycleAnchorDateOfInterestPayment !== 'number' && typeof obj.cycleAnchorDateOfInterestPayment !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfRateReset == undefined || typeof obj.cycleAnchorDateOfRateReset !== 'number' && typeof obj.cycleAnchorDateOfRateReset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfScalingIndex == undefined || typeof obj.cycleAnchorDateOfScalingIndex !== 'number' && typeof obj.cycleAnchorDateOfScalingIndex !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfPrincipalRedemption == undefined || typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'number' && typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'string') { return false; }
- 
-  if (!isIPS(obj.cycleOfInterestPayment)) { return false; }
-  if (!isIPS(obj.cycleOfRateReset)) { return false; }
-  if (!isIPS(obj.cycleOfScalingIndex)) { return false; }
-  if (!isIPS(obj.cycleOfFee)) { return false; }
-  if (!isIPS(obj.cycleOfPrincipalRedemption)) { return false; }
- 
-  if (!isIP(obj.gracePeriod)) { return false; }
-  if (!isIP(obj.delinquencyPeriod)) { return false; }
-
-  return true;
-}
-
-export function isCustomTerms (obj: any): obj is CustomTerms {
-  if (!obj) { return false; }
-  if (obj.anchorDate == undefined || typeof obj.anchorDate !== 'number' && typeof obj.anchorDate !== 'string') { return false; }
-  if (obj.overwrittenAttributesMap == undefined || typeof obj.overwrittenAttributesMap !== 'number' && typeof obj.overwrittenAttributesMap !== 'string') { return false; }
-  if (!isLifecycleTerms(obj.overwrittenTerms)) { return false; }
-
-  return true;
-}
-
-export function isTemplateTerms (obj: any): obj is TemplateTerms {
-  if (!obj) { return false; }
-  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
-  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
-  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
-  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
-  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
-  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
-  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
-  if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
-  if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
-
-  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
-  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
-
-  if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
-
-  if (obj.statusDateOffset == undefined || typeof obj.statusDateOffset !== 'number' && typeof obj.statusDateOffset !== 'string') { return false; }
-  if (obj.maturityDateOffset == undefined || typeof obj.maturityDateOffset !== 'number' && typeof obj.maturityDateOffset !== 'string') { return false; }
-
-  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
-  if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
-  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
-  if (obj.rateMultiplier == undefined || typeof obj.rateMultiplier !== 'number' && typeof obj.rateMultiplier !== 'string') { return false; }
-  if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
-  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
-  if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
-  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
-  if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
-  if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
-  if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
-  if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
-  if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
-  if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
-  if (obj.periodCap == undefined || typeof obj.periodCap !== 'number' && typeof obj.periodCap !== 'string') { return false; }
-  if (obj.periodFloor == undefined || typeof obj.periodFloor !== 'number' && typeof obj.periodFloor !== 'string') { return false; }
- 
-  if (!isIP(obj.gracePeriod)) { return false; }
-  if (!isIP(obj.delinquencyPeriod)) { return false; }
-
-  return true;
-}
-
-export function isExtendedTemplateTerms (obj: any): obj is ExtendedTemplateTerms {
+export function isANNTerms (obj: any): obj is ANNTerms {
   if (!obj) { return false; }
   if (obj.contractType == undefined || typeof obj.contractType !== 'string' && typeof obj.contractType !== 'number') { return false; }
   if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
@@ -539,51 +412,174 @@ export function isExtendedTemplateTerms (obj: any): obj is ExtendedTemplateTerms
   if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
   if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
   if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
-  if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
   
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
   
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
-  
-  if (obj.contractDealDateOffset == undefined || typeof obj.contractDealDateOffset !== 'number' && typeof obj.contractDealDateOffset !== 'string') { return false; }
-  if (obj.statusDateOffset == undefined || typeof obj.statusDateOffset !== 'number' && typeof obj.statusDateOffset !== 'string') { return false; }
-  if (obj.initialExchangeDateOffset == undefined || typeof obj.initialExchangeDateOffset !== 'number' && typeof obj.initialExchangeDateOffset !== 'string') { return false; }
-  if (obj.maturityDateOffset == undefined || typeof obj.maturityDateOffset !== 'number' && typeof obj.maturityDateOffset !== 'string') { return false; }
-  if (obj.purchaseDateOffset == undefined || typeof obj.purchaseDateOffset !== 'number' && typeof obj.purchaseDateOffset !== 'string') { return false; }
-  if (obj.capitalizationEndDateOffset == undefined || typeof obj.capitalizationEndDateOffset !== 'number' && typeof obj.capitalizationEndDateOffset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfInterestPaymentOffset == undefined || typeof obj.cycleAnchorDateOfInterestPaymentOffset !== 'number' && typeof obj.cycleAnchorDateOfInterestPaymentOffset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfRateResetOffset == undefined || typeof obj.cycleAnchorDateOfRateResetOffset !== 'number' && typeof obj.cycleAnchorDateOfRateResetOffset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfScalingIndexOffset == undefined || typeof obj.cycleAnchorDateOfScalingIndexOffset !== 'number' && typeof obj.cycleAnchorDateOfScalingIndexOffset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfFeeOffset == undefined || typeof obj.cycleAnchorDateOfFeeOffset !== 'number' && typeof obj.cycleAnchorDateOfFeeOffset !== 'string') { return false; }
-  if (obj.cycleAnchorDateOfPrincipalRedemptionOffset == undefined || typeof obj.cycleAnchorDateOfPrincipalRedemptionOffset !== 'number' && typeof obj.cycleAnchorDateOfPrincipalRedemptionOffset !== 'string') { return false; }
-  
+
+  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
+  if (obj.capitalizationEndDate == undefined || typeof obj.capitalizationEndDate !== 'number' && typeof obj.capitalizationEndDate !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfInterestPayment == undefined || typeof obj.cycleAnchorDateOfInterestPayment !== 'number' && typeof obj.cycleAnchorDateOfInterestPayment !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfRateReset == undefined || typeof obj.cycleAnchorDateOfRateReset !== 'number' && typeof obj.cycleAnchorDateOfRateReset !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfScalingIndex == undefined || typeof obj.cycleAnchorDateOfScalingIndex !== 'number' && typeof obj.cycleAnchorDateOfScalingIndex !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfPrincipalRedemption == undefined || typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'number' && typeof obj.cycleAnchorDateOfPrincipalRedemption !== 'string') { return false; }
+
   if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
-  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
   if (obj.rateMultiplier == undefined || typeof obj.rateMultiplier !== 'number' && typeof obj.rateMultiplier !== 'string') { return false; }
   if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
-  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
+  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
+  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
   if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
-  if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
+
   if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
   if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
   if (obj.periodCap == undefined || typeof obj.periodCap !== 'number' && typeof obj.periodCap !== 'string') { return false; }
   if (obj.periodFloor == undefined || typeof obj.periodFloor !== 'number' && typeof obj.periodFloor !== 'string') { return false; }
-  
+
+  if (!isIP(obj.gracePeriod)) { return false; }
+  if (!isIP(obj.delinquencyPeriod)) { return false; }
+
   if (!isIPS(obj.cycleOfInterestPayment)) { return false; }
   if (!isIPS(obj.cycleOfRateReset)) { return false; }
   if (!isIPS(obj.cycleOfScalingIndex)) { return false; }
   if (!isIPS(obj.cycleOfFee)) { return false; }
   if (!isIPS(obj.cycleOfPrincipalRedemption)) { return false; }
+
+  return true;
+}
+
+export function isCECTerms (obj: any): obj is CECTerms {
+  if (!obj) { return false; }
+  if (obj.contractType == undefined || typeof obj.contractType !== 'string' && typeof obj.contractType !== 'number') { return false; }
+  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
+  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
+  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
+  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
+  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
+  if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
+  if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
   
+  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
+  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
+  
+
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
+  if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
+
+  if (!isContractReference(obj.contractReference_1)) { return false; }
+  if (!isContractReference(obj.contractReference_2)) { return false; }
+
+  return true;
+}
+
+export function isCEGTerms (obj: any): obj is CEGTerms {
+  if (!obj) { return false; }
+  if (obj.contractType == undefined || typeof obj.contractType !== 'string' && typeof obj.contractType !== 'number') { return false; }
+  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
+  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
+  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
+  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
+  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
+  if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
+  if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
+  
+  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
+  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
+  
+  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
+
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
+  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
+  if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
+
   if (!isIP(obj.gracePeriod)) { return false; }
   if (!isIP(obj.delinquencyPeriod)) { return false; }
+
+  if (!isIPS(obj.cycleOfFee)) { return false; }
+
+  if (!isContractReference(obj.contractReference_1)) { return false; }
+  if (!isContractReference(obj.contractReference_2)) { return false; }
+
+  return true;
+}
+
+export function isPAMTerms (obj: any): obj is PAMTerms {
+  if (!obj) { return false; }
+  if (obj.contractType == undefined || typeof obj.contractType !== 'string' && typeof obj.contractType !== 'number') { return false; }
+  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
+  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
+  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
+  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
+  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
+  if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
+  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
+  if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
   
+  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
+  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
+  
+  if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
+
+  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
+  if (obj.capitalizationEndDate == undefined || typeof obj.capitalizationEndDate !== 'number' && typeof obj.capitalizationEndDate !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfInterestPayment == undefined || typeof obj.cycleAnchorDateOfInterestPayment !== 'number' && typeof obj.cycleAnchorDateOfInterestPayment !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfRateReset == undefined || typeof obj.cycleAnchorDateOfRateReset !== 'number' && typeof obj.cycleAnchorDateOfRateReset !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfScalingIndex == undefined || typeof obj.cycleAnchorDateOfScalingIndex !== 'number' && typeof obj.cycleAnchorDateOfScalingIndex !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
+
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
+  if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
+  if (obj.rateMultiplier == undefined || typeof obj.rateMultiplier !== 'number' && typeof obj.rateMultiplier !== 'string') { return false; }
+  if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
+  if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
+  if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
+  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
+  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
+  if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
+  if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+
+  if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
+  if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
+  if (obj.periodCap == undefined || typeof obj.periodCap !== 'number' && typeof obj.periodCap !== 'string') { return false; }
+  if (obj.periodFloor == undefined || typeof obj.periodFloor !== 'number' && typeof obj.periodFloor !== 'string') { return false; }
+
+  if (!isIP(obj.gracePeriod)) { return false; }
+  if (!isIP(obj.delinquencyPeriod)) { return false; }
+
+  if (!isIPS(obj.cycleOfInterestPayment)) { return false; }
+  if (!isIPS(obj.cycleOfRateReset)) { return false; }
+  if (!isIPS(obj.cycleOfScalingIndex)) { return false; }
+  if (!isIPS(obj.cycleOfFee)) { return false; }
+
   return true;
 }

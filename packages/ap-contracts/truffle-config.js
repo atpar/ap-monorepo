@@ -11,7 +11,8 @@ module.exports = {
     'ap-chain': {
       host: "127.0.0.1",
       port: 8545,
-      network_id: "*"
+      network_id: "*",
+      gas: 8000000
     },
     goerli: {
       provider: () =>
@@ -46,7 +47,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.6.4",
+      version: "0.6.10",
       settings: {
         optimizer: {
           enabled: true,

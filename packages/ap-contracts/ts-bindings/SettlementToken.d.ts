@@ -21,9 +21,26 @@ export class SettlementToken extends Contract {
   );
   clone(): SettlementToken;
   methods: {
+    allowance(owner: string, spender: string): TransactionObject<string>;
+
+    approve(
+      spender: string,
+      amount: number | string
+    ): TransactionObject<boolean>;
+
+    balanceOf(account: string): TransactionObject<string>;
+
     decimals(): TransactionObject<string>;
 
-    isOwner(): TransactionObject<boolean>;
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string
+    ): TransactionObject<boolean>;
+
+    increaseAllowance(
+      spender: string,
+      addedValue: number | string
+    ): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
 
@@ -33,20 +50,20 @@ export class SettlementToken extends Contract {
 
     symbol(): TransactionObject<string>;
 
-    transferOwnership(newOwner: string): TransactionObject<void>;
+    totalSupply(): TransactionObject<string>;
 
-    transfer(to: string, tokens: number | string): TransactionObject<boolean>;
-
-    approve(
-      spender: string,
-      tokens: number | string
+    transfer(
+      recipient: string,
+      amount: number | string
     ): TransactionObject<boolean>;
 
     transferFrom(
-      from: string,
-      to: string,
-      tokens: number | string
+      sender: string,
+      recipient: string,
+      amount: number | string
     ): TransactionObject<boolean>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
     approveAndCall(
       spender: string,
@@ -60,18 +77,12 @@ export class SettlementToken extends Contract {
       tokenAddress: string,
       tokens: number | string
     ): TransactionObject<boolean>;
-
-    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
-
-    totalSupply(): TransactionObject<string>;
-
-    balanceOf(tokenOwner: string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{
-      tokenOwner: string;
+      owner: string;
       spender: string;
-      tokens: string;
+      value: string;
       0: string;
       1: string;
       2: string;
@@ -85,7 +96,7 @@ export class SettlementToken extends Contract {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      tokens: string;
+      value: string;
       0: string;
       1: string;
       2: string;

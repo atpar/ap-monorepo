@@ -1,15 +1,21 @@
-const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
+const PAMEngine = artifacts.require('PAMEngine');
 const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
 
+const ANNRegistry = artifacts.require('ANNRegistry');
+const CECRegistry = artifacts.require('CECRegistry');
+const CEGRegistry = artifacts.require('CEGRegistry');
+const PAMRegistry = artifacts.require('PAMRegistry');
+
+const ANNActor = artifacts.require('ANNActor');
+const CECActor = artifacts.require('CECActor');
+const CEGActor = artifacts.require('CEGActor');
+const PAMActor = artifacts.require('PAMActor');
+
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
-const AssetRegistry = artifacts.require('AssetRegistry')
-const AssetActor = artifacts.require('AssetActor');
-const AssetIssuer = artifacts.require('AssetIssuer');
 const Custodian = artifacts.require('Custodian');
-const TemplateRegistry = artifacts.require('TemplateRegistry');
-const TokenizationFactory = artifacts.require('TokenizationFactory')
+const FDTFactory = artifacts.require('FDTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
 
@@ -18,47 +24,56 @@ async function setupTestEnvironment (accounts) {
   const admin = accounts[0];
   const instances = {};
 
-  PAMEngine.numberFormat = 'String';
+  // PAMEngine.numberFormat = 'String';
 
-  // deploy ACTUS Solidity
+  // ACTUS-Solidity
   instances.PAMEngineInstance = await PAMEngine.new();
   instances.ANNEngineInstance = await ANNEngine.new();
   instances.CEGEngineInstance = await CEGEngine.new();
   instances.CECEngineInstance = await CECEngine.new();
 
-  // deploy Core
+  // Asset Registry
+  instances.ANNRegistryInstance = await ANNRegistry.new();
+  instances.CECRegistryInstance = await CECRegistry.new();
+  instances.CEGRegistryInstance = await CEGRegistry.new();
+  instances.PAMRegistryInstance = await PAMRegistry.new();
+
+  // Market Object Registry
   instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
-  instances.TemplateRegistryInstance = await TemplateRegistry.new();
-  instances.AssetRegistryInstance = await AssetRegistry.new(instances.TemplateRegistryInstance.address)
-  instances.AssetActorInstance = await AssetActor.new(
-    instances.AssetRegistryInstance.address,
-    instances.TemplateRegistryInstance.address,
-    instances.MarketObjectRegistryInstance.address
-  );
+
+  // Asset Actor
+  instances.ANNActorInstance = await ANNActor.new(instances.ANNRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+  instances.CECActorInstance = await CECActor.new(instances.CECRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+  instances.CEGActorInstance = await CEGActor.new(instances.CEGRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+  instances.PAMActorInstance = await PAMActor.new(instances.PAMRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+
+  // Custodian
   instances.CustodianInstance = await Custodian.new(
-    instances.AssetActorInstance.address,
-    instances.AssetRegistryInstance.address
+    instances.CECActorInstance.address,
+    instances.CECRegistryInstance.address
   );
 
-  // deploy Issuance
-  instances.AssetIssuerInstance = await AssetIssuer.new(
-    instances.CustodianInstance.address,
-    instances.TemplateRegistryInstance.address,
-    instances.AssetRegistryInstance.address,
-    instances.AssetActorInstance.address
-  );
+  // FDT
+  instances.FDTFactoryInstance = await FDTFactory.new();
 
-  // deploy Tokenization
-  instances.TokenizationFactoryInstance = await TokenizationFactory.new(instances.AssetRegistryInstance.address);
-
-  await instances.AssetActorInstance.registerIssuer(instances.AssetIssuerInstance.address);
-  await instances.AssetActorInstance.registerIssuer(admin);
+  await instances.ANNActorInstance.registerIssuer(admin);
+  await instances.CECActorInstance.registerIssuer(admin);
+  await instances.CEGActorInstance.registerIssuer(admin);
+  await instances.PAMActorInstance.registerIssuer(admin);
 
   return instances;
 }
 
-async function getDefaultTerms () {
-  return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms('PAM');
+function parseToContractTerms(contract, terms) {
+  return require('@atpar/actus-solidity/test/helper/parser').parseTermsFromObject(contract, terms);
+}
+
+async function getDefaultTerms (contract) {
+  return require('@atpar/actus-solidity/test/helper/tests').getDefaultTestTerms(contract);
+}
+
+function getZeroTerms () {
+  return require('./terms/zero-terms.json');
 }
 
 function getComplexTerms () {
@@ -77,7 +92,9 @@ async function deployPaymentToken(owner, holders) {
 
 module.exports = {
   setupTestEnvironment,
+  parseToContractTerms,
   getDefaultTerms,
+  getZeroTerms,
   getComplexTerms,
   deployPaymentToken
 };

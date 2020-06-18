@@ -1,0 +1,17 @@
+[
+  "contractType",
+  "calendar",
+  "contractRole",
+  "dayCountConvention",
+  "businessDayConvention",
+  "endOfMonthConvention",
+  "creditEventTypeCovered",
+  "feeBasis",
+  "statusDate",
+  "maturityDate",
+  "notionalPrincipal",
+  "feeRate",
+  "coverageOfCreditEnhancement",
+  "contractReference_1",
+  "contractReference_2"
+]

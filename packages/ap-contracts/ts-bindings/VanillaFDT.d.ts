@@ -48,8 +48,6 @@ export class VanillaFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    isOwner(): TransactionObject<boolean>;
-
     name(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;

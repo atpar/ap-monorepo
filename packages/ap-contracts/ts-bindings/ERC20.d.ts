@@ -21,6 +21,12 @@ export class ERC20 extends Contract {
   );
   clone(): ERC20;
   methods: {
+    name(): TransactionObject<string>;
+
+    symbol(): TransactionObject<string>;
+
+    decimals(): TransactionObject<string>;
+
     totalSupply(): TransactionObject<string>;
 
     balanceOf(account: string): TransactionObject<string>;

@@ -16,7 +16,6 @@ echo "Starting new ganache-cli instance."
 npx --quiet ganache-cli \
   --port "$ganache_port" \
   --networkId "1994" \
-  --gasPrice "8000000" \
   --gasLimit "8000000" \
   --defaultBalanceEther "5000000000" \
   --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \

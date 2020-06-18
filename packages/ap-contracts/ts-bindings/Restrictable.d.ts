@@ -21,8 +21,6 @@ export class Restrictable extends Contract {
   );
   clone(): Restrictable;
   methods: {
-    isOwner(): TransactionObject<boolean>;
-
     owner(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;
