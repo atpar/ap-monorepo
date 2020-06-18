@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap.js",
-  "version": "0.3.0-beta.0",
+  "version": "0.3.0-beta.1",
   "description": "Typescript Library for interacting with the ACTUS protocol",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -33,7 +33,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "@atpar/ap-contracts": "0.3.0-beta.0",
+    "@atpar/ap-contracts": "0.3.0-beta.1",
     "@types/eth-sig-util": "^2.1.0",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
