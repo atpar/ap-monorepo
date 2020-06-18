@@ -14,6 +14,13 @@ import ANNRegistryArtifact from '@atpar/ap-contracts/artifacts/ANNRegistry.min.j
 import CECRegistryArtifact from '@atpar/ap-contracts/artifacts/CECRegistry.min.json';
 import CEGRegistryArtifact from '@atpar/ap-contracts/artifacts/CEGRegistry.min.json';
 import PAMRegistryArtifact from '@atpar/ap-contracts/artifacts/PAMRegistry.min.json';
+// import ANNEncoderArtifact from '@atpar/ap-contracts/artifacts/ANNEncoder.min.json';
+// import CECEncoderArtifact from '@atpar/ap-contracts/artifacts/CECEncoder.min.json';
+// import CEGEncoderArtifact from '@atpar/ap-contracts/artifacts/CEGEncoder.min.json';
+// import PAMEncoderArtifact from '@atpar/ap-contracts/artifacts/PAMEncoder.min.json';
+// import ScheduleEncoderArtifact from '@atpar/ap-contracts/artifacts/ScheduleEncoder.min.json';
+// import StateEncoderArtifact from '@atpar/ap-contracts/artifacts/StateEncoder.min.json';
+import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
 import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketObjectRegistry.min.json';
 import FDTFactoryArtifact from '@atpar/ap-contracts/artifacts/FDTFactory.min.json';
@@ -35,6 +42,13 @@ import { ANNRegistry } from '@atpar/ap-contracts/ts-bindings/ANNRegistry';
 import { CECRegistry } from '@atpar/ap-contracts/ts-bindings/CECRegistry';
 import { CEGRegistry } from '@atpar/ap-contracts/ts-bindings/CEGRegistry';
 import { PAMRegistry } from '@atpar/ap-contracts/ts-bindings/PAMRegistry';
+// import { ANNEncoder } from '@atpar/ap-contracts/ts-bindings/ANNEncoder';
+// import { CECEncoder } from '@atpar/ap-contracts/ts-bindings/CECEncoder';
+// import { CEGEncoder } from '@atpar/ap-contracts/ts-bindings/CEGEncoder';
+// import { PAMEncoder } from '@atpar/ap-contracts/ts-bindings/PAMEncoder';
+// import { ScheduleEncoder } from '@atpar/ap-contracts/ts-bindings/ScheduleEncoder';
+// import { StateEncoder } from '@atpar/ap-contracts/ts-bindings/StateEncoder';
+import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObjectRegistry';
 import { FDTFactory } from '@atpar/ap-contracts/ts-bindings/FDTFactory';
@@ -69,6 +83,14 @@ export class Contracts {
   public cegRegistry: CEGRegistry;
   public pamRegistry: PAMRegistry;
 
+  // public annEncoder: ANNEncoder;
+  // public cecEncoder: CECEncoder;
+  // public cegEncoder: CEGEncoder;
+  // public pamEncoder: PAMEncoder;
+  // public scheduleEncoder: ScheduleEncoder;
+  // public stateEncoder: StateEncoder;
+  public signedMath: SignedMath;
+
   public custodian: Custodian;
   public marketObjectRegistry: MarketObjectRegistry;
   public fdtFactory: FDTFactory;
@@ -83,17 +105,17 @@ export class Contracts {
     if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
     // @ts-ignore
-    this._assetActor = new web3.eth.Contract(IAssetActor.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
+    this._assetActor = new web3.eth.Contract(IAssetActorArtifact.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
     // @ts-ignore
-    this._assetRegistry = new web3.eth.Contract(IAssetRegistry.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
+    this._assetRegistry = new web3.eth.Contract(IAssetRegistryArtifact.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
     // @ts-ignore
-    this.annEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
+    this.annEngine = new web3.eth.Contract(ANNEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
     // @ts-ignore
-    this.pamEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
+    this.pamEngine = new web3.eth.Contract(PAMEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
     // @ts-ignore
-    this.cegEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CEGEngine, { data: CEGEngineArtifact.bytecode }) as CEGEngine;
+    this.cegEngine = new web3.eth.Contract(CEGEngineArtifact.abi, addressBook.CEGEngine, { data: CEGEngineArtifact.bytecode }) as CEGEngine;
     // @ts-ignore
-    this.cecEngine = new web3.eth.Contract(IEngineArtifact.abi, addressBook.CECEngine, { data: CECEngineArtifact.bytecode }) as CECEngine;
+    this.cecEngine = new web3.eth.Contract(CECEngineArtifact.abi, addressBook.CECEngine, { data: CECEngineArtifact.bytecode }) as CECEngine;
     // @ts-ignore
     this.annActor = new web3.eth.Contract(ANNActorArtifact.abi, addressBook.ANNActor, { data: ANNActorArtifact.bytecode }) as ANNActor;
     // @ts-ignore
@@ -110,12 +132,26 @@ export class Contracts {
     this.cegRegistry = new web3.eth.Contract(CEGRegistryArtifact.abi, addressBook.CEGRegistry, { data: CEGRegistryArtifact.bytecode }) as CEGRegistry;
     // @ts-ignore
     this.pamRegistry = new web3.eth.Contract(PAMRegistryArtifact.abi, addressBook.PAMRegistry, { data: PAMRegistryArtifact.bytecode }) as PAMRegistry;
+    // // @ts-ignore
+    // this.annEncoder = new web3.eth.Contract(ANNEncoderArtifact.abi, addressBook.ANNEncoder, { data: ANNEncoderArtifact.bytecode }) as ANNEncoder;
+    // // @ts-ignore
+    // this.cecEncoder = new web3.eth.Contract(CECEncoderArtifact.abi, addressBook.CECEncoder, { data: CECEncoderArtifact.bytecode }) as CECEncoder;
+    // // @ts-ignore
+    // this.cegEncoder = new web3.eth.Contract(CEGEncoderArtifact.abi, addressBook.CEGEncoder, { data: CEGEncoderArtifact.bytecode }) as CEGEncoder;
+    // // @ts-ignore
+    // this.pamEncoder = new web3.eth.Contract(PAMEncoderArtifact.abi, addressBook.PAMEncoder, { data: PAMEncoderArtifact.bytecode }) as PAMEncoder;
+    // // @ts-ignore
+    // this.scheduleEncoder = new web3.eth.Contract(ScheduleEncoderArtifact.abi, addressBook.ScheduleEncoder, { data: ScheduleEncoderArtifact.bytecode }) as ScheduleEncoder;
+    // // @ts-ignore
+    // this.stateEncoder = new web3.eth.Contract(StateEncoderArtifact.abi, addressBook.StateEncoder, { data: StateEncoderArtifact.bytecode }) as StateEncoder;
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
     this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry, { data: MarketObjectRegistryArtifact.bytecode }) as MarketObjectRegistry,
     // @ts-ignore
     this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
+    // @ts-ignore
+    this.signedMath = new web3.eth.Contract(SignedMathArtifact.abi, addressBook.SignedMath, { data: SignedMathArtifact.bytecode }) as SignedMath;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore
