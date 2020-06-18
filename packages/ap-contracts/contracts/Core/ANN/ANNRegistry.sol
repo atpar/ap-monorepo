@@ -79,15 +79,6 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
         emit UpdatedTerms(assetId);
     }
 
-    function getTermsAsBytes(bytes32 assetId)
-        external
-        view
-        override(ITermsRegistry, TermsRegistry)
-        returns (bytes memory)
-    {
-        return abi.encode(assets[assetId].decodeAndGetANNTerms());
-    }
-
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view

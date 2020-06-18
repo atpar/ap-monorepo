@@ -513,8 +513,6 @@ export class ANNRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
-    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
-
     getEnumValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]

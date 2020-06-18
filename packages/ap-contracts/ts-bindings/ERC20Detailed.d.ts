@@ -13,33 +13,27 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ERC20 extends Contract {
+export class ERC20Detailed extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ERC20;
+  clone(): ERC20Detailed;
   methods: {
-    name(): TransactionObject<string>;
-
-    symbol(): TransactionObject<string>;
-
-    decimals(): TransactionObject<string>;
-
-    totalSupply(): TransactionObject<string>;
-
-    balanceOf(account: string): TransactionObject<string>;
-
-    transfer(
-      recipient: string,
-      amount: number | string
-    ): TransactionObject<boolean>;
-
     allowance(owner: string, spender: string): TransactionObject<string>;
 
     approve(
       spender: string,
+      amount: number | string
+    ): TransactionObject<boolean>;
+
+    balanceOf(account: string): TransactionObject<string>;
+
+    totalSupply(): TransactionObject<string>;
+
+    transfer(
+      recipient: string,
       amount: number | string
     ): TransactionObject<boolean>;
 
@@ -49,15 +43,11 @@ export class ERC20 extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    increaseAllowance(
-      spender: string,
-      addedValue: number | string
-    ): TransactionObject<boolean>;
+    name(): TransactionObject<string>;
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: number | string
-    ): TransactionObject<boolean>;
+    symbol(): TransactionObject<string>;
+
+    decimals(): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{

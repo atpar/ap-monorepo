@@ -23,8 +23,6 @@ export class Ownable extends Contract {
   methods: {
     owner(): TransactionObject<string>;
 
-    isOwner(): TransactionObject<boolean>;
-
     renounceOwnership(): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;

@@ -379,8 +379,6 @@ export class CECRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
-    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
-
     getEnumValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]

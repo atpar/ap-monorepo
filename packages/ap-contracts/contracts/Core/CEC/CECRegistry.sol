@@ -79,15 +79,6 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         emit UpdatedTerms(assetId);
     }
 
-    function getTermsAsBytes(bytes32 assetId)
-        external
-        view
-        override(ITermsRegistry, TermsRegistry)
-        returns (bytes memory)
-    {
-        return abi.encode(assets[assetId].decodeAndGetCECTerms());
-    }
-
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view

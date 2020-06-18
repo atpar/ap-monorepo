@@ -142,8 +142,6 @@ export class ScheduleRegistry extends Contract {
       exerciseAmount: string;
     }>;
 
-    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
-
     getUIntValueForForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]

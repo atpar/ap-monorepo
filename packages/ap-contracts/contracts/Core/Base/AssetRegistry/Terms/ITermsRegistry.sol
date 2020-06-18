@@ -7,11 +7,6 @@ import "../../SharedTypes.sol";
 
 interface ITermsRegistry {
 
-    function getTermsAsBytes(bytes32 assetId)
-        external
-        view
-        returns (bytes memory);
-
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         external
         view

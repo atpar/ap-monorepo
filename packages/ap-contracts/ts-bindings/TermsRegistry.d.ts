@@ -21,8 +21,6 @@ export class TermsRegistry extends Contract {
   );
   clone(): TermsRegistry;
   methods: {
-    getTermsAsBytes(assetId: string | number[]): TransactionObject<string>;
-
     getEnumValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]

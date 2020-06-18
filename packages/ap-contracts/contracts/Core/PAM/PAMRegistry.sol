@@ -79,15 +79,6 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         emit UpdatedTerms(assetId);
     }
 
-    function getTermsAsBytes(bytes32 assetId)
-        external
-        view
-        override(ITermsRegistry, TermsRegistry)
-        returns (bytes memory)
-    {
-        return abi.encode(assets[assetId].decodeAndGetPAMTerms());
-    }
-
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view

@@ -19,7 +19,6 @@ npx --quiet ganache-cli \
   --gasLimit "8000000" \
   --defaultBalanceEther "5000000000" \
   --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
-  --allowUnlimitedContractSize \
   1>/dev/null &
 
 ganache_pid=$!

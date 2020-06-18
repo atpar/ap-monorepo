@@ -56,8 +56,6 @@ export class PAMActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
-    isOwner(): TransactionObject<boolean>;
-
     issuers(arg0: string): TransactionObject<boolean>;
 
     marketObjectRegistry(): TransactionObject<string>;
