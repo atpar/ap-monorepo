@@ -1,3 +1,11 @@
+import { ANNEngine } from "@atpar/ap-contracts/ts-bindings/ANNEngine";
+import { CECEngine } from "@atpar/ap-contracts/ts-bindings/CECEngine";
+import { CEGEngine } from "@atpar/ap-contracts/ts-bindings/CEGEngine";
+import { PAMEngine } from "@atpar/ap-contracts/ts-bindings/PAMEngine";
+
+// Union Types
+export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine;
+export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
@@ -8,9 +16,6 @@ export const IP_SCHEDULE_ID = '8';
 export const IPCI_SCHEDULE_ID = '9';
 export const RR_SCHEDULE_ID = '12';
 export const SC_SCHEDULE_ID = '17';
-
-// define zero offset (1) as offset == anchorDate
-export const ZERO_OFFSET = '1';
 
 // IPS
 export interface IPS { 
@@ -88,6 +93,7 @@ export interface Terms {
   feeRate: number | string;
   nextResetRate: number | string;
   penaltyRate: number | string;
+  delinquencyRate: number | string;
   premiumDiscountAtIED: number | string;
   priceAtPurchaseDate: number | string;
   nextPrincipalRedemptionPayment: number | string;
@@ -394,10 +400,3 @@ export function isTerms (obj: any): obj is Terms {
 
   return true;
 }
-
-
-
-
-
-
-
