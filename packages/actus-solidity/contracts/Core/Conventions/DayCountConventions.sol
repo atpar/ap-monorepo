@@ -2,7 +2,7 @@
 pragma solidity ^0.6.10;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/drafts/SignedSafeMath.sol";
+import "openzeppelin-solidity/contracts/math/SignedSafeMath.sol";
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";

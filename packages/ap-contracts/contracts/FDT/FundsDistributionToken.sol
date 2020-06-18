@@ -2,7 +2,6 @@
 pragma solidity ^0.6.10;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 import "./math/SafeMathUint.sol";
@@ -23,7 +22,7 @@ import "./IFundsDistributionToken.sol";
  * FundsDistributionToken (FDT) implements the accounting logic. FDT-Extension contracts implement methods for depositing and
  * withdrawing funds in Ether or according to a token standard such as ERC20, ERC223, ERC777.
  */
-abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20, ERC20Detailed {
+abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20 {
 
     using SafeMath for uint256;
     using SafeMathUint for uint256;
@@ -42,7 +41,7 @@ abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20, ERC2
         string memory symbol
     )
         public
-        ERC20Detailed(name, symbol, 18)
+        ERC20(name, symbol)
     {}
 
     /**

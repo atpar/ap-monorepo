@@ -2,7 +2,7 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 
 import "./IMarketObjectRegistry.sol";
 import "./MarketObjectRegistryStorage.sol";

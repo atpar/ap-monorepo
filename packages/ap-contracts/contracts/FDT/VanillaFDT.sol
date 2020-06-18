@@ -1,7 +1,7 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "./FundsDistributionToken.sol";
 import "./IFundsDistributionToken.sol";
@@ -43,7 +43,7 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
         );
 
         fundsToken = _fundsToken;
-        _transferOwnership(owner);
+        transferOwnership(owner);
         _mint(owner, initialAmount);
     }
 
