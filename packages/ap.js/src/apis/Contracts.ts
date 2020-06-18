@@ -2,7 +2,6 @@ import Web3 from 'web3';
 
 import IAssetActorArtifact from '@atpar/ap-contracts/artifacts/IAssetActor.min.json';
 import IAssetRegistryArtifact from '@atpar/ap-contracts/artifacts/IAssetRegistry.min.json';
-import IEngineArtifact from '@atpar/ap-contracts/artifacts/IEngine.min.json';
 import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json';
 import CECEngineArtifact from '@atpar/ap-contracts/artifacts/CECEngine.min.json';
 import CEGEngineArtifact from '@atpar/ap-contracts/artifacts/CEGEngine.min.json';
@@ -24,7 +23,6 @@ import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.jso
 
 import { IAssetActor } from '@atpar/ap-contracts/ts-bindings/IAssetActor';
 import { IAssetRegistry } from '@atpar/ap-contracts/ts-bindings/IAssetRegistry';
-import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
 import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
 import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
@@ -51,7 +49,7 @@ export class Contracts {
 
   private _assetActor: IAssetActor;
   private _assetRegistry: IAssetRegistry;
-  private _engine: IEngine;
+
   private _erc20: ERC20;
   private _erc1404: ERC1404;
   private _erc2222: VanillaFDT;
@@ -84,6 +82,8 @@ export class Contracts {
   public constructor (web3: Web3, addressBook: AddressBook) {
     if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
+    // @ts-ignore
+    this._assetActor = new web3.eth.Contract(IAssetActor.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
     // @ts-ignore
     this._assetRegistry = new web3.eth.Contract(IAssetRegistry.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
     // @ts-ignore
@@ -154,11 +154,17 @@ export class Contracts {
 
   /**
    * Instantiates asset registry contract by with a provided address or contract type  and returns the instance.
+   * @param {string} address address of the contract type specific registry
    * @param {string} contractType a supported contract type
-   * * @param {string} address address of the contract type specific registry
    * @returns {ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
    */
-  public assetRegistry (contractType: string | number, address: string): ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+  public assetRegistry (address: string, contractType?: string | number): IAssetRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+    if (contractType == undefined) {
+      const assetRegistry = this._assetRegistry.clone();
+      assetRegistry.options.address = address;
+      return assetRegistry;
+    }
+
     if (contractType === '0') {
       const pamRegistry = this.pamRegistry.clone();
       pamRegistry.options.address = address;
@@ -182,11 +188,17 @@ export class Contracts {
 
   /**
    * Instantiates asset actor contract by with a provided address or contract type  and returns the instance.
+   * @param {string} address address of the contract type specific asset actor
    * @param {string} contractType a supported contract type
-   * * @param {string} address address of the contract type specific asset actor
    * @returns {ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
    */
-  public assetActor (contractType: string | number, address: string): ANNActor | CECActor | CEGActor | PAMActor {
+  public assetActor (address: string, contractType?: string | number): IAssetActor | ANNActor | CECActor | CEGActor | PAMActor {
+    if (contractType == undefined) {
+      const assetActor = this._assetActor.clone();
+      assetActor.options.address = address;
+      return assetActor;
+    }
+
     if (contractType === '0') {
       const pamActor = this.pamActor.clone();
       pamActor.options.address = address;
