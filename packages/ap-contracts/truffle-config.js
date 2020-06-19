@@ -37,8 +37,7 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(require('./mnemonic.js'), 'https://ropsten.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0'),
       network_id: '3',
-      skipDryRun: true,
-      gasPrice: '100000000000'
+      skipDryRun: true
     },
   },
   mocha: {
