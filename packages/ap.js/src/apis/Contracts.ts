@@ -166,25 +166,25 @@ export class Contracts {
    * @param {string} address address of the contract type specific engine
    * @returns {ANNEngine | CECEngine | CEGEngine | PAMEngine} Instance of contract type specific engine
    */
-  public engine (contractType: string | number, address: string): ANNEngine | CECEngine | CEGEngine | PAMEngine {
+  public engine (contractType: string | number, address?: string): ANNEngine | CECEngine | CEGEngine | PAMEngine {
     if (contractType === '0') {
       const pamEngine = this.pamEngine.clone();
-      pamEngine.options.address = address;
+      if (address) { pamEngine.options.address = address; }
       return pamEngine;
     } else if (contractType === '1') {
       const annEngine = this.annEngine.clone();
-      annEngine.options.address = address;
+      if (address) { annEngine.options.address = address; }
       return annEngine;
     } else if (contractType === '16') {
       const cegEngine = this.cegEngine.clone();
-      cegEngine.options.address = address;
+      if (address) { cegEngine.options.address = address; }
       return cegEngine;
     } else if (contractType === '17') {
       const cecEngine = this.cecEngine.clone();
-      cecEngine.options.address = address;
+      if (address) { cecEngine.options.address = address; }
       return cecEngine;
     } else {
-      throw new Error('Could return engine contract instance. Unsupported contract type provided.');
+      throw new Error('Could not return instance of Engine. Unsupported contract type provided.');
     }
   }
 
@@ -194,8 +194,12 @@ export class Contracts {
    * @param {string} contractType a supported contract type
    * @returns {ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
    */
-  public assetRegistry (address: string, contractType?: string | number): IAssetRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
-    if (contractType == undefined) {
+  public assetRegistry (contractType: string | number | null, address?: string): IAssetRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+    if (contractType === null && address == undefined) {
+      throw new Error('Could not return instance of AssetRegistry. At least one parameter is required.');
+    }
+
+    if (contractType === null && address) {
       const assetRegistry = this._assetRegistry.clone();
       assetRegistry.options.address = address;
       return assetRegistry;
@@ -203,22 +207,22 @@ export class Contracts {
 
     if (contractType === '0') {
       const pamRegistry = this.pamRegistry.clone();
-      pamRegistry.options.address = address;
+      if (address) { pamRegistry.options.address = address; }
       return pamRegistry;
     } else if (contractType === '1') {
       const annRegistry = this.annRegistry.clone();
-      annRegistry.options.address = address;
+      if (address) { annRegistry.options.address = address; }
       return annRegistry;
     } else if (contractType === '16') {
       const cegRegistry = this.cegRegistry.clone();
-      cegRegistry.options.address = address;
+      if (address) { cegRegistry.options.address = address; }
       return cegRegistry;
     } else if (contractType === '17') {
       const cecRegistry = this.cecRegistry.clone();
-      cecRegistry.options.address = address;
+      if (address) { cecRegistry.options.address = address; }
       return cecRegistry;
     } else {
-      throw new Error('Could return asset contract contract instance. Unsupported contract type provided.');
+      throw new Error('Could not return instance of AssetRegistry. Unsupported contract type provided.');
     }
   }
 
@@ -228,8 +232,12 @@ export class Contracts {
    * @param {string} contractType a supported contract type
    * @returns {ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
    */
-  public assetActor (address: string, contractType?: string | number): IAssetActor | ANNActor | CECActor | CEGActor | PAMActor {
-    if (contractType == undefined) {
+  public assetActor (contractType: string | number | null, address?: string): IAssetActor | ANNActor | CECActor | CEGActor | PAMActor {
+    if (contractType === null && address == undefined) {
+      throw new Error('Could not return instance of AssetActor. At least one parameter is required.');
+    }
+
+    if (contractType === null && address) {
       const assetActor = this._assetActor.clone();
       assetActor.options.address = address;
       return assetActor;
@@ -237,22 +245,22 @@ export class Contracts {
 
     if (contractType === '0') {
       const pamActor = this.pamActor.clone();
-      pamActor.options.address = address;
+      if (address) { pamActor.options.address = address; }
       return pamActor;
     } else if (contractType === '1') {
       const annActor = this.annActor.clone();
-      annActor.options.address = address;
+      if (address) { annActor.options.address = address; }
       return annActor;
     } else if (contractType === '16') {
       const cegActor = this.cegActor.clone();
-      cegActor.options.address = address;
+      if (address) { cegActor.options.address = address; }
       return cegActor;
     } else if (contractType === '17') {
       const cecActor = this.cecActor.clone();
-      cecActor.options.address = address;
+      if (address) { cecActor.options.address = address; }
       return cecActor;
     } else {
-      throw new Error('Could return asset actor contract instance. Unsupported contract type provided.');
+      throw new Error('Could not instance of AssetActor. Unsupported contract type provided.');
     }
   }
 

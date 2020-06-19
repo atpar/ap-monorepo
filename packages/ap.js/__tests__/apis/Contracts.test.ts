@@ -53,10 +53,37 @@ describe('Contracts', (): void => {
     // expect(initializedAddresses).toEqual(addressBook);
   });
 
-  it('should return instance of IEngine for a given address', async (): Promise<void> => {
+  it('should return instance of an Engine contract', async (): Promise<void> => {
     expect(
-      contracts.engine('0', '0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
-    ).toBe(true);    
+      contracts.engine('0').options.address === contracts.pamEngine.options.address
+    ).toBe(true);
+    expect(
+      contracts.engine('0', '0x0000000000000000000000000000000000000002').options.address === '0x0000000000000000000000000000000000000002'
+    ).toBe(true);
+  });
+
+  it('should return instance of an AssetActor contract', async (): Promise<void> => {
+    expect(
+      contracts.assetActor('0').options.address === contracts.pamActor.options.address
+    ).toBe(true);
+    expect(
+      contracts.assetActor(null, '0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
+    ).toBe(true);
+    expect(
+      contracts.assetActor('0', '0x0000000000000000000000000000000000000002').options.address === '0x0000000000000000000000000000000000000002'
+    ).toBe(true);
+  });
+
+  it('should return instance of an AssetRegistry contract', async (): Promise<void> => {
+    expect(
+      contracts.assetRegistry('0').options.address === contracts.pamRegistry.options.address
+    ).toBe(true);
+    expect(
+      contracts.assetRegistry(null, '0x0000000000000000000000000000000000000001').options.address === '0x0000000000000000000000000000000000000001'
+    ).toBe(true);
+    expect(
+      contracts.assetRegistry('0', '0x0000000000000000000000000000000000000002').options.address === '0x0000000000000000000000000000000000000002'
+    ).toBe(true);
   });
 
   it('should return instance of ERC2222 for a given address', async (): Promise<void> => {
