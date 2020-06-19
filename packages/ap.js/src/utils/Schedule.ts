@@ -1,6 +1,8 @@
 import Web3Utils from 'web3-utils';
 
 import {
+  UEngine,
+  UTerms,
   FP_SCHEDULE_ID,
   PR_SCHEDULE_ID,
   PY_SCHEDULE_ID,
@@ -31,9 +33,9 @@ export function getEpochOffsetForEventType (eventType: string): number {
   return 0;
 }
 
-export async function computeScheduleFromTerms<E, T>(
-  engine: E,
-  terms: T
+export async function computeScheduleFromTerms(
+  engine: UEngine,
+  terms: UTerms,
 ): Promise<string[]> {
   // @ts-ignore
   const { maturityDate } = terms;

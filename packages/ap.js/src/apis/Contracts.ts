@@ -167,19 +167,19 @@ export class Contracts {
    * @returns {ANNEngine | CECEngine | CEGEngine | PAMEngine} Instance of contract type specific engine
    */
   public engine (contractType: string | number, address?: string): ANNEngine | CECEngine | CEGEngine | PAMEngine {
-    if (contractType === '0') {
+    if (String(contractType) === '0') {
       const pamEngine = this.pamEngine.clone();
       if (address) { pamEngine.options.address = address; }
       return pamEngine;
-    } else if (contractType === '1') {
+    } else if (String(contractType) === '1') {
       const annEngine = this.annEngine.clone();
       if (address) { annEngine.options.address = address; }
       return annEngine;
-    } else if (contractType === '16') {
+    } else if (String(contractType) === '16') {
       const cegEngine = this.cegEngine.clone();
       if (address) { cegEngine.options.address = address; }
       return cegEngine;
-    } else if (contractType === '17') {
+    } else if (String(contractType) === '17') {
       const cecEngine = this.cecEngine.clone();
       if (address) { cecEngine.options.address = address; }
       return cecEngine;
@@ -205,19 +205,19 @@ export class Contracts {
       return assetRegistry;
     }
 
-    if (contractType === '0') {
+    if (String(contractType) === '0') {
       const pamRegistry = this.pamRegistry.clone();
       if (address) { pamRegistry.options.address = address; }
       return pamRegistry;
-    } else if (contractType === '1') {
+    } else if (String(contractType) === '1') {
       const annRegistry = this.annRegistry.clone();
       if (address) { annRegistry.options.address = address; }
       return annRegistry;
-    } else if (contractType === '16') {
+    } else if (String(contractType) === '16') {
       const cegRegistry = this.cegRegistry.clone();
       if (address) { cegRegistry.options.address = address; }
       return cegRegistry;
-    } else if (contractType === '17') {
+    } else if (String(contractType) === '17') {
       const cecRegistry = this.cecRegistry.clone();
       if (address) { cecRegistry.options.address = address; }
       return cecRegistry;
@@ -243,19 +243,19 @@ export class Contracts {
       return assetActor;
     }
 
-    if (contractType === '0') {
+    if (String(contractType) === '0') {
       const pamActor = this.pamActor.clone();
       if (address) { pamActor.options.address = address; }
       return pamActor;
-    } else if (contractType === '1') {
+    } else if (String(contractType) === '1') {
       const annActor = this.annActor.clone();
       if (address) { annActor.options.address = address; }
       return annActor;
-    } else if (contractType === '16') {
+    } else if (String(contractType) === '16') {
       const cegActor = this.cegActor.clone();
       if (address) { cegActor.options.address = address; }
       return cegActor;
-    } else if (contractType === '17') {
+    } else if (String(contractType) === '17') {
       const cecActor = this.cecActor.clone();
       if (address) { cecActor.options.address = address; }
       return cecActor;
