@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
-import IAssetActorArtifact from '@atpar/ap-contracts/artifacts/IAssetActor.min.json';
-import IAssetRegistryArtifact from '@atpar/ap-contracts/artifacts/IAssetRegistry.min.json';
+import BaseActorArtifact from '@atpar/ap-contracts/artifacts/BaseActor.min.json';
+import BaseRegistryArtifact from '@atpar/ap-contracts/artifacts/BaseRegistry.min.json';
 import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json';
 import CECEngineArtifact from '@atpar/ap-contracts/artifacts/CECEngine.min.json';
 import CEGEngineArtifact from '@atpar/ap-contracts/artifacts/CEGEngine.min.json';
@@ -28,8 +28,8 @@ import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
 import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
 
-import { IAssetActor } from '@atpar/ap-contracts/ts-bindings/IAssetActor';
-import { IAssetRegistry } from '@atpar/ap-contracts/ts-bindings/IAssetRegistry';
+import { BaseActor } from '@atpar/ap-contracts/ts-bindings/BaseActor';
+import { BaseRegistry } from '@atpar/ap-contracts/ts-bindings/BaseRegistry';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
 import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
 import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
@@ -61,8 +61,8 @@ import { AddressBook, isAddressBook } from '../types';
 
 export class Contracts {
 
-  private _assetActor: IAssetActor;
-  private _assetRegistry: IAssetRegistry;
+  private _assetActor: BaseActor;
+  private _assetRegistry: BaseRegistry;
 
   private _erc20: ERC20;
   private _erc1404: ERC1404;
@@ -105,9 +105,9 @@ export class Contracts {
     if (!isAddressBook(addressBook)) { throw new Error('Malformed AddressBook.'); }
 
     // @ts-ignore
-    this._assetActor = new web3.eth.Contract(IAssetActorArtifact.abi, undefined, { data: IAssetActorArtifact.bytecode }) as IAssetActor;
+    this._assetActor = new web3.eth.Contract(BaseActorArtifact.abi, undefined, { data: BaseActorArtifact.bytecode }) as BaseActor;
     // @ts-ignore
-    this._assetRegistry = new web3.eth.Contract(IAssetRegistryArtifact.abi, undefined, { data: IAssetRegistryArtifact.bytecode }) as IAssetRegistry;
+    this._assetRegistry = new web3.eth.Contract(BaseRegistryArtifact.abi, undefined, { data: BaseRegistryArtifact.bytecode }) as BaseRegistry;
     // @ts-ignore
     this.annEngine = new web3.eth.Contract(ANNEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
     // @ts-ignore
@@ -192,9 +192,9 @@ export class Contracts {
    * Instantiates asset registry contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific registry
    * @param {string} contractType a supported contract type
-   * @returns {ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
+   * @returns {BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
    */
-  public assetRegistry (contractType: string | number | null, address?: string): IAssetRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+  public assetRegistry (contractType: string | number | null, address?: string): BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetRegistry. At least one parameter is required.');
     }
@@ -230,9 +230,9 @@ export class Contracts {
    * Instantiates asset actor contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific asset actor
    * @param {string} contractType a supported contract type
-   * @returns {ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
+   * @returns {BaseActor | ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
    */
-  public assetActor (contractType: string | number | null, address?: string): IAssetActor | ANNActor | CECActor | CEGActor | PAMActor {
+  public assetActor (contractType: string | number | null, address?: string): BaseActor | ANNActor | CECActor | CEGActor | PAMActor {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetActor. At least one parameter is required.');
     }
