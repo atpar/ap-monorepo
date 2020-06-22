@@ -1,4 +1,5 @@
-pragma solidity 0.6.4;
+// "SPDX-License-Identifier: Apache-2.0"
+pragma solidity 0.6.10;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
@@ -16,6 +17,8 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
 
     using SafeMath for uint256;
 
+    
+    constructor(string memory name, string memory symbol) CheckpointedToken(name, symbol) public {}
 
     function createDeposit(bytes32 depositId, uint256 scheduledFor, bool onlySignaled, address token) public {
         Deposit storage deposit = deposits[depositId];

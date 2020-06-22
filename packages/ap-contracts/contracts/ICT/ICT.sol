@@ -1,11 +1,12 @@
-pragma solidity ^0.6.4;
+// "SPDX-License-Identifier: Apache-2.0"
+pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 
-import "../../Core/AssetRegistry/IAssetRegistry.sol";
+import "../Core/Base/AssetRegistry/IAssetRegistry.sol";
 import "./DepositAllocater.sol";
 
 
@@ -18,7 +19,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, Utils {
     bytes32 public assetId;
 
 
-    constructor(IAssetRegistry _assetRegistry) public {
+    constructor(IAssetRegistry _assetRegistry) DepositAllocater("Investment Certificate Token", "ICT") public {
         assetRegistry = _assetRegistry;
     }
 
@@ -38,13 +39,13 @@ contract ICT is IERC20, Ownable, DepositAllocater, Utils {
         );
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-        LifecycleTerms memory terms = assetRegistry.getTerms(assetId);
+        address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
 
         createDeposit(
             _event,
             scheduleTime,
-            (eventType == EventType.RD),
-            terms.currency
+            false, // (eventType == EventType.RD),
+            currency
         );
     }
 

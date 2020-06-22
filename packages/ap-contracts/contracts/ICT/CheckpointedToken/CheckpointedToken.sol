@@ -1,4 +1,5 @@
-pragma solidity 0.6.4;
+// "SPDX-License-Identifier: Apache-2.0"
+pragma solidity 0.6.10;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
@@ -8,6 +9,8 @@ import "./CheckpointedTokenStorage.sol";
 
 
 contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
+
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) public {}
 
     /**
      * @notice returns an array of holders with non zero balance at a given checkpoint
