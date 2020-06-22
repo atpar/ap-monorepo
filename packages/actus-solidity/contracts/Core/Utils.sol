@@ -1,17 +1,18 @@
-pragma solidity ^0.6.4;
+// "SPDX-License-Identifier: Apache-2.0"
+pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
 import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "./ACTUSTypes.sol";
-import "./Conventions/BusinessDayConvention.sol";
+import "./Conventions/BusinessDayConventions.sol";
 
 
 /**
  * @title Utils
  * @notice Utility methods used throughout Core and all Engines
  */
-contract Utils is ACTUSTypes, BusinessDayConvention {
+contract Utils is BusinessDayConventions {
 
     function encodeEvent(EventType eventType, uint256 scheduleTime)
         public
@@ -39,7 +40,7 @@ contract Utils is ACTUSTypes, BusinessDayConvention {
      * @notice Returns the event time for a given schedule time
      * by applying the BDC specified in the terms
      */
-    function computeEventTimeForEvent(bytes32 _event, LifecycleTerms memory terms)
+    function computeEventTimeForEvent(bytes32 _event, BusinessDayConvention bdc, Calendar calendar, uint256 maturityDate)
         public
         pure
         returns (uint256)
@@ -47,7 +48,7 @@ contract Utils is ACTUSTypes, BusinessDayConvention {
         (, uint256 scheduleTime) = decodeEvent(_event);
 
         // handle maturity date
-        return shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate);
+        return shiftEventTime(scheduleTime, bdc, calendar, maturityDate);
     }
 
     /**

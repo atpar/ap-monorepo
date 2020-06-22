@@ -3,7 +3,7 @@ const HDWalletProvider = require("truffle-hdwallet-provider");
 
 module.exports = {
 
-  plugins: ["truffle-security", "solidity-coverage"],
+  plugins: ["truffle-security"],
 
   networks: {
     development: {
@@ -35,7 +35,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.6.4",
+      version: "0.6.10",
       settings: {
         optimizer: {
           enabled: true,

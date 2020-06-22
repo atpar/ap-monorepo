@@ -1,0 +1,28 @@
+{ 
+  "contractType": 16,
+  "calendar": 0,
+  "contractRole": 6,
+  "dayCountConvention": 0,
+  "businessDayConvention": 0,
+  "endOfMonthConvention": 0,
+  "creditEventTypeCovered": 3,
+  "feeBasis": 0,
+  "statusDate": 1356825600,
+  "maturityDate": 1388534400,
+  "capitalizationEndDate": 0,
+  "notionalPrincipal": 0,
+  "feeRate": 0,
+  "coverageOfCreditEnhancement": "1000000000000000000",
+  "contractReference_1": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "object2": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "_type": 1,
+    "role": 3
+  },
+  "contractReference_2": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "object2": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "_type": 0,
+    "role": 4
+  }
+}

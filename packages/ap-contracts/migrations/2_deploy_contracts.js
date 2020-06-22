@@ -6,16 +6,28 @@ const PAMEngine = artifacts.require('PAMEngine');
 const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
 const SignedMath = artifacts.require('SignedMath');
-const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
-const AssetRegistry = artifacts.require('AssetRegistry');
-const TemplateRegistry = artifacts.require('TemplateRegistry');
-const AssetActor = artifacts.require('AssetActor');
-const AssetIssuer = artifacts.require('AssetIssuer');
-const Custodian = artifacts.require('Custodian');
-const TokenizationFactory = artifacts.require('TokenizationFactory');
-const SettlementToken = artifacts.require('SettlementToken');
 
-const { registerTemplate } = require('../test/helper/utils');
+const ANNEncoder = artifacts.require('ANNEncoder');
+const CECEncoder = artifacts.require('CECEncoder');
+const CEGEncoder = artifacts.require('CEGEncoder');
+const PAMEncoder = artifacts.require('PAMEncoder');
+const StateEncoder = artifacts.require('StateEncoder');
+const ScheduleEncoder = artifacts.require('ScheduleEncoder');
+
+const ANNRegistry = artifacts.require('ANNRegistry');
+const CECRegistry = artifacts.require('CECRegistry');
+const CEGRegistry = artifacts.require('CEGRegistry');
+const PAMRegistry = artifacts.require('PAMRegistry');
+
+const ANNActor = artifacts.require('ANNActor');
+const CECActor = artifacts.require('CECActor');
+const CEGActor = artifacts.require('CEGActor');
+const PAMActor = artifacts.require('PAMActor');
+
+const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const Custodian = artifacts.require('Custodian');
+const FDTFactory = artifacts.require('FDTFactory');
+const SettlementToken = artifacts.require('SettlementToken');
 
 
 module.exports = async (deployer, network) => {
@@ -32,57 +44,78 @@ module.exports = async (deployer, network) => {
   await deployer.link(SignedMath, CECEngine);
   instances.CECEngineInstance = await deployer.deploy(CECEngine);
 
-  // Core
+  // Asset Registry
+  instances.ANNEncoderInstance = await deployer.deploy(ANNEncoder);
+  instances.CECEncoderInstance = await deployer.deploy(CECEncoder);
+  instances.CEGEncoderInstance = await deployer.deploy(CEGEncoder);
+  instances.PAMEncoderInstance = await deployer.deploy(PAMEncoder);
+  instances.StateEncoderInstance = await deployer.deploy(StateEncoder);
+  instances.ScheduleEncoderInstance = await deployer.deploy(ScheduleEncoder);
+  
+  await deployer.link(ANNEncoder, ANNRegistry);
+  await deployer.link(StateEncoder, ANNRegistry);
+  await deployer.link(ScheduleEncoder, ANNRegistry);
+  instances.ANNRegistryInstance = await deployer.deploy(ANNRegistry);
+
+  await deployer.link(ANNEncoder, CECRegistry);
+  await deployer.link(StateEncoder, CECRegistry);
+  await deployer.link(ScheduleEncoder, CECRegistry);
+  instances.CECRegistryInstance = await deployer.deploy(CECRegistry);
+    
+  await deployer.link(ANNEncoder, CEGRegistry);
+  await deployer.link(StateEncoder, CEGRegistry);
+  await deployer.link(ScheduleEncoder, CEGRegistry);
+  instances.CEGRegistryInstance = await deployer.deploy(CEGRegistry);
+
+  await deployer.link(ANNEncoder, PAMRegistry);
+  await deployer.link(StateEncoder, PAMRegistry);
+  await deployer.link(ScheduleEncoder, PAMRegistry);
+  instances.PAMRegistryInstance = await deployer.deploy(PAMRegistry);
+
+  // Market Object Registry
   instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
-  instances.TemplateRegistryInstance = await deployer.deploy(TemplateRegistry);
-  instances.AssetRegistryInstance = await deployer.deploy(
-    AssetRegistry,
-    TemplateRegistry.address
-  );
-  instances.AssetActorInstance = await deployer.deploy(
-    AssetActor,
-    AssetRegistry.address,
-    TemplateRegistry.address,
-    MarketObjectRegistry.address
-  );
+
+  // Asset Actor
+  instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, MarketObjectRegistry.address);
+  instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, MarketObjectRegistry.address);
+  instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, MarketObjectRegistry.address);
+  instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, MarketObjectRegistry.address);
+  
+  // Custodian
   instances.CustodianInstance = await deployer.deploy(
     Custodian,
-    AssetActor.address,
-    AssetRegistry.address
+    CECActor.address,
+    CECRegistry.address
   );
 
-  // Issuance
-  instances.AssetIssuerInstance = await deployer.deploy(
-    AssetIssuer,
-    Custodian.address,
-    TemplateRegistry.address,
-    AssetRegistry.address,
-    AssetActor.address
-  );
-
-  // Tokenization
-  instances.TokenizationFactoryInstance = await deployer.deploy(
-    TokenizationFactory,
-    AssetRegistry.address
-  );
-
-  await instances.AssetActorInstance.registerIssuer(AssetIssuer.address);
+  // FDT
+  instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   console.log(`
     Deployments:
     
+      ANNActor: ${ANNActor.address}
+      ANNEncoder: ${ANNEncoder.address}
       ANNEngine: ${ANNEngine.address}
-      AssetActor: ${AssetActor.address}
-      AssetIssuer: ${AssetIssuer.address}
-      AssetRegistry: ${AssetRegistry.address}
+      ANNRegistry: ${ANNRegistry.address}
+      CECActor: ${CECActor.address}
+      CECEncoder: ${CECEncoder.address}
       CECEngine: ${CECEngine.address}
+      CECRegistry: ${CECRegistry.address}
+      CEGActor: ${CEGActor.address}
+      CEGEncoder: ${CEGEncoder.address}
       CEGEngine: ${CEGEngine.address}
+      CEGRegistry: ${CEGRegistry.address}
       Custodian: ${Custodian.address}
+      FDTFactory: ${FDTFactory.address}
       MarketObjectRegistry: ${MarketObjectRegistry.address}
+      PAMActor: ${PAMActor.address}
+      PAMEncoder: ${PAMEncoder.address}
       PAMEngine: ${PAMEngine.address}
-      TemplateRegistry: ${TemplateRegistry.address}
+      PAMRegistry: ${PAMRegistry.address}
+      ScheduleEncoder: ${ScheduleEncoder.address}
       SignedMath: ${SignedMath.address}
-      TokenizationFactory: ${TokenizationFactory.address}
+      StateEncoder: ${StateEncoder.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -90,44 +123,31 @@ module.exports = async (deployer, network) => {
   console.log('    Deployed Settlement Token: ' + SettlementToken.address);
   console.log('');
 
-  // registering standard templates (skip for local)
-  const pathToTemplates = (network === 'ap-chain')
-    ? '../templates/ap-chain/'
-    : (network === 'goerli')
-      ? '../templates/goerli/'
-      : (network === 'ropsten')
-        ? '../templates/ropsten/'
-        : null;
-
-  if (!pathToTemplates) { return; } 
-
-  console.log('    Registering standard templates on network \'' + network + '\':');
-  console.log('');
-
-  for (const templateFileName of fs.readdirSync(path.resolve(__dirname, pathToTemplates))) {
-    if (!templateFileName.includes('.json')) { continue; }
-    const template = JSON.parse(fs.readFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), 'utf8'));
-    template.extendedTemplateTerms.currency = SettlementToken.address;
-    template.templateId = await registerTemplate(instances, template);
-    console.log('      ' + template.name + ': ' + template.templateId);
-    fs.writeFileSync(path.resolve(__dirname, pathToTemplates, templateFileName), JSON.stringify(template, null, 4), 'utf8');
-  }
-
   // update address for ap-chain or goerli deployment
   const deployments = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../', 'deployments.json'), 'utf8'));
   deployments[await web3.eth.net.getId()] = {
+    "ANNActor": ANNActor.address,
+    "ANNEncoder": ANNEncoder.address,
     "ANNEngine": ANNEngine.address,
-    "AssetActor": AssetActor.address,
-    "AssetIssuer": AssetIssuer.address,
-    "AssetRegistry": AssetRegistry.address,
+    "ANNRegistry": ANNRegistry.address,
+    "CECActor": CECActor.address,
+    "CECEncoder": CECEncoder.address,
     "CECEngine": CECEngine.address,
+    "CECRegistry": CECRegistry.address,
+    "CEGActor": CEGActor.address,
+    "CEGEncoder": CEGEncoder.address,
     "CEGEngine": CEGEngine.address,
+    "CEGRegistry": CEGRegistry.address,
     "Custodian": Custodian.address,
+    "FDTFactory": FDTFactory.address,
     "MarketObjectRegistry": MarketObjectRegistry.address,
+    "PAMActor": PAMActor.address,
+    "PAMEncoder": PAMEncoder.address,
     "PAMEngine": PAMEngine.address,
-    "TemplateRegistry": TemplateRegistry.address,
+    "PAMRegistry": PAMRegistry.address,
+    "ScheduleEncoder": ScheduleEncoder.address,
     "SignedMath": SignedMath.address,
-    "TokenizationFactory": TokenizationFactory.address
+    "StateEncoder": StateEncoder.address
   }
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };

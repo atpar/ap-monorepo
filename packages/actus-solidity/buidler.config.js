@@ -1,7 +1,15 @@
+const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-tasks/task-names');
+
+
 usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
 usePlugin('solidity-coverage');
 
+task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
+  const input = await runSuper();
+  input.settings.metadata.useLiteralContent = false;
+  return input;
+});
 
 module.exports = {
   paths: {
@@ -17,7 +25,7 @@ module.exports = {
     }
   },
   solc: {
-    version: '0.6.4',
+    version: '0.6.10',
     optimizer: {
       enabled: true,
       runs: 200

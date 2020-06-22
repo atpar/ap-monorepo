@@ -1,9 +1,16 @@
 import Web3Utils from 'web3-utils';
 
-import { IEngine } from '@atpar/ap-contracts/ts-bindings/IEngine';
-
-import { denormalizeDate, deriveGeneratingTermsFromExtendedTemplateTerms } from './Conversion';
-import { ExtendedTemplateTerms } from '../types';
+import {
+  UEngine,
+  UTerms,
+  FP_SCHEDULE_ID,
+  PR_SCHEDULE_ID,
+  PY_SCHEDULE_ID,
+  IP_SCHEDULE_ID,
+  IPCI_SCHEDULE_ID,
+  RR_SCHEDULE_ID,
+  SC_SCHEDULE_ID
+} from '../types';
 
 
 export function getEpochOffsetForEventType (eventType: string): number {
@@ -26,37 +33,32 @@ export function getEpochOffsetForEventType (eventType: string): number {
   return 0;
 }
 
-export function deriveScheduleFromTemplateSchedule(anchorDate: string | number, templateSchedule: string[]): string[] {
+export async function computeScheduleFromTerms(
+  engine: UEngine,
+  terms: UTerms,
+): Promise<string[]> {
+  // @ts-ignore
+  const { maturityDate } = terms;
   const schedule = [];
 
-  for (const event of templateSchedule) {
-    const { eventType, scheduleTime: scheduleTimeOffset } = decodeEvent(event);
-    schedule.push(
-      encodeEvent(eventType, denormalizeDate(anchorDate, scheduleTimeOffset))
-    );
-  }
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, 0, maturityDate).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, FP_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, PR_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, PY_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, IP_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, IPCI_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, RR_SCHEDULE_ID).call()));
+  // @ts-ignore
+  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, SC_SCHEDULE_ID).call()));
 
-  return schedule;
-}
-
-export async function computeTemplateScheduleFromExtendedTemplateTerms(
-  engine: IEngine,
-  extendedTemplateTerms: ExtendedTemplateTerms
-): Promise<string[]> {
-  const generatingTerms = deriveGeneratingTermsFromExtendedTemplateTerms(extendedTemplateTerms);
-  const { maturityDate } = generatingTerms;
-  const templateSchedule = [];
-
-  templateSchedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(generatingTerms, 0, maturityDate).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 2).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 3).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 6).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 8).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 9).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 12).call()));
-  templateSchedule.push(...(await engine.methods.computeCyclicScheduleSegment(generatingTerms, 0, maturityDate, 17).call()));
-
-  return sortEvents(removeNullEvents(templateSchedule));
+  return sortEvents(removeNullEvents(schedule));
 }
 
 export function sortEvents (_events: string[]): string[] {
