@@ -10,6 +10,7 @@ import "./Ownership/OwnershipRegistry.sol";
 import "./Terms/TermsRegistry.sol";
 import "./State/StateRegistry.sol";
 import "./Schedule/ScheduleRegistry.sol";
+import "./AccessControl/Whitelist.sol";
 
 
 /**
@@ -22,7 +23,8 @@ abstract contract BaseRegistry is
     StateRegistry,
     ScheduleRegistry,
     OwnershipRegistry,
-    IBaseRegistry
+    IBaseRegistry,
+    Whitelist
 {
     event RegisteredAsset(bytes32 assetId);
     event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);

@@ -45,6 +45,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
     )
         external
         override
+        onlyWhitelisted
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetCERTFTerms(terms);
