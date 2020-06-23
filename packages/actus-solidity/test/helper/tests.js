@@ -41,7 +41,7 @@ function compareTestResults (actualResults, expectedResults) {
       const decimals = (numberOfDecimals(actualEvent.eventValue) < numberOfDecimals(expectedEvent.eventValue)) 
         ? numberOfDecimals(actualEvent.eventValue)
         : numberOfDecimals(expectedEvent.eventValue);
-      actualEvent.eventType = roundToDecimals(actualEvent.eventValue, decimals);
+      actualEvent.eventValue = roundToDecimals(actualEvent.eventValue, decimals);
       expectedEvent.eventValue = roundToDecimals(expectedEvent.eventValue, decimals);
     }
     if (expectedEvent.notionalPrincipal) {
@@ -51,63 +51,70 @@ function compareTestResults (actualResults, expectedResults) {
       actualEvent.notionalPrincipal = roundToDecimals(actualEvent.notionalPrincipal, decimals);
       expectedEvent.notionalPrincipal = roundToDecimals(expectedEvent.notionalPrincipal, decimals);
     }
+    if (expectedEvent.nominalInterestRate) {
+      const decimals = (numberOfDecimals(actualEvent.nominalInterestRate) < numberOfDecimals(expectedEvent.nominalInterestRate)) 
+        ? numberOfDecimals(actualEvent.nominalInterestRate)
+        : numberOfDecimals(expectedEvent.nominalInterestRate);
+      actualEvent.nominalInterestRate = roundToDecimals(actualEvent.nominalInterestRate, decimals);
+      expectedEvent.nominalInterestRate = roundToDecimals(expectedEvent.nominalInterestRate, decimals);
+    }
     if (expectedEvent.accruedInterest) {
       const decimals = (numberOfDecimals(actualEvent.accruedInterest) < numberOfDecimals(expectedEvent.accruedInterest)) 
         ? numberOfDecimals(actualEvent.accruedInterest)
         : numberOfDecimals(expectedEvent.accruedInterest);
       actualEvent.accruedInterest = roundToDecimals(actualEvent.accruedInterest, decimals);
-      expectEvent.accruedInterest = roundToDecimals(expectedEvent.accruedInterest, decimals);
+      expectedEvent.accruedInterest = roundToDecimals(expectedEvent.accruedInterest, decimals);
     }
     if (expectedEvent.quantity) {
       const decimals = (numberOfDecimals(actualEvent.quantity) < numberOfDecimals(expectedEvent.quantity)) 
         ? numberOfDecimals(actualEvent.quantity)
         : numberOfDecimals(expectedEvent.quantity);
       actualEvent.accruedInterest = roundToDecimals(actualEvent.quantity, decimals);
-      expectEvent.accruedInterest = roundToDecimals(expectedEvent.quantity, decimals);
+      expectedEvent.accruedInterest = roundToDecimals(expectedEvent.quantity, decimals);
     }
     if (expectedEvent.exerciseAmount) {
       const decimals = (numberOfDecimals(actualEvent.exerciseAmount) < numberOfDecimals(expectedEvent.exerciseAmount)) 
         ? numberOfDecimals(actualEvent.exerciseAmount)
         : numberOfDecimals(expectedEvent.exerciseAmount);
       actualEvent.exerciseAmount = roundToDecimals(actualEvent.exerciseAmount, decimals);
-      expectEvent.exerciseAmount = roundToDecimals(expectedEvent.exerciseAmount, decimals);
+      expectedEvent.exerciseAmount = roundToDecimals(expectedEvent.exerciseAmount, decimals);
     }
     if (expectedEvent.exerciseQuantity) {
       const decimals = (numberOfDecimals(actualEvent.exerciseQuantity) < numberOfDecimals(expectedEvent.exerciseQuantity)) 
         ? numberOfDecimals(actualEvent.exerciseQuantity)
         : numberOfDecimals(expectedEvent.exerciseQuantity);
       actualEvent.exerciseQuantity = roundToDecimals(actualEvent.exerciseQuantity, decimals);
-      expectEvent.exerciseQuantity = roundToDecimals(expectedEvent.exerciseQuantity, decimals);
+      expectedEvent.exerciseQuantity = roundToDecimals(expectedEvent.exerciseQuantity, decimals);
     }
     if (expectedEvent.exerciseQuantityOrdered) {
       // const decimals = (numberOfDecimals(actualEvent.exerciseQuantityOrdered) < numberOfDecimals(expectedEvent.exerciseQuantityOrdered)) 
       //   ? numberOfDecimals(actualEvent.exerciseQuantityOrdered)
       //   : numberOfDecimals(expectedEvent.exerciseQuantityOrdered);
       // actualEvent.exerciseQuantityOrdered = roundToDecimals(actualEvent.exerciseQuantityOrdered, decimals);
-      // expectEvent.exerciseQuantityOrdered = roundToDecimals(expectedEvent.exerciseQuantityOrdered, decimals);
+      // expectedEvent.exerciseQuantityOrdered = roundToDecimals(expectedEvent.exerciseQuantityOrdered, decimals);
       actualEvent.exerciseQuantityOrdered = 0;
-      expectEvent.exerciseQuantityOrdered = 0;
+      expectedEvent.exerciseQuantityOrdered = 0;
     }
     if (expectedEvent.marginFactor) {
       const decimals = (numberOfDecimals(actualEvent.marginFactor) < numberOfDecimals(expectedEvent.marginFactor)) 
         ? numberOfDecimals(actualEvent.marginFactor)
         : numberOfDecimals(expectedEvent.marginFactor);
       actualEvent.marginFactor = roundToDecimals(actualEvent.marginFactor, decimals);
-      expectEvent.marginFactor = roundToDecimals(expectedEvent.marginFactor, decimals);
+      expectedEvent.marginFactor = roundToDecimals(expectedEvent.marginFactor, decimals);
     }
     if (expectedEvent.adjustmentFactor) {
       const decimals = (numberOfDecimals(actualEvent.adjustmentFactor) < numberOfDecimals(expectedEvent.adjustmentFactor)) 
         ? numberOfDecimals(actualEvent.adjustmentFactor)
         : numberOfDecimals(expectedEvent.adjustmentFactor);
       actualEvent.adjustmentFactor = roundToDecimals(actualEvent.adjustmentFactor, decimals);
-      expectEvent.adjustmentFactor = roundToDecimals(expectedEvent.adjustmentFactor, decimals);
+      expectedEvent.adjustmentFactor = roundToDecimals(expectedEvent.adjustmentFactor, decimals);
     }
     if (expectedEvent.couponAmountFixed) {
       const decimals = (numberOfDecimals(actualEvent.couponAmountFixed) < numberOfDecimals(expectedEvent.couponAmountFixed)) 
         ? numberOfDecimals(actualEvent.couponAmountFixed)
         : numberOfDecimals(expectedEvent.couponAmountFixed);
       actualEvent.couponAmountFixed = roundToDecimals(actualEvent.couponAmountFixed, decimals);
-      expectEvent.couponAmountFixed = roundToDecimals(expectedEvent.couponAmountFixed, decimals);
+      expectedEvent.couponAmountFixed = roundToDecimals(expectedEvent.couponAmountFixed, decimals);
     }
 
     assert.deepEqual(actualEvent, expectedEvent);
