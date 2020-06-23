@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
 
-
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) for CERTF contracts
@@ -17,7 +16,7 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_AD (
-        CERTFTerms memory terms,
+        CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -57,7 +56,7 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_IED (
-        CERTFTerms memory terms,
+        CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -85,7 +84,20 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        // TODO
+
+        // Assumes that couponType = "FIX"
+        uint256 timeSinceLCD = yearFraction(
+            shiftCalcTime(state.lastCouponDay, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+            terms.dayCountConvention,
+            terms.maturityDate);
+
+        state.couponAmountFixed = timeSinceLCD.floatMult(terms.nomincalPrice).floatMult(terms.couponRate)
+        
+        
+        state.lastCouponDay = scheduleTime;
+        state.statusDate = scheduleTime;
+
         return state;
     }
 
@@ -96,7 +108,7 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_CPD (
-        CERTFTerms memory terms,
+        CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -105,7 +117,8 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        // TODO
+        state.couponAmountFixed = 0;
+        state.statusDate = scheduleTime;
         return state;
     }
 
@@ -119,13 +132,17 @@ contract CERTFSTF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes32 externalData
     )
         internal
         pure
         returns (State memory)
     {
+
         // TODO
+        
+        state.statusDate = scheduleTime;
+
         return state;
     }
 
@@ -135,18 +152,21 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_XO (
-        CERTFTerms memory terms,
+        CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes32 externalData
     )
         internal
         pure
         returns (State memory)
     {
         // TODO
-        // int256 exerciseQuantityOrdered = state.quantity;
-        // exerciseQuantityOrdered.min(state.exerciseQuantityOrdered.add(state.exerciseQuantity))
+        int256 externalQuantity = int256(uint256(externalData)); // TODO ??
+        state.exerciseQuantityOrdered = state.quantity.min(state.exerciseQuantityOrdered.add(externalQuantity))
+
+        state.statusDate = scheduleTime;
+
         return state;
     }
 
@@ -165,10 +185,8 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-
-        // TODO
-        // state.exerciseQuantity = state.exerciseQuantityOrdered; //??
-        // state.exerciseQuantityOrdered = 0;
+        state.exerciseQuantity = state.exerciseQuantityOrdered;
+        state.exerciseQuantityOrdered = 0;
         state.statusDate = scheduleTime;
         return state;
     }
@@ -188,8 +206,17 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
+        state.quantity = state.quantity.sub(state.exerciseQuantity)
+        state.exerciseQuantity = 0;
+        state.exerciseAmount = 0;
 
-        // TODO
+        if (state.maturityDate != 0 && state.terminationDate == 0) {
+            state.contractPerformance = ContractPerformance.MD;
+        } else if (state.terminationDate != 0) {
+            state.contractPerformance = ContractPerformance.TD;
+        } // else they are both 0 so keep prf the same
+
+        state.statusDate = scheduleTime;
         return state;
     }
 
@@ -208,8 +235,7 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        // TODO
-        // state.exerciseQuantity = 0; //??
+        state.quantity = 0;
         state.terminationDate = scheduleTime;
         state.statusDate = scheduleTime;
         return state;
@@ -221,7 +247,7 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_MD (
-        CERTFTerms memory terms,
+        CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -230,8 +256,7 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        // TODO
-        // state.exerciseQuantityOrdered = state.quantity ??
+        state.exerciseQuantity = state.quantity
         state.maturityDate = scheduleTime;
         state.statusDate = scheduleTime;
         return state;
@@ -260,7 +285,7 @@ contract CERTFSTF is Core {
     }
 
     function _yearFraction_STF (
-        PAMTerms memory terms,
+        CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime
     )

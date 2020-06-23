@@ -68,7 +68,7 @@ contract CERTPOF is Core {
         return (
             roleSign(terms.contractRole)
             * state.quantity
-            * state.couponAmountFixed // TODO ??
+            * state.couponAmountFixed
         )
     }
 
@@ -88,8 +88,8 @@ contract CERTPOF is Core {
     {
         return (
             roleSign(terms.contractRole)
-            * state.exerciseQuantity // TODO ??
-            * state.exerciseAmount // TODO ??
+            * state.exerciseQuantity
+            * state.exerciseAmount
         )
     }
 
@@ -110,7 +110,7 @@ contract CERTPOF is Core {
         return (
             roleSign(terms.contractRole)
             * state.quantity
-            * state.exerciseAmount // TODO ??
+            * state.exerciseAmount
         )
     }
 
@@ -135,7 +135,7 @@ contract CERTPOF is Core {
     }
 
     function _yearFraction_STF (
-        PAMTerms memory terms,
+        CERTF memory terms,
         State memory state,
         uint256 scheduleTime
     )
