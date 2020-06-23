@@ -95,21 +95,17 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         returns (State memory)
     {
         State memory state;
-
-        // TODO 
         
+        state.quantity = 0;
+        state.exerciseQuantityOrdered = 0;
+        state.exerciseQuantity = 0;
+        state.marginFactor = 1;
+        state.adjustmentFactor = 1;
+        state.lastCouponDay = terms.issueDate;
+        state.couponAmountFixed = 0;
+
         state.contractPerformance = ContractPerformance.PF;
         state.statusDate = terms.statusDate;
-        // state.maturityDate = terms.maturityDate;
-        // state.notionalPrincipal = terms.notionalPrincipal;
-        // state.nominalInterestRate = terms.nominalInterestRate;
-        // state.accruedInterest = terms.accruedInterest;
-        // state.feeAccrued = terms.feeAccrued;
-
-        state.exerciseAmount = terms.exerciseAmount;
-        // state.exerciseQuantity = terms.exerciseQuantity;
-        // state.exerciseQuantityOrdered = terms.exerciseQuantityOrdered;
-        // state.terminationDate = terms.terminationDate;
 
         return state;
     }

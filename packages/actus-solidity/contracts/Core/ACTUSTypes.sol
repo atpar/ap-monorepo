@@ -76,12 +76,12 @@ struct State {
     int256 exerciseAmount;
     
     int256 quantity;
-    // int256 couponAmountFixed;
-    // int256 exerciseQuantity;
-    // int256 exerciseQuantityOrdered;
-    // int256 lastCouponDay;
-    // int256 marginFactor;
-    // int256 adjustmentFactor;
+    int256 couponAmountFixed;
+    int256 exerciseQuantity;
+    int256 exerciseQuantityOrdered;
+    int256 lastCouponDay;
+    int256 marginFactor;
+    int256 adjustmentFactor;
 }
 
 struct ANNTerms {
