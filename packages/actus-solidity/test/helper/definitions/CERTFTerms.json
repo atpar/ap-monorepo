@@ -9,6 +9,7 @@
   "couponType",
   "currency",
   "settlementCurrency",
+  "contractDealDate",
   "statusDate",
   "initialExchangeDate",
   "maturityDate",

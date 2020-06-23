@@ -18,31 +18,31 @@ contract('PAMEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      2 // FP
+      3 // FP
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      9 // IPCI
+      10 // IPCI
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      8 // IP
+      9 // IP
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      3 // PR
+      4 // PR
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      12 // RR
+      13 // RR
     ));
     
     return sortEvents(schedule);

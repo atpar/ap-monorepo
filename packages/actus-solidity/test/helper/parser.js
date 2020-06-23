@@ -6,6 +6,7 @@ const ACTUS_DICTIONARY = require('actus-dictionary/actus-dictionary.json');
 const ANN_TERMS = require('./definitions/ANNTerms.json');
 const CEC_TERMS = require('./definitions/CECTerms.json');
 const CEG_TERMS = require('./definitions/CEGTerms.json');
+const CERTF_TERMS = require('./definitions/CERTFTerms.json');
 const PAM_TERMS = require('./definitions/PAMTerms.json');
 
 const PRECISION = 18; // solidity precision
@@ -24,6 +25,8 @@ const toHex = (value) => {
 }
 
 const getIndexOfAttribute = (attribute, value) => {
+  if (attribute === 'contractType' && String(value) === 'CERTF') { return 18; } // workaround
+
   if (ACTUS_DICTIONARY.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
   const allowedValues = ACTUS_DICTIONARY.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
   if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
@@ -84,8 +87,8 @@ const parsePeriodToIP = (period) => {
 
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y'];
 
-  let i = String(cycle).slice(0, -2);
-  let p = pOptions.indexOf(String(cycle).slice(-2, -1));
+  let i = String(period).slice(0, -1);
+  let p = pOptions.indexOf(String(period).slice(-1));
 
   return { i: i, p: p, isSet: true };
 }
@@ -120,12 +123,12 @@ const parseResultsFromObject = (schedule) => {
 
     if (eventTypeIndex === 0) { continue; } // filter out AD events
     parsedResults.push({
-      eventDate: new Date(event['eventDate'] + 'Z').toISOString(),
+      eventDate: new Date(event.eventDate + 'Z').toISOString(),
       eventType: eventTypeIndex.toString(),
-      eventValue: Number(event['eventValue']),
-      notionalPrincipal: Number(event['notionalPrincipal']),
-      nominalInterestRate: Number(event['nominalInterestRate']),
-      accruedInterest: Number(event['accruedInterest']),
+      eventValue: Number(event.eventValue),
+      notionalPrincipal: Number(event.notionalPrincipal),
+      nominalInterestRate: Number(event.nominalInterestRate),
+      accruedInterest: Number(event.accruedInterest),
     });
   }
 
@@ -137,9 +140,26 @@ function parseToTestEvent (eventType, eventTime, payoff, state) {
     eventDate: unixToISO(eventTime),
     eventType: String(eventType),
     eventValue: fromPrecision(payoff),
-    notionalPrincipal: fromPrecision(state['notionalPrincipal']),
-    nominalInterestRate: fromPrecision(state['nominalInterestRate']),
-    accruedInterest: fromPrecision(state['accruedInterest']),
+    notionalPrincipal: fromPrecision(state.notionalPrincipal),
+    nominalInterestRate: fromPrecision(state.nominalInterestRate),
+    accruedInterest: fromPrecision(state.accruedInterest),
+  };
+}
+
+function parseToTestEventCERTF (eventType, eventTime, payoff, state) {
+  return {
+    eventDate: unixToISO(eventTime),
+    eventType: String(eventType),
+    eventValue: fromPrecision(payoff),
+    quantity: fromPrecision(state.quantity),
+    exerciseAmount: fromPrecision(state.exerciseAmount),
+    exerciseQuantity: fromPrecision(state.exerciseQuantity),
+    // exerciseQuantityOrdered: fromPrecision(state.exerciseQuantityOrdered),
+    marginFactor: fromPrecision(state.marginFactor),
+    adjustmentFactor: fromPrecision(state.adjustmentFactor),
+    couponAmountFixed: fromPrecision(state.couponAmountFixed),
+    contractPerformance: String(state.contractPerformance),
+    statusDate: unixToISO(state.statusDate),
   };
 }
 
@@ -173,6 +193,15 @@ const parseCEGTermsFromObject = (terms) => {
   return parsedTerms;
 }
 
+const parseCERTFTermsFromObject = (terms) => {
+  const parsedTerms = {};
+
+  for (const attribute of CERTF_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+  }
+
+  return parsedTerms;
+}
 
 const parsePAMTermsFromObject = (terms) => { 
   const parsedTerms = {};
@@ -191,6 +220,8 @@ const parseTermsFromObject = (contract, terms) => {
     return parseCECTermsFromObject(terms);
   } else if (contract === 'CEG') {
     return parseCEGTermsFromObject(terms);
+  } else if (contract === 'CERTF') {
+    return parseCERTFTermsFromObject(terms);
   } else if (contract === 'PAM') {
     return parsePAMTermsFromObject(terms);
   }
@@ -206,6 +237,7 @@ module.exports = {
   parseTermsFromObject,
   parseResultsFromObject,
   parseToTestEvent,
+  parseToTestEventCERTF,
   fromPrecision,
   unixToISO,
   roundToDecimals,

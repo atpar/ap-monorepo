@@ -27,7 +27,6 @@ async function getTestCases (contract) {
 
 async function getDefaultTestTerms (contract) {
   const testCases = await getTestCases(contract);
-
   return testCases[Object.keys(testCases)[0]].terms;
 }
 
@@ -37,34 +36,81 @@ function compareTestResults (actualResults, expectedResults) {
   for (let i = 0; i < numberOfEvents; i++) {
     const actualEvent = actualResults[i];
     const expectedEvent = expectedResults[i];
+    
+    if (expectedEvent.eventValue) {
+      const decimals = (numberOfDecimals(actualEvent.eventValue) < numberOfDecimals(expectedEvent.eventValue)) 
+        ? numberOfDecimals(actualEvent.eventValue)
+        : numberOfDecimals(expectedEvent.eventValue);
+      actualEvent.eventType = roundToDecimals(actualEvent.eventValue, decimals);
+      expectedEvent.eventValue = roundToDecimals(expectedEvent.eventValue, decimals);
+    }
+    if (expectedEvent.notionalPrincipal) {
+      const decimals = (numberOfDecimals(actualEvent.notionalPrincipal) < numberOfDecimals(expectedEvent.notionalPrincipal)) 
+        ? numberOfDecimals(actualEvent.notionalPrincipal)
+        : numberOfDecimals(expectedEvent.notionalPrincipal);
+      actualEvent.notionalPrincipal = roundToDecimals(actualEvent.notionalPrincipal, decimals);
+      expectedEvent.notionalPrincipal = roundToDecimals(expectedEvent.notionalPrincipal, decimals);
+    }
+    if (expectedEvent.accruedInterest) {
+      const decimals = (numberOfDecimals(actualEvent.accruedInterest) < numberOfDecimals(expectedEvent.accruedInterest)) 
+        ? numberOfDecimals(actualEvent.accruedInterest)
+        : numberOfDecimals(expectedEvent.accruedInterest);
+      actualEvent.accruedInterest = roundToDecimals(actualEvent.accruedInterest, decimals);
+      expectEvent.accruedInterest = roundToDecimals(expectedEvent.accruedInterest, decimals);
+    }
+    if (expectedEvent.quantity) {
+      const decimals = (numberOfDecimals(actualEvent.quantity) < numberOfDecimals(expectedEvent.quantity)) 
+        ? numberOfDecimals(actualEvent.quantity)
+        : numberOfDecimals(expectedEvent.quantity);
+      actualEvent.accruedInterest = roundToDecimals(actualEvent.quantity, decimals);
+      expectEvent.accruedInterest = roundToDecimals(expectedEvent.quantity, decimals);
+    }
+    if (expectedEvent.exerciseAmount) {
+      const decimals = (numberOfDecimals(actualEvent.exerciseAmount) < numberOfDecimals(expectedEvent.exerciseAmount)) 
+        ? numberOfDecimals(actualEvent.exerciseAmount)
+        : numberOfDecimals(expectedEvent.exerciseAmount);
+      actualEvent.exerciseAmount = roundToDecimals(actualEvent.exerciseAmount, decimals);
+      expectEvent.exerciseAmount = roundToDecimals(expectedEvent.exerciseAmount, decimals);
+    }
+    if (expectedEvent.exerciseQuantity) {
+      const decimals = (numberOfDecimals(actualEvent.exerciseQuantity) < numberOfDecimals(expectedEvent.exerciseQuantity)) 
+        ? numberOfDecimals(actualEvent.exerciseQuantity)
+        : numberOfDecimals(expectedEvent.exerciseQuantity);
+      actualEvent.exerciseQuantity = roundToDecimals(actualEvent.exerciseQuantity, decimals);
+      expectEvent.exerciseQuantity = roundToDecimals(expectedEvent.exerciseQuantity, decimals);
+    }
+    if (expectedEvent.exerciseQuantityOrdered) {
+      // const decimals = (numberOfDecimals(actualEvent.exerciseQuantityOrdered) < numberOfDecimals(expectedEvent.exerciseQuantityOrdered)) 
+      //   ? numberOfDecimals(actualEvent.exerciseQuantityOrdered)
+      //   : numberOfDecimals(expectedEvent.exerciseQuantityOrdered);
+      // actualEvent.exerciseQuantityOrdered = roundToDecimals(actualEvent.exerciseQuantityOrdered, decimals);
+      // expectEvent.exerciseQuantityOrdered = roundToDecimals(expectedEvent.exerciseQuantityOrdered, decimals);
+      actualEvent.exerciseQuantityOrdered = 0;
+      expectEvent.exerciseQuantityOrdered = 0;
+    }
+    if (expectedEvent.marginFactor) {
+      const decimals = (numberOfDecimals(actualEvent.marginFactor) < numberOfDecimals(expectedEvent.marginFactor)) 
+        ? numberOfDecimals(actualEvent.marginFactor)
+        : numberOfDecimals(expectedEvent.marginFactor);
+      actualEvent.marginFactor = roundToDecimals(actualEvent.marginFactor, decimals);
+      expectEvent.marginFactor = roundToDecimals(expectedEvent.marginFactor, decimals);
+    }
+    if (expectedEvent.adjustmentFactor) {
+      const decimals = (numberOfDecimals(actualEvent.adjustmentFactor) < numberOfDecimals(expectedEvent.adjustmentFactor)) 
+        ? numberOfDecimals(actualEvent.adjustmentFactor)
+        : numberOfDecimals(expectedEvent.adjustmentFactor);
+      actualEvent.adjustmentFactor = roundToDecimals(actualEvent.adjustmentFactor, decimals);
+      expectEvent.adjustmentFactor = roundToDecimals(expectedEvent.adjustmentFactor, decimals);
+    }
+    if (expectedEvent.couponAmountFixed) {
+      const decimals = (numberOfDecimals(actualEvent.couponAmountFixed) < numberOfDecimals(expectedEvent.couponAmountFixed)) 
+        ? numberOfDecimals(actualEvent.couponAmountFixed)
+        : numberOfDecimals(expectedEvent.couponAmountFixed);
+      actualEvent.couponAmountFixed = roundToDecimals(actualEvent.couponAmountFixed, decimals);
+      expectEvent.couponAmountFixed = roundToDecimals(expectedEvent.couponAmountFixed, decimals);
+    }
 
-    const decimalsEventValue = (numberOfDecimals(actualEvent.eventValue) < numberOfDecimals(expectedEvent.eventValue)) 
-      ? numberOfDecimals(actualEvent.eventValue)
-      : numberOfDecimals(expectedEvent.eventValue);
-
-    const decimalsNominalValue = (numberOfDecimals(actualEvent.notionalPrincipal) < numberOfDecimals(expectedEvent.notionalPrincipal)) 
-      ? numberOfDecimals(actualEvent.notionalPrincipal)
-      : numberOfDecimals(expectedEvent.notionalPrincipal);
-
-    const decimalsNominalAccrued = (numberOfDecimals(actualEvent.accruedInterest) < numberOfDecimals(expectedEvent.accruedInterest)) 
-      ? numberOfDecimals(actualEvent.accruedInterest)
-      : numberOfDecimals(expectedEvent.accruedInterest);
-
-    assert.deepEqual({
-      eventDate: actualEvent.eventDate,
-      eventType: actualEvent.eventType,
-      eventValue: roundToDecimals(actualEvent.eventValue, decimalsEventValue),
-      notionalPrincipal: roundToDecimals(actualEvent.notionalPrincipal, decimalsNominalValue),
-      nominalInterestRate: actualEvent.nominalInterestRate,
-      accruedInterest: roundToDecimals(actualEvent.accruedInterest, decimalsNominalAccrued)
-    }, {  
-      eventDate: expectedEvent.eventDate,
-      eventType: expectedEvent.eventType,
-      eventValue: roundToDecimals(expectedEvent.eventValue, decimalsEventValue),
-      notionalPrincipal: roundToDecimals(expectedEvent.notionalPrincipal, decimalsNominalValue),
-      nominalInterestRate: expectedEvent.nominalInterestRate,
-      accruedInterest: roundToDecimals(expectedEvent.accruedInterest, decimalsNominalAccrued)
-    });
+    assert.deepEqual(actualEvent, expectedEvent);
   }
 }
 
@@ -74,7 +120,8 @@ function assertEqualStates(newState, expectedState){
   assert.equal(newState[2], expectedState.nonPerformingDate, "Difference in 'nonPerformingDate'");
   assert.equal(newState[3], expectedState.maturityDate, "Difference in 'maturityDate'");
   assert.equal(newState[4], expectedState.exerciseDate, "Difference in 'exerciseDate'");
-  assert.equal(newState[5], expectedState.exerciseDate, "Difference in 'terminationDate'");
+  assert.equal(newState[5], expectedState.terminationDate, "Difference in 'terminationDate'");
+  assert.equal(newState[5], expectedState.lastCouponDay, "Difference in 'lastCouponyDay'");
   assert.equal(newState[6], expectedState.notionalPrincipal, "Difference in 'notionalPrincipal'");
   assert.equal(newState[7], expectedState.accruedInterest, "Difference in 'accruedInterest'");
   assert.equal(newState[8], expectedState.feeAccrued, "Difference in 'feeAccrued'");
@@ -83,16 +130,22 @@ function assertEqualStates(newState, expectedState){
   assert.equal(newState[11], expectedState.notionalScalingMultiplier, "Difference in 'notionalScalingMultiplier'");
   assert.equal(newState[12], expectedState.nextPrincipalRedemptionPayment, "Difference in 'nextPrincipalRedemptionPayment'");
   assert.equal(newState[13], expectedState.exerciseAmount, "Difference in 'exerciseAmount'");
+  assert.equal(newState[14], expectedState.exerciseQuantity, "Difference in 'exerciseQuantity'");
+  assert.equal(newState[15], expectedState.quantity, "Difference in 'quantity'");
+  assert.equal(newState[16], expectedState.couponAmountFixed, "Difference in 'couponAmountFixed'");
+  assert.equal(newState[17], expectedState.marginFactor, "Difference in 'marginFactor'");
+  assert.equal(newState[18], expectedState.adjustmentFactor, "Difference in 'adjustmentFactor'");
 }
 
 function getDefaultState () {
   return {
-    contractPerformance: 0, // 0 : Performant
+    contractPerformance: 0, // PF
     statusDate: 0,
     nonPerformingDate: 0,
     maturityDate: 31536000, // (1 year from 0)
     exerciseDate: 31536000, 
     terminationDate: 31536000, 
+    lastCouponDay: 0, 
     notionalPrincipal: web3.utils.toWei("1000000"),
     accruedInterest: web3.utils.toWei("100"),
     feeAccrued: web3.utils.toWei("10"),

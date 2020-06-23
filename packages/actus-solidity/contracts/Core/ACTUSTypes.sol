@@ -249,7 +249,7 @@ struct CERTFTerms {
 
     // bytes32 marketObjectCode;
 
-    // uint256 contractDealDate;
+    uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
