@@ -5,7 +5,7 @@ import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
 
 
-library PAMEncoder {
+library CERTFEncoder {
 
     function storeInPackedTerms(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
         // skip if value did not change
@@ -18,7 +18,7 @@ library PAMEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetPAMTerms(Asset storage asset, PAMTerms memory terms) internal {
+    function encodeAndSetCERTFTerms(Asset storage asset, CERTFTerms memory terms) internal {
         storeInPackedTerms(
             asset,
             "enums",
@@ -28,43 +28,27 @@ library PAMEncoder {
             bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
-            bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(terms.feeBasis))) << 184
+            bytes32(uint256(uint8(terms.contractPerformance))) << 200 |
+            bytes32(uint256(uint8(terms.couponType))) << 192
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
         storeInPackedTerms(asset, "settlementCurrency", bytes32(uint256(terms.settlementCurrency) << 96));
 
-        storeInPackedTerms(asset, "marketObjectCodeRateReset", bytes32(terms.marketObjectCodeRateReset));
-
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
-        storeInPackedTerms(asset, "purchaseDate", bytes32(terms.purchaseDate));
-        storeInPackedTerms(asset, "capitalizationEndDate", bytes32(terms.capitalizationEndDate));
-        storeInPackedTerms(asset, "cycleAnchorDateOfInterestPayment", bytes32(terms.cycleAnchorDateOfInterestPayment));
-        storeInPackedTerms(asset, "cycleAnchorDateOfRateReset", bytes32(terms.cycleAnchorDateOfRateReset));
-        storeInPackedTerms(asset, "cycleAnchorDateOfScalingIndex", bytes32(terms.cycleAnchorDateOfScalingIndex));
-        storeInPackedTerms(asset, "cycleAnchorDateOfFee", bytes32(terms.cycleAnchorDateOfFee));
+        storeInPackedTerms(asset, "nonPerformingDate", bytes32(terms.nonPerformingDate));
+        storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
+        storeInPackedTerms(asset, "cycleAnchorDateOfRedemption", bytes32(terms.cycleAnchorDateOfRedemption));
+        storeInPackedTerms(asset, "cycleAnchorDateOfTermination", bytes32(terms.cycleAnchorDateOfTermination));
+        storeInPackedTerms(asset, "cycleAnchorDateOfCoupon", bytes32(terms.cycleAnchorDateOfCoupon));
 
-        storeInPackedTerms(asset, "notionalPrincipal", bytes32(terms.notionalPrincipal));
-        storeInPackedTerms(asset, "nominalInterestRate", bytes32(terms.nominalInterestRate));
-        storeInPackedTerms(asset, "accruedInterest", bytes32(terms.accruedInterest));
-        storeInPackedTerms(asset, "rateMultiplier", bytes32(terms.rateMultiplier));
-        storeInPackedTerms(asset, "rateSpread", bytes32(terms.rateSpread));
-        storeInPackedTerms(asset, "nextResetRate", bytes32(terms.nextResetRate));
-        storeInPackedTerms(asset, "feeRate", bytes32(terms.feeRate));
-        storeInPackedTerms(asset, "feeAccrued", bytes32(terms.feeAccrued));
-        storeInPackedTerms(asset, "penaltyRate", bytes32(terms.penaltyRate));
-        storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
-        storeInPackedTerms(asset, "premiumDiscountAtIED", bytes32(terms.premiumDiscountAtIED));
-        storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
-        storeInPackedTerms(asset, "lifeCap", bytes32(terms.lifeCap));
-        storeInPackedTerms(asset, "lifeFloor", bytes32(terms.lifeFloor));
-        storeInPackedTerms(asset, "periodCap", bytes32(terms.periodCap));
-        storeInPackedTerms(asset, "periodFloor", bytes32(terms.periodFloor));
+        storeInPackedTerms(asset, "nominalPrice", bytes32(terms.nominalPrice));
+        storeInPackedTerms(asset, "issuePrice", bytes32(terms.issuePrice));
+        storeInPackedTerms(asset, "quantity", bytes32(terms.quantity));
+        storeInPackedTerms(asset, "denominationRatio", bytes32(terms.denominationRatio));
+        storeInPackedTerms(asset, "couponRate", bytes32(terms.couponRate));
 
         storeInPackedTerms(
             asset,
@@ -80,89 +64,104 @@ library PAMEncoder {
             bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
             bytes32(uint256((terms.delinquencyPeriod.isSet) ? 1 : 0)) << 8
         );
+        storeInPackedTerms(
+            asset,
+            "settlementPeriod",
+            bytes32(uint256(terms.settlementPeriod.i)) << 24 |
+            bytes32(uint256(terms.settlementPeriod.p)) << 16 |
+            bytes32(uint256((terms.settlementPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "fixingPeriod",
+            bytes32(uint256(terms.fixingPeriod.i)) << 24 |
+            bytes32(uint256(terms.fixingPeriod.p)) << 16 |
+            bytes32(uint256((terms.fixingPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "exercisePeriod",
+            bytes32(uint256(terms.exercisePeriod.i)) << 24 |
+            bytes32(uint256(terms.exercisePeriod.p)) << 16 |
+            bytes32(uint256((terms.exercisePeriod.isSet) ? 1 : 0)) << 8
+        );
 
         storeInPackedTerms(
             asset,
-            "cycleOfInterestPayment",
-            bytes32(uint256(terms.cycleOfInterestPayment.i)) << 24 |
-            bytes32(uint256(terms.cycleOfInterestPayment.p)) << 16 |
-            bytes32(uint256(terms.cycleOfInterestPayment.s)) << 8 |
-            bytes32(uint256((terms.cycleOfInterestPayment.isSet) ? 1 : 0))
+            "cycleOfRedemption",
+            bytes32(uint256(terms.cycleOfRedemption.i)) << 24 |
+            bytes32(uint256(terms.cycleOfRedemption.p)) << 16 |
+            bytes32(uint256(terms.cycleOfRedemption.s)) << 8 |
+            bytes32(uint256((terms.cycleOfRedemption.isSet) ? 1 : 0))
         );
         storeInPackedTerms(
             asset,
-            "cycleOfRateReset",
-            bytes32(uint256(terms.cycleOfRateReset.i)) << 24 |
-            bytes32(uint256(terms.cycleOfRateReset.p)) << 16 |
-            bytes32(uint256(terms.cycleOfRateReset.s)) << 8 |
-            bytes32(uint256((terms.cycleOfRateReset.isSet) ? 1 : 0))
+            "cycleOfTermination",
+            bytes32(uint256(terms.cycleOfTermination.i)) << 24 |
+            bytes32(uint256(terms.cycleOfTermination.p)) << 16 |
+            bytes32(uint256(terms.cycleOfTermination.s)) << 8 |
+            bytes32(uint256((terms.cycleOfTermination.isSet) ? 1 : 0))
         );
         storeInPackedTerms(
             asset,
-            "cycleOfScalingIndex",
-            bytes32(uint256(terms.cycleOfScalingIndex.i)) << 24 |
-            bytes32(uint256(terms.cycleOfScalingIndex.p)) << 16 |
-            bytes32(uint256(terms.cycleOfScalingIndex.s)) << 8 |
-            bytes32(uint256((terms.cycleOfScalingIndex.isSet) ? 1 : 0))
+            "cycleOfCoupon",
+            bytes32(uint256(terms.cycleOfCoupon.i)) << 24 |
+            bytes32(uint256(terms.cycleOfCoupon.p)) << 16 |
+            bytes32(uint256(terms.cycleOfCoupon.s)) << 8 |
+            bytes32(uint256((terms.cycleOfCoupon.isSet) ? 1 : 0))
+        );
+
+        storeInPackedTerms(
+            asset,
+            "contractReference_1_type_role",
+            bytes32(uint256(terms.contractReference_1._type)) << 16 |
+            bytes32(uint256(terms.contractReference_1.role)) << 8
+        );
+
+        storeInPackedTerms(
+            asset,
+            "contractReference_1_object",
+            terms.contractReference_1.object
         );
         storeInPackedTerms(
             asset,
-            "cycleOfFee",
-            bytes32(uint256(terms.cycleOfFee.i)) << 24 |
-            bytes32(uint256(terms.cycleOfFee.p)) << 16 |
-            bytes32(uint256(terms.cycleOfFee.s)) << 8 |
-            bytes32(uint256((terms.cycleOfFee.isSet) ? 1 : 0))
+            "contractReference_1_object2",
+            terms.contractReference_1.object2
         );
     }
 
     /**
-     * @dev Decode and loads PAMTerms
+     * @dev Decode and loads CERTFTerms
      */
-    function decodeAndGetPAMTerms(Asset storage asset) internal view returns (PAMTerms memory) {
-        return PAMTerms(
+    function decodeAndGetCERTFTerms(Asset storage asset) internal view returns (CERTFTerms memory) {
+        return CERTFTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
             ContractRole(uint8(uint256(asset.packedTerms["enums"] >> 232))),
             DayCountConvention(uint8(uint256(asset.packedTerms["enums"] >> 224))),
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
-            ScalingEffect(uint8(uint256(asset.packedTerms["enums"] >> 200))),
-            PenaltyType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
-            FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 184))),
+            ContractPerformance(uint8(uint256(asset.packedTerms["enums"] >> 200))),
+            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
-            asset.packedTerms["marketObjectCodeRateReset"],
-
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
-            uint256(asset.packedTerms["purchaseDate"]),
-            uint256(asset.packedTerms["capitalizationEndDate"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfInterestPayment"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfRateReset"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfScalingIndex"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfFee"]),
+            uint256(asset.packedTerms["nonPerformingDate"]),
+            uint256(asset.packedTerms["issueDate"]),
+            uint256(asset.packedTerms["cycleAnchorDateOfRedemption"]),
+            uint256(asset.packedTerms["cycleAnchorDateOfTermination"]),
+            uint256(asset.packedTerms["cycleAnchorDateOfCoupon"]),
 
-            int256(asset.packedTerms["notionalPrincipal"]),
-            int256(asset.packedTerms["nominalInterestRate"]),
-            int256(asset.packedTerms["accruedInterest"]),
-            int256(asset.packedTerms["rateMultiplier"]),
-            int256(asset.packedTerms["rateSpread"]),
-            int256(asset.packedTerms["nextResetRate"]),
-            int256(asset.packedTerms["feeRate"]),
-            int256(asset.packedTerms["feeAccrued"]),
-            int256(asset.packedTerms["penaltyRate"]),
-            int256(asset.packedTerms["delinquencyRate"]),
-            int256(asset.packedTerms["premiumDiscountAtIED"]),
-            int256(asset.packedTerms["priceAtPurchaseDate"]),
-            int256(asset.packedTerms["lifeCap"]),
-            int256(asset.packedTerms["lifeFloor"]),
-            int256(asset.packedTerms["periodCap"]),
-            int256(asset.packedTerms["periodFloor"]),
-            
+            int256(asset.packedTerms["nominalPrice"]),
+            int256(asset.packedTerms["issuePrice"]),
+            int256(asset.packedTerms["quantity"]),
+            int256(asset.packedTerms["denominationRatio"]),
+            int256(asset.packedTerms["couponRate"]),
+
             IP(
                 uint256(asset.packedTerms["gracePeriod"] >> 24),
                 P(uint8(uint256(asset.packedTerms["gracePeriod"] >> 16))),
@@ -173,35 +172,49 @@ library PAMEncoder {
                 P(uint8(uint256(asset.packedTerms["delinquencyPeriod"] >> 16))),
                 (asset.packedTerms["delinquencyPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
-
-            IPS(
-                uint256(asset.packedTerms["cycleOfInterestPayment"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfInterestPayment"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfInterestPayment"] >> 8))),
-                (asset.packedTerms["cycleOfInterestPayment"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+            IP(
+                uint256(asset.packedTerms["settlementPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["settlementPeriod"] >> 16))),
+                (asset.packedTerms["settlementPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+            ),
+            IP(
+                uint256(asset.packedTerms["fixingPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["fixingPeriod"] >> 16))),
+                (asset.packedTerms["fixingPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+            ),
+            IP(
+                uint256(asset.packedTerms["exercisePeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["exercisePeriod"] >> 16))),
+                (asset.packedTerms["exercisePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleOfRateReset"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfRateReset"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfRateReset"] >> 8))),
-                (asset.packedTerms["cycleOfRateReset"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfRedemption"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfRedemption"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfRedemption"] >> 8))),
+                (asset.packedTerms["cycleOfRedemption"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleOfScalingIndex"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfScalingIndex"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfScalingIndex"] >> 8))),
-                (asset.packedTerms["cycleOfScalingIndex"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfTermination"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfTermination"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfTermination"] >> 8))),
+                (asset.packedTerms["cycleOfTermination"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleOfFee"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfFee"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfFee"] >> 8))),
-                (asset.packedTerms["cycleOfFee"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["cycleOfCoupon"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfCoupon"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfCoupon"] >> 8))),
+                (asset.packedTerms["cycleOfCoupon"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+            ),
+            ContractReference(
+                asset.packedTerms["contractReference_1_object"],
+                asset.packedTerms["contractReference_1_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
             )
         );
     }
 
-    function decodeAndGetEnumValueForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetEnumValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (uint8)
@@ -218,18 +231,16 @@ library PAMEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 216));
         } else if (attributeKey == bytes32("endOfMonthConvention")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
-        } else if (attributeKey == bytes32("scalingEffect")) {
+        } else if (attributeKey == bytes32("contractPerformance")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 200));
-        } else if (attributeKey == bytes32("penaltyType")) {
+        } else if (attributeKey == bytes32("couponType")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 192));
-        } else if (attributeKey == bytes32("feeBasis")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 184));
         } else {
             return uint8(0);
         }
     }
 
-    function decodeAndGetAddressValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetAddressValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (address)
@@ -240,10 +251,10 @@ library PAMEncoder {
             return address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96));
         } else {
             return address(0);
-        }   
+        }
     }
 
-    function decodeAndGetBytes32ValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetBytes32ValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (bytes32)
@@ -251,7 +262,7 @@ library PAMEncoder {
         return asset.packedTerms[attributeKey];
     }
 
-    function decodeAndGetUIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetUIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (uint256)
@@ -259,7 +270,7 @@ library PAMEncoder {
         return uint256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (int256)
@@ -267,7 +278,7 @@ library PAMEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetPeriodValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetPeriodValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (IP memory)
@@ -275,6 +286,9 @@ library PAMEncoder {
         if (
             attributeKey == bytes32("gracePeriod")
             || attributeKey == bytes32("delinquencyPeriod")
+            || attributeKey == bytes32("settlementPeriod")
+            || attributeKey == bytes32("fixingPeriod")
+            || attributeKey == bytes32("exercisePeriod")
         ) {
             return IP(
                 uint256(asset.packedTerms[attributeKey] >> 24),
@@ -286,16 +300,15 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetCycleValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetCycleValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
         view
         returns (IPS memory)
     {
         if (
-            attributeKey == bytes32("cycleOfInterestPayment")
-            || attributeKey == bytes32("cycleOfRateReset")
-            || attributeKey == bytes32("cycleOfScalingIndex")
-            || attributeKey == bytes32("cycleOfFee")
+            attributeKey == bytes32("cycleOfRedemption")
+            || attributeKey == bytes32("cycleOfTermination")
+            || attributeKey == bytes32("cycleOfCoupon")
         ) {
             return IPS(
                 uint256(asset.packedTerms[attributeKey] >> 24),
@@ -308,16 +321,25 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetContractReferenceValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
         internal
-        pure
+        view
         returns (ContractReference memory)
     {
-        return ContractReference(
-            bytes32(0),
-            bytes32(0),
-            ContractReferenceType(0),
-            ContractReferenceRole(0)
-        );
+        if (attributeKey == bytes32("contractReference_1")) {
+            return ContractReference(
+                asset.packedTerms["contractReference_1_object"],
+                asset.packedTerms["contractReference_1_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
+            );
+        } else {
+            return ContractReference(
+                bytes32(0),
+                bytes32(0),
+                ContractReferenceType(0),
+                ContractReferenceRole(0)
+            );
+        }
     }
 }
