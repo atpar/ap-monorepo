@@ -247,9 +247,9 @@ struct CERTFTerms {
     address currency;
     address settlementCurrency;
 
-    bytes32 marketObjectCode;
+    // bytes32 marketObjectCode;
 
-    uint256 contractDealDate;
+    // uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
@@ -262,7 +262,7 @@ struct CERTFTerms {
 
     int256 nominalPrice;
     int256 issuePrice;
-    int256 delinquencyRate;
+    // int256 delinquencyRate;
     int256 quantity;
     // int256 exerciseQuantity;
     // int256 exerciseQuantityOrdered;
@@ -275,7 +275,7 @@ struct CERTFTerms {
 
     IP gracePeriod;
     IP delinquencyPeriod;
-    // IP settlementPeriod;
+    IP settlementPeriod;
     IP fixingPeriod;
     IP exercisePeriod;
 
