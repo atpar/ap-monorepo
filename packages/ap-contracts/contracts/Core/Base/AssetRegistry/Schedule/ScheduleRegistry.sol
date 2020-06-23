@@ -196,10 +196,19 @@ abstract contract ScheduleRegistry is
         returns (bytes32)
     {
         Asset storage asset = assets[assetId];
+        bytes32 nextCyclicEvent = getNextCyclicEvent(assetId);
+        bytes32 nextScheduleEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
 
-        if (asset.schedule.length == 0) { return bytes32(0); }
-        
-        return asset.schedule.events[asset.schedule.nextScheduleIndex];
+        if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
+
+        (, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
+        (, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
+
+        if (scheduleTimeNextCyclicEvent <= scheduleTimeNextScheduleEvent) {
+            return nextCyclicEvent;
+        } else {
+            return nextScheduleEvent;
+        }
     }
 
     /**
@@ -215,13 +224,21 @@ abstract contract ScheduleRegistry is
         returns (bytes32)
     {
         Asset storage asset = assets[assetId];
+        bytes32 nextCyclicEvent = getNextCyclicEvent(assetId);
+        bytes32 nextScheduleEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
 
-        if (asset.schedule.nextScheduleIndex == asset.schedule.length) { return bytes32(0); }
+        if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
 
-        bytes32 _event = asset.schedule.events[asset.schedule.nextScheduleIndex];
-        asset.schedule.nextScheduleIndex += 1;
+        (EventType eventTypeNextCyclicEvent, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
+        (, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
 
-        return _event;
+        if (scheduleTimeNextCyclicEvent <= scheduleTimeNextScheduleEvent) {
+            asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
+            return nextCyclicEvent;
+        } else {
+            asset.schedule.nextScheduleIndex += 1;
+            return nextScheduleEvent;
+        }
     }
 
     /**
@@ -254,5 +271,16 @@ abstract contract ScheduleRegistry is
         isAuthorized (assetId)
     {
         assets[assetId].settlement[_event] = Settlement({ isSettled: true, payoff: _payoff });
-    }    
+    }
+
+    // function decodeEvent(bytes32 _event)
+    //     internal
+    //     pure
+    //     returns (EventType, uint256)
+    // {
+    //     EventType eventType = EventType(uint8(uint256(_event >> 248)));
+    //     uint256 scheduleTime = uint256(uint64(uint256(_event)));
+
+    //     return (eventType, scheduleTime);
+    // }
 }

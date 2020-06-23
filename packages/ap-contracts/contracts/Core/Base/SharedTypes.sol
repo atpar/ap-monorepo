@@ -19,7 +19,7 @@ struct AssetOwnership {
 struct Schedule {
     // scheduleTime and EventType are tighlty packed and encoded as bytes32
     // ...
-    mapping(bytes32 => uint256) lastScheduleTimeOfCyclicEvent;
+    mapping(EventType => uint256) lastScheduleTimeOfCyclicEvent;
     // index of event => bytes32 encoded event
     mapping(uint256 => bytes32) events;
     // the length of the schedule, used to determine the end of the schedule

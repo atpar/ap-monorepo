@@ -60,23 +60,24 @@ contract Utils is BusinessDayConventions {
         pure
         returns (uint256)
     {
-        if (eventType == EventType.IED) return 20;
-        if (eventType == EventType.PR) return 25;
-        if (eventType == EventType.IP) return 30;
-        if (eventType == EventType.IPCI) return 40;
-        if (eventType == EventType.FP) return 50;
-        if (eventType == EventType.DV) return 60;
-        if (eventType == EventType.MR) return 80;
-        if (eventType == EventType.RRF) return 90;
-        if (eventType == EventType.RR) return 100;
-        if (eventType == EventType.SC) return 110;
-        if (eventType == EventType.IPCB) return 120;
-        if (eventType == EventType.PRD) return 130;
-        if (eventType == EventType.TD) return 140;
-        if (eventType == EventType.STD) return 150;
-        if (eventType == EventType.MD) return 160;
-        if (eventType == EventType.AD) return 950;
-        return 0;
+        return uint256(eventType);
+        // if (eventType == EventType.IED) return 20;
+        // if (eventType == EventType.PR) return 25;
+        // if (eventType == EventType.IP) return 30;
+        // if (eventType == EventType.IPCI) return 40;
+        // if (eventType == EventType.FP) return 50;
+        // if (eventType == EventType.DV) return 60;
+        // if (eventType == EventType.MR) return 80;
+        // if (eventType == EventType.RRF) return 90;
+        // if (eventType == EventType.RR) return 100;
+        // if (eventType == EventType.SC) return 110;
+        // if (eventType == EventType.IPCB) return 120;
+        // if (eventType == EventType.PRD) return 130;
+        // if (eventType == EventType.TD) return 140;
+        // if (eventType == EventType.STD) return 150;
+        // if (eventType == EventType.MD) return 160;
+        // if (eventType == EventType.AD) return 950;
+        // return 0;
     }
 
     /**
