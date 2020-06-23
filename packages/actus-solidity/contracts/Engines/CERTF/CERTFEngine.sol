@@ -97,7 +97,6 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         State memory state;
         
         state.quantity = 0;
-        state.exerciseQuantityOrdered = 0;
         state.exerciseQuantity = 0;
         state.marginFactor = 1;
         state.adjustmentFactor = 1;
@@ -226,13 +225,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        if (eventType == EventType.AD) return STF_CERTF_AD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.ID) return STF_CERTF_ID(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_CERTF_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CFD) return STF_CERTF_CFD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CPD) return STF_CERTF_CPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RFD) return STF_CERTF_RFD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.XO) return STF_CERTF_XO(terms, state, scheduleTime, externalData);
         if (eventType == EventType.XD) return STF_CERTF_XD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RPD) return STF_CERTF_RPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return STF_CERTF_TD(terms, state, scheduleTime, externalData);
@@ -267,15 +264,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         if (eventType == EventType.ID) return 0;
         if (eventType == EventType.CFD) return 0;
         if (eventType == EventType.RFD) return 0;
-        if (eventType == EventType.XO) return 0;
         if (eventType == EventType.XD) return 0;
         if (eventType == EventType.MD) return 0;
-        if (eventType == EventType.AD) return POF_CERTF_AD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.CE) return 0;
         if (eventType == EventType.IED) return POF_CERTF_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CPD) return POF_CERTF_CPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RPD) return POF_CERTF_RPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_CERTF_TD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CE) return POF_CERTF_CE(terms, state, scheduleTime, externalData);
 
         revert("CERTFEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }
