@@ -9,26 +9,7 @@ import "../../Core/Core.sol";
  * @title POF
  * @notice Contains all Payoff Functions (POFs) for CERTF contracts
  */
-contract CERTPOF is Core {
-
-    /**
-     * Payoff Function for CERTF analysis events
-     * @return the payoff amount
-     */
-    function POF_CERTF_AD (
-        CERTFTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns(int256)
-    {
-        // TODO
-        // POF_AD_PAM()
-        return state;
-    }
+contract CERTFPOF is Core {
 
     /**
      * Payoff Function for CERTF initial exchange
@@ -45,10 +26,8 @@ contract CERTPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole)
-            * state.quantity
-            * terms.issuePrice
-        )
+            roleSign(terms.contractRole) * state.quantity.floatMult(terms.issuePrice)
+        );
     }
 
     /**
@@ -66,10 +45,8 @@ contract CERTPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole)
-            * state.quantity
-            * state.couponAmountFixed
-        )
+            roleSign(terms.contractRole) * state.quantity.floatMult(state.couponAmountFixed)
+        );
     }
 
     /**
@@ -77,7 +54,7 @@ contract CERTPOF is Core {
      * @return the new state
      */
     function POF_CERTF_RPD (
-        CERTFTerms memory /* terms */,
+        CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -87,10 +64,8 @@ contract CERTPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole)
-            * state.exerciseQuantity
-            * state.exerciseAmount
-        )
+            roleSign(terms.contractRole) * state.exerciseQuantity.floatMult(state.exerciseAmount)
+        );
     }
 
      /**
@@ -98,7 +73,7 @@ contract CERTPOF is Core {
      * @return the new state
      */
     function POF_CERTF_TD (
-        CERTFTerms memory /* terms */,
+        CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -108,34 +83,12 @@ contract CERTPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole)
-            * state.quantity
-            * state.exerciseAmount
-        )
+            roleSign(terms.contractRole) * state.quantity.floatMult(state.exerciseAmount)
+        );
     }
 
-
-    /**
-     * Payoff Function for CERTF settlement
-     * @return the new state
-     */
-    function POF_CERTF_CE (
-        CERTFTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns(int256)
-    {
-        // TODO
-        // POF_CE_PAM()
-        return state;
-    }
-
-    function _yearFraction_STF (
-        CERTF memory terms,
+    function _yearFraction_POF (
+        CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime
     )

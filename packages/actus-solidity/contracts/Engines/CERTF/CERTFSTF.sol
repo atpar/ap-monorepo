@@ -11,25 +11,6 @@ import "../../Core/Core.sol";
 contract CERTFSTF is Core {
 
     /**
-     * State transition for CERTF analysis events
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_CERTF_AD (
-        CERTFTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.statusDate = scheduleTime;
-        return state;
-    }
-
-    /**
      * State transition for CERTF issue day events
      * @param state the old state
      * @return the new state
@@ -84,19 +65,17 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-
-        // Assumes that couponType = "FIX"
-        uint256 timeSinceLCD = yearFraction(
-            shiftCalcTime(state.lastCouponDay, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate);
-
-        state.couponAmountFixed = timeSinceLCD.floatMult(terms.nomincalPrice).floatMult(terms.couponRate)
-        
-        
         state.lastCouponDay = scheduleTime;
         state.statusDate = scheduleTime;
+        
+        if (terms.couponType == CouponType.FIX) {
+            state.couponAmountFixed = yearFraction(
+                shiftCalcTime(state.lastCouponDay, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            ).floatMult(terms.nominalPrice).floatMult(terms.couponRate);
+        }
 
         return state;
     }
@@ -138,20 +117,18 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-
-        // TODO
-        
         state.statusDate = scheduleTime;
+        // state.exerciseAmount = ...
 
         return state;
     }
 
-        /**
-     * State transition for CERTF exercise order
+    /**
+     * State transition for CERTF exercise day
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_XO (
+    function STF_CERTF_XD (
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
@@ -161,33 +138,9 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        // TODO
-        int256 externalQuantity = int256(uint256(externalData)); // TODO ??
-        state.exerciseQuantityOrdered = state.quantity.min(state.exerciseQuantityOrdered.add(externalQuantity))
-
+        state.exerciseQuantity = int256(externalData);
         state.statusDate = scheduleTime;
 
-        return state;
-    }
-
-     /**
-     * State transition for CERTF exercise day
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_CERTF_XD (
-        CERTFTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.exerciseQuantity = state.exerciseQuantityOrdered;
-        state.exerciseQuantityOrdered = 0;
-        state.statusDate = scheduleTime;
         return state;
     }
 
@@ -210,13 +163,16 @@ contract CERTFSTF is Core {
         state.exerciseQuantity = 0;
         state.exerciseAmount = 0;
 
-        if (state.maturityDate != 0 && state.terminationDate == 0) {
+        state.quantity -= state.exerciseQuantity;
+        state.exerciseQuantity = 0;
+        state.exerciseAmount = 0;
+        
+        if (scheduleTime == state.maturityDate) {
             state.contractPerformance = ContractPerformance.MD;
-        } else if (state.terminationDate != 0) {
+        } else if (scheduleTime == state.terminationDate) {
             state.contractPerformance = ContractPerformance.TD;
-        } // else they are both 0 so keep prf the same
+        }
 
-        state.statusDate = scheduleTime;
         return state;
     }
 
@@ -238,6 +194,7 @@ contract CERTFSTF is Core {
         state.quantity = 0;
         state.terminationDate = scheduleTime;
         state.statusDate = scheduleTime;
+
         return state;
     }
 
@@ -256,9 +213,9 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.exerciseQuantity = state.quantity
         state.maturityDate = scheduleTime;
         state.statusDate = scheduleTime;
+
         return state;
     }
 
@@ -270,17 +227,50 @@ contract CERTFSTF is Core {
      * @return the new state
      */
     function STF_CERTF_CE (
-        CERTFTerms memory /* terms */,
+        CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes32 externalData
     )
         internal
         pure
         returns (State memory)
     {
-        // TODO
-        // POF_AD_OPTNS()
+        // handle maturity date
+        uint256 nonPerformingDate = (state.nonPerformingDate == 0)
+            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            : state.nonPerformingDate;
+
+        uint256 currentTimestamp = uint256(externalData);
+
+        bool isInGracePeriod = false;
+        if (terms.gracePeriod.isSet) {
+            uint256 graceDate = getTimestampPlusPeriod(terms.gracePeriod, nonPerformingDate);
+            if (currentTimestamp <= graceDate) {
+                state.contractPerformance = ContractPerformance.DL;
+                isInGracePeriod = true;
+            }
+        }
+
+        if (terms.delinquencyPeriod.isSet && !isInGracePeriod) {
+            uint256 delinquencyDate = getTimestampPlusPeriod(terms.delinquencyPeriod, nonPerformingDate);
+            if (currentTimestamp <= delinquencyDate) {
+                state.contractPerformance = ContractPerformance.DQ;
+            } else {
+                state.contractPerformance = ContractPerformance.DF;
+            }
+        }
+
+        if (state.nonPerformingDate == 0) {
+            // handle maturity date
+            state.nonPerformingDate = shiftEventTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+
         return state;
     }
 

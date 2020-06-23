@@ -10,14 +10,14 @@ import "../IEngine.sol";
  * @title IEngine
  * @notice Interface which all Engines have to implement
  */
-interface IPAMEngine is IEngine {
+interface ICERTFEngine is IEngine {
 
     /**
      * @notice Initialize contract state space based on the contract terms.
      * @param terms terms of the contract
      * @return initial state of the contract
      */
-    function computeInitialState(PAMTerms calldata terms)
+    function computeInitialState(CERTFTerms calldata terms)
         external
         pure
         returns (State memory);
@@ -31,7 +31,7 @@ interface IPAMEngine is IEngine {
      * @return the resulting contract state
      */
     function computeStateForEvent(
-        PAMTerms calldata terms,
+        CERTFTerms calldata terms,
         State calldata state,
         bytes32 _event,
         bytes32 externalData
@@ -49,7 +49,7 @@ interface IPAMEngine is IEngine {
      * @return the payoff of the event
      */
     function computePayoffForEvent(
-        PAMTerms calldata terms,
+        CERTFTerms calldata terms,
         State calldata state,
         bytes32 _event,
         bytes32 externalData
@@ -67,7 +67,7 @@ interface IPAMEngine is IEngine {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        PAMTerms calldata terms,
+        CERTFTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd
     )
@@ -85,7 +85,7 @@ interface IPAMEngine is IEngine {
      * @return event schedule segment
      */
     function computeCyclicScheduleSegment(
-        PAMTerms calldata terms,
+        CERTFTerms calldata terms,
         uint256 segmentStart,
         uint256 segmentEnd,
         EventType eventType
@@ -106,7 +106,7 @@ interface IPAMEngine is IEngine {
      */
     function isEventScheduled(
         bytes32 _event,
-        PAMTerms calldata terms,
+        CERTFTerms calldata terms,
         State calldata state,
         bool hasUnderlying,
         State calldata underlyingState
