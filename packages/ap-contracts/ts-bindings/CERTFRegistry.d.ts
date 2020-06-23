@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class CECRegistry extends Contract {
+export class CERTFRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): CECRegistry;
+  clone(): CERTFRegistry;
   methods: {
     computeEventTimeForEvent(
       _event: string | number[],
@@ -294,20 +294,63 @@ export class CECRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -357,20 +400,32 @@ export class CECRegistry extends Contract {
       dayCountConvention: string;
       businessDayConvention: string;
       endOfMonthConvention: string;
-      creditEventTypeCovered: string;
-      feeBasis: string;
+      contractPerformance: string;
+      couponType: string;
+      currency: string;
+      settlementCurrency: string;
       statusDate: string;
+      initialExchangeDate: string;
       maturityDate: string;
-      notionalPrincipal: string;
-      feeRate: string;
-      coverageOfCreditEnhancement: string;
+      nonPerformingDate: string;
+      issueDate: string;
+      cycleAnchorDateOfRedemption: string;
+      cycleAnchorDateOfTermination: string;
+      cycleAnchorDateOfCoupon: string;
+      nominalPrice: string;
+      issuePrice: string;
+      quantity: string;
+      denominationRatio: string;
+      couponRate: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      settlementPeriod: { i: string; p: string; isSet: boolean };
+      fixingPeriod: { i: string; p: string; isSet: boolean };
+      exercisePeriod: { i: string; p: string; isSet: boolean };
+      cycleOfRedemption: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfTermination: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfCoupon: { i: string; p: string; s: string; isSet: boolean };
       contractReference_1: {
-        object: string;
-        object2: string;
-        _type: string;
-        role: string;
-      };
-      contractReference_2: {
         object: string;
         object2: string;
         _type: string;
@@ -387,20 +442,63 @@ export class CECRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;

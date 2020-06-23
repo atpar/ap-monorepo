@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class CECEngine extends Contract {
+export class CERTFEngine extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): CECEngine;
+  clone(): CERTFEngine;
   methods: {
     MAX_CYCLE_SIZE(): TransactionObject<string>;
 
@@ -71,20 +71,63 @@ export class CECEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -146,20 +189,63 @@ export class CECEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -199,20 +285,59 @@ export class CECEngine extends Contract {
       dayCountConvention: number | string;
       businessDayConvention: number | string;
       endOfMonthConvention: number | string;
-      creditEventTypeCovered: number | string;
-      feeBasis: number | string;
+      contractPerformance: number | string;
+      couponType: number | string;
+      currency: string;
+      settlementCurrency: string;
       statusDate: number | string;
+      initialExchangeDate: number | string;
       maturityDate: number | string;
-      notionalPrincipal: number | string;
-      feeRate: number | string;
-      coverageOfCreditEnhancement: number | string;
-      contractReference_1: {
-        object: string | number[];
-        object2: string | number[];
-        _type: number | string;
-        role: number | string;
+      nonPerformingDate: number | string;
+      issueDate: number | string;
+      cycleAnchorDateOfRedemption: number | string;
+      cycleAnchorDateOfTermination: number | string;
+      cycleAnchorDateOfCoupon: number | string;
+      nominalPrice: number | string;
+      issuePrice: number | string;
+      quantity: number | string;
+      denominationRatio: number | string;
+      couponRate: number | string;
+      gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+      delinquencyPeriod: {
+        i: number | string;
+        p: number | string;
+        isSet: boolean;
       };
-      contractReference_2: {
+      settlementPeriod: {
+        i: number | string;
+        p: number | string;
+        isSet: boolean;
+      };
+      fixingPeriod: { i: number | string; p: number | string; isSet: boolean };
+      exercisePeriod: {
+        i: number | string;
+        p: number | string;
+        isSet: boolean;
+      };
+      cycleOfRedemption: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      };
+      cycleOfTermination: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      };
+      cycleOfCoupon: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      };
+      contractReference_1: {
         object: string | number[];
         object2: string | number[];
         _type: number | string;
@@ -249,20 +374,63 @@ export class CECEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -274,36 +442,79 @@ export class CECEngine extends Contract {
     ): TransactionObject<string[]>;
 
     computeCyclicScheduleSegment(
-      arg0: {
+      terms: {
         contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
         contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
           role: number | string;
         };
-        contractReference_2: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
-        };
       },
-      arg1: number | string,
-      arg2: number | string,
-      arg3: number | string
+      segmentStart: number | string,
+      segmentEnd: number | string,
+      eventType: number | string
     ): TransactionObject<string[]>;
 
     isEventScheduled(
@@ -315,20 +526,63 @@ export class CECEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        creditEventTypeCovered: number | string;
-        feeBasis: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
         statusDate: number | string;
+        initialExchangeDate: number | string;
         maturityDate: number | string;
-        notionalPrincipal: number | string;
-        feeRate: number | string;
-        coverageOfCreditEnhancement: number | string;
-        contractReference_1: {
-          object: string | number[];
-          object2: string | number[];
-          _type: number | string;
-          role: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
         };
-        contractReference_2: {
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;

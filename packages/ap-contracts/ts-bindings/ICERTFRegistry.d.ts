@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class IAssetRegistry extends Contract {
+export class ICERTFRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): IAssetRegistry;
+  clone(): ICERTFRegistry;
   methods: {
     getActor(assetId: string | number[]): TransactionObject<string>;
 
@@ -294,6 +294,228 @@ export class IAssetRegistry extends Contract {
         couponAmountFixed: number | string;
         marginFactor: number | string;
         adjustmentFactor: number | string;
+      }
+    ): TransactionObject<void>;
+
+    registerAsset(
+      assetId: string | number[],
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      state: {
+        contractPerformance: number | string;
+        statusDate: number | string;
+        nonPerformingDate: number | string;
+        maturityDate: number | string;
+        exerciseDate: number | string;
+        terminationDate: number | string;
+        lastCouponDay: number | string;
+        notionalPrincipal: number | string;
+        accruedInterest: number | string;
+        feeAccrued: number | string;
+        nominalInterestRate: number | string;
+        interestScalingMultiplier: number | string;
+        notionalScalingMultiplier: number | string;
+        nextPrincipalRedemptionPayment: number | string;
+        exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
+      },
+      schedule: (string | number[])[],
+      ownership: {
+        creatorObligor: string;
+        creatorBeneficiary: string;
+        counterpartyObligor: string;
+        counterpartyBeneficiary: string;
+      },
+      engine: string,
+      actor: string,
+      admin: string
+    ): TransactionObject<void>;
+
+    getTerms(
+      assetId: string | number[]
+    ): TransactionObject<{
+      contractType: string;
+      calendar: string;
+      contractRole: string;
+      dayCountConvention: string;
+      businessDayConvention: string;
+      endOfMonthConvention: string;
+      contractPerformance: string;
+      couponType: string;
+      currency: string;
+      settlementCurrency: string;
+      statusDate: string;
+      initialExchangeDate: string;
+      maturityDate: string;
+      nonPerformingDate: string;
+      issueDate: string;
+      cycleAnchorDateOfRedemption: string;
+      cycleAnchorDateOfTermination: string;
+      cycleAnchorDateOfCoupon: string;
+      nominalPrice: string;
+      issuePrice: string;
+      quantity: string;
+      denominationRatio: string;
+      couponRate: string;
+      gracePeriod: { i: string; p: string; isSet: boolean };
+      delinquencyPeriod: { i: string; p: string; isSet: boolean };
+      settlementPeriod: { i: string; p: string; isSet: boolean };
+      fixingPeriod: { i: string; p: string; isSet: boolean };
+      exercisePeriod: { i: string; p: string; isSet: boolean };
+      cycleOfRedemption: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfTermination: { i: string; p: string; s: string; isSet: boolean };
+      cycleOfCoupon: { i: string; p: string; s: string; isSet: boolean };
+      contractReference_1: {
+        object: string;
+        object2: string;
+        _type: string;
+        role: string;
+      };
+    }>;
+
+    setTerms(
+      assetId: string | number[],
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        contractPerformance: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        nonPerformingDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       }
     ): TransactionObject<void>;
   };

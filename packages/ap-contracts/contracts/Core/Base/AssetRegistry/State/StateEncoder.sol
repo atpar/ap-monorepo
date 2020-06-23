@@ -31,6 +31,13 @@ library StateEncoder {
         storeInPackedState(asset, "notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
         storeInPackedState(asset, "nextPrincipalRedemptionPayment", bytes32(state.nextPrincipalRedemptionPayment));
         storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
+
+        storeInPackedState(asset, "exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "adjustmentFactor", bytes32(state.adjustmentFactor));
+        storeInPackedState(asset, "lastCouponDay", bytes32(state.lastCouponDay));
     }
 
     /**
@@ -51,6 +58,13 @@ library StateEncoder {
         storeInPackedState(asset, "F_notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
         storeInPackedState(asset, "F_nextPrincipalRedemptionPayment", bytes32(state.nextPrincipalRedemptionPayment));
         storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
+
+        storeInPackedState(asset, "F_exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "F_quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "F_couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "F_marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "F_adjustmentFactor", bytes32(state.adjustmentFactor));
+        storeInPackedState(asset, "F_lastCouponDay", bytes32(state.lastCouponDay));
     }
 
     /**
@@ -64,6 +78,9 @@ library StateEncoder {
             uint256(asset.packedState["maturityDate"]),
             uint256(asset.packedState["exerciseDate"]),
             uint256(asset.packedState["terminationDate"]),
+
+            uint256(asset.packedState["lastCouponDay"]),
+            
             int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["accruedInterest"]),
             int256(asset.packedState["feeAccrued"]),
@@ -71,7 +88,13 @@ library StateEncoder {
             int256(asset.packedState["interestScalingMultiplier"]),
             int256(asset.packedState["notionalScalingMultiplier"]),
             int256(asset.packedState["nextPrincipalRedemptionPayment"]),
-            int256(asset.packedState["exerciseAmount"])
+            int256(asset.packedState["exerciseAmount"]),
+
+            int256(asset.packedState["exerciseQuantity"]),
+            int256(asset.packedState["quantity"]),
+            int256(asset.packedState["couponAmountFixed"]),
+            int256(asset.packedState["marginFactor"]),
+            int256(asset.packedState["adjustmentFactor"])
         );
     }
 
@@ -86,6 +109,9 @@ library StateEncoder {
             uint256(asset.packedState["F_maturityDate"]),
             uint256(asset.packedState["F_exerciseDate"]),
             uint256(asset.packedState["F_terminationDate"]),
+
+            uint256(asset.packedState["F_lastCouponDay"]),
+
             int256(asset.packedState["F_notionalPrincipal"]),
             int256(asset.packedState["F_accruedInterest"]),
             int256(asset.packedState["F_feeAccrued"]),
@@ -93,7 +119,13 @@ library StateEncoder {
             int256(asset.packedState["F_interestScalingMultiplier"]),
             int256(asset.packedState["F_notionalScalingMultiplier"]),
             int256(asset.packedState["F_nextPrincipalRedemptionPayment"]),
-            int256(asset.packedState["F_exerciseAmount"])
+            int256(asset.packedState["F_exerciseAmount"]),
+
+            int256(asset.packedState["F_exerciseQuantity"]),
+            int256(asset.packedState["F_quantity"]),
+            int256(asset.packedState["F_couponAmountFixed"]),
+            int256(asset.packedState["F_marginFactor"]),
+            int256(asset.packedState["F_adjustmentFactor"])
         );
     }
 
