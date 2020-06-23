@@ -73,7 +73,7 @@ contract('PAMEngine', () => {
       
       let externalData = scheduleTime;
 
-      if (eventType === 12) {
+      if (eventType === 13) {
         externalData = web3.utils.toWei(externalDataObject['interestRateValues'][rrIndex]);
         rrIndex++;
       }
@@ -89,7 +89,7 @@ contract('PAMEngine', () => {
         terms, 
         state, 
         _event, 
-        web3.utils.padLeft(web3.utils.toHex(externalData),64)
+        web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
 
       state = nextState;
