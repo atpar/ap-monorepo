@@ -22,10 +22,6 @@ abstract contract ScheduleRegistry is
     StateRegistry,
     IScheduleRegistry
 {
-
-    event IncrementedScheduleIndex(bytes32 indexed assetId, uint256 nextScheduleIndex);
-
-
     /**
      * @notice Returns an event for a given position (index) in a schedule of a given asset.
      * @param assetId id of the asset
@@ -201,9 +197,7 @@ abstract contract ScheduleRegistry is
     {
         Asset storage asset = assets[assetId];
 
-        if (asset.schedule.length == 0) {
-            return encodeEvent(EventType(0), 0);
-        }
+        if (asset.schedule.length == 0) { return bytes32(0); }
         
         return asset.schedule.events[asset.schedule.nextScheduleIndex];
     }
@@ -222,14 +216,10 @@ abstract contract ScheduleRegistry is
     {
         Asset storage asset = assets[assetId];
 
-        if (asset.schedule.nextScheduleIndex == asset.schedule.length) {
-            return encodeEvent(EventType(0), 0);
-        }
+        if (asset.schedule.nextScheduleIndex == asset.schedule.length) { return bytes32(0); }
 
         bytes32 _event = asset.schedule.events[asset.schedule.nextScheduleIndex];
         asset.schedule.nextScheduleIndex += 1;
-        
-        emit IncrementedScheduleIndex(assetId, asset.schedule.nextScheduleIndex);
 
         return _event;
     }
