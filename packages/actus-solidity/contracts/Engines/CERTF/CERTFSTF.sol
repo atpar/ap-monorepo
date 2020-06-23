@@ -119,9 +119,9 @@ contract CERTFSTF is Core {
     {
         state.exerciseAmount = (int256(externalData)
             .floatMult(terms.nominalPrice)
-            * state.marginFactor
-            * state.adjustmentFactor);
-        
+            .floatMult(state.marginFactor)
+            .floatMult(state.adjustmentFactor));
+
         state.statusDate = scheduleTime;
 
         return state;
@@ -163,10 +163,6 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.quantity = state.quantity.sub(state.exerciseQuantity)
-        state.exerciseQuantity = 0;
-        state.exerciseAmount = 0;
-
         state.quantity -= state.exerciseQuantity;
         state.exerciseQuantity = 0;
         state.exerciseAmount = 0;

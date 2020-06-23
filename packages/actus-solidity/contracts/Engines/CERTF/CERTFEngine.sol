@@ -95,11 +95,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         returns (State memory)
     {
         State memory state;
-        
+
         state.quantity = 0;
         state.exerciseQuantity = 0;
-        state.marginFactor = 1;
-        state.adjustmentFactor = 1;
+        state.marginFactor = 1 * 10 ** 18;
+        state.adjustmentFactor = 1 * 10 ** 18;
         state.lastCouponDay = terms.issueDate;
         state.couponAmountFixed = 0;
 
