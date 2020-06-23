@@ -65,9 +65,6 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.lastCouponDay = scheduleTime;
-        state.statusDate = scheduleTime;
-        
         if (terms.couponType == CouponType.FIX) {
             state.couponAmountFixed = yearFraction(
                 shiftCalcTime(state.lastCouponDay, terms.businessDayConvention, terms.calendar, terms.maturityDate),
@@ -77,6 +74,9 @@ contract CERTFSTF is Core {
             ).floatMult(terms.nominalPrice).floatMult(terms.couponRate);
         }
 
+        state.lastCouponDay = scheduleTime;
+        state.statusDate = scheduleTime;
+        
         return state;
     }
 
@@ -117,8 +117,12 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
+        state.exerciseAmount = (int256(externalData)
+            .floatMult(terms.nominalPrice)
+            * state.marginFactor
+            * state.adjustmentFactor);
+        
         state.statusDate = scheduleTime;
-        // state.exerciseAmount = ...
 
         return state;
     }
