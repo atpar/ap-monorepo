@@ -117,10 +117,10 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.exerciseAmount = (int256(externalData)
-            .floatMult(terms.nominalPrice)
-            .floatMult(state.marginFactor)
-            .floatMult(state.adjustmentFactor));
+        state.exerciseAmount = int256(externalData)
+        .floatMult(terms.nominalPrice)
+        .floatMult(state.marginFactor)
+        .floatMult(state.adjustmentFactor);
 
         state.statusDate = scheduleTime;
 
@@ -176,7 +176,7 @@ contract CERTFSTF is Core {
         return state;
     }
 
-     /**
+    /**
      * State transition for CERTF termination events
      * @param state the old state
      * @return the new state
@@ -218,8 +218,6 @@ contract CERTFSTF is Core {
 
         return state;
     }
-
-
 
     /**
      * State transition for CERTF settlement

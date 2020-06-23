@@ -98,8 +98,8 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
 
         state.quantity = 0;
         state.exerciseQuantity = 0;
-        state.marginFactor = 1 * 10 ** 18;
-        state.adjustmentFactor = 1 * 10 ** 18;
+        state.marginFactor = ONE_POINT_ZERO;
+        state.adjustmentFactor = ONE_POINT_ZERO;
         state.lastCouponDay = terms.issueDate;
         state.couponAmountFixed = 0;
 
@@ -130,7 +130,25 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index = 0;
 
-        // TODO
+        // issue date
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ID, terms.issueDate);
+                index++;
+            }
+        }
+
+        // initial exchange
+        if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+            index++;
+        }
+
+        // maturity event
+        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
+            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
+            index++;
+        }
 
         // remove null entries from returned array
         bytes32[] memory schedule = new bytes32[](index);
@@ -164,8 +182,103 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index = 0;
 
-        if (eventType == EventType.AD) {
-           // Same as PAM?
+        if (eventType == EventType.CFD) {
+            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+                uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfCoupon,
+                    terms.maturityDate,
+                    terms.cycleOfCoupon,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (couponSchedule[i] == 0) break;
+                    if (isInSegment(couponSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.CFD, couponSchedule[i]);
+                    index++;
+                }
+            }
+        }
+
+         if (eventType == EventType.CPD) {
+            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+                uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfCoupon,
+                    terms.maturityDate,
+                    terms.cycleOfCoupon,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (couponSchedule[i] == 0) break;
+                    uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, couponSchedule[i]);
+                    if (isInSegment(couponPaymentDayScheduleTime, segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.CFD, couponPaymentDayScheduleTime);
+                    index++;
+                }
+            }
+        }
+
+        if (eventType == EventType.RFD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfRedemption,
+                    terms.maturityDate,
+                    terms.cycleOfRedemption,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (redemptionSchedule[i] == 0) break;
+                    if (isInSegment(redemptionSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.RFD, redemptionSchedule[i]);
+                    index++;
+                }
+            }
+        }
+
+        if (eventType == EventType.RPD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfRedemption,
+                    terms.maturityDate,
+                    terms.cycleOfRedemption,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (redemptionSchedule[i] == 0) break;
+                    uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, redemptionSchedule[i]);
+                    if (isInSegment(redemptionPaymentDayScheduleTime, segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.RPD, redemptionPaymentDayScheduleTime);
+                    index++;
+                }
+            }
+        }
+
+        if (eventType == EventType.XD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfRedemption,
+                    terms.maturityDate,
+                    terms.cycleOfRedemption,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (redemptionSchedule[i] == 0) break;
+                    if (redemptionSchedule[i] == terms.maturityDate) continue;
+                    uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, redemptionSchedule[i]);
+                    if (isInSegment(executionDateScheduleTime, segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.RFD, executionDateScheduleTime);
+                    index++;
+                }
+            }
         }
 
         // remove null entries from returned array
