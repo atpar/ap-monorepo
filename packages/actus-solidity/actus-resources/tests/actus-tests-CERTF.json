@@ -2,31 +2,54 @@
   "CERTF_01": {
     "identifier": "CERTF_01",
     "terms": {
-        "contractID": "CERTF_01",
-        "contractType": "CERTF",
-        "statusDate": "2020-06-01T00:00:00",
-        "marketObjectCode": "CH012D2FLV21",
-        "contractRole": "BUY",
-        "creatorID": "549300L7V4",
-        "counterpartyID": "2490L72UCL4",
-        "currency": "CHF",
-        "settlementCurrency": "CHF",
-        "nominalPrice": "100",
-        "issuePrice": "100",
-        "quantity": "100000",
-        "contractStructure": "[ {\"object\":\"CH02315F1WD\",\"type\":\"MOC\",\"role\":\"UDL\"} ]",
-        "contractDealDate": "2020-06-01T00:00:00",
-        "issueDate": "2020-06-02T00:00:00",
-        "fixingPeriod": "0D",
-        "exercisePeriod": "5D",
-        "settlementPeriod": "10D",
-        "cycleAnchorDateOfRedemption": "2020-09-01T00:00:00",
-        "cycleOfRedemption": "3M+",
-        "contractPerformance": "PF",
-        "calendar": "NC",
-        "tMax": "2021-06-12T00:00:00",
-        "dataObserved": "[{\"identifier\":\"CH02315F1WD\",\"times\":[\"2020-06-02T00:00:00\",\"2020-09-01T00:00:00\",\"2020-12-01T00:00:00\",\"2021-03-01T00:00:00\",\"2021-06-01T00:00:00\"],\"values\":[100,110,120,130,140]}]"
-      },
+      "contractID": "CERTF_01",
+      "contractType": "CERTF",
+      "statusDate": "2020-06-01T00:00:00",
+      "marketObjectCode": "CH012D2FLV21",
+      "contractRole": "BUY",
+      "creatorID": "549300L7V4",
+      "counterpartyID": "2490L72UCL4",
+      "currency": "CHF",
+      "settlementCurrency": "CHF",
+      "nominalPrice": "100",
+      "issuePrice": "100",
+      "quantity": "100000",
+      "contractStructure": [ { "object": "CH02315F1WD", "type": "MOC", "role": "UDL"} ],
+      "contractDealDate": "2020-06-01T00:00:00",
+      "issueDate": "2020-06-02T00:00:00",
+      "fixingPeriod": "0D",
+      "exercisePeriod": "5D",
+      "settlementPeriod": "10D",
+      "cycleAnchorDateOfRedemption": "2020-09-01T00:00:00",
+      "cycleOfRedemption": "3M-",
+      "contractPerformance": "PF",
+      "calendar": "NC",
+      "tMax": "2021-06-12T00:00:00"
+    },
+    "externalData": {
+      "CH02315F1WD": [
+        {
+          "timestamp": "2020-06-02T00:00:00",
+          "value": "100"
+        },
+        {
+          "timestamp": "2020-09-01T00:00:00",
+          "value": "110"
+        },
+        {
+          "timestamp": "2020-12-01T00:00:00",
+          "value": "120"
+        },
+        {
+          "timestamp": "2021-03-01T00:00:00",
+          "value": "130"
+        },
+        {
+          "timestamp": "2021-06-01T00:00:00",
+          "value": "140"
+        }
+      ]
+    },
     "results": [
       {
         "eventDate": "2020-06-02T00:00:00",

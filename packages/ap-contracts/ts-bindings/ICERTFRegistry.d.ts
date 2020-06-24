@@ -310,6 +310,7 @@ export class ICERTFRegistry extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -416,6 +417,7 @@ export class ICERTFRegistry extends Contract {
       couponType: string;
       currency: string;
       settlementCurrency: string;
+      contractDealDate: string;
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
@@ -458,6 +460,7 @@ export class ICERTFRegistry extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;

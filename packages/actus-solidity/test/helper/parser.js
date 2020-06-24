@@ -34,6 +34,14 @@ const getIndexOfAttribute = (attribute, value) => {
   return Number(allowedValues.option);
 }
 
+const getIndexForContractReferenceAttribute = (attribute, value) => {
+  if (ACTUS_DICTIONARY.contractReference[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
+  const allowedValues = ACTUS_DICTIONARY.contractReference[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
+  if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
+
+  return Number(allowedValues.option);
+}
+
 const getIndexForEventType = (eventType) => {
   if (eventType === 'AD') return 0;
 
@@ -94,7 +102,26 @@ const parsePeriodToIP = (period) => {
 }
 
 const parseAttributeValue = (attribute, value) => {
-  if (attribute === 'contractReference_1' || attribute === 'contractReference_2') {
+  if (attribute === 'contractReference_1') {
+    if (value && value.length > 0 && value[0].object && value[0].type && value[0].role) {
+      return {
+        object: toHex(value[0].object),
+        object2: toHex(''),
+        _type: getIndexForContractReferenceAttribute('type', value[0].type),
+        role: getIndexForContractReferenceAttribute('role', value[0].role)
+      };  
+    }
+    return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
+  }
+  if (attribute === 'contractReference_2') {
+    if (value && value.length > 1 && value[1].object && value[1].type && value[1].role) {
+      return {
+        object: toHex(value[1].object),
+        object2: toHex(''),
+        _type: getIndexForContractReferenceAttribute('type', value[1].type),
+        role: getIndexForContractReferenceAttribute('role', value[1].role)
+      };  
+    }
     return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
   } else if (attribute === 'currency' || attribute === 'settlementCurrency') {
     return '0x0000000000000000000000000000000000000000';
@@ -119,17 +146,22 @@ const parseResultsFromObject = (schedule) => {
   const parsedResults = [];
 
   for (const event of schedule) {
-    const eventTypeIndex = getIndexForEventType(event['eventType']);
+    const eventTypeIndex = getIndexForEventType(event.eventType);
 
     if (eventTypeIndex === 0) { continue; } // filter out AD events
-    parsedResults.push({
-      eventDate: new Date(event.eventDate + 'Z').toISOString(),
-      eventType: eventTypeIndex.toString(),
-      eventValue: Number(event.eventValue),
-      notionalPrincipal: Number(event.notionalPrincipal),
-      nominalInterestRate: Number(event.nominalInterestRate),
-      accruedInterest: Number(event.accruedInterest),
-    });
+    const result = { ...event };
+
+    if (result.eventDate !== undefined) result.eventDate = new Date(result.eventDate + 'Z').toISOString();
+    if (result.eventType !== undefined) result.eventType = Number(eventTypeIndex).toString();
+    if (result.contractPerformance !== undefined) result.contractPerformance = getIndexOfAttribute('contractPerformance', result.contractPerformance).toString();
+    if (result.payoff !== undefined) result.eventValue = result.payoff; delete result.payoff;
+    if (result.quantity !== undefined) result.quantity = Number(result.quantity);
+    if (result.statusDate !== undefined) result.statusDate = new Date(result.statusDate + 'Z').toISOString();
+    if (result.accruedInterest !== undefined) result.accruedInterest = Number(result.accruedInterest);
+    if (result.nominalInterestRate !== undefined) result.nominalInterestRate = Number(result.nominalInterestRate);
+    if (result.notionalPrincipal !== undefined) result.notionalPrincipal = Number(result.notionalPrincipal);
+
+    parsedResults.push(result)
   }
 
   return parsedResults;
@@ -154,7 +186,6 @@ function parseToTestEventCERTF (eventType, eventTime, payoff, state) {
     quantity: fromPrecision(state.quantity),
     exerciseAmount: fromPrecision(state.exerciseAmount),
     exerciseQuantity: fromPrecision(state.exerciseQuantity),
-    // exerciseQuantityOrdered: fromPrecision(state.exerciseQuantityOrdered),
     marginFactor: fromPrecision(state.marginFactor),
     adjustmentFactor: fromPrecision(state.adjustmentFactor),
     couponAmountFixed: fromPrecision(state.couponAmountFixed),
@@ -197,7 +228,8 @@ const parseCERTFTermsFromObject = (terms) => {
   const parsedTerms = {};
 
   for (const attribute of CERTF_TERMS) {
-    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+    const identifier = (attribute === 'contractReference_1' || attribute === 'contractReference_2') ? 'contractStructure' : attribute;
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[identifier]);
   }
 
   return parsedTerms;
@@ -240,6 +272,7 @@ module.exports = {
   parseToTestEventCERTF,
   fromPrecision,
   unixToISO,
+  isoToUnix,
   roundToDecimals,
   numberOfDecimals
 }

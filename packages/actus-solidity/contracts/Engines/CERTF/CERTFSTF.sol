@@ -163,9 +163,10 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.quantity -= state.exerciseQuantity;
+        state.quantity = state.quantity.sub(state.exerciseQuantity);
         state.exerciseQuantity = 0;
         state.exerciseAmount = 0;
+        state.statusDate = scheduleTime;
         
         if (scheduleTime == state.maturityDate) {
             state.contractPerformance = ContractPerformance.MD;

@@ -18,7 +18,7 @@ async function getTestCases (contract) {
     const caseDetails = {};
     caseDetails['terms'] = parseTermsFromObject(contract, testCases[name].terms);
     caseDetails['results'] = parseResultsFromObject(testCases[name].results);
-    caseDetails['externalData'] = testCases[name].externalData;
+    caseDetails['externalData'] = testCases[name].externalData || testCases[name].dataObserved;
     parsedCases[name] = caseDetails;
   });
 
@@ -36,7 +36,7 @@ function compareTestResults (actualResults, expectedResults) {
   for (let i = 0; i < numberOfEvents; i++) {
     const actualEvent = actualResults[i];
     const expectedEvent = expectedResults[i];
-    
+
     if (expectedEvent.eventValue) {
       const decimals = (numberOfDecimals(actualEvent.eventValue) < numberOfDecimals(expectedEvent.eventValue)) 
         ? numberOfDecimals(actualEvent.eventValue)

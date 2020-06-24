@@ -76,9 +76,13 @@ module.exports = async (deployer, network) => {
   instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
 
   // Asset Actor
+  await deployer.link(SignedMath, ANNActor);
   instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, MarketObjectRegistry.address);
+  await deployer.link(SignedMath, CECActor);
   instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, MarketObjectRegistry.address);
+  await deployer.link(SignedMath, CEGActor);
   instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, MarketObjectRegistry.address);
+  await deployer.link(SignedMath, PAMActor);
   instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, MarketObjectRegistry.address);
   
   // Custodian

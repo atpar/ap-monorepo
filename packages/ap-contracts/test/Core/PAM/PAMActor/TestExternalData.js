@@ -40,7 +40,7 @@ contract('PAMActor', (accounts) => {
     this.terms = require('../../../helper/terms/PAMTerms-external-data.json');
   
     // only want RR events in the schedules
-    this.schedule = (await generateSchedule(this.PAMEngineInstance, this.terms)).filter((event) => event.startsWith('0x0c'));
+    this.schedule = (await generateSchedule(this.PAMEngineInstance, this.terms)).filter((event) => event.startsWith('0x0d'));
   
     const tx = await this.PAMActorInstance.initialize(
       this.terms,

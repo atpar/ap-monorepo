@@ -43,7 +43,30 @@ contract CERTFActor is BaseActor {
         external
         onlyRegisteredIssuer
     {
-        // TODO 
+        require(
+            engine != address(0) && IEngine(engine).contractType() == ContractType.CERTF,
+            "CERTFActor.initialize: CONTRACT_TYPE_OF_ENGINE_UNSUPPORTED"
+        );
+
+        // solium-disable-next-line
+        bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
+
+        // compute the initial state of the asset
+        State memory initialState = ICERTFEngine(engine).computeInitialState(terms);
+
+        // register the asset in the AssetRegistry
+        ICERTFRegistry(address(assetRegistry)).registerAsset(
+            assetId,
+            terms,
+            initialState,
+            schedule,
+            ownership,
+            engine,
+            address(this),
+            admin
+        );
+
+        emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)

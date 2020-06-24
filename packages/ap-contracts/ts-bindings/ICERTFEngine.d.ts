@@ -34,6 +34,7 @@ export class ICERTFEngine extends Contract {
       couponType: number | string;
       currency: string;
       settlementCurrency: string;
+      contractDealDate: number | string;
       statusDate: number | string;
       initialExchangeDate: number | string;
       maturityDate: number | string;
@@ -123,6 +124,7 @@ export class ICERTFEngine extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -241,6 +243,7 @@ export class ICERTFEngine extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -338,6 +341,7 @@ export class ICERTFEngine extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -413,6 +417,7 @@ export class ICERTFEngine extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -490,6 +495,7 @@ export class ICERTFEngine extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
+        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
