@@ -4,13 +4,13 @@ pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "@atpar/actus-solidity/contracts/Core/Utils.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 
 import "../Core/Base/AssetRegistry/IAssetRegistry.sol";
 import "./DepositAllocater.sol";
 
 
-contract ICT is IERC20, Ownable, DepositAllocater, Utils {
+contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
 
     using SafeMath for uint256;
 

@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class Schedule extends Contract {
+export class CycleUtils extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): Schedule;
+  clone(): CycleUtils;
   methods: {
     MAX_CYCLE_SIZE(): TransactionObject<string>;
 
@@ -28,27 +28,6 @@ export class Schedule extends Contract {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
-
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
   };
   events: {
     allEvents: (

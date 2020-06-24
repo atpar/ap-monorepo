@@ -2,8 +2,6 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import "@atpar/actus-solidity/contracts/Core/Utils.sol";
-
 import "../Conversions.sol";
 import "../SharedTypes.sol";
 import "./State/StateEncoder.sol";
@@ -51,7 +49,7 @@ struct Asset {
  * Contains getter and setter methods for encoding, decoding data to optimize gas cost.
  * Circumvents storing default values by relying on the characteristic of mappings returning zero for not set values.
  */
-abstract contract BaseRegistryStorage is Utils, Conversions {
+abstract contract BaseRegistryStorage {
 
     using StateEncoder for Asset;
     using ScheduleEncoder for Asset;

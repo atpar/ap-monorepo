@@ -23,13 +23,6 @@ export class CERTFActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{

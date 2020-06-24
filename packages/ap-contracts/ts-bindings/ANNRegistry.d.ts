@@ -21,31 +21,12 @@ export class ANNRegistry extends Contract {
   );
   clone(): ANNRegistry;
   methods: {
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
       0: string;
       1: string;
     }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -611,12 +592,6 @@ export class ANNRegistry extends Contract {
       0: string;
       1: string;
       2: string;
-    }>;
-    SetRootAccess: ContractEvent<{
-      assetId: string;
-      account: string;
-      0: string;
-      1: string;
     }>;
     UpdatedActor: ContractEvent<{
       assetId: string;

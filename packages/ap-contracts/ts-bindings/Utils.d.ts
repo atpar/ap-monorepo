@@ -21,10 +21,13 @@ export class Utils extends Contract {
   );
   clone(): Utils;
   methods: {
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
+    MAX_CYCLE_SIZE(): TransactionObject<string>;
+
+    MAX_EVENT_SCHEDULE_SIZE(): TransactionObject<string>;
+
+    ONE_POINT_ZERO(): TransactionObject<string>;
+
+    PRECISION(): TransactionObject<string>;
 
     decodeEvent(
       _event: string | number[]
@@ -33,14 +36,19 @@ export class Utils extends Contract {
       1: string;
     }>;
 
+    encodeEvent(
+      eventType: number | string,
+      scheduleTime: number | string
+    ): TransactionObject<string>;
+
+    getEpochOffset(eventType: number | string): TransactionObject<string>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       bdc: number | string,
       calendar: number | string,
       maturityDate: number | string
     ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
   };
   events: {
     allEvents: (

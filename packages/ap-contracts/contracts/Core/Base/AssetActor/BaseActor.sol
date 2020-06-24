@@ -5,11 +5,10 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 
 import "../SharedTypes.sol";
-import "../ScheduleUtils.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
 import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
@@ -26,13 +25,8 @@ import "./IAssetActor.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-abstract contract BaseActor is
-    Utils,
-    ScheduleUtils,
-    Conversions,
-    IAssetActor,
-    Ownable
-{
+abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
+
     using SignedMath for int;
 
     event InitializedAsset(bytes32 indexed assetId, ContractType contractType, address creator, address counterparty);
