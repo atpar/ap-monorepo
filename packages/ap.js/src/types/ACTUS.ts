@@ -2,10 +2,11 @@ import { ANNEngine } from "@atpar/ap-contracts/ts-bindings/ANNEngine";
 import { CECEngine } from "@atpar/ap-contracts/ts-bindings/CECEngine";
 import { CEGEngine } from "@atpar/ap-contracts/ts-bindings/CEGEngine";
 import { PAMEngine } from "@atpar/ap-contracts/ts-bindings/PAMEngine";
+import { CERTFEngine } from "@atpar/ap-contracts/ts-bindings/CERTFEngine";
 
 // Union Types
-export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine;
-export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms;
+export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine;
+export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
@@ -282,6 +283,50 @@ export interface PAMTerms {
   cycleOfScalingIndex: IPS;
   cycleOfFee: IPS;
 }
+
+
+export interface CERTFTerms {
+  contractType: string | number;
+  calendar: string | number;
+  contractRole: string | number;
+  dayCountConvention: string | number;
+  businessDayConvention: string | number;
+  endOfMonthConvention: string | number;
+  contractPerformance: string | number;
+  couponType: string | number;
+  
+  currency: string;
+  settlementCurrency: string;
+
+  statusDate: number | string;
+  initialExchangeDate: number | string;
+  maturityDate: number | string;
+  nonPerformingDate: number | string;
+  issueDate: number | string;
+
+  cycleAnchorDateOfRedemption: number | string;
+  cycleAnchorDateOfTermination: number | string;
+  cycleAnchorDateOfCoupon: number | string;
+
+  nominalPrice: number | string;
+  issuePrice: number | string;
+  quantity: number | string;
+  denominationRatio: number | string;
+  couponRate: number | string;
+
+  gracePeriod: IP;
+  delinquencyPeriod: IP;  
+  settlementPeriod: IP;
+  fixingPeriod: IP;
+  exercisePeriod: IP;
+
+  cycleOfRedemption: IPS;
+  cycleOfTermination: IPS;
+  cycleOfCoupon: IPS;
+
+  contractReference_1: ContractReference;
+}
+
 
 
 export function isIP(obj: any): obj is IP {
@@ -580,6 +625,52 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
   if (!isIPS(obj.cycleOfRateReset)) { return false; }
   if (!isIPS(obj.cycleOfScalingIndex)) { return false; }
   if (!isIPS(obj.cycleOfFee)) { return false; }
+
+  return true;
+}
+
+export function isCERTFTerms (obj: any): obj is CERTFTerms {
+  if (!obj) { return false; }
+  if (obj.contractType == undefined || typeof obj.contractType !== 'string' && typeof obj.contractType !== 'number') { return false; }
+  if (obj.calendar == undefined || typeof obj.calendar !== 'string' && typeof obj.calendar !== 'number') { return false; }
+  if (obj.contractRole == undefined || typeof obj.contractRole !== 'string' && typeof obj.contractRole !== 'number') { return false; }
+  if (obj.dayCountConvention == undefined || typeof obj.dayCountConvention !== 'string' && typeof obj.dayCountConvention !== 'number') { return false; }
+  if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
+  if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'string' && typeof obj.contractPerformance !== 'number') { return false; }
+  if (obj.couponType == undefined || typeof obj.couponType !== 'string' && typeof obj.couponType !== 'number') { return false; }
+  
+  if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
+  if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
+  
+  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.issueDate == undefined || typeof obj.issueDate !== 'number' && typeof obj.issueDate !== 'string') { return false; }
+
+  if (obj.cycleAnchorDateOfRedemption == undefined || typeof obj.cycleAnchorDateOfRedemption !== 'number' && typeof obj.cycleAnchorDateOfRedemption !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfTermination == undefined || typeof obj.cycleAnchorDateOfTermination !== 'number' && typeof obj.cycleAnchorDateOfTermination !== 'string') { return false; }
+  if (obj.cycleAnchorDateOfCoupon == undefined || typeof obj.cycleAnchorDateOfCoupon !== 'number' && typeof obj.cycleAnchorDateOfCoupon !== 'string') { return false; }
+
+  if (obj.nominalPrice == undefined || typeof obj.nominalPrice !== 'number' && typeof obj.nominalPrice !== 'string') { return false; }
+  if (obj.issuePrice == undefined || typeof obj.issuePrice !== 'number' && typeof obj.issuePrice !== 'string') { return false; }
+  if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
+  if (obj.denominationRatio == undefined || typeof obj.denominationRatio !== 'number' && typeof obj.denominationRatio !== 'string') { return false; }
+  if (obj.couponRate == undefined || typeof obj.couponRate !== 'number' && typeof obj.couponRate !== 'string') { return false; }
+
+  if (!isIP(obj.gracePeriod)) { return false; }
+  if (!isIP(obj.delinquencyPeriod)) { return false; }
+  if (!isIP(obj.settlementPeriod)) { return false; }
+  if (!isIP(obj.fixingPeriod)) { return false; }
+  if (!isIP(obj.exercisePeriod)) { return false; }
+
+  if (!isIPS(obj.cycleOfRedemption)) { return false; }
+  if (!isIPS(obj.cycleOfTermination)) { return false; }
+  if (!isIPS(obj.cycleOfCoupon)) { return false; }
+  
+  if (!isContractReference(obj.contractReference_1)) { return false; }
 
   return true;
 }

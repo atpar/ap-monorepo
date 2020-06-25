@@ -5,22 +5,18 @@ import BaseRegistryArtifact from '@atpar/ap-contracts/artifacts/BaseRegistry.min
 import ANNEngineArtifact from '@atpar/ap-contracts/artifacts/ANNEngine.min.json';
 import CECEngineArtifact from '@atpar/ap-contracts/artifacts/CECEngine.min.json';
 import CEGEngineArtifact from '@atpar/ap-contracts/artifacts/CEGEngine.min.json';
+import CERTFEngineArtifact from '@atpar/ap-contracts/artifacts/CERTFEngine.min.json';
 import PAMEngineArtifact from '@atpar/ap-contracts/artifacts/PAMEngine.min.json';
 import ANNActorArtifact from '@atpar/ap-contracts/artifacts/ANNActor.min.json';
-import CEGActorArtifact from '@atpar/ap-contracts/artifacts/CEGActor.min.json';
 import CECActorArtifact from '@atpar/ap-contracts/artifacts/CECActor.min.json';
+import CEGActorArtifact from '@atpar/ap-contracts/artifacts/CEGActor.min.json';
+import CERTFActorArtifact from '@atpar/ap-contracts/artifacts/CERTFActor.min.json';
 import PAMActorArtifact from '@atpar/ap-contracts/artifacts/PAMActor.min.json';
 import ANNRegistryArtifact from '@atpar/ap-contracts/artifacts/ANNRegistry.min.json';
 import CECRegistryArtifact from '@atpar/ap-contracts/artifacts/CECRegistry.min.json';
 import CEGRegistryArtifact from '@atpar/ap-contracts/artifacts/CEGRegistry.min.json';
+import CERTFRegistryArtifact from '@atpar/ap-contracts/artifacts/CERTFRegistry.min.json';
 import PAMRegistryArtifact from '@atpar/ap-contracts/artifacts/PAMRegistry.min.json';
-// import ANNEncoderArtifact from '@atpar/ap-contracts/artifacts/ANNEncoder.min.json';
-// import CECEncoderArtifact from '@atpar/ap-contracts/artifacts/CECEncoder.min.json';
-// import CEGEncoderArtifact from '@atpar/ap-contracts/artifacts/CEGEncoder.min.json';
-// import PAMEncoderArtifact from '@atpar/ap-contracts/artifacts/PAMEncoder.min.json';
-// import ScheduleEncoderArtifact from '@atpar/ap-contracts/artifacts/ScheduleEncoder.min.json';
-// import StateEncoderArtifact from '@atpar/ap-contracts/artifacts/StateEncoder.min.json';
-import SignedMathArtifact from '@atpar/ap-contracts/artifacts/SignedMath.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
 import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketObjectRegistry.min.json';
 import FDTFactoryArtifact from '@atpar/ap-contracts/artifacts/FDTFactory.min.json';
@@ -33,22 +29,18 @@ import { BaseRegistry } from '@atpar/ap-contracts/ts-bindings/BaseRegistry';
 import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
 import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
 import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
+import { CERTFEngine } from '@atpar/ap-contracts/ts-bindings/CERTFEngine';
 import { PAMEngine } from '@atpar/ap-contracts/ts-bindings/PAMEngine';
 import { ANNActor } from '@atpar/ap-contracts/ts-bindings/ANNActor';
 import { CEGActor } from '@atpar/ap-contracts/ts-bindings/CEGActor';
 import { CECActor } from '@atpar/ap-contracts/ts-bindings/CECActor';
+import { CERTFActor } from '@atpar/ap-contracts/ts-bindings/CERTFActor';
 import { PAMActor } from '@atpar/ap-contracts/ts-bindings/PAMActor';
 import { ANNRegistry } from '@atpar/ap-contracts/ts-bindings/ANNRegistry';
 import { CECRegistry } from '@atpar/ap-contracts/ts-bindings/CECRegistry';
 import { CEGRegistry } from '@atpar/ap-contracts/ts-bindings/CEGRegistry';
+import { CERTFRegistry } from '@atpar/ap-contracts/ts-bindings/CERTFRegistry';
 import { PAMRegistry } from '@atpar/ap-contracts/ts-bindings/PAMRegistry';
-// import { ANNEncoder } from '@atpar/ap-contracts/ts-bindings/ANNEncoder';
-// import { CECEncoder } from '@atpar/ap-contracts/ts-bindings/CECEncoder';
-// import { CEGEncoder } from '@atpar/ap-contracts/ts-bindings/CEGEncoder';
-// import { PAMEncoder } from '@atpar/ap-contracts/ts-bindings/PAMEncoder';
-// import { ScheduleEncoder } from '@atpar/ap-contracts/ts-bindings/ScheduleEncoder';
-// import { StateEncoder } from '@atpar/ap-contracts/ts-bindings/StateEncoder';
-import { SignedMath } from '@atpar/ap-contracts/ts-bindings/SignedMath';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObjectRegistry';
 import { FDTFactory } from '@atpar/ap-contracts/ts-bindings/FDTFactory';
@@ -56,7 +48,7 @@ import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 import { ERC1404 } from '@atpar/ap-contracts/ts-bindings/ERC1404';
 import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
 
-import { AddressBook, isAddressBook } from '../types';
+import { AddressBook, isAddressBook, UEngine } from '../types';
 
 
 export class Contracts {
@@ -69,27 +61,22 @@ export class Contracts {
   private _erc2222: VanillaFDT;
 
   public annEngine: ANNEngine;
-  public pamEngine: PAMEngine;
-  public cegEngine: CEGEngine;
   public cecEngine: CECEngine;
+  public cegEngine: CEGEngine;
+  public certfEngine: CERTFEngine;
+  public pamEngine: PAMEngine;
 
   public annActor: ANNActor;
   public cecActor: CECActor;
   public cegActor: CEGActor;
+  public certfActor: CERTFActor;
   public pamActor: PAMActor;
   
   public annRegistry: ANNRegistry;
   public cecRegistry: CECRegistry;
   public cegRegistry: CEGRegistry;
+  public certfRegistry: CERTFRegistry;
   public pamRegistry: PAMRegistry;
-
-  // public annEncoder: ANNEncoder;
-  // public cecEncoder: CECEncoder;
-  // public cegEncoder: CEGEncoder;
-  // public pamEncoder: PAMEncoder;
-  // public scheduleEncoder: ScheduleEncoder;
-  // public stateEncoder: StateEncoder;
-  public signedMath: SignedMath;
 
   public custodian: Custodian;
   public marketObjectRegistry: MarketObjectRegistry;
@@ -111,17 +98,21 @@ export class Contracts {
     // @ts-ignore
     this.annEngine = new web3.eth.Contract(ANNEngineArtifact.abi, addressBook.ANNEngine, { data: ANNEngineArtifact.bytecode }) as ANNEngine;
     // @ts-ignore
-    this.pamEngine = new web3.eth.Contract(PAMEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
+    this.cecEngine = new web3.eth.Contract(CECEngineArtifact.abi, addressBook.CECEngine, { data: CECEngineArtifact.bytecode }) as CECEngine;
     // @ts-ignore
     this.cegEngine = new web3.eth.Contract(CEGEngineArtifact.abi, addressBook.CEGEngine, { data: CEGEngineArtifact.bytecode }) as CEGEngine;
     // @ts-ignore
-    this.cecEngine = new web3.eth.Contract(CECEngineArtifact.abi, addressBook.CECEngine, { data: CECEngineArtifact.bytecode }) as CECEngine;
+    this.certfEngine = new web3.eth.Contract(CERTFEngineArtifact.abi, addressBook.CERTFEngine, { data: CERTFEngineArtifact.bytecode }) as CERTFEngine;
+    // @ts-ignore
+    this.pamEngine = new web3.eth.Contract(PAMEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
     // @ts-ignore
     this.annActor = new web3.eth.Contract(ANNActorArtifact.abi, addressBook.ANNActor, { data: ANNActorArtifact.bytecode }) as ANNActor;
     // @ts-ignore
     this.cecActor = new web3.eth.Contract(CECActorArtifact.abi, addressBook.CECActor, { data: CECActorArtifact.bytecode }) as CECActor;
     // @ts-ignore
     this.cegActor = new web3.eth.Contract(CEGActorArtifact.abi, addressBook.CEGActor, { data: CEGActorArtifact.bytecode }) as CEGActor;
+    // @ts-ignore
+    this.certfActor = new web3.eth.Contract(CERTFActorArtifact.abi, addressBook.CERTFActor, { data: CERTFActorArtifact.bytecode }) as CERTFActor;
     // @ts-ignore
     this.pamActor = new web3.eth.Contract(PAMActorArtifact.abi, addressBook.PAMActor, { data: PAMActorArtifact.bytecode }) as PAMActor;
     // @ts-ignore
@@ -131,27 +122,15 @@ export class Contracts {
     // @ts-ignore
     this.cegRegistry = new web3.eth.Contract(CEGRegistryArtifact.abi, addressBook.CEGRegistry, { data: CEGRegistryArtifact.bytecode }) as CEGRegistry;
     // @ts-ignore
+    this.certfRegistry = new web3.eth.Contract(CERTFRegistryArtifact.abi, addressBook.CERTFRegistry, { data: CERTFRegistryArtifact.bytecode }) as CERTFRegistry;
+    // @ts-ignore
     this.pamRegistry = new web3.eth.Contract(PAMRegistryArtifact.abi, addressBook.PAMRegistry, { data: PAMRegistryArtifact.bytecode }) as PAMRegistry;
-    // // @ts-ignore
-    // this.annEncoder = new web3.eth.Contract(ANNEncoderArtifact.abi, addressBook.ANNEncoder, { data: ANNEncoderArtifact.bytecode }) as ANNEncoder;
-    // // @ts-ignore
-    // this.cecEncoder = new web3.eth.Contract(CECEncoderArtifact.abi, addressBook.CECEncoder, { data: CECEncoderArtifact.bytecode }) as CECEncoder;
-    // // @ts-ignore
-    // this.cegEncoder = new web3.eth.Contract(CEGEncoderArtifact.abi, addressBook.CEGEncoder, { data: CEGEncoderArtifact.bytecode }) as CEGEncoder;
-    // // @ts-ignore
-    // this.pamEncoder = new web3.eth.Contract(PAMEncoderArtifact.abi, addressBook.PAMEncoder, { data: PAMEncoderArtifact.bytecode }) as PAMEncoder;
-    // // @ts-ignore
-    // this.scheduleEncoder = new web3.eth.Contract(ScheduleEncoderArtifact.abi, addressBook.ScheduleEncoder, { data: ScheduleEncoderArtifact.bytecode }) as ScheduleEncoder;
-    // // @ts-ignore
-    // this.stateEncoder = new web3.eth.Contract(StateEncoderArtifact.abi, addressBook.StateEncoder, { data: StateEncoderArtifact.bytecode }) as StateEncoder;
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
     this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry, { data: MarketObjectRegistryArtifact.bytecode }) as MarketObjectRegistry,
     // @ts-ignore
     this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
-    // @ts-ignore
-    this.signedMath = new web3.eth.Contract(SignedMathArtifact.abi, addressBook.SignedMath, { data: SignedMathArtifact.bytecode }) as SignedMath;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore
@@ -164,9 +143,9 @@ export class Contracts {
    * Instantiates ACTUS engine contract by with a provided address or contract type  and returns the instance.
    * @param {string} contractType a supported contract type
    * @param {string} address address of the contract type specific engine
-   * @returns {ANNEngine | CECEngine | CEGEngine | PAMEngine} Instance of contract type specific engine
+   * @returns {UEngine} Instance of contract type specific engine
    */
-  public engine (contractType: string | number, address?: string): ANNEngine | CECEngine | CEGEngine | PAMEngine {
+  public engine (contractType: string | number, address?: string): UEngine {
     if (String(contractType) === '0') {
       const pamEngine = this.pamEngine.clone();
       if (address) { pamEngine.options.address = address; }
@@ -183,6 +162,10 @@ export class Contracts {
       const cecEngine = this.cecEngine.clone();
       if (address) { cecEngine.options.address = address; }
       return cecEngine;
+    } else if (String(contractType) === '18') {
+      const certfEngine = this.certfEngine.clone();
+      if (address) { certfEngine.options.address = address; }
+      return certfEngine;
     } else {
       throw new Error('Could not return instance of Engine. Unsupported contract type provided.');
     }
@@ -192,9 +175,12 @@ export class Contracts {
    * Instantiates asset registry contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific registry
    * @param {string} contractType a supported contract type
-   * @returns {BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry} Instance of asset registry contract
+   * @returns {BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry} Instance of asset registry contract
    */
-  public assetRegistry (contractType: string | number | null, address?: string): BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | PAMRegistry {
+  public assetRegistry (
+    contractType: string | number | null,
+    address?: string
+  ): BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetRegistry. At least one parameter is required.');
     }
@@ -221,6 +207,10 @@ export class Contracts {
       const cecRegistry = this.cecRegistry.clone();
       if (address) { cecRegistry.options.address = address; }
       return cecRegistry;
+    } else if (String(contractType) === '18') {
+      const certfRegistry = this.certfRegistry.clone();
+      if (address) { certfRegistry.options.address = address; }
+      return certfRegistry;
     } else {
       throw new Error('Could not return instance of AssetRegistry. Unsupported contract type provided.');
     }
@@ -230,9 +220,12 @@ export class Contracts {
    * Instantiates asset actor contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific asset actor
    * @param {string} contractType a supported contract type
-   * @returns {BaseActor | ANNActor | CECActor | CEGActor | PAMActor} Instance of asset actor contract
+   * @returns {BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor} Instance of asset actor contract
    */
-  public assetActor (contractType: string | number | null, address?: string): BaseActor | ANNActor | CECActor | CEGActor | PAMActor {
+  public assetActor (
+    contractType: string | number | null,
+    address?: string
+  ): BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetActor. At least one parameter is required.');
     }
@@ -259,6 +252,10 @@ export class Contracts {
       const cecActor = this.cecActor.clone();
       if (address) { cecActor.options.address = address; }
       return cecActor;
+    } else if (String(contractType) === '18') {
+      const certfActor = this.certfActor.clone();
+      if (address) { certfActor.options.address = address; }
+      return certfActor;
     } else {
       throw new Error('Could not instance of AssetActor. Unsupported contract type provided.');
     }

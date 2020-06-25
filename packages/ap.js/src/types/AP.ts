@@ -35,27 +35,23 @@ export interface AssetOwnership {
 export function isAddressBook (obj: any): obj is AddressBook {
   if (!obj) { return false; }
   if (obj.ANNActor == undefined || typeof obj.ANNActor !== 'string' || obj.ANNActor === ZERO_ADDRESS) { return false; }
-  // if (obj.ANNEncoder == undefined || typeof obj.ANNEncoder !== 'string' || obj.ANNEncoder === ZERO_ADDRESS) { return false; }
   if (obj.ANNEngine == undefined || typeof obj.ANNEngine !== 'string' || obj.ANNEngine === ZERO_ADDRESS) { return false; }
   if (obj.ANNRegistry == undefined || typeof obj.ANNRegistry !== 'string' || obj.ANNRegistry === ZERO_ADDRESS) { return false; }
   if (obj.CECActor == undefined || typeof obj.CECActor !== 'string' || obj.CECActor === ZERO_ADDRESS) { return false; }
-  // if (obj.CECEncoder == undefined || typeof obj.CECEncoder !== 'string' || obj.CECEncoder === ZERO_ADDRESS) { return false; }
   if (obj.CECEngine == undefined || typeof obj.CECEngine !== 'string' || obj.CECEngine === ZERO_ADDRESS) { return false; }
   if (obj.CECRegistry == undefined || typeof obj.CECRegistry !== 'string' || obj.CECRegistry === ZERO_ADDRESS) { return false; }
   if (obj.CEGActor == undefined || typeof obj.CEGActor !== 'string' || obj.CEGActor === ZERO_ADDRESS) { return false; }
-  // if (obj.CEGEncoder == undefined || typeof obj.CEGEncoder !== 'string' || obj.CEGEncoder === ZERO_ADDRESS) { return false; }
   if (obj.CEGEngine == undefined || typeof obj.CEGEngine !== 'string' || obj.CEGEngine === ZERO_ADDRESS) { return false; }
   if (obj.CEGRegistry == undefined || typeof obj.CEGRegistry !== 'string' || obj.CEGRegistry === ZERO_ADDRESS) { return false; }
+  if (obj.CERTFActor == undefined || typeof obj.CERTFActor !== 'string' || obj.CERTFActor === ZERO_ADDRESS) { return false; }
+  if (obj.CERTFEngine == undefined || typeof obj.CERTFEngine !== 'string' || obj.CERTFEngine === ZERO_ADDRESS) { return false; }
+  if (obj.CERTFRegistry == undefined || typeof obj.CERTFRegistry !== 'string' || obj.CERTFRegistry === ZERO_ADDRESS) { return false; }
   if (obj.Custodian == undefined || typeof obj.Custodian !== 'string' || obj.Custodian === ZERO_ADDRESS) { return false; }
   if (obj.FDTFactory == undefined || typeof obj.FDTFactory !== 'string' || obj.FDTFactory === ZERO_ADDRESS) { return false; }
   if (obj.MarketObjectRegistry == undefined || typeof obj.MarketObjectRegistry !== 'string' || obj.MarketObjectRegistry === ZERO_ADDRESS) { return false; }
   if (obj.PAMActor == undefined || typeof obj.PAMActor !== 'string' || obj.PAMActor === ZERO_ADDRESS) { return false; }
-  // if (obj.PAMEncoder == undefined || typeof obj.PAMEncoder !== 'string' || obj.PAMEncoder === ZERO_ADDRESS) { return false; }
   if (obj.PAMEngine == undefined || typeof obj.PAMEngine !== 'string' || obj.PAMEngine === ZERO_ADDRESS) { return false; }
   if (obj.PAMRegistry == undefined || typeof obj.PAMRegistry !== 'string' || obj.PAMRegistry === ZERO_ADDRESS) { return false; }
-  // if (obj.ScheduleEncoder == undefined || typeof obj.ScheduleEncoder !== 'string' || obj.ScheduleEncoder === ZERO_ADDRESS) { return false; }
-  if (obj.SignedMath == undefined || typeof obj.SignedMath !== 'string' || obj.SignedMath === ZERO_ADDRESS) { return false; }
-  // if (obj.StateEncoder == undefined || typeof obj.StateEncoder !== 'string' || obj.StateEncoder === ZERO_ADDRESS) { return false; }
 
   return true;
 }

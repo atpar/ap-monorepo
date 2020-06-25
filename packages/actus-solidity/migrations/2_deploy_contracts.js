@@ -1,24 +1,16 @@
-const PAMEngine = artifacts.require('PAMEngine');
 const ANNEngine = artifacts.require('ANNEngine');
-const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
-const SignedMath = artifacts.require('SignedMath');
+const CEGEngine = artifacts.require('CEGEngine');
+const CERTFEngine = artifacts.require('CERTFEngine');
+const PAMEngine = artifacts.require('PAMEngine');
 
 
 module.exports = async (deployer) => {
-  await deployer.deploy(SignedMath);
-  
-  await deployer.link(SignedMath, PAMEngine);
-  await deployer.deploy(PAMEngine);
-
-  await deployer.link(SignedMath, ANNEngine);
   await deployer.deploy(ANNEngine);
-
-  await deployer.link(SignedMath, CEGEngine);
-  await deployer.deploy(CEGEngine);
-
-  await deployer.link(SignedMath, CECEngine);
   await deployer.deploy(CECEngine);
+  await deployer.deploy(CEGEngine);
+  await deployer.deploy(CERTFEngine);
+  await deployer.deploy(PAMEngine);
 
   console.log(`
     Deployments:
@@ -26,7 +18,7 @@ module.exports = async (deployer) => {
       ANNEngine: ${ANNEngine.address}
       CECEngine: ${CECEngine.address}
       CEGEngine: ${CEGEngine.address}
+      CERTFEngine: ${CERTFEngine.address}
       PAMEngine: ${PAMEngine.address}
-      SignedMath: ${SignedMath.address}
   `);
 }

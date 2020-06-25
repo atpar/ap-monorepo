@@ -5,10 +5,10 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "@atpar/actus-solidity/contracts/Core/Utils.sol";
+import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 
 import "../SharedTypes.sol";
-import "../ScheduleUtils.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
 import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
@@ -25,13 +25,9 @@ import "./IAssetActor.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-abstract contract BaseActor is
-    Utils,
-    ScheduleUtils,
-    Conversions,
-    IAssetActor,
-    Ownable
-{
+abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
+
+    using SignedMath for int;
 
     event InitializedAsset(bytes32 indexed assetId, ContractType contractType, address creator, address counterparty);
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);
@@ -327,6 +323,28 @@ abstract contract BaseActor is
                     IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
+        } else if (eventType == EventType.RFD) {
+            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_1"
+            );
+            if (
+                contractReference_1._type == ContractReferenceType.MOC
+                && contractReference_1.role == ContractReferenceRole.UDL
+            ) {
+                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = marketObjectRegistry.getDataPointOfMarketObject(
+                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
+                    scheduleTime
+                );
+                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
+                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
+                    assetRegistry.getUIntValueForForTermsAttribute(assetId, "issueDate")
+                );
+                if (isSetScheduleTime && isSetAnchorDate) {
+                    return bytes32(redemptionAmountScheduleTime.floatDiv(redemptionAmountAnchorDate));
+                }
+            }
+            return bytes32(0);
         }
 
         return bytes32(0);

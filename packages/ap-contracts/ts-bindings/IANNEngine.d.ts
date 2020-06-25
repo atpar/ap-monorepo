@@ -107,6 +107,7 @@ export class IANNEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -115,6 +116,11 @@ export class IANNEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computeStateForEvent(
@@ -203,6 +209,7 @@ export class IANNEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -211,6 +218,11 @@ export class IANNEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -221,6 +233,7 @@ export class IANNEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -229,6 +242,11 @@ export class IANNEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computePayoffForEvent(
@@ -317,6 +335,7 @@ export class IANNEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -325,6 +344,11 @@ export class IANNEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -584,6 +608,7 @@ export class IANNEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -592,6 +617,11 @@ export class IANNEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       hasUnderlying: boolean,
       underlyingState: {
@@ -601,6 +631,7 @@ export class IANNEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -609,6 +640,11 @@ export class IANNEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<boolean>;
   };

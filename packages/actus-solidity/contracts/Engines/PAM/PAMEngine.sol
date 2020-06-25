@@ -128,7 +128,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index = 0;
+        uint16 index;
 
         // initial exchange
         if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
@@ -180,7 +180,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         returns(bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint256 index = 0;
+        uint256 index;
 
         if (eventType == EventType.IP) {
             // interest payment related (covers pre-repayment period only,

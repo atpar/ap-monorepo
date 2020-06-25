@@ -1,6 +1,6 @@
 const TestPOF = artifacts.require('TestCEGPOF.sol');
 const CEGEngine = artifacts.require('CEGEngine.sol');
-const { getDefaultTestTerms } = require('../../helper/tests');
+const { getDefaultTestTerms, web3ResponseToState } = require('../../helper/tests');
 
 
 contract('TestCEGPOF', () => {
@@ -12,18 +12,16 @@ contract('TestCEGPOF', () => {
   });
 
   /*
-  * TEST POF_CEG_STD
-  */
-
+   * TEST POF_CEG_STD
+   */
   it('Should yield a settlement payoff of 100005', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
+    const state = web3ResponseToState(await this.CEGEngineInstance.computeInitialState(this.CEGTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
     // used data
-    state[13] = web3.utils.toWei('100000'); // exerciseAmount
-    state[8] = web3.utils.toWei('5'); // feeAccrued
-
+    state.exerciseAmount = web3.utils.toWei('100000');
+    state.feeAccrued = web3.utils.toWei('5');
 
     const payoff = await this.TestPOF._POF_CEG_STD(
       this.CEGTerms,
@@ -31,6 +29,7 @@ contract('TestCEGPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '100005000000000000000000');
   });
 
@@ -61,7 +60,7 @@ contract('TestCEGPOF', () => {
 
   // feeBasis.A
   it('CEG fee basis A: should yield a fee of 5', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
+    const state = web3ResponseToState(await this.CEGEngineInstance.computeInitialState(this.CEGTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 0;
 
@@ -75,25 +74,26 @@ contract('TestCEGPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '5000000000000000000');
   });
 
   // feeBasis.N
   it('CEG fee basis N: should yield a fee of 10100', async () => {
-    const state = await this.CEGEngineInstance.computeInitialState(this.CEGTerms);
+    const state = web3ResponseToState(await this.CEGEngineInstance.computeInitialState(this.CEGTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
     this.CEGTerms.feeBasis = 1; // FeeBasis.N
-    state[8] = web3.utils.toWei('100'); // feeAccrued = 100
-    state[1] = '0'; // statusDate = 0
     this.CEGTerms.businessDayConvention = 0; // NULL
     this.CEGTerms.calendar = 0; // NoCalendar
     this.CEGTerms.dayCountConvention = 2; // A_365
     this.CEGTerms.maturityDate = 31536000; // 1 year
-
     this.CEGTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+
+    state.feeAccrued = web3.utils.toWei('100');
+    state.statusDate = '0';
+    state.notionalPrincipal = web3.utils.toWei('1000000');
 
     const payoff = await this.TestPOF._POF_CEG_FP(
       this.CEGTerms,
@@ -101,8 +101,7 @@ contract('TestCEGPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '10100000000000000000000');
   });
-
-
 });

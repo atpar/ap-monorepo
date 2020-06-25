@@ -30,6 +30,7 @@ export class IStateRegistry extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -38,6 +39,11 @@ export class IStateRegistry extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     getFinalizedState(
@@ -49,6 +55,7 @@ export class IStateRegistry extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -57,6 +64,11 @@ export class IStateRegistry extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     getEnumValueForStateAttribute(
@@ -83,6 +95,7 @@ export class IStateRegistry extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -91,6 +104,11 @@ export class IStateRegistry extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<void>;
 
@@ -103,6 +121,7 @@ export class IStateRegistry extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -111,6 +130,11 @@ export class IStateRegistry extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<void>;
   };

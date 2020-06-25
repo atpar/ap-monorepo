@@ -124,7 +124,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index = 0;
+        uint16 index;
 
         // maturity event
         if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {

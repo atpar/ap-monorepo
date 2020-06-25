@@ -125,7 +125,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index = 0;
+        uint16 index;
 
         // purchase
         if (terms.purchaseDate != 0) {

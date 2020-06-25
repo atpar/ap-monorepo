@@ -15,21 +15,28 @@ function getEngineContractInstanceForContractType(instances, contractType) {
     return instances.CEGEngineInstance;
   } else if (contractType === 17) {
     return instances.CECEngineInstance;
+  } else if (contractType === 18) {
+    return instances.CERTFEngineInstance;
   } else {
     throw new Error('Contract Type not supported.');
   }
 }
 
-async function generateSchedule(engineContractInstance, terms) {
+async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
   events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, terms.maturityDate)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 2)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 6)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 8)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 12)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 17)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26)));
 
   return sortEvents(removeNullEvents(events));
 }
@@ -55,6 +62,19 @@ function parseTerms (array) {
   });
 }
 
+const web3ResponseToState = (arr) => ({ 
+  ...Object.keys(arr).reduce((obj, element) => (
+    (!Number.isInteger(Number(element)))
+      ? { 
+        ...obj,
+        [element]: (Array.isArray(arr[element]))
+          ? web3ResponseToState(arr[element])
+          : arr[element]
+      }
+      : obj
+  ), {})
+});
+
 module.exports = {
   getEngineContractInstanceForContractType,
   generateSchedule,
@@ -62,5 +82,6 @@ module.exports = {
   ZERO_ADDRESS,
   ZERO_BYTES32,
   ZERO_BYTES,
-  parseTerms
+  parseTerms,
+  web3ResponseToState
 }

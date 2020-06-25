@@ -4,9 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "./ACTUSTypes.sol";
 import "./ACTUSConstants.sol";
-import "./Utils.sol";
-import "./Schedule.sol";
-
+import "./Utils/Utils.sol";
 import "./Conventions/BusinessDayConventions.sol";
 import "./Conventions/ContractDefaultConventions.sol";
 import "./Conventions/ContractRoleConventions.sol";
@@ -26,6 +24,5 @@ contract Core is
     ContractRoleConventions,
     DayCountConventions,
     EndOfMonthConventions,
-    Utils,
-    Schedule
+    Utils
 {}

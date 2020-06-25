@@ -2,18 +2,20 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import "../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
+import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
-import "./ACTUSTypes.sol";
-import "./ACTUSConstants.sol";
-import "./Utils.sol";
+import "../ACTUSTypes.sol";
+import "../ACTUSConstants.sol";
+import "./PeriodUtils.sol";
 
 
 /**
  * @title Schedule
  * @notice Methods related to generating event schedules.
  */
-contract Schedule is ACTUSConstants, Utils {
+contract CycleUtils is ACTUSConstants, PeriodUtils {
+
+    using BokkyPooBahsDateTimeLibrary for uint;
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date
@@ -26,17 +28,17 @@ contract Schedule is ACTUSConstants, Utils {
         uint256 newTimestamp;
 
         if (cycle.p == P.D) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addDays(cycleStart, cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i * cycleIndex);
         } else if (cycle.p == P.W) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addDays(cycleStart, cycle.i * 7 * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i * 7 * cycleIndex);
         } else if (cycle.p == P.M) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addMonths(cycleStart, cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i * cycleIndex);
         } else if (cycle.p == P.Q) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addMonths(cycleStart, cycle.i * 3 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i * 3 * cycleIndex);
         } else if (cycle.p == P.H) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addMonths(cycleStart, cycle.i * 6 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i * 6 * cycleIndex);
         } else if (cycle.p == P.Y) {
-            newTimestamp = BokkyPooBahsDateTimeLibrary.addYears(cycleStart, cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addYears(cycle.i * cycleIndex);
         } else {
             revert("Schedule.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
         }
@@ -70,7 +72,7 @@ contract Schedule is ACTUSConstants, Utils {
         returns (uint256[MAX_CYCLE_SIZE] memory)
     {
         uint256[MAX_CYCLE_SIZE] memory dates;
-        uint256 index = 0;
+        uint256 index;
 
         // if the cycle is not set we return only the cycle start end end dates under these conditions:
         // we return the cycle start, if it's in the segment
@@ -87,7 +89,7 @@ contract Schedule is ACTUSConstants, Utils {
         }
 
         uint256 date = cycleStart;
-        uint256 cycleIndex = 0;
+        uint256 cycleIndex;
 
         // walk through the cycle and create the cycle dates to be returned
         while (date < cycleEnd) {
@@ -121,5 +123,22 @@ contract Schedule is ACTUSConstants, Utils {
         }
 
         return dates;
+    }
+
+    /**
+     * @notice Checks if a timestamp is in a given range.
+     */
+    function isInSegment(
+        uint256 timestamp,
+        uint256 startTimestamp,
+        uint256 endTimestamp
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        if (startTimestamp > endTimestamp) return false;
+        if (startTimestamp <= timestamp && timestamp <= endTimestamp) return true;
+        return false;
     }
 }

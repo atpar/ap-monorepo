@@ -24,19 +24,20 @@ struct IP {
 }
 
 // Number of enum options should be limited to 256 (8 bits) such that 32 enums can be packed fit into 256 bits (bytes32)
-enum Calendar {NC, MF}
 enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
+enum Calendar {NC, MF}
 enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
 enum ContractReferenceType {CNT, CID, MOC, EID, CST}
 enum ContractReferenceRole {UDL, FIL, SEL, COVE, COVI}
 enum ContractRole {RPA, RPL, RFL, PFL, RF, PF, BUY, SEL, COL, CNO, UDL, UDLP, UDLM}
-enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC}
+enum ContractType {PAM, ANN, NAM, LAM, LAX, CLM, UMP, CSH, STK, COM, SWAPS, SWPPV, FXOUT, CAPFL, FUTUR, OPTNS, CEG, CEC, CERTF}
+enum CouponType {NOC, FIX, FCN, PRF}
 enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
-//               0    1   2   3   4    5   6   7   8     9  10   11  12  13   14  15  16  17    18  19  20   21  22
-enum EventType {NE, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, XD, STD, AD}
+//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
+enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
@@ -60,6 +61,7 @@ struct State {
     uint256 maturityDate;
     uint256 exerciseDate;
     uint256 terminationDate;
+    uint256 lastCouponDay;
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -73,6 +75,13 @@ struct State {
     int256 notionalScalingMultiplier;
     int256 nextPrincipalRedemptionPayment;
     int256 exerciseAmount;
+    int256 exerciseQuantity;
+    
+    int256 quantity;
+    int256 couponAmountFixed;
+    // int256 exerciseQuantityOrdered;
+    int256 marginFactor;
+    int256 adjustmentFactor;
 }
 
 struct ANNTerms {
@@ -223,6 +232,58 @@ struct CEGTerms {
     // - make ContractReference top level and skip ContractStructure
     ContractReference contractReference_1;
     ContractReference contractReference_2;
+}
+
+struct CERTFTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    ContractPerformance contractPerformance;
+    CouponType couponType;
+
+    address currency;
+    address settlementCurrency;
+
+    // bytes32 marketObjectCode;
+
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    uint256 maturityDate;
+    uint256 nonPerformingDate;
+    uint256 issueDate;
+    // uint256 lastCouponDay;
+    uint256 cycleAnchorDateOfRedemption;
+    uint256 cycleAnchorDateOfTermination;
+    uint256 cycleAnchorDateOfCoupon;
+
+    int256 nominalPrice;
+    int256 issuePrice;
+    // int256 delinquencyRate;
+    int256 quantity;
+    // int256 exerciseQuantity;
+    // int256 exerciseQuantityOrdered;
+    // int256 marginFactor;
+    // int256 adjustmentFactor;
+    int256 denominationRatio;
+    int256 couponRate;
+    // int256 exerciseAmount;
+    // int256 couponAmountFixed;
+
+    IP gracePeriod;
+    IP delinquencyPeriod;
+    IP settlementPeriod;
+    IP fixingPeriod;
+    IP exercisePeriod;
+
+    IPS cycleOfRedemption;
+    IPS cycleOfTermination;
+    IPS cycleOfCoupon;
+
+    ContractReference contractReference_1;
 }
 
 struct PAMTerms {

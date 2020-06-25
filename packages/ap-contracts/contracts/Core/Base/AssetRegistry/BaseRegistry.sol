@@ -90,9 +90,7 @@ abstract contract BaseRegistry is
         asset.encodeAndSetSchedule(schedule);
 
         // set external admin if specified
-        if (admin != address(0)) {
-            setDefaultRoot(assetId, admin);
-        }
+        if (admin != address(0)) setDefaultRoot(assetId, admin);
 
         emit RegisteredAsset(assetId);
     }
@@ -137,7 +135,6 @@ abstract contract BaseRegistry is
         isAuthorized (assetId)
     {
         address prevEngine = assets[assetId].engine;
-
         assets[assetId].engine = engine;
 
         emit UpdatedEngine(assetId, prevEngine, engine);
@@ -154,7 +151,6 @@ abstract contract BaseRegistry is
         isAuthorized (assetId)
     {
         address prevActor = assets[assetId].actor;
-
         assets[assetId].actor = actor;
 
         emit UpdatedActor(assetId, prevActor, actor);

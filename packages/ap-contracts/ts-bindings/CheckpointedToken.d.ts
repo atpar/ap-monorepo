@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class ERC20Detailed extends Contract {
+export class CheckpointedToken extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): ERC20Detailed;
+  clone(): CheckpointedToken;
   methods: {
     allowance(owner: string, spender: string): TransactionObject<string>;
 
@@ -29,6 +29,24 @@ export class ERC20Detailed extends Contract {
     ): TransactionObject<boolean>;
 
     balanceOf(account: string): TransactionObject<string>;
+
+    decimals(): TransactionObject<string>;
+
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string
+    ): TransactionObject<boolean>;
+
+    holderCount(): TransactionObject<string>;
+
+    increaseAllowance(
+      spender: string,
+      addedValue: number | string
+    ): TransactionObject<boolean>;
+
+    name(): TransactionObject<string>;
+
+    symbol(): TransactionObject<string>;
 
     totalSupply(): TransactionObject<string>;
 
@@ -43,11 +61,22 @@ export class ERC20Detailed extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
-    name(): TransactionObject<string>;
+    getHoldersAt(checkpointId: number | string): TransactionObject<string[]>;
 
-    symbol(): TransactionObject<string>;
+    getHolderSubsetAt(
+      checkpointId: number | string,
+      start: number | string,
+      end: number | string
+    ): TransactionObject<string[]>;
 
-    decimals(): TransactionObject<string>;
+    getNumberOfHolders(): TransactionObject<string>;
+
+    balanceOfAt(
+      holder: string,
+      timestamp: number | string
+    ): TransactionObject<string>;
+
+    totalSupplyAt(timestamp: number | string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{
@@ -58,6 +87,7 @@ export class ERC20Detailed extends Contract {
       1: string;
       2: string;
     }>;
+    CheckpointCreated: ContractEvent<string>;
     Transfer: ContractEvent<{
       from: string;
       to: string;

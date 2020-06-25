@@ -1,16 +1,19 @@
 const ANNEngine = artifacts.require('ANNEngine');
-const PAMEngine = artifacts.require('PAMEngine');
-const CEGEngine = artifacts.require('CEGEngine');
 const CECEngine = artifacts.require('CECEngine');
+const CEGEngine = artifacts.require('CEGEngine');
+const CERTFEngine = artifacts.require('CERTFEngine');
+const PAMEngine = artifacts.require('PAMEngine');
 
 const ANNRegistry = artifacts.require('ANNRegistry');
 const CECRegistry = artifacts.require('CECRegistry');
 const CEGRegistry = artifacts.require('CEGRegistry');
+const CERTFRegistry = artifacts.require('CERTFRegistry');
 const PAMRegistry = artifacts.require('PAMRegistry');
 
 const ANNActor = artifacts.require('ANNActor');
 const CECActor = artifacts.require('CECActor');
 const CEGActor = artifacts.require('CEGActor');
+const CERTFActor = artifacts.require('CERTFActor');
 const PAMActor = artifacts.require('PAMActor');
 
 const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
@@ -27,15 +30,17 @@ async function setupTestEnvironment (accounts) {
   // PAMEngine.numberFormat = 'String';
 
   // ACTUS-Solidity
-  instances.PAMEngineInstance = await PAMEngine.new();
   instances.ANNEngineInstance = await ANNEngine.new();
-  instances.CEGEngineInstance = await CEGEngine.new();
   instances.CECEngineInstance = await CECEngine.new();
+  instances.CEGEngineInstance = await CEGEngine.new();
+  instances.CERTFEngineInstance = await CERTFEngine.new();
+  instances.PAMEngineInstance = await PAMEngine.new();
 
   // Asset Registry
   instances.ANNRegistryInstance = await ANNRegistry.new();
   instances.CECRegistryInstance = await CECRegistry.new();
   instances.CEGRegistryInstance = await CEGRegistry.new();
+  instances.CERTFRegistryInstance = await CERTFRegistry.new();
   instances.PAMRegistryInstance = await PAMRegistry.new();
 
   // Market Object Registry
@@ -45,6 +50,7 @@ async function setupTestEnvironment (accounts) {
   instances.ANNActorInstance = await ANNActor.new(instances.ANNRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
   instances.CECActorInstance = await CECActor.new(instances.CECRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
   instances.CEGActorInstance = await CEGActor.new(instances.CEGRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+  instances.CERTFActorInstance = await CERTFActor.new(instances.CERTFRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
   instances.PAMActorInstance = await PAMActor.new(instances.PAMRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
 
   // Custodian
@@ -59,6 +65,7 @@ async function setupTestEnvironment (accounts) {
   await instances.ANNActorInstance.registerIssuer(admin);
   await instances.CECActorInstance.registerIssuer(admin);
   await instances.CEGActorInstance.registerIssuer(admin);
+  await instances.CERTFActorInstance.registerIssuer(admin);
   await instances.PAMActorInstance.registerIssuer(admin);
 
   return instances;

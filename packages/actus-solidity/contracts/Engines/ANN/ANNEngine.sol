@@ -132,7 +132,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index = 0;
+        uint16 index;
 
         // initial exchange
         if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
@@ -184,13 +184,13 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint256 index = 0;
+        uint256 index;
 
         if (eventType == EventType.IP) {
             // interest payment related (covers pre-repayment period only,
             // starting with PRANX interest is paid following the PR schedule)
             if (
-                terms.cycleOfInterestPayment.isSet == true
+                terms.cycleOfInterestPayment.isSet
                 && terms.cycleAnchorDateOfInterestPayment != 0
             ) {
                 uint256[MAX_CYCLE_SIZE] memory interestPaymentSchedule = computeDatesFromCycleSegment(
