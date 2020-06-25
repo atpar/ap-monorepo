@@ -7,6 +7,7 @@ import {
   ANNTerms,
   CECTerms,
   CEGTerms,
+  CERTFTerms,
   PAMTerms,
   State
 } from '../types';
