@@ -25,8 +25,6 @@ const toHex = (value) => {
 }
 
 const getIndexOfAttribute = (attribute, value) => {
-  if (attribute === 'contractType' && String(value) === 'CERTF') { return 18; } // workaround
-
   if (ACTUS_DICTIONARY.terms[attribute] == undefined) { throw new Error('Unknown attribute provided.')}
   const allowedValues = ACTUS_DICTIONARY.terms[attribute].allowedValues.find((allowedValue) => allowedValue.acronym === value);
   if (allowedValues == undefined) { console.log(attribute); throw new Error('No index found for attribute.'); }
