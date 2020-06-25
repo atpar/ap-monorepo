@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
 
+
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) for CERTF contracts

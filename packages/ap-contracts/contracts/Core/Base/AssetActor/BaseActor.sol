@@ -333,11 +333,11 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
                 (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = marketObjectRegistry.getDataPointOfMarketObject(
-                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, contractReference_1.object),
+                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
                     scheduleTime
                 );
                 (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
-                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, contractReference_1.object),
+                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
                     assetRegistry.getUIntValueForForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {

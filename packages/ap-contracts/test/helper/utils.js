@@ -22,7 +22,7 @@ function getEngineContractInstanceForContractType(instances, contractType) {
   }
 }
 
-async function generateSchedule(engineContractInstance, terms) {
+async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
   events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, terms.maturityDate)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
@@ -32,6 +32,11 @@ async function generateSchedule(engineContractInstance, terms) {
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24)));
+  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26)));
 
   return sortEvents(removeNullEvents(events));
 }
