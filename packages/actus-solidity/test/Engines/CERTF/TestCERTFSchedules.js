@@ -8,7 +8,7 @@ contract('CERTFEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
     const schedule = [];
-      
+
     schedule.push(... await this.CERTFEngineInstance.computeNonCyclicScheduleSegment(
       terms,
       segmentStart,
@@ -53,12 +53,12 @@ contract('CERTFEngine', () => {
     this.testCases = await getTestCases('CERTF');
   });
 
-  const evaluateEventSchedule = async (terms, dataObserved) => {
+  const evaluateEventSchedule = async (terms, dataObserved, tMax) => {
     const initialState = await this.CERTFEngineInstance.computeInitialState(terms);
     const schedule = await computeEventScheduleSegment(
       terms,
       terms.contractDealDate,
-      (terms.maturityDate > 0) ? terms.maturityDate : 1623448800
+      (terms.maturityDate > 0) ? terms.maturityDate : tMax
     );
 
     const evaluatedSchedule = [];
@@ -113,7 +113,13 @@ contract('CERTFEngine', () => {
  
   it('should yield the expected evaluated contract schedule for test CERTF_01', async () => {
     const testDetails = this.testCases['CERTF_01'];
-    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData);
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
+    compareTestResults(evaluatedSchedule, testDetails['results']);
+  });
+
+  it('should yield the expected evaluated contract schedule for test CERTF_02', async () => {
+    const testDetails = this.testCases['CERTF_02'];
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 });

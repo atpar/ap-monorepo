@@ -2,7 +2,8 @@ const {
   parseTermsFromObject, 
   parseResultsFromObject,
   roundToDecimals,
-  numberOfDecimals
+  numberOfDecimals,
+  isoToUnix
 } = require('./parser');
 
 const TEST_TERMS_DIR = './actus-resources/tests/';
@@ -16,9 +17,10 @@ async function getTestCases (contract) {
   const parsedCases = {};
   testCaseNames.forEach((name) => {
     const caseDetails = {};
-    caseDetails['terms'] = parseTermsFromObject(contract, testCases[name].terms);
-    caseDetails['results'] = parseResultsFromObject(testCases[name].results);
-    caseDetails['externalData'] = testCases[name].externalData || testCases[name].dataObserved;
+    caseDetails.terms = parseTermsFromObject(contract, testCases[name].terms);
+    caseDetails.results = parseResultsFromObject(testCases[name].results);
+    caseDetails.externalData = testCases[name].externalData || testCases[name].dataObserved;
+    caseDetails.tMax = (testCases[name].tMax) ? isoToUnix(testCases[name].tMax) : undefined;
     parsedCases[name] = caseDetails;
   });
 
