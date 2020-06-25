@@ -10,13 +10,8 @@ export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
-export const FP_SCHEDULE_ID = '2';
-export const PR_SCHEDULE_ID = '3';
-export const PY_SCHEDULE_ID = '6';
-export const IP_SCHEDULE_ID = '8';
-export const IPCI_SCHEDULE_ID = '9';
-export const RR_SCHEDULE_ID = '12';
-export const SC_SCHEDULE_ID = '17';
+// FP, PR, PY, IP, IPCI, RR, SC, CFD, CPD, RFD, RPD, XD
+export const CYCLIC_EVENTS = ['3', '4', '7', '9', '10', '13', '18', '21', '23', '24', '26'];
 
 // IPS
 export interface IPS { 

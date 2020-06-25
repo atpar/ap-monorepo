@@ -3,13 +3,7 @@ import Web3Utils from 'web3-utils';
 import {
   UEngine,
   UTerms,
-  FP_SCHEDULE_ID,
-  PR_SCHEDULE_ID,
-  PY_SCHEDULE_ID,
-  IP_SCHEDULE_ID,
-  IPCI_SCHEDULE_ID,
-  RR_SCHEDULE_ID,
-  SC_SCHEDULE_ID
+  CYCLIC_EVENTS
 } from '../types';
 
 
@@ -43,20 +37,13 @@ export async function computeScheduleFromTerms(
 
   // @ts-ignore
   schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, 0, maturityDate).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, FP_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, PR_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, PY_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, IP_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, IPCI_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, RR_SCHEDULE_ID).call()));
-  // @ts-ignore
-  schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, SC_SCHEDULE_ID).call()));
+
+  if (String(terms.maturityDate) !== '0') {
+    for (const cyclicEvent of CYCLIC_EVENTS) {
+      // @ts-ignore
+      schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, cyclicEvent).call()));
+    }
+  } 
 
   return sortEvents(removeNullEvents(schedule));
 }

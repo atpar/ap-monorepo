@@ -230,6 +230,7 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
+  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
