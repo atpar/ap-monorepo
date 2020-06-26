@@ -23,8 +23,8 @@ abstract contract BaseRegistry is
     StateRegistry,
     ScheduleRegistry,
     OwnershipRegistry,
-    IBaseRegistry,
-    Whitelist
+    IBaseRegistry
+    // Whitelist
 {
     event RegisteredAsset(bytes32 assetId);
     event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);

@@ -21,6 +21,8 @@ export class BaseRegistry extends Contract {
   );
   clone(): BaseRegistry;
   methods: {
+    addToWhitelist(account: string): TransactionObject<void>;
+
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
@@ -200,11 +202,15 @@ export class BaseRegistry extends Contract {
       1: string;
     }>;
 
+    isWhitelisted(account: string): TransactionObject<boolean>;
+
     markEventAsSettled(
       assetId: string | number[],
       _event: string | number[],
       _payoff: number | string
     ): TransactionObject<void>;
+
+    owner(): TransactionObject<string>;
 
     popNextScheduledEvent(
       assetId: string | number[]
@@ -216,6 +222,8 @@ export class BaseRegistry extends Contract {
       assetId: string | number[],
       pendingEvent: string | number[]
     ): TransactionObject<void>;
+
+    removeFromWhitelist(account: string): TransactionObject<void>;
 
     revokeAccess(
       assetId: string | number[],
@@ -295,6 +303,8 @@ export class BaseRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
@@ -323,6 +333,12 @@ export class BaseRegistry extends Contract {
     IncrementedScheduleIndex: ContractEvent<{
       assetId: string;
       nextScheduleIndex: string;
+      0: string;
+      1: string;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
       0: string;
       1: string;
     }>;
@@ -380,6 +396,18 @@ export class BaseRegistry extends Contract {
       1: string;
     }>;
     UpdatedTerms: ContractEvent<string>;
+    WhitelistAccountAdded: ContractEvent<{
+      account: string;
+      caller: string;
+      0: string;
+      1: string;
+    }>;
+    WhitelistAccountRemoved: ContractEvent<{
+      account: string;
+      caller: string;
+      0: string;
+      1: string;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

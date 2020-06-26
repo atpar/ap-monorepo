@@ -6,13 +6,14 @@ import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";
 import "./PAMEncoder.sol";
 import "./IPAMRegistry.sol";
+import "../Base/AssetRegistry/AccessControl/Whitelist.sol";
 
 
 /**
  * @title PAMRegistry
  * @notice Registry for ACTUS Protocol assets
  */
-contract PAMRegistry is BaseRegistry, IPAMRegistry {
+contract PAMRegistry is BaseRegistry, IPAMRegistry, Whitelist {
 
     using PAMEncoder for Asset;
 

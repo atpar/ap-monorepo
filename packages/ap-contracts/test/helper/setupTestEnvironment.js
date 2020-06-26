@@ -68,6 +68,13 @@ async function setupTestEnvironment (accounts) {
   await instances.CERTFActorInstance.registerIssuer(admin);
   await instances.PAMActorInstance.registerIssuer(admin);
 
+  // // add actors to registry whitelists
+  // await instances.ANNRegistryInstance.addToWhitelist(instances.ANNActorInstance.address);
+  // await instances.CECRegistryInstance.addToWhitelist(instances.CECActorInstance.address);
+  // await instances.CEGRegistryInstance.addToWhitelist(instances.CEGActorInstance.address);
+  // await instances.CERTFRegistryInstance.addToWhitelist(instances.CERTFActorInstance.address);
+  await instances.PAMRegistryInstance.addToWhitelist(instances.PAMActorInstance.address);
+
   return instances;
 }
 

@@ -45,7 +45,7 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
     )
         external
         override
-        onlyWhitelisted
+        // onlyWhitelisted
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetANNTerms(terms);
