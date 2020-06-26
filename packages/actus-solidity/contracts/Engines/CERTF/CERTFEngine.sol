@@ -128,7 +128,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         returns (bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index = 0;
+        uint16 index;
 
         // issue date
         if (terms.issueDate != 0) {
@@ -139,15 +139,19 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         // initial exchange
-        if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
-            index++;
+        if (terms.initialExchangeDate != 0) {
+            if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+                index++;
+            }
         }
 
         // maturity event
-        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
-            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
-            index++;
+        if (terms.maturityDate != 0) {
+            if (isInSegment(terms.maturityDate, segmentStart, segmentEnd) == true) {
+                events[index] = encodeEvent(EventType.MD, terms.maturityDate);
+                index++;
+            }
         }
 
         // remove null entries from returned array
@@ -180,15 +184,15 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         returns(bytes32[] memory)
     {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint256 index = 0;
+        uint256 index;
 
         if (eventType == EventType.CFD) {
             if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
-                    terms.maturityDate,
+                    (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
-                    true,
+                    (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
                 );
@@ -205,9 +209,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
-                    terms.maturityDate,
+                    (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
-                    true,
+                    (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
                 );
@@ -225,9 +229,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
-                    terms.maturityDate,
+                    (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
-                    true,
+                    (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
                 );
@@ -244,9 +248,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
-                    terms.maturityDate,
+                    (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
-                    true,
+                    (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
                 );
@@ -264,9 +268,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
-                    terms.maturityDate,
+                    (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
-                    true,
+                    (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
                 );
@@ -275,7 +279,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     if (redemptionSchedule[i] == terms.maturityDate) continue;
                     uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, redemptionSchedule[i]);
                     if (isInSegment(executionDateScheduleTime, segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.RFD, executionDateScheduleTime);
+                    events[index] = encodeEvent(EventType.XD, executionDateScheduleTime);
                     index++;
                 }
             }

@@ -46,13 +46,6 @@ export class ICT extends Contract {
 
     claimDeposit(depositId: string | number[]): TransactionObject<void>;
 
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
     createDeposit(
       depositId: string | number[],
       scheduledFor: number | string,

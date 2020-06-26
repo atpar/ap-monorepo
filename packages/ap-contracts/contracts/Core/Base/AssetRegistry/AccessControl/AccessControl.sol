@@ -8,13 +8,12 @@ import "./IAccessControl.sol";
 
 contract AccessControl is BaseRegistryStorage, IAccessControl {
 
-    event SetRootAccess(bytes32 indexed assetId, address indexed account);
     event GrantedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);
     event RevokedAccess(bytes32 indexed assetId, address indexed account, bytes4 methodSignature);
 
 
     // Method signature == bytes4(0) := Access to all methods defined in the Asset Registry contract
-    bytes4 constant ROOT_ACCESS = bytes4(0);
+    bytes4 constant ROOT_ACCESS = 0;
 
 
     modifier isAuthorized(bytes32 assetId) {
@@ -106,7 +105,6 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
      */
     function setDefaultRoot(bytes32 assetId, address account) internal {
         assets[assetId].access[ROOT_ACCESS][account] = true;
-
-        emit SetRootAccess(assetId, account);
+        emit GrantedAccess(assetId, account, ROOT_ACCESS);
     }
 }

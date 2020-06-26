@@ -2,10 +2,6 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-
-import "@atpar/actus-solidity/contracts/Core/Utils.sol";
 import "@atpar/actus-solidity/contracts/Engines/CERTF/ICERTFEngine.sol";
 
 import "../Base/AssetActor/BaseActor.sol";
@@ -43,7 +39,30 @@ contract CERTFActor is BaseActor {
         external
         onlyRegisteredIssuer
     {
-        // TODO 
+        require(
+            engine != address(0) && IEngine(engine).contractType() == ContractType.CERTF,
+            "CERTFActor.initialize: CONTRACT_TYPE_OF_ENGINE_UNSUPPORTED"
+        );
+
+        // solium-disable-next-line
+        bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
+
+        // compute the initial state of the asset
+        State memory initialState = ICERTFEngine(engine).computeInitialState(terms);
+
+        // register the asset in the AssetRegistry
+        ICERTFRegistry(address(assetRegistry)).registerAsset(
+            assetId,
+            terms,
+            initialState,
+            schedule,
+            ownership,
+            engine,
+            address(this),
+            admin
+        );
+
+        emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)

@@ -36,7 +36,7 @@ enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
-//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18   19   20   21   22   23   24  25   26   27  28
+//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
 enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
@@ -249,7 +249,7 @@ struct CERTFTerms {
 
     // bytes32 marketObjectCode;
 
-    // uint256 contractDealDate;
+    uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;

@@ -726,7 +726,7 @@ acorn@^6.0.7:
 
 "actus-dictionary@https://github.com/atpar/actus-dictionary.git#feature_certf":
   version "0.0.0"
-  resolved "https://github.com/atpar/actus-dictionary.git#cdec7f3bea9d8b6d1f90be77e1b5baf08cf783e8"
+  resolved "https://github.com/atpar/actus-dictionary.git#4c3179c10a20575ec095a087c36c6ed148e9bf21"
 
 address@^1.0.1:
   version "1.1.2"

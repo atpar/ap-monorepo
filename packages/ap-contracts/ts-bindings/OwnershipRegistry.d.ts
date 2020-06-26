@@ -21,39 +21,6 @@ export class OwnershipRegistry extends Contract {
   );
   clone(): OwnershipRegistry;
   methods: {
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
-
     grantAccess(
       assetId: string | number[],
       methodSignature: string | number[],
@@ -122,12 +89,6 @@ export class OwnershipRegistry extends Contract {
       0: string;
       1: string;
       2: string;
-    }>;
-    SetRootAccess: ContractEvent<{
-      assetId: string;
-      account: string;
-      0: string;
-      1: string;
     }>;
     UpdatedBeneficiary: ContractEvent<{
       assetId: string;

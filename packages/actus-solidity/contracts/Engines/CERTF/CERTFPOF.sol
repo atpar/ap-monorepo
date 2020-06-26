@@ -18,7 +18,7 @@ contract CERTFPOF is Core {
     function POF_CERTF_IED (
         CERTFTerms memory terms,
         State memory state,
-        uint256 scheduleTime,
+        uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
@@ -37,7 +37,7 @@ contract CERTFPOF is Core {
     function POF_CERTF_CPD (
         CERTFTerms memory terms,
         State memory state,
-        uint256 scheduleTime,
+        uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
@@ -56,7 +56,7 @@ contract CERTFPOF is Core {
     function POF_CERTF_RPD (
         CERTFTerms memory terms,
         State memory state,
-        uint256 scheduleTime,
+        uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
@@ -75,7 +75,7 @@ contract CERTFPOF is Core {
     function POF_CERTF_TD (
         CERTFTerms memory terms,
         State memory state,
-        uint256 scheduleTime,
+        uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
@@ -87,20 +87,20 @@ contract CERTFPOF is Core {
         );
     }
 
-    function _yearFraction_POF (
-        CERTFTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
-    }
+    // function _yearFraction_POF (
+    //     CERTFTerms memory terms,
+    //     State memory state,
+    //     uint256 scheduleTime
+    // )
+    //     private
+    //     pure
+    //     returns(int256)
+    // {
+    //     return yearFraction(
+    //         shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+    //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+    //         terms.dayCountConvention,
+    //         terms.maturityDate
+    //     );
+    // }
 }

@@ -24,9 +24,8 @@ describe('Utils', (): void => {
 
   it('should return schedule for terms', async (): Promise<void> => {
     const terms = DEFAULT_TERMS;
+    const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms);
 
-    expect(
-      (await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms)).length
-    ).toBeGreaterThan(0);
+    expect(schedule.length).toBeGreaterThan(0);
   });
 });

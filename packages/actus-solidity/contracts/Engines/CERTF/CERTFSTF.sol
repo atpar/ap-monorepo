@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
 
+
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) for CERTF contracts
@@ -163,9 +164,10 @@ contract CERTFSTF is Core {
         pure
         returns (State memory)
     {
-        state.quantity -= state.exerciseQuantity;
+        state.quantity = state.quantity.sub(state.exerciseQuantity);
         state.exerciseQuantity = 0;
         state.exerciseAmount = 0;
+        state.statusDate = scheduleTime;
         
         if (scheduleTime == state.maturityDate) {
             state.contractPerformance = ContractPerformance.MD;
@@ -272,20 +274,20 @@ contract CERTFSTF is Core {
         return state;
     }
 
-    function _yearFraction_STF (
-        CERTFTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
-    }
+    // function _yearFraction_STF (
+    //     CERTFTerms memory terms,
+    //     State memory state,
+    //     uint256 scheduleTime
+    // )
+    //     private
+    //     pure
+    //     returns(int256)
+    // {
+    //     return yearFraction(
+    //         shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+    //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+    //         terms.dayCountConvention,
+    //         terms.maturityDate
+    //     );
+    // }
 }

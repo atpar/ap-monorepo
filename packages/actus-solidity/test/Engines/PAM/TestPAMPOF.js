@@ -1,23 +1,21 @@
 const TestPOF = artifacts.require('TestPAMPOF.sol');
 const PAMEngine = artifacts.require('PAMEngine.sol');
-const { getDefaultTestTerms } = require('../../helper/tests');
+const { getDefaultTestTerms, web3ResponseToState } = require('../../helper/tests');
 
 
 contract('TestPAMPOF', () => {
   before(async () => {
     this.PAMEngineInstance = await PAMEngine.new();
     this.PAMTerms = await getDefaultTestTerms('PAM');
-
     this.TestPOF = await TestPOF.new();
   });
 
   /*
-  * TEST POF_PAM_FP
-  */
-
+   * TEST POF_PAM_FP
+   */
   // feeBasis.A
   it('PAM fee basis A: should yield a fee of 5', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 0;
 
@@ -31,25 +29,26 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '5000000000000000000');
   });
 
   // feeBasis.N
   it('PAM fee basis N: should yield a fee of 10100', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
     this.PAMTerms.feeBasis = 1; // FeeBasis.N
-    state[8] = web3.utils.toWei('100'); // feeAccrued = 100
-    state[1] = '0'; // statusDate = 0
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-
     this.PAMTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+
+    state.statusDate = '0';
+    state.feeAccrued = web3.utils.toWei('100');
+    state.notionalPrincipal = web3.utils.toWei('1000000');
 
     const payoff = await this.TestPOF._POF_PAM_FP(
       this.PAMTerms,
@@ -57,6 +56,7 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '10100000000000000000000');
   });
 
@@ -65,9 +65,9 @@ contract('TestPAMPOF', () => {
   */
 
   it('Should yield an initial exchange amount of -1000100', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    scheduleTime = 0;
+    const scheduleTime = 0;
 
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
@@ -79,27 +79,28 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '-1000100000000000000000000');
   });
 
   /*
-  * TEST POF_PAM_IP
-  */
-
+   * TEST POF_PAM_IP
+   */
   it('Should yield an interest payment of 20200', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
-    state[10] = web3.utils.toWei('2'); // interestScalingMultiplier
-    state[7] = web3.utils.toWei('100'); // accruedInterest
-    state[1] = '0'; // statusDate = 0
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    state[9] = web3.utils.toWei('0.05'); // nominalInterestRate
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    
+    state.statusDate = '0';
+    state.notionalPrincipal = web3.utils.toWei('1000000');
+    state.accruedInterest = web3.utils.toWei('100');
+    state.nominalInterestRate = web3.utils.toWei('0.05');
+    state.interestScalingMultiplier = web3.utils.toWei('2');
 
     const payoff = await this.TestPOF._POF_PAM_IP(
       this.PAMTerms,
@@ -107,21 +108,22 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '20200000000000000000000');
   });
 
   /*
-  * TEST POF_PAM_PP
-  */
-
+   * TEST POF_PAM_PP
+   */
   it('Should yield a principal prepayment of 1000000', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
     // used data
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    
+    state.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
     const payoff = await this.TestPOF._POF_PAM_PP(
       this.PAMTerms,
@@ -129,6 +131,7 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '1000000000000000000000000');
   });
 
@@ -163,17 +166,16 @@ contract('TestPAMPOF', () => {
   // });
 
   /*
-  * TEST POF_PAM_MD
-  */
-
+   * TEST POF_PAM_MD
+   */
   it('Should yield a maturity payoff of 1100000', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
     // used data
-    state[11] = web3.utils.toWei('1.1'); // notionalScalingMultiplier
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    state.notionalPrincipal = web3.utils.toWei('1000000');
+    state.notionalScalingMultiplier = web3.utils.toWei('1.1');
 
     const payoff = await this.TestPOF._POF_PAM_MD(
       this.PAMTerms,
@@ -181,15 +183,16 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '1100000000000000000000000');
   });
 
   /*
-  * TEST POF_PAM_PY
-  */
+   * TEST POF_PAM_PY
+   */
   // PenaltyType.A
   it('Should yield a penalty payment of 1000', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -204,27 +207,28 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '1000000000000000000000');
   });
 
   // PenaltyType.N
   it('Should yield a penalty payment of 20000', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+    const scheduleTime = 6307200; // .2 years
 
     // used data
+    this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.penaltyType = 2 // 2 = PenaltyType.N
-    this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.penaltyRate = web3.utils.toWei('0.1');
-    const scheduleTime = 6307200; // .2 years
-    this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    state[1] = '0'; // statusDate = 0
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    
+    state.statusDate = '0';
+    state.notionalPrincipal = web3.utils.toWei('1000000');
 
     const payoff = await this.TestPOF._POF_PAM_PY(
       this.PAMTerms,
@@ -232,26 +236,27 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+
     assert.equal(payoff.toString(), '20000000000000000000000');
   });
 
   // Other PenaltyTypes
   it('Should yield a penalty payment of 200000', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+    const scheduleTime = 6307200; // .2 years
 
     // used data
     this.PAMTerms.penaltyType = 0 // 0 = PenaltyType.O
-    this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
-    const scheduleTime = 6307200; // .2 years
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    state[1] = '0'; // statusDate = 0
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    
+    state.statusDate = '0';
+    state.notionalPrincipal = web3.utils.toWei('1000000');
 
     const payoff = await this.TestPOF._POF_PAM_PY(
       this.PAMTerms,
@@ -263,26 +268,26 @@ contract('TestPAMPOF', () => {
   });
 
   /*
-  * TEST POF_PAM_TD
-  */
-
+   * TEST POF_PAM_TD
+   */
   it('Should yield a termination payoff of 110100', async () => {
-    const state = await this.PAMEngineInstance.computeInitialState(this.PAMTerms);
+    const state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.PAMTerms));
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+    const scheduleTime = 6307200; // .2 years
 
     // used data
-    state[7] = web3.utils.toWei('100'); // accruedInterest
     this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
-    const scheduleTime = 6307200; // .2 years
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    state[1] = '0'; // statusDate = 0
-    state[9] = web3.utils.toWei('0.05'); // nominalInterestRate
-    state[6] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    
+    state.statusDate = '0';
+    state.notionalPrincipal = web3.utils.toWei('1000000');
+    state.accruedInterest = web3.utils.toWei('100');
+    state.nominalInterestRate = web3.utils.toWei('0.05');
 
     const payoff = await this.TestPOF._POF_PAM_TD(
       this.PAMTerms,
@@ -290,10 +295,7 @@ contract('TestPAMPOF', () => {
       scheduleTime,
       externalData
     );
+  
     assert.equal(payoff.toString(), '110100000000000000000000');
   });
-
-
-
-
 });
