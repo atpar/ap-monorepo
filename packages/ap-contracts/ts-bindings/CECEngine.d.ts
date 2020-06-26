@@ -98,6 +98,7 @@ export class CECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -106,6 +107,11 @@ export class CECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -116,6 +122,7 @@ export class CECEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -124,6 +131,11 @@ export class CECEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computePayoffForEvent(
@@ -161,6 +173,7 @@ export class CECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -169,6 +182,11 @@ export class CECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -207,6 +225,7 @@ export class CECEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -215,6 +234,11 @@ export class CECEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computeNonCyclicScheduleSegment(
@@ -282,6 +306,38 @@ export class CECEngine extends Contract {
       arg3: number | string
     ): TransactionObject<string[]>;
 
+    computeNextCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        creditEventTypeCovered: number | string;
+        feeBasis: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        feeRate: number | string;
+        coverageOfCreditEnhancement: number | string;
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      lastScheduleTime: number | string,
+      eventType: number | string
+    ): TransactionObject<string>;
+
     isEventScheduled(
       arg0: string | number[],
       arg1: {
@@ -318,6 +374,7 @@ export class CECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -326,6 +383,11 @@ export class CECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       arg3: boolean,
       arg4: {
@@ -335,6 +397,7 @@ export class CECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -343,6 +406,11 @@ export class CECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<boolean>;
   };

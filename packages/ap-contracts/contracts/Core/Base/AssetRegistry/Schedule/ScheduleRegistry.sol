@@ -2,6 +2,9 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
+import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils/PeriodUtils.sol";
+
 import "../BaseRegistryStorage.sol";
 import "../IBaseRegistry.sol";
 import "../AccessControl/AccessControl.sol";
@@ -20,7 +23,9 @@ abstract contract ScheduleRegistry is
     AccessControl,
     TermsRegistry,
     StateRegistry,
-    IScheduleRegistry
+    IScheduleRegistry,
+    EventUtils,
+    PeriodUtils
 {
     /**
      * @notice Returns an event for a given position (index) in a schedule of a given asset.
@@ -64,15 +69,7 @@ abstract contract ScheduleRegistry is
         override
         returns (bytes32[] memory)
     {
-        Asset storage asset = assets[assetId];
-
-        bytes32[] memory schedule = new bytes32[](asset.schedule.length);
-
-        for (uint256 i = 0; i < asset.schedule.length; i++) {
-            schedule[i] = asset.schedule.events[i];
-        }
-
-        return schedule;
+        return assets[assetId].decodeAndGetSchedule();
     }
 
     function getPendingEvent(bytes32 assetId)
@@ -129,7 +126,6 @@ abstract contract ScheduleRegistry is
         returns (bytes32)
     {
         ContractReference memory contractReference_1 = getContractReferenceValueForTermsAttribute(assetId, "contractReference_1");
-        State memory state = assets[assetId].decodeAndGetState();
 
         // check for COVE
         if (contractReference_1.object != bytes32(0) && contractReference_1.role == ContractReferenceRole.COVE) {
@@ -137,24 +133,26 @@ abstract contract ScheduleRegistry is
             address underlyingRegistry = address(uint160(uint256(contractReference_1.object2))); // workaround for solc bug (replace with bytes)
 
             require(
-                IBaseRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
+                IBaseRegistry(underlyingRegistry).isRegistered(underlyingAssetId),
                 "AssetActor.getNextUnderlyingEvent: UNDERLYING_ASSET_DOES_NOT_EXIST"
             );
 
+            uint256 exerciseDate = getUintValueForStateAttribute(assetId, "exerciseDate");
             ContractPerformance creditEventTypeCovered = ContractPerformance(getEnumValueForTermsAttribute(assetId, "creditEventTypeCovered"));
             ContractPerformance underlyingContractPerformance = ContractPerformance(IStateRegistry(underlyingRegistry).getEnumValueForStateAttribute(underlyingAssetId, "contractPerformance"));
             uint256 underlyingNonPerformingDate = IStateRegistry(underlyingRegistry).getUintValueForStateAttribute(underlyingAssetId, "nonPerformingDate");
 
             // check if exerciseDate has been triggered
-            if (state.exerciseDate > 0) {
+            if (exerciseDate > 0) {
                 // insert SettlementDate event
                 return encodeEvent(
                     EventType.STD,
                     // solium-disable-next-line
                     block.timestamp
                 );
+            }
             // if not check if performance of underlying asset is covered by this asset (PF excluded)
-            } else if (
+            if (
                 creditEventTypeCovered != ContractPerformance.PF
                 && underlyingContractPerformance == creditEventTypeCovered
             ) {
@@ -181,7 +179,7 @@ abstract contract ScheduleRegistry is
             }
         }
 
-        return encodeEvent(EventType(0), 0);
+        return bytes32(0);
     }
 
     /**
@@ -236,6 +234,7 @@ abstract contract ScheduleRegistry is
             asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
             return nextCyclicEvent;
         } else {
+            if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
             asset.schedule.nextScheduleIndex += 1;
             return nextScheduleEvent;
         }

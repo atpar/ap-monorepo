@@ -125,31 +125,31 @@ contract('CECActor', (accounts) => {
     await mineBlock(Number(await getEventTime(iedEvent, this.terms)));
     await this.PaymentTokenInstance.approve(this.PAMActorInstance.address, iedPayoff, { from: creatorObligor });
     await this.PAMActorInstance.progress(this.assetId);
-    assert.equal(Number(decodeEvent(iedEvent).eventType), 1);
+    assert.equal(Number(decodeEvent(iedEvent).eventType), 2);
 
     // progress to schedule time of first IP (payoff == 0)
     const ipEvent_1 = await this.PAMRegistryInstance.getNextScheduledEvent(this.assetId);
     await mineBlock(Number(await getEventTime(ipEvent_1, this.terms)));
     await this.PAMActorInstance.progress(this.assetId);
-    assert.equal(Number(decodeEvent(ipEvent_1).eventType), 8);
+    assert.equal(Number(decodeEvent(ipEvent_1).eventType), 9);
 
     // progress to post-grace period of IP
     const ipEvent_2 = await this.PAMRegistryInstance.getNextScheduledEvent(this.assetId);
     await mineBlock(Number(await getEventTime(ipEvent_2, this.terms)) + 10000000);
     await this.PAMActorInstance.progress(this.assetId);
-    assert.equal(Number(decodeEvent(ipEvent_2).eventType), 8);
+    assert.equal(Number(decodeEvent(ipEvent_2).eventType), 9);
 
     // progress collateral enhancement
     const xdEvent = await this.CECRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(xdEvent, termsCEC)));
     await this.CECActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(xdEvent).eventType), 20);
+    assert.equal(Number(decodeEvent(xdEvent).eventType), 26);
 
     // progress collateral enhancement
     const stdEvent = await this.CECRegistryInstance.getNextUnderlyingEvent(web3.utils.toHex(cecAssetId));
     await mineBlock(Number(await getEventTime(stdEvent, termsCEC)));
     await this.CECActorInstance.progress(web3.utils.toHex(cecAssetId));
-    assert.equal(Number(decodeEvent(stdEvent).eventType), 21);
+    assert.equal(Number(decodeEvent(stdEvent).eventType), 27);
 
     // creator should have received seized collateral from custodian
     assert.equal(

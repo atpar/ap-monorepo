@@ -56,6 +56,7 @@ export class ICECEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -64,6 +65,11 @@ export class ICECEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computeStateForEvent(
@@ -101,6 +107,7 @@ export class ICECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -109,6 +116,11 @@ export class ICECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -119,6 +131,7 @@ export class ICECEngine extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -127,6 +140,11 @@ export class ICECEngine extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     computePayoffForEvent(
@@ -164,6 +182,7 @@ export class ICECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -172,6 +191,11 @@ export class ICECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       _event: string | number[],
       externalData: string | number[]
@@ -242,6 +266,38 @@ export class ICECEngine extends Contract {
       eventType: number | string
     ): TransactionObject<string[]>;
 
+    computeNextCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        creditEventTypeCovered: number | string;
+        feeBasis: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        feeRate: number | string;
+        coverageOfCreditEnhancement: number | string;
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      lastScheduleTime: number | string,
+      eventType: number | string
+    ): TransactionObject<string>;
+
     isEventScheduled(
       _event: string | number[],
       terms: {
@@ -278,6 +334,7 @@ export class ICECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -286,6 +343,11 @@ export class ICECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       },
       hasUnderlying: boolean,
       underlyingState: {
@@ -295,6 +357,7 @@ export class ICECEngine extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -303,6 +366,11 @@ export class ICECEngine extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<boolean>;
   };

@@ -66,7 +66,7 @@ contract('ANNActor', (accounts) => {
     this.assetId = tx.logs[0].args.assetId;
 
     const initialState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    const event = encodeEvent(8, Number(this.terms.contractDealDate) + 100);
+    const event = encodeEvent(9, Number(this.terms.contractDealDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
     
     await mineBlock(Number(eventTime));

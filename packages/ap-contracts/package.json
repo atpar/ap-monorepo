@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-contracts",
-  "version": "0.4.0-beta.1",
+  "version": "0.4.0-beta.5",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -29,8 +29,8 @@
   },
   "scripts": {
     "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
-    "compile:all": "truffle compile --all",
-    "compile": "truffle compile",
+    "compile:all": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile --all",
+    "compile": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "generate-docs": "./scripts/generate-docs.sh",
@@ -49,7 +49,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "@atpar/actus-solidity": "0.4.0-beta.1",
+    "@atpar/actus-solidity": "0.4.0-beta.5",
     "openzeppelin-solidity": "^3.0.2",
     "truffle-hdwallet-provider": "^1.0.9"
   },

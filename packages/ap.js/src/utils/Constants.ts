@@ -7,7 +7,8 @@ import {
   PAMTerms,
   ANNTerms,
   CECTerms,
-  CEGTerms
+  CEGTerms,
+  CERTFTerms
 } from '../types'; 
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -216,6 +217,48 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   contractReference_2: EMPTY_CONTRACT_REFERENCE
 };
 
+export const EMPTY_CERTF_TERMS: CERTFTerms = {
+  contractType: '0',
+  calendar: '0',
+  contractRole: '0',
+  dayCountConvention: '0',
+  businessDayConvention: '0',
+  endOfMonthConvention: '0',
+  contractPerformance: '0',
+  couponType: '0',
+
+  currency: ZERO_ADDRESS,
+  settlementCurrency: ZERO_ADDRESS,
+
+  contractDealDate: '0',
+  statusDate: '0',
+  initialExchangeDate: '0',
+  maturityDate: '0',
+  nonPerformingDate: '0',
+  issueDate: '0',
+
+  cycleAnchorDateOfRedemption: '0',
+  cycleAnchorDateOfTermination: '0',
+  cycleAnchorDateOfCoupon: '0',
+
+  nominalPrice: '0',
+  issuePrice: '0',
+  quantity: '0',
+  denominationRatio: '0',
+  couponRate: '0',
+
+  gracePeriod: EMPTY_IP,
+  delinquencyPeriod: EMPTY_IP,  
+  settlementPeriod: EMPTY_IP,
+  fixingPeriod: EMPTY_IP,
+  exercisePeriod: EMPTY_IP,
+
+  cycleOfRedemption: EMPTY_IPS,
+  cycleOfTermination: EMPTY_IPS,
+  cycleOfCoupon: EMPTY_IPS,
+
+  contractReference_1: EMPTY_CONTRACT_REFERENCE
+}
 
 export const EMPTY_PAM_TERMS: PAMTerms = {
   contractType: '0',

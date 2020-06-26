@@ -7,6 +7,7 @@ import {
   ANNTerms,
   CECTerms,
   CEGTerms,
+  CERTFTerms,
   PAMTerms,
   State
 } from '../types';
@@ -66,6 +67,10 @@ export const web3ResponseToCECTerms = (web3Response: any): CECTerms => (
 
 export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
   associativeArrayToObject(web3Response) as CEGTerms
+);
+
+export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
+  associativeArrayToObject(web3Response) as CERTFTerms
 );
 
 export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (

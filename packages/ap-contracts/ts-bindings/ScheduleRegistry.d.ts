@@ -21,31 +21,12 @@ export class ScheduleRegistry extends Contract {
   );
   clone(): ScheduleRegistry;
   methods: {
-    computeEventTimeForEvent(
-      _event: string | number[],
-      bdc: number | string,
-      calendar: number | string,
-      maturityDate: number | string
-    ): TransactionObject<string>;
-
-    decodeCollateralObject(
-      object: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
       0: string;
       1: string;
     }>;
-
-    encodeCollateralAsObject(
-      collateralToken: string,
-      collateralAmount: number | string
-    ): TransactionObject<string>;
 
     encodeEvent(
       eventType: number | string,
@@ -98,6 +79,7 @@ export class ScheduleRegistry extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -106,6 +88,11 @@ export class ScheduleRegistry extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     getIntValueForForTermsAttribute(
@@ -132,6 +119,7 @@ export class ScheduleRegistry extends Contract {
       maturityDate: string;
       exerciseDate: string;
       terminationDate: string;
+      lastCouponDay: string;
       notionalPrincipal: string;
       accruedInterest: string;
       feeAccrued: string;
@@ -140,6 +128,11 @@ export class ScheduleRegistry extends Contract {
       notionalScalingMultiplier: string;
       nextPrincipalRedemptionPayment: string;
       exerciseAmount: string;
+      exerciseQuantity: string;
+      quantity: string;
+      couponAmountFixed: string;
+      marginFactor: string;
+      adjustmentFactor: string;
     }>;
 
     getUIntValueForForTermsAttribute(
@@ -184,6 +177,7 @@ export class ScheduleRegistry extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -192,6 +186,11 @@ export class ScheduleRegistry extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<void>;
 
@@ -204,6 +203,7 @@ export class ScheduleRegistry extends Contract {
         maturityDate: number | string;
         exerciseDate: number | string;
         terminationDate: number | string;
+        lastCouponDay: number | string;
         notionalPrincipal: number | string;
         accruedInterest: number | string;
         feeAccrued: number | string;
@@ -212,6 +212,11 @@ export class ScheduleRegistry extends Contract {
         notionalScalingMultiplier: number | string;
         nextPrincipalRedemptionPayment: number | string;
         exerciseAmount: number | string;
+        exerciseQuantity: number | string;
+        quantity: number | string;
+        couponAmountFixed: number | string;
+        marginFactor: number | string;
+        adjustmentFactor: number | string;
       }
     ): TransactionObject<void>;
 
@@ -270,12 +275,6 @@ export class ScheduleRegistry extends Contract {
       1: string;
       2: string;
     }>;
-    IncrementedScheduleIndex: ContractEvent<{
-      assetId: string;
-      nextScheduleIndex: string;
-      0: string;
-      1: string;
-    }>;
     RevokedAccess: ContractEvent<{
       assetId: string;
       account: string;
@@ -283,12 +282,6 @@ export class ScheduleRegistry extends Contract {
       0: string;
       1: string;
       2: string;
-    }>;
-    SetRootAccess: ContractEvent<{
-      assetId: string;
-      account: string;
-      0: string;
-      1: string;
     }>;
     UpdatedFinalizedState: ContractEvent<{
       assetId: string;

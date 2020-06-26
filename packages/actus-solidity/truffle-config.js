@@ -11,6 +11,12 @@ module.exports = {
       port: 8545,
       network_id: "*"
     },
+    'ap-chain': {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*",
+      gas: 8000000
+    },
     goerli: {
       provider: () =>
         new HDWalletProvider(require('./mnemonic.js'), 'https://goerli.infura.io/v3/a5d418a8a94240fa8d067ed1ac2313fa'),

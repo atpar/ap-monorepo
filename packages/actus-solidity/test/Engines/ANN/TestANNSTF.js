@@ -9,10 +9,8 @@ contract('TestANNSTF', () => {
   before(async () => {
     this.ANNEngineInstance = await ANNEngine.new();
     this.ANNTerms = await getDefaultTestTerms('ANN');
-
     this.TestSTF = await TestSTF.new();
   });
-
 
   /*
   * TEST STF_ANN_AD
@@ -164,7 +162,4 @@ contract('TestANNSTF', () => {
 
     assertEqualStates(newState, expectedState);
   });
-
-  
-
 });
