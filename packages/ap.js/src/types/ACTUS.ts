@@ -62,6 +62,8 @@ export interface Terms {
   penaltyType: string | number;
   feeBasis: string | number;
   creditEventTypeCovered: string | number;
+  contractPerformance: string | number;
+  couponType: string | number;
   
   currency: string;
   settlementCurrency: string;
@@ -79,6 +81,11 @@ export interface Terms {
   cycleAnchorDateOfScalingIndex: number | string;
   cycleAnchorDateOfFee: number | string;
   cycleAnchorDateOfPrincipalRedemption: number | string;
+  nonPerformingDate: number | string;
+  issueDate: number | string;
+  cycleAnchorDateOfRedemption: number | string;
+  cycleAnchorDateOfTermination: number | string;
+  cycleAnchorDateOfCoupon: number | string;
 
   notionalPrincipal: number | string;
   nominalInterestRate: number | string;
@@ -98,15 +105,26 @@ export interface Terms {
   lifeFloor: number | string;
   periodCap: number | string;
   periodFloor: number | string;
+  nominalPrice: number | string;
+  issuePrice: number | string;
+  quantity: number | string;
+  denominationRatio: number | string;
+  couponRate: number | string;
 
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
   cycleOfScalingIndex: IPS;
   cycleOfFee: IPS;
   cycleOfPrincipalRedemption: IPS;
+  cycleOfRedemption: IPS;
+  cycleOfTermination: IPS;
+  cycleOfCoupon: IPS;
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
+  settlementPeriod: IP;
+  fixingPeriod: IP;
+  exercisePeriod: IP;
 
   contractReference_1: ContractReference;
   contractReference_2: ContractReference;
