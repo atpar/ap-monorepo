@@ -6,7 +6,9 @@ import Deployments from '@atpar/ap-contracts/deployments.json';
 import { Utils, Contracts } from '../../src/apis';
 
 import DEFAULT_TERMS from '../Default-Terms.json';
+import DEFAULT_TERMS_SCHEDULE from '../default-terms-schedule.json';
 import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms } from '../../src/types';
+import { removeNullEvents } from '../../src/utils/Schedule';
 
 
 describe('Utils', (): void => {
@@ -24,7 +26,16 @@ describe('Utils', (): void => {
   });
 
   describe('Schedule', (): void => {
-
+    
+    it('should remove null events', async (): Promise<void> => {
+      const schedule = [
+        '0x0200000000000000000000000000000000000000000000000000000050e22700',
+        '0x1400000000000000000000000000000000000000000000000000000052c35a80',
+        '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ];
+      const newSchedule = removeNullEvents(schedule);
+      expect(newSchedule.length).toBe(2)
+    });
 
     it('should return schedule for PAM terms', async (): Promise<void> => {
       const terms: Terms = DEFAULT_TERMS;
@@ -32,8 +43,8 @@ describe('Utils', (): void => {
       const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(pamTerms.contractType), pamTerms);
 
       expect(schedule.length).toBeGreaterThan(0);
+      expect(schedule).toEqual(DEFAULT_TERMS_SCHEDULE)
     });
-
   });
   
   describe('Conversion', (): void => {
