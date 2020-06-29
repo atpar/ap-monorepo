@@ -25,7 +25,7 @@ contract('PAMActor', (accounts) => {
   });
 
   it('should initialize Asset with ContractType PAM', async () => {
-    const terms = (await getTestCases('PAM'))['10001']['terms'];
+    const terms = (await getTestCases('PAM'))['pam01']['terms'];
     const schedule = await generateSchedule(this.PAMEngineInstance, terms);
     const state = await this.PAMEngineInstance.computeInitialState(terms);
     const ownership = {
