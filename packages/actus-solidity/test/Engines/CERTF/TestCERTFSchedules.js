@@ -157,5 +157,5 @@ contract('CERTFEngine', () => {
   //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
   //   console.log(evaluatedSchedule);
   //   compareTestResults(evaluatedSchedule, testDetails['results']);
-  });
+  // });
 });
