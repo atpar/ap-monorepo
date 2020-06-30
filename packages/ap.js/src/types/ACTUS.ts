@@ -35,20 +35,26 @@ export interface ContractReference {
 }
 
 export interface State {
-  contractPerformance: number | string;
-  statusDate: number | string;
-  nonPerformingDate: number | string;
-  maturityDate: number | string;
-  exerciseDate: number | string;
-  terminationDate: number | string;
-  notionalPrincipal: number | string;
-  accruedInterest: number | string;
-  feeAccrued: number | string;
-  nominalInterestRate: number | string;
-  interestScalingMultiplier: number | string;
-  notionalScalingMultiplier: number | string;
-  nextPrincipalRedemptionPayment: number | string;
-  exerciseAmount: number | string;
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  exerciseDate: string | number;
+  terminationDate: string | number;
+  lastCouponDay: string | number;
+  notionalPrincipal: string | number;
+  accruedInterest: string | number;
+  feeAccrued: string | number;
+  nominalInterestRate: string | number;
+  interestScalingMultiplier: string | number;
+  notionalScalingMultiplier: string | number;
+  nextPrincipalRedemptionPayment: string | number;
+  exerciseAmount: string | number;
+  exerciseQuantity: string | number;
+  quantity: string | number;
+  couponAmountFixed: string | number;
+  marginFactor: string | number;
+  adjustmentFactor: string | number;
 }
 
 export interface Terms {
@@ -367,6 +373,7 @@ export function isState(obj: any): obj is State {
   if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
   if (obj.exerciseDate == undefined || typeof obj.exerciseDate !== 'number' && typeof obj.exerciseDate !== 'string') { return false; }
   if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.lastCouponDay == undefined || typeof obj.lastCouponDay !== 'number' && typeof obj.lastCouponDay !== 'string') { return false; }
   if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
@@ -375,6 +382,11 @@ export function isState(obj: any): obj is State {
   if (obj.notionalScalingMultiplier == undefined || typeof obj.notionalScalingMultiplier !== 'number' && typeof obj.notionalScalingMultiplier !== 'string') { return false; }
   if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
   if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
+  if (obj.exerciseQuantity == undefined || typeof obj.exerciseQuantity !== 'number' && typeof obj.exerciseQuantity !== 'string') { return false; }
+  if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
+  if (obj.couponAmountFixed == undefined || typeof obj.couponAmountFixed !== 'number' && typeof obj.couponAmountFixed !== 'string') { return false; }
+  if (obj.marginFactor == undefined || typeof obj.marginFactor !== 'number' && typeof obj.marginFactor !== 'string') { return false; }
+  if (obj.adjustmentFactor == undefined || typeof obj.adjustmentFactor !== 'number' && typeof obj.adjustmentFactor !== 'string') { return false; }
 
   return true;
 }

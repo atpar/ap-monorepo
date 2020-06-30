@@ -79,6 +79,9 @@ const numberOfDecimals = (number) => {
 const parseCycleToIPS = (cycle) => {
   if (!cycle || cycle === '') { return { i: 0, p: 0, s: 0, isSet: false }; }
 
+  // workaround for new Cycles format
+  cycle = cycle.replace('P', '').replace('L', '').replace(/.$/, cycle.slice(-1) === '0' ? '+' : '-');
+
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y'];
 
   let i = String(cycle).slice(0, -2);
@@ -90,6 +93,9 @@ const parseCycleToIPS = (cycle) => {
 
 const parsePeriodToIP = (period) => {
   if (!period  || period === '') { return { i: 0, p: 0, isSet: false }; }
+
+  // workaround for new Period format
+  period = period.replace('P', '');
 
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y'];
 

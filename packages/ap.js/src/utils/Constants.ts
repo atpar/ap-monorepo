@@ -32,6 +32,7 @@ export const EMPTY_STATE: State = {
   maturityDate: '0',
   exerciseDate: '0',
   terminationDate: '0',
+  lastCouponDay: '0',
   notionalPrincipal: '0',
   accruedInterest: '0',
   feeAccrued: '0',
@@ -40,6 +41,11 @@ export const EMPTY_STATE: State = {
   notionalScalingMultiplier: '0',
   nextPrincipalRedemptionPayment: '0',
   exerciseAmount: '0',
+  exerciseQuantity: '0',
+  quantity: '0',
+  couponAmountFixed: '0',
+  marginFactor: '0',
+  adjustmentFactor: '0',
 };
 
 // export const EMPTY_TERMS: Terms = {

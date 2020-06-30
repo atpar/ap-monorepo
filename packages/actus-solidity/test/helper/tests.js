@@ -53,13 +53,13 @@ function compareTestResults (actualResults, expectedResults) {
       actualEvent.notionalPrincipal = roundToDecimals(actualEvent.notionalPrincipal, decimals);
       expectedEvent.notionalPrincipal = roundToDecimals(expectedEvent.notionalPrincipal, decimals);
     }
-    // if (expectedEvent.nominalInterestRate) {
-    //   const decimals = (numberOfDecimals(actualEvent.nominalInterestRate) < numberOfDecimals(expectedEvent.nominalInterestRate)) 
-    //     ? numberOfDecimals(actualEvent.nominalInterestRate)
-    //     : numberOfDecimals(expectedEvent.nominalInterestRate);
-    //   actualEvent.nominalInterestRate = roundToDecimals(actualEvent.nominalInterestRate, decimals);
-    //   expectedEvent.nominalInterestRate = roundToDecimals(expectedEvent.nominalInterestRate, decimals);
-    // }
+    if (expectedEvent.nominalInterestRate) {
+      const decimals = (numberOfDecimals(actualEvent.nominalInterestRate) < numberOfDecimals(expectedEvent.nominalInterestRate)) 
+        ? numberOfDecimals(actualEvent.nominalInterestRate)
+        : numberOfDecimals(expectedEvent.nominalInterestRate);
+      actualEvent.nominalInterestRate = roundToDecimals(actualEvent.nominalInterestRate, decimals);
+      expectedEvent.nominalInterestRate = roundToDecimals(expectedEvent.nominalInterestRate, decimals);
+    }
     if (expectedEvent.accruedInterest) {
       const decimals = (numberOfDecimals(actualEvent.accruedInterest) < numberOfDecimals(expectedEvent.accruedInterest)) 
         ? numberOfDecimals(actualEvent.accruedInterest)

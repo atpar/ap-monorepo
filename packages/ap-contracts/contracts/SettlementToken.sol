@@ -30,7 +30,7 @@ interface ApproveAndCallFallBack {
 contract SettlementToken is ERC20, FaucetInterface, Ownable {
     using SafeMath for uint256;
 
-    constructor() ERC20("DAI", "Test DAI") public {
+    constructor() ERC20("STLMT", "Settlement Token") public {
         uint256 amount = 1000000 * (10**18);
         _mint(msg.sender, amount);
     }
