@@ -14,6 +14,8 @@ import "../State/StateRegistry.sol";
 import "../State/IStateRegistry.sol";
 import "./IScheduleRegistry.sol";
 
+import "@nomiclabs/buidler/console.sol";
+
 
 /**
  * @title ScheduleRegistry
@@ -202,7 +204,10 @@ abstract contract ScheduleRegistry is
         (, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
         (, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
 
-        if (scheduleTimeNextCyclicEvent <= scheduleTimeNextScheduleEvent) {
+        if (
+            scheduleTimeNextScheduleEvent == 0
+            || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent)
+        ) {
             return nextCyclicEvent;
         } else {
             return nextScheduleEvent;
@@ -228,13 +233,31 @@ abstract contract ScheduleRegistry is
         if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
 
         (EventType eventTypeNextCyclicEvent, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
-        (, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
+        (EventType eventTypeNextScheduleEvent, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
 
-        if (scheduleTimeNextCyclicEvent <= scheduleTimeNextScheduleEvent) {
+        // update both next cyclic event and next schedule event if they are the same
+        if (nextCyclicEvent == nextScheduleEvent) {
+            asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
+            if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
+            asset.schedule.nextScheduleIndex += 1;
+            // does matter since they are the same
+            return nextCyclicEvent;
+        }
+
+        // next cyclic event occurs earlier than next schedule event
+        if (
+            (scheduleTimeNextScheduleEvent == 0 || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent))
+            || (
+                scheduleTimeNextCyclicEvent == scheduleTimeNextScheduleEvent
+                && getEpochOffset(eventTypeNextCyclicEvent) < getEpochOffset(eventTypeNextScheduleEvent)
+            )
+        ) {
             asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
             return nextCyclicEvent;
         } else {
-            if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
+            if (scheduleTimeNextScheduleEvent == 0 || asset.schedule.nextScheduleIndex == asset.schedule.length) {
+                return bytes32(0);
+            }
             asset.schedule.nextScheduleIndex += 1;
             return nextScheduleEvent;
         }

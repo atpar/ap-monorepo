@@ -165,6 +165,24 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         EventType nextEventType;
         uint256 nextScheduleTimeOffset;
 
+        // CFD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CFD],
+                EventType.CFD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset < nextScheduleTimeOffset)
+                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
         // CPD
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(

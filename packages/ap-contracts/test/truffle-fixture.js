@@ -10,6 +10,12 @@ const CEGRegistry = artifacts.require('CEGRegistry');
 const CERTFRegistry = artifacts.require('CERTFRegistry');
 const PAMRegistry = artifacts.require('PAMRegistry');
 
+const ANNEncoder = artifacts.require('ANNEncoder');
+const CECEncoder = artifacts.require('CECEncoder');
+const CEGEncoder = artifacts.require('CEGEncoder');
+const CERTFEncoder = artifacts.require('CERTFEncoder');
+const PAMEncoder = artifacts.require('PAMEncoder');
+
 const ANNActor = artifacts.require('ANNActor');
 const CECActor = artifacts.require('CECActor');
 const CEGActor = artifacts.require('CEGActor');
@@ -35,6 +41,21 @@ module.exports = async (accounts) => {
   PAMEngine.setAsDeployed(PAMEngineInstance);
 
   // Asset Registry
+  const ANNEncoderInstance = await ANNEncoder.new();
+  ANNEncoder.setAsDeployed(ANNEncoderInstance);
+  const CECEncoderInstance = await CECEncoder.new();
+  CECEncoder.setAsDeployed(CECEncoderInstance);
+  const CEGEncoderInstance = await CEGEncoder.new();
+  CEGEncoder.setAsDeployed(CEGEncoderInstance);
+  const CERTFEncoderInstance = await CERTFEncoder.new();
+  CERTFEncoder.setAsDeployed(CERTFEncoderInstance);
+  const PAMEncoderInstance = await PAMEncoder.new();
+  PAMEncoder.setAsDeployed(PAMEncoderInstance);
+  try { await ANNRegistry.link(ANNEncoderInstance); } catch(error) {}
+  try { await CECRegistry.link(CECEncoderInstance); } catch(error) {}
+  try { await CEGRegistry.link(CEGEncoderInstance); } catch(error) {}
+  try { await CERTFRegistry.link(CERTFEncoderInstance); } catch(error) {}
+  try { await PAMRegistry.link(PAMEncoderInstance); } catch(error) {}
   const ANNRegistryInstance = await ANNRegistry.new();
   ANNRegistry.setAsDeployed(ANNRegistryInstance);
   const CECRegistryInstance = await CECRegistry.new();

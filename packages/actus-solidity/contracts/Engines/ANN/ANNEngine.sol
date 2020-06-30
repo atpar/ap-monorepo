@@ -304,13 +304,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         override
         returns(bytes32)
     {
+        // IP
         if (eventType == EventType.IP) {
             // interest payment related (starting with PRANX interest is paid following the PR schedule)
             if (
                 terms.cycleOfInterestPayment.isSet == true && terms.cycleAnchorDateOfInterestPayment != 0) {
                 uint256 nextInterestPaymentDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfInterestPayment,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfInterestPayment : lastScheduleTime
                 );
                 if (nextInterestPaymentDate == 0) return bytes32(0);
                 if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
@@ -318,8 +319,8 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             }
         }
 
+        // IPCI
         if (eventType == EventType.IPCI) {
-            // IPCI
             if (
                 terms.cycleOfInterestPayment.isSet == true
                 && terms.cycleAnchorDateOfInterestPayment != 0
@@ -329,31 +330,30 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 cycleOfInterestCapitalization.s = S.SHORT;
                 uint256 nextInterestCapitalizationDate = computeNextCycleDateFromPrecedingDate(
                     cycleOfInterestCapitalization,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfInterestPayment : lastScheduleTime
                 );
                 if (nextInterestCapitalizationDate == 0) return bytes32(0);
                 return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
             }
         }
 
+        // fees
         if (eventType == EventType.FP) {
-            // fees
             if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
                 uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfFee,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfFee : lastScheduleTime
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
             }
         }
 
-
+        // principal redemption
         if (eventType == EventType.PR) {
-            // principal redemption
             uint256 nextPrincipalRedemptionDate = computeNextCycleDateFromPrecedingDate(
                 terms.cycleOfPrincipalRedemption,
-                lastScheduleTime
+                (lastScheduleTime == 0) ? terms.cycleAnchorDateOfPrincipalRedemption : lastScheduleTime
             );
             if (nextPrincipalRedemptionDate == 0) return bytes32(0);
             return encodeEvent(EventType.PR, nextPrincipalRedemptionDate);

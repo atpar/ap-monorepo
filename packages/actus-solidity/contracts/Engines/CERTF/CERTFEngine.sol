@@ -316,7 +316,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfCoupon : lastScheduleTime
                 );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
                 return encodeEvent(EventType.CFD, nextCouponDate);
@@ -327,7 +327,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfCoupon : lastScheduleTime
                 );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
                 uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextCouponDate);
@@ -339,7 +339,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfRedemption : lastScheduleTime
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 return encodeEvent(EventType.RFD, nextRedemptionDate);
@@ -350,7 +350,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfRedemption : lastScheduleTime
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextRedemptionDate);
@@ -362,7 +362,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
-                    lastScheduleTime
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfRedemption : lastScheduleTime
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 if (nextRedemptionDate == terms.maturityDate) return bytes32(0);

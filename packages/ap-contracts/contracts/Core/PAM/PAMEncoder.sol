@@ -1,5 +1,6 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
+pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
@@ -18,7 +19,7 @@ library PAMEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetPAMTerms(Asset storage asset, PAMTerms memory terms) internal {
+    function encodeAndSetPAMTerms(Asset storage asset, PAMTerms memory terms) external {
         storeInPackedTerms(
             asset,
             "enums",
@@ -118,7 +119,7 @@ library PAMEncoder {
     /**
      * @dev Decode and loads PAMTerms
      */
-    function decodeAndGetPAMTerms(Asset storage asset) internal view returns (PAMTerms memory) {
+    function decodeAndGetPAMTerms(Asset storage asset) external view returns (PAMTerms memory) {
         return PAMTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
@@ -202,7 +203,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetEnumValueForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint8)
     {
@@ -230,7 +231,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetAddressValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (address)
     {
@@ -244,7 +245,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetBytes32ValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (bytes32)
     {
@@ -252,7 +253,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetUIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint256)
     {
@@ -260,7 +261,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (int256)
     {
@@ -268,7 +269,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetPeriodValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IP memory)
     {
@@ -287,7 +288,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetCycleValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IPS memory)
     {
@@ -309,7 +310,7 @@ library PAMEncoder {
     }
 
     function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
-        internal
+        external
         pure
         returns (ContractReference memory)
     {

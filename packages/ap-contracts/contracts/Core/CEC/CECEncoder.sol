@@ -1,5 +1,6 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
+pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
@@ -18,7 +19,7 @@ library CECEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetCECTerms(Asset storage asset, CECTerms memory terms) internal {
+    function encodeAndSetCECTerms(Asset storage asset, CECTerms memory terms) external {
         storeInPackedTerms(
             asset,
             "enums",
@@ -80,7 +81,7 @@ library CECEncoder {
     /**
      * @dev Decode and loads CECTerms
      */
-    function decodeAndGetCECTerms(Asset storage asset) internal view returns (CECTerms memory) {
+    function decodeAndGetCECTerms(Asset storage asset) external view returns (CECTerms memory) {
         return CECTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
@@ -114,7 +115,7 @@ library CECEncoder {
     }
 
     function decodeAndGetEnumValueForCECAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint8)
     {
@@ -140,7 +141,7 @@ library CECEncoder {
     }
 
     function decodeAndGetAddressValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
-        internal
+        external
         pure
         returns (address)
     {
@@ -148,7 +149,7 @@ library CECEncoder {
     }
 
     function decodeAndGetBytes32ValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (bytes32)
     {
@@ -156,7 +157,7 @@ library CECEncoder {
     }
 
     function decodeAndGetUIntValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint256)
     {
@@ -164,7 +165,7 @@ library CECEncoder {
     }
 
     function decodeAndGetIntValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (int256)
     {
@@ -172,7 +173,7 @@ library CECEncoder {
     }
 
     function decodeAndGetPeriodValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
-        internal
+        external
         pure
         returns (IP memory)
     {
@@ -180,7 +181,7 @@ library CECEncoder {
     }
 
     function decodeAndGetCycleValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
-        internal
+        external
         pure
         returns (IPS memory)
     {
@@ -188,7 +189,7 @@ library CECEncoder {
     }
 
     function decodeAndGetContractReferenceValueForCECAttribute(Asset storage asset , bytes32 attributeKey )
-        internal
+        external
         view
         returns (ContractReference memory)
     {
