@@ -284,6 +284,7 @@ struct CERTFTerms {
     IPS cycleOfCoupon;
 
     ContractReference contractReference_1;
+    ContractReference contractReference_2;
 }
 
 struct PAMTerms {

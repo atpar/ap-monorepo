@@ -263,7 +263,8 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   cycleOfTermination: EMPTY_IPS,
   cycleOfCoupon: EMPTY_IPS,
 
-  contractReference_1: EMPTY_CONTRACT_REFERENCE
+  contractReference_1: EMPTY_CONTRACT_REFERENCE,
+  contractReference_2: EMPTY_CONTRACT_REFERENCE
 }
 
 export const EMPTY_PAM_TERMS: PAMTerms = {

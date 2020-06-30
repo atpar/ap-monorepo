@@ -134,6 +134,12 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -253,6 +259,12 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -341,6 +353,12 @@ export class CERTFEngine extends Contract {
         isSet: boolean;
       };
       contractReference_1: {
+        object: string | number[];
+        object2: string | number[];
+        _type: number | string;
+        role: number | string;
+      };
+      contractReference_2: {
         object: string | number[];
         object2: string | number[];
         _type: number | string;
@@ -440,6 +458,12 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       segmentStart: number | string,
       segmentEnd: number | string
@@ -511,6 +535,12 @@ export class CERTFEngine extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -593,6 +623,12 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       lastScheduleTime: number | string,
       eventType: number | string
@@ -665,6 +701,12 @@ export class CERTFEngine extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;

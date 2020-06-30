@@ -115,13 +115,6 @@ library CERTFEncoder {
 
         storeInPackedTerms(
             asset,
-            "contractReference_1_type_role",
-            bytes32(uint256(terms.contractReference_1._type)) << 16 |
-            bytes32(uint256(terms.contractReference_1.role)) << 8
-        );
-
-        storeInPackedTerms(
-            asset,
             "contractReference_1_object",
             terms.contractReference_1.object
         );
@@ -129,6 +122,29 @@ library CERTFEncoder {
             asset,
             "contractReference_1_object2",
             terms.contractReference_1.object2
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_1_type_role",
+            bytes32(uint256(terms.contractReference_1._type)) << 16 |
+            bytes32(uint256(terms.contractReference_1.role)) << 8
+        );
+
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_object",
+            terms.contractReference_2.object
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_object2",
+            terms.contractReference_2.object2
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_type_role",
+            bytes32(uint256(terms.contractReference_2._type)) << 16 |
+            bytes32(uint256(terms.contractReference_2.role)) << 8
         );
     }
 
@@ -213,6 +229,12 @@ library CERTFEncoder {
                 asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
+            ),
+            ContractReference(
+                asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             )
         );
     }
@@ -335,6 +357,13 @@ library CERTFEncoder {
                 asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
+            );
+        } else if (attributeKey == bytes32("contractReference_2")) {
+            return ContractReference(
+                asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             );
         } else {
             return ContractReference(

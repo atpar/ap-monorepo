@@ -53,7 +53,8 @@ contract('CERTFEngine', () => {
     this.testCases = await getTestCases('CERTF');
   });
 
-  const evaluateEventSchedule = async (terms, externalDataObject, tMax) => {
+  const evaluateEventSchedule = async (terms, externalDataObject, tMax, eventsObserved) => {
+    terms.contractReference_2.object = web3.utils.toHex('ABC');
     const initialState = await this.CERTFEngineInstance.computeInitialState(terms);
     const schedule = await computeEventScheduleSegment(
       terms,
@@ -63,6 +64,8 @@ contract('CERTFEngine', () => {
 
     const evaluatedSchedule = [];
     let state = initialState;
+
+    let xoIndex = 0;
 
     for (_event of schedule) {
       const { eventType, scheduleTime } = decodeEvent(_event);
@@ -94,17 +97,14 @@ contract('CERTFEngine', () => {
         externalData = web3.utils.toWei(String(Number(dataPointScheduleTime.value) / Number(dataPointIssueDate.value)));
       }
 
-      // if (eventType === 23) { // XD
-      //   const marketObjectCode = web3.utils.toAscii(terms.contractReference_2.object);
-      //   if (externalDataObject[marketObjectCode] == undefined) {
-      //     throw new Error('No external data found for ' + marketObjectCode + '.');
-      //   }
-      //   const dataPoint = externalDataObject[marketObjectCode].data.find(({ timestamp }) => {
-      //     return String(isoToUnix(timestamp)) === scheduleTime.toString()
-      //   });
-      //   if (dataPoint == undefined) { throw new Error('No data point for event.'); }
-      //   externalData = web3.utils.toWei(exerciseAmount.value);
-      // }
+      if (eventType === 26 && eventsObserved != undefined) { // XD
+        // const dataPoint = eventsObserved.find(({ time }) => {
+        //   return String(isoToUnix(time)) === scheduleTime.toString()
+        // });
+        // if (dataPoint == undefined) { throw new Error('No data point for event.'); }
+        externalData = web3.utils.toWei(String(eventsObserved[xoIndex].value)); // web3.utils.toWei(dataPoint.value);
+        xoIndex++;
+      }
 
       const payoff = await this.CERTFEngineInstance.computePayoffForEvent(
         terms,
@@ -145,17 +145,34 @@ contract('CERTFEngine', () => {
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  // it('should yield the expected evaluated contract schedule for test certf04', async () => {
-  //   const testDetails = this.testCases['certf04'];
-  //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
-  //   console.log(evaluatedSchedule);
-  //   compareTestResults(evaluatedSchedule, testDetails['results']);
-  // });
+  it('should yield the expected evaluated contract schedule for test certf04', async () => {
+    const testDetails = this.testCases['certf04'];
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
+    compareTestResults(evaluatedSchedule, testDetails['results']);
+  });
 
+  // fixing period
   // it('should yield the expected evaluated contract schedule for test certf05', async () => {
   //   const testDetails = this.testCases['certf05'];
   //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);
-  //   console.log(evaluatedSchedule);
+  //   compareTestResults(evaluatedSchedule, testDetails['results']);
+  // });
+
+  it('should yield the expected evaluated contract schedule for test certf06', async () => {
+    const testDetails = this.testCases['certf06'];
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax, testDetails.eventsObserved);
+    compareTestResults(evaluatedSchedule, testDetails['results']);
+  });
+
+  it('should yield the expected evaluated contract schedule for test certf07', async () => {
+    const testDetails = this.testCases['certf07'];
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax, testDetails.eventsObserved);
+    compareTestResults(evaluatedSchedule, testDetails['results']);
+  });
+
+  // it('should yield the expected evaluated contract schedule for test certf08', async () => {
+  //   const testDetails = this.testCases['certf08'];
+  //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax, testDetails.eventsObserved);
   //   compareTestResults(evaluatedSchedule, testDetails['results']);
   // });
 });

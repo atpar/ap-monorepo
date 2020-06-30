@@ -139,6 +139,12 @@ export class CERTFActor extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       schedule: (string | number[])[],
       ownership: {

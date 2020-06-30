@@ -327,6 +327,7 @@ export interface CERTFTerms {
   cycleOfCoupon: IPS;
 
   contractReference_1: ContractReference;
+  contractReference_2: ContractReference;
 }
 
 
@@ -679,6 +680,7 @@ export function isCERTFTerms (obj: any): obj is CERTFTerms {
   if (!isIPS(obj.cycleOfCoupon)) { return false; }
   
   if (!isContractReference(obj.contractReference_1)) { return false; }
+  if (!isContractReference(obj.contractReference_2)) { return false; }
 
   return true;
 }

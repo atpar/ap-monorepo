@@ -338,6 +338,12 @@ export class CERTFRegistry extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -414,6 +420,12 @@ export class CERTFRegistry extends Contract {
         _type: string;
         role: string;
       };
+      contractReference_2: {
+        object: string;
+        object2: string;
+        _type: string;
+        role: string;
+      };
     }>;
 
     setTerms(
@@ -483,6 +495,12 @@ export class CERTFRegistry extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;

@@ -20,6 +20,7 @@ async function getTestCases (contract) {
     caseDetails.terms = parseTermsFromObject(contract, testCases[name].terms);
     caseDetails.results = parseResultsFromObject(testCases[name].results);
     caseDetails.externalData = testCases[name].externalData || testCases[name].dataObserved;
+    caseDetails.eventsObserved = testCases[name].eventsObserved;
     caseDetails.tMax = (testCases[name].tMax) ? isoToUnix(testCases[name].tMax) : undefined;
     parsedCases[name] = caseDetails;
   });
