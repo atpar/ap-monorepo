@@ -183,8 +183,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         uint256 index;
 
         if (eventType == EventType.IP) {
-            // interest payment related (covers pre-repayment period only,
-            // starting with PRANX interest is paid following the PR schedule)
+            // interest payment related (starting with PRANX interest is paid following the PR schedule)
             if (
                 terms.cycleOfInterestPayment.isSet == true
                 && terms.cycleAnchorDateOfInterestPayment != 0
@@ -304,6 +303,96 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         }
 
         return schedule;
+    }
+
+    /**
+     * @notice Computes a schedule segment of cyclic contract events based on the contract terms
+     * and the specified timestamps.
+     * @param terms terms of the contract
+     * @param lastScheduleTime last occurrence of cyclic event
+     * @param eventType eventType of the cyclic schedule
+     * @return event schedule segment
+     */
+    function computeNextCyclicEvent(
+        PAMTerms calldata terms,
+        uint256 lastScheduleTime,
+        EventType eventType
+    )
+        external
+        pure
+        override
+        returns(bytes32)
+    {
+        if (eventType == EventType.IP) {
+            // interest payment related (starting with PRANX interest is paid following the PR schedule)
+            if (
+                terms.cycleOfInterestPayment.isSet == true && terms.cycleAnchorDateOfInterestPayment != 0) {
+                uint256 nextInterestPaymentDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfInterestPayment,
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfInterestPayment : lastScheduleTime
+                );
+                if (nextInterestPaymentDate == 0) return bytes32(0);
+                if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
+                return encodeEvent(EventType.IP, nextInterestPaymentDate);
+            }
+        }
+
+        if (eventType == EventType.IPCI) {
+            // IPCI
+            if (
+                terms.cycleOfInterestPayment.isSet == true
+                && terms.cycleAnchorDateOfInterestPayment != 0
+                && terms.capitalizationEndDate != 0
+            ) {
+                IPS memory cycleOfInterestCapitalization = terms.cycleOfInterestPayment;
+                cycleOfInterestCapitalization.s = S.SHORT;
+                uint256 nextInterestCapitalizationDate = computeNextCycleDateFromPrecedingDate(
+                    cycleOfInterestCapitalization,
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfInterestPayment : lastScheduleTime
+                );
+                if (nextInterestCapitalizationDate == 0) return bytes32(0);
+                return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
+            }
+        }
+
+        if (eventType == EventType.RR) {
+            // rate reset
+            if (terms.cycleOfRateReset.isSet == true && terms.cycleAnchorDateOfRateReset != 0) {
+                uint256 nextRateResetDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRateReset,
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfRateReset : lastScheduleTime
+                );
+                if (nextRateResetDate == 0) return bytes32(0);
+                return encodeEvent(EventType.RR, nextRateResetDate);
+            }
+            // ... nextRateReset
+        }
+
+        if (eventType == EventType.FP) {
+            // fees
+            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
+                uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfFee,
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfFee : lastScheduleTime
+                );
+                if (nextFeeDate == 0) return bytes32(0);
+                return encodeEvent(EventType.FP, nextFeeDate);
+            }
+        }
+
+        if (eventType == EventType.SC) {
+            // scaling
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
+                uint256 nextScalingDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfScalingIndex,
+                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfScalingIndex : lastScheduleTime
+                );
+                if (nextScalingDate == 0) return bytes32(0);
+                return encodeEvent(EventType.SC, nextScalingDate);
+            }
+        }
+
+        return bytes32(0);
     }
 
     /**

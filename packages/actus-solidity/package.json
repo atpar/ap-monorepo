@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "build": "npm run compile && npm run generate-artifacts",
-    "compile": "truffle compile",
+    "compile": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "generate-docs": "./scripts/generate-docs.sh",

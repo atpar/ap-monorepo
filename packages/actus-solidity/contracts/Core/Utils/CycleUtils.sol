@@ -47,14 +47,13 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
     }
 
     /**
-     * This function computes an array of UNIX timestamps that
-     * represent dates in a cycle falling within a given segment.
+     * Computes an array of timestamps that represent dates in a cycle falling within a given segment.
      * @dev There are some notable edge cases: If the cycle is "not set" we return the start end end dates
      * of the cycle if they lie within the segment. Otherwise and empty array is returned.
-     * @param cycleStart the start time of the cycle
-     * @param cycleEnd the end time of the cycle
-     * @param cycle struct that describe sthe cycle
-     * @param addEndTime specifies if the timestamp of the end of the cycle should be added to the result if it falls in the segment
+     * @param cycleStart start time of the cycle
+     * @param cycleEnd end time of the cycle
+     * @param cycle IPS cycle
+     * @param addEndTime timestamp of the end of the cycle should be added to the result if it falls in the segment
      * @param segmentStart start time of the segment
      * @param segmentEnd end time of the segment
      * @return an array of timestamps from the given cycle that fall within the specified segement
@@ -102,9 +101,7 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
 
             cycleIndex++;
 
-
             date = getNextCycleDate(cycle, cycleStart, cycleIndex);
-
         }
 
         // add additional time at the end if addEndTime
@@ -126,6 +123,27 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
     }
 
     /**
+     * Computes the next date for a given an IPS cycle.
+     * @param cycle IPS cycle
+     * @param precedingDate the previous date of the cycle
+     * @return next date of the cycle
+     */
+    function computeNextCycleDateFromPrecedingDate(
+        IPS memory cycle,
+        uint256 precedingDate
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        if (cycle.isSet == false) {
+            return 0;
+        }
+
+        return getNextCycleDate(cycle, precedingDate, 1);
+    }
+
+    /*
      * @notice Checks if a timestamp is in a given range.
      */
     function isInSegment(
