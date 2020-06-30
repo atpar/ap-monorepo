@@ -18,8 +18,7 @@ struct AssetOwnership {
 
 struct Schedule {
     // scheduleTime and EventType are tighlty packed and encoded as bytes32
-    // in the context of a Template scheduleTime is defined as an offset in seconds
-    // respective to an anchorDate which is defined in the CustomTerms of the asset which references this template
+    
     // index of event => bytes32 encoded event
     mapping(uint256 => bytes32) events;
     // the length of the schedule, used to determine the end of the schedule
