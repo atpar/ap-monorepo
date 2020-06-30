@@ -14,8 +14,6 @@ import "../State/StateRegistry.sol";
 import "../State/IStateRegistry.sol";
 import "./IScheduleRegistry.sol";
 
-import "@nomiclabs/buidler/console.sol";
-
 
 /**
  * @title ScheduleRegistry

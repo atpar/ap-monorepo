@@ -180,7 +180,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         // IPCI
@@ -193,8 +193,8 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
 
             if (
                 (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
@@ -211,8 +211,8 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
 
             if (
                 (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
@@ -229,8 +229,8 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
 
             if (
                 (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;

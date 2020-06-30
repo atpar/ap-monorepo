@@ -5,10 +5,10 @@ const { setupTestEnvironment, getDefaultTerms, deployPaymentToken, parseToContra
 const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
 const { generateSchedule, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState } = require('../../../helper/utils');
 
-const ANNActor = artifacts.require('ANNActor');
+const CERTFActor = artifacts.require('CERTFActor');
 
 
-contract('ANNActor', (accounts) => {
+contract('CERTFActor', (accounts) => {
 
   const creatorObligor = accounts[1];
   const creatorBeneficiary = accounts[2];
@@ -19,7 +19,7 @@ contract('ANNActor', (accounts) => {
   let snapshot_asset;
   
   const getEventTime = async (_event, terms) => {
-    return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
+    return Number(await this.CERTFEngineInstance.computeEventTimeForEvent(
       _event,
       terms.businessDayConvention,
       terms.calendar,
@@ -33,7 +33,7 @@ contract('ANNActor', (accounts) => {
 
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = { 
-      ...await getDefaultTerms('ANN'),
+      ...await getDefaultTerms('CERTF'),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
@@ -47,18 +47,18 @@ contract('ANNActor', (accounts) => {
     this.terms.statusDate = this.terms.contractDealDate;
 
     this.schedule = [];
-    this.state = web3ResponseToState(await this.ANNEngineInstance.computeInitialState(this.terms));
+    this.state = web3ResponseToState(await this.CERTFEngineInstance.computeInitialState(this.terms));
 
-    const tx = await this.ANNActorInstance.initialize(
+    const tx = await this.CERTFActorInstance.initialize(
       this.terms,
       this.schedule,
       this.ownership,
-      this.ANNEngineInstance.address,
+      this.CERTFEngineInstance.address,
       ZERO_ADDRESS
     );
 
     await expectEvent.inTransaction(
-      tx.tx, ANNActor, 'InitializedAsset'
+      tx.tx, CERTFActor, 'InitializedAsset'
     );
 
     this.assetId =  tx.logs[0].args.assetId;
@@ -71,10 +71,10 @@ contract('ANNActor', (accounts) => {
   });
 
   it('should process the next cyclic event', async () => {
-    const _event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.terms)
 
-    const payoff = new BigNumber(await this.ANNEngineInstance.computePayoffForEvent(
+    const payoff = new BigNumber(await this.CERTFEngineInstance.computePayoffForEvent(
       this.terms, 
       this.state, 
       _event,
@@ -85,30 +85,30 @@ contract('ANNActor', (accounts) => {
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.approve(
-      this.ANNActorInstance.address,
+      this.CERTFActorInstance.address,
       value,
       { from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor }
     );
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const tx = await this.ANNActorInstance.progress(
+    const tx = await this.CERTFActorInstance.progress(
       web3.utils.toHex(this.assetId), 
       { from: creatorObligor }
     );
     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      tx.tx, ANNActor, 'ProgressedAsset'
+      tx.tx, CERTFActor, 'ProgressedAsset'
     );
 
-    const storedNextState = web3ResponseToState(await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const isEventSettled = await this.ANNRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
-    const projectedNextState = web3ResponseToState(await this.ANNEngineInstance.computeStateForEvent(
+    const storedNextState = web3ResponseToState(await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId)));
+    const isEventSettled = await this.CERTFRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
+    const projectedNextState = web3ResponseToState(await this.CERTFEngineInstance.computeStateForEvent(
       this.terms,
       this.state,
       _event,
       web3.utils.toHex(0)
     ));
-    const storedNextEvent = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const storedNextEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     
     assert.equal(emittedAssetId, this.assetId);
     assert.notEqual(storedNextEvent, _event);
