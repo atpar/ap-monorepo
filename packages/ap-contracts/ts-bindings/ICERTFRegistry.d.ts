@@ -306,7 +306,6 @@ export class ICERTFRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -314,7 +313,6 @@ export class ICERTFRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -419,7 +417,6 @@ export class ICERTFRegistry extends Contract {
       dayCountConvention: string;
       businessDayConvention: string;
       endOfMonthConvention: string;
-      contractPerformance: string;
       couponType: string;
       currency: string;
       settlementCurrency: string;
@@ -427,7 +424,6 @@ export class ICERTFRegistry extends Contract {
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
-      nonPerformingDate: string;
       issueDate: string;
       cycleAnchorDateOfRedemption: string;
       cycleAnchorDateOfTermination: string;
@@ -468,7 +464,6 @@ export class ICERTFRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -476,7 +471,6 @@ export class ICERTFRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;

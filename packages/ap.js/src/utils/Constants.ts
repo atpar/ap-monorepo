@@ -3,12 +3,11 @@ import {
   IPS,
   ContractReference,
   State,
-  // Terms,
-  PAMTerms,
   ANNTerms,
   CECTerms,
   CEGTerms,
-  CERTFTerms
+  CERTFTerms,
+  PAMTerms
 } from '../types'; 
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -47,66 +46,6 @@ export const EMPTY_STATE: State = {
   marginFactor: '0',
   adjustmentFactor: '0',
 };
-
-// export const EMPTY_TERMS: Terms = {
-//   contractType: '0',
-//   calendar: '0',
-//   contractRole: '0',
-//   dayCountConvention: '0',
-//   businessDayConvention: '0',
-//   endOfMonthConvention: '0',
-//   scalingEffect: '0',
-//   penaltyType: '0',
-//   feeBasis: '0',
-//   creditEventTypeCovered: '0',
-
-//   currency: ZERO_ADDRESS,
-//   settlementCurrency: ZERO_ADDRESS,
-
-//   marketObjectCodeRateReset: ZERO_BYTES32,
-
-//   contractDealDate: '0',
-//   statusDate: '0',
-//   initialExchangeDate: '0',
-//   maturityDate: '0',
-//   purchaseDate: '0',
-//   capitalizationEndDate: '0',
-//   cycleAnchorDateOfInterestPayment: '0',
-//   cycleAnchorDateOfRateReset: '0',
-//   cycleAnchorDateOfScalingIndex: '0',
-//   cycleAnchorDateOfFee: '0',
-//   cycleAnchorDateOfPrincipalRedemption: '0',
-
-//   notionalPrincipal: '0',
-//   nominalInterestRate: '0',
-//   feeAccrued: '0',
-//   accruedInterest: '0',
-//   rateMultiplier: '0',
-//   rateSpread: '0',
-//   feeRate: '0',
-//   nextResetRate: '0',
-//   penaltyRate: '0',
-//   premiumDiscountAtIED: '0',
-//   priceAtPurchaseDate: '0',
-//   nextPrincipalRedemptionPayment: '0',
-//   coverageOfCreditEnhancement: '0',
-//   lifeCap: '0',
-//   lifeFloor: '0',
-//   periodCap: '0',
-//   periodFloor: '0',
-
-//   cycleOfInterestPayment: EMPTY_IPS,
-//   cycleOfRateReset: EMPTY_IPS,
-//   cycleOfScalingIndex: EMPTY_IPS,
-//   cycleOfFee: EMPTY_IPS,
-//   cycleOfPrincipalRedemption: EMPTY_IPS,
-
-//   gracePeriod: EMPTY_IP,
-//   delinquencyPeriod: EMPTY_IP,
-
-//   contractReference_1: EMPTY_CONTRACT_REFERENCE,
-//   contractReference_2: EMPTY_CONTRACT_REFERENCE
-// };
 
 export const EMPTY_ANN_TERMS: ANNTerms = {
   contractType: '0',
@@ -230,7 +169,6 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   dayCountConvention: '0',
   businessDayConvention: '0',
   endOfMonthConvention: '0',
-  contractPerformance: '0',
   couponType: '0',
 
   currency: ZERO_ADDRESS,
@@ -240,9 +178,7 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
-  nonPerformingDate: '0',
   issueDate: '0',
-
   cycleAnchorDateOfRedemption: '0',
   cycleAnchorDateOfTermination: '0',
   cycleAnchorDateOfCoupon: '0',
@@ -328,15 +264,3 @@ export const EMPTY_OWNERSHIP = {
   counterpartyObligor: ZERO_ADDRESS,
   counterpartyBeneficiary: ZERO_ADDRESS
 };
-
-// export const EMPTY_ENHANCEMENT_PARAMS = {
-//   termsHash: ZERO_BYTES32,
-//   templateId: ZERO_BYTES32,
-//   customTerms: EMPTY_CUSTOM_TERMS,
-//   ownership: EMPTY_OWNERSHIP,
-//   engine: ZERO_ADDRESS,
-//   admin: ZERO_ADDRESS,
-//   creatorSignature: ZERO_BYTES,
-//   counterpartySignature: ZERO_BYTES,
-//   salt: Math.floor(Math.random() * 1000000)
-// };

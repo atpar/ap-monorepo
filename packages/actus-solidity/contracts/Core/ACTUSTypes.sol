@@ -241,37 +241,37 @@ struct CERTFTerms {
     DayCountConvention dayCountConvention;
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
-    ContractPerformance contractPerformance;
     CouponType couponType;
+    // ContractPerformance contractPerformance; state only
 
     address currency;
     address settlementCurrency;
 
-    // bytes32 marketObjectCode;
+    // bytes32 marketObjectCode; // not implemented
 
     uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
-    uint256 nonPerformingDate;
+    // uint256 nonPerformingDate; // state only
     uint256 issueDate;
-    // uint256 lastCouponDay;
+    // uint256 lastCouponDay; // state only
     uint256 cycleAnchorDateOfRedemption;
     uint256 cycleAnchorDateOfTermination;
     uint256 cycleAnchorDateOfCoupon;
 
     int256 nominalPrice;
     int256 issuePrice;
-    // int256 delinquencyRate;
+    // int256 delinquencyRate; // not implemented
     int256 quantity;
-    // int256 exerciseQuantity;
-    // int256 exerciseQuantityOrdered;
-    // int256 marginFactor;
-    // int256 adjustmentFactor;
+    // int256 exerciseQuantity; // state only
+    // int256 exerciseQuantityOrdered; // state only
+    // int256 marginFactor;  // state only
+    // int256 adjustmentFactor; // state only
     int256 denominationRatio;
     int256 couponRate;
-    // int256 exerciseAmount;
-    // int256 couponAmountFixed;
+    // int256 exerciseAmount; // state only
+    // int256 couponAmountFixed; // state only
 
     IP gracePeriod;
     IP delinquencyPeriod;

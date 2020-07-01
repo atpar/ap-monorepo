@@ -30,7 +30,6 @@ export class ICERTFEngine extends Contract {
       dayCountConvention: number | string;
       businessDayConvention: number | string;
       endOfMonthConvention: number | string;
-      contractPerformance: number | string;
       couponType: number | string;
       currency: string;
       settlementCurrency: string;
@@ -38,7 +37,6 @@ export class ICERTFEngine extends Contract {
       statusDate: number | string;
       initialExchangeDate: number | string;
       maturityDate: number | string;
-      nonPerformingDate: number | string;
       issueDate: number | string;
       cycleAnchorDateOfRedemption: number | string;
       cycleAnchorDateOfTermination: number | string;
@@ -126,7 +124,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -134,7 +131,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -251,7 +247,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -259,7 +254,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -355,7 +349,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -363,7 +356,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -437,7 +429,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -445,7 +436,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -520,7 +510,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -528,7 +517,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -603,7 +591,6 @@ export class ICERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -611,7 +598,6 @@ export class ICERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;

@@ -29,8 +29,7 @@ library CERTFEncoder {
             bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(terms.contractPerformance))) << 200 |
-            bytes32(uint256(uint8(terms.couponType))) << 192
+            bytes32(uint256(uint8(terms.couponType))) << 200
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -40,7 +39,6 @@ library CERTFEncoder {
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
-        storeInPackedTerms(asset, "nonPerformingDate", bytes32(terms.nonPerformingDate));
         storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
         storeInPackedTerms(asset, "cycleAnchorDateOfRedemption", bytes32(terms.cycleAnchorDateOfRedemption));
         storeInPackedTerms(asset, "cycleAnchorDateOfTermination", bytes32(terms.cycleAnchorDateOfTermination));
@@ -159,8 +157,7 @@ library CERTFEncoder {
             DayCountConvention(uint8(uint256(asset.packedTerms["enums"] >> 224))),
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
-            ContractPerformance(uint8(uint256(asset.packedTerms["enums"] >> 200))),
-            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
+            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 200))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
@@ -169,7 +166,6 @@ library CERTFEncoder {
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
-            uint256(asset.packedTerms["nonPerformingDate"]),
             uint256(asset.packedTerms["issueDate"]),
             uint256(asset.packedTerms["cycleAnchorDateOfRedemption"]),
             uint256(asset.packedTerms["cycleAnchorDateOfTermination"]),
@@ -256,10 +252,8 @@ library CERTFEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 216));
         } else if (attributeKey == bytes32("endOfMonthConvention")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
-        } else if (attributeKey == bytes32("contractPerformance")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 200));
         } else if (attributeKey == bytes32("couponType")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 192));
+            return uint8(uint256(asset.packedTerms["enums"] >> 200));
         } else {
             return uint8(0);
         }
