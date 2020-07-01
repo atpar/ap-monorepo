@@ -199,12 +199,15 @@ abstract contract ScheduleRegistry is
 
         if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
 
-        (, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
-        (, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
+        (EventType eventTypeNextCyclicEvent, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
+        (EventType eventTypeNextScheduleEvent, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
 
         if (
-            scheduleTimeNextScheduleEvent == 0
-            || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent)
+            (scheduleTimeNextScheduleEvent == 0 || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent))
+            || (
+                scheduleTimeNextCyclicEvent == scheduleTimeNextScheduleEvent
+                && getEpochOffset(eventTypeNextCyclicEvent) < getEpochOffset(eventTypeNextScheduleEvent)
+            )
         ) {
             return nextCyclicEvent;
         } else {

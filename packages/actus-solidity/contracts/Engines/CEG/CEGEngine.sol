@@ -223,10 +223,9 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         if (eventType == EventType.FP) {
             // fees
             if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
-                uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
-                    terms.cycleOfFee,
-                    (lastScheduleTime == 0) ? terms.cycleAnchorDateOfFee : lastScheduleTime
-                );
+                uint256 nextFeeDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfFee
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfFee, lastScheduleTime);
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
             }

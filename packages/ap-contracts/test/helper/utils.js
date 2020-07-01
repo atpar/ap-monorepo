@@ -1,6 +1,5 @@
 const { sortEvents, removeNullEvents } = require('./scheduleUtils');
 
-// const ZeroTerms = require('./ZeroTerms.json');
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
@@ -25,6 +24,7 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
   events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, terms.maturityDate)));
+  
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7)));

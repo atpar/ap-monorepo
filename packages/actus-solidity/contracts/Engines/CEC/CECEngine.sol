@@ -169,15 +169,15 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
     /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
-     * @param terms terms of the contract
-     * @param lastScheduleTime last occurrence of cyclic event
-     * @param eventType eventType of the cyclic schedule
+     * param terms terms of the contract
+     * param lastScheduleTime last occurrence of cyclic event
+     * param eventType eventType of the cyclic schedule
      * @return event schedule segment
      */
     function computeNextCyclicEvent(
-        CECTerms calldata terms,
-        uint256 lastScheduleTime,
-        EventType eventType
+        CECTerms calldata /* terms */,
+        uint256 /* lastScheduleTime */,
+        EventType /* eventType */
     )
         external
         pure

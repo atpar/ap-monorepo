@@ -92,7 +92,7 @@ contract('PAMActor', (accounts) => {
 
   it('should process next state with contract status equal to PF', async () => {
     const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.terms)
+    const eventTime = await getEventTime(_event, this.terms);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
       this.terms, 

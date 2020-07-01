@@ -307,7 +307,7 @@ export class CECEngine extends Contract {
     ): TransactionObject<string[]>;
 
     computeNextCyclicEvent(
-      terms: {
+      arg0: {
         contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
@@ -334,8 +334,8 @@ export class CECEngine extends Contract {
           role: number | string;
         };
       },
-      lastScheduleTime: number | string,
-      eventType: number | string
+      arg1: number | string,
+      arg2: number | string
     ): TransactionObject<string>;
 
     isEventScheduled(
