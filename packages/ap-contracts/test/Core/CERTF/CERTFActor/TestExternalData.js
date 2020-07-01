@@ -41,8 +41,8 @@ contract('CERTFActor', (accounts) => {
     this.terms = require('../../../helper/terms/CERTFTerms-external-data.json');
   
     // only want RR events in the schedules
-    this.schedule = (await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000)).filter((event) => event.startsWith('0x17'));
-  
+    this.schedule = (await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000)).filter((event) => (event.startsWith('0x17') || event.startsWith('0x1a')));
+
     const tx = await this.CERTFActorInstance.initialize(
       this.terms,
       this.schedule,
@@ -54,6 +54,7 @@ contract('CERTFActor', (accounts) => {
     this.assetId = tx.logs[0].args.assetId;
     this.state = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
     this.redemptionAmounts = [100, 110];
+    this.quantity = [100];
 
     snapshot = await createSnapshot();
   });
@@ -62,7 +63,7 @@ contract('CERTFActor', (accounts) => {
     await revertToSnapshot(snapshot);
   });
 
-  it('should process next state with external rate', async () => {
+  it('should process next state with external redemption amount', async () => {
     const _event = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const { scheduleTime } = decodeEvent(_event);
     
@@ -109,6 +110,55 @@ contract('CERTFActor', (accounts) => {
       web3.utils.padLeft(
         web3.utils.numberToHex(
           web3.utils.toWei(String(this.redemptionAmounts[1] / this.redemptionAmounts[0]))
+        ),
+        64
+      )
+    );
+
+    // compare results
+    assert.equal(emittedAssetId, this.assetId);
+    assert.equal(storedNextState.statusDate, scheduleTime);
+    assert.deepEqual(storedNextState, projectedNextState);
+
+    this.state = storedNextState;
+  });
+
+  it('should process next state with external quantity', async () => {
+    const _event = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const { scheduleTime } = decodeEvent(_event);
+    
+    await mineBlock(Number(scheduleTime));
+    
+    await this.MarketObjectRegistryInstance.setMarketObjectProvider(
+      this.terms.contractReference_2.object,
+      accounts[0]
+    );
+
+    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+      this.terms.contractReference_2.object,
+      scheduleTime,
+      web3.utils.padLeft(
+        web3.utils.numberToHex(
+          web3.utils.toWei(String(this.quantity[0]))
+        ),
+        64
+      )
+    );
+
+    const { tx: txHash } = await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
+    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
+      txHash, CERTFActor, 'ProgressedAsset'
+    );
+    const storedNextState = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
+
+    // compute expected next state
+    const projectedNextState = await this.CERTFEngineInstance.computeStateForEvent(
+      this.terms,
+      this.state,
+      _event,
+      web3.utils.padLeft(
+        web3.utils.numberToHex(
+          web3.utils.toWei(String(this.quantity[0]))
         ),
         64
       )

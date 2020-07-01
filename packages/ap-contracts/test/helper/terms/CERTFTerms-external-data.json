@@ -18,10 +18,10 @@
   "cycleAnchorDateOfRedemption": 1598918400,
   "cycleAnchorDateOfTermination": 0,
   "cycleAnchorDateOfCoupon": 0,
-  "nominalPrice": "100000000000000000000",
-  "issuePrice": "100000000000000000000",
+  "nominalPrice": "1000000000000000000000",
+  "issuePrice": "1000000000000000000000",
   "quantity": "100000000000000000000000",
-  "denominationRatio": 0,
+  "denominationRatio": "1000000000000000000",
   "couponRate": 0,
   "gracePeriod": { "i": 0, "p": 0, "isSet": false },
   "settlementPeriod": { "i": "10", "p": 0, "isSet": true },
@@ -32,15 +32,15 @@
   "cycleOfTermination": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfCoupon": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "contractReference_1": {
-    "object": "0x4348303233313546315744000000000000000000000000000000000000000000",
+    "object": "0x4348303233313546315744",
+    "object2": "0x00",
+    "_type": 2,
+    "role": 0 
+  },
+  "contractReference_2": {
+    "object": "0x414243",
     "object2": "0x00",
     "_type": 2,
     "role": 0
-  },
-  "contractReference_2": { 
-    "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "object2": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "_type": 2,
-    "role": 0
-  }
+  } 
 }

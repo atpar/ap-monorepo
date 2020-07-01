@@ -73,7 +73,6 @@ contract('PAMActor', (accounts) => {
   it('should process the next cyclic event', async () => {
     const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(_event, this.terms)
-    console.log(_event);
 
     const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
       this.terms, 

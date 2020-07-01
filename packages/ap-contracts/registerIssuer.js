@@ -10,13 +10,21 @@ module.exports = async (callback) => {
   console.log('Registering address (' + issuer + ') as Issuer for all Actors.');
 
   const annActorInstance = await ANNActor.deployed();
-  await annActorInstance.registerIssuer(issuer);
+  if (await annActorInstance.issuers(issuer) === false) {
+    await annActorInstance.registerIssuer(issuer);
+  }
   const cecActorInstance = await CECActor.deployed();
-  await cecActorInstance.registerIssuer(issuer);
+  if (await cecActorInstance.issuers(issuer) === false) {
+    await cecActorInstance.registerIssuer(issuer);
+  }
   const cegActorInstance = await CEGActor.deployed();
-  await cegActorInstance.registerIssuer(issuer);
+  if (await cegActorInstance.issuers(issuer) === false) {
+    await cegActorInstance.registerIssuer(issuer);
+  }
   const pamActorInstance = await PAMActor.deployed();
-  await pamActorInstance.registerIssuer(issuer);
+  if (await pamActorInstance.issuers(issuer) === false) {
+    await pamActorInstance.registerIssuer(issuer);
+  }
 
   console.log('Done.');
 
