@@ -130,9 +130,11 @@ export class ICT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    name(): TransactionObject<string>;
+    marketObjectCode(): TransactionObject<string>;
 
-    numberOfDepositsSignaledByHolder(arg0: string): TransactionObject<string>;
+    marketObjectRegistry(): TransactionObject<string>;
+
+    name(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 
@@ -149,6 +151,8 @@ export class ICT extends Contract {
     ): TransactionObject<void>;
 
     symbol(): TransactionObject<string>;
+
+    totalAmountSignaledByHolder(arg0: string): TransactionObject<string>;
 
     totalSupply(): TransactionObject<string>;
 

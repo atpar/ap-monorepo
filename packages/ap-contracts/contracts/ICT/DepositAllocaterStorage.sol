@@ -28,6 +28,5 @@ contract DepositAllocaterStorage {
 
     // depositId => Deposit
     mapping(bytes32 => Deposit) public deposits;
-
-    mapping(address => uint256) public numberOfDepositsSignaledByHolder;
+    mapping(address => uint256) public totalAmountSignaledByHolder;
 }
