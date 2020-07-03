@@ -2,6 +2,8 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
+import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
+
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";
 import "./CEGEncoder.sol";
@@ -150,5 +152,38 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         returns (ContractReference memory)
     {
         return assets[assetId].decodeAndGetContractReferenceValueForCEGAttribute(attribute);
+    }
+
+    function getNextCyclicEvent(bytes32 assetId)
+        internal
+        view
+        override(TermsRegistry)
+        returns (bytes32)
+    {
+        Asset storage asset = assets[assetId];
+        CEGTerms memory terms = asset.decodeAndGetCEGTerms();
+
+        EventType nextEventType;
+        uint256 nextScheduleTimeOffset;
+
+        // FP
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICEGEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.FP],
+                EventType.FP
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset < nextScheduleTimeOffset)
+                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        return encodeEvent(nextEventType, nextScheduleTimeOffset);
     }
 }

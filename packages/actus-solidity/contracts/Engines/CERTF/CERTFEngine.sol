@@ -295,6 +295,81 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     }
 
     /**
+     * @notice Computes a schedule segment of cyclic contract events based on the contract terms
+     * and the specified timestamps.
+     * @param terms terms of the contract
+     * @param lastScheduleTime last occurrence of cyclic event
+     * @param eventType eventType of the cyclic schedule
+     * @return event schedule segment
+     */
+    function computeNextCyclicEvent(
+        CERTFTerms calldata terms,
+        uint256 lastScheduleTime,
+        EventType eventType
+    )
+        external
+        pure
+        override
+        returns(bytes32)
+    {
+        if (eventType == EventType.CFD) {
+            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+                uint256 nextCouponDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfCoupon
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfCoupon, lastScheduleTime);
+                if (nextCouponDate == uint256(0)) return bytes32(0);
+                return encodeEvent(EventType.CFD, nextCouponDate);
+            }
+        }
+
+         if (eventType == EventType.CPD) {
+            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+                uint256 nextCouponDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfCoupon
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfCoupon, lastScheduleTime);
+                if (nextCouponDate == uint256(0)) return bytes32(0);
+                uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextCouponDate);
+                return encodeEvent(EventType.CFD, couponPaymentDayScheduleTime);
+            }
+        }
+
+        if (eventType == EventType.RFD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfRedemption
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+                if (nextRedemptionDate == uint256(0)) return bytes32(0);
+                return encodeEvent(EventType.RFD, nextRedemptionDate);
+            }
+        }
+
+        if (eventType == EventType.RPD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfRedemption
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+                if (nextRedemptionDate == uint256(0)) return bytes32(0);
+                uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextRedemptionDate);
+                return encodeEvent(EventType.RPD, redemptionPaymentDayScheduleTime);
+            }
+        }
+
+        if (eventType == EventType.XD) {
+            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfRedemption
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+                if (nextRedemptionDate == uint256(0)) return bytes32(0);
+                if (nextRedemptionDate == terms.maturityDate) return bytes32(0);
+                uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, nextRedemptionDate);
+                return encodeEvent(EventType.XD, executionDateScheduleTime);
+            }
+        }
+
+       return bytes32(0);
+    }
+
+    /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled

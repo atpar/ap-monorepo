@@ -13,6 +13,12 @@ const CEGRegistry = artifacts.require('CEGRegistry');
 const CERTFRegistry = artifacts.require('CERTFRegistry');
 const PAMRegistry = artifacts.require('PAMRegistry');
 
+const ANNEncoder = artifacts.require('ANNEncoder');
+const CECEncoder = artifacts.require('CECEncoder');
+const CEGEncoder = artifacts.require('CEGEncoder');
+const CERTFEncoder = artifacts.require('CERTFEncoder');
+const PAMEncoder = artifacts.require('PAMEncoder');
+
 const ANNActor = artifacts.require('ANNActor');
 const CECActor = artifacts.require('CECActor');
 const CEGActor = artifacts.require('CEGActor');
@@ -36,6 +42,16 @@ module.exports = async (deployer, network) => {
   instances.PAMEngineInstance = await deployer.deploy(PAMEngine);
 
   // Asset Registry
+  await deployer.deploy(ANNEncoder);
+  await deployer.deploy(CECEncoder);
+  await deployer.deploy(CEGEncoder);
+  await deployer.deploy(CERTFEncoder);
+  await deployer.deploy(PAMEncoder);
+  deployer.link(ANNEncoder, ANNRegistry);
+  deployer.link(CECEncoder, CECRegistry);
+  deployer.link(CEGEncoder, CEGRegistry);
+  deployer.link(CERTFEncoder, CERTFRegistry);
+  deployer.link(PAMEncoder, PAMRegistry);
   instances.ANNRegistryInstance = await deployer.deploy(ANNRegistry);
   instances.CECRegistryInstance = await deployer.deploy(CECRegistry);
   instances.CEGRegistryInstance = await deployer.deploy(CEGRegistry);

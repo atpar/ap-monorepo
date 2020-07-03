@@ -5,22 +5,33 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
+import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
 
 import "../Core/Base/AssetRegistry/IAssetRegistry.sol";
+import "../Core/Base/MarketObjectRegistry/IMarketObjectRegistry.sol";
 import "./DepositAllocater.sol";
 
 
 contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
 
     using SafeMath for uint256;
+    using SignedMath for int256;
 
     IAssetRegistry public assetRegistry;
+    IMarketObjectRegistry public marketObjectRegistry;
 
+    bytes32 public marketObjectCode;
     bytes32 public assetId;
 
 
-    constructor(IAssetRegistry _assetRegistry) DepositAllocater("Investment Certificate Token", "ICT") public {
+    constructor(
+        IAssetRegistry _assetRegistry,
+        IMarketObjectRegistry _marketObjectRegistry,
+        bytes32 _marketObjectCode
+    ) DepositAllocater("Investment Certificate Token", "ICT") public {
         assetRegistry = _assetRegistry;
+        marketObjectRegistry = _marketObjectRegistry;
+        marketObjectCode = _marketObjectCode;
     }
 
     function setAssetId(bytes32 _assetId) public onlyOwner {
@@ -44,7 +55,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
         createDeposit(
             _event,
             scheduleTime,
-            false, // (eventType == EventType.RD),
+            (eventType == EventType.XD),
             currency
         );
     }
@@ -70,10 +81,19 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
     function registerForRedemption(bytes32 _event, uint256 amount) public {
         require(
             assetRegistry.isRegistered(assetId) == true,
-            "ICT.createDepositForEvent: ASSET_DOES_NOT_EXIST"
+            "ICT.registerForRedemption: ASSET_DOES_NOT_EXIST"
         );
 
         signalAmountForDeposit(_event, amount);
+
+        Deposit storage deposit = deposits[_event];
+        // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
+        int256 totalQuantity = assetRegistry.getIntValueForForTermsAttribute(assetId, "quantity");
+        int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
+        int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
+        int256 quantity = ratioSignaled.floatMult(totalQuantity);
+
+        marketObjectRegistry.publishDataPointOfMarketObject(marketObjectCode, deposit.scheduledFor, quantity);
     }
 
     /**
@@ -84,8 +104,17 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
             assetRegistry.isRegistered(assetId) == true,
             "ICT.createDepositForEvent: ASSET_DOES_NOT_EXIST"
         );
-
+        
         signalAmountForDeposit(_event, 0);
+
+        Deposit storage deposit = deposits[_event];
+        // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
+        int256 totalQuantity = assetRegistry.getIntValueForForTermsAttribute(assetId, "quantity");
+        int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
+        int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
+        int256 quantity = ratioSignaled.floatMult(totalQuantity);
+
+        marketObjectRegistry.publishDataPointOfMarketObject(marketObjectCode, deposit.scheduledFor, quantity);
     }
 
     function _transfer(
@@ -98,7 +127,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
         override
     {
         require(
-            numberOfDepositsSignaledByHolder[msg.sender] == 0,
+            totalAmountSignaledByHolder[msg.sender] == 0,
             "ICT._transfer: HOLDER_IS_SIGNALING"
         );
         super._transfer(msg.sender, to, value);

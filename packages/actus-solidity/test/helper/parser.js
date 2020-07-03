@@ -79,6 +79,9 @@ const numberOfDecimals = (number) => {
 const parseCycleToIPS = (cycle) => {
   if (!cycle || cycle === '') { return { i: 0, p: 0, s: 0, isSet: false }; }
 
+  // workaround for new Cycles format
+  cycle = cycle.replace('P', '').replace('L', '').replace(/.$/, cycle.slice(-1) === '0' ? '+' : '-');
+
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y'];
 
   let i = String(cycle).slice(0, -2);
@@ -90,6 +93,9 @@ const parseCycleToIPS = (cycle) => {
 
 const parsePeriodToIP = (period) => {
   if (!period  || period === '') { return { i: 0, p: 0, isSet: false }; }
+
+  // workaround for new Period format
+  period = period.replace('P', '');
 
   const pOptions = ['D', 'W', 'M', 'Q', 'H', 'Y'];
 
@@ -144,13 +150,14 @@ const parseResultsFromObject = (schedule) => {
   const parsedResults = [];
 
   for (const event of schedule) {
-    const eventTypeIndex = getIndexForEventType(event.eventType);
+    const eventTypeIndex = Number(getIndexForEventType(event.eventType));
 
     if (eventTypeIndex === 0) { continue; } // filter out AD events
+    if (eventTypeIndex === 25) { continue; } // filter out XO events
     const result = { ...event };
 
     if (result.eventDate !== undefined) result.eventDate = new Date(result.eventDate + 'Z').toISOString();
-    if (result.eventType !== undefined) result.eventType = Number(eventTypeIndex).toString();
+    if (result.eventType !== undefined) result.eventType = eventTypeIndex.toString();
     if (result.contractPerformance !== undefined) result.contractPerformance = getIndexOfAttribute('contractPerformance', result.contractPerformance).toString();
     if (result.payoff !== undefined) result.eventValue = result.payoff; delete result.payoff;
     if (result.quantity !== undefined) result.quantity = Number(result.quantity);

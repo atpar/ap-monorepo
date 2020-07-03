@@ -57,4 +57,10 @@ abstract contract TermsRegistry {
         view
         virtual
         returns (ContractReference memory);
+
+    function getNextCyclicEvent(bytes32 assetId)
+        internal
+        view
+        virtual
+        returns (bytes32);
 }

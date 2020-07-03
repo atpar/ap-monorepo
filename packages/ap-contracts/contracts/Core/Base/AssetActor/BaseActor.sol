@@ -323,6 +323,20 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
                     IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
+            ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_2"
+            );
+            if (
+                contractReference_2._type == ContractReferenceType.MOC
+                && contractReference_2.role == ContractReferenceRole.UDL
+            ) {
+                (int256 quantity, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+                    contractReference_2.object,
+                    scheduleTime
+                );
+                if (isSet) return bytes32(quantity);
+            }
         } else if (eventType == EventType.RFD) {
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
                 assetId,
@@ -333,11 +347,11 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
                 (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = marketObjectRegistry.getDataPointOfMarketObject(
-                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
+                    contractReference_1.object,
                     scheduleTime
                 );
                 (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
-                    assetRegistry.getBytes32ValueForTermsAttribute(assetId, "contractReference_1_object"),
+                    contractReference_1.object,
                     assetRegistry.getUIntValueForForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {

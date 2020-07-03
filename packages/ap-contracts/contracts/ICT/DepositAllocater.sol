@@ -54,30 +54,35 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
 
         require(
             deposit.scheduledFor != uint256(0),
-            "Deposit.updateDepositAmount: DEPOSIT_DOES_NOT_EXIST"
+            "Deposit.signalAmountForDeposit: DEPOSIT_DOES_NOT_EXIST"
         );
 
         require(
             deposit.onlySignaled == true,
-            "Deposit.updateDepositAmount: SIGNALING_NOT_ENABLED"
+            "Deposit.signalAmountForDeposit: SIGNALING_NOT_ENABLED"
         );
 
         require(
             deposit.scheduledFor > now,
-            "Deposit.updateDepositAmount: DEPOSIT_IS_ALREADY_PROCESSED"
+            "Deposit.signalAmountForDeposit: DEPOSIT_IS_ALREADY_PROCESSED"
         );
 
         require(
-            balanceOfAt(msg.sender, deposit.scheduledFor) >= signalAmount,
-            "Deposit.updateSignaledAmountForDeposit: SIGNAL_AMOUNT_EXCEEDS_BALANCE"
+            totalAmountSignaledByHolder[msg.sender] <= balanceOfAt(msg.sender, block.timestamp),
+            "Deposit.signalAmountForDeposit: SIGNAL_AMOUNT_EXCEEDS_BALANCE"
         );
 
-        // mark deposit as signalled for by the holder
-        if (deposit.signaledAmounts[msg.sender] == 0 && signalAmount > 0) {
-            numberOfDepositsSignaledByHolder[msg.sender] = numberOfDepositsSignaledByHolder[msg.sender].add(1);
-        } else if (deposit.signaledAmounts[msg.sender] > 0 && signalAmount == 0) {
-            numberOfDepositsSignaledByHolder[msg.sender] = numberOfDepositsSignaledByHolder[msg.sender].sub(1);
+        // increment total amount of signaled by the holder comprising all deposits
+        if (signalAmount == 0) {
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deposit.signaledAmounts[msg.sender]);   
+        } else if (signalAmount < deposit.signaledAmounts[msg.sender]) {
+            uint256 deltaAmountSignaled = deposit.signaledAmounts[msg.sender].sub(signalAmount);
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deltaAmountSignaled);   
+        } else {
+            uint256 deltaAmountSignaled = signalAmount.sub(deposit.signaledAmounts[msg.sender]);
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].add(deltaAmountSignaled);   
         }
+
         // update total amount signaled for deposit
         deposit.totalAmountSignaled = deposit.totalAmountSignaled.sub(deposit.signaledAmounts[msg.sender]);        
         deposit.totalAmountSignaled = deposit.totalAmountSignaled.add(signalAmount);
@@ -137,6 +142,9 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
      
         deposit.claimed[payee] = true;
         deposit.claimedAmount = claim.add(deposit.claimedAmount);
+
+        // decrease total amount signaled by holder for all deposits by the holders signaled amount of the deposit 
+        totalAmountSignaledByHolder[payee] = totalAmountSignaledByHolder[payee].sub(deposit.signaledAmounts[payee]);
      
         if (claim > 0) {
             require(

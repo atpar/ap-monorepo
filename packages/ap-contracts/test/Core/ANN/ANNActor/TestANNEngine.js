@@ -1,8 +1,8 @@
 const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
 
-const { setupTestEnvironment } = require('../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot } = require('../../helper/blockchain');
-const { generateSchedule, ZERO_ADDRESS } = require('../../helper/utils');
+const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
+const { createSnapshot, revertToSnapshot } = require('../../../helper/blockchain');
+const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
 
 
 contract('ANNActor', (accounts) => {
@@ -25,7 +25,7 @@ contract('ANNActor', (accounts) => {
   });
 
   it('should initialize Asset with ContractType ANN', async () => {
-    const terms = (await getTestCases('ANN'))['20001']['terms'];
+    const terms = (await getTestCases('ANN'))['ann01']['terms'];
     const schedule = await generateSchedule(this.ANNEngineInstance, terms);
     const state = await this.ANNEngineInstance.computeInitialState(terms);
     const ownership = {

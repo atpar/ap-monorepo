@@ -10,6 +10,12 @@ const CEGRegistry = artifacts.require('CEGRegistry');
 const CERTFRegistry = artifacts.require('CERTFRegistry');
 const PAMRegistry = artifacts.require('PAMRegistry');
 
+const ANNEncoder = artifacts.require('ANNEncoder');
+const CECEncoder = artifacts.require('CECEncoder');
+const CEGEncoder = artifacts.require('CEGEncoder');
+const CERTFEncoder = artifacts.require('CERTFEncoder');
+const PAMEncoder = artifacts.require('PAMEncoder');
+
 const ANNActor = artifacts.require('ANNActor');
 const CECActor = artifacts.require('CECActor');
 const CEGActor = artifacts.require('CEGActor');
@@ -27,8 +33,6 @@ async function setupTestEnvironment (accounts) {
   const admin = accounts[0];
   const instances = {};
 
-  // PAMEngine.numberFormat = 'String';
-
   // ACTUS-Solidity
   instances.ANNEngineInstance = await ANNEngine.new();
   instances.CECEngineInstance = await CECEngine.new();
@@ -37,6 +41,16 @@ async function setupTestEnvironment (accounts) {
   instances.PAMEngineInstance = await PAMEngine.new();
 
   // Asset Registry
+  instances.ANNEncoderInstance = await ANNEncoder.new();
+  instances.CECEncoderInstance = await CECEncoder.new();
+  instances.CEGEncoderInstance = await CEGEncoder.new();
+  instances.CERTFEncoderInstance = await CERTFEncoder.new();
+  instances.PAMEncoderInstance = await PAMEncoder.new();
+  try { await ANNRegistry.link(instances.ANNEncoderInstance); } catch(error) {}
+  try { await CECRegistry.link(instances.CECEncoderInstance); } catch(error) {}
+  try { await CEGRegistry.link(instances.CEGEncoderInstance); } catch(error) {}
+  try { await CERTFRegistry.link(instances.CERTFEncoderInstance); } catch(error) {}
+  try { await PAMRegistry.link(instances.PAMEncoderInstance); } catch(error) {}
   instances.ANNRegistryInstance = await ANNRegistry.new();
   instances.CECRegistryInstance = await CECRegistry.new();
   instances.CEGRegistryInstance = await CEGRegistry.new();

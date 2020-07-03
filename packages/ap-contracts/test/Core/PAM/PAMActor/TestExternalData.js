@@ -53,7 +53,7 @@ contract('PAMActor', (accounts) => {
     this.assetId = tx.logs[0].args.assetId;
     this.state = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
 
-    this.resetRate = web3.utils.toWei('0'); // TODO: investigate overflow if set to non zero
+    this.resetRate = web3.utils.toWei('100'); // TODO: investigate overflow if set to non zero
 
     snapshot = await createSnapshot();
   });
@@ -76,7 +76,7 @@ contract('PAMActor', (accounts) => {
     await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
       this.terms.marketObjectCodeRateReset,
       eventTime,
-      this.resetRate
+      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
     );
         
     const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
@@ -90,7 +90,7 @@ contract('PAMActor', (accounts) => {
       this.terms,
       this.state,
       _event,
-      web3.utils.toHex(this.resetRate)
+      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
     );
 
     // compare results

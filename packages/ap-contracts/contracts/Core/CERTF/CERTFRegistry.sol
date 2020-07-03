@@ -2,6 +2,8 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
+import "@atpar/actus-solidity/contracts/Engines/CERTF/ICERTFEngine.sol";
+
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";
 import "./CERTFEncoder.sol";
@@ -150,5 +152,110 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         returns (ContractReference memory)
     {
         return assets[assetId].decodeAndGetContractReferenceValueForCERTFAttribute(attribute);
+    }
+
+    function getNextCyclicEvent(bytes32 assetId)
+        internal
+        view
+        override(TermsRegistry)
+        returns (bytes32)
+    {
+        Asset storage asset = assets[assetId];
+        CERTFTerms memory terms = asset.decodeAndGetCERTFTerms();
+
+        EventType nextEventType;
+        uint256 nextScheduleTimeOffset;
+
+        // CFD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CFD],
+                EventType.CFD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset < nextScheduleTimeOffset)
+                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // CPD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CPD],
+                EventType.CPD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // RFD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RFD],
+                EventType.RFD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // RPD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RPD],
+                EventType.RPD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // XD
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.XD],
+                EventType.XD
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        return encodeEvent(nextEventType, nextScheduleTimeOffset);
     }
 }

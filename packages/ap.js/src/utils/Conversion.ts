@@ -190,6 +190,41 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   contractReference_2: terms.contractReference_2
 });
 
+export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  couponType: terms.couponType,
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+  contractDealDate: terms.contractDealDate,
+  statusDate: terms.statusDate,
+  initialExchangeDate: terms.initialExchangeDate,
+  maturityDate: terms.maturityDate,
+  issueDate: terms.issueDate,
+  cycleAnchorDateOfRedemption: terms.cycleAnchorDateOfRedemption,
+  cycleAnchorDateOfTermination: terms.cycleAnchorDateOfTermination,
+  cycleAnchorDateOfCoupon: terms.cycleAnchorDateOfCoupon,
+  nominalPrice: terms.nominalPrice,
+  issuePrice: terms.issuePrice,
+  quantity: terms.quantity,
+  denominationRatio: terms.denominationRatio,
+  couponRate: terms.couponRate,
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+  settlementPeriod: terms.settlementPeriod,
+  fixingPeriod: terms.fixingPeriod,
+  exercisePeriod: terms.exercisePeriod,
+  cycleOfRedemption: terms.cycleOfRedemption,
+  cycleOfTermination: terms.cycleOfTermination,
+  cycleOfCoupon: terms.cycleOfCoupon,
+  contractReference_1: terms.contractReference_1,
+  contractReference_2: terms.contractReference_2
+});
+
 export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   contractType: terms.contractType,
   calendar: terms.calendar,

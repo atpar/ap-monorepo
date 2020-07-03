@@ -24,33 +24,29 @@ describe('Contracts', (): void => {
   it('should instantiate ContractsAPI', async (): Promise<void> => {
     contracts = new Contracts(web3, addressBook);
 
-    // const initializedAddresses = {
-    //   ANNActor: contracts.annActor.options.address,
-    //   // ANNEncoder: contracts.annEncoder.options.address,
-    //   ANNEngine: contracts.annEngine.options.address,
-    //   ANNRegistry: contracts.annRegistry.options.address,
-    //   CECActor: contracts.cecActor.options.address,
-    //   // CECEncoder: contracts.cecEncoder.options.address,
-    //   CECEngine: contracts.cecEngine.options.address,
-    //   CECRegistry: contracts.cecRegistry.options.address,
-    //   CEGActor: contracts.cegActor.options.address,
-    //   // CEGEncoder: contracts.cegEncoder.options.address,
-    //   CEGEngine: contracts.cegEngine.options.address,
-    //   CEGRegistry: contracts.cegRegistry.options.address,
-    //   Custodian: contracts.custodian.options.address,
-    //   FDTFactory: contracts.fdtFactory.options.address,
-    //   MarketObjectRegistry: contracts.marketObjectRegistry.options.address,
-    //   PAMActor: contracts.pamActor.options.address,
-    //   // PAMEncoder: contracts.pamEncoder.options.address,
-    //   PAMEngine: contracts.pamEngine.options.address,
-    //   PAMRegistry: contracts.pamRegistry.options.address,
-    //   // ScheduleEncoder: contracts.scheduleEncoder.options.address,
-    //   SignedMath: contracts.signedMath.options.address,
-    //   // StateEncoder: contracts.stateEncoder.options.address,
-    // }
+    const initializedAddresses = {
+      ANNActor: contracts.annActor.options.address,
+      ANNEngine: contracts.annEngine.options.address,
+      ANNRegistry: contracts.annRegistry.options.address,
+      CECActor: contracts.cecActor.options.address,
+      CECEngine: contracts.cecEngine.options.address,
+      CECRegistry: contracts.cecRegistry.options.address,
+      CEGActor: contracts.cegActor.options.address,
+      CEGEngine: contracts.cegEngine.options.address,
+      CEGRegistry: contracts.cegRegistry.options.address,
+      CERTFActor: contracts.certfActor.options.address,
+      CERTFEngine: contracts.certfEngine.options.address,
+      CERTFRegistry: contracts.certfRegistry.options.address,
+      Custodian: contracts.custodian.options.address,
+      FDTFactory: contracts.fdtFactory.options.address,
+      MarketObjectRegistry: contracts.marketObjectRegistry.options.address,
+      PAMActor: contracts.pamActor.options.address,
+      PAMEngine: contracts.pamEngine.options.address,
+      PAMRegistry: contracts.pamRegistry.options.address,
+    }
 
     expect(contracts instanceof Contracts).toBe(true);
-    // expect(initializedAddresses).toEqual(addressBook);
+    expect(initializedAddresses).toEqual(addressBook);
   });
 
   it('should return instance of an Engine contract', async (): Promise<void> => {

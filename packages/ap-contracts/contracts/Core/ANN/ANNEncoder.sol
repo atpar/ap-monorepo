@@ -1,5 +1,6 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
+pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
@@ -18,7 +19,7 @@ library ANNEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetANNTerms(Asset storage asset, ANNTerms memory terms) internal {
+    function encodeAndSetANNTerms(Asset storage asset, ANNTerms memory terms) external {
         storeInPackedTerms(
             asset,
             "enums",
@@ -128,7 +129,7 @@ library ANNEncoder {
     /**
      * @dev Decode and loads ANNTerms
      */
-    function decodeAndGetANNTerms(Asset storage asset) internal view returns (ANNTerms memory) {
+    function decodeAndGetANNTerms(Asset storage asset) external view returns (ANNTerms memory) {
         return ANNTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
@@ -220,7 +221,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetEnumValueForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint8)
     {
@@ -248,7 +249,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetAddressValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (address)
     {
@@ -262,7 +263,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetBytes32ValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (bytes32)
     {
@@ -270,7 +271,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetUIntValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint256)
     {
@@ -278,7 +279,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetIntValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (int256)
     {
@@ -286,7 +287,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetPeriodValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IP memory)
     {
@@ -305,7 +306,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetCycleValueForForANNAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IPS memory)
     {
@@ -328,7 +329,7 @@ library ANNEncoder {
     }
 
     function decodeAndGetContractReferenceValueForANNAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
-        internal
+        external
         pure
         returns (ContractReference memory)
     {

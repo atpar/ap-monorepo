@@ -285,7 +285,6 @@ export class CERTFRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -293,7 +292,6 @@ export class CERTFRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -348,6 +346,12 @@ export class CERTFRegistry extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -392,7 +396,6 @@ export class CERTFRegistry extends Contract {
       dayCountConvention: string;
       businessDayConvention: string;
       endOfMonthConvention: string;
-      contractPerformance: string;
       couponType: string;
       currency: string;
       settlementCurrency: string;
@@ -400,7 +403,6 @@ export class CERTFRegistry extends Contract {
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
-      nonPerformingDate: string;
       issueDate: string;
       cycleAnchorDateOfRedemption: string;
       cycleAnchorDateOfTermination: string;
@@ -424,6 +426,12 @@ export class CERTFRegistry extends Contract {
         _type: string;
         role: string;
       };
+      contractReference_2: {
+        object: string;
+        object2: string;
+        _type: string;
+        role: string;
+      };
     }>;
 
     setTerms(
@@ -435,7 +443,6 @@ export class CERTFRegistry extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -443,7 +450,6 @@ export class CERTFRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -493,6 +499,12 @@ export class CERTFRegistry extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -554,18 +566,6 @@ export class CERTFRegistry extends Contract {
       0: string;
       1: string;
       2: string;
-    }>;
-    IncrementedScheduleIndex: ContractEvent<{
-      assetId: string;
-      nextScheduleIndex: string;
-      0: string;
-      1: string;
-    }>;
-    OwnershipTransferred: ContractEvent<{
-      previousOwner: string;
-      newOwner: string;
-      0: string;
-      1: string;
     }>;
     RegisteredAsset: ContractEvent<string>;
     RevokedAccess: ContractEvent<{

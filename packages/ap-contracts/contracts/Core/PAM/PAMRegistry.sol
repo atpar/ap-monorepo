@@ -2,6 +2,8 @@
 pragma solidity ^0.6.10;
 pragma experimental ABIEncoderV2;
 
+import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
+
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";
 import "./PAMEncoder.sol";
@@ -151,5 +153,92 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry, Whitelist {
         returns (ContractReference memory)
     {
         return assets[assetId].decodeAndGetContractReferenceValueForPAMAttribute(attribute);
+    }
+
+    function getNextCyclicEvent(bytes32 assetId)
+        internal
+        view
+        override(TermsRegistry)
+        returns (bytes32)
+    {
+        Asset storage asset = assets[assetId];
+        PAMTerms memory terms = asset.decodeAndGetPAMTerms();
+
+        EventType nextEventType;
+        uint256 nextScheduleTimeOffset;
+
+        // IP
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IP],
+                EventType.IP
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset < nextScheduleTimeOffset)
+                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }
+        }
+
+        // IPCI
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IPCI],
+                EventType.IPCI
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // FP
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.FP],
+                EventType.FP
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        // SC
+        {
+            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+                terms,
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.SC],
+                EventType.SC
+            ));
+
+            if (
+                (nextScheduleTimeOffset == 0)
+                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
+                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextEventType = eventType;
+            }        
+        }
+
+        return encodeEvent(nextEventType, nextScheduleTimeOffset);
     }
 }

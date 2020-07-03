@@ -78,9 +78,9 @@ export class DepositAllocater extends Contract {
 
     name(): TransactionObject<string>;
 
-    numberOfDepositsSignaledByHolder(arg0: string): TransactionObject<string>;
-
     symbol(): TransactionObject<string>;
+
+    totalAmountSignaledByHolder(arg0: string): TransactionObject<string>;
 
     totalSupply(): TransactionObject<string>;
 

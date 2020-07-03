@@ -38,7 +38,7 @@ export class DepositAllocaterStorage extends Contract {
       5: boolean;
     }>;
 
-    numberOfDepositsSignaledByHolder(arg0: string): TransactionObject<string>;
+    totalAmountSignaledByHolder(arg0: string): TransactionObject<string>;
   };
   events: {
     allEvents: (
