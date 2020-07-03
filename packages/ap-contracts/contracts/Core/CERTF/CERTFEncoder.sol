@@ -1,5 +1,6 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
+pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
@@ -18,7 +19,7 @@ library CERTFEncoder {
      * @notice All non zero values of the overwrittenTerms object are stored.
      * It does not check if overwrittenAttributesMap actually marks attribute as overwritten.
      */
-    function encodeAndSetCERTFTerms(Asset storage asset, CERTFTerms memory terms) internal {
+    function encodeAndSetCERTFTerms(Asset storage asset, CERTFTerms memory terms) external {
         storeInPackedTerms(
             asset,
             "enums",
@@ -28,8 +29,7 @@ library CERTFEncoder {
             bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(terms.contractPerformance))) << 200 |
-            bytes32(uint256(uint8(terms.couponType))) << 192
+            bytes32(uint256(uint8(terms.couponType))) << 200
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -39,7 +39,6 @@ library CERTFEncoder {
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
-        storeInPackedTerms(asset, "nonPerformingDate", bytes32(terms.nonPerformingDate));
         storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
         storeInPackedTerms(asset, "cycleAnchorDateOfRedemption", bytes32(terms.cycleAnchorDateOfRedemption));
         storeInPackedTerms(asset, "cycleAnchorDateOfTermination", bytes32(terms.cycleAnchorDateOfTermination));
@@ -114,13 +113,6 @@ library CERTFEncoder {
 
         storeInPackedTerms(
             asset,
-            "contractReference_1_type_role",
-            bytes32(uint256(terms.contractReference_1._type)) << 16 |
-            bytes32(uint256(terms.contractReference_1.role)) << 8
-        );
-
-        storeInPackedTerms(
-            asset,
             "contractReference_1_object",
             terms.contractReference_1.object
         );
@@ -129,12 +121,35 @@ library CERTFEncoder {
             "contractReference_1_object2",
             terms.contractReference_1.object2
         );
+        storeInPackedTerms(
+            asset,
+            "contractReference_1_type_role",
+            bytes32(uint256(terms.contractReference_1._type)) << 16 |
+            bytes32(uint256(terms.contractReference_1.role)) << 8
+        );
+
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_object",
+            terms.contractReference_2.object
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_object2",
+            terms.contractReference_2.object2
+        );
+        storeInPackedTerms(
+            asset,
+            "contractReference_2_type_role",
+            bytes32(uint256(terms.contractReference_2._type)) << 16 |
+            bytes32(uint256(terms.contractReference_2.role)) << 8
+        );
     }
 
     /**
      * @dev Decode and loads CERTFTerms
      */
-    function decodeAndGetCERTFTerms(Asset storage asset) internal view returns (CERTFTerms memory) {
+    function decodeAndGetCERTFTerms(Asset storage asset) external view returns (CERTFTerms memory) {
         return CERTFTerms(
             ContractType(uint8(uint256(asset.packedTerms["enums"] >> 248))),
             Calendar(uint8(uint256(asset.packedTerms["enums"] >> 240))),
@@ -142,8 +157,7 @@ library CERTFEncoder {
             DayCountConvention(uint8(uint256(asset.packedTerms["enums"] >> 224))),
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
-            ContractPerformance(uint8(uint256(asset.packedTerms["enums"] >> 200))),
-            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
+            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 200))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
@@ -152,7 +166,6 @@ library CERTFEncoder {
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
-            uint256(asset.packedTerms["nonPerformingDate"]),
             uint256(asset.packedTerms["issueDate"]),
             uint256(asset.packedTerms["cycleAnchorDateOfRedemption"]),
             uint256(asset.packedTerms["cycleAnchorDateOfTermination"]),
@@ -212,12 +225,18 @@ library CERTFEncoder {
                 asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
+            ),
+            ContractReference(
+                asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             )
         );
     }
 
     function decodeAndGetEnumValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint8)
     {
@@ -233,17 +252,15 @@ library CERTFEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 216));
         } else if (attributeKey == bytes32("endOfMonthConvention")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
-        } else if (attributeKey == bytes32("contractPerformance")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 200));
         } else if (attributeKey == bytes32("couponType")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 192));
+            return uint8(uint256(asset.packedTerms["enums"] >> 200));
         } else {
             return uint8(0);
         }
     }
 
     function decodeAndGetAddressValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (address)
     {
@@ -257,7 +274,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetBytes32ValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (bytes32)
     {
@@ -265,7 +282,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetUIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (uint256)
     {
@@ -273,7 +290,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (int256)
     {
@@ -281,7 +298,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetPeriodValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IP memory)
     {
@@ -303,7 +320,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetCycleValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (IPS memory)
     {
@@ -324,7 +341,7 @@ library CERTFEncoder {
     }
 
     function decodeAndGetContractReferenceValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
-        internal
+        external
         view
         returns (ContractReference memory)
     {
@@ -334,6 +351,13 @@ library CERTFEncoder {
                 asset.packedTerms["contractReference_1_object2"],
                 ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
                 ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
+            );
+        } else if (attributeKey == bytes32("contractReference_2")) {
+            return ContractReference(
+                asset.packedTerms["contractReference_2_object"],
+                asset.packedTerms["contractReference_2_object2"],
+                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
+                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
             );
         } else {
             return ContractReference(

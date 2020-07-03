@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-contracts",
-  "version": "0.4.0-beta.5",
+  "version": "0.4.0-beta.8",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -29,8 +29,8 @@
   },
   "scripts": {
     "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
-    "compile:all": "truffle compile --all",
-    "compile": "truffle compile",
+    "compile:all": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile --all",
+    "compile": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
     "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
     "generate-docs": "./scripts/generate-docs.sh",
@@ -38,10 +38,10 @@
     "lint": "solhint contracts/**/*.sol",
     "lint:fix": "solhint contracts/**/*.sol --fix",
     "migrate:ap-chain": "./scripts/setup-ap-chain.sh",
-    "migrate:goerli": "truffle migrate --network goerli",
-    "migrate:kovan": "truffle migrate --network kovan",
-    "migrate:rinkeby": "truffle migrate --network rinkeby",
-    "migrate:ropsten": "truffle migrate --network ropsten",
+    "migrate:goerli": "node --max-old-space-size=4096 ./node_modules/.bin/truffle migrate --network goerli",
+    "migrate:kovan": "node --max-old-space-size=4096 ./node_modules/.bin/truffle migrate --network kovan",
+    "migrate:rinkeby": "node --max-old-space-size=4096 ./node_modules/.bin/truffle migrate --network rinkeby",
+    "migrate:ropsten": "node --max-old-space-size=4096 ./node_modules/.bin/truffle migrate --network ropsten",
     "migrate:testnets": "npm run migrate:goerli && npm run migrate:kovan && npm run migrate:rinkeby && npm run migrate:ropsten",
     "test": "buidler test"
   },
@@ -49,7 +49,7 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "@atpar/actus-solidity": "0.4.0-beta.5",
+    "@atpar/actus-solidity": "0.4.0-beta.8",
     "openzeppelin-solidity": "^3.0.2",
     "truffle-hdwallet-provider": "^1.0.9"
   },
@@ -67,7 +67,7 @@
     "openzeppelin-test-helpers": "^0.1.2",
     "solhint": "^3.0.0",
     "solidity-coverage": "^0.7.4",
-    "truffle": "5.1.20",
+    "truffle": "5.1.32",
     "typechain": "^1.0.5",
     "typechain-target-web3-v1": "^1.0.4",
     "web3": "1.2.4"

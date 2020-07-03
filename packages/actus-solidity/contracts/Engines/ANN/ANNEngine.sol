@@ -287,6 +287,78 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
     }
 
     /**
+     * @notice Computes a schedule segment of cyclic contract events based on the contract terms
+     * and the specified timestamps.
+     * @param terms terms of the contract
+     * @param lastScheduleTime last occurrence of cyclic event
+     * @param eventType eventType of the cyclic schedule
+     * @return event schedule segment
+     */
+    function computeNextCyclicEvent(
+        ANNTerms calldata terms,
+        uint256 lastScheduleTime,
+        EventType eventType
+    )
+        external
+        pure
+        override
+        returns(bytes32)
+    {
+        // IP
+        if (eventType == EventType.IP) {
+            // interest payment related (starting with PRANX interest is paid following the PR schedule)
+            if (
+                terms.cycleOfInterestPayment.isSet == true && terms.cycleAnchorDateOfInterestPayment != 0) {
+                uint256 nextInterestPaymentDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfInterestPayment
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfInterestPayment, lastScheduleTime);
+                if (nextInterestPaymentDate == 0) return bytes32(0);
+                if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
+                return encodeEvent(EventType.IP, nextInterestPaymentDate);
+            }
+        }
+
+        // IPCI
+        if (eventType == EventType.IPCI) {
+            if (
+                terms.cycleOfInterestPayment.isSet == true
+                && terms.cycleAnchorDateOfInterestPayment != 0
+                && terms.capitalizationEndDate != 0
+            ) {
+                IPS memory cycleOfInterestCapitalization = terms.cycleOfInterestPayment;
+                cycleOfInterestCapitalization.s = S.SHORT;
+                uint256 nextInterestCapitalizationDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfInterestPayment
+                    : computeNextCycleDateFromPrecedingDate(cycleOfInterestCapitalization, lastScheduleTime);
+                if (nextInterestCapitalizationDate == 0) return bytes32(0);
+                return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
+            }
+        }
+
+        // fees
+        if (eventType == EventType.FP) {
+            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
+                uint256 nextFeeDate = (lastScheduleTime == 0)
+                    ? terms.cycleAnchorDateOfFee
+                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfFee, lastScheduleTime);
+                if (nextFeeDate == 0) return bytes32(0);
+                return encodeEvent(EventType.FP, nextFeeDate);
+            }
+        }
+
+        // principal redemption
+        if (eventType == EventType.PR) {
+            uint256 nextPrincipalRedemptionDate = (lastScheduleTime == 0)
+                ? terms.cycleAnchorDateOfPrincipalRedemption
+                : computeNextCycleDateFromPrecedingDate(terms.cycleOfPrincipalRedemption, lastScheduleTime);
+            if (nextPrincipalRedemptionDate == 0) return bytes32(0);
+            return encodeEvent(EventType.PR, nextPrincipalRedemptionDate);
+        }
+
+        return bytes32(0);
+    }
+
+    /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled

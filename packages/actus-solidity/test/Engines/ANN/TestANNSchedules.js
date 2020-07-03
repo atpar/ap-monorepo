@@ -103,8 +103,8 @@ contract('ANNEngine', () => {
     return evaluatedSchedule;
   };
 
-  it('should yield the expected evaluated contract schedule for test ANN20001', async () => {
-    const testDetails = this.testCases['20001'];
+  it('should yield the expected evaluated contract schedule for test ann01', async () => {
+    const testDetails = this.testCases['ann01'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
@@ -118,29 +118,29 @@ contract('ANNEngine', () => {
   //   compareTestResults(evaluatedSchedule, testDetails['results']);
   // });
 
-  it('should yield the expected evaluated contract schedule for test ANN20003', async () => {
-    const testDetails = this.testCases['20003'];
+  it('should yield the expected evaluated contract schedule for test ann03', async () => {
+    const testDetails = this.testCases['ann03'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  it('should yield the expected evaluated contract schedule for test ANN20004', async () => {
-    const testDetails = this.testCases['20004'];
+  it('should yield the expected evaluated contract schedule for test ann04', async () => {
+    const testDetails = this.testCases['ann04'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  it('should yield the expected evaluated contract schedule for test ANN20005', async () => {
-    const testDetails = this.testCases['20005'];
+  it('should yield the expected evaluated contract schedule for test ann05', async () => {
+    const testDetails = this.testCases['ann05'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  it('should yield the expected evaluated contract schedule for test ANN20006', async () => {
-    const testDetails = this.testCases['20006'];
+  it('should yield the expected evaluated contract schedule for test ann06', async () => {
+    const testDetails = this.testCases['ann06'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
@@ -311,15 +311,15 @@ contract('ANNEngine', () => {
   });
   */
 
-  it('should yield the expected evaluated contract schedule for test ANN20031', async () => {
-    const testDetails = this.testCases['20031'];
+  it('should yield the expected evaluated contract schedule for test ann31', async () => {
+    const testDetails = this.testCases['ann31'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
-  it('should yield the expected evaluated contract schedule for test ANN20032', async () => {
-    const testDetails = this.testCases['20032'];
+  it('should yield the expected evaluated contract schedule for test ann32', async () => {
+    const testDetails = this.testCases['ann32'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);

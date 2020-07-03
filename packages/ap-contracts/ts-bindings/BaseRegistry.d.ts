@@ -320,12 +320,6 @@ export class BaseRegistry extends Contract {
       1: string;
       2: string;
     }>;
-    IncrementedScheduleIndex: ContractEvent<{
-      assetId: string;
-      nextScheduleIndex: string;
-      0: string;
-      1: string;
-    }>;
     RegisteredAsset: ContractEvent<string>;
     RevokedAccess: ContractEvent<{
       assetId: string;

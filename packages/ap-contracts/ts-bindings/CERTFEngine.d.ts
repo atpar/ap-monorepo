@@ -71,7 +71,6 @@ export class CERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -79,7 +78,6 @@ export class CERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -129,6 +127,12 @@ export class CERTFEngine extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -190,7 +194,6 @@ export class CERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -198,7 +201,6 @@ export class CERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -253,6 +255,12 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       state: {
         contractPerformance: number | string;
@@ -287,7 +295,6 @@ export class CERTFEngine extends Contract {
       dayCountConvention: number | string;
       businessDayConvention: number | string;
       endOfMonthConvention: number | string;
-      contractPerformance: number | string;
       couponType: number | string;
       currency: string;
       settlementCurrency: string;
@@ -295,7 +302,6 @@ export class CERTFEngine extends Contract {
       statusDate: number | string;
       initialExchangeDate: number | string;
       maturityDate: number | string;
-      nonPerformingDate: number | string;
       issueDate: number | string;
       cycleAnchorDateOfRedemption: number | string;
       cycleAnchorDateOfTermination: number | string;
@@ -346,6 +352,12 @@ export class CERTFEngine extends Contract {
         _type: number | string;
         role: number | string;
       };
+      contractReference_2: {
+        object: string | number[];
+        object2: string | number[];
+        _type: number | string;
+        role: number | string;
+      };
     }): TransactionObject<{
       contractPerformance: string;
       statusDate: string;
@@ -377,7 +389,6 @@ export class CERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -385,7 +396,6 @@ export class CERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -435,6 +445,12 @@ export class CERTFEngine extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;
@@ -453,7 +469,6 @@ export class CERTFEngine extends Contract {
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -461,7 +476,6 @@ export class CERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -516,22 +530,26 @@ export class CERTFEngine extends Contract {
           _type: number | string;
           role: number | string;
         };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
       },
       segmentStart: number | string,
       segmentEnd: number | string,
       eventType: number | string
     ): TransactionObject<string[]>;
 
-    isEventScheduled(
-      arg0: string | number[],
-      arg1: {
+    computeNextCyclicEvent(
+      terms: {
         contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
         dayCountConvention: number | string;
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
-        contractPerformance: number | string;
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
@@ -539,7 +557,6 @@ export class CERTFEngine extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
-        nonPerformingDate: number | string;
         issueDate: number | string;
         cycleAnchorDateOfRedemption: number | string;
         cycleAnchorDateOfTermination: number | string;
@@ -589,6 +606,93 @@ export class CERTFEngine extends Contract {
           isSet: boolean;
         };
         contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      lastScheduleTime: number | string,
+      eventType: number | string
+    ): TransactionObject<string>;
+
+    isEventScheduled(
+      arg0: string | number[],
+      arg1: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        couponType: number | string;
+        currency: string;
+        settlementCurrency: string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        issueDate: number | string;
+        cycleAnchorDateOfRedemption: number | string;
+        cycleAnchorDateOfTermination: number | string;
+        cycleAnchorDateOfCoupon: number | string;
+        nominalPrice: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        denominationRatio: number | string;
+        couponRate: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        settlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        fixingPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        exercisePeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfRedemption: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfTermination: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfCoupon: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
           object: string | number[];
           object2: string | number[];
           _type: number | string;

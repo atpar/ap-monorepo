@@ -197,17 +197,13 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   dayCountConvention: terms.dayCountConvention,
   businessDayConvention: terms.businessDayConvention,
   endOfMonthConvention: terms.endOfMonthConvention,
-  contractPerformance: terms.contractPerformance,
   couponType: terms.couponType,
-  
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
-  
   contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
-  nonPerformingDate: terms.nonPerformingDate,
   issueDate: terms.issueDate,
   cycleAnchorDateOfRedemption: terms.cycleAnchorDateOfRedemption,
   cycleAnchorDateOfTermination: terms.cycleAnchorDateOfTermination,
@@ -224,12 +220,12 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   settlementPeriod: terms.settlementPeriod,
   fixingPeriod: terms.fixingPeriod,
   exercisePeriod: terms.exercisePeriod,
-  
+
   cycleOfRedemption: terms.cycleOfRedemption,
   cycleOfTermination: terms.cycleOfTermination,
   cycleOfCoupon: terms.cycleOfCoupon,
-
   contractReference_1: terms.contractReference_1,
+  contractReference_2: terms.contractReference_2
 });
 
 export const extractPAMTerms = (terms: Terms): PAMTerms => ({

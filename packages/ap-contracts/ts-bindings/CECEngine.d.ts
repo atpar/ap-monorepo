@@ -306,6 +306,38 @@ export class CECEngine extends Contract {
       arg3: number | string
     ): TransactionObject<string[]>;
 
+    computeNextCyclicEvent(
+      arg0: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        creditEventTypeCovered: number | string;
+        feeBasis: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        feeRate: number | string;
+        coverageOfCreditEnhancement: number | string;
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      arg1: number | string,
+      arg2: number | string
+    ): TransactionObject<string>;
+
     isEventScheduled(
       arg0: string | number[],
       arg1: {

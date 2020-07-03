@@ -266,6 +266,38 @@ export class ICECEngine extends Contract {
       eventType: number | string
     ): TransactionObject<string[]>;
 
+    computeNextCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        creditEventTypeCovered: number | string;
+        feeBasis: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        notionalPrincipal: number | string;
+        feeRate: number | string;
+        coverageOfCreditEnhancement: number | string;
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      lastScheduleTime: number | string,
+      eventType: number | string
+    ): TransactionObject<string>;
+
     isEventScheduled(
       _event: string | number[],
       terms: {
