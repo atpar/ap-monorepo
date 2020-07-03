@@ -10,14 +10,6 @@ import "../Core/Core.sol";
 */
 contract TestCore is Core {
 
-    function _performanceIndicator(ContractPerformance contractPerformance)
-        public
-        pure
-        returns (int8)
-    {
-        return performanceIndicator(contractPerformance);
-    }
-
     function _roleSign(ContractRole contractRole)
         public
         pure

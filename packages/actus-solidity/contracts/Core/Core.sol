@@ -6,7 +6,6 @@ import "./ACTUSTypes.sol";
 import "./ACTUSConstants.sol";
 import "./Utils/Utils.sol";
 import "./Conventions/BusinessDayConventions.sol";
-import "./Conventions/ContractDefaultConventions.sol";
 import "./Conventions/ContractRoleConventions.sol";
 import "./Conventions/DayCountConventions.sol";
 import "./Conventions/EndOfMonthConventions.sol";
@@ -20,7 +19,6 @@ import "./Conventions/EndOfMonthConventions.sol";
 contract Core is
     ACTUSConstants,
     BusinessDayConventions,
-    ContractDefaultConventions,
     ContractRoleConventions,
     DayCountConventions,
     EndOfMonthConventions,
