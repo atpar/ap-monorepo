@@ -182,12 +182,10 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index;
 
+        // IP
+        // interest payment related (starting with PRANX interest is paid following the PR schedule)
         if (eventType == EventType.IP) {
-            // interest payment related (starting with PRANX interest is paid following the PR schedule)
-            if (
-                terms.cycleOfInterestPayment.isSet == true
-                && terms.cycleAnchorDateOfInterestPayment != 0
-            ) {
+            if (terms.cycleAnchorDateOfInterestPayment != 0) {
                 uint256[MAX_CYCLE_SIZE] memory interestPaymentSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.maturityDate,
@@ -206,16 +204,11 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             }
         }
 
+        // IPCI
         if (eventType == EventType.IPCI) {
-            // IPCI
-            if (
-                terms.cycleOfInterestPayment.isSet == true
-                && terms.cycleAnchorDateOfInterestPayment != 0
-                && terms.capitalizationEndDate != 0
-            ) {
+            if (terms.cycleAnchorDateOfInterestPayment != 0 && terms.capitalizationEndDate != 0) {
                 IPS memory cycleOfInterestCapitalization = terms.cycleOfInterestPayment;
                 cycleOfInterestCapitalization.s = S.SHORT;
-
                 uint256[MAX_CYCLE_SIZE] memory interestPaymentSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.capitalizationEndDate,
@@ -233,9 +226,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             }
         }
 
+        // rate reset
         if (eventType == EventType.RR) {
-            // rate reset
-            if (terms.cycleOfRateReset.isSet == true && terms.cycleAnchorDateOfRateReset != 0) {
+            if (terms.cycleAnchorDateOfRateReset != 0) {
                 uint256[MAX_CYCLE_SIZE] memory rateResetSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRateReset,
                     terms.maturityDate,
@@ -254,9 +247,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             // ... nextRateReset
         }
 
+        // fees
         if (eventType == EventType.FP) {
-            // fees
-            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
+            if (terms.cycleAnchorDateOfFee != 0) {
                 uint256[MAX_CYCLE_SIZE] memory feeSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfFee,
                     terms.maturityDate,
@@ -274,11 +267,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             }
         }
 
+        // scaling
         if (eventType == EventType.SC) {
-            // scaling
-            if ((terms.scalingEffect != ScalingEffect._000)
-                && terms.cycleAnchorDateOfScalingIndex != 0
-            ) {
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
                 uint256[MAX_CYCLE_SIZE] memory scalingSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfScalingIndex,
                     terms.maturityDate,
@@ -323,64 +314,71 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         override
         returns(bytes32)
     {
+        // IP
+        // interest payment related (starting with PRANX interest is paid following the PR schedule)
         if (eventType == EventType.IP) {
-            // interest payment related (starting with PRANX interest is paid following the PR schedule)
             if (terms.cycleOfInterestPayment.isSet == true && terms.cycleAnchorDateOfInterestPayment != 0) {
-                uint256 nextInterestPaymentDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfInterestPayment
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfInterestPayment, lastScheduleTime);
+                uint256 nextInterestPaymentDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfInterestPayment,
+                    terms.cycleAnchorDateOfInterestPayment,
+                    lastScheduleTime
+                );
                 if (nextInterestPaymentDate == 0) return bytes32(0);
                 if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
                 return encodeEvent(EventType.IP, nextInterestPaymentDate);
             }
         }
 
+        // IPCI
         if (eventType == EventType.IPCI) {
-            // IPCI
-            if (
-                terms.cycleOfInterestPayment.isSet == true
-                && terms.cycleAnchorDateOfInterestPayment != 0
-                && terms.capitalizationEndDate != 0
-            ) {
+            if (terms.cycleAnchorDateOfInterestPayment != 0 && terms.capitalizationEndDate != 0) {
                 IPS memory cycleOfInterestCapitalization = terms.cycleOfInterestPayment;
                 cycleOfInterestCapitalization.s = S.SHORT;
-                uint256 nextInterestCapitalizationDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfInterestPayment
-                    : computeNextCycleDateFromPrecedingDate(cycleOfInterestCapitalization, lastScheduleTime);
+                uint256 nextInterestCapitalizationDate = computeNextCycleDateFromPrecedingDate(
+                    cycleOfInterestCapitalization,
+                    terms.cycleAnchorDateOfInterestPayment,
+                    lastScheduleTime
+                );
                 if (nextInterestCapitalizationDate == 0) return bytes32(0);
                 return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
             }
         }
 
+        // rate reset
         if (eventType == EventType.RR) {
-            // rate reset
-            if (terms.cycleOfRateReset.isSet == true && terms.cycleAnchorDateOfRateReset != 0) {
-                uint256 nextRateResetDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfRateReset
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRateReset, lastScheduleTime);
+            if (terms.cycleAnchorDateOfRateReset != 0) {
+                uint256 nextRateResetDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRateReset,
+                    terms.cycleAnchorDateOfRateReset,
+                    lastScheduleTime
+                );
                 if (nextRateResetDate == 0) return bytes32(0);
                 return encodeEvent(EventType.RR, nextRateResetDate);
             }
             // ... nextRateReset
         }
 
+        // fees
         if (eventType == EventType.FP) {
-            // fees
-            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
-                uint256 nextFeeDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfFee
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfFee, lastScheduleTime);
+            if (terms.cycleAnchorDateOfFee != 0) {
+                uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfFee,
+                    terms.cycleAnchorDateOfFee,
+                    lastScheduleTime
+                );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
             }
         }
 
+        // scaling
         if (eventType == EventType.SC) {
-            // scaling
             if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
-                uint256 nextScalingDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfScalingIndex
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfScalingIndex, lastScheduleTime);
+                uint256 nextScalingDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfScalingIndex,
+                    terms.cycleAnchorDateOfScalingIndex,
+                    lastScheduleTime
+                );
                 if (nextScalingDate == 0) return bytes32(0);
                 return encodeEvent(EventType.SC, nextScalingDate);
             }

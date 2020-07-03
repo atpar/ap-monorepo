@@ -130,15 +130,14 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
      */
     function computeNextCycleDateFromPrecedingDate(
         IPS memory cycle,
+        uint256 anchorDate,
         uint256 precedingDate
     )
         internal
         pure
         returns (uint256)
     {
-        if (cycle.isSet == false) {
-            return 0;
-        }
+        if (cycle.isSet == false || precedingDate == 0) return anchorDate;
 
         return getNextCycleDate(cycle, precedingDate, 1);
     }
