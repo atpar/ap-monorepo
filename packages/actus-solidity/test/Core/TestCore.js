@@ -8,13 +8,6 @@ contract('Core', () => {
     this.TestCore = await TestCore.new();
   });
 
-  it('should test ContractDefaultConvention', async () => {
-    assert.equal(await this.TestCore._performanceIndicator(0), 1); // PF
-    assert.equal(await this.TestCore._performanceIndicator(1), 1); // DL
-    assert.equal(await this.TestCore._performanceIndicator(2), 1); // DQ
-    assert.equal(await this.TestCore._performanceIndicator(3), 0); // DF
-  });
-
   it('should test ContractRoleConvention', async () => {
     assert.equal(await this.TestCore._roleSign(0), 1); // RPA
     assert.equal(await this.TestCore._roleSign(1), -1); // RPL
