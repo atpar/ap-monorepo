@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
 contract ProxyFactory {
     using Address for address;
 
-    event NewEip1167Proxy(address addr, address logic, uint256 salt);
+    event NewEip1167Proxy(address addr, address logic, address deployer, uint256 salt);
 
     /**
      * @dev `create2` a new EIP-1167 proxi instance
@@ -44,6 +44,6 @@ contract ProxyFactory {
                 salt
             )
         }
-        emit NewEip1167Proxy(newAddr, logic, salt);
+        emit NewEip1167Proxy(newAddr, logic, address(this), salt);
     }
 }
