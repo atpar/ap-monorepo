@@ -1,13 +1,13 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.11;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "./FundsDistributionToken.sol";
 import "./IFundsDistributionToken.sol";
+import "./IInitializableFDT.sol";
 
-
-contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable {
+contract VanillaFDT is IFundsDistributionToken, IInitializableFDT, FundsDistributionToken, OwnableUpgradeSafe {
 
     using SafeMathUint for uint256;
     using SafeMathInt for int256;
@@ -25,26 +25,6 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
             "VanillaFDT.onlyFundsToken: UNAUTHORIZED_SENDER"
         );
         _;
-    }
-
-    constructor(
-        string memory name,
-        string memory symbol,
-        IERC20 _fundsToken,
-        address owner,
-        uint256 initialAmount
-    )
-        public
-        FundsDistributionToken(name, symbol)
-    {
-        require(
-            address(_fundsToken) != address(0),
-            "SimpleRestrictedFDT: INVALID_FUNDS_TOKEN_ADDRESS"
-        );
-
-        fundsToken = _fundsToken;
-        transferOwnership(owner);
-        _mint(owner, initialAmount);
     }
 
     /**
@@ -65,6 +45,30 @@ contract VanillaFDT is IFundsDistributionToken, FundsDistributionToken, Ownable 
         if (newFunds > 0) {
             _distributeFunds(newFunds.toUint256Safe());
         }
+    }
+
+    /**
+     * @notice Initialize a new Proxy instance storage
+     * @dev "constructor" the Proxy shall delegatecall on deployment
+     */
+    function initialize(
+        string memory name,
+        string memory symbol,
+        IERC20 _fundsToken,
+        address owner,
+        uint256 initialAmount
+    ) public override initializer {
+        require(
+            address(_fundsToken) != address(0),
+            "VanillaFDT: INVALID_FUNDS_TOKEN_ADDRESS"
+        );
+
+        super.__ERC20_init(name, symbol);
+        super.__Ownable_init();
+
+        fundsToken = _fundsToken;
+        transferOwnership(owner);
+        _mint(owner, initialAmount);
     }
 
     /**

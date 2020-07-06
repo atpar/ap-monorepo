@@ -115,6 +115,14 @@ export class SimpleRestrictedFDT extends Contract {
 
     updateFundsReceived(): TransactionObject<void>;
 
+    initialize(
+      name: string,
+      symbol: string,
+      _fundsToken: string,
+      owner: string,
+      initialAmount: number | string
+    ): TransactionObject<void>;
+
     pushFunds(owners: string[]): TransactionObject<void>;
 
     transfer(to: string, value: number | string): TransactionObject<boolean>;

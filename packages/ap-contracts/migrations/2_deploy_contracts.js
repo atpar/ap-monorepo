@@ -1,3 +1,4 @@
+/* global artifacts */
 const fs = require('fs');
 const path = require('path');
 
@@ -29,6 +30,8 @@ const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
 const SettlementToken = artifacts.require('SettlementToken');
+const VanillaFDT = artifacts.require('VanillaFDT');
+const SimpleRestrictedFDT = artifacts.require('SimpleRestrictedFDT');
 
 
 module.exports = async (deployer, network) => {
@@ -67,7 +70,7 @@ module.exports = async (deployer, network) => {
   instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, DataRegistry.address);
   instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, DataRegistry.address);
   instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, DataRegistry.address);
-  
+
   // Custodian
   instances.CustodianInstance = await deployer.deploy(
     Custodian,
@@ -76,6 +79,10 @@ module.exports = async (deployer, network) => {
   );
 
   // FDT
+  instances.VanillaFDT = await deployer.deploy(VanillaFDT);
+  instances.SimpleRestrictedFDT = await deployer.deploy(SimpleRestrictedFDT);
+  await FDTFactory.link('VanillaFDTLogic', instances.VanillaFDT.address);
+  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedFDT.address);
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   console.log(`
@@ -99,6 +106,8 @@ module.exports = async (deployer, network) => {
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
+      SimpleRestrictedFDT: ${SimpleRestrictedFDT.address}
+      VanillaFDT: ${VanillaFDT.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -127,6 +136,8 @@ module.exports = async (deployer, network) => {
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,
-  }
+    "SimpleRestrictedFDT": SimpleRestrictedFDT.address,
+    "VanillaFDT": VanillaFDT.address
+  };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };
