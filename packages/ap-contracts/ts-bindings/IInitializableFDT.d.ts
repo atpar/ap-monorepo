@@ -13,47 +13,23 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class FDTFactory extends Contract {
+export class IInitializableFDT extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): FDTFactory;
+  clone(): IInitializableFDT;
   methods: {
-    createERC20Distributor(
+    initialize(
       name: string,
       symbol: string,
-      initialSupply: number | string,
-      token: string,
+      fundsToken: string,
       owner: string,
-      salt: number | string
-    ): TransactionObject<void>;
-
-    createRestrictedERC20Distributor(
-      name: string,
-      symbol: string,
-      initialSupply: number | string,
-      token: string,
-      owner: string,
-      salt: number | string
+      initialSupply: number | string
     ): TransactionObject<void>;
   };
   events: {
-    DeployedDistributor: ContractEvent<{
-      distributor: string;
-      creator: string;
-      0: string;
-      1: string;
-    }>;
-    NewEip1167Proxy: ContractEvent<{
-      addr: string;
-      logic: string;
-      salt: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

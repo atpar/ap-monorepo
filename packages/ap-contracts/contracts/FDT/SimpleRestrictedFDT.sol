@@ -1,18 +1,18 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.11;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "./FundsDistributionToken.sol";
 import "./IFundsDistributionToken.sol";
-
+import "./IInitializableFDT.sol";
 
 /**
  * @notice This contract allows a list of administrators to be tracked. This list can then be enforced
  * on functions with administrative permissions.  Only the owner of the contract should be allowed
  * to modify the administrator list.
  */
-contract Administratable is Ownable {
+contract Administratable is OwnableUpgradeSafe {
     // The mapping to track administrator accounts - true is reserved for admin addresses.
     mapping(address => bool) public administrators;
 
@@ -215,7 +215,7 @@ contract Whitelistable is Administratable {
  * @notice Restrictions start off as enabled. Once they are disabled, they cannot be re-enabled.
  * Only the owner may disable restrictions.
  */
-contract Restrictable is Ownable {
+contract Restrictable is OwnableUpgradeSafe {
     // State variable to track whether restrictions are enabled.  Defaults to true.
     bool private _restrictionsEnabled = true;
 
@@ -275,6 +275,7 @@ abstract contract ERC1404 is IERC20 {
 
 contract SimpleRestrictedFDT is
     IFundsDistributionToken,
+    IInitializableFDT,
     FundsDistributionToken,
     ERC1404,
     Whitelistable,
@@ -304,23 +305,6 @@ contract SimpleRestrictedFDT is
         _;
     }
 
-    constructor(
-        string memory name,
-        string memory symbol,
-        IERC20 _fundsToken,
-        address owner,
-        uint256 initialAmount
-    ) public FundsDistributionToken(name, symbol) {
-        require(
-            address(_fundsToken) != address(0),
-            "SimpleRestrictedFDT: INVALID_FUNDS_TOKEN_ADDRESS"
-        );
-
-        fundsToken = _fundsToken;
-        transferOwnership(owner);
-        _mint(owner, initialAmount);
-    }
-
     /**
   	 * @notice Evaluates whether a transfer should be allowed or not.
   	 */
@@ -342,7 +326,7 @@ contract SimpleRestrictedFDT is
 
     /**
 	 * @notice Register a payment of funds in tokens. May be called directly after a deposit is made.
-	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new 
+	 * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new
 	 * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
 	 */
     function updateFundsReceived() external {
@@ -351,6 +335,30 @@ contract SimpleRestrictedFDT is
         if (newFunds > 0) {
             _distributeFunds(newFunds.toUint256Safe());
         }
+    }
+
+    /**
+     * @notice Initialize a new Proxy instance storage
+     * @dev "constructor" the Proxy shall delegatecall on deployment
+     */
+    function initialize(
+        string memory name,
+        string memory symbol,
+        IERC20 _fundsToken,
+        address owner,
+        uint256 initialAmount
+    ) public override initializer {
+        require(
+            address(_fundsToken) != address(0),
+            "SimpleRestrictedFDT: INVALID_FUNDS_TOKEN_ADDRESS"
+        );
+
+        super.__ERC20_init(name, symbol);
+        super.__Ownable_init();
+
+        fundsToken = _fundsToken;
+        transferOwnership(owner);
+        _mint(owner, initialAmount);
     }
 
     /**
@@ -368,7 +376,7 @@ contract SimpleRestrictedFDT is
     function transfer(address to, uint256 value)
         public
         notRestricted(msg.sender, to, value)
-        override(IERC20, ERC20)
+        override(IERC20, ERC20UpgradeSafe)
         returns (bool success)
     {
         success = super.transfer(to, value);
@@ -380,7 +388,7 @@ contract SimpleRestrictedFDT is
     function transferFrom(address from, address to, uint256 value)
         public
         notRestricted(from, to, value)
-        override(IERC20, ERC20)
+        override(IERC20, ERC20UpgradeSafe)
         returns (bool success)
     {
         success = super.transferFrom(from, to, value);
@@ -471,7 +479,7 @@ contract SimpleRestrictedFDT is
     }
 
     /**
-	 * @dev Updates the current funds token balance 
+	 * @dev Updates the current funds token balance
 	 * and returns the difference of new and previous funds token balances
 	 * @return A int256 representing the difference of the new and previous funds token balance
 	 */

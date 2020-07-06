@@ -15,13 +15,15 @@ contract('SimpleRestrictedFDT', function (accounts) {
     // deploy test ERC20 token
     this.fundsToken = await deployPaymentToken(owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone]);
 
-    this.fundsDistributionToken = await SimpleRestrictedFDT.new(
+    const fundsDistributionToken = await SimpleRestrictedFDT.new();
+    await fundsDistributionToken.initialize(
       'FundsDistributionToken',
       'FDT',
       this.fundsToken.address,
       owner,
       '0'
     );
+    this.fundsDistributionToken = fundsDistributionToken;
 
     await this.fundsDistributionToken.addAdmin(owner);
     await this.fundsDistributionToken.updateOutboundWhitelistEnabled('1', '1', true);
@@ -463,7 +465,7 @@ contract('SimpleRestrictedFDT', function (accounts) {
       await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1 });
       balanceAfter = await this.fundsToken.balanceOf(tokenHolder1);
       balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('10')));
-      
+
 
       (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
       (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
