@@ -15,15 +15,13 @@ contract('SimpleRestrictedFDT', function (accounts) {
     // deploy test ERC20 token
     this.fundsToken = await deployPaymentToken(owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone]);
 
-    const fundsDistributionToken = await SimpleRestrictedFDT.new();
-    await fundsDistributionToken.initialize(
+    this.fundsDistributionToken = await SimpleRestrictedFDT.new(
       'FundsDistributionToken',
       'FDT',
       this.fundsToken.address,
       owner,
       '0'
     );
-    this.fundsDistributionToken = fundsDistributionToken;
 
     await this.fundsDistributionToken.addAdmin(owner);
     await this.fundsDistributionToken.updateOutboundWhitelistEnabled('1', '1', true);

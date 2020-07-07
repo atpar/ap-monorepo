@@ -30,8 +30,8 @@ const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
 const SettlementToken = artifacts.require('SettlementToken');
-const VanillaFDT = artifacts.require('VanillaFDT');
-const SimpleRestrictedFDT = artifacts.require('SimpleRestrictedFDT');
+const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
+const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
 
 
 module.exports = async (deployer, network) => {
@@ -79,10 +79,10 @@ module.exports = async (deployer, network) => {
   );
 
   // FDT
-  instances.VanillaFDT = await deployer.deploy(VanillaFDT);
-  instances.SimpleRestrictedFDT = await deployer.deploy(SimpleRestrictedFDT);
-  await FDTFactory.link('VanillaFDTLogic', instances.VanillaFDT.address);
-  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedFDT.address);
+  instances.VanillaUpgradeSafeFDT = await deployer.deploy(VanillaUpgradeSafeFDT);
+  instances.SimpleRestrictedUpgradeSafeFDT = await deployer.deploy(SimpleRestrictedUpgradeSafeFDT);
+  await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDT.address);
+  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDT.address);
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   console.log(`
@@ -106,8 +106,8 @@ module.exports = async (deployer, network) => {
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
-      SimpleRestrictedFDT: ${SimpleRestrictedFDT.address}
-      VanillaFDT: ${VanillaFDT.address}
+      SimpleRestrictedUpgradeSafeFDT: ${SimpleRestrictedUpgradeSafeFDT.address}
+      VanillaUpgradeSafeFDT: ${VanillaUpgradeSafeFDT.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -136,8 +136,8 @@ module.exports = async (deployer, network) => {
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,
-    "SimpleRestrictedFDT": SimpleRestrictedFDT.address,
-    "VanillaFDT": VanillaFDT.address
+    "SimpleRestrictedUpgradeSafeFDT": SimpleRestrictedUpgradeSafeFDT.address,
+    "VanillaUpgradeSafeFDT": VanillaUpgradeSafeFDT.address
   };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };
