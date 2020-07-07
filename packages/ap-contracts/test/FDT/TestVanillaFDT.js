@@ -15,15 +15,13 @@ contract('VanillaFDT', function (accounts) {
     // deploy test ERC20 token
     this.fundsToken = await deployPaymentToken(owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone]);
 
-    const fundsDistributionToken = await VanillaFDT.new();
-    await fundsDistributionToken.initialize(
+    this.fundsDistributionToken = await VanillaFDT.new(
       'FundsDistributionToken',
       'FDT',
       this.fundsToken.address,
       owner,
       '0'
     );
-    this.fundsDistributionToken = fundsDistributionToken;
   });
 
   describe('mint', function () {

@@ -26,8 +26,8 @@ const PAMActor = artifacts.require('PAMActor');
 const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
-const VanillaFDT = artifacts.require('VanillaFDT');
-const SimpleRestrictedFDT = artifacts.require('SimpleRestrictedFDT');
+const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
+const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
 
 const SettlementToken = artifacts.require('SettlementToken');
 
@@ -114,19 +114,19 @@ async function setupTestEnvironment (accounts) {
   }
 
   // FDT
-  instances.VanillaFDT = await VanillaFDT.new();
-  instances.SimpleRestrictedFDT = await SimpleRestrictedFDT.new();
+  instances.VanillaUpgradeSafeFDTInstance = await VanillaUpgradeSafeFDT.new();
+  instances.SimpleRestrictedUpgradeSafeFDTInstance = await SimpleRestrictedUpgradeSafeFDT.new();
   if (isBuidler) {
-    VanillaFDT.setAsDeployed(instances.VanillaFDTInstance);
-    SimpleRestrictedFDT.setAsDeployed(instances.SimpleRestrictedFDTInstance);
+    VanillaUpgradeSafeFDT.setAsDeployed(instances.VanillaUpgradeSafeFDTInstance);
+    SimpleRestrictedUpgradeSafeFDT.setAsDeployed(instances.SimpleRestrictedUpgradeSafeFDTInstance);
     // FIXME: Work around Buidler "linking by name unsupported" (for FDTFactory)
     // Error: Linking contracts by name is not supported by Buidler. Please use FDTFactory.link(libraryInstance) instead
-    // await FDTFactory.link('VanillaFDTLogic', instances.VanillaFDT.address);
-    // await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedFDT.address);
+    // await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
+    // await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
     // FDTFactory.setAsDeployed(instances.FDTFactoryInstance);
   } else {
-    await FDTFactory.link('VanillaFDTLogic', instances.VanillaFDT.address);
-    await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedFDT.address);
+    await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
+    await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
     instances.FDTFactoryInstance = await FDTFactory.new();
   }
 
