@@ -95,12 +95,12 @@ export class ScheduleRegistry extends Contract {
       adjustmentFactor: string;
     }>;
 
-    getIntValueForForTermsAttribute(
+    getIntValueForStateAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getIntValueForStateAttribute(
+    getIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
@@ -135,7 +135,7 @@ export class ScheduleRegistry extends Contract {
       adjustmentFactor: string;
     }>;
 
-    getUIntValueForForTermsAttribute(
+    getUIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;

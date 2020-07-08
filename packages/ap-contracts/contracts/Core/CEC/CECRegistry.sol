@@ -106,7 +106,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetBytes32ValueForForCECAttribute(attribute);
     }
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -115,7 +115,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetUIntValueForForCECAttribute(attribute);
     }
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)

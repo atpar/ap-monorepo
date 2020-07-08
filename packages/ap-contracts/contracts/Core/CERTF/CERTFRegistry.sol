@@ -108,7 +108,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         return assets[assetId].decodeAndGetBytes32ValueForForCERTFAttribute(attribute);
     }
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -117,7 +117,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         return assets[assetId].decodeAndGetUIntValueForForCERTFAttribute(attribute);
     }
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)

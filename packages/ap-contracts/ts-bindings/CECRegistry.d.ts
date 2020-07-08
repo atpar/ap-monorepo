@@ -405,12 +405,12 @@ export class CECRegistry extends Contract {
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getUIntValueForForTermsAttribute(
+    getUIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getIntValueForForTermsAttribute(
+    getIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;

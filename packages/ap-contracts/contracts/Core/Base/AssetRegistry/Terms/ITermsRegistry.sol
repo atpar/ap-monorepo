@@ -22,12 +22,12 @@ interface ITermsRegistry {
         view
         returns (bytes32);
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         external
         view
         returns (uint256);
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         external
         view
         returns (int256);

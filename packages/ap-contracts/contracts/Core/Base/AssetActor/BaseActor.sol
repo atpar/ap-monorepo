@@ -166,7 +166,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 scheduleTime,
                 BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
                 Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
-                assetRegistry.getUIntValueForForTermsAttribute(assetId, "maturityDate")
+                assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
             ) <= block.timestamp,
             "ANNActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
@@ -359,7 +359,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 );
                 (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
                     contractReference_1.object,
-                    assetRegistry.getUIntValueForForTermsAttribute(assetId, "issueDate")
+                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
                     return bytes32(redemptionAmountScheduleTime.floatDiv(redemptionAmountAnchorDate));

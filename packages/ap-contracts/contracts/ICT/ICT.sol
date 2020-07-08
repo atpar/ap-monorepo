@@ -88,7 +88,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
 
         Deposit storage deposit = deposits[_event];
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
-        int256 totalQuantity = assetRegistry.getIntValueForForTermsAttribute(assetId, "quantity");
+        int256 totalQuantity = assetRegistry.getIntValueForTermsAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
@@ -109,7 +109,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
 
         Deposit storage deposit = deposits[_event];
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
-        int256 totalQuantity = assetRegistry.getIntValueForForTermsAttribute(assetId, "quantity");
+        int256 totalQuantity = assetRegistry.getIntValueForTermsAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
