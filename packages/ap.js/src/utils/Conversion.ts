@@ -49,6 +49,14 @@ export const decodeBytes32AsNumber = (bytes32Data: string): string => (
   web3Utils.hexToNumberString(bytes32Data)
 );
 
+export const decodeBytes32AsAddress = (bytes32: string): string => {
+  if (bytes32.length !== 66) {
+    throw new Error('Invalid bytes32 value ' + bytes32)
+  }
+
+  return '0x' + bytes32.substring(26)
+}
+
 export const web3ResponseToAssetOwnership = (web3Response: any): AssetOwnership => (
   associativeArrayToObject(web3Response) as AssetOwnership
 );
