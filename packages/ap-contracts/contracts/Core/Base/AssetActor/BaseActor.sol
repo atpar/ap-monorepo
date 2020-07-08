@@ -162,7 +162,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
         // compute event time by applying BDC to schedule time
         require(
             // solium-disable-next-line
-            shiftCalcTime(
+            shiftEventTime(
                 scheduleTime,
                 BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
                 Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
@@ -294,19 +294,18 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
      */
     function getExternalDataForSTF(
         bytes32 assetId,
-        bytes32 _event
+        EventType eventType,
+        uint256 timestamp
     )
         internal
         view
         returns (bytes32)
     {
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-
         if (eventType == EventType.RR) {
-            // get rate from MOR
+            // get rate from DataRegistry
             (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
                 assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
-                scheduleTime
+                timestamp
             );
             if (isSet) return bytes32(resetRate);
         } else if (eventType == EventType.CE) {
@@ -340,7 +339,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             ) {
                 (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
                     contractReference_2.object,
-                    scheduleTime
+                    timestamp
                 );
                 if (isSet) return bytes32(quantity);
             }
@@ -355,7 +354,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             ) {
                 (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
                     contractReference_1.object,
-                    scheduleTime
+                    timestamp
                 );
                 (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
                     contractReference_1.object,
@@ -377,14 +376,13 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
      */
     function getExternalDataForPOF(
         bytes32 assetId,
-        bytes32 _event
+        EventType /* eventType */,
+        uint256 timestamp
     )
         internal
         view
         returns (bytes32)
     {
-        (, uint256  scheduleTime) = decodeEvent(_event);
-
         address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
         address settlementCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "settlementCurrency");
 
@@ -392,7 +390,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             // get FX rate
             (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
                 keccak256(abi.encode(currency, settlementCurrency)),
-                scheduleTime
+                timestamp
             );
             if (isSet) return bytes32(fxRate);
         }

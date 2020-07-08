@@ -54,11 +54,11 @@ contract NoSettlementToken is ERC20Interface {
         return ~uint256(0);
     }
 
-    function balanceOf(address tokenOwner) external view override returns (uint balance) {
+    function balanceOf(address /* tokenOwner */) external view override returns (uint balance) {
         return ~uint256(0);
     }
 
-    function allowance(address tokenOwner, address spender) external view override returns (uint remaining) {
+    function allowance(address /* tokenOwner */, address /* spender */) external view override returns (uint remaining) {
         return ~uint256(0);
     }
 }

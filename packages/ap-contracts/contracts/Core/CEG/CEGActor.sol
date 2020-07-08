@@ -83,18 +83,27 @@ contract CEGActor is BaseActor {
     {
         address engine = assetRegistry.getEngine(assetId);
         CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         int256 payoff = ICEGEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
-            getExternalDataForPOF(assetId, _event)
+            getExternalDataForPOF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
         state = ICEGEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,
-            getExternalDataForSTF(assetId, _event)
+            getExternalDataForSTF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
 
         return (state, payoff);

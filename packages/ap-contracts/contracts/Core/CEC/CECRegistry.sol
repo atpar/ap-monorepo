@@ -151,7 +151,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForCECAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextCyclicEvent(bytes32 /* assetId */)
         internal
         view
         override(TermsRegistry)

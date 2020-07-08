@@ -73,18 +73,27 @@ contract PAMActor is BaseActor {
     {
         address engine = assetRegistry.getEngine(assetId);
         PAMTerms memory terms = IPAMRegistry(address(assetRegistry)).getTerms(assetId);
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         int256 payoff = IPAMEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
-            getExternalDataForPOF(assetId, _event)
+            getExternalDataForPOF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
         state = IPAMEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,
-            getExternalDataForSTF(assetId, _event)
+            getExternalDataForSTF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
 
         return (state, payoff);
