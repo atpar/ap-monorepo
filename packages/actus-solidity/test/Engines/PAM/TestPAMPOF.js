@@ -22,6 +22,7 @@ contract('TestPAMPOF', () => {
     this.PAMTerms.feeBasis = 0; // FeeBasis.A
     this.PAMTerms.feeRate = web3.utils.toWei('5'); // set fixed fee
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_PAM_FP(
       this.PAMTerms,
@@ -72,6 +73,7 @@ contract('TestPAMPOF', () => {
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
     this.PAMTerms.premiumDiscountAtIED = web3.utils.toWei('100'); // premiumDiscountAtIED = 100
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_PAM_IED(
       this.PAMTerms,
@@ -124,6 +126,7 @@ contract('TestPAMPOF', () => {
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     
     state.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_PAM_PP(
       this.PAMTerms,
@@ -176,6 +179,7 @@ contract('TestPAMPOF', () => {
     // used data
     state.notionalPrincipal = web3.utils.toWei('1000000');
     state.notionalScalingMultiplier = web3.utils.toWei('1.1');
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_PAM_MD(
       this.PAMTerms,
@@ -200,6 +204,7 @@ contract('TestPAMPOF', () => {
     this.PAMTerms.penaltyType = 1 // 1 = PenaltyType.A
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
     this.PAMTerms.penaltyRate = web3.utils.toWei('1000');
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_PAM_PY(
       this.PAMTerms,

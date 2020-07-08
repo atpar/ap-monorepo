@@ -28,6 +28,17 @@ export class CycleUtils extends Contract {
     ONE_POINT_ZERO(): TransactionObject<string>;
 
     PRECISION(): TransactionObject<string>;
+
+    adjustEndOfMonthConvention(
+      eomc: number | string,
+      startTime: number | string,
+      cycle: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      }
+    ): TransactionObject<string>;
   };
   events: {
     allEvents: (

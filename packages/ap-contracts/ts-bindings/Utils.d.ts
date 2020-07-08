@@ -29,6 +29,17 @@ export class Utils extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    adjustEndOfMonthConvention(
+      eomc: number | string,
+      startTime: number | string,
+      cycle: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      }
+    ): TransactionObject<string>;
+
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{

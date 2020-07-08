@@ -33,10 +33,20 @@ contract ANNPOF is Core {
             );
         }
 
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         return (
             state.feeAccrued
             .add(
-                _yearFraction_POF(terms, state, scheduleTime)
+                timeFromLastEvent
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             )
@@ -79,12 +89,22 @@ contract ANNPOF is Core {
         pure
         returns(int256)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         return (
             state.interestScalingMultiplier
             .floatMult(
                 state.accruedInterest
                 .add(
-                    _yearFraction_POF(terms, state, scheduleTime)
+                    timeFromLastEvent
                     .floatMult(state.nominalInterestRate)
                     .floatMult(state.notionalPrincipal)
                 )
@@ -146,6 +166,16 @@ contract ANNPOF is Core {
         pure
         returns(int256)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         if (terms.penaltyType == PenaltyType.A) {
             return (
                 roleSign(terms.contractRole)
@@ -154,14 +184,14 @@ contract ANNPOF is Core {
         } else if (terms.penaltyType == PenaltyType.N) {
             return (
                 roleSign(terms.contractRole)
-                * _yearFraction_POF(terms, state, scheduleTime)
+                * timeFromLastEvent
                 .floatMult(terms.penaltyRate)
                 .floatMult(state.notionalPrincipal)
             );
         } else {
             return (
                 roleSign(terms.contractRole)
-                * _yearFraction_POF(terms, state, scheduleTime)
+                * timeFromLastEvent
                 .floatMult(state.notionalPrincipal)
             );
         }
@@ -181,12 +211,22 @@ contract ANNPOF is Core {
         pure
         returns(int256)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         return (
             roleSign(terms.contractRole)
             * terms.priceAtPurchaseDate
             .add(state.accruedInterest)
             .add(
-                _yearFraction_POF(terms, state, scheduleTime)
+                timeFromLastEvent
                 .floatMult(state.nominalInterestRate)
                 .floatMult(state.notionalPrincipal)
             )
@@ -208,6 +248,16 @@ contract ANNPOF is Core {
         pure
         returns(int256)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         return (
             (state.notionalScalingMultiplier * roleSign(terms.contractRole))
             .floatMult(
@@ -217,29 +267,12 @@ contract ANNPOF is Core {
                     * (
                         state.nextPrincipalRedemptionPayment
                         - state.accruedInterest
-                        - _yearFraction_POF(terms, state, scheduleTime)
+                        - timeFromLastEvent
                         .floatMult(state.nominalInterestRate)
                         .floatMult(state.notionalPrincipal)
                     )
                 )
             )
-        );
-    }
-
-    function _yearFraction_POF (
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
         );
     }
 }

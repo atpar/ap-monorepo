@@ -194,6 +194,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.maturityDate,
                     terms.cycleOfInterestPayment,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -222,6 +223,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.capitalizationEndDate,
                     cycleOfInterestCapitalization,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -242,6 +244,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleAnchorDateOfFee,
                     terms.maturityDate,
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -262,6 +265,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleAnchorDateOfPrincipalRedemption,
                     terms.maturityDate,
                     terms.cycleOfPrincipalRedemption,
+                    terms.endOfMonthConvention,
                     false,
                     segmentStart,
                     segmentEnd
@@ -308,6 +312,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             if (terms.cycleAnchorDateOfInterestPayment != 0) {
                 uint256 nextInterestPaymentDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfInterestPayment,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
                     lastScheduleTime
                 );
@@ -324,6 +329,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 cycleOfInterestCapitalization.s = S.SHORT;
                 uint256 nextInterestCapitalizationDate = computeNextCycleDateFromPrecedingDate(
                     cycleOfInterestCapitalization,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
                     lastScheduleTime
                 );
@@ -337,6 +343,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             if (terms.cycleAnchorDateOfFee != 0) {
                 uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
                     lastScheduleTime
                 );
@@ -350,6 +357,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             if (terms.cycleAnchorDateOfPrincipalRedemption != 0) {
                 uint256 nextPrincipalRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfPrincipalRedemption,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfPrincipalRedemption,
                     lastScheduleTime
                 );

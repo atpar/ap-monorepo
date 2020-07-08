@@ -18,7 +18,6 @@ import "./Conventions/EndOfMonthConventions.sol";
  */
 contract Core is
     ACTUSConstants,
-    BusinessDayConventions,
     ContractRoleConventions,
     DayCountConventions,
     EndOfMonthConventions,

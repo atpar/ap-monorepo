@@ -190,6 +190,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.maturityDate,
                     terms.cycleOfInterestPayment,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -213,6 +214,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleAnchorDateOfInterestPayment,
                     terms.capitalizationEndDate,
                     cycleOfInterestCapitalization,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -233,6 +235,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleAnchorDateOfRateReset,
                     terms.maturityDate,
                     terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
                     false,
                     segmentStart,
                     segmentEnd
@@ -254,6 +257,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleAnchorDateOfFee,
                     terms.maturityDate,
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -274,6 +278,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleAnchorDateOfScalingIndex,
                     terms.maturityDate,
                     terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -320,6 +325,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             if (terms.cycleOfInterestPayment.isSet == true && terms.cycleAnchorDateOfInterestPayment != 0) {
                 uint256 nextInterestPaymentDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfInterestPayment,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
                     lastScheduleTime
                 );
@@ -336,6 +342,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                 cycleOfInterestCapitalization.s = S.SHORT;
                 uint256 nextInterestCapitalizationDate = computeNextCycleDateFromPrecedingDate(
                     cycleOfInterestCapitalization,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
                     lastScheduleTime
                 );
@@ -349,6 +356,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             if (terms.cycleAnchorDateOfRateReset != 0) {
                 uint256 nextRateResetDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfRateReset,
                     lastScheduleTime
                 );
@@ -363,6 +371,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             if (terms.cycleAnchorDateOfFee != 0) {
                 uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
                     lastScheduleTime
                 );
@@ -376,6 +385,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
                 uint256 nextScalingDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfScalingIndex,
                     lastScheduleTime
                 );

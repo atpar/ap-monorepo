@@ -238,8 +238,12 @@ contract CERTFSTF is Core {
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            : state.nonPerformingDate;
+            ? shiftEventTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            ) : state.nonPerformingDate;
 
         uint256 currentTimestamp = uint256(externalData);
 
@@ -273,21 +277,4 @@ contract CERTFSTF is Core {
 
         return state;
     }
-
-    // function _yearFraction_STF (
-    //     CERTFTerms memory terms,
-    //     State memory state,
-    //     uint256 scheduleTime
-    // )
-    //     private
-    //     pure
-    //     returns(int256)
-    // {
-    //     return yearFraction(
-    //         shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-    //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-    //         terms.dayCountConvention,
-    //         terms.maturityDate
-    //     );
-    // }
 }

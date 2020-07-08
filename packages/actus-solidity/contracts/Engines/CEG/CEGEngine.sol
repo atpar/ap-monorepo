@@ -180,6 +180,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
                     terms.cycleAnchorDateOfFee,
                     terms.maturityDate,
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -225,6 +226,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
             if (terms.cycleAnchorDateOfFee != 0) {
                 uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
                     lastScheduleTime
                 );

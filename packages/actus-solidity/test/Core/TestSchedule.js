@@ -36,21 +36,22 @@ contract('Core', () => {
     const cEnd = '1538352000'; // Monday, 2018-10-01 00:00:00 UTC
     const sStart = '1525132800'; // Tuesday, 2018-05-01 00:00:00 UTC
     const sEnd = '1535760000'; // Saturday, 2018-09-01 00:00:00 UTC
+    const eomc = 0;
 
     // Segment lies before cycle
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, '0', '0')), []);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, '0', '0')), []);
     // Segment lies after cycle
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, '9999999999', '9999999999')), []);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, '9999999999', '9999999999')), []);
     // Segment lies within cycle
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), []);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), []);
     // Cycle lies within Segment, addEndTime == false
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, '0', '9999999999')), [cStart]);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, '0', '9999999999')), [cStart]);
     // Cycle lies within Segment, addEndTime == true
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, true, '0', '9999999999')), [cStart, cEnd]);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, true, '0', '9999999999')), [cStart, cEnd]);
     // Only cycle start lies within segment, addEndTime == true
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, true, '0', sEnd)), [cStart]);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, true, '0', sEnd)), [cStart]);
     // Only cycle end lies within segment, addEndTime == false
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, '9999999999')), []);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, '9999999999')), []);
   });
 
   it('should test computeDatesFromCycleSegment for isSet == true', async () => {
@@ -60,6 +61,7 @@ contract('Core', () => {
     const cEnd = '1538352000'; // Monday, 2018-10-01 00:00:00 UTC
     const sStart = '1525132800'; // Tuesday, 2018-05-01 00:00:00 UTC
     const sEnd = '1535760000'; // Saturday, 2018-09-01 00:00:00 UTC
+    const eomc = 0;
 
     // Segment lies in cycle
     const result_1 = [
@@ -69,7 +71,7 @@ contract('Core', () => {
       '1533081600', // Wednesday, 2018-08-01 00:00:00 UTC
       sEnd
     ];
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
 
     // Segment lies in cycle, addEndTime = false
     const result_2 = [
@@ -83,7 +85,7 @@ contract('Core', () => {
       '1533081600', // Wednesday, 2018-08-01 00:00:00 UTC
       sEnd
     ];
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, '0', '9999999999')), result_2);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, '0', '9999999999')), result_2);
 
     // Segment lies in cycle, addEndTime = true
     const result_3 = [
@@ -98,7 +100,7 @@ contract('Core', () => {
       '1535760000', // Saturday, 2018-09-01 00:00:00 UTC
       cEnd
     ];
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, true, '0', '9999999999')), result_3);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, true, '0', '9999999999')), result_3);
   });
 
   /*
@@ -114,6 +116,7 @@ contract('Core', () => {
     const cEnd = '1488326400'; // 2017-03-01T00:00:00
     const sStart = '0'; // Tuesday, 2018-05-01 00:00:00 UTC
     const sEnd = '9999999999'; // Saturday, 2018-09-01 00:00:00 UTC
+    const eomc = 0;
 
     // Segment lies in cycle
     const result_1 = [
@@ -130,7 +133,7 @@ contract('Core', () => {
       '1488240000', // 2017-02-28T00:00:00
       cEnd
     ];
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment for isSet == true, stub == short, EOM == SD with cStart 30th of month in a leap year', async () => {
@@ -140,6 +143,7 @@ contract('Core', () => {
     const cEnd = '1456790400'; // 2016-03-01T00:00:00 - 2016 is a leap year
     const sStart = '0'; // Tuesday, 2018-05-01 00:00:00 UTC
     const sEnd = '9999999999'; // Saturday, 2018-09-01 00:00:00 UTC
+    const eomc = 0;
 
     // Segment lies in cycle
     const result_1 = [
@@ -156,6 +160,6 @@ contract('Core', () => {
       '1456704000', // 2016-02-29T00:00:00
       cEnd
     ];
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 });

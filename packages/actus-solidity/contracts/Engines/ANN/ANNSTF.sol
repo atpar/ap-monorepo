@@ -44,7 +44,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -77,7 +85,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -105,7 +121,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -139,7 +163,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -172,7 +204,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -233,8 +273,12 @@ contract ANNSTF is Core {
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            : state.nonPerformingDate;
+            ? shiftEventTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            ) : state.nonPerformingDate;
 
         uint256 currentTimestamp = uint256(externalData);
 
@@ -297,7 +341,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.accruedInterest
@@ -329,7 +381,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = 0;
         state.feeAccrued = state.feeAccrued
         .add(
@@ -352,7 +412,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -396,7 +464,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -445,7 +521,15 @@ contract ANNSTF is Core {
             rate = terms.lifeFloor;
         }
 
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -469,7 +553,15 @@ contract ANNSTF is Core {
         pure
         returns (State memory)
     {
-        int256 timeFromLastEvent = _yearFraction_STF(terms, state, scheduleTime);
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
@@ -493,22 +585,5 @@ contract ANNSTF is Core {
         state.statusDate = scheduleTime;
 
         return state;
-    }
-
-    function _yearFraction_STF (
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
     }
 }

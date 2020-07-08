@@ -60,6 +60,17 @@ contract EndOfMonthConventions {
 	  pure
 	  returns (uint256)
 	{
+        // // check if startTime is last day in month and schedule has month based period
+        // // otherwise switch to SD convention
+        // if (
+        //     eomc != EndOfMonthConvention.EOM
+        //     || BokkyPooBahsDateTimeLibrary.getDay(startTime) != BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime)
+        //     || (cycle.p == P.M || cycle.p == P.Q || cycle.p == P.H)
+        // ) {
+        //     // SD
+        //     return timestamp;
+        // }
+
 		uint256 year;
 		uint256 month;
 		uint256 day;

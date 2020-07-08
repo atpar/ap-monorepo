@@ -6,6 +6,7 @@ import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
+import "@atpar/actus-solidity/contracts/Core/Conventions/BusinessDayConventions.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 
 import "../SharedTypes.sol";
@@ -25,7 +26,7 @@ import "./IAssetActor.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
+abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, IAssetActor, Ownable {
 
     using SignedMath for int;
 
@@ -157,11 +158,17 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        // revert if the scheduleTime of the next event is in the future
+        // revert if the event time of the next event is in the future
+        // compute event time by applying BDC to schedule time
         require(
             // solium-disable-next-line
-            scheduleTime <= block.timestamp,
-            "BaseActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
+            shiftCalcTime(
+                scheduleTime,
+                BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
+                Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
+                assetRegistry.getUIntValueForForTermsAttribute(assetId, "maturityDate")
+            ) <= block.timestamp,
+            "ANNActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
 
         // get external data for the next event

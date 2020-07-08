@@ -86,21 +86,4 @@ contract CERTFPOF is Core {
             roleSign(terms.contractRole) * state.quantity.floatMult(state.exerciseAmount)
         );
     }
-
-    // function _yearFraction_POF (
-    //     CERTFTerms memory terms,
-    //     State memory state,
-    //     uint256 scheduleTime
-    // )
-    //     private
-    //     pure
-    //     returns(int256)
-    // {
-    //     return yearFraction(
-    //         shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-    //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-    //         terms.dayCountConvention,
-    //         terms.maturityDate
-    //     );
-    // }
 }

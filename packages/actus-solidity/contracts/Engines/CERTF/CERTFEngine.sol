@@ -192,6 +192,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.cycleAnchorDateOfCoupon,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -211,6 +212,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.cycleAnchorDateOfCoupon,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -231,6 +233,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -250,6 +253,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -270,6 +274,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -316,6 +321,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfCoupon,
                     lastScheduleTime
                 );
@@ -328,6 +334,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfCoupon,
                     lastScheduleTime
                 );
@@ -341,6 +348,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfRedemption,
                     lastScheduleTime
                 );
@@ -353,6 +361,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfRedemption,
                     lastScheduleTime
                 );
@@ -366,6 +375,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfRedemption,
                     lastScheduleTime
                 );

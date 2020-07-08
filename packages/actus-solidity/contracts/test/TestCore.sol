@@ -63,6 +63,7 @@ contract TestCore is Core {
         uint256 cycleStart,
         uint256 cycleEnd,
         IPS memory cycle,
+        EndOfMonthConvention eomc,
         bool addEndTime,
         uint256 segmentStart,
         uint256 segmentEnd
@@ -71,6 +72,6 @@ contract TestCore is Core {
         pure
         returns (uint256[MAX_CYCLE_SIZE] memory)
     {
-        return computeDatesFromCycleSegment(cycleStart, cycleEnd, cycle, addEndTime, segmentStart, segmentEnd);
+        return computeDatesFromCycleSegment(cycleStart, cycleEnd, cycle, eomc, addEndTime, segmentStart, segmentEnd);
     }
 }

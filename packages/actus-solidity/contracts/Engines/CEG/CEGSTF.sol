@@ -28,8 +28,12 @@ contract CEGSTF is Core {
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            : state.nonPerformingDate;
+            ? shiftEventTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            ) : state.nonPerformingDate;
 
         uint256 currentTimestamp = uint256(externalData);
 
@@ -91,6 +95,15 @@ contract CEGSTF is Core {
         pure
         returns (State memory)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.statusDate = scheduleTime;
         // decode state.notionalPrincipal of underlying from externalData
         state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
@@ -101,12 +114,7 @@ contract CEGSTF is Core {
         } else {
             state.feeAccrued = state.feeAccrued
             .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                timeFromLastEvent
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             );
@@ -164,22 +172,5 @@ contract CEGSTF is Core {
         state.statusDate = scheduleTime;
 
         return state;
-    }
-
-    function _yearFraction_STF (
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
     }
 }

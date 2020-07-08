@@ -27,13 +27,14 @@ contract('Core', () => {
     const cEnd = '1452816000'; // 2016-01-15T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [];
     for (i = 0; i < 15; i++) {
       result_1.push(String(Number(cStart) + i * 86400));
     }
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   // it('should test computeDatesFromCycleSegment Daily_EOM_shortstub', async () => {
@@ -59,13 +60,14 @@ contract('Core', () => {
     const cEnd = '1452816000'; // 2016-01-15T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [];
     for (i = 0; i < 15; i++) {
       result_1.push(String(Number(cStart) + i * 86400));
     }
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Daily_SD_shortstub_endT24', async () => {
@@ -75,6 +77,7 @@ contract('Core', () => {
     const cEnd = '1452815999'; // 2016-01-14T23:59:59
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [];
     for (i = 0; i < 14; i++) {
@@ -83,7 +86,7 @@ contract('Core', () => {
 
     result_1[14] = cEnd; // 2016-01-14T23:59:59
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Daily_SD_longstub_endT24', async () => {
@@ -93,6 +96,7 @@ contract('Core', () => {
     const cEnd = '1452815999'; // 2016-01-14T23:59:59
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0;
 
     const result_1 = [];
     for (i = 0; i < 13; i++) {
@@ -101,7 +105,7 @@ contract('Core', () => {
 
     result_1[13] = cEnd; // 2016-01-14T23:59:59
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiDaily_SD_shortstub', async () => {
@@ -111,13 +115,14 @@ contract('Core', () => {
     const cEnd = '1453852800'; // 2016-01-27T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0;
 
     const result_1 = [];
     for (i = 0; i < 28; i = i + 2) {
       result_1.push(String(Number(cStart) + i * 86400));
     }
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   // it('should test computeDatesFromCycleSegment 31Daily_EOM_shortstub_startEndMonth', async () => {
@@ -140,12 +145,13 @@ contract('Core', () => {
     const cEnd = '1459468800'; // 2016-04-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Weekly_SD_longstub', async () => {
@@ -155,12 +161,13 @@ contract('Core', () => {
     const cEnd = '1459468800'; // 2016-04-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Weekly_EOM_shortstub_startMidMonth', async () => {
@@ -170,12 +177,13 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Weekly_EOM_shortstub_startEndMonth', async () => {
@@ -185,12 +193,13 @@ contract('Core', () => {
     const cEnd = '1459468800'; // 2016-04-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '7', p: '0', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment 4Weekly_SD_longstub_startEndMonth', async () => {
@@ -200,12 +209,13 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '28', p: '0', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '28', p: '0', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   // it('should test computeDatesFromCycleSegment 4Weekly_EOM_longstub_startEndMonth', async () => {
@@ -230,12 +240,13 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '28', p: '0', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '28', p: '0', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Monthly_SD_shortstub', async () => {
@@ -245,6 +256,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -262,7 +274,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Monthly_SD_longstub_startBeginningMonth', async () => {
@@ -272,6 +284,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -289,7 +302,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Monthly_SD_shortstub_startMidMonth', async () => {
@@ -299,6 +312,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -316,7 +330,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Monthly_SD_longstub_startMidMonth', async () => {
@@ -326,6 +340,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -342,7 +357,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiMonthly_SD_longstub_startBeginningMonth', async () => {
@@ -352,6 +367,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -363,7 +379,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiMonthly_SD_longstub_startMidMonth', async () => {
@@ -373,6 +389,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
@@ -383,7 +400,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Monthly_EOM_shortstub_startMidMonth', async () => {
@@ -393,6 +410,7 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = [
       cStart,
@@ -410,7 +428,7 @@ contract('Core', () => {
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   /*
@@ -561,13 +579,14 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = [
       cStart,
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiMonthly_EOM_shortstub_onlyStartAndEndTimes', async () => {
@@ -577,13 +596,14 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = [
       cStart,
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiMonthly_EOM_longstub_onlyStartAndEndTimes', async () => {
@@ -593,13 +613,14 @@ contract('Core', () => {
     const cEnd = '1483228800'; // 2017-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = [
       cStart,
       cEnd
     ];
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Quarterly_SD_shortstub', async () => {
@@ -609,12 +630,13 @@ contract('Core', () => {
     const cEnd = '1546300800'; // 2019-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '3', p: '2', s: '1', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '3', p: '2', s: '1', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Quarterly_SD_longstub', async () => {
@@ -624,12 +646,13 @@ contract('Core', () => {
     const cEnd = '1546300800'; // 2019-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 0; // SD
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '3', p: '2', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '3', p: '2', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   // it('should test computeDatesFromCycleSegment Quarterly_EOM_longstub', async () => {
@@ -654,12 +677,13 @@ contract('Core', () => {
     const cEnd = '1640995200'; // 2022-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '6', p: '2', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '6', p: '2', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Halfyear_EOM_longstub', async () => {
@@ -669,12 +693,13 @@ contract('Core', () => {
     const cEnd = '1640995200'; // 2022-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '2', p: '3', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '2', p: '3', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment Yearly_EOM_longstub', async () => {
@@ -684,12 +709,13 @@ contract('Core', () => {
     const cEnd = '1640995200'; // 2022-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '2', p: '4', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '2', p: '4', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 
   it('should test computeDatesFromCycleSegment BiYearly_EOM_longstub', async () => {
@@ -699,11 +725,12 @@ contract('Core', () => {
     const cEnd = '1767225600'; // 2026-01-01T00:00:00
     const sStart = '0';
     const sEnd = '9999999999';
+    const eomc = 1; // EOM
 
     const result_1 = removeNullDates(
-      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '4', p: '4', s: '0', isSet: true}, addEndTime, sStart, sEnd)
+      await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, { i: '4', p: '4', s: '0', isSet: true}, eomc, addEndTime, sStart, sEnd)
     );
 
-    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, addEndTime, sStart, sEnd)), result_1);
+    assert.deepEqual(removeNullDates(await this.TestCore._computeDatesFromCycleSegment(cStart, cEnd, c, eomc, addEndTime, sStart, sEnd)), result_1);
   });
 });
