@@ -184,7 +184,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             // (if the obligation is later fulfilled before the asset reaches default,
             // the last performant state is used to derive subsequent states of the asset)
             if (state.contractPerformance == ContractPerformance.PF) {
-                assetRegistry.setFinalizedState(assetId, nextState); // state ???
+                assetRegistry.setFinalizedState(assetId, state);
             }
 
             // store event as pending event for future settlement
