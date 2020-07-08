@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.10;
+pragma solidity 0.6.11;
 
 /**
  * @title Holds the storage variable for the FDTCheckpoint (i.e ERC20, Ether)
