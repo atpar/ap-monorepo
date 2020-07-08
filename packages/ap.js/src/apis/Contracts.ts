@@ -18,7 +18,7 @@ import CEGRegistryArtifact from '@atpar/ap-contracts/artifacts/CEGRegistry.min.j
 import CERTFRegistryArtifact from '@atpar/ap-contracts/artifacts/CERTFRegistry.min.json';
 import PAMRegistryArtifact from '@atpar/ap-contracts/artifacts/PAMRegistry.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
-import MarketObjectRegistryArtifact from '@atpar/ap-contracts/artifacts/MarketObjectRegistry.min.json';
+import DataRegistryArtifact from '@atpar/ap-contracts/artifacts/DataRegistry.min.json';
 import FDTFactoryArtifact from '@atpar/ap-contracts/artifacts/FDTFactory.min.json';
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
@@ -42,7 +42,7 @@ import { CEGRegistry } from '@atpar/ap-contracts/ts-bindings/CEGRegistry';
 import { CERTFRegistry } from '@atpar/ap-contracts/ts-bindings/CERTFRegistry';
 import { PAMRegistry } from '@atpar/ap-contracts/ts-bindings/PAMRegistry';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
-import { MarketObjectRegistry } from '@atpar/ap-contracts/ts-bindings/MarketObjectRegistry';
+import { DataRegistry } from '@atpar/ap-contracts/ts-bindings/DataRegistry';
 import { FDTFactory } from '@atpar/ap-contracts/ts-bindings/FDTFactory';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 import { ERC1404 } from '@atpar/ap-contracts/ts-bindings/ERC1404';
@@ -79,7 +79,7 @@ export class Contracts {
   public pamRegistry: PAMRegistry;
 
   public custodian: Custodian;
-  public marketObjectRegistry: MarketObjectRegistry;
+  public dataRegistry: DataRegistry;
   public fdtFactory: FDTFactory;
 
 
@@ -128,7 +128,7 @@ export class Contracts {
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
-    this.marketObjectRegistry = new web3.eth.Contract(MarketObjectRegistryArtifact.abi, addressBook.MarketObjectRegistry, { data: MarketObjectRegistryArtifact.bytecode }) as MarketObjectRegistry,
+    this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
     // @ts-ignore
     this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
     // @ts-ignore

@@ -22,7 +22,7 @@ const CEGActor = artifacts.require('CEGActor');
 const CERTFActor = artifacts.require('CERTFActor');
 const PAMActor = artifacts.require('PAMActor');
 
-const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
 
@@ -67,20 +67,20 @@ module.exports = async (accounts) => {
   const PAMRegistryInstance = await PAMRegistry.new();
   PAMRegistry.setAsDeployed(PAMRegistryInstance);
 
-  // Market Object Registry
-  const MarketObjectRegistryInstance = await MarketObjectRegistry.new();
-  MarketObjectRegistry.setAsDeployed(MarketObjectRegistryInstance);
+  // Data Registry
+  const DataRegistryInstance = await DataRegistry.new();
+  DataRegistry.setAsDeployed(DataRegistryInstance);
 
   // Asset Actor
-  const ANNActorInstance = await ANNActor.new(ANNRegistryInstance.address, MarketObjectRegistryInstance.address);
+  const ANNActorInstance = await ANNActor.new(ANNRegistryInstance.address, DataRegistryInstance.address);
   ANNActor.setAsDeployed(ANNActorInstance);
-  const CECActorInstance = await CECActor.new(CECRegistryInstance.address, MarketObjectRegistryInstance.address);
+  const CECActorInstance = await CECActor.new(CECRegistryInstance.address, DataRegistryInstance.address);
   CECActor.setAsDeployed(CECActorInstance);
-  const CEGActorInstance = await CEGActor.new(CEGRegistryInstance.address, MarketObjectRegistryInstance.address);
+  const CEGActorInstance = await CEGActor.new(CEGRegistryInstance.address, DataRegistryInstance.address);
   CEGActor.setAsDeployed(CEGActorInstance);
-  const CERTFActorInstance = await CERTFActor.new(CERTFRegistryInstance.address, MarketObjectRegistryInstance.address);
+  const CERTFActorInstance = await CERTFActor.new(CERTFRegistryInstance.address, DataRegistryInstance.address);
   CERTFActor.setAsDeployed(CERTFActorInstance);
-  const PAMActorInstance = await PAMActor.new(PAMRegistryInstance.address, MarketObjectRegistryInstance.address);
+  const PAMActorInstance = await PAMActor.new(PAMRegistryInstance.address, DataRegistryInstance.address);
   PAMActor.setAsDeployed(PAMActorInstance);
 
   // Custodian

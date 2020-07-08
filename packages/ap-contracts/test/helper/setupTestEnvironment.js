@@ -22,7 +22,7 @@ const CEGActor = artifacts.require('CEGActor');
 const CERTFActor = artifacts.require('CERTFActor');
 const PAMActor = artifacts.require('PAMActor');
 
-const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
 
@@ -57,15 +57,15 @@ async function setupTestEnvironment (accounts) {
   instances.CERTFRegistryInstance = await CERTFRegistry.new();
   instances.PAMRegistryInstance = await PAMRegistry.new();
 
-  // Market Object Registry
-  instances.MarketObjectRegistryInstance = await MarketObjectRegistry.new();
+  // Data Registry
+  instances.DataRegistryInstance = await DataRegistry.new();
 
   // Asset Actor
-  instances.ANNActorInstance = await ANNActor.new(instances.ANNRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
-  instances.CECActorInstance = await CECActor.new(instances.CECRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
-  instances.CEGActorInstance = await CEGActor.new(instances.CEGRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
-  instances.CERTFActorInstance = await CERTFActor.new(instances.CERTFRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
-  instances.PAMActorInstance = await PAMActor.new(instances.PAMRegistryInstance.address, instances.MarketObjectRegistryInstance.address);
+  instances.ANNActorInstance = await ANNActor.new(instances.ANNRegistryInstance.address, instances.DataRegistryInstance.address);
+  instances.CECActorInstance = await CECActor.new(instances.CECRegistryInstance.address, instances.DataRegistryInstance.address);
+  instances.CEGActorInstance = await CEGActor.new(instances.CEGRegistryInstance.address, instances.DataRegistryInstance.address);
+  instances.CERTFActorInstance = await CERTFActor.new(instances.CERTFRegistryInstance.address, instances.DataRegistryInstance.address);
+  instances.PAMActorInstance = await PAMActor.new(instances.PAMRegistryInstance.address, instances.DataRegistryInstance.address);
 
   // Custodian
   instances.CustodianInstance = await Custodian.new(

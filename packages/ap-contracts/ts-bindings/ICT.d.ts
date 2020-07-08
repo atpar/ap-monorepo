@@ -53,6 +53,8 @@ export class ICT extends Contract {
       token: string
     ): TransactionObject<void>;
 
+    dataRegistry(): TransactionObject<string>;
+
     decimals(): TransactionObject<string>;
 
     decodeEvent(
@@ -131,8 +133,6 @@ export class ICT extends Contract {
     ): TransactionObject<boolean>;
 
     marketObjectCode(): TransactionObject<string>;
-
-    marketObjectRegistry(): TransactionObject<string>;
 
     name(): TransactionObject<string>;
 

@@ -2,41 +2,41 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "./MarketObjectRegistryStorage.sol";
+import "./DataRegistryStorage.sol";
 
 
-interface IMarketObjectRegistry {
+interface IDataRegistry {
 
-    function isRegistered(bytes32 marketObjectId)
+    function isRegistered(bytes32 setId)
         external
         view
         returns (bool);
 
-    function getMarketObjectLastUpdatedTimestamp(bytes32 marketObjectId)
+    function getLastUpdatedTimestamp(bytes32 setId)
         external
         view
         returns (uint256);
 
-    function getMarketObjectProvider(bytes32 marketObjectId)
+    function getDataProvider(bytes32 setId)
         external
         view
         returns (address);
 
-    function setMarketObjectProvider(
-        bytes32 marketObjectId,
+    function setDataProvider(
+        bytes32 setId,
         address provider
     )
         external;
 
-    function publishDataPointOfMarketObject(
-        bytes32 marketObjectId,
+    function publishDataPoint(
+        bytes32 setId,
         uint256 timestamp,
         int256 dataPoint
     )
         external;
 
-    function getDataPointOfMarketObject(
-        bytes32 marketObjectId,
+    function getDataPoint(
+        bytes32 setId,
         uint256 timestamp
     )
         external

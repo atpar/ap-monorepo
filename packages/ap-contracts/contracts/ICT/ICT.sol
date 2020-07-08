@@ -8,7 +8,7 @@ import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
 
 import "../Core/Base/AssetRegistry/IAssetRegistry.sol";
-import "../Core/Base/MarketObjectRegistry/IMarketObjectRegistry.sol";
+import "../Core/Base/DataRegistry/DataRegistry.sol";
 import "./DepositAllocater.sol";
 
 
@@ -18,7 +18,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
     using SignedMath for int256;
 
     IAssetRegistry public assetRegistry;
-    IMarketObjectRegistry public marketObjectRegistry;
+    DataRegistry public dataRegistry;
 
     bytes32 public marketObjectCode;
     bytes32 public assetId;
@@ -26,11 +26,11 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
 
     constructor(
         IAssetRegistry _assetRegistry,
-        IMarketObjectRegistry _marketObjectRegistry,
+        DataRegistry _dataRegistry,
         bytes32 _marketObjectCode
     ) DepositAllocater("Investment Certificate Token", "ICT") public {
         assetRegistry = _assetRegistry;
-        marketObjectRegistry = _marketObjectRegistry;
+        dataRegistry = _dataRegistry;
         marketObjectCode = _marketObjectCode;
     }
 
@@ -93,7 +93,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
-        marketObjectRegistry.publishDataPointOfMarketObject(marketObjectCode, deposit.scheduledFor, quantity);
+        dataRegistry.publishDataPoint(marketObjectCode, deposit.scheduledFor, quantity);
     }
 
     /**
@@ -114,7 +114,7 @@ contract ICT is IERC20, Ownable, DepositAllocater, EventUtils {
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
-        marketObjectRegistry.publishDataPointOfMarketObject(marketObjectCode, deposit.scheduledFor, quantity);
+        dataRegistry.publishDataPoint(marketObjectCode, deposit.scheduledFor, quantity);
     }
 
     function _transfer(

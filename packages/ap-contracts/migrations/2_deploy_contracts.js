@@ -25,7 +25,7 @@ const CEGActor = artifacts.require('CEGActor');
 const CERTFActor = artifacts.require('CERTFActor');
 const PAMActor = artifacts.require('PAMActor');
 
-const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 const FDTFactory = artifacts.require('FDTFactory');
 const SettlementToken = artifacts.require('SettlementToken');
@@ -59,14 +59,14 @@ module.exports = async (deployer, network) => {
   instances.PAMRegistryInstance = await deployer.deploy(PAMRegistry);
 
   // Market Object Registry
-  instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
+  instances.DataRegistryInstance = await deployer.deploy(DataRegistry);
 
   // Asset Actor
-  instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, MarketObjectRegistry.address);
-  instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, MarketObjectRegistry.address);
-  instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, MarketObjectRegistry.address);
-  instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, MarketObjectRegistry.address);
-  instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, MarketObjectRegistry.address);
+  instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, DataRegistry.address);
+  instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, DataRegistry.address);
+  instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, DataRegistry.address);
+  instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, DataRegistry.address);
+  instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, DataRegistry.address);
   
   // Custodian
   instances.CustodianInstance = await deployer.deploy(
@@ -95,7 +95,7 @@ module.exports = async (deployer, network) => {
       CERTFRegistry: ${CERTFRegistry.address}
       Custodian: ${Custodian.address}
       FDTFactory: ${FDTFactory.address}
-      MarketObjectRegistry: ${MarketObjectRegistry.address}
+      DataRegistry: ${DataRegistry.address}
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
@@ -123,7 +123,7 @@ module.exports = async (deployer, network) => {
     "CERTFRegistry": CERTFRegistry.address,
     "Custodian": Custodian.address,
     "FDTFactory": FDTFactory.address,
-    "MarketObjectRegistry": MarketObjectRegistry.address,
+    "DataRegistry": DataRegistry.address,
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,

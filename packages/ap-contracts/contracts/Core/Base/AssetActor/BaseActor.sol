@@ -12,7 +12,7 @@ import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
+import "../DataRegistry/IDataRegistry.sol";
 import "./IAssetActor.sol";
 
 
@@ -36,7 +36,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
 
     IAssetRegistry public assetRegistry;
-    IMarketObjectRegistry public marketObjectRegistry;
+    IDataRegistry public dataRegistry;
 
     mapping(address => bool) public issuers;
 
@@ -51,12 +51,12 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
     constructor (
         IAssetRegistry _assetRegistry,
-        IMarketObjectRegistry _marketObjectRegistry
+        IDataRegistry _dataRegistry
     )
         public
     {
         assetRegistry = _assetRegistry;
-        marketObjectRegistry = _marketObjectRegistry;
+        dataRegistry = _dataRegistry;
     }
 
     /**
@@ -304,7 +304,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (eventType == EventType.RR) {
             // get rate from MOR
-            (int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+            (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
                 assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
                 scheduleTime
             );
@@ -338,7 +338,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 contractReference_2._type == ContractReferenceType.MOC
                 && contractReference_2.role == ContractReferenceRole.UDL
             ) {
-                (int256 quantity, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
                     contractReference_2.object,
                     scheduleTime
                 );
@@ -353,11 +353,11 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 contractReference_1._type == ContractReferenceType.MOC
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
-                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
                     contractReference_1.object,
                     scheduleTime
                 );
-                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
                     contractReference_1.object,
                     assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
@@ -390,7 +390,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+            (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
                 keccak256(abi.encode(currency, settlementCurrency)),
                 scheduleTime
             );

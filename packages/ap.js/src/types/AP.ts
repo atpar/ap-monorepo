@@ -15,7 +15,7 @@ export interface AddressBook {
   CERTFRegistry: string;
   Custodian: string;
   FDTFactory: string;
-  MarketObjectRegistry: string;
+  DataRegistry: string;
   PAMActor: string;
   PAMEngine: string;
   PAMRegistry: string;
@@ -44,7 +44,7 @@ export function isAddressBook (obj: any): obj is AddressBook {
   if (obj.CERTFRegistry == undefined || typeof obj.CERTFRegistry !== 'string' || obj.CERTFRegistry === ZERO_ADDRESS) { return false; }
   if (obj.Custodian == undefined || typeof obj.Custodian !== 'string' || obj.Custodian === ZERO_ADDRESS) { return false; }
   if (obj.FDTFactory == undefined || typeof obj.FDTFactory !== 'string' || obj.FDTFactory === ZERO_ADDRESS) { return false; }
-  if (obj.MarketObjectRegistry == undefined || typeof obj.MarketObjectRegistry !== 'string' || obj.MarketObjectRegistry === ZERO_ADDRESS) { return false; }
+  if (obj.DataRegistry == undefined || typeof obj.DataRegistry !== 'string' || obj.DataRegistry === ZERO_ADDRESS) { return false; }
   if (obj.PAMActor == undefined || typeof obj.PAMActor !== 'string' || obj.PAMActor === ZERO_ADDRESS) { return false; }
   if (obj.PAMEngine == undefined || typeof obj.PAMEngine !== 'string' || obj.PAMEngine === ZERO_ADDRESS) { return false; }
   if (obj.PAMRegistry == undefined || typeof obj.PAMRegistry !== 'string' || obj.PAMRegistry === ZERO_ADDRESS) { return false; }

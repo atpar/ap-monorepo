@@ -14,9 +14,9 @@ import "./ICERTFRegistry.sol";
  */
 contract CERTFActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
+    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
         public
-        BaseActor(assetRegistry, marketObjectRegistry)
+        BaseActor(assetRegistry, dataRegistry)
     {}
 
     /**
