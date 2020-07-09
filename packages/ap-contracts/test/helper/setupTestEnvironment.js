@@ -49,13 +49,13 @@ async function setupTestEnvironment (accounts) {
   instances.CEGEngineInstance = await CEGEngine.new();
   instances.CERTFEngineInstance = await CERTFEngine.new();
   instances.PAMEngineInstance = await PAMEngine.new();
-    if (isBuidler) {
-        ANNEngine.setAsDeployed(instances.ANNEngineInstance);
-        CECEngine.setAsDeployed(instances.CECEngineInstance);
-        CEGEngine.setAsDeployed(instances.CEGEngineInstance);
-        CERTFEngine.setAsDeployed(instances.CERTFEngineInstance);
-        PAMEngine.setAsDeployed(instances.PAMEngineInstance);
-    }
+  if (isBuidler) {
+      ANNEngine.setAsDeployed(instances.ANNEngineInstance);
+      CECEngine.setAsDeployed(instances.CECEngineInstance);
+      CEGEngine.setAsDeployed(instances.CEGEngineInstance);
+      CERTFEngine.setAsDeployed(instances.CERTFEngineInstance);
+      PAMEngine.setAsDeployed(instances.PAMEngineInstance);
+  }
 
   // Asset Registry
   instances.ANNEncoderInstance = await ANNEncoder.new();
