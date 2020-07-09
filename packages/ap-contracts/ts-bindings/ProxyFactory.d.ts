@@ -23,14 +23,12 @@ export class ProxyFactory extends Contract {
   methods: {};
   events: {
     NewEip1167Proxy: ContractEvent<{
-      addr: string;
+      proxy: string;
       logic: string;
-      deployer: string;
       salt: string;
       0: string;
       1: string;
       2: string;
-      3: string;
     }>;
     allEvents: (
       options?: EventOptions,
