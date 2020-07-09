@@ -1,4 +1,6 @@
 /* global artifacts, buidlerArguments, web3 */
+const {isRunUnderBuidler, linkByPlaceholdersAndDeploy} = require('./buidler-helper.js');
+
 const ANNEngine = artifacts.require('ANNEngine');
 const CECEngine = artifacts.require('CECEngine');
 const CEGEngine = artifacts.require('CEGEngine');
@@ -37,7 +39,7 @@ async function setupTestEnvironment (accounts) {
   const instances = {};
 
   // If it runs by Buidler (rather than Truffle)
-  const isBuidler = typeof buidlerArguments === 'object';
+  const isBuidler = isRunUnderBuidler();
 
   // PAMEngine.numberFormat = 'String';
 
@@ -119,12 +121,15 @@ async function setupTestEnvironment (accounts) {
   if (isBuidler) {
     VanillaUpgradeSafeFDT.setAsDeployed(instances.VanillaUpgradeSafeFDTInstance);
     SimpleRestrictedUpgradeSafeFDT.setAsDeployed(instances.SimpleRestrictedUpgradeSafeFDTInstance);
-    // FIXME: Work around Buidler "linking by name unsupported" (for FDTFactory)
-    // Error: Linking contracts by name is not supported by Buidler. Please use FDTFactory.link(libraryInstance) instead
-    // await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
-    // await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
-    // FDTFactory.setAsDeployed(instances.FDTFactoryInstance);
-  } else {
+    // Work around unsupported "linking by name" in Buidler
+    instances.FDTFactoryInstance = await linkByPlaceholdersAndDeploy(FDTFactory, {
+      // (placeholders MUST match ones in the `FDTFactory.bytecode`)
+      '__$841be2597f4d9c69c442725b7c2d682d84$__': instances.VanillaUpgradeSafeFDTInstance.address,
+      '__$8e30c1edc2e8ce660a2408600808dad003$__': instances.SimpleRestrictedUpgradeSafeFDTInstance.address,
+    });
+    FDTFactory.setAsDeployed(instances.FDTFactoryInstance);
+  }
+  else {
     await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
     await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
     instances.FDTFactoryInstance = await FDTFactory.new();

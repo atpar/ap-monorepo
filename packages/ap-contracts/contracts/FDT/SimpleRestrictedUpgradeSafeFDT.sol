@@ -338,8 +338,8 @@ contract SimpleRestrictedUpgradeSafeFDT is
     }
 
     /**
-     * @notice Initialize a new Proxy instance storage
-     * @dev "constructor" the Proxy shall delegatecall on deployment
+     * @notice Initialize a new instance storage
+     * @dev "constructor" to be called on deployment
      */
     function initialize(
         string memory name,

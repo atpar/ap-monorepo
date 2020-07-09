@@ -79,10 +79,10 @@ module.exports = async (deployer, network) => {
   );
 
   // FDT
-  instances.VanillaUpgradeSafeFDT = await deployer.deploy(VanillaUpgradeSafeFDT);
-  instances.SimpleRestrictedUpgradeSafeFDT = await deployer.deploy(SimpleRestrictedUpgradeSafeFDT);
-  await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDT.address);
-  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDT.address);
+  instances.VanillaUpgradeSafeFDTInstance = await deployer.deploy(VanillaUpgradeSafeFDT);
+  instances.SimpleRestrictedUpgradeSafeFDTInstance = await deployer.deploy(SimpleRestrictedUpgradeSafeFDT);
+  await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
+  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   console.log(`
