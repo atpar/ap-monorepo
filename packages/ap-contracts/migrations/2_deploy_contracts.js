@@ -136,8 +136,6 @@ module.exports = async (deployer, network) => {
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,
-    "SimpleRestrictedUpgradeSafeFDT": SimpleRestrictedUpgradeSafeFDT.address,
-    "VanillaUpgradeSafeFDT": VanillaUpgradeSafeFDT.address
   };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };
