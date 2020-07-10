@@ -1,9 +1,10 @@
+/* global assert, buidlerArguments */
+
 /**
  * @dev Buidler does not support "linking by name"
  * This module provides a rough "work around" for this
  * See examples in `function _testSelf`
  */
-
 module.exports =(web3) => {
     const {isAddress} = web3.utils;
 
@@ -30,10 +31,13 @@ module.exports =(web3) => {
      */
     function getPlaceholdersFromBytecode(bytecode) {
         const placeholderRegexp = /[a-f0-9]*(__.{36}__)[a-f0-9]{2,}/gi;
-        const placeholders = [...new Set(
-            new Array(...bytecode.replace(/^0x/, '').matchAll(placeholderRegexp)).map(e=>e[1])
-        )];
-        return placeholders || [];
+        const placeholders = [];
+        let match = placeholderRegexp.exec(bytecode);
+        while(match) {
+            if (!placeholders.includes(match[1])) placeholders.push(match[1]);
+            match = placeholderRegexp.exec(bytecode);
+        }
+        return placeholders;
     }
 
     /**

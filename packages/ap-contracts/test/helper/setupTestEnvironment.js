@@ -1,4 +1,4 @@
-/* global artifacts, buidlerArguments, web3 */
+/* global artifacts, web3 */
 const {isRunUnderBuidler, linkAddressesAndDeploy} = require('./buidler-helper.js')(web3);
 
 const ANNEngine = artifacts.require('ANNEngine');
