@@ -16,6 +16,8 @@ ganache-cli \
 	-t "2009-01-03T18:15:05" \
 	-e 5000000000 \
 	-d -m "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
+	-l 0x895440 \
+	-g 5000000000 \
 	1>/dev/null &
 
 ganache_pid=$!
