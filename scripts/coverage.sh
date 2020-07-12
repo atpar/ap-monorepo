@@ -1,5 +1,5 @@
 mergerd_lconv=$(mktemp)
-trap "rm -rf $mergerd_lconv" EXIT
+trap "rm-rf $mergerd_lconv" EXIT
 
 (
   cd ./packages/ap-contracts
