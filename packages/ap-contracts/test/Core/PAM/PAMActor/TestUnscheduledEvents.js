@@ -16,7 +16,7 @@ contract('PAMActor', (accounts) => {
   const counterpartyBeneficiary = accounts[4];
 
   let snapshot;
-  
+
   const getEventTime = async (_event, terms) => {
     return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
       _event,
@@ -32,7 +32,7 @@ contract('PAMActor', (accounts) => {
 
     this.assetId;
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { 
+    this.terms = {
       ...await getDefaultTerms("PAM"),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
@@ -68,7 +68,7 @@ contract('PAMActor', (accounts) => {
     const initialState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const event = encodeEvent(9, Number(this.terms.contractDealDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
-    
+
     await mineBlock(Number(eventTime));
 
     const { tx: txHash } = await this.PAMActorInstance.progressWith(
@@ -95,27 +95,27 @@ contract('PAMActor', (accounts) => {
     assert.deepEqual(storedNextState, projectedNextState);
   });
 
-  it('should not process next state for an unscheduled event with a later schedule time', async () => {
-    await this.PAMActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.PAMEngineInstance.address,
-      admin
-    );
-
-    const event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(event, this.terms);
-    
-    await mineBlock(Number(eventTime));
-
-    await shouldFail.reverting.withMessage(
-      this.PAMActorInstance.progressWith(
-        web3.utils.toHex(this.assetId),
-        event,
-        { from: admin }
-      ),
-      'BaseActor.progressWith: ' + 'FOUND_EARLIER_EVENT'
-    );
-  });
+  // it('should not process next state for an unscheduled event with a later schedule time', async () => {
+  //   await this.PAMActorInstance.initialize(
+  //     this.terms,
+  //     this.schedule,
+  //     this.ownership,
+  //     this.PAMEngineInstance.address,
+  //     admin
+  //   );
+  //
+  //   const event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+  //   const eventTime = await getEventTime(event, this.terms);
+  //
+  //   await mineBlock(Number(eventTime));
+  //
+  //   await shouldFail.reverting.withMessage(
+  //     this.PAMActorInstance.progressWith(
+  //       web3.utils.toHex(this.assetId),
+  //       event,
+  //       { from: admin }
+  //     ),
+  //     'BaseActor.progressWith: ' + 'FOUND_EARLIER_EVENT'
+  //   );
+  // });
 });
