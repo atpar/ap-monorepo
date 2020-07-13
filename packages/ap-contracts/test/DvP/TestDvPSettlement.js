@@ -93,7 +93,6 @@ contract('DvPSettlement', function (accounts) {
     });
 
     it('should revert when attempting to execute a settlement past its expiration', async function () {
-
       await this.creatorToken.approve(this.dvpSettlementContract.address, creatorAmount, { from: creator });
       const tomorrow = timeNow() + (60 * 60 * 24)
       const tx = await this.dvpSettlementContract.createSettlement(
@@ -118,7 +117,6 @@ contract('DvPSettlement', function (accounts) {
 
 
     it('should allow anyone to call expireSettlement to return tokens to creator after expiration date', async function () {
-
       await this.creatorToken.approve(this.dvpSettlementContract.address, creatorAmount, { from: creator });
       const future = (await web3.eth.getBlock('latest')).timestamp + (60 * 60)
       const tx = await this.dvpSettlementContract.createSettlement(
@@ -131,22 +129,15 @@ contract('DvPSettlement', function (accounts) {
         { from: creator }
       );
       const id = tx.logs[0].args[0];
-
       await this.counterpartyToken.approve(this.dvpSettlementContract.address, counterpartyAmount, { from: counterparty });
       await mineBlock(future + 1)
-
       let tx2 = await this.dvpSettlementContract.expireSettlement(id, { from: anyone })
       await expectEvent.inTransaction(
         tx2.tx, DvPSettlement, 'SettlementExpired'
       );
-
       const settlement = await this.dvpSettlementContract.settlements(id)
       assert.equal(settlement.status, '4');
-
     });
-
-
-
   });
 
 });
