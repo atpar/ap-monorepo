@@ -10,7 +10,7 @@ contract DepositAllocaterStorage {
     struct Deposit {
         // Time at which the deposit is scheduled for
         uint256 scheduledFor;
-        // Deposit amount in WEI 
+        // Deposit amount in WEI
         uint256 amount;
         // Amount of funds claimed so far
         uint256 claimedAmount;
@@ -29,4 +29,7 @@ contract DepositAllocaterStorage {
     // depositId => Deposit
     mapping(bytes32 => Deposit) public deposits;
     mapping(address => uint256) public totalAmountSignaledByHolder;
+
+    // Reserved
+    uint256[10] private __gap;
 }
