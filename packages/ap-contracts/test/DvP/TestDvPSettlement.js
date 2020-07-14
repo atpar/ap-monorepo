@@ -1,5 +1,7 @@
 const { BN, ether, balance, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
 const { createSnapshot, revertToSnapshot, mineBlock, getLatestBlockTimestamp } = require('../helper/blockchain');
+const { ZERO_ADDRESS } = require('../helper/utils');
+
 
 const SettlementToken = artifacts.require('SettlementToken');
 const DvPSettlement = artifacts.require('DvPSettlement');
@@ -14,10 +16,10 @@ contract('DvPSettlement', function (accounts) {
   const creatorAmount = new BN(20000);
   const counterpartyAmount = new BN(1000);
 
-  let snapshot
-  before(async () => {
-    snapshot = await createSnapshot()
-  });
+  // let snapshot
+  // before(async () => {
+  //   snapshot = await createSnapshot()
+  // });
 
   beforeEach(async function () {
     // deploy test ERC20 token
@@ -26,9 +28,9 @@ contract('DvPSettlement', function (accounts) {
     this.dvpSettlementContract = await DvPSettlement.new({ from: someone })
   });
 
-  afterEach(async () => {
-    await revertToSnapshot(snapshot);
-  });
+  // afterEach(async () => {
+  //   await revertToSnapshot(snapshot);
+  // });
 
   describe('end to end test', function () {
     it('should pass end to end test', async function () {
@@ -36,10 +38,10 @@ contract('DvPSettlement', function (accounts) {
 
       const tomorrow = timeNow() + (60 * 60 * 24)
       const receipt = await this.dvpSettlementContract.createSettlement(
-        counterparty,
         this.creatorToken.address,
-        this.counterpartyToken.address,
         creatorAmount,
+        counterparty,
+        this.counterpartyToken.address,
         counterpartyAmount,
         tomorrow,
         { from: creator }
@@ -48,9 +50,8 @@ contract('DvPSettlement', function (accounts) {
       (await this.creatorToken.balanceOf(this.dvpSettlementContract.address)).should.be.bignumber.equal(creatorAmount);
 
       const id = receipt.logs[0].args[0];
-      const settlement = await this.dvpSettlementContract.settlements(id)
+      const settlement = await this.dvpSettlementContract.settlements(id);
 
-      assert.equal(settlement.counterparty, counterparty);
       (settlement.expirationDate).should.be.bignumber.equal(new BN(tomorrow));
       assert.equal(settlement.status, '1');
 
@@ -73,6 +74,46 @@ contract('DvPSettlement', function (accounts) {
 
     });
 
+    it('should pass open Settlement end to end test', async function () {
+      await this.creatorToken.approve(this.dvpSettlementContract.address, creatorAmount, { from: creator });
+
+      const tomorrow = timeNow() + (60 * 60 * 24)
+      const receipt = await this.dvpSettlementContract.createSettlement(
+        this.creatorToken.address,
+        creatorAmount,
+        ZERO_ADDRESS,
+        this.counterpartyToken.address,
+        counterpartyAmount,
+        tomorrow,
+        { from: creator }
+      );
+
+      (await this.creatorToken.balanceOf(this.dvpSettlementContract.address)).should.be.bignumber.equal(creatorAmount);
+
+      const id = receipt.logs[0].args[0];
+      const settlement = await this.dvpSettlementContract.settlements(id);
+
+      (settlement.expirationDate).should.be.bignumber.equal(new BN(tomorrow));
+      assert.equal(settlement.status, '1');
+
+
+      await this.counterpartyToken.approve(this.dvpSettlementContract.address, counterpartyAmount, { from: counterparty });
+      const tx = await this.dvpSettlementContract.executeSettlement(id, { from: counterparty })
+
+      await expectEvent.inTransaction(
+        tx.tx, DvPSettlement, 'SettlementExecuted'
+      );
+
+      const settlement2 = await this.dvpSettlementContract.settlements(id)
+      assert.equal(settlement2.status, '2');
+
+      const creatorBalanceOfcpToken = await this.counterpartyToken.balanceOf(creator);
+      const cpBalanceOfCreatorToken = await this.creatorToken.balanceOf(counterparty);
+
+      creatorBalanceOfcpToken.should.be.bignumber.equal(counterpartyAmount);
+      cpBalanceOfCreatorToken.should.be.bignumber.equal(creatorAmount);
+
+    });
   });
 
   describe('expiration date tests', function () {
@@ -81,10 +122,10 @@ contract('DvPSettlement', function (accounts) {
       const lastTimestamp = (await web3.eth.getBlock('latest')).timestamp;
       await shouldFail.reverting(
         this.dvpSettlementContract.createSettlement(
-          counterparty,
           this.creatorToken.address,
-          this.counterpartyToken.address,
           creatorAmount,
+          counterparty,
+          this.counterpartyToken.address,
           counterpartyAmount,
           lastTimestamp - 1,
           { from: creator }
@@ -96,10 +137,10 @@ contract('DvPSettlement', function (accounts) {
       await this.creatorToken.approve(this.dvpSettlementContract.address, creatorAmount, { from: creator });
       const tomorrow = timeNow() + (60 * 60 * 24)
       const tx = await this.dvpSettlementContract.createSettlement(
-        counterparty,
         this.creatorToken.address,
-        this.counterpartyToken.address,
         creatorAmount,
+        counterparty,
+        this.counterpartyToken.address,
         counterpartyAmount,
         tomorrow,
         { from: creator }
@@ -120,10 +161,10 @@ contract('DvPSettlement', function (accounts) {
       await this.creatorToken.approve(this.dvpSettlementContract.address, creatorAmount, { from: creator });
       const future = (await web3.eth.getBlock('latest')).timestamp + (60 * 60)
       const tx = await this.dvpSettlementContract.createSettlement(
-        counterparty,
         this.creatorToken.address,
-        this.counterpartyToken.address,
         creatorAmount,
+        counterparty,
+        this.counterpartyToken.address,
         counterpartyAmount,
         future,
         { from: creator }
@@ -136,7 +177,7 @@ contract('DvPSettlement', function (accounts) {
         tx2.tx, DvPSettlement, 'SettlementExpired'
       );
       const settlement = await this.dvpSettlementContract.settlements(id)
-      assert.equal(settlement.status, '4');
+      assert.equal(settlement.status, '3');
     });
   });
 
