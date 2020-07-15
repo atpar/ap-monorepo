@@ -5,6 +5,10 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/utils/Counters.sol";
 
+/**
+ * @title DvPSettlement
+ * @dev Contract to manage any number of Delivery-versus-Payment Settlements
+ */
 contract DvPSettlement {
     using Counters for Counters.Counter;
     Counters.Counter _settlementIds;
@@ -28,6 +32,16 @@ contract DvPSettlement {
 
     mapping (uint256 => Settlement) public settlements;
 
+    /**
+     * @notice Creates a new Settlement in the contract's storage and transfers creator's tokens into the contract
+     * @dev The creator must approve for this contract at least `creatorAmount` of tokens
+     * @param creatorToken address of creator's ERC20 token
+     * @param creatorAmount amount of creator's ERC20 token to be exchanged
+     * @param counterparty address of counterparty OR 0x0 for open settlement
+     * @param counterpartyToken address of counterparty's ERC20 token
+     * @param counterpartyAmount amount of counterparty's ERC20 token to be exchanged
+     * @param expirationDate unix timestamp in seconds
+     */
     function createSettlement(
         address creatorToken,
         uint256 creatorAmount,
@@ -53,8 +67,8 @@ contract DvPSettlement {
         settlements[id].counterpartyAmount = counterpartyAmount;
         settlements[id].expirationDate = expirationDate;
         settlements[id].status = SettlementStatus.INITIALIZED;
-        
-       require(
+
+        require(
             IERC20(settlements[id].creatorToken)
             .transferFrom(
                 settlements[id].creator,
@@ -67,6 +81,14 @@ contract DvPSettlement {
         emit SettlementInitialized(id, settlements[id]);
     }
 
+
+    /**
+     * @notice Executes an existing Settlement with the sender as the counterparty
+     * @dev This function can only be successfully called by the designated counterparty unless
+     * the counterparty address is empty (0x0) in which case anyone can fulfill and execute the settlement
+     * @dev The counterparty must approve for this contract at least `counterpartyAmount` of tokens
+     * @param id the unsigned integer ID value for the Settlement to execute
+     */
     function executeSettlement(uint256 id) public {
         require(
             settlements[id].status == SettlementStatus.INITIALIZED,
@@ -77,7 +99,7 @@ contract DvPSettlement {
             "DvPSettlement.executeSettlement - settlement expired"
         );
 
-        // if no counterparty is set consider it an "open" settlement
+        // if empty (0x0) counterparty address, consider it an "open" settlement
         require(
             settlements[id].counterparty == address(0) || settlements[id].counterparty == msg.sender,
             "DvPSettlement.executeSettlement - sender not allowed to execute settlement"
@@ -107,6 +129,12 @@ contract DvPSettlement {
         emit SettlementExecuted(id, msg.sender);
     }
 
+    /**
+     * @notice When called after a given settlement expires, it refunds tokens to the creator
+     * @dev This function can be called by anyone since there is no other possible outcome for
+     * a created settlement that has passed the expiration date
+     * @param id the unsigned integer ID value for the Settlement to expire
+     */
     function expireSettlement(uint256 id) public {
         require(
             settlements[id].expirationDate < block.timestamp,
@@ -118,10 +146,13 @@ contract DvPSettlement {
         );
 
         // refund creator
-        IERC20(settlements[id].creatorToken)
-        .transfer(
-            settlements[id].creator,
-            settlements[id].creatorAmount
+        require(
+            (IERC20(settlements[id].creatorToken)
+            .transfer(
+                settlements[id].creator,
+                settlements[id].creatorAmount
+            )),
+            "DvPSettlement.expireSettlement - refunding creator failed"
         );
 
         settlements[id].status = SettlementStatus.EXPIRED;
