@@ -15,11 +15,12 @@ import "./DepositAllocater.sol";
 
 
 contract UpgradeSafeICT is
-    OwnableUpgradeSafe,
+    IERC20,
     DepositAllocater,
-    EventUtils,
-    IERC20
+    OwnableUpgradeSafe,
+    EventUtils
 {
+    using Address for address;
     using SafeMath for uint256;
     using SignedMath for int256;
 
@@ -41,13 +42,13 @@ contract UpgradeSafeICT is
         DataRegistry _dataRegistry,
         bytes32 _marketObjectCode,
         address owner
-    ) public override initializer {
+    ) public initializer {
         require(
-            isContract(_assetRegistry),
+            address(_assetRegistry).isContract(),
             "ICT.initialize: INVALID_ASSET_REGISTRY"
         );
         require(
-            isContract(_dataRegistry),
+            address(_dataRegistry).isContract(),
             "ICT.initialize: INVALID_DATA_REGISTRY"
         );
 
@@ -152,11 +153,12 @@ contract UpgradeSafeICT is
         virtual
         override
     {
+        // TODO: confirm `from replacing `msg.sender`
         require(
-            totalAmountSignaledByHolder[msg.sender] == 0,
+            totalAmountSignaledByHolder[from] == 0,
             "ICT._transfer: HOLDER_IS_SIGNALING"
         );
-        super._transfer(msg.sender, to, value);
+        super._transfer(from, to, value);
     }
 
     function transferDeposit(

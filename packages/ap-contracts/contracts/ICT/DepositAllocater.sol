@@ -178,7 +178,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
     }
 
     /**
-     * @notice
+     * @notice Returns params of a deposit
      * @return scheduledFor
      * @return amount
      * @return claimedAmount
