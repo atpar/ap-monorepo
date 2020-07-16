@@ -28,10 +28,15 @@ const PAMActor = artifacts.require('PAMActor');
 
 const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
+
 const FDTFactory = artifacts.require('FDTFactory');
-const SettlementToken = artifacts.require('SettlementToken');
 const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
 const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
+
+const UpgradeSafeICT = artifacts.require('UpgradeSafeICT');
+const ICTFactory = artifacts.require('ICTFactory');
+
+const SettlementToken = artifacts.require('SettlementToken');
 
 
 module.exports = async (deployer, network) => {
@@ -85,6 +90,11 @@ module.exports = async (deployer, network) => {
   await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
+  // ICT
+  instances.UpgradeSafeICTInstance = await deployer.deploy(UpgradeSafeICT);
+  await ICTFactory.link('ICTLogic', instances.UpgradeSafeICTInstance.address);
+  instances.ICTFactoryInstance = await deployer.deploy(ICTFactory);
+
   console.log(`
     Deployments:
     
@@ -103,10 +113,12 @@ module.exports = async (deployer, network) => {
       Custodian: ${Custodian.address}
       FDTFactory: ${FDTFactory.address}
       DataRegistry: ${DataRegistry.address}
+      ICTFactory: ${ICTFactory.address}
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
       SimpleRestrictedUpgradeSafeFDT: ${SimpleRestrictedUpgradeSafeFDT.address}
+      UpgradeSafeICT: ${UpgradeSafeICT.address}
       VanillaUpgradeSafeFDT: ${VanillaUpgradeSafeFDT.address}
   `);
 

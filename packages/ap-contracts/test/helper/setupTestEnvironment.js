@@ -27,9 +27,13 @@ const PAMActor = artifacts.require('PAMActor');
 
 const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
+
 const FDTFactory = artifacts.require('FDTFactory');
 const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
 const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
+
+const UpgradeSafeICT = artifacts.require('UpgradeSafeICT');
+const ICTFactory = artifacts.require('ICTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
 
@@ -132,6 +136,20 @@ async function setupTestEnvironment (accounts) {
     await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
     await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
     instances.FDTFactoryInstance = await FDTFactory.new();
+  }
+
+  // ICT
+  instances.UpgradeSafeICTInstance = await UpgradeSafeICT.new();
+  if (isBuidler) {
+    UpgradeSafeICT.setAsDeployed(instances.UpgradeSafeICTInstance);
+    // Work around unsupported "linking by name" in Buidler
+    instances.ICTFactoryInstance = await linkAddressesAndDeploy(ICTFactory, [
+      instances.UpgradeSafeICTInstance.address,
+    ]);
+    ICTFactory.setAsDeployed(instances.ICTFactoryInstance);
+  } else {
+    await ICTFactory.link('ICTLogic', instances.UpgradeSafeICTInstance.address);
+    instances.ICTFactoryInstance = await ICTFactory.new();
   }
 
   await instances.ANNActorInstance.registerIssuer(admin);

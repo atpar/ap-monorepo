@@ -27,7 +27,7 @@ module.exports =(web3) => {
      * Extract unique placeholders from a bytecode
      * (placeholders, if any, returned in the order they appear in the bytecode)
      * @param bytecode {string}
-     * @return [{string}] placeholders
+     * @return placeholders {Array.<string>}
      */
     function getPlaceholdersFromBytecode(bytecode) {
         const placeholderRegexp = /[a-f0-9]*(__.{36}__)[a-f0-9]{2,}/gi;
@@ -45,7 +45,7 @@ module.exports =(web3) => {
      *   i.e. replace placeholders with addresses, deploy the contract, and restore the bytecode
      *   addresses must follow in the same order as (unique) placeholders appear the bytecode
      * @param contract buidler Contract
-     * @param addresses [string {string}] list of addresses to link with
+     * @param addresses {Array.<string>} list of addresses to link with
      * @param force {boolean} if true, ignore whether buidler runs or not
      * @return {Promise<*>} deployed instance (`contract.new()`)
      */

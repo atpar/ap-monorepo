@@ -17,7 +17,7 @@ library ICTLogic {
  */
 contract ICTFactory is ProxyFactory {
 
-    event DeployedAllocator(address allocator, address creator);
+    event DeployedICT(address icToken, address creator);
 
 
     /*
@@ -28,7 +28,7 @@ contract ICTFactory is ProxyFactory {
      * @param owner of the new ICT contract
      * @param salt as defined by EIP-1167
      */
-    function createERC20Distributor(
+    function createICToken(
         address assetRegistry,
         address dataRegistry,
         bytes32 marketObjectCode,
@@ -39,9 +39,9 @@ contract ICTFactory is ProxyFactory {
     {
         address logic = address(ICTLogic);
 
-        address allocator = create2Eip1167Proxy(logic, salt);
-        IInitializableICT(allocator).initialize(assetRegistry, dataRegistry, marketObjectCode, owner);
+        address icToken = create2Eip1167Proxy(logic, salt);
+        IInitializableICT(icToken).initialize(assetRegistry, dataRegistry, marketObjectCode, owner);
 
-        emit DeployedAllocator(allocator, msg.sender);
+        emit DeployedICT(icToken, msg.sender);
     }
 }
