@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@atpar/actus-solidity@0.4.0-beta.9":
+  version "0.4.0-beta.9"
+  resolved "https://registry.yarnpkg.com/@atpar/actus-solidity/-/actus-solidity-0.4.0-beta.9.tgz#d322a616a59313967110e159dfaa9c57a5ba3ef9"
+  integrity sha512-/mk3EZ/R2nIV5wIs4HwDvOo4sVvJId1a1vz06EHO9wdXdUSGGArWcfYMKfZm1wKUaLMOoOC8Lg5jMsjVlLWCCw==
+
 "@babel/code-frame@^7.0.0":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.1.tgz#d5481c5095daa1c57e16e54c6f9198443afb49ff"
@@ -4447,9 +4452,9 @@ lodash.toarray@^4.4.0:
   integrity sha1-JMS/zWsvuji/0FlNsRedjptlZWE=
 
 lodash@^4.14.2, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 log-driver@^1.2.7:
   version "1.2.7"
