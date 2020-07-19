@@ -2,10 +2,11 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "./UpgradeSafeICT.sol";
 
 
-contract ICT is UpgradeSafeICT {
+contract ICT is IERC20, UpgradeSafeICT {
 
     constructor(
         IAssetRegistry assetRegistry,

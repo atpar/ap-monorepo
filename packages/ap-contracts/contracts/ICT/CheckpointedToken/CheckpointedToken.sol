@@ -188,7 +188,7 @@ contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
         virtual
         override
     {
-        // TODO: confirm `from replacing `msg.sender`
+        // TODO: confirm `from` replacing `msg.sender`
         _updateTransfer(from, to, value);
         super._transfer(from, to, value);
     }

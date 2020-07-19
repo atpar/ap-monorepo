@@ -3,8 +3,10 @@ pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 
 import "./CheckpointedToken/CheckpointedToken.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "./DepositAllocaterStorage.sol";
 
 
@@ -12,7 +14,7 @@ import "./DepositAllocaterStorage.sol";
  * @title Logic for distributing funds based on checkpointing
  * @dev abstract contract
  */
-contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
+contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, ReentrancyGuardUpgradeSafe {
 
     using SafeMath for uint256;
 
@@ -134,6 +136,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
     )
         internal
         virtual
+        nonReentrant()
     {
         uint256 claim = calculateClaimOnDeposit(payee, depositId);
 

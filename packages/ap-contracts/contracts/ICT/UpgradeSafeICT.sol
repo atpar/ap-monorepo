@@ -3,7 +3,7 @@ pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
 import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
@@ -15,7 +15,6 @@ import "./DepositAllocater.sol";
 
 
 contract UpgradeSafeICT is
-    IERC20,
     DepositAllocater,
     OwnableUpgradeSafe,
     EventUtils
@@ -53,7 +52,8 @@ contract UpgradeSafeICT is
         );
 
         super.initialize("Investment Certificate Token", "ICT");
-        super.__Ownable_init();
+        __Ownable_init();
+        __ReentrancyGuard_init();
         transferOwnership(owner);
 
         assetRegistry = _assetRegistry;
@@ -70,7 +70,10 @@ contract UpgradeSafeICT is
         assetId = _assetId;
     }
 
-    function createDepositForEvent(bytes32 _event) public {
+    function createDepositForEvent(bytes32 _event)
+        public
+        nonReentrant()
+    {
         require(
             assetRegistry.isRegistered(assetId) == true,
             "ICT.createDepositForEvent: ASSET_DOES_NOT_EXIST"
@@ -87,7 +90,10 @@ contract UpgradeSafeICT is
         );
     }
 
-    function fetchDepositAmountForEvent(bytes32 _event) public {
+    function fetchDepositAmountForEvent(bytes32 _event)
+        public
+        nonReentrant()
+    {
         (bool isSettled, int256 payoff) = assetRegistry.isEventSettled(assetId, _event);
 
         require(
@@ -105,7 +111,10 @@ contract UpgradeSafeICT is
      * @param _event encoded redemption to register for
      * @param amount amount of tokens to redeem
      */
-    function registerForRedemption(bytes32 _event, uint256 amount) public {
+    function registerForRedemption(bytes32 _event, uint256 amount)
+        public
+        nonReentrant()
+    {
         require(
             assetRegistry.isRegistered(assetId) == true,
             "ICT.registerForRedemption: ASSET_DOES_NOT_EXIST"
@@ -126,7 +135,10 @@ contract UpgradeSafeICT is
     /**
      * @param _event encoded redemption to cancel the registration for
      */
-    function cancelRegistrationForRedemption(bytes32 _event) public {
+    function cancelRegistrationForRedemption(bytes32 _event)
+        public
+        nonReentrant()
+    {
         require(
             assetRegistry.isRegistered(assetId) == true,
             "ICT.createDepositForEvent: ASSET_DOES_NOT_EXIST"
@@ -173,7 +185,7 @@ contract UpgradeSafeICT is
         if (deposit.onlySignaled == true && deposit.signaledAmounts[payee] > 0) {
             _burn(payee, deposit.signaledAmounts[payee]);
         }
-
+        // `nonReentrant`-protected (by the `DepositAllocator`)
         super.transferDeposit(payee, deposit, depositId);
     }
 }
