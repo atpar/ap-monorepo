@@ -165,7 +165,6 @@ contract UpgradeSafeICT is
         virtual
         override
     {
-        // TODO: confirm `from replacing `msg.sender`
         require(
             totalAmountSignaledByHolder[from] == 0,
             "ICT._transfer: HOLDER_IS_SIGNALING"

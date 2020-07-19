@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "./IInitializableFDT.sol";
-import "./proxy/ProxyFactory.sol";
+import "../proxy/ProxyFactory.sol";
 
 // @dev Mock lib to link pre-deployed VanillaUpgradeSafeFDT contract
 library VanillaFDTLogic {

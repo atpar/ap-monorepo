@@ -4,9 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
 
-// TODO: is CheckpointedToken ReentrancyGuardUpgradeSafe
-// import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
-
 import "./CheckpointedTokenStorage.sol";
 
 contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
@@ -188,7 +185,6 @@ contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
         virtual
         override
     {
-        // TODO: confirm `from` replacing `msg.sender`
         _updateTransfer(from, to, value);
         super._transfer(from, to, value);
     }
