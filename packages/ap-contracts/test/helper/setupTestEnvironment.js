@@ -29,10 +29,10 @@ const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 
 const FDTFactory = artifacts.require('FDTFactory');
-const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
-const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
+const ProxySafeVanillaFDT = artifacts.require('ProxySafeVanillaFDT');
+const ProxySafeSimpleRestrictedFDT = artifacts.require('ProxySafeSimpleRestrictedFDT');
 
-const UpgradeSafeICT = artifacts.require('UpgradeSafeICT');
+const ProxySafeICT = artifacts.require('ProxySafeICT');
 const ICTFactory = artifacts.require('ICTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
@@ -120,35 +120,35 @@ async function setupTestEnvironment (accounts) {
   }
 
   // FDT
-  instances.VanillaUpgradeSafeFDTInstance = await VanillaUpgradeSafeFDT.new();
-  instances.SimpleRestrictedUpgradeSafeFDTInstance = await SimpleRestrictedUpgradeSafeFDT.new();
+  instances.ProxySafeVanillaFDTInstance = await ProxySafeVanillaFDT.new();
+  instances.ProxySafeSimpleRestrictedFDTInstance = await ProxySafeSimpleRestrictedFDT.new();
   if (isBuidler) {
-    VanillaUpgradeSafeFDT.setAsDeployed(instances.VanillaUpgradeSafeFDTInstance);
-    SimpleRestrictedUpgradeSafeFDT.setAsDeployed(instances.SimpleRestrictedUpgradeSafeFDTInstance);
+    ProxySafeVanillaFDT.setAsDeployed(instances.ProxySafeVanillaFDTInstance);
+    ProxySafeSimpleRestrictedFDT.setAsDeployed(instances.ProxySafeSimpleRestrictedFDTInstance);
     // Work around unsupported "linking by name" in Buidler
     instances.FDTFactoryInstance = await linkAddressesAndDeploy(FDTFactory, [
-      instances.VanillaUpgradeSafeFDTInstance.address,
-      instances.SimpleRestrictedUpgradeSafeFDTInstance.address,
+      instances.ProxySafeVanillaFDTInstance.address,
+      instances.ProxySafeSimpleRestrictedFDTInstance.address,
     ]);
     FDTFactory.setAsDeployed(instances.FDTFactoryInstance);
   }
   else {
-    await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
-    await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
+    await FDTFactory.link('VanillaFDTLogic', instances.ProxySafeVanillaFDTInstance.address);
+    await FDTFactory.link('SimpleRestrictedFDTLogic', instances.ProxySafeSimpleRestrictedFDTInstance.address);
     instances.FDTFactoryInstance = await FDTFactory.new();
   }
 
   // ICT
-  instances.UpgradeSafeICTInstance = await UpgradeSafeICT.new();
+  instances.ProxySafeICTInstance = await ProxySafeICT.new();
   if (isBuidler) {
-    UpgradeSafeICT.setAsDeployed(instances.UpgradeSafeICTInstance);
+    ProxySafeICT.setAsDeployed(instances.ProxySafeICTInstance);
     // Work around unsupported "linking by name" in Buidler
     instances.ICTFactoryInstance = await linkAddressesAndDeploy(ICTFactory, [
-      instances.UpgradeSafeICTInstance.address,
+      instances.ProxySafeICTInstance.address,
     ]);
     ICTFactory.setAsDeployed(instances.ICTFactoryInstance);
   } else {
-    await ICTFactory.link('ICTLogic', instances.UpgradeSafeICTInstance.address);
+    await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
     instances.ICTFactoryInstance = await ICTFactory.new();
   }
 

@@ -30,10 +30,10 @@ const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
 
 const FDTFactory = artifacts.require('FDTFactory');
-const VanillaUpgradeSafeFDT = artifacts.require('VanillaUpgradeSafeFDT');
-const SimpleRestrictedUpgradeSafeFDT = artifacts.require('SimpleRestrictedUpgradeSafeFDT');
+const ProxySafeVanillaFDT = artifacts.require('ProxySafeVanillaFDT');
+const ProxySafeSimpleRestrictedFDT = artifacts.require('ProxySafeSimpleRestrictedFDT');
 
-const UpgradeSafeICT = artifacts.require('UpgradeSafeICT');
+const ProxySafeICT = artifacts.require('ProxySafeICT');
 const ICTFactory = artifacts.require('ICTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
@@ -84,15 +84,15 @@ module.exports = async (deployer, network) => {
   );
 
   // FDT
-  instances.VanillaUpgradeSafeFDTInstance = await deployer.deploy(VanillaUpgradeSafeFDT);
-  instances.SimpleRestrictedUpgradeSafeFDTInstance = await deployer.deploy(SimpleRestrictedUpgradeSafeFDT);
-  await FDTFactory.link('VanillaFDTLogic', instances.VanillaUpgradeSafeFDTInstance.address);
-  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.SimpleRestrictedUpgradeSafeFDTInstance.address);
+  instances.ProxySafeVanillaFDTInstance = await deployer.deploy(ProxySafeVanillaFDT);
+  instances.ProxySafeSimpleRestrictedFDTInstance = await deployer.deploy(ProxySafeSimpleRestrictedFDT);
+  await FDTFactory.link('VanillaFDTLogic', instances.ProxySafeVanillaFDTInstance.address);
+  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.ProxySafeSimpleRestrictedFDTInstance.address);
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   // ICT
-  instances.UpgradeSafeICTInstance = await deployer.deploy(UpgradeSafeICT);
-  await ICTFactory.link('ICTLogic', instances.UpgradeSafeICTInstance.address);
+  instances.ProxySafeICTInstance = await deployer.deploy(ProxySafeICT);
+  await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
   instances.ICTFactoryInstance = await deployer.deploy(ICTFactory);
 
   console.log(`
@@ -117,9 +117,9 @@ module.exports = async (deployer, network) => {
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
-      SimpleRestrictedUpgradeSafeFDT: ${SimpleRestrictedUpgradeSafeFDT.address}
-      UpgradeSafeICT: ${UpgradeSafeICT.address}
-      VanillaUpgradeSafeFDT: ${VanillaUpgradeSafeFDT.address}
+      ProxySafeSimpleRestrictedFDT: ${ProxySafeSimpleRestrictedFDT.address}
+      ProxySafeICT: ${ProxySafeICT.address}
+      ProxySafeVanillaFDT: ${ProxySafeVanillaFDT.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)

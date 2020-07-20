@@ -273,7 +273,7 @@ abstract contract ERC1404 is IERC20 {
         returns (string memory);
 }
 
-contract SimpleRestrictedUpgradeSafeFDT is
+contract ProxySafeSimpleRestrictedFDT is
     IFundsDistributionToken,
     IInitializableFDT,
     FundsDistributionToken,

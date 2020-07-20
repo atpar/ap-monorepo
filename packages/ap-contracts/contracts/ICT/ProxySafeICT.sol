@@ -14,7 +14,7 @@ import "../Core/Base/DataRegistry/DataRegistry.sol";
 import "./DepositAllocater.sol";
 
 
-contract UpgradeSafeICT is
+contract ProxySafeICT is
     DepositAllocater,
     OwnableUpgradeSafe,
     EventUtils

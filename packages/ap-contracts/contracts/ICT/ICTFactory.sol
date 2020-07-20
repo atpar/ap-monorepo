@@ -6,14 +6,14 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
 import "./IInitializableICT.sol";
 import "../proxy/ProxyFactory.sol";
 
-// @dev Mock lib to link pre-deployed UpgradeSafeICT contract
+// @dev Mock lib to link pre-deployed ProxySafeICT contract
 library ICTLogic {
     function _() public pure { revert("never deploy it"); }
 }
 
 /**
  * @title ICTFactory
- * @notice Factory for deploying UpgradeSafeICT contracts
+ * @notice Factory for deploying ProxySafeICT contracts
  */
 contract ICTFactory is ProxyFactory {
 

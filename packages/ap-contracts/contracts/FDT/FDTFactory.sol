@@ -6,12 +6,12 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
 import "./IInitializableFDT.sol";
 import "../proxy/ProxyFactory.sol";
 
-// @dev Mock lib to link pre-deployed VanillaUpgradeSafeFDT contract
+// @dev Mock lib to link pre-deployed ProxySafeVanillaFDT contract
 library VanillaFDTLogic {
     function _() public pure { revert("never deploy it"); }
 }
 
-// @dev Mock lib to link pre-deployed SimpleRestrictedUpgradeSafeFDT contract
+// @dev Mock lib to link pre-deployed ProxySafeSimpleRestrictedFDT contract
 library SimpleRestrictedFDTLogic {
     function _() public pure { revert("never deploy it"); }
 }

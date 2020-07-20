@@ -36,8 +36,8 @@ contract('FDTFactory', function (accounts) {
 
   function testCreateDistributor(fnName) {
     const [logicName, tokenName] = ({
-      createERC20Distributor: ['VanillaUpgradeSafeFDT', 'VanillaFDT'],
-      createRestrictedERC20Distributor: ['SimpleRestrictedUpgradeSafeFDT', 'SimpleRestrictedFDT'],
+      createERC20Distributor: ['ProxySafeVanillaFDT', 'VanillaFDT'],
+      createRestrictedERC20Distributor: ['ProxySafeSimpleRestrictedFDT', 'SimpleRestrictedFDT'],
     })[fnName];
     if (!logicName) throw new Error('invalid fnName');
 

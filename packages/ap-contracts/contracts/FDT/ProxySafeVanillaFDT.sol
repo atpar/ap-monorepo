@@ -7,7 +7,7 @@ import "./FundsDistributionToken.sol";
 import "./IFundsDistributionToken.sol";
 import "./IInitializableFDT.sol";
 
-contract VanillaUpgradeSafeFDT is
+contract ProxySafeVanillaFDT is
     IFundsDistributionToken,
     IInitializableFDT,
     FundsDistributionToken,

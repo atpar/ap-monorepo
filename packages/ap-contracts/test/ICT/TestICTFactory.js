@@ -39,7 +39,7 @@ contract('ICTFactory', function (accounts) {
   function testCreateICToken(fnName) {
     // reserved for more `fName`s
     const [logicName, tokenName] = ({
-      createICToken: ['UpgradeSafeICT', 'ICT'],
+      createICToken: ['ProxySafeICT', 'ICT'],
     })[fnName];
     if (!logicName) throw new Error('invalid fnName');
 

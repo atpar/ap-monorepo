@@ -1,13 +1,13 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.11;
 
-import "./VanillaUpgradeSafeFDT.sol";
+import "./ProxySafeVanillaFDT.sol";
 
 /**
  * @notice This contract, unlike its parent contract, is entirely instantiated by the `constructor`.
  * Therefore this contract may NOT be used with a proxy that `delegatecall`s it.
  */
-contract VanillaFDT is VanillaUpgradeSafeFDT {
+contract VanillaFDT is ProxySafeVanillaFDT {
 
     constructor(
         string memory name,
@@ -17,7 +17,7 @@ contract VanillaFDT is VanillaUpgradeSafeFDT {
         uint256 initialAmount
     )
         public
-        VanillaUpgradeSafeFDT()
+        ProxySafeVanillaFDT()
     {
         initialize(name, symbol, _fundsToken, owner, initialAmount);
     }
