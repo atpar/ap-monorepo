@@ -86,13 +86,17 @@ module.exports = async (deployer, network) => {
   // FDT
   instances.ProxySafeVanillaFDTInstance = await deployer.deploy(ProxySafeVanillaFDT);
   instances.ProxySafeSimpleRestrictedFDTInstance = await deployer.deploy(ProxySafeSimpleRestrictedFDT);
+  // Before the factory deployment, link pre-deployed "logic" contract(s)
   await FDTFactory.link('VanillaFDTLogic', instances.ProxySafeVanillaFDTInstance.address);
   await FDTFactory.link('SimpleRestrictedFDTLogic', instances.ProxySafeSimpleRestrictedFDTInstance.address);
+  // Deploy the factory (with "logic" contract(s) linked)
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
 
   // ICT
   instances.ProxySafeICTInstance = await deployer.deploy(ProxySafeICT);
+  // Before the factory deployment, link pre-deployed "logic" contract(s)
   await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
+  // Deploy the factory (with "logic" contract(s) linked)
   instances.ICTFactoryInstance = await deployer.deploy(ICTFactory);
 
   console.log(`
