@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class SimpleRestrictedFDT extends Contract {
+export class SimpleRestrictedUpgradeSafeFDT extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): SimpleRestrictedFDT;
+  clone(): SimpleRestrictedUpgradeSafeFDT;
   methods: {
     FAILURE_NON_WHITELIST(): TransactionObject<string>;
 
@@ -53,8 +53,6 @@ export class SimpleRestrictedFDT extends Contract {
 
     balanceOf(account: string): TransactionObject<string>;
 
-    burn(account: string, amount: number | string): TransactionObject<boolean>;
-
     checkWhitelistAllowed(
       sender: string,
       receiver: string
@@ -67,12 +65,6 @@ export class SimpleRestrictedFDT extends Contract {
       subtractedValue: number | string
     ): TransactionObject<boolean>;
 
-    detectTransferRestriction(
-      from: string,
-      to: string,
-      arg2: number | string
-    ): TransactionObject<string>;
-
     disableRestrictions(): TransactionObject<void>;
 
     fundsToken(): TransactionObject<string>;
@@ -84,23 +76,9 @@ export class SimpleRestrictedFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    initialize(
-      name: string,
-      symbol: string,
-      _fundsToken: string,
-      owner: string,
-      initialAmount: number | string
-    ): TransactionObject<void>;
-
     isAdministrator(addressToTest: string): TransactionObject<boolean>;
 
     isRestrictionEnabled(): TransactionObject<boolean>;
-
-    messageForTransferRestriction(
-      restrictionCode: number | string
-    ): TransactionObject<string>;
-
-    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
 
@@ -110,8 +88,6 @@ export class SimpleRestrictedFDT extends Contract {
     ): TransactionObject<boolean>;
 
     owner(): TransactionObject<string>;
-
-    pushFunds(owners: string[]): TransactionObject<void>;
 
     removeAdmin(adminToRemove: string): TransactionObject<void>;
 
@@ -123,6 +99,32 @@ export class SimpleRestrictedFDT extends Contract {
 
     totalSupply(): TransactionObject<string>;
 
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
+    updateOutboundWhitelistEnabled(
+      sourceWhitelist: number | string,
+      destinationWhitelist: number | string,
+      newEnabledValue: boolean
+    ): TransactionObject<void>;
+
+    withdrawableFundsOf(_owner: string): TransactionObject<string>;
+
+    withdrawnFundsOf(_owner: string): TransactionObject<string>;
+
+    withdrawFunds(): TransactionObject<void>;
+
+    updateFundsReceived(): TransactionObject<void>;
+
+    initialize(
+      name: string,
+      symbol: string,
+      _fundsToken: string,
+      owner: string,
+      initialAmount: number | string
+    ): TransactionObject<void>;
+
+    pushFunds(owners: string[]): TransactionObject<void>;
+
     transfer(to: string, value: number | string): TransactionObject<boolean>;
 
     transferFrom(
@@ -131,21 +133,19 @@ export class SimpleRestrictedFDT extends Contract {
       value: number | string
     ): TransactionObject<boolean>;
 
-    transferOwnership(newOwner: string): TransactionObject<void>;
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
-    updateFundsReceived(): TransactionObject<void>;
+    burn(account: string, amount: number | string): TransactionObject<boolean>;
 
-    updateOutboundWhitelistEnabled(
-      sourceWhitelist: number | string,
-      destinationWhitelist: number | string,
-      newEnabledValue: boolean
-    ): TransactionObject<void>;
+    detectTransferRestriction(
+      from: string,
+      to: string,
+      arg2: number | string
+    ): TransactionObject<string>;
 
-    withdrawFunds(): TransactionObject<void>;
-
-    withdrawableFundsOf(_owner: string): TransactionObject<string>;
-
-    withdrawnFundsOf(_owner: string): TransactionObject<string>;
+    messageForTransferRestriction(
+      restrictionCode: number | string
+    ): TransactionObject<string>;
   };
   events: {
     AddressAddedToWhitelist: ContractEvent<{

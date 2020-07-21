@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class VanillaFDT extends Contract {
+export class VanillaUpgradeSafeFDT extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): VanillaFDT;
+  clone(): VanillaUpgradeSafeFDT;
   methods: {
     accumulativeFundsOf(_owner: string): TransactionObject<string>;
 
@@ -31,8 +31,6 @@ export class VanillaFDT extends Contract {
     ): TransactionObject<boolean>;
 
     balanceOf(account: string): TransactionObject<string>;
-
-    burn(account: string, amount: number | string): TransactionObject<boolean>;
 
     decimals(): TransactionObject<string>;
 
@@ -50,6 +48,26 @@ export class VanillaFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
+    name(): TransactionObject<string>;
+
+    owner(): TransactionObject<string>;
+
+    renounceOwnership(): TransactionObject<void>;
+
+    symbol(): TransactionObject<string>;
+
+    totalSupply(): TransactionObject<string>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
+    withdrawableFundsOf(_owner: string): TransactionObject<string>;
+
+    withdrawnFundsOf(_owner: string): TransactionObject<string>;
+
+    withdrawFunds(): TransactionObject<void>;
+
+    updateFundsReceived(): TransactionObject<void>;
+
     initialize(
       name: string,
       symbol: string,
@@ -58,19 +76,7 @@ export class VanillaFDT extends Contract {
       initialAmount: number | string
     ): TransactionObject<void>;
 
-    mint(account: string, amount: number | string): TransactionObject<boolean>;
-
-    name(): TransactionObject<string>;
-
-    owner(): TransactionObject<string>;
-
     pushFunds(owners: string[]): TransactionObject<void>;
-
-    renounceOwnership(): TransactionObject<void>;
-
-    symbol(): TransactionObject<string>;
-
-    totalSupply(): TransactionObject<string>;
 
     transfer(to: string, value: number | string): TransactionObject<boolean>;
 
@@ -80,15 +86,9 @@ export class VanillaFDT extends Contract {
       value: number | string
     ): TransactionObject<boolean>;
 
-    transferOwnership(newOwner: string): TransactionObject<void>;
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
-    updateFundsReceived(): TransactionObject<void>;
-
-    withdrawFunds(): TransactionObject<void>;
-
-    withdrawableFundsOf(_owner: string): TransactionObject<string>;
-
-    withdrawnFundsOf(_owner: string): TransactionObject<string>;
+    burn(account: string, amount: number | string): TransactionObject<boolean>;
   };
   events: {
     Approval: ContractEvent<{

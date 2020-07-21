@@ -1,3 +1,6 @@
+/* global artifacts, web3 */
+const {isRunUnderBuidler, linkAddressesAndDeploy} = require('./buidler-helper.js')(web3);
+
 const ANNEngine = artifacts.require('ANNEngine');
 const CECEngine = artifacts.require('CECEngine');
 const CEGEngine = artifacts.require('CEGEngine');
@@ -24,7 +27,13 @@ const PAMActor = artifacts.require('PAMActor');
 
 const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
+
 const FDTFactory = artifacts.require('FDTFactory');
+const ProxySafeVanillaFDT = artifacts.require('ProxySafeVanillaFDT');
+const ProxySafeSimpleRestrictedFDT = artifacts.require('ProxySafeSimpleRestrictedFDT');
+
+const ProxySafeICT = artifacts.require('ProxySafeICT');
+const ICTFactory = artifacts.require('ICTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
 
@@ -33,12 +42,24 @@ async function setupTestEnvironment (accounts) {
   const admin = accounts[0];
   const instances = {};
 
+  // If it runs by Buidler (rather than Truffle)
+  const isBuidler = isRunUnderBuidler();
+
+  // PAMEngine.numberFormat = 'String';
+
   // ACTUS-Solidity
   instances.ANNEngineInstance = await ANNEngine.new();
   instances.CECEngineInstance = await CECEngine.new();
   instances.CEGEngineInstance = await CEGEngine.new();
   instances.CERTFEngineInstance = await CERTFEngine.new();
   instances.PAMEngineInstance = await PAMEngine.new();
+  if (isBuidler) {
+      ANNEngine.setAsDeployed(instances.ANNEngineInstance);
+      CECEngine.setAsDeployed(instances.CECEngineInstance);
+      CEGEngine.setAsDeployed(instances.CEGEngineInstance);
+      CERTFEngine.setAsDeployed(instances.CERTFEngineInstance);
+      PAMEngine.setAsDeployed(instances.PAMEngineInstance);
+  }
 
   // Asset Registry
   instances.ANNEncoderInstance = await ANNEncoder.new();
@@ -56,9 +77,24 @@ async function setupTestEnvironment (accounts) {
   instances.CEGRegistryInstance = await CEGRegistry.new();
   instances.CERTFRegistryInstance = await CERTFRegistry.new();
   instances.PAMRegistryInstance = await PAMRegistry.new();
+  if (isBuidler) {
+    ANNEncoder.setAsDeployed(instances.ANNEncoderInstance);
+    CECEncoder.setAsDeployed(instances.CECEncoderInstance);
+    CEGEncoder.setAsDeployed(instances.CEGEncoderInstance);
+    CERTFEncoder.setAsDeployed(instances.CERTFEncoderInstance);
+    PAMEncoder.setAsDeployed(instances.PAMEncoderInstance);
+    ANNRegistry.setAsDeployed(instances.ANNRegistryInstance);
+    CECRegistry.setAsDeployed(instances.CECRegistryInstance);
+    CEGRegistry.setAsDeployed(instances.CEGRegistryInstance);
+    CERTFRegistry.setAsDeployed(instances.CERTFRegistryInstance);
+    PAMRegistry.setAsDeployed(instances.PAMRegistryInstance);
+  }
 
   // Data Registry
   instances.DataRegistryInstance = await DataRegistry.new();
+  if (isBuidler) {
+      DataRegistry.setAsDeployed(instances.DataRegistryInstance);
+  }
 
   // Asset Actor
   instances.ANNActorInstance = await ANNActor.new(instances.ANNRegistryInstance.address, instances.DataRegistryInstance.address);
@@ -66,15 +102,55 @@ async function setupTestEnvironment (accounts) {
   instances.CEGActorInstance = await CEGActor.new(instances.CEGRegistryInstance.address, instances.DataRegistryInstance.address);
   instances.CERTFActorInstance = await CERTFActor.new(instances.CERTFRegistryInstance.address, instances.DataRegistryInstance.address);
   instances.PAMActorInstance = await PAMActor.new(instances.PAMRegistryInstance.address, instances.DataRegistryInstance.address);
+  if (isBuidler) {
+    ANNActor.setAsDeployed(instances.ANNActorInstance);
+    CECActor.setAsDeployed(instances.CECActorInstance);
+    CEGActor.setAsDeployed(instances.CEGActorInstance);
+    CERTFActor.setAsDeployed(instances.CERTFActorInstance);
+    PAMActor.setAsDeployed(instances.PAMActorInstance);
+  }
 
   // Custodian
   instances.CustodianInstance = await Custodian.new(
     instances.CECActorInstance.address,
     instances.CECRegistryInstance.address
   );
+  if (isBuidler) {
+    Custodian.setAsDeployed(instances.CustodianInstance);
+  }
 
   // FDT
-  instances.FDTFactoryInstance = await FDTFactory.new();
+  instances.ProxySafeVanillaFDTInstance = await ProxySafeVanillaFDT.new();
+  instances.ProxySafeSimpleRestrictedFDTInstance = await ProxySafeSimpleRestrictedFDT.new();
+  if (isBuidler) {
+    ProxySafeVanillaFDT.setAsDeployed(instances.ProxySafeVanillaFDTInstance);
+    ProxySafeSimpleRestrictedFDT.setAsDeployed(instances.ProxySafeSimpleRestrictedFDTInstance);
+    // Work around unsupported "linking by name" in Buidler
+    instances.FDTFactoryInstance = await linkAddressesAndDeploy(FDTFactory, [
+      instances.ProxySafeVanillaFDTInstance.address,
+      instances.ProxySafeSimpleRestrictedFDTInstance.address,
+    ]);
+    FDTFactory.setAsDeployed(instances.FDTFactoryInstance);
+  }
+  else {
+    await FDTFactory.link('VanillaFDTLogic', instances.ProxySafeVanillaFDTInstance.address);
+    await FDTFactory.link('SimpleRestrictedFDTLogic', instances.ProxySafeSimpleRestrictedFDTInstance.address);
+    instances.FDTFactoryInstance = await FDTFactory.new();
+  }
+
+  // ICT
+  instances.ProxySafeICTInstance = await ProxySafeICT.new();
+  if (isBuidler) {
+    ProxySafeICT.setAsDeployed(instances.ProxySafeICTInstance);
+    // Work around unsupported "linking by name" in Buidler
+    instances.ICTFactoryInstance = await linkAddressesAndDeploy(ICTFactory, [
+      instances.ProxySafeICTInstance.address,
+    ]);
+    ICTFactory.setAsDeployed(instances.ICTFactoryInstance);
+  } else {
+    await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
+    instances.ICTFactoryInstance = await ICTFactory.new();
+  }
 
   await instances.ANNActorInstance.registerIssuer(admin);
   await instances.CECActorInstance.registerIssuer(admin);
@@ -104,7 +180,7 @@ function getComplexTerms () {
 async function deployPaymentToken(owner, holders) {
   const PaymentTokenInstance = await SettlementToken.new({ from: owner });
 
-  for (holder of holders) {
+  for (let holder of holders) {
     await PaymentTokenInstance.transfer(holder, web3.utils.toWei('5000'), { from: owner });
   }
 
