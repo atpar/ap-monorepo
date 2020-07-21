@@ -76,6 +76,8 @@ export class DepositAllocater extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
+    initialize(name: string, symbol: string): TransactionObject<void>;
+
     name(): TransactionObject<string>;
 
     symbol(): TransactionObject<string>;

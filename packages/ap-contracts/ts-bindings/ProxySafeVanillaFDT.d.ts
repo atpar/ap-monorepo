@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class VanillaUpgradeSafeFDT extends Contract {
+export class ProxySafeVanillaFDT extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): VanillaUpgradeSafeFDT;
+  clone(): ProxySafeVanillaFDT;
   methods: {
     accumulativeFundsOf(_owner: string): TransactionObject<string>;
 

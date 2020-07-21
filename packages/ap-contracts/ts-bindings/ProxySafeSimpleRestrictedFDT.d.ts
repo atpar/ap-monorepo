@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class SimpleRestrictedUpgradeSafeFDT extends Contract {
+export class ProxySafeSimpleRestrictedFDT extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): SimpleRestrictedUpgradeSafeFDT;
+  clone(): ProxySafeSimpleRestrictedFDT;
   methods: {
     FAILURE_NON_WHITELIST(): TransactionObject<string>;
 

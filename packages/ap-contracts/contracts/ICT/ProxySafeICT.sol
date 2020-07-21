@@ -41,7 +41,10 @@ contract ProxySafeICT is
         DataRegistry _dataRegistry,
         bytes32 _marketObjectCode,
         address owner
-    ) public initializer {
+    )
+        public
+        initializer
+    {
         require(
             address(_assetRegistry).isContract(),
             "ICT.initialize: INVALID_ASSET_REGISTRY"
@@ -61,7 +64,10 @@ contract ProxySafeICT is
         marketObjectCode = _marketObjectCode;
     }
 
-    function setAssetId(bytes32 _assetId) public onlyOwner {
+    function setAssetId(bytes32 _assetId)
+        public
+        onlyOwner
+    {
         require (
             assetId == bytes32(0),
             "ICT.setAssetId: ASSET_ID_ALREADY_SET"
@@ -85,7 +91,7 @@ contract ProxySafeICT is
         createDeposit(
             _event,
             scheduleTime,
-            (eventType == EventType.XD),
+            (eventType == EventType.RPD),
             currency
         );
     }
@@ -154,6 +160,15 @@ contract ProxySafeICT is
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
         dataRegistry.publishDataPoint(marketObjectCode, deposit.scheduledFor, quantity);
+    }
+
+    function mint(address account, uint256 amount)
+        public
+        onlyOwner
+        returns(bool)
+    {
+        super._mint(account, amount);
+        return true;
     }
 
     function _transfer(

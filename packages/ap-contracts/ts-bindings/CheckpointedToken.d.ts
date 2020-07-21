@@ -61,6 +61,8 @@ export class CheckpointedToken extends Contract {
       amount: number | string
     ): TransactionObject<boolean>;
 
+    initialize(name: string, symbol: string): TransactionObject<void>;
+
     getHoldersAt(checkpointId: number | string): TransactionObject<string[]>;
 
     getHolderSubsetAt(
