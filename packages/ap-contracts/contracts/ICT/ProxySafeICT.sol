@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
 import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
+import "@atpar/actus-solidity/contracts/Core/Conventions/BusinessDayConventions.sol";
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
 
 import "../Core/Base/AssetRegistry/IAssetRegistry.sol";
@@ -17,7 +18,8 @@ import "./DepositAllocater.sol";
 contract ProxySafeICT is
     DepositAllocater,
     OwnableUpgradeSafe,
-    EventUtils
+    EventUtils,
+    BusinessDayConventions
 {
     using Address for address;
     using SafeMath for uint256;
@@ -91,7 +93,7 @@ contract ProxySafeICT is
         createDeposit(
             _event,
             scheduleTime,
-            (eventType == EventType.RPD),
+            (eventType == EventType.XD),
             currency
         );
     }
@@ -135,7 +137,14 @@ contract ProxySafeICT is
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
-        dataRegistry.publishDataPoint(marketObjectCode, deposit.scheduledFor, quantity);
+        uint256 timestamp = shiftCalcTime(
+            deposit.scheduledFor,
+            BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
+            Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
+            assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
+        );
+
+        dataRegistry.publishDataPoint(marketObjectCode, timestamp, quantity);
     }
 
     /**
@@ -159,7 +168,14 @@ contract ProxySafeICT is
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
-        dataRegistry.publishDataPoint(marketObjectCode, deposit.scheduledFor, quantity);
+        uint256 timestamp = shiftCalcTime(
+            deposit.scheduledFor,
+            BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
+            Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
+            assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
+        );
+
+        dataRegistry.publishDataPoint(marketObjectCode, timestamp, quantity);
     }
 
     function mint(address account, uint256 amount)

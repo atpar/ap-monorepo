@@ -12,36 +12,53 @@ const { mineBlock } = require('../helper/blockchain');
 contract('ICT', function (accounts) {
   const [owner, issuer, counterparty, investor1] = accounts;
 
-  const computeEventTime = async (event) => {
-    return (await this.CERTFEngineInstance.computeEventTimeForEvent(
-      event,
+  const computeEventTime = async (scheduleTime) => {
+    return (await this.CERTFEngineInstance.shiftEventTime(
+      scheduleTime,
       this.terms.businessDayConvention,
       this.terms.calendar,
       this.terms.maturityDate
     )).toString();
   };
 
+  const computeCalcTime = async (scheduleTime) => {
+    return (await this.CERTFEngineInstance.shiftCalcTime(
+      scheduleTime,
+      this.terms.businessDayConvention,
+      this.terms.calendar,
+      this.terms.maturityDate
+    )).toString();
+  };
+
+  const encodeNumberAsBytes32 = (number) => {
+    return web3.utils.padLeft(
+      web3.utils.numberToHex(
+        web3.utils.toWei(String(number))
+      ),
+      64
+    );
+  };
+
   before(async () => {
     this.instances =  await setupTestEnvironment(accounts);
     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
-    this.quantityMOC = web3.utils.toHex('QUANTITY');
+    // deploy test ERC20 token
+    this.PaymentTokenInstance = await deployPaymentToken(issuer, [issuer]);
+
+    this.terms = { ...require('./CERTF-TERMS.json'), currency: this.PaymentTokenInstance.address };
+    this.schedule = await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000);
 
     this.ict = await ICToken.new(
       this.CERTFRegistryInstance.address,
       this.DataRegistryInstance.address,
-      this.quantityMOC
+      this.terms.contractReference_2.object
     );
-
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(issuer, [issuer]);
 
     // mint 50% of all ICTs to investor1
     await this.ict.mint(issuer, web3.utils.toWei('1000')); 
     await this.ict.mint(investor1, web3.utils.toWei('1000'));
 
-    this.terms = { ...require('./CERTF-TERMS.json'), currency: this.PaymentTokenInstance.address };
-    this.schedule = await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000);
     this.ownership = {
       creatorObligor: issuer, 
       creatorBeneficiary: ict.address, 
@@ -62,13 +79,13 @@ contract('ICT', function (accounts) {
 
     await this.ict.setAssetId(web3.utils.toHex(this.assetId));
 
-    await this.DataRegistryInstance.setDataProvider(this.quantityMOC, this.ict.address);
+    await this.DataRegistryInstance.setDataProvider(this.terms.contractReference_2.object, this.ict.address);
     await this.DataRegistryInstance.setDataProvider(this.terms.contractReference_1.object, owner);
 
     await DataRegistryInstance.publishDataPoint(
       this.terms.contractReference_1.object,
-      this.terms.nominalPrice,
-      this.terms.issueDate
+      this.terms.issueDate,
+      encodeNumberAsBytes32(this.terms.nominalPrice)
     );
   });
   
@@ -77,34 +94,26 @@ contract('ICT', function (accounts) {
     const { eventType, scheduleTime } = decodeEvent(idEvent);
     assert.equal(eventType, '1');
 
-    // // set allowance for Payment Router
-    // await this.PaymentTokenInstance.approve(
-    //   this.CERTFActorInstance.address,
-    //   this.terms.,
-    //   { from: issuer }
-    // );
-
     // settle and progress asset state
-    await mineBlock(await computeEventTime(idEvent));
-
+    await mineBlock(await computeEventTime(scheduleTime));
     await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
   });
 
-  it('should register investor1 for redemption for the first RPD event', async () => {
-    const rpdEvent = this.schedule[3];
-    const { eventType, scheduleTime } = decodeEvent(rpdEvent);
-    assert.equal(eventType, '24');
+  it('should register investor1 for redemption for the first XD event', async () => {
+    const xdEvent = this.schedule[2];
+    const { eventType, scheduleTime } = decodeEvent(xdEvent);
+    assert.equal(eventType, '26');
    
     const tokensToRedeem = web3.utils.toWei('1000');
 
-    await this.ict.createDepositForEvent(rpdEvent); 
-    await this.ict.registerForRedemption(rpdEvent, tokensToRedeem);
+    await this.ict.createDepositForEvent(xdEvent); 
+    await this.ict.registerForRedemption(xdEvent, tokensToRedeem);
 
     const quantity = (await this.DataRegistryInstance.getDataPoint(
-      this.quantityMOC,
-      await computeEventTime(rpdEvent)
+      this.terms.contractReference_2.object,
+      await computeCalcTime(scheduleTime)
     ))[0].toString();
-    
+
     assert.equal(quantity, tokensToRedeem);
   });
 
@@ -115,36 +124,42 @@ contract('ICT', function (accounts) {
 
     await DataRegistryInstance.publishDataPoint(
       this.terms.contractReference_1.object,
-      this.terms.nominalPrice,
-      await computeEventTime(rfdEvent)
+      await computeCalcTime(scheduleTime),
+      encodeNumberAsBytes32(this.terms.nominalPrice)
     );
 
     // settle and progress asset state
-    await mineBlock(await computeEventTime(rfdEvent));
+    await mineBlock(await computeEventTime(scheduleTime));
     await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
   });
 
   it('should process the first ExecutionDate event', async () => {
     const xdEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const { eventType} = decodeEvent(xdEvent);
+    const { eventType, scheduleTime } = decodeEvent(xdEvent);
     assert.equal(eventType, '26');
 
     // settle and progress asset state
-    await mineBlock(await computeEventTime(xdEvent));
+    await mineBlock(await computeEventTime(scheduleTime));
     await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
   });
 
     it('should process the first RPD event', async () => {
     const rpdEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const { eventType} = decodeEvent(rpdEvent);
+    const { eventType, scheduleTime } = decodeEvent(rpdEvent);
     assert.equal(eventType, '24');
 
-    // settle and progress asset state
-    await mineBlock(await computeEventTime(rpdEvent));
-    const tx = await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
-    await this.ict.fetchDepositAmountForEvent(rpdEvent);
+    // set allowance for CERTFActor
+    await this.PaymentTokenInstance.approve(
+      this.CERTFActorInstance.address,
+      web3.utils.toWei('1000000'),
+      { from: issuer }
+    );
 
-    console.log(tx.logs[0]);
-    // console.log(await this.ict.getDeposit(rpdEvent));
+    // settle and progress asset state
+    await mineBlock(await computeEventTime(scheduleTime));
+    await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
+    await this.ict.fetchDepositAmountForEvent(this.schedule[2]);
+
+    // console.log(await this.ict.getDeposit(this.schedule[2]));
   });
 });
