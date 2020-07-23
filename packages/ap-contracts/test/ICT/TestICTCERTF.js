@@ -47,7 +47,7 @@ contract('ICT', function (accounts) {
     // deploy test ERC20 token
     this.PaymentTokenInstance = await deployPaymentToken(issuer, [issuer]);
 
-    this.terms = { ...require('./CERTF-TERMS.json'), currency: this.PaymentTokenInstance.address };
+    this.terms = { ...require('./CERTF-Terms.json'), currency: this.PaymentTokenInstance.address };
     this.schedule = await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000);
 
     this.ict = await ICToken.new(
