@@ -166,6 +166,20 @@ export class ICT extends Contract {
 
     setAssetId(_assetId: string | number[]): TransactionObject<void>;
 
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
     signalAmountForDeposit(
       depositId: string | number[],
       signalAmount: number | string

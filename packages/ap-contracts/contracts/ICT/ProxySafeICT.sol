@@ -7,6 +7,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Address.sol";
 import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
+import "@atpar/actus-solidity/contracts/Core/Utils/PeriodUtils.sol";
 import "@atpar/actus-solidity/contracts/Core/Conventions/BusinessDayConventions.sol";
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
 
@@ -19,6 +20,7 @@ contract ProxySafeICT is
     DepositAllocater,
     OwnableUpgradeSafe,
     EventUtils,
+    PeriodUtils,
     BusinessDayConventions
 {
     using Address for address;
@@ -88,12 +90,20 @@ contract ProxySafeICT is
         );
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+        
+        // redemption is comprised of RFD, XD, RPD events
+        // only RFD is needed for the ICT redemption workflow
+        require(
+            eventType != EventType.XD && eventType != EventType.RPD,
+            "ICT.createDepositForEvent: FORBIDDEN_EVEN_TYPE"
+        );
+
         address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
 
         createDeposit(
             _event,
             scheduleTime,
-            (eventType == EventType.XD),
+            (eventType == EventType.RFD),
             currency
         );
     }
@@ -102,7 +112,20 @@ contract ProxySafeICT is
         public
         nonReentrant()
     {
-        (bool isSettled, int256 payoff) = assetRegistry.isEventSettled(assetId, _event);
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        (bool isSettled, int256 payoff) = assetRegistry.isEventSettled(
+            assetId,
+            (eventType != EventType.RFD) 
+                ? _event
+                : encodeEvent(
+                    EventType.RPD,
+                    getTimestampPlusPeriod(
+                        assetRegistry.getPeriodValueForTermsAttribute(assetId, "settlementPeriod"),
+                        scheduleTime
+                    )
+                )
+        );
 
         require(
             isSettled == true,
@@ -137,8 +160,15 @@ contract ProxySafeICT is
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
+        (EventType eventType, ) = decodeEvent(_event);
+
         uint256 timestamp = shiftCalcTime(
-            deposit.scheduledFor,
+            (eventType != EventType.RFD)
+                ? deposit.scheduledFor
+                : getTimestampPlusPeriod(
+                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
+                    deposit.scheduledFor
+                ),
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
@@ -168,8 +198,15 @@ contract ProxySafeICT is
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
         int256 quantity = ratioSignaled.floatMult(totalQuantity);
 
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
         uint256 timestamp = shiftCalcTime(
-            deposit.scheduledFor,
+            (eventType != EventType.RFD)
+                ? deposit.scheduledFor
+                : getTimestampPlusPeriod(
+                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
+                    scheduleTime
+                ),
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")

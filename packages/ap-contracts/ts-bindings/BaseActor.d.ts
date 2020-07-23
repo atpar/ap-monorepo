@@ -57,6 +57,20 @@ export class BaseActor extends Contract {
 
     renounceOwnership(): TransactionObject<void>;
 
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
     transferOwnership(newOwner: string): TransactionObject<void>;
 
     registerIssuer(issuer: string): TransactionObject<void>;

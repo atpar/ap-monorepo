@@ -6,6 +6,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol
 
 import "./CheckpointedTokenStorage.sol";
 
+
 contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
 
     /**
@@ -161,8 +162,8 @@ contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
         internal
         override
     {
-        _updateTransfer(address(0), tokenHolder, value);
         super._mint(tokenHolder, value);
+        _updateTransfer(address(0), tokenHolder, value);
     }
 
     function _burn(
@@ -172,8 +173,8 @@ contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
         internal
         override
     {
-        _updateTransfer(tokenHolder, address(0), value);
         super._burn(tokenHolder, value);
+        _updateTransfer(tokenHolder, address(0), value);
     }
 
     function _transfer(
@@ -185,7 +186,7 @@ contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
         virtual
         override
     {
-        _updateTransfer(from, to, value);
         super._transfer(from, to, value);
+        _updateTransfer(from, to, value);
     }
 }

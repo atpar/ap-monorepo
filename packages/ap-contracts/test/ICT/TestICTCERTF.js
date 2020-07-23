@@ -1,5 +1,6 @@
 /* global before, beforeEach, contract, describe, it, web3 */
 const { BN, ether, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
+const BigNumber = require('bignumber.js');
 
 const ICToken = artifacts.require('ICT');
 
@@ -55,9 +56,9 @@ contract('ICT', function (accounts) {
       this.terms.contractReference_2.object
     );
 
-    // mint 50% of all ICTs to investor1
-    await this.ict.mint(issuer, web3.utils.toWei('1000')); 
-    await this.ict.mint(investor1, web3.utils.toWei('1000'));
+    // mint 100% of all ICTs to investor1
+    await this.ict.mint(issuer, web3.utils.toWei('2500'));
+    await this.ict.mint(investor1, web3.utils.toWei('5000'));
 
     this.ownership = {
       creatorObligor: issuer, 
@@ -99,22 +100,31 @@ contract('ICT', function (accounts) {
     await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
   });
 
-  it('should register investor1 for redemption for the first XD event', async () => {
-    const xdEvent = this.schedule[2];
-    const { eventType, scheduleTime } = decodeEvent(xdEvent);
-    assert.equal(eventType, '26');
+  it('should register investor1 for redemption for the first RFD event', async () => {
+    const rfdEvent = this.schedule[1];
+    const { eventType } = decodeEvent(rfdEvent);
+    assert.equal(eventType, '23');
    
     const tokensToRedeem = web3.utils.toWei('1000');
 
-    await this.ict.createDepositForEvent(xdEvent); 
-    await this.ict.registerForRedemption(xdEvent, tokensToRedeem);
+    await this.ict.createDepositForEvent(rfdEvent); 
+    await this.ict.registerForRedemption(rfdEvent, tokensToRedeem, { from: investor1 });
+
+    const { scheduleTime: scheduleTimeXD } = decodeEvent(this.schedule[2]);
 
     const quantity = (await this.DataRegistryInstance.getDataPoint(
       this.terms.contractReference_2.object,
-      await computeCalcTime(scheduleTime)
+      await computeCalcTime(scheduleTimeXD)
     ))[0].toString();
 
-    assert.equal(quantity, tokensToRedeem);
+    const deposit = await this.ict.getDeposit(rfdEvent);
+    const totalSupply = await this.ict.totalSupply();
+    const ratioSignaled = (new BigNumber(deposit.totalAmountSignaled.toString())).dividedBy(totalSupply.toString()).shiftedBy(18).decimalPlaces(0);
+    const expectedQuantity = ratioSignaled.multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed();
+
+    assert.equal(quantity, expectedQuantity);
+
+    this.quantity = quantity;
   });
 
   it('should process the first RedemptionFixingDay event', async () => {
@@ -151,15 +161,31 @@ contract('ICT', function (accounts) {
     // set allowance for CERTFActor
     await this.PaymentTokenInstance.approve(
       this.CERTFActorInstance.address,
-      web3.utils.toWei('1000000'),
+      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed(),
       { from: issuer }
     );
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
     await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
-    await this.ict.fetchDepositAmountForEvent(this.schedule[2]);
+    await this.ict.fetchDepositAmountForEvent(this.schedule[1]);
 
-    // console.log(await this.ict.getDeposit(this.schedule[2]));
+    const deposit = await this.ict.getDeposit(this.schedule[1]);
+
+    assert.equal(
+      deposit.amount.toString(),
+      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.quantity).shiftedBy(-18).toFixed()
+    );
+  });
+
+  it('should withdraw the share for investor1', async () => {
+    await this.ict.claimDeposit(this.schedule[1], { from: investor1 });
+
+    const deposit = await this.ict.getDeposit(this.schedule[1]);
+
+    assert.equal(
+      deposit.claimedAmount.toString(),
+      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.quantity).shiftedBy(-18).toFixed()  
+    )
   });
 });

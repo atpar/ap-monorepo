@@ -61,6 +61,20 @@ export class CERTFEngine extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
     contractType(): TransactionObject<string>;
 
     computeStateForEvent(

@@ -60,6 +60,20 @@ export class Core extends Contract {
     ): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
   };
   events: {
     allEvents: (

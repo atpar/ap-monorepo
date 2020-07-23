@@ -54,6 +54,20 @@ export class Utils extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
     computeEventTimeForEvent(
       _event: string | number[],
       bdc: number | string,
