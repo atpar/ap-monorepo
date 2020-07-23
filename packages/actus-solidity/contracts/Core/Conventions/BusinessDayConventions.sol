@@ -24,7 +24,7 @@ contract BusinessDayConventions {
         Calendar calendar,
         uint256 maturityDate
     )
-        internal
+        public
         pure
         returns (uint256)
     {
@@ -52,7 +52,7 @@ contract BusinessDayConventions {
         Calendar calendar,
         uint256 maturityDate
     )
-        internal
+        public
         pure
         returns (uint256)
     {
