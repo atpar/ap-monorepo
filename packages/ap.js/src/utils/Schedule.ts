@@ -14,19 +14,21 @@ export function getEpochOffsetForEventType (eventType: string): number {
 export async function computeScheduleFromTerms(
   engine: UEngine,
   terms: UTerms,
-  generateCyclicEvent?: boolean
+  generateCyclicEvent?: boolean,
+  from?: number | string,
+  to?: number | string
 ): Promise<string[]> {
   // @ts-ignore
   const { maturityDate } = terms;
   const schedule = [];
 
   // @ts-ignore
-  schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, 0, maturityDate).call()));
+  schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, from || 0, to || maturityDate).call()));
 
   if (generateCyclicEvent === true && String(terms.maturityDate) !== '0') {
     for (const cyclicEvent of CYCLIC_EVENTS) {
       // @ts-ignore
-      schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, 0, maturityDate, cyclicEvent).call()));
+      schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, from || 0, to || maturityDate, cyclicEvent).call()));
     }
   } 
 
