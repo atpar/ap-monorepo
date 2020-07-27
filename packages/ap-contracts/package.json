@@ -25,7 +25,8 @@
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "build": "npm run compile:all && npm run generate-artifacts && npm run generate-ts-bindings",
