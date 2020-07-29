@@ -24,6 +24,45 @@ module.exports = {
     buidlerevm: {
       allowUnlimitedContractSize: false,
       initialDate: '2009-01-03T18:15:05' // for ACTUS test cases
+    },
+    'ap-chain': {
+      url: 'http://127.0.0.1:8545'
+    },
+    goerli: {
+      url: 'https://goerli.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: require('./mnemonic.js'),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
+    kovan: {
+      url: 'https://kovan.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: require('./mnemonic.js'),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: require('./mnemonic.js'),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
+    ropsten: {
+      url: 'https://ropsten.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: require('./mnemonic.js'),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
     }
   },
   solc: {
