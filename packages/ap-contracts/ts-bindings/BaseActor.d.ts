@@ -51,8 +51,6 @@ export class BaseActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
-    issuers(arg0: string): TransactionObject<boolean>;
-
     owner(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;
@@ -72,8 +70,6 @@ export class BaseActor extends Contract {
     ): TransactionObject<string>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
-
-    registerIssuer(issuer: string): TransactionObject<void>;
 
     progress(assetId: string | number[]): TransactionObject<void>;
 

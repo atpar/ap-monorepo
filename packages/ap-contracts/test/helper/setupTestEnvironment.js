@@ -40,6 +40,7 @@ const SettlementToken = artifacts.require('SettlementToken');
 
 async function setupTestEnvironment (accounts) {
   const admin = accounts[0];
+  const defaultActor = accounts[1];
   const instances = {};
 
   // If it runs by Buidler (rather than Truffle)
@@ -110,6 +111,23 @@ async function setupTestEnvironment (accounts) {
     PAMActor.setAsDeployed(instances.PAMActorInstance);
   }
 
+  // approve Actors for the Asset Registries
+  await instances.ANNRegistryInstance.approveActor(instances.ANNActorInstance.address);
+  await instances.CECRegistryInstance.approveActor(instances.CECActorInstance.address);
+  await instances.CEGRegistryInstance.approveActor(instances.CEGActorInstance.address);
+  await instances.CERTFRegistryInstance.approveActor(instances.CERTFActorInstance.address);
+  await instances.PAMRegistryInstance.approveActor(instances.PAMActorInstance.address);
+  await instances.ANNRegistryInstance.approveActor(admin);
+  await instances.CECRegistryInstance.approveActor(admin);
+  await instances.CEGRegistryInstance.approveActor(admin);
+  await instances.CERTFRegistryInstance.approveActor(admin);
+  await instances.PAMRegistryInstance.approveActor(admin);
+  await instances.ANNRegistryInstance.approveActor(defaultActor);
+  await instances.CECRegistryInstance.approveActor(defaultActor);
+  await instances.CEGRegistryInstance.approveActor(defaultActor);
+  await instances.CERTFRegistryInstance.approveActor(defaultActor);
+  await instances.PAMRegistryInstance.approveActor(defaultActor);
+
   // Custodian
   instances.CustodianInstance = await Custodian.new(
     instances.CECActorInstance.address,
@@ -151,12 +169,6 @@ async function setupTestEnvironment (accounts) {
     await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
     instances.ICTFactoryInstance = await ICTFactory.new();
   }
-
-  await instances.ANNActorInstance.registerIssuer(admin);
-  await instances.CECActorInstance.registerIssuer(admin);
-  await instances.CEGActorInstance.registerIssuer(admin);
-  await instances.CERTFActorInstance.registerIssuer(admin);
-  await instances.PAMActorInstance.registerIssuer(admin);
 
   return instances;
 }

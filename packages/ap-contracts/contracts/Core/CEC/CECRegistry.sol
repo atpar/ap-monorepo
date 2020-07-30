@@ -45,6 +45,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
     )
         external
         override
+        onlyApprovedActors
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetCECTerms(terms);

@@ -51,8 +51,6 @@ export class PAMActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
-    issuers(arg0: string): TransactionObject<boolean>;
-
     owner(): TransactionObject<string>;
 
     progress(assetId: string | number[]): TransactionObject<void>;
@@ -61,8 +59,6 @@ export class PAMActor extends Contract {
       assetId: string | number[],
       _event: string | number[]
     ): TransactionObject<void>;
-
-    registerIssuer(issuer: string): TransactionObject<void>;
 
     renounceOwnership(): TransactionObject<void>;
 

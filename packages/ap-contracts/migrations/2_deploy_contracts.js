@@ -76,6 +76,13 @@ module.exports = async (deployer, network) => {
   instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, DataRegistry.address);
   instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, DataRegistry.address);
 
+  // approve Actors for the Asset Registries
+  await instances.ANNRegistryInstance.approveActor(instances.ANNActorInstance.address);
+  await instances.CECRegistryInstanceANNRegistryInstance.approveActor(instances.CECActorInstance.address);
+  await instances.CEGRegistryInstanceANNRegistryInstance.approveActor(instances.CEGActorInstance.address);
+  await instances.CERTFRegistryInstanceANNRegistryInstance.approveActor(instances.CERTFActorInstance.address);
+  await instances.PAMRegistryInstanceANNRegistryInstance.approveActor(instances.PAMActorInstance.address);
+
   // Custodian
   instances.CustodianInstance = await deployer.deploy(
     Custodian,

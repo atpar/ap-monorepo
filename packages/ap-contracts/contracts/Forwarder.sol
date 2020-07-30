@@ -1,7 +1,8 @@
-pragma solidity ^0.5.2;
+// "SPDX-License-Identifier: Apache-2.0"
+pragma solidity ^0.6.11;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 
 
 contract Forwarder is Ownable {

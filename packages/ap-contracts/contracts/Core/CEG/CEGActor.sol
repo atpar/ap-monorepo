@@ -22,7 +22,6 @@ contract CEGActor is BaseActor {
     /**
      * @notice Derives initial state of the asset terms and stores together with
      * terms, schedule, ownership, engine, admin of the asset in the contract types specific AssetRegistry.
-     * @dev Can only be called by a whitelisted issuer.
      * @param terms asset specific terms
      * @param schedule schedule of the asset
      * @param ownership ownership of the asset
@@ -37,7 +36,6 @@ contract CEGActor is BaseActor {
         address admin
     )
         external
-        onlyRegisteredIssuer
     {
         require(
             engine != address(0) && IEngine(engine).contractType() == ContractType.CEG,
