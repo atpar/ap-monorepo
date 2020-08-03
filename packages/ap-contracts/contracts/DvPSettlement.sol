@@ -23,6 +23,7 @@ contract DvPSettlement {
         address creator;
         address creatorToken;
         uint256 creatorAmount;
+        address creatorBeneficiary;
         address counterparty;
         address counterpartyToken;
         uint256 counterpartyAmount;
@@ -45,6 +46,7 @@ contract DvPSettlement {
     function createSettlement(
         address creatorToken,
         uint256 creatorAmount,
+        address creatorBeneficiary,
         address counterparty,
         address counterpartyToken,
         uint256 counterpartyAmount,
@@ -62,6 +64,7 @@ contract DvPSettlement {
         settlements[id].creator = msg.sender;
         settlements[id].creatorToken = creatorToken;
         settlements[id].creatorAmount = creatorAmount;
+        settlements[id].creatorBeneficiary = creatorBeneficiary;
         settlements[id].counterparty = counterparty;
         settlements[id].counterpartyToken = counterpartyToken;
         settlements[id].counterpartyAmount = counterpartyAmount;
@@ -105,12 +108,16 @@ contract DvPSettlement {
             "DvPSettlement.executeSettlement - sender not allowed to execute settlement"
         );
 
+        // if empty (0x0) creatorBeneficiary address, send funds to creator
+        address creatorReveiver = (settlements[id].creatorBeneficiary == address(0)) ?
+            settlements[id].creator : settlements[id].creatorBeneficiary;
+
         // transfer both tokens
         require(
             (IERC20(settlements[id].counterpartyToken)
             .transferFrom(
                 msg.sender,
-                settlements[id].creator,
+                creatorReveiver,
                 settlements[id].counterpartyAmount
             )),
             "DvPSettlement.executeSettlement - transferFrom sender failed"
