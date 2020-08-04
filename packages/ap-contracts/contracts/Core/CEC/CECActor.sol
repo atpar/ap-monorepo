@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@atpar/actus-solidity/contracts/Engines/CEC/ICECEngine.sol";
@@ -16,15 +16,14 @@ import "./ICECRegistry.sol";
 contract CECActor is BaseActor {
 
 
-    constructor(IAssetRegistry assetRegistry, IMarketObjectRegistry marketObjectRegistry)
+    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
         public
-        BaseActor(assetRegistry, marketObjectRegistry)
+        BaseActor(assetRegistry, dataRegistry)
     {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
      * terms, schedule, ownership, engine, admin of the asset in the contract types specific AssetRegistry.
-     * @dev Can only be called by a whitelisted issuer.
      * @param terms asset specific terms
      * @param schedule schedule of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
@@ -41,7 +40,6 @@ contract CECActor is BaseActor {
         address underlyingRegistry
     )
         external
-        onlyRegisteredIssuer
     {
         require(
             engine != address(0) && IEngine(engine).contractType() == ContractType.CEC,
@@ -128,18 +126,27 @@ contract CECActor is BaseActor {
     {
         address engine = assetRegistry.getEngine(assetId);
         CECTerms memory terms = ICECRegistry(address(assetRegistry)).getTerms(assetId);
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         int256 payoff = ICECEngine(engine).computePayoffForEvent(
             terms,
             state,
             _event,
-            getExternalDataForPOF(assetId, _event)
+            getExternalDataForPOF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
         state = ICECEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,
-            getExternalDataForSTF(assetId, _event)
+            getExternalDataForSTF(
+                assetId,
+                eventType,
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            )
         );
 
         return (state, payoff);

@@ -1,20 +1,20 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 
 /**
- * @title MarketObjectRegistryStorage
- * @notice Describes the storage of the MarketObjectRegistry
+ * @title DataRegistryStorage
+ * @notice Describes the storage of the DataRegistry
  */
-contract MarketObjectRegistryStorage {
+contract DataRegistryStorage {
 
     struct DataPoint {
         int256 dataPoint;
         bool isSet;
     }
 
-    struct MarketObject {
+    struct Set {
         // timestamp => DataPoint
         mapping(uint256 => DataPoint) dataPoints;
         uint256 lastUpdatedTimestamp;
@@ -22,5 +22,5 @@ contract MarketObjectRegistryStorage {
         bool isSet;
     }
 
-    mapping(bytes32 => MarketObject) internal marketObjects;
+    mapping(bytes32 => Set) internal sets;
 }

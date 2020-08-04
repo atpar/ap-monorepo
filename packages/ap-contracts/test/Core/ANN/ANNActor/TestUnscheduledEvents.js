@@ -16,7 +16,7 @@ contract('ANNActor', (accounts) => {
   const counterpartyBeneficiary = accounts[4];
 
   let snapshot;
-  
+
   const getEventTime = async (_event, terms) => {
     return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
       _event,
@@ -32,7 +32,7 @@ contract('ANNActor', (accounts) => {
 
     this.assetId;
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { 
+    this.terms = {
       ...await getDefaultTerms("ANN"),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
@@ -68,7 +68,7 @@ contract('ANNActor', (accounts) => {
     const initialState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
     const event = encodeEvent(9, Number(this.terms.contractDealDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
-    
+
     await mineBlock(Number(eventTime));
 
     const { tx: txHash } = await this.ANNActorInstance.progressWith(
@@ -96,7 +96,7 @@ contract('ANNActor', (accounts) => {
   });
 
   it('should not process next state for an unscheduled event with a later schedule time', async () => {
-    await this.ANNActorInstance.initialize(
+    const tx = await this.ANNActorInstance.initialize(
       this.terms,
       this.schedule,
       this.ownership,
@@ -104,9 +104,11 @@ contract('ANNActor', (accounts) => {
       admin
     );
 
+    this.assetId = tx.logs[0].args.assetId;
+
     const event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
     const eventTime = await getEventTime(event, this.terms);
-    
+
     await mineBlock(Number(eventTime));
 
     await shouldFail.reverting.withMessage(

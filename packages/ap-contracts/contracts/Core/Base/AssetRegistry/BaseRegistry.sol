@@ -1,6 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
+
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 
 import "../SharedTypes.sol";
 
@@ -17,6 +19,7 @@ import "./Schedule/ScheduleRegistry.sol";
  * @notice Registry for ACTUS Protocol assets
  */
 abstract contract BaseRegistry is
+    Ownable,
     BaseRegistryStorage,
     TermsRegistry,
     StateRegistry,
@@ -28,11 +31,30 @@ abstract contract BaseRegistry is
     event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);
     event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
 
+    mapping(address => bool) public approvedActors;
+
+
+    modifier onlyApprovedActors {
+        require(
+            approvedActors[msg.sender],
+            "BaseRegistry.onlyApprovedActors: UNAUTHORIZED_SENDER"
+        );
+        _;
+    }
 
     constructor()
         public
         BaseRegistryStorage()
     {}
+
+    /**
+     * @notice Approves the address of an actor contract e.g. for registering assets.
+     * @dev Can only be called by the owner of the contract.
+     * @param actor address of the actor
+     */
+    function approveActor(address actor) external onlyOwner {
+        approvedActors[actor] = true;
+    }
 
     /**
      * @notice Returns if there is an asset registerd for a given assetId
@@ -78,6 +100,11 @@ abstract contract BaseRegistry is
         require(
             asset.isSet == false,
             "BaseRegistry.setAsset: ASSET_ALREADY_EXISTS"
+        );
+        // revert if specified address of the actor is not approved
+        require(
+            approvedActors[actor] == true,
+            "BaseRegistry.setAsset: ACTOR_NOT_APPROVED"
         );
 
         asset.isSet = true;

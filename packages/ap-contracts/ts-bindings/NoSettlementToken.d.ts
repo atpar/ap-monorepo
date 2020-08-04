@@ -42,9 +42,9 @@ export class NoSettlementToken extends Contract {
 
     totalSupply(): TransactionObject<string>;
 
-    balanceOf(tokenOwner: string): TransactionObject<string>;
+    balanceOf(arg0: string): TransactionObject<string>;
 
-    allowance(tokenOwner: string, spender: string): TransactionObject<string>;
+    allowance(arg0: string, arg1: string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{

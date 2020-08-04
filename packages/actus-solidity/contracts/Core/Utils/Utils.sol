@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../ACTUSTypes.sol";
@@ -14,7 +14,7 @@ import "./CycleUtils.sol";
  * @title Utils
  * @notice Utility methods used throughout Core and all Engines
  */
-contract Utils is EventUtils, PeriodUtils, CycleUtils, BusinessDayConventions {
+contract Utils is BusinessDayConventions, EventUtils, PeriodUtils, CycleUtils {
 
     /**
      * @notice Returns the event time for a given schedule time

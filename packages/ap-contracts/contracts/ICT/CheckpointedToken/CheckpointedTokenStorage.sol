@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.10;
+pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../Checkpoint/Checkpoint.sol";
@@ -18,4 +18,7 @@ contract CheckpointedTokenStorage is Checkpoint {
 
     // Number of holders with non-zero balance
     uint256 public holderCount;
+
+    // Reserved
+    uint256[10] private __gap;
 }

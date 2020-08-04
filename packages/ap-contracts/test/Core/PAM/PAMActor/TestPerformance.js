@@ -151,7 +151,7 @@ contract('PAMActor', (accounts) => {
       txHash, PAMActor, 'ProgressedAsset'
     );
     const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const storedNextFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
+    const storedFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
     const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
@@ -168,7 +168,7 @@ contract('PAMActor', (accounts) => {
     // compare results
     assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(storedFinalizedState.statusDate, this.state.statusDate);
     assert.equal(isEventSettled[0], false);
     assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
@@ -189,7 +189,7 @@ contract('PAMActor', (accounts) => {
       txHash, PAMActor, 'ProgressedAsset'
     );
     const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const storedNextFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
+    const storedFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
     const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
@@ -207,7 +207,7 @@ contract('PAMActor', (accounts) => {
     // compare results
     assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(storedFinalizedState.statusDate, this.state.statusDate);
     assert.equal(isEventSettled[0], false);
     assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
@@ -228,7 +228,7 @@ contract('PAMActor', (accounts) => {
       txHash, PAMActor, 'ProgressedAsset'
     );
     const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const storedNextFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
+    const storedFinalizedState = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
     const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
     // compute expected next state
@@ -245,7 +245,7 @@ contract('PAMActor', (accounts) => {
     // compare results
     assert.equal(emittedAssetId, this.assetId);
     assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(storedNextFinalizedState.statusDate, projectedNextState.statusDate);
+    assert.equal(storedFinalizedState.statusDate, this.state.statusDate);
     assert.equal(isEventSettled[0], false);
     assert.equal(isEventSettled[1].toString(), '0');
     assert.deepEqual(storedNextState, projectedNextState);
@@ -266,7 +266,7 @@ contract('PAMActor', (accounts) => {
       txHash_DL, PAMActor, 'ProgressedAsset'
     );
     const storedNextState_DL = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const storedNextFinalizedState_DL = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
+    const storedFinalizedState_DL = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
     const storedPendingEvent_DL = await this.PAMRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
     const isEventSettled_DL = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
@@ -285,7 +285,7 @@ contract('PAMActor', (accounts) => {
     assert.equal(emittedAssetId_DL, this.assetId);
     assert.equal(_event, storedPendingEvent_DL);
     assert.equal(storedNextState_DL.statusDate, eventTime);
-    assert.equal(storedNextFinalizedState_DL.statusDate, projectedNextState_DL.statusDate);
+    assert.equal(storedFinalizedState_DL.statusDate, this.state.statusDate);
     assert.equal(isEventSettled_DL[0], false);
     assert.equal(isEventSettled_DL[1].toString(), '0');
     assert.deepEqual(storedNextState_DL, projectedNextState_DL);
@@ -313,7 +313,7 @@ contract('PAMActor', (accounts) => {
       txHash_PF, PAMActor, 'ProgressedAsset'
     );
     const storedNextState_PF = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const storedNextFinalizedState_PF = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
+    const storedFinalizedState_PF = web3ResponseToState(await this.PAMRegistryInstance.getFinalizedState(web3.utils.toHex(this.assetId)));
     const storedPendingEvent_PF = await this.PAMRegistryInstance.getPendingEvent(web3.utils.toHex(this.assetId));
     const isEventSettled_PF = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
 
@@ -332,7 +332,7 @@ contract('PAMActor', (accounts) => {
     assert.equal(emittedAssetId_PF, this.assetId);
     assert.equal(storedPendingEvent_PF, ZERO_BYTES32);
     assert.equal(storedNextState_PF.statusDate, eventTime);
-    assert.equal(storedNextFinalizedState_PF.statusDate, projectedNextState_PF.statusDate);
+    assert.equal(storedFinalizedState_PF.statusDate, this.state.statusDate);
     assert.equal(isEventSettled_PF[0], true);
     assert.equal(isEventSettled_PF[1].toString(), payoff.toFixed());
     assert.deepEqual(storedNextState_PF, projectedNextState_PF);

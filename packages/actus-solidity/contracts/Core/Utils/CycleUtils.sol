@@ -1,11 +1,12 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
 import "../ACTUSConstants.sol";
+import "../Conventions/EndOfMonthConventions.sol";
 import "./PeriodUtils.sol";
 
 
@@ -13,7 +14,7 @@ import "./PeriodUtils.sol";
  * @title Schedule
  * @notice Methods related to generating event schedules.
  */
-contract CycleUtils is ACTUSConstants, PeriodUtils {
+contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
 
     using BokkyPooBahsDateTimeLibrary for uint;
 
@@ -53,6 +54,7 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
      * @param cycleStart start time of the cycle
      * @param cycleEnd end time of the cycle
      * @param cycle IPS cycle
+     * @param eomc end of month convention
      * @param addEndTime timestamp of the end of the cycle should be added to the result if it falls in the segment
      * @param segmentStart start time of the segment
      * @param segmentEnd end time of the segment
@@ -62,6 +64,7 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
         uint256 cycleStart,
         uint256 cycleEnd,
         IPS memory cycle,
+        EndOfMonthConvention eomc,
         bool addEndTime,
         uint256 segmentStart,
         uint256 segmentEnd
@@ -90,6 +93,8 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
         uint256 date = cycleStart;
         uint256 cycleIndex;
 
+        EndOfMonthConvention actualEOMC = adjustEndOfMonthConvention(eomc, cycleStart, cycle);
+
         // walk through the cycle and create the cycle dates to be returned
         while (date < cycleEnd) {
             // if date is in segment and MAX_CYCLE_SIZE is not reached add it to the output array
@@ -101,7 +106,9 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
 
             cycleIndex++;
 
-            date = getNextCycleDate(cycle, cycleStart, cycleIndex);
+            date = (actualEOMC == EndOfMonthConvention.EOM)
+                ? shiftEndOfMonth(getNextCycleDate(cycle, cycleStart, cycleIndex))
+                : getNextCycleDate(cycle, cycleStart, cycleIndex);
         }
 
         // add additional time at the end if addEndTime
@@ -130,17 +137,19 @@ contract CycleUtils is ACTUSConstants, PeriodUtils {
      */
     function computeNextCycleDateFromPrecedingDate(
         IPS memory cycle,
+        EndOfMonthConvention eomc,
+        uint256 anchorDate,
         uint256 precedingDate
     )
         internal
         pure
         returns (uint256)
     {
-        if (cycle.isSet == false) {
-            return 0;
-        }
+        if (cycle.isSet == false || precedingDate == 0) return anchorDate;
 
-        return getNextCycleDate(cycle, precedingDate, 1);
+        return (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
+            ? shiftEndOfMonth(getNextCycleDate(cycle, precedingDate, 1))
+            : getNextCycleDate(cycle, precedingDate, 1);
     }
 
     /*

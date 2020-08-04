@@ -29,6 +29,17 @@ export class Utils extends Contract {
 
     PRECISION(): TransactionObject<string>;
 
+    adjustEndOfMonthConvention(
+      eomc: number | string,
+      startTime: number | string,
+      cycle: {
+        i: number | string;
+        p: number | string;
+        s: number | string;
+        isSet: boolean;
+      }
+    ): TransactionObject<string>;
+
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
@@ -42,6 +53,20 @@ export class Utils extends Contract {
     ): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
 
     computeEventTimeForEvent(
       _event: string | number[],

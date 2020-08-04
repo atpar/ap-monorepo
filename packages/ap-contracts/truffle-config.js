@@ -1,7 +1,6 @@
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
 module.exports = {
-
   networks: { 
     development: {
       host: "127.0.0.1",
@@ -18,7 +17,8 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(require('./mnemonic.js'), 'https://goerli.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0'),
       network_id: '5',
-      skipDryRun: true
+      skipDryRun: true,
+      gasLimit: 8000000
     },
     kovan: {
       provider: () =>
@@ -48,7 +48,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.6.10",
+      version: "0.6.11",
       settings: {
         optimizer: {
           enabled: true,

@@ -1,17 +1,18 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
+import "@atpar/actus-solidity/contracts/Core/Conventions/BusinessDayConventions.sol";
 import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
 
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../MarketObjectRegistry/IMarketObjectRegistry.sol";
+import "../DataRegistry/IDataRegistry.sol";
 import "./IAssetActor.sol";
 
 
@@ -25,7 +26,7 @@ import "./IAssetActor.sol";
  * The AssetActor stores the next state in the AssetRegistry, depending on if it is able
  * to settle the current outstanding payoff on behalf of the obligor.
  */
-abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
+abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, IAssetActor, Ownable {
 
     using SignedMath for int;
 
@@ -33,38 +34,18 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
-
     IAssetRegistry public assetRegistry;
-    IMarketObjectRegistry public marketObjectRegistry;
+    IDataRegistry public dataRegistry;
 
-    mapping(address => bool) public issuers;
-
-
-    modifier onlyRegisteredIssuer {
-        require(
-            issuers[msg.sender],
-            "BaseActor.onlyRegisteredIssuer: UNAUTHORIZED_SENDER"
-        );
-        _;
-    }
 
     constructor (
         IAssetRegistry _assetRegistry,
-        IMarketObjectRegistry _marketObjectRegistry
+        IDataRegistry _dataRegistry
     )
         public
     {
         assetRegistry = _assetRegistry;
-        marketObjectRegistry = _marketObjectRegistry;
-    }
-
-    /**
-     * @notice Whitelists the address of an issuer contract for initializing an asset.
-     * @dev Can only be called by the owner of the contract.
-     * @param issuer address of the issuer
-     */
-    function registerIssuer(address issuer) external onlyOwner {
-        issuers[issuer] = true;
+        dataRegistry = _dataRegistry;
     }
 
     /**
@@ -157,11 +138,17 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        // revert if the scheduleTime of the next event is in the future
+        // revert if the event time of the next event is in the future
+        // compute event time by applying BDC to schedule time
         require(
             // solium-disable-next-line
-            scheduleTime <= block.timestamp,
-            "BaseActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
+            shiftEventTime(
+                scheduleTime,
+                BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
+                Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
+                assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
+            ) <= block.timestamp,
+            "ANNActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
 
         // get external data for the next event
@@ -177,7 +164,7 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
             // (if the obligation is later fulfilled before the asset reaches default,
             // the last performant state is used to derive subsequent states of the asset)
             if (state.contractPerformance == ContractPerformance.PF) {
-                assetRegistry.setFinalizedState(assetId, nextState); // state ???
+                assetRegistry.setFinalizedState(assetId, state);
             }
 
             // store event as pending event for future settlement
@@ -287,19 +274,18 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
      */
     function getExternalDataForSTF(
         bytes32 assetId,
-        bytes32 _event
+        EventType eventType,
+        uint256 timestamp
     )
         internal
         view
         returns (bytes32)
     {
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-
         if (eventType == EventType.RR) {
-            // get rate from MOR
-            (int256 resetRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+            // get rate from DataRegistry
+            (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
                 assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
-                scheduleTime
+                timestamp
             );
             if (isSet) return bytes32(resetRate);
         } else if (eventType == EventType.CE) {
@@ -331,9 +317,9 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
                 contractReference_2._type == ContractReferenceType.MOC
                 && contractReference_2.role == ContractReferenceRole.UDL
             ) {
-                (int256 quantity, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
                     contractReference_2.object,
-                    scheduleTime
+                    timestamp
                 );
                 if (isSet) return bytes32(quantity);
             }
@@ -346,13 +332,13 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
                 contractReference_1._type == ContractReferenceType.MOC
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
-                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
                     contractReference_1.object,
-                    scheduleTime
+                    timestamp
                 );
-                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = marketObjectRegistry.getDataPointOfMarketObject(
+                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
                     contractReference_1.object,
-                    assetRegistry.getUIntValueForForTermsAttribute(assetId, "issueDate")
+                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
                     return bytes32(redemptionAmountScheduleTime.floatDiv(redemptionAmountAnchorDate));
@@ -370,22 +356,21 @@ abstract contract BaseActor is Conversions, EventUtils, IAssetActor, Ownable {
      */
     function getExternalDataForPOF(
         bytes32 assetId,
-        bytes32 _event
+        EventType /* eventType */,
+        uint256 timestamp
     )
         internal
         view
         returns (bytes32)
     {
-        (, uint256  scheduleTime) = decodeEvent(_event);
-
         address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
         address settlementCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "settlementCurrency");
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = marketObjectRegistry.getDataPointOfMarketObject(
+            (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
                 keccak256(abi.encode(currency, settlementCurrency)),
-                scheduleTime
+                timestamp
             );
             if (isSet) return bytes32(fxRate);
         }

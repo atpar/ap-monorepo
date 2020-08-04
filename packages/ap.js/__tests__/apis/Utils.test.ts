@@ -45,6 +45,13 @@ describe('Utils', (): void => {
       expect(schedule.length).toBeGreaterThan(0);
       expect(schedule).toEqual(DEFAULT_TERMS_SCHEDULE)
     });
+    
+    it('should return schedule for terms - perpetual', async (): Promise<void> => {
+      const terms = DEFAULT_TERMS;
+      const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms, true, terms.maturityDate, terms.maturityDate);
+      console.log(schedule);
+      expect(schedule.length).toBeGreaterThan(0);
+    });
   });
   
   describe('Conversion', (): void => {
@@ -102,6 +109,5 @@ describe('Utils', (): void => {
       expect(isPAMTerms(pamTerms))
     });
   });
-
 
 });

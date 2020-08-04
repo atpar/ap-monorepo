@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
@@ -45,6 +45,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
     )
         external
         override
+        onlyApprovedActors
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetCECTerms(terms);
@@ -106,7 +107,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetBytes32ValueForForCECAttribute(attribute);
     }
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -115,7 +116,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetUIntValueForForCECAttribute(attribute);
     }
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -151,7 +152,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForCECAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextCyclicEvent(bytes32 /* assetId */)
         internal
         view
         override(TermsRegistry)

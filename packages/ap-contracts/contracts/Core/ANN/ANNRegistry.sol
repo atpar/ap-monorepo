@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@atpar/actus-solidity/contracts/Engines/ANN/IANNEngine.sol";
@@ -47,6 +47,7 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
     )
         external
         override
+        onlyApprovedActors
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetANNTerms(terms);
@@ -108,7 +109,7 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
         return assets[assetId].decodeAndGetBytes32ValueForForANNAttribute(attribute);
     }
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -117,7 +118,7 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
         return assets[assetId].decodeAndGetUIntValueForForANNAttribute(attribute);
     }
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)

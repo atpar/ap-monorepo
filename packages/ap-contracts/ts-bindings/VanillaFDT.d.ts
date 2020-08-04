@@ -32,6 +32,8 @@ export class VanillaFDT extends Contract {
 
     balanceOf(account: string): TransactionObject<string>;
 
+    burn(account: string, amount: number | string): TransactionObject<boolean>;
+
     decimals(): TransactionObject<string>;
 
     decreaseAllowance(
@@ -48,27 +50,27 @@ export class VanillaFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
+    initialize(
+      name: string,
+      symbol: string,
+      _fundsToken: string,
+      owner: string,
+      initialAmount: number | string
+    ): TransactionObject<void>;
+
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
+
     name(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
+
+    pushFunds(owners: string[]): TransactionObject<void>;
 
     renounceOwnership(): TransactionObject<void>;
 
     symbol(): TransactionObject<string>;
 
     totalSupply(): TransactionObject<string>;
-
-    transferOwnership(newOwner: string): TransactionObject<void>;
-
-    withdrawableFundsOf(_owner: string): TransactionObject<string>;
-
-    withdrawnFundsOf(_owner: string): TransactionObject<string>;
-
-    withdrawFunds(): TransactionObject<void>;
-
-    updateFundsReceived(): TransactionObject<void>;
-
-    pushFunds(owners: string[]): TransactionObject<void>;
 
     transfer(to: string, value: number | string): TransactionObject<boolean>;
 
@@ -78,9 +80,15 @@ export class VanillaFDT extends Contract {
       value: number | string
     ): TransactionObject<boolean>;
 
-    mint(account: string, amount: number | string): TransactionObject<boolean>;
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
-    burn(account: string, amount: number | string): TransactionObject<boolean>;
+    updateFundsReceived(): TransactionObject<void>;
+
+    withdrawFunds(): TransactionObject<void>;
+
+    withdrawableFundsOf(_owner: string): TransactionObject<string>;
+
+    withdrawnFundsOf(_owner: string): TransactionObject<string>;
   };
   events: {
     Approval: ContractEvent<{

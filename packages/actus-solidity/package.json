@@ -1,6 +1,6 @@
 {
   "name": "@atpar/actus-solidity",
-  "version": "0.4.0-beta.8",
+  "version": "0.4.1",
   "description": "ACTUS smart contracts",
   "author": "atpar AG",
   "authors": [
@@ -21,6 +21,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atpar/ap-monorepo.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
@@ -65,7 +68,6 @@
     "solidity-coverage": "^0.7.4",
     "truffle": "5.1.32",
     "truffle-hdwallet-provider": "^1.0.9",
-    "truffle-security": "https://github.com/ConsenSys/truffle-security#1.7.2",
     "web3-utils": "^1.2.4"
   }
 }

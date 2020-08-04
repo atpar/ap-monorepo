@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
@@ -187,11 +187,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         uint256 index;
 
         if (eventType == EventType.CFD) {
-            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+            if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -206,11 +207,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
          if (eventType == EventType.CPD) {
-            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
+            if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -226,11 +228,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         if (eventType == EventType.RFD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+            if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -245,11 +248,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         if (eventType == EventType.RPD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+            if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -265,11 +269,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         if (eventType == EventType.XD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
+            if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
                     (terms.maturityDate > 0) ? terms.maturityDate : segmentEnd,
                     terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
                     (terms.maturityDate > 0) ? true : false,
                     segmentStart,
                     segmentEnd
@@ -313,20 +318,26 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         returns(bytes32)
     {
         if (eventType == EventType.CFD) {
-            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
-                uint256 nextCouponDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfCoupon
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfCoupon, lastScheduleTime);
+            if (terms.cycleAnchorDateOfCoupon != 0) {
+                uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfCoupon,
+                    lastScheduleTime
+                );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
                 return encodeEvent(EventType.CFD, nextCouponDate);
             }
         }
 
          if (eventType == EventType.CPD) {
-            if (terms.cycleOfCoupon.isSet == true && terms.cycleAnchorDateOfCoupon != 0) {
-                uint256 nextCouponDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfCoupon
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfCoupon, lastScheduleTime);
+            if (terms.cycleAnchorDateOfCoupon != 0) {
+                uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfCoupon,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfCoupon,
+                    lastScheduleTime
+                );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
                 uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextCouponDate);
                 return encodeEvent(EventType.CFD, couponPaymentDayScheduleTime);
@@ -334,20 +345,26 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         if (eventType == EventType.RFD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
-                uint256 nextRedemptionDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfRedemption
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+            if (terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfRedemption,
+                    lastScheduleTime
+                );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 return encodeEvent(EventType.RFD, nextRedemptionDate);
             }
         }
 
         if (eventType == EventType.RPD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
-                uint256 nextRedemptionDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfRedemption
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+            if (terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfRedemption,
+                    lastScheduleTime
+                );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextRedemptionDate);
                 return encodeEvent(EventType.RPD, redemptionPaymentDayScheduleTime);
@@ -355,10 +372,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         if (eventType == EventType.XD) {
-            if (terms.cycleOfRedemption.isSet == true && terms.cycleAnchorDateOfRedemption != 0) {
-                uint256 nextRedemptionDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfRedemption
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfRedemption, lastScheduleTime);
+            if (terms.cycleAnchorDateOfRedemption != 0) {
+                uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRedemption,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfRedemption,
+                    lastScheduleTime
+                );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 if (nextRedemptionDate == terms.maturityDate) return bytes32(0);
                 uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, nextRedemptionDate);

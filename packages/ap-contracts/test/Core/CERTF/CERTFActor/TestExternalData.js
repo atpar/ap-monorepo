@@ -69,12 +69,12 @@ contract('CERTFActor', (accounts) => {
     
     await mineBlock(Number(scheduleTime));
     
-    await this.MarketObjectRegistryInstance.setMarketObjectProvider(
+    await this.DataRegistryInstance.setDataProvider(
       this.terms.contractReference_1.object,
       accounts[0]
     );
 
-    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+    await this.DataRegistryInstance.publishDataPoint(
       this.terms.contractReference_1.object,
       this.terms.issueDate,
       web3.utils.padLeft(
@@ -85,7 +85,7 @@ contract('CERTFActor', (accounts) => {
       )
     );
       
-    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+    await this.DataRegistryInstance.publishDataPoint(
       this.terms.contractReference_1.object,
       scheduleTime,
       web3.utils.padLeft(
@@ -129,12 +129,12 @@ contract('CERTFActor', (accounts) => {
     
     await mineBlock(Number(scheduleTime));
     
-    await this.MarketObjectRegistryInstance.setMarketObjectProvider(
+    await this.DataRegistryInstance.setDataProvider(
       this.terms.contractReference_2.object,
       accounts[0]
     );
 
-    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+    await this.DataRegistryInstance.publishDataPoint(
       this.terms.contractReference_2.object,
       scheduleTime,
       web3.utils.padLeft(

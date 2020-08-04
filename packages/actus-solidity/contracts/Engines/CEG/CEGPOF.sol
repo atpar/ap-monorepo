@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
@@ -49,30 +49,23 @@ contract CEGPOF is Core {
             );
         }
 
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
+
         return (
             state.feeAccrued
             .add(
-                _yearFraction_POF(terms, state, scheduleTime)
+                timeFromLastEvent
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             )
-        );
-    }
-
-    function _yearFraction_POF (
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
         );
     }
 }

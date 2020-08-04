@@ -23,6 +23,8 @@ export class BaseActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
+    dataRegistry(): TransactionObject<string>;
+
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -49,17 +51,25 @@ export class BaseActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
-    issuers(arg0: string): TransactionObject<boolean>;
-
-    marketObjectRegistry(): TransactionObject<string>;
-
     owner(): TransactionObject<string>;
 
     renounceOwnership(): TransactionObject<void>;
 
-    transferOwnership(newOwner: string): TransactionObject<void>;
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
 
-    registerIssuer(issuer: string): TransactionObject<void>;
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
     progress(assetId: string | number[]): TransactionObject<void>;
 

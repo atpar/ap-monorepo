@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 
 import "@atpar/actus-solidity/contracts/Engines/ANN/ANNEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CEC/CECEngine.sol";

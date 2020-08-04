@@ -1,3 +1,4 @@
+/* global artifacts */
 const fs = require('fs');
 const path = require('path');
 
@@ -25,10 +26,18 @@ const CEGActor = artifacts.require('CEGActor');
 const CERTFActor = artifacts.require('CERTFActor');
 const PAMActor = artifacts.require('PAMActor');
 
-const MarketObjectRegistry = artifacts.require('MarketObjectRegistry');
+const DataRegistry = artifacts.require('DataRegistry');
 const Custodian = artifacts.require('Custodian');
+
 const FDTFactory = artifacts.require('FDTFactory');
+const ProxySafeVanillaFDT = artifacts.require('ProxySafeVanillaFDT');
+const ProxySafeSimpleRestrictedFDT = artifacts.require('ProxySafeSimpleRestrictedFDT');
+
+const ProxySafeICT = artifacts.require('ProxySafeICT');
+const ICTFactory = artifacts.require('ICTFactory');
+
 const SettlementToken = artifacts.require('SettlementToken');
+const DvPSettlement = artifacts.require('DvPSettlement');
 
 
 module.exports = async (deployer, network) => {
@@ -59,15 +68,22 @@ module.exports = async (deployer, network) => {
   instances.PAMRegistryInstance = await deployer.deploy(PAMRegistry);
 
   // Market Object Registry
-  instances.MarketObjectRegistryInstance = await deployer.deploy(MarketObjectRegistry);
+  instances.DataRegistryInstance = await deployer.deploy(DataRegistry);
 
   // Asset Actor
-  instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, MarketObjectRegistry.address);
-  instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, MarketObjectRegistry.address);
-  instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, MarketObjectRegistry.address);
-  instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, MarketObjectRegistry.address);
-  instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, MarketObjectRegistry.address);
-  
+  instances.ANNActorInstance = await deployer.deploy(ANNActor, ANNRegistry.address, DataRegistry.address);
+  instances.CECActorInstance = await deployer.deploy(CECActor, CECRegistry.address, DataRegistry.address);
+  instances.CEGActorInstance = await deployer.deploy(CEGActor, CEGRegistry.address, DataRegistry.address);
+  instances.CERTFActorInstance = await deployer.deploy(CERTFActor, CERTFRegistry.address, DataRegistry.address);
+  instances.PAMActorInstance = await deployer.deploy(PAMActor, PAMRegistry.address, DataRegistry.address);
+
+  // approve Actors for the Asset Registries
+  await instances.ANNRegistryInstance.approveActor(instances.ANNActorInstance.address);
+  await instances.CECRegistryInstance.approveActor(instances.CECActorInstance.address);
+  await instances.CEGRegistryInstance.approveActor(instances.CEGActorInstance.address);
+  await instances.CERTFRegistryInstance.approveActor(instances.CERTFActorInstance.address);
+  await instances.PAMRegistryInstance.approveActor(instances.PAMActorInstance.address);
+
   // Custodian
   instances.CustodianInstance = await deployer.deploy(
     Custodian,
@@ -76,7 +92,24 @@ module.exports = async (deployer, network) => {
   );
 
   // FDT
+  instances.ProxySafeVanillaFDTInstance = await deployer.deploy(ProxySafeVanillaFDT);
+  instances.ProxySafeSimpleRestrictedFDTInstance = await deployer.deploy(ProxySafeSimpleRestrictedFDT);
+  // Before the factory deployment, link pre-deployed "logic" contract(s)
+  await FDTFactory.link('VanillaFDTLogic', instances.ProxySafeVanillaFDTInstance.address);
+  await FDTFactory.link('SimpleRestrictedFDTLogic', instances.ProxySafeSimpleRestrictedFDTInstance.address);
+  // Deploy the factory (with "logic" contract(s) linked)
   instances.FDTFactoryInstance = await deployer.deploy(FDTFactory);
+
+  // ICT
+  instances.ProxySafeICTInstance = await deployer.deploy(ProxySafeICT);
+  // Before the factory deployment, link pre-deployed "logic" contract(s)
+  await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
+  // Deploy the factory (with "logic" contract(s) linked)
+  instances.ICTFactoryInstance = await deployer.deploy(ICTFactory);
+
+  // DvPSettlement
+  instances.DvPSettlement = await deployer.deploy(DvPSettlement);
+
 
   console.log(`
     Deployments:
@@ -95,10 +128,15 @@ module.exports = async (deployer, network) => {
       CERTFRegistry: ${CERTFRegistry.address}
       Custodian: ${Custodian.address}
       FDTFactory: ${FDTFactory.address}
-      MarketObjectRegistry: ${MarketObjectRegistry.address}
+      DataRegistry: ${DataRegistry.address}
+      ICTFactory: ${ICTFactory.address}
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
       PAMRegistry: ${PAMRegistry.address}
+      ProxySafeSimpleRestrictedFDT: ${ProxySafeSimpleRestrictedFDT.address}
+      ProxySafeICT: ${ProxySafeICT.address}
+      ProxySafeVanillaFDT: ${ProxySafeVanillaFDT.address}
+      DvPSettlement: ${DvPSettlement.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -123,10 +161,11 @@ module.exports = async (deployer, network) => {
     "CERTFRegistry": CERTFRegistry.address,
     "Custodian": Custodian.address,
     "FDTFactory": FDTFactory.address,
-    "MarketObjectRegistry": MarketObjectRegistry.address,
+    "DataRegistry": DataRegistry.address,
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,
-  }
+    "DvPSettlement": DvPSettlement.address
+  };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };

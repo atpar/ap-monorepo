@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
@@ -54,11 +54,11 @@ contract NoSettlementToken is ERC20Interface {
         return ~uint256(0);
     }
 
-    function balanceOf(address tokenOwner) external view override returns (uint balance) {
+    function balanceOf(address /* tokenOwner */) external view override returns (uint balance) {
         return ~uint256(0);
     }
 
-    function allowance(address tokenOwner, address spender) external view override returns (uint remaining) {
+    function allowance(address /* tokenOwner */, address /* spender */) external view override returns (uint remaining) {
         return ~uint256(0);
     }
 }

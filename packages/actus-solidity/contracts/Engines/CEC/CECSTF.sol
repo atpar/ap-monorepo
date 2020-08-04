@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
@@ -56,6 +56,15 @@ contract CECSTF is Core {
         pure
         returns (State memory)
     {
+        int256 timeFromLastEvent;
+        {
+            timeFromLastEvent = yearFraction(
+                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                terms.dayCountConvention,
+                terms.maturityDate
+            );
+        }
         state.statusDate = scheduleTime;
         // decode state.notionalPrincipal of underlying from externalData
         state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
@@ -66,12 +75,7 @@ contract CECSTF is Core {
         } else {
             state.feeAccrued = state.feeAccrued
             .add(
-                yearFraction(
-                    shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                    terms.dayCountConvention,
-                    terms.maturityDate
-                )
+                timeFromLastEvent
                 .floatMult(terms.feeRate)
                 .floatMult(state.notionalPrincipal)
             );
@@ -96,22 +100,5 @@ contract CECSTF is Core {
         state.statusDate = scheduleTime;
 
         return state;
-    }
-
-    function _yearFraction_STF (
-        CECTerms memory terms,
-        State memory state,
-        uint256 scheduleTime
-    )
-        private
-        pure
-        returns(int256)
-    {
-        return yearFraction(
-            shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-            terms.dayCountConvention,
-            terms.maturityDate
-        );
     }
 }

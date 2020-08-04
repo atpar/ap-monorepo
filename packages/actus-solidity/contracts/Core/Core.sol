@@ -1,12 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "./ACTUSTypes.sol";
 import "./ACTUSConstants.sol";
 import "./Utils/Utils.sol";
 import "./Conventions/BusinessDayConventions.sol";
-import "./Conventions/ContractDefaultConventions.sol";
 import "./Conventions/ContractRoleConventions.sol";
 import "./Conventions/DayCountConventions.sol";
 import "./Conventions/EndOfMonthConventions.sol";
@@ -19,8 +18,6 @@ import "./Conventions/EndOfMonthConventions.sol";
  */
 contract Core is
     ACTUSConstants,
-    BusinessDayConventions,
-    ContractDefaultConventions,
     ContractRoleConventions,
     DayCountConventions,
     EndOfMonthConventions,

@@ -23,7 +23,7 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 
 async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
-  events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, terms.maturityDate)));
+  events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, 1000000000000)));
   
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
   events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4)));

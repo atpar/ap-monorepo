@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../Core/Core.sol";
@@ -9,14 +9,6 @@ import "../Core/Core.sol";
 * These helper contracts expose internal functions for unit testing.
 */
 contract TestCore is Core {
-
-    function _performanceIndicator(ContractPerformance contractPerformance)
-        public
-        pure
-        returns (int8)
-    {
-        return performanceIndicator(contractPerformance);
-    }
 
     function _roleSign(ContractRole contractRole)
         public
@@ -71,6 +63,7 @@ contract TestCore is Core {
         uint256 cycleStart,
         uint256 cycleEnd,
         IPS memory cycle,
+        EndOfMonthConvention eomc,
         bool addEndTime,
         uint256 segmentStart,
         uint256 segmentEnd
@@ -79,6 +72,6 @@ contract TestCore is Core {
         pure
         returns (uint256[MAX_CYCLE_SIZE] memory)
     {
-        return computeDatesFromCycleSegment(cycleStart, cycleEnd, cycle, addEndTime, segmentStart, segmentEnd);
+        return computeDatesFromCycleSegment(cycleStart, cycleEnd, cycle, eomc, addEndTime, segmentStart, segmentEnd);
     }
 }

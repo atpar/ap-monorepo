@@ -21,6 +21,10 @@ export class PAMRegistry extends Contract {
   );
   clone(): PAMRegistry;
   methods: {
+    approveActor(actor: string): TransactionObject<void>;
+
+    approvedActors(arg0: string): TransactionObject<boolean>;
+
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
@@ -167,6 +171,8 @@ export class PAMRegistry extends Contract {
       _payoff: number | string
     ): TransactionObject<void>;
 
+    owner(): TransactionObject<string>;
+
     popNextScheduledEvent(
       assetId: string | number[]
     ): TransactionObject<string>;
@@ -177,6 +183,8 @@ export class PAMRegistry extends Contract {
       assetId: string | number[],
       pendingEvent: string | number[]
     ): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
 
     revokeAccess(
       assetId: string | number[],
@@ -265,6 +273,8 @@ export class PAMRegistry extends Contract {
         adjustmentFactor: number | string;
       }
     ): TransactionObject<void>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
 
     registerAsset(
       assetId: string | number[],
@@ -515,12 +525,12 @@ export class PAMRegistry extends Contract {
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getUIntValueForForTermsAttribute(
+    getUIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getIntValueForForTermsAttribute(
+    getIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
@@ -553,6 +563,12 @@ export class PAMRegistry extends Contract {
       0: string;
       1: string;
       2: string;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
     }>;
     RegisteredAsset: ContractEvent<string>;
     RevokedAccess: ContractEvent<{

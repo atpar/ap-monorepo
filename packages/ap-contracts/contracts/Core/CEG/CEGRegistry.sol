@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "@atpar/actus-solidity/contracts/Engines/CEG/ICEGEngine.sol";
@@ -47,6 +47,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
     )
         external
         override
+        onlyApprovedActors
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
         assets[assetId].encodeAndSetCEGTerms(terms);
@@ -108,7 +109,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         return assets[assetId].decodeAndGetBytes32ValueForForCEGAttribute(attribute);
     }
 
-    function getUIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)
@@ -117,7 +118,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         return assets[assetId].decodeAndGetUIntValueForForCEGAttribute(attribute);
     }
 
-    function getIntValueForForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         public
         view
         override(ITermsRegistry, TermsRegistry)

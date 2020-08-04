@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 
 import "./math/SafeMathUint.sol";
 import "./math/SafeMathInt.sol";
@@ -22,7 +22,7 @@ import "./IFundsDistributionToken.sol";
  * FundsDistributionToken (FDT) implements the accounting logic. FDT-Extension contracts implement methods for depositing and
  * withdrawing funds in Ether or according to a token standard such as ERC20, ERC223, ERC777.
  */
-abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20 {
+abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20UpgradeSafe {
 
     using SafeMath for uint256;
     using SafeMathUint for uint256;
@@ -34,15 +34,6 @@ abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20 {
 
     mapping(address => int256) internal pointsCorrection;
     mapping(address => uint256) internal withdrawnFunds;
-
-
-    constructor (
-        string memory name,
-        string memory symbol
-    )
-        public
-        ERC20(name, symbol)
-    {}
 
     /**
      * prev. distributeDividends

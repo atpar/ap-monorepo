@@ -26,7 +26,8 @@ export class FDTFactory extends Contract {
       symbol: string,
       initialSupply: number | string,
       token: string,
-      owner: string
+      owner: string,
+      salt: number | string
     ): TransactionObject<void>;
 
     createRestrictedERC20Distributor(
@@ -34,7 +35,8 @@ export class FDTFactory extends Contract {
       symbol: string,
       initialSupply: number | string,
       token: string,
-      owner: string
+      owner: string,
+      salt: number | string
     ): TransactionObject<void>;
   };
   events: {
@@ -43,6 +45,14 @@ export class FDTFactory extends Contract {
       creator: string;
       0: string;
       1: string;
+    }>;
+    NewEip1167Proxy: ContractEvent<{
+      proxy: string;
+      logic: string;
+      salt: string;
+      0: string;
+      1: string;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

@@ -1,11 +1,12 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.10;
+pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/math/Math.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 
 import "./CheckpointedToken/CheckpointedToken.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "./DepositAllocaterStorage.sol";
 
 
@@ -13,12 +14,10 @@ import "./DepositAllocaterStorage.sol";
  * @title Logic for distributing funds based on checkpointing
  * @dev abstract contract
  */
-contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
+contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, ReentrancyGuardUpgradeSafe {
 
     using SafeMath for uint256;
 
-    
-    constructor(string memory name, string memory symbol) CheckpointedToken(name, symbol) public {}
 
     function createDeposit(bytes32 depositId, uint256 scheduledFor, bool onlySignaled, address token) public {
         Deposit storage deposit = deposits[depositId];
@@ -74,17 +73,17 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
 
         // increment total amount of signaled by the holder comprising all deposits
         if (signalAmount == 0) {
-            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deposit.signaledAmounts[msg.sender]);   
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deposit.signaledAmounts[msg.sender]);
         } else if (signalAmount < deposit.signaledAmounts[msg.sender]) {
             uint256 deltaAmountSignaled = deposit.signaledAmounts[msg.sender].sub(signalAmount);
-            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deltaAmountSignaled);   
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].sub(deltaAmountSignaled);
         } else {
             uint256 deltaAmountSignaled = signalAmount.sub(deposit.signaledAmounts[msg.sender]);
-            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].add(deltaAmountSignaled);   
+            totalAmountSignaledByHolder[msg.sender] = totalAmountSignaledByHolder[msg.sender].add(deltaAmountSignaled);
         }
 
         // update total amount signaled for deposit
-        deposit.totalAmountSignaled = deposit.totalAmountSignaled.sub(deposit.signaledAmounts[msg.sender]);        
+        deposit.totalAmountSignaled = deposit.totalAmountSignaled.sub(deposit.signaledAmounts[msg.sender]);
         deposit.totalAmountSignaled = deposit.totalAmountSignaled.add(signalAmount);
         // update the signaled amount of holder
         deposit.signaledAmounts[msg.sender] = signalAmount;
@@ -116,12 +115,12 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
      */
     function claimDeposit(bytes32 depositId) public {
         Deposit storage deposit = deposits[depositId];
-        
+
         require(
             deposit.claimed[msg.sender] == false,
             "Deposit.claimDeposit: DEPOSIT_ALREADY_CLAIMED"
         );
-        
+
         transferDeposit(msg.sender, deposit, depositId);
     }
 
@@ -137,15 +136,16 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
     )
         internal
         virtual
+        nonReentrant()
     {
         uint256 claim = calculateClaimOnDeposit(payee, depositId);
-     
+
         deposit.claimed[payee] = true;
         deposit.claimedAmount = claim.add(deposit.claimedAmount);
 
-        // decrease total amount signaled by holder for all deposits by the holders signaled amount of the deposit 
+        // decrease total amount signaled by holder for all deposits by the holders signaled amount of the deposit
         totalAmountSignaledByHolder[payee] = totalAmountSignaledByHolder[payee].sub(deposit.signaledAmounts[payee]);
-     
+
         if (claim > 0) {
             require(
                 IERC20(deposit.token).transfer(payee, claim),
@@ -176,12 +176,12 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
         uint256 claim = balance.mul(deposit.amount).div(
             (deposit.onlySignaled) ? deposit.totalAmountSignaled : totalSupply
         );
-        
+
         return claim;
     }
 
     /**
-     * @notice 
+     * @notice Returns params of a deposit
      * @return scheduledFor
      * @return amount
      * @return claimedAmount
@@ -189,9 +189,9 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage {
      * @return onlySignaled
      * @return token
      */
-    function getDeposit(bytes32 depositId) 
+    function getDeposit(bytes32 depositId)
         public
-        view 
+        view
         returns (
             uint256 scheduledFor,
             uint256 amount,

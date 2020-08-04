@@ -13,37 +13,35 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class IMarketObjectRegistry extends Contract {
+export class IDataRegistry extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): IMarketObjectRegistry;
+  clone(): IDataRegistry;
   methods: {
-    isRegistered(marketObjectId: string | number[]): TransactionObject<boolean>;
+    isRegistered(setId: string | number[]): TransactionObject<boolean>;
 
-    getMarketObjectLastUpdatedTimestamp(
-      marketObjectId: string | number[]
+    getLastUpdatedTimestamp(
+      setId: string | number[]
     ): TransactionObject<string>;
 
-    getMarketObjectProvider(
-      marketObjectId: string | number[]
-    ): TransactionObject<string>;
+    getDataProvider(setId: string | number[]): TransactionObject<string>;
 
-    setMarketObjectProvider(
-      marketObjectId: string | number[],
+    setDataProvider(
+      setId: string | number[],
       provider: string
     ): TransactionObject<void>;
 
-    publishDataPointOfMarketObject(
-      marketObjectId: string | number[],
+    publishDataPoint(
+      setId: string | number[],
       timestamp: number | string,
       dataPoint: number | string
     ): TransactionObject<void>;
 
-    getDataPointOfMarketObject(
-      marketObjectId: string | number[],
+    getDataPoint(
+      setId: string | number[],
       timestamp: number | string
     ): TransactionObject<{
       0: string;

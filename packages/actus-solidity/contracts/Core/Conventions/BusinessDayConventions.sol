@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
@@ -24,7 +24,7 @@ contract BusinessDayConventions {
         Calendar calendar,
         uint256 maturityDate
     )
-        internal
+        public
         pure
         returns (uint256)
     {
@@ -52,7 +52,7 @@ contract BusinessDayConventions {
         Calendar calendar,
         uint256 maturityDate
     )
-        internal
+        public
         pure
         returns (uint256)
     {

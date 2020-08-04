@@ -23,6 +23,8 @@ export class ANNActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
+    dataRegistry(): TransactionObject<string>;
+
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -49,10 +51,6 @@ export class ANNActor extends Contract {
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
 
-    issuers(arg0: string): TransactionObject<boolean>;
-
-    marketObjectRegistry(): TransactionObject<string>;
-
     owner(): TransactionObject<string>;
 
     progress(assetId: string | number[]): TransactionObject<void>;
@@ -62,9 +60,21 @@ export class ANNActor extends Contract {
       _event: string | number[]
     ): TransactionObject<void>;
 
-    registerIssuer(issuer: string): TransactionObject<void>;
-
     renounceOwnership(): TransactionObject<void>;
+
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 

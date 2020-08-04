@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/Core.sol";
@@ -175,11 +175,12 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
 
         if (eventType == EventType.FP) {
             // fees
-            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
+            if (terms.cycleAnchorDateOfFee != 0) {
                 uint256[MAX_CYCLE_SIZE] memory feeSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfFee,
                     terms.maturityDate,
                     terms.cycleOfFee,
+                    terms.endOfMonthConvention,
                     true,
                     segmentStart,
                     segmentEnd
@@ -220,12 +221,15 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         override
         returns(bytes32)
     {
+        // fees
         if (eventType == EventType.FP) {
-            // fees
-            if (terms.cycleOfFee.isSet == true && terms.cycleAnchorDateOfFee != 0) {
-                uint256 nextFeeDate = (lastScheduleTime == 0)
-                    ? terms.cycleAnchorDateOfFee
-                    : computeNextCycleDateFromPrecedingDate(terms.cycleOfFee, lastScheduleTime);
+            if (terms.cycleAnchorDateOfFee != 0) {
+                uint256 nextFeeDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfFee,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfFee,
+                    lastScheduleTime
+                );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
             }

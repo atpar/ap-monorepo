@@ -44,6 +44,10 @@ export class ICT extends Contract {
       depositId: string | number[]
     ): TransactionObject<string>;
 
+    cancelRegistrationForRedemption(
+      _event: string | number[]
+    ): TransactionObject<void>;
+
     claimDeposit(depositId: string | number[]): TransactionObject<void>;
 
     createDeposit(
@@ -52,6 +56,10 @@ export class ICT extends Contract {
       onlySignaled: boolean,
       token: string
     ): TransactionObject<void>;
+
+    createDepositForEvent(_event: string | number[]): TransactionObject<void>;
+
+    dataRegistry(): TransactionObject<string>;
 
     decimals(): TransactionObject<string>;
 
@@ -88,6 +96,10 @@ export class ICT extends Contract {
       eventType: number | string,
       scheduleTime: number | string
     ): TransactionObject<string>;
+
+    fetchDepositAmountForEvent(
+      _event: string | number[]
+    ): TransactionObject<void>;
 
     getDeposit(
       depositId: string | number[]
@@ -130,9 +142,11 @@ export class ICT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
+    initialize(name: string, symbol: string): TransactionObject<void>;
+
     marketObjectCode(): TransactionObject<string>;
 
-    marketObjectRegistry(): TransactionObject<string>;
+    mint(account: string, amount: number | string): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
 
@@ -143,7 +157,28 @@ export class ICT extends Contract {
       payees: string[]
     ): TransactionObject<void>;
 
+    registerForRedemption(
+      _event: string | number[],
+      amount: number | string
+    ): TransactionObject<void>;
+
     renounceOwnership(): TransactionObject<void>;
+
+    setAssetId(_assetId: string | number[]): TransactionObject<void>;
+
+    shiftCalcTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
+
+    shiftEventTime(
+      timestamp: number | string,
+      convention: number | string,
+      calendar: number | string,
+      maturityDate: number | string
+    ): TransactionObject<string>;
 
     signalAmountForDeposit(
       depositId: string | number[],
@@ -174,23 +209,6 @@ export class ICT extends Contract {
     updateDepositAmount(
       depositId: string | number[],
       amount: number | string
-    ): TransactionObject<void>;
-
-    setAssetId(_assetId: string | number[]): TransactionObject<void>;
-
-    createDepositForEvent(_event: string | number[]): TransactionObject<void>;
-
-    fetchDepositAmountForEvent(
-      _event: string | number[]
-    ): TransactionObject<void>;
-
-    registerForRedemption(
-      _event: string | number[],
-      amount: number | string
-    ): TransactionObject<void>;
-
-    cancelRegistrationForRedemption(
-      _event: string | number[]
     ): TransactionObject<void>;
   };
   events: {

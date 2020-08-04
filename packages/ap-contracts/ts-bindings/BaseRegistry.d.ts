@@ -21,6 +21,8 @@ export class BaseRegistry extends Contract {
   );
   clone(): BaseRegistry;
   methods: {
+    approvedActors(arg0: string): TransactionObject<boolean>;
+
     decodeEvent(
       _event: string | number[]
     ): TransactionObject<{
@@ -100,12 +102,12 @@ export class BaseRegistry extends Contract {
       adjustmentFactor: string;
     }>;
 
-    getIntValueForForTermsAttribute(
+    getIntValueForStateAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
 
-    getIntValueForStateAttribute(
+    getIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
@@ -165,7 +167,7 @@ export class BaseRegistry extends Contract {
       adjustmentFactor: string;
     }>;
 
-    getUIntValueForForTermsAttribute(
+    getUIntValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
@@ -206,6 +208,8 @@ export class BaseRegistry extends Contract {
       _payoff: number | string
     ): TransactionObject<void>;
 
+    owner(): TransactionObject<string>;
+
     popNextScheduledEvent(
       assetId: string | number[]
     ): TransactionObject<string>;
@@ -216,6 +220,8 @@ export class BaseRegistry extends Contract {
       assetId: string | number[],
       pendingEvent: string | number[]
     ): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
 
     revokeAccess(
       assetId: string | number[],
@@ -295,6 +301,10 @@ export class BaseRegistry extends Contract {
       }
     ): TransactionObject<void>;
 
+    transferOwnership(newOwner: string): TransactionObject<void>;
+
+    approveActor(actor: string): TransactionObject<void>;
+
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
@@ -319,6 +329,12 @@ export class BaseRegistry extends Contract {
       0: string;
       1: string;
       2: string;
+    }>;
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
     }>;
     RegisteredAsset: ContractEvent<string>;
     RevokedAccess: ContractEvent<{

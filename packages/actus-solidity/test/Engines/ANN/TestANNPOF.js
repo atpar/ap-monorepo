@@ -55,6 +55,7 @@ contract('TestANNPOF', () => {
     this.ANNTerms.feeBasis = 0; // FeeBasis.A
     this.ANNTerms.feeRate = web3.utils.toWei('5'); // set fixed fee
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_ANN_FP(
       this.ANNTerms,
@@ -102,6 +103,7 @@ contract('TestANNPOF', () => {
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
     this.ANNTerms.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
     this.ANNTerms.premiumDiscountAtIED = web3.utils.toWei('100'); // premiumDiscountAtIED = 100
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_ANN_IED(
       this.ANNTerms,
@@ -151,6 +153,7 @@ contract('TestANNPOF', () => {
     // used data
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
     state.notionalPrincipal = web3.utils.toWei('1000000');
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_ANN_PP(
       this.ANNTerms,
@@ -169,6 +172,7 @@ contract('TestANNPOF', () => {
     // used data
     state.notionalScalingMultiplier = web3.utils.toWei('1.1');
     state.notionalPrincipal = web3.utils.toWei('1000000');
+    state.statusDate = '0';
 
     const payoff = await this.TestPOF._POF_ANN_MD(
       this.ANNTerms,
@@ -189,6 +193,7 @@ contract('TestANNPOF', () => {
     const scheduleTime = 6307200; // .2 years
 
     // used data
+    state.statusDate = '0';
     this.ANNTerms.penaltyType = 1 // 1 = PenaltyType.A
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
     this.ANNTerms.penaltyRate = web3.utils.toWei('1000');

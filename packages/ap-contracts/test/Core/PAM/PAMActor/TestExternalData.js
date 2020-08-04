@@ -68,12 +68,12 @@ contract('PAMActor', (accounts) => {
     
     await mineBlock(Number(eventTime));
     
-    await this.MarketObjectRegistryInstance.setMarketObjectProvider(
+    await this.DataRegistryInstance.setDataProvider(
       this.terms.marketObjectCodeRateReset,
       accounts[0]
     );
       
-    await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
+    await this.DataRegistryInstance.publishDataPoint(
       this.terms.marketObjectCodeRateReset,
       eventTime,
       web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
