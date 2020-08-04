@@ -23,6 +23,7 @@ import FDTFactoryArtifact from '@atpar/ap-contracts/artifacts/FDTFactory.min.jso
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
 import VanillaFDTArtifact from '@atpar/ap-contracts/artifacts/VanillaFDT.min.json';
+import DvPSettlementArtifact from '@atpar/ap-contracts/artifacts/DvPSettlement.min.json';
 
 import { BaseActor } from '@atpar/ap-contracts/ts-bindings/BaseActor';
 import { BaseRegistry } from '@atpar/ap-contracts/ts-bindings/BaseRegistry';
@@ -47,6 +48,7 @@ import { FDTFactory } from '@atpar/ap-contracts/ts-bindings/FDTFactory';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 import { ERC1404 } from '@atpar/ap-contracts/ts-bindings/ERC1404';
 import { VanillaFDT } from '@atpar/ap-contracts/ts-bindings/VanillaFDT';
+import { DvPSettlement } from '@atpar/ap-contracts/ts-bindings/DvPSettlement';
 
 import { AddressBook, isAddressBook, UEngine } from '../types';
 
@@ -81,6 +83,7 @@ export class Contracts {
   public custodian: Custodian;
   public dataRegistry: DataRegistry;
   public fdtFactory: FDTFactory;
+  public dvpSettlement: DvPSettlement;
 
 
   /**
@@ -131,6 +134,8 @@ export class Contracts {
     this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
     // @ts-ignore
     this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
+    // @ts-ignore
+    this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore
