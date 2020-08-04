@@ -37,6 +37,7 @@ const ProxySafeICT = artifacts.require('ProxySafeICT');
 const ICTFactory = artifacts.require('ICTFactory');
 
 const SettlementToken = artifacts.require('SettlementToken');
+const DvPSettlement = artifacts.require('DvPSettlement');
 
 
 module.exports = async (deployer, network) => {
@@ -78,10 +79,10 @@ module.exports = async (deployer, network) => {
 
   // approve Actors for the Asset Registries
   await instances.ANNRegistryInstance.approveActor(instances.ANNActorInstance.address);
-  await instances.CECRegistryInstanceANNRegistryInstance.approveActor(instances.CECActorInstance.address);
-  await instances.CEGRegistryInstanceANNRegistryInstance.approveActor(instances.CEGActorInstance.address);
-  await instances.CERTFRegistryInstanceANNRegistryInstance.approveActor(instances.CERTFActorInstance.address);
-  await instances.PAMRegistryInstanceANNRegistryInstance.approveActor(instances.PAMActorInstance.address);
+  await instances.CECRegistryInstance.approveActor(instances.CECActorInstance.address);
+  await instances.CEGRegistryInstance.approveActor(instances.CEGActorInstance.address);
+  await instances.CERTFRegistryInstance.approveActor(instances.CERTFActorInstance.address);
+  await instances.PAMRegistryInstance.approveActor(instances.PAMActorInstance.address);
 
   // Custodian
   instances.CustodianInstance = await deployer.deploy(
@@ -105,6 +106,10 @@ module.exports = async (deployer, network) => {
   await ICTFactory.link('ICTLogic', instances.ProxySafeICTInstance.address);
   // Deploy the factory (with "logic" contract(s) linked)
   instances.ICTFactoryInstance = await deployer.deploy(ICTFactory);
+
+  // DvPSettlement
+  instances.DvPSettlement = await deployer.deploy(DvPSettlement);
+
 
   console.log(`
     Deployments:
@@ -131,6 +136,7 @@ module.exports = async (deployer, network) => {
       ProxySafeSimpleRestrictedFDT: ${ProxySafeSimpleRestrictedFDT.address}
       ProxySafeICT: ${ProxySafeICT.address}
       ProxySafeVanillaFDT: ${ProxySafeVanillaFDT.address}
+      DvPSettlement: ${DvPSettlement.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -159,6 +165,7 @@ module.exports = async (deployer, network) => {
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
     "PAMRegistry": PAMRegistry.address,
+    "DvPSettlement": DvPSettlement.address
   };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };
