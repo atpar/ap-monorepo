@@ -148,8 +148,8 @@ contract DvPSettlement {
             "DvPSettlement.expireSettlement - settlement is not expired"
         );
         require(
-            settlements[id].status != SettlementStatus.EXPIRED,
-            "DvPSettlement.expireSettlement - function already called"
+            settlements[id].status == SettlementStatus.INITIALIZED,
+            "DvPSettlement.expireSettlement - only INITIALIZED settlements can be expired"
         );
 
         // refund creator
