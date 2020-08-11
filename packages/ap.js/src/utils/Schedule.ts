@@ -25,7 +25,7 @@ export async function computeScheduleFromTerms(
   // @ts-ignore
   schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, from || 0, to || maturityDate).call()));
 
-  if (generateCyclicEvent === true && String(terms.maturityDate) !== '0') {
+  if (generateCyclicEvent === true && (to || maturityDate)) {
     for (const cyclicEvent of CYCLIC_EVENTS) {
       // @ts-ignore
       schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, from || 0, to || maturityDate, cyclicEvent).call()));
