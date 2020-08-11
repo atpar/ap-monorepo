@@ -24,7 +24,6 @@ contract CECActor is BaseActor {
     /**
      * @notice Derives initial state of the asset terms and stores together with
      * terms, schedule, ownership, engine, admin of the asset in the contract types specific AssetRegistry.
-     * @dev Can only be called by a whitelisted issuer.
      * @param terms asset specific terms
      * @param schedule schedule of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
@@ -41,7 +40,6 @@ contract CECActor is BaseActor {
         address underlyingRegistry
     )
         external
-        onlyRegisteredIssuer
     {
         require(
             engine != address(0) && IEngine(engine).contractType() == ContractType.CEC,

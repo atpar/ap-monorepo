@@ -463,7 +463,7 @@ contract('SimpleRestrictedFDT', function (accounts) {
       await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1 });
       balanceAfter = await this.fundsToken.balanceOf(tokenHolder1);
       balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('10')));
-      
+
 
       (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
       (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));

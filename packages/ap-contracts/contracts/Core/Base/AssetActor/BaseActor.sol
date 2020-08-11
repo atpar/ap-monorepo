@@ -34,20 +34,9 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
-
     IAssetRegistry public assetRegistry;
     IDataRegistry public dataRegistry;
 
-    mapping(address => bool) public issuers;
-
-
-    modifier onlyRegisteredIssuer {
-        require(
-            issuers[msg.sender],
-            "BaseActor.onlyRegisteredIssuer: UNAUTHORIZED_SENDER"
-        );
-        _;
-    }
 
     constructor (
         IAssetRegistry _assetRegistry,
@@ -57,15 +46,6 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     {
         assetRegistry = _assetRegistry;
         dataRegistry = _dataRegistry;
-    }
-
-    /**
-     * @notice Whitelists the address of an issuer contract for initializing an asset.
-     * @dev Can only be called by the owner of the contract.
-     * @param issuer address of the issuer
-     */
-    function registerIssuer(address issuer) external onlyOwner {
-        issuers[issuer] = true;
     }
 
     /**

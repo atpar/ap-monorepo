@@ -16,7 +16,8 @@
     "url": "git+https://github.com/atpar/ap-monorepo.git"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
     "build": "webpack",

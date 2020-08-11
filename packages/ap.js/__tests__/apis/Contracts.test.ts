@@ -43,6 +43,7 @@ describe('Contracts', (): void => {
       PAMActor: contracts.pamActor.options.address,
       PAMEngine: contracts.pamEngine.options.address,
       PAMRegistry: contracts.pamRegistry.options.address,
+      DvPSettlement: contracts.dvpSettlement.options.address,
     }
 
     expect(contracts instanceof Contracts).toBe(true);

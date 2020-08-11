@@ -22,6 +22,9 @@
     "type": "git",
     "url": "git+https://github.com/atpar/ap-monorepo.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },

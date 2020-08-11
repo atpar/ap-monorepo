@@ -18,4 +18,7 @@ contract CheckpointedTokenStorage is Checkpoint {
 
     // Number of holders with non-zero balance
     uint256 public holderCount;
+
+    // Reserved
+    uint256[10] private __gap;
 }

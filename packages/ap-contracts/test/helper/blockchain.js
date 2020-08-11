@@ -34,7 +34,7 @@ async function mineBlock (blockTimestamp) {
     web3.currentProvider.send({ 
       jsonrpc: '2.0', 
       method: 'evm_mine', 
-      params: [blockTimestamp], 
+      params: [Number(blockTimestamp)], 
       id: new Date().getSeconds()
     }, async (err, res) => {
       // console.log('res: ' + JSON.stringify(res), 'error: ' + JSON.stringify(err));

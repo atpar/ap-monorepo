@@ -2,15 +2,20 @@
 pragma solidity 0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
 
 import "./CheckpointedTokenStorage.sol";
 
 
-contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
+contract CheckpointedToken is ERC20UpgradeSafe, CheckpointedTokenStorage {
 
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) public {}
+    /**
+     * @notice Initialize a new instance storage
+     * @dev "constructor" to be called on deployment
+     */
+    function initialize(string memory name, string memory symbol) public initializer {
+        __ERC20_init(name, symbol);
+    }
 
     /**
      * @notice returns an array of holders with non zero balance at a given checkpoint
@@ -57,7 +62,7 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
         address[] memory holderSubset = new address[](size);
         for(uint256 j; j < size; j++)
             holderSubset[j] = holders[j + start];
-        
+
         uint256 count;
         uint256 i;
         for (i = 0; i < holderSubset.length; i++) {
@@ -93,7 +98,7 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
 
     /**
      * @notice Queries totalSupply at a specific timestamp
-     * @param timestamp Timestamp of the totalSupply checkpoint 
+     * @param timestamp Timestamp of the totalSupply checkpoint
      * @return uint256
      */
     function totalSupplyAt(uint256 timestamp) public view returns(uint256) {
@@ -157,8 +162,8 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
         internal
         override
     {
-        _updateTransfer(address(0), tokenHolder, value);
         super._mint(tokenHolder, value);
+        _updateTransfer(address(0), tokenHolder, value);
     }
 
     function _burn(
@@ -168,20 +173,20 @@ contract CheckpointedToken is CheckpointedTokenStorage, ERC20, ReentrancyGuard {
         internal
         override
     {
-        _updateTransfer(tokenHolder, address(0), value);
         super._burn(tokenHolder, value);
+        _updateTransfer(tokenHolder, address(0), value);
     }
 
     function _transfer(
         address from,
         address to,
         uint256 value
-    ) 
+    )
         internal
         virtual
         override
     {
-        _updateTransfer(msg.sender, to, value);
-        super._transfer(msg.sender, to, value);
+        super._transfer(from, to, value);
+        _updateTransfer(from, to, value);
     }
 }
