@@ -13,6 +13,14 @@ task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
   return input;
 });
 
+function getMnemonic() {
+  try {
+    return require('./mnemonic.js');
+  } catch (error) {
+    return '';
+  }
+}
+
 module.exports = {
   paths: {
     artifacts: './test/artifacts',
@@ -27,12 +35,41 @@ module.exports = {
       allowUnlimitedContractSize: false,
       initialDate: '2009-01-03T18:15:05' // for ACTUS test cases
     },
+    'ap-chain': {
+      url: 'http://127.0.0.1:8545'
+    },
+    goerli: {
+      url: 'https://goerli.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: getMnemonic(),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
+    kovan: {
+      url: 'https://kovan.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: getMnemonic(),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: getMnemonic(),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
+    },
     ropsten: {
       url: `https://ropsten.infura.io/v3/${process.env.INFURA_KEY}`,
       accounts: (process.env.PRIV_KEYS || '').split('.')
     }
   },
-  // https://github.com/wighawag/buidler-deploy#namedaccounts
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer

@@ -5,7 +5,9 @@ CNAME
 # actus-solditiy, ap-contracts
 build/
 artifacts/
+ts-bindings
 mnemonic.js
+ts-bindings/
 
 # sol-coverage
 coverage.json

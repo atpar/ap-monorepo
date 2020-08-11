@@ -127,8 +127,9 @@ module.exports = async (deployer, network) => {
       CERTFEngine: ${CERTFEngine.address}
       CERTFRegistry: ${CERTFRegistry.address}
       Custodian: ${Custodian.address}
-      FDTFactory: ${FDTFactory.address}
       DataRegistry: ${DataRegistry.address}
+      DvPSettlement: ${DvPSettlement.address}
+      FDTFactory: ${FDTFactory.address}
       ICTFactory: ${ICTFactory.address}
       PAMActor: ${PAMActor.address}
       PAMEngine: ${PAMEngine.address}
@@ -136,7 +137,6 @@ module.exports = async (deployer, network) => {
       ProxySafeSimpleRestrictedFDT: ${ProxySafeSimpleRestrictedFDT.address}
       ProxySafeICT: ${ProxySafeICT.address}
       ProxySafeVanillaFDT: ${ProxySafeVanillaFDT.address}
-      DvPSettlement: ${DvPSettlement.address}
   `);
 
   // deploy settlement token (necessary for registering templates on testnets)
@@ -160,12 +160,12 @@ module.exports = async (deployer, network) => {
     "CERTFEngine": CERTFEngine.address,
     "CERTFRegistry": CERTFRegistry.address,
     "Custodian": Custodian.address,
-    "FDTFactory": FDTFactory.address,
     "DataRegistry": DataRegistry.address,
+    "DvPSettlement": DvPSettlement.address,
+    "FDTFactory": FDTFactory.address,
     "PAMActor": PAMActor.address,
     "PAMEngine": PAMEngine.address,
-    "PAMRegistry": PAMRegistry.address,
-    "DvPSettlement": DvPSettlement.address
+    "PAMRegistry": PAMRegistry.address
   };
   fs.writeFileSync(path.resolve(__dirname, '../', 'deployments.json'), JSON.stringify(deployments, null, 2), 'utf8');
 };

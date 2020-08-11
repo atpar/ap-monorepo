@@ -1,6 +1,6 @@
 {
   "name": "@atpar/ap-contracts",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "ACTUS protocol smart contracts",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
@@ -53,8 +53,8 @@
     "**/web3-eth-contract": "1.2.4"
   },
   "dependencies": {
-    "@atpar/actus-solidity": "0.4.1",
     "@openzeppelin/contracts-ethereum-package": "^3.0.0",
+    "@atpar/actus-solidity": "0.4.2",
     "openzeppelin-solidity": "^3.0.2",
     "truffle-hdwallet-provider": "^1.0.9"
   },
@@ -73,7 +73,7 @@
     "openzeppelin-test-helpers": "^0.1.2",
     "solhint": "^3.0.0",
     "solidity-coverage": "^0.7.4",
-    "truffle": "5.1.32",
+    "truffle": "5.1.36",
     "typechain": "^1.0.5",
     "typechain-target-web3-v1": "^1.0.4",
     "web3": "1.2.4"
