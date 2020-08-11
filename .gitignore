@@ -6,6 +6,7 @@ CNAME
 build/
 artifacts/
 mnemonic.js
+ts-bindings/
 
 # sol-coverage
 coverage.json
