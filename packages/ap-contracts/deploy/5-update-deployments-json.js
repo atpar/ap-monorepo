@@ -1,28 +1,29 @@
 const fs = require("fs");
 const path = require('path');
-const log = require("debug")("buidler-deploy:5-update-deployments-json");
+
+module.exports = updateDeploymentsJson;
+module.exports.tags = ["_export"];
+module.exports.dependencies = ["_env", "_deployment"];
 
 /**
- * @typedef {import('./0-create-namespace').UserBuidlerRuntimeEnvironment}
- * @typedef {import('./1-define-package').ContractsListItem}
- * @typedef {import('./2-deploy-contracts').Instances}
+ * @typedef {import('./1-extend-buidler-env').UserBuidlerRuntimeEnvironment}
+ * @typedef {import('./2-define-package').ContractsListItem}
+ * @typedef {import('./3-deploy-contracts').Instances}
+ * @param {UserBuidlerRuntimeEnvironment} bre
  */
+async function updateDeploymentsJson(bre) {
 
-/** @param {UserBuidlerRuntimeEnvironment} bre */
-module.exports = async (bre) => {
-    /**
-     * @type {ContractsListItem[]} contracts
-     * @type {Instances} instances - web3.js Contract objects
-     */
-    const {usrNs: {chainId, package: {contracts}, instances}} = bre;
+    /** @type {Instances} instances - web3.js Contract objects */
+    const {  deployments: { log }, usrNs: { chainId, instances, package: { contracts }}} = bre;
 
-    if (!chainId || !contracts || !instances) {
+    if ( !chainId || !contracts || !instances ) {
         throw new Error("unexpected UserBuidlerRuntimeEnvironment");
     }
 
     const deploymentsFile = path.resolve(__dirname, '../', 'deployments.json');
     const deployments = JSON.parse(fs.readFileSync(deploymentsFile, 'utf8'));
 
+    /** @property {ContractsListItem[]} contracts */
     deployments[chainId] = contracts.reduce(
         (acc, { name, exportDeployment = false }) => {
             if (exportDeployment) {
@@ -33,7 +34,9 @@ module.exports = async (bre) => {
         {},
     );
 
-    fs.writeFileSync(deploymentsFile, JSON.stringify(deployments, null, 2), 'utf8');
+    await new Promise(
+        res => fs.writeFile(deploymentsFile, JSON.stringify(deployments, null, 2), 'utf8', res)
+    );
 
-    log("done");
-};
+    log("deployments.json updated");
+}

@@ -1,27 +1,24 @@
-const log = require("debug")("buidler-deploy:0-create-namespace");
+module.exports = extendBuidlerEnv;
+module.exports.tags = ["_env"];
 
 /**
  * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/buidler-deploy#environment-extensions)
  *
  * @typedef {BuidlerRuntimeEnvironment} UserBuidlerRuntimeEnvironment - extended environment
- * @property {Object} usrNs - user namespace extension
+ * @property {Object} usrNs - user namespace
  */
 
 /** @param bre {UserBuidlerRuntimeEnvironment} */
-module.exports = async (bre) => {
+async function extendBuidlerEnv(bre) {
     if (typeof bre.usrNs === 'undefined') bre.usrNs = {};
     if (typeof bre.usrNs !== 'object') throw new Error("unexpected BuidlerRuntimeEnvironment");
 
-    const { getNamedAccounts, getChainId, web3, usrNs } = bre;
+    const {  deployments: { log }, getNamedAccounts, getChainId, usrNs, web3 } = bre;
 
     usrNs.chainId = `${await getChainId()}`;
     log(`ChainId: ${usrNs.chainId}`);
 
     usrNs.isBuidlerEvm = usrNs.chainId === '31337';
-
-    if (!usrNs.isBuidlerEvm && usrNs.chainId !== '3') {
-        throw new Error('buidlerevm or ropsten networks allowed only');
-    }
 
     usrNs.accounts = await web3.eth.getAccounts();
     const { admin, deployer } = await getNamedAccounts();
@@ -36,6 +33,4 @@ module.exports = async (bre) => {
                 throw new Error(`invalid address: ${key}`);
         }
     );
-
-    log("done");
-};
+}

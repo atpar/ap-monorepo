@@ -1,17 +1,19 @@
-const log = require("debug")("buidler-deploy:2-deploy-contracts");
+module.exports = deployContracts;
+module.exports.tags = ["_deployment"];
+module.exports.dependencies = ["_package"];
 
 /**
- * @typedef {import('./0-create-namespace').UserBuidlerRuntimeEnvironment}
- * @typedef {import('./1-define-package').ContractsListItem}
+ * @typedef {import('./1-extend-buidler-env').UserBuidlerRuntimeEnvironment}
+ * @typedef {import('./2-define-package').ContractsListItem}
+ * @type (UserBuidlerRuntimeEnvironment): {Promise<void>}
  */
+async function deployContracts(bre) {
 
-/** @type (UserBuidlerRuntimeEnvironment): {Promise<void>} */
-module.exports = async (bre) => {
     if ( typeof bre.usrNs !== 'object' || typeof bre.usrNs.package !== 'object' ) {
         throw new Error("unexpected BuidlerRuntimeEnvironment");
     }
 
-    const { deployments: {deploy}, usrNs, web3 } = bre;
+    const { deployments: { deploy, log }, usrNs, web3 } = bre;
     const { package: { defaultDeployOptions, contracts } } = usrNs;
 
     /** @typedef {Object[]} Instances - key (contract name + 'Instance') to value (web3.js Contract object) pairs */
@@ -24,6 +26,7 @@ module.exports = async (bre) => {
             async () => {
                 const { name, getOptions } = contract;
                 const deployOptions = contract.options || (getOptions ? getOptions(bre) : {});
+                log(`"${name}" ...`);
                 const { abi, address } = await deploy(
                     name,
                     Object.assign({}, defaultDeployOptions, deployOptions),
@@ -33,6 +36,4 @@ module.exports = async (bre) => {
         ),
         Promise.resolve(),
     );
-
-    log("done");
-};
+}

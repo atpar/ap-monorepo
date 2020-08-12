@@ -1,11 +1,14 @@
-const log = require("debug")("buidler-deploy:1-define-package");
+module.exports = definePackage;
+module.exports.tags = ["_package"];
+module.exports.dependencies = ["_env"];
 
 /**
- * @typedef {import('./0-create-namespace').UserBuidlerRuntimeEnvironment}
+ * @typedef {import('./1-extend-buidler-env').UserBuidlerRuntimeEnvironment}
  * @param {UserBuidlerRuntimeEnvironment} bre
  */
-module.exports = async (bre) => {
-    const { usrNs } = bre;
+async function definePackage(bre) {
+
+    const { deployments: { log }, usrNs } = bre;
     if (typeof usrNs !== 'object' || typeof usrNs.package !== 'undefined') {
         throw new Error("unexpected BuidlerRuntimeEnvironment");
     }
@@ -150,5 +153,8 @@ module.exports = async (bre) => {
         },
     };
 
-    log("done");
+    log(`package contracts: ${usrNs.package.contracts.map(e => e.name)}`);
+
+    // shall be async
+    return Promise.resolve();
 }
