@@ -1,9 +1,10 @@
 const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-tasks/task-names');
 
 
-usePlugin('@nomiclabs/buidler-truffle5');
+// usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
 usePlugin('solidity-coverage');
+usePlugin("buidler-deploy");
 
 task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
   const input = await runSuper();
@@ -13,7 +14,8 @@ task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
 
 module.exports = {
   paths: {
-    artifacts: './test/artifacts'
+    artifacts: './test/artifacts',
+    deployments: 'deployments',
   },
   defaultNetwork: 'buidlerevm',
   networks: {
