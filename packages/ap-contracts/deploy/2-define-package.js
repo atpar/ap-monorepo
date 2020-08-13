@@ -108,7 +108,7 @@ async function definePackage(bre) {
 
             // Custodian
             {
-                name: "PAMActor",
+                name: "Custodian",
                 exportDeployment: true,
                 getOptions: ({ usrNs: { instances: {CECActorInstance, CECRegistryInstance }}}) =>
                         ({ args: [ CECActorInstance.options.address, CECRegistryInstance.options.address ]}),
