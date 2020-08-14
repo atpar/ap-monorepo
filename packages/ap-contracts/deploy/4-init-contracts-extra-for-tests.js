@@ -1,4 +1,4 @@
-module.exports = initExtraContractsForTests;
+module.exports = initContractsForTests;
 module.exports.tags = ["_init-tests"];
 module.exports.dependencies = ["_env", "_env-tests", "_deployment"];
 
@@ -10,7 +10,7 @@ module.exports.skip = ({ usrNs: { chainId }}) => Promise.resolve(parseInt(chainI
  * @typedef {import('./3-deploy-contracts').Instances}
  * @param {UserBuidlerRuntimeEnvironment} bre
  */
-async function initExtraContractsForTests(bre) {
+async function initContractsForTests(bre) {
     /**
      * @type {Instances} instances - web3.js Contract objects
      */

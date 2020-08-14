@@ -16,7 +16,10 @@ async function deployContracts(bre) {
     const { deployments: { deploy, log }, usrNs, web3 } = bre;
     const { package: { defaultDeployOptions, contracts } } = usrNs;
 
-    /** @typedef {Object[]} Instances - key (contract name + 'Instance') to value (web3.js Contract object) pairs */
+    /**
+     * @typedef Instances {[name: string]: instance: any} - web3 Contract objects, name: contract name + 'Instance'
+     * @property {Instances} usrNs.instances
+     */
     if (!usrNs.instances) usrNs.instances = {};
 
     /** @type {ContractsListItem[]} contracts */
@@ -27,11 +30,17 @@ async function deployContracts(bre) {
                 const { name, getOptions } = contract;
                 const deployOptions = contract.options || (getOptions ? getOptions(bre) : {});
                 log(`"${name}" ...`);
-                const { abi, address } = await deploy(
+                const deployment = await deploy(
                     name,
                     Object.assign({}, defaultDeployOptions, deployOptions),
                 );
-                usrNs.instances[`${name}Instance`] = new web3.eth.Contract(abi, address);
+                const { abi, address, bytecode, libraries, metadata } = deployment;
+                contract.libraries = libraries;
+                contract.metadata = metadata;
+                contract.instance = new web3.eth.Contract(abi, address);
+                contract.instance.options.data = bytecode;
+
+                usrNs.instances[`${name}Instance`] = contract.instance;
             }
         ),
         Promise.resolve(),
