@@ -5,29 +5,24 @@ module.exports = updateDeploymentsJson;
 module.exports.tags = ["_export"];
 module.exports.dependencies = ["_env", "_deployment"];
 
-/**
- * @typedef {import('./1-extend-buidler-env').UserBuidlerRuntimeEnvironment}
- * @typedef {import('./2-define-package').ContractsListItem}
- * @typedef {import('./3-deploy-contracts').Instances}
- * @param {UserBuidlerRuntimeEnvironment} bre
- */
+/** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
 async function updateDeploymentsJson(bre) {
 
-    /** @type {Instances} instances - web3.js Contract objects */
-    const {  deployments: { log }, usrNs: { chainId, instances, package: { contracts }}} = bre;
+    const {  deployments: { log }, usrNs: { chainId, package: { contracts }}} = bre;
 
-    if ( !chainId || !contracts || !instances ) {
-        throw new Error("unexpected UserBuidlerRuntimeEnvironment");
+    if ( !chainId || !contracts ) {
+        throw new Error("unexpected Buidler Runtime Environment");
     }
 
     const deploymentsFile = path.resolve(__dirname, '../', 'deployments.json');
     const deployments = JSON.parse(fs.readFileSync(deploymentsFile, 'utf8'));
 
-    /** @property {ContractsListItem[]} contracts */
-    deployments[chainId] = contracts.reduce(
-        (acc, { name, exportDeployment = false }) => {
+    /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} instances */
+    const instances = contracts;
+    deployments[chainId] = instances.reduce(
+        (acc, { name, exportDeployment = false, instance }) => {
             if (exportDeployment) {
-                acc[name] = instances[`${name}Instance`].options.address;
+                acc[name] = instance.options.address;
             }
             return acc;
         },

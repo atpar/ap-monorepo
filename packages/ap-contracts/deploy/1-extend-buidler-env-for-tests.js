@@ -2,7 +2,10 @@ module.exports = extendBuidlerEnvForTests;
 module.exports.tags = ["_env-tests"];
 module.exports.dependencies = ["_env"];
 
-async function extendBuidlerEnvForTests({ deployments: { log }, usrNs: { accounts, roles }, web3 }) {
+/** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
+async function extendBuidlerEnvForTests(bre) {
+
+    const { deployments: { log }, usrNs: { accounts, roles }, web3 } = bre;
 
     roles.defaultActor = checkAddress(accounts[2]);
     log(`roles: ${JSON.stringify(roles, null, 2)}`);

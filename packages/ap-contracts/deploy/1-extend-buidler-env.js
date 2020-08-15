@@ -4,33 +4,47 @@ module.exports.tags = ["_env"];
 /**
  * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/buidler-deploy#environment-extensions)
  *
- * @typedef {BuidlerRuntimeEnvironment} UserBuidlerRuntimeEnvironment - extended environment
- * @property {Object} usrNs - user namespace
+ * @typedef  {{name: string: address: string}} Roles
+ * @typedef UserNamespace
+ * @property {String} chainId
+ * @property {String[]} accounts
+ * @property {Roles}  roles
+ * @property {import('./2-define-package').Package} package
+ * @property {{name: string, helper:any}} helpers - misc helper functions
+ *
+ * @typedef {BuidlerRuntimeEnvironment} ExtendedBRE - extended Builder Runtime Environment
+ * @property {UserNamespace} usrNs - extension
  */
 
-/** @param bre {UserBuidlerRuntimeEnvironment} */
+/** @param bre {ExtendedBRE} */
 async function extendBuidlerEnv(bre) {
-    if (typeof bre.usrNs === 'undefined') bre.usrNs = {};
-    if (typeof bre.usrNs !== 'object') throw new Error("unexpected BuidlerRuntimeEnvironment");
+    if (typeof bre.usrNs !== 'undefined') throw new Error("unexpected Buidler Runtime Environment");
 
-    const {  deployments: { log }, getNamedAccounts, getChainId, usrNs, web3 } = bre;
+    const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = bre;
 
-    usrNs.chainId = `${await getChainId()}`;
-    log(`ChainId: ${usrNs.chainId}`);
-
-    usrNs.isBuidlerEvm = usrNs.chainId === '31337';
-
-    usrNs.accounts = await web3.eth.getAccounts();
     const { admin, deployer } = await getNamedAccounts();
-    usrNs.roles = {
-        deployer: deployer || usrNs.accounts[0],
-        admin: admin || (usrNs.isBuidlerEvm ? usrNs.accounts[1] : usrNs.accounts[0]),
-    }
+    const chainId = `${await getChainId()}`;
 
-    Object.keys(usrNs.roles).forEach(
+    const accounts = await web3.eth.getAccounts();
+    const roles = {
+        deployer: deployer || accounts[0],
+        admin: admin || accounts[1] || accounts[0],
+    };
+    Object.keys(roles).forEach(
         (key) => {
-            if (!web3.utils.isAddress(usrNs.roles[key]))
-                throw new Error(`invalid address: ${key}`);
+            if (!web3.utils.isAddress(roles[key])) {
+                throw new Error(`invalid address for role: ${key}`);
+            }
         }
     );
+
+    bre.usrNs = {
+        chainId,
+        accounts,
+        roles,
+        package: {},
+        helpers: {},
+    };
+
+    log(`Buidler Runtime Environment extended, chainId: ${chainId}`);
 }
