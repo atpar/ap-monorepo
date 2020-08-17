@@ -11,7 +11,7 @@ interface FaucetInterface {
     function drip(address receiver, uint tokens) external;
 }
 
-contract SettlementToken is ERC20, FaucetInterface, Ownable {
+contract ERC20Token is ERC20, FaucetInterface, Ownable {
     using SafeMath for uint256;
 
     constructor(string memory name, string memory symbol) ERC20(name, symbol) public
