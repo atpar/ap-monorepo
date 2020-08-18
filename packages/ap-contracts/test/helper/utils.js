@@ -23,20 +23,23 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 
 async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
-  events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, 1000000000000)));
-  
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26)));
+  const opts = {from: engineContractInstance.defaultAccount};
+
+  let res = await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).send(opts);
+  events.push((await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).send(opts)).events);
+
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24).send(opts)).events);
+  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26).send(opts)).events);
 
   return sortEvents(removeNullEvents(events));
 }
@@ -62,10 +65,10 @@ function parseTerms (array) {
   });
 }
 
-const web3ResponseToState = (arr) => ({ 
+const web3ResponseToState = (arr) => ({
   ...Object.keys(arr).reduce((obj, element) => (
     (!Number.isInteger(Number(element)))
-      ? { 
+      ? {
         ...obj,
         [element]: (Array.isArray(arr[element]))
           ? web3ResponseToState(arr[element])

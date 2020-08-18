@@ -38,6 +38,10 @@ async function extendBuidlerEnv(bre) {
         }
     );
 
+    if (!web3.eth.Contract.defaultAccount) {
+        web3.eth.Contract.defaultAccount = deployer;
+    }
+
     bre.usrNs = {
         chainId,
         accounts,

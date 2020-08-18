@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = exportArtifacts;
 module.exports.tags = ["_artifacts"];
-module.exports.dependencies = ["_deployment"];
+module.exports.dependencies = ["_package"];
 
 /** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
 async function exportArtifacts(bre) {
