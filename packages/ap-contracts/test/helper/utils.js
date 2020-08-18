@@ -23,23 +23,20 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 
 async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
-  const opts = {from: engineContractInstance.defaultAccount};
+  events.push(...(await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).call()));
 
-  let res = await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).send(opts);
-  events.push((await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).send(opts)).events);
-
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24).send(opts)).events);
-  events.push((await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26).send(opts)).events);
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26).call()));
 
   return sortEvents(removeNullEvents(events));
 }
