@@ -17,12 +17,13 @@ async function updateDeploymentsJson(bre) {
     const deploymentsFile = path.resolve(__dirname, '../', 'deployments.json');
     const deployments = JSON.parse(fs.readFileSync(deploymentsFile, 'utf8'));
 
-    /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} instances */
-    const instances = contracts;
-    deployments[chainId] = instances.reduce(
-        (acc, { name, exportDeployment = false, instance }) => {
+    /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} deployed */
+    const deployed = contracts;
+    deployments[chainId] = deployed.reduce(
+        (acc, { name, exportDeployment = false, deployment: { address } }) => {
             if (exportDeployment) {
-                acc[name] = instance.options.address;
+                acc[name] = address;
+                if (!acc[name]) throw new Error('unexpected address');
             }
             return acc;
         },

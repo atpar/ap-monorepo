@@ -1,6 +1,6 @@
 module.exports = initContractsForTests;
 module.exports.tags = ["_init-tests"];
-module.exports.dependencies = ["_env", "_env-tests", "_deployment"];
+module.exports.dependencies = ["_env-tests", "_deployment"];
 
 // never run on the mainnet
 module.exports.skip = ({ usrNs: { chainId }}) => Promise.resolve(parseInt(chainId) < 2);

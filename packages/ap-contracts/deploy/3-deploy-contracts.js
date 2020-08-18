@@ -5,10 +5,13 @@ module.exports.dependencies = ["_package"];
 /**
  * @typedef {import('./1-extend-buidler-env').ExtendedBRE}
  *
- * @typedef {import('./2-define-package').ContractsListItem} ContractsListDeployedItem
+ * @typedef Deployment {Object}
  * @property {string} metadata - contract metadata (by Solc)
  * @property {{name: string, address: string}} libraries - lib addresses to link
  * @property {any} instance - web3 Contract instance
+ *
+ * @typedef {import('./2-define-package').ContractsListItem} ContractsListDeployedItem
+ * @property {Deployment} deployment
  */
 
 /** @param {ExtendedBRE} bre */
@@ -17,7 +20,6 @@ async function deployContracts(bre) {
     const {
         deployments: { deploy, log },
         usrNs: { package: { contracts, defaultDeployOptions }, helpers },
-        web3,
     } = bre;
 
     if ( typeof contracts !== 'object' || typeof defaultDeployOptions !== 'object'|| typeof helpers !== 'object' ) {
@@ -39,17 +41,11 @@ async function deployContracts(bre) {
                     : (getOptions ? getOptions(bre) : {});
 
                 log(`"${name}" ...`);
-                const deployment = await deploy(
+                contract.deployment = await deploy(
                     name,
                     Object.assign({}, defaultDeployOptions, deployOptions),
                 );
-                const { abi, address, bytecode, libraries, metadata } = deployment;
-                addresses[name] = address;
-
-                contract.libraries = libraries;
-                contract.metadata = metadata;
-                contract.instance = new web3.eth.Contract(abi, address);
-                contract.instance.options.data = bytecode;
+                addresses[name] = contract.deployment.address;
             }
         ),
         Promise.resolve(),

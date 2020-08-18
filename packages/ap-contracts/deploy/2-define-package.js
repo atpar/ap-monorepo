@@ -11,7 +11,6 @@ module.exports.dependencies = ["_env"];
  * @property {DeployOptions} [options]
  * @property {function (ExtendedBRE): DeployOptions} [getOptions] - getter for options
  * @property {boolean} [exportDeployment] - `true` to export into `../deployments.json` and `../artifacts/`
- * @property {any} [instance] - web3 Contract objects
  *
  * @typedef {Object} Package
  * @property {ContractsListItem[]} contracts

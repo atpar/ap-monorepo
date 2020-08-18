@@ -34,11 +34,13 @@ async function registerActor(bre, registry, actor) {
     const instances = contracts;
     const contract = instances.find(i => i.name === registry);
     if (!contract) throw new Error("invalid registry contract");
-    const { instance } = contract;
+
+    const { deployment } = contract;
+    const instance = new web3.eth.Contract(deployment.abi, deployment.address);
 
     const address = web3.utils.isAddress(actor)
         ? actor
-        : instances.find(i => i.name === actor).instance.options.address;
+        : instances.find(i => i.name === actor).deployment.address;
     if (!web3.utils.isAddress(address)) throw new Error("invalid actor address");
 
     if (await instance.methods.approvedActors(address).call()) {

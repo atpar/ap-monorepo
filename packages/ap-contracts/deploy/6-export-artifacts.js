@@ -17,7 +17,7 @@ async function exportArtifacts(bre) {
     await Promise.all(contracts.map(async (contract) => {
         if (!contract.exportDeployment) return Promise.resolve();
 
-        const { name, metadata, options: deployOptions } = contract;
+        const { name, deployment: { metadata }, options: deployOptions } = contract;
         const { abi, bytecode, contractName, linkReferences } = await getArtifact(name);
         const artifact = JSON.stringify(
             { contractName, abi, metadata, bytecode, linkReferences, deployOptions },

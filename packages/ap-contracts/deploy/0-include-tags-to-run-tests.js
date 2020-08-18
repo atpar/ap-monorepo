@@ -6,7 +6,7 @@ module.exports.dependencies = [
     "_env-tests",
     "_package",
     "_deployment",
-    "_linking-tests",
     "_init",
     "_init-tests",
+    "_instances-tests",
 ];
