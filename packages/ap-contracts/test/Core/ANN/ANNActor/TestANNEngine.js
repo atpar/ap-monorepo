@@ -4,19 +4,17 @@ const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
 const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
+const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
 
 
 describe('ANNActor', () => {
   const txOpts = {};
-  let instances;
 
   let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
 
   before(async () => {
-    // deploy instances and create the EVM snapshot
-    await bre.deployments.fixture("u-tests");
+    await setupTestEnvironment(bre, this);
 
-    instances = bre.usrNs.instances;
     const accounts = bre.usrNs.accounts;
     txOpts.from = accounts[9];
 
@@ -28,8 +26,8 @@ describe('ANNActor', () => {
 
   it('should initialize Asset with ContractType ANN', async () => {
     const terms = (await getTestCases('ANN'))['ann01']['terms'];
-    const schedule = await generateSchedule(instances.ANNEngineInstance, terms);
-    const state = await instances.ANNEngineInstance.methods.computeInitialState(terms).call(txOpts);
+    const schedule = await generateSchedule(this.ANNEngineInstance, terms);
+    const state = await this.ANNEngineInstance.methods.computeInitialState(terms).call(txOpts);
     const ownership = {
       creatorObligor,
       creatorBeneficiary,
@@ -37,16 +35,16 @@ describe('ANNActor', () => {
       counterpartyBeneficiary
     };
 
-    const tx = await instances.ANNActorInstance.methods.initialize(
+    const tx = await this.ANNActorInstance.methods.initialize(
       terms,
       schedule,
       ownership,
-      instances.ANNEngineInstance.options.address,
+      this.ANNEngineInstance.options.address,
       ZERO_ADDRESS
     ).send(txOpts);
 
     const assetId = tx.events.InitializedAsset.returnValues.assetId;
-    const storedState = await instances.ANNRegistryInstance.methods.getState(assetId).call();
+    const storedState = await this.ANNRegistryInstance.methods.getState(assetId).call();
 
     assert.deepStrictEqual(storedState, state);
   });

@@ -1,123 +1,122 @@
+/*jslint node*/
+/*global before, beforeEach, describe, it*/
+const assert = require('assert');
+const bre = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
-const { expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken, parseToContractTerms } = require('../../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState } = require('../../../helper/utils');
-
-const ANNActor = artifacts.require('ANNActor');
+const { getDefaultTerms, deployPaymentToken, setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
+const { mineBlock } = require('../../../helper/blockchain');
+const { ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils');
 
 
-contract('ANNActor', (accounts) => {
+describe('ANNActor', () => {
 
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
+  const txOpts = {};
 
-  let snapshot;
-  let snapshot_asset;
-  
+  let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
+
   const getEventTime = async (_event, terms) => {
-    return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
+    return Number(await this.ANNEngineInstance.methods.computeEventTimeForEvent(
       _event,
       terms.businessDayConvention,
       terms.calendar,
       terms.maturityDate
-    ));
+    ).call());
   }
 
   before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+    await setupTestEnvironment(bre, this);
 
-    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { 
+    const accounts = bre.usrNs.accounts;
+    txOpts.from = accounts[9];
+
+    creatorObligor = accounts[2];
+    creatorBeneficiary = accounts[3];
+    counterpartyObligor = accounts[4];
+    counterpartyBeneficiary = accounts[5];
+
+    this.ownership = {creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary};
+    this.terms = {
       ...await getDefaultTerms('ANN'),
-      gracePeriod: { i: 1, p: 2, isSet: true },
-      delinquencyPeriod: { i: 1, p: 3, isSet: true }
+      gracePeriod: {i: 1, p: 2, isSet: true},
+      delinquencyPeriod: {i: 1, p: 3, isSet: true}
     };
+  });
+
+  beforeEach(async () => {
+    await setupTestEnvironment(bre, this);
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor, [counterpartyObligor, counterpartyBeneficiary]);
+    this.PaymentTokenInstance = await deployPaymentToken(
+        creatorObligor,
+        [counterpartyObligor, counterpartyBeneficiary],
+        this.SettlementTokenInstance,
+    );
 
     // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
+    this.terms.currency = this.PaymentTokenInstance.options.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.options.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
     this.schedule = [];
-    this.state = web3ResponseToState(await this.ANNEngineInstance.computeInitialState(this.terms));
+    this.state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.terms).call());
 
-    const tx = await this.ANNActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.ANNEngineInstance.address,
-      ZERO_ADDRESS
-    );
+    const tx = await this.ANNActorInstance.methods.initialize(
+        this.terms,
+        this.schedule,
+        this.ownership,
+        this.ANNEngineInstance.options.address,
+        ZERO_ADDRESS
+    ).send(txOpts);
 
-    await expectEvent.inTransaction(
-      tx.tx, ANNActor, 'InitializedAsset'
-    );
-
-    this.assetId =  tx.logs[0].args.assetId;
-
-    snapshot = await createSnapshot();
-  });
-
-  after(async () => {
-    await revertToSnapshot(snapshot);
+    this.assetId = tx.events.InitializedAsset.returnValues.assetId;
   });
 
   it('should process the next cyclic event', async () => {
-    const _event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.ANNRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms)
 
-    const payoff = new BigNumber(await this.ANNEngineInstance.computePayoffForEvent(
-      this.terms, 
-      this.state, 
+    const payoff = new BigNumber(await this.ANNEngineInstance.methods.computePayoffForEvent(
+      this.terms,
+      this.state,
       _event,
       web3.utils.toHex(eventTime)
-    ));
+    ).call());
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
     // set allowance for Payment Router
-    await this.PaymentTokenInstance.approve(
-      this.ANNActorInstance.address,
-      value,
-      { from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor }
-    );
+    await this.PaymentTokenInstance.methods.approve(
+      this.ANNActorInstance.options.address,
+      value
+    ).send({ from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor });
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const tx = await this.ANNActorInstance.progress(
-      web3.utils.toHex(this.assetId), 
-      { from: creatorObligor }
-    );
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      tx.tx, ANNActor, 'ProgressedAsset'
-    );
+    const tx = await this.ANNActorInstance.methods.progress(
+      web3.utils.toHex(this.assetId),
+    ).send({ from: creatorObligor });
+    const emittedAssetId = tx.events.ProgressedAsset.returnValues.assetId;
 
-    const storedNextState = web3ResponseToState(await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const isEventSettled = await this.ANNRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
-    const projectedNextState = web3ResponseToState(await this.ANNEngineInstance.computeStateForEvent(
+    const storedNextState = web3ResponseToState(
+        await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
+    );
+    const isEventSettled = await this.ANNRegistryInstance
+        .methods.isEventSettled(web3.utils.toHex(this.assetId), _event).call();
+    const projectedNextState = web3ResponseToState(await this.ANNEngineInstance.methods.computeStateForEvent(
       this.terms,
       this.state,
       _event,
       web3.utils.toHex(0)
-    ));
-    const storedNextEvent = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    
-    assert.equal(emittedAssetId, this.assetId);
-    assert.notEqual(storedNextEvent, _event);
-    assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(isEventSettled[0], true);
-    assert.equal(isEventSettled[1].toString(), payoff.toFixed());
-    assert.deepEqual(storedNextState, projectedNextState);
+    ).call());
+    const storedNextEvent = await this.ANNRegistryInstance
+        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
 
-    await revertToSnapshot(snapshot_asset);
-    snapshot_asset = await createSnapshot();
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.notStrictEqual(storedNextEvent, _event);
+    assert.strictEqual(storedNextState.statusDate.toString(), eventTime.toString());
+    assert.strictEqual(isEventSettled[0], true);
+    assert.strictEqual(isEventSettled[1].toString(), payoff.toFixed());
+    assert.deepStrictEqual(storedNextState, projectedNextState);
   });
 });

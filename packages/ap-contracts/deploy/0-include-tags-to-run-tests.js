@@ -8,5 +8,4 @@ module.exports.dependencies = [
     "_deployment",
     "_init",
     "_init-tests",
-    "_instances-tests",
 ];

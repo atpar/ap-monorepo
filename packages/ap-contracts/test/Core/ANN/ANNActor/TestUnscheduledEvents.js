@@ -1,122 +1,127 @@
-const { expectEvent, shouldFail } = require('openzeppelin-test-helpers');
-const ANNActor = artifacts.require('ANNActor');
+/*jslint node*/
+/*global before, beforeEach, describe, it*/
+const assert = require('assert');
+const bre = require('@nomiclabs/buidler');
+const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
-const { generateSchedule, ZERO_BYTES32, parseTerms } = require('../../../helper/utils');
+const { generateSchedule, ZERO_BYTES32 } = require('../../../helper/utils');
 const { encodeEvent } = require('../../../helper/scheduleUtils');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
+const { mineBlock } = require('../../../helper/blockchain');
 
 
-contract('ANNActor', (accounts) => {
-
-  const admin = accounts[0];
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
-
-  let snapshot;
+describe('ANNActor', () => {
+  const txOpts = {};
+  let admin, creatorObligor, creatorBeneficiary, counterpartyObligor, countecounterpartyBeneficiary;
 
   const getEventTime = async (_event, terms) => {
-    return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
+    return Number(await this.ANNEngineInstance.methods.computeEventTimeForEvent(
       _event,
       terms.businessDayConvention,
       terms.calendar,
       terms.maturityDate
-    ));
+    ).call());
   }
 
   before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+    await setupTestEnvironment(bre, this);
 
-    this.assetId;
+    const accounts = bre.usrNs.accounts;
+    txOpts.from = accounts[9];
+
+    admin = accounts[0];
+    creatorObligor = accounts[2];
+    creatorBeneficiary = accounts[3];
+    counterpartyObligor = accounts[4];
+    counterpartyBeneficiary = accounts[5];
+  });
+
+  before(async () => {
     this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     this.terms = {
       ...await getDefaultTerms("ANN"),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
     };
+  });
+
+  beforeEach(async () => {
+    await setupTestEnvironment(bre, this);
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor, [counterpartyBeneficiary]);
+    this.PaymentTokenInstance = await deployPaymentToken(
+        creatorObligor,
+        [counterpartyBeneficiary],
+        this.SettlementTokenInstance,
+    );
     // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
+    this.terms.currency = this.PaymentTokenInstance.options.address;
+    this.terms.settlementCurrency = this.PaymentTokenInstance.options.address;
     this.terms.statusDate = this.terms.contractDealDate;
 
     this.schedule = await generateSchedule(this.ANNEngineInstance, this.terms);
-
-    snapshot = await createSnapshot();
-  });
-
-  afterEach(async () => {
-    await revertToSnapshot(snapshot);
   });
 
   it('should process next state for an unscheduled event', async () => {
-    const tx = await this.ANNActorInstance.initialize(
+    const tx = await this.ANNActorInstance.methods.initialize(
       this.terms,
       this.schedule,
       this.ownership,
-      this.ANNEngineInstance.address,
+      this.ANNEngineInstance.options.address,
       admin
-    );
+    ).send(txOpts);
 
-    this.assetId = tx.logs[0].args.assetId;
+    this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
-    const initialState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const initialState = await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
     const event = encodeEvent(9, Number(this.terms.contractDealDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
 
-    const { tx: txHash } = await this.ANNActorInstance.progressWith(
+    const tx2 = await this.ANNActorInstance.methods.progressWith(
       web3.utils.toHex(this.assetId),
       event,
-      { from: admin }
-    );
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, ANNActor, 'ProgressedAsset'
-    );
-    const storedNextState = await this.ANNRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    ).send({ from: admin });
+    const emittedAssetId = tx2.events.ProgressedAsset.returnValues.assetId;
+    const storedNextState = await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
     // compute expected next state
-    const projectedNextState = await this.ANNEngineInstance.computeStateForEvent(
+    const projectedNextState = await this.ANNEngineInstance.methods.computeStateForEvent(
       this.terms,
       initialState,
       event,
       ZERO_BYTES32
-    );
+    ).call();
 
     // compare results
-    assert.equal(emittedAssetId, this.assetId);
-    assert.equal(storedNextState.statusDate, eventTime);
-    assert.deepEqual(storedNextState, projectedNextState);
+    assert.strictEqual(emittedAssetId.toString(), this.assetId.toString());
+    assert.strictEqual(storedNextState.statusDate.toString(), eventTime.toString());
+    assert.strictEqual(storedNextState.toString(), projectedNextState.toString());
   });
 
   it('should not process next state for an unscheduled event with a later schedule time', async () => {
-    const tx = await this.ANNActorInstance.initialize(
+    const tx = await this.ANNActorInstance.methods.initialize(
       this.terms,
       this.schedule,
       this.ownership,
-      this.ANNEngineInstance.address,
+      this.ANNEngineInstance.options.address,
       admin
-    );
+    ).send(txOpts);
 
-    this.assetId = tx.logs[0].args.assetId;
+    this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
-    const event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const event = await this.ANNRegistryInstance
+        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
 
     await shouldFail.reverting.withMessage(
-      this.ANNActorInstance.progressWith(
+      this.ANNActorInstance.methods.progressWith(
         web3.utils.toHex(this.assetId),
         event,
-        { from: admin }
-      ),
+      ).send({ from: admin }),
       'BaseActor.progressWith: ' + 'FOUND_EARLIER_EVENT'
     );
   });
