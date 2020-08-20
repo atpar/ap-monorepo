@@ -19,7 +19,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, Reentra
     using SafeMath for uint256;
 
 
-    function createDeposit(bytes32 depositId, uint256 scheduledFor, bool onlySignaled, address token) public {
+    function createDeposit(bytes32 depositId, uint256 scheduledFor, uint256 signalingCutoff, bool onlySignaled, address token) public {
         Deposit storage deposit = deposits[depositId];
 
         require(
@@ -28,6 +28,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, Reentra
         );
 
         deposit.scheduledFor = scheduledFor;
+        deposit.signalingCutoff = signalingCutoff;
         deposit.onlySignaled = onlySignaled;
         deposit.token = token;
     }
@@ -62,8 +63,8 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, Reentra
         );
 
         require(
-            deposit.scheduledFor > now,
-            "Deposit.signalAmountForDeposit: DEPOSIT_IS_ALREADY_PROCESSED"
+            deposit.signalingCutoff > now,
+            "Deposit.signalAmountForDeposit: SIGNALING_ENDED"
         );
 
         require(
