@@ -1,8 +1,8 @@
-import { ANNEngine } from "@atpar/ap-contracts/ts-bindings/ANNEngine";
-import { CECEngine } from "@atpar/ap-contracts/ts-bindings/CECEngine";
-import { CEGEngine } from "@atpar/ap-contracts/ts-bindings/CEGEngine";
-import { PAMEngine } from "@atpar/ap-contracts/ts-bindings/PAMEngine";
-import { CERTFEngine } from "@atpar/ap-contracts/ts-bindings/CERTFEngine";
+import { ANNEngine } from '@atpar/ap-contracts/ts-bindings/ANNEngine';
+import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
+import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
+import { PAMEngine } from '@atpar/ap-contracts/ts-bindings/PAMEngine';
+import { CERTFEngine } from '@atpar/ap-contracts/ts-bindings/CERTFEngine';
 
 // Union Types
 export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine;
