@@ -10,6 +10,8 @@ contract DepositAllocaterStorage {
     struct Deposit {
         // Time at which the deposit is scheduled for
         uint256 scheduledFor;
+        // Time until which holders can signal for a deposit
+        uint256 signalingCutoff;
         // Deposit amount in WEI
         uint256 amount;
         // Amount of funds claimed so far
@@ -18,7 +20,7 @@ contract DepositAllocaterStorage {
         uint256 totalAmountSignaled;
         // Address of the token in which the deposit is made
         address token;
-        // Indicates whether hodlers have to signal in advance to claim their share of the deposit
+        // Indicates whether holders have to signal in advance to claim their share of the deposit
         bool onlySignaled;
         // List of addresses which have withdrawn their share of funds of the deposit
         mapping (address => bool) claimed;
