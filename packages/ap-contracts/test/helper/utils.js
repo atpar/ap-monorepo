@@ -75,9 +75,47 @@ const web3ResponseToState = (arr) => ({
   ), {})
 });
 
+/**
+ * @param events {{name: string, event: Object}} - `events` property of the web3 transaction object
+ * @param eventName {string}
+ * @param eventArgs{{key: string, value: any}}
+ * @return {Object|null} - if found, `event` object from `events`
+ */
+function findEvent (events, eventName, eventArgs = {}) {
+  const foundName = Object.keys(events).find((key) => {
+    if (key === eventName) {
+      let isMismatched = false;
+      for (const [k, v] of Object.entries(eventArgs)) {
+        if (events[eventName].returnValues[k] !== v) {
+          return false;
+        }
+      }
+      return true;
+    }
+  });
+  return foundName ? events[foundName] : null;
+}
+
+/**
+ * `expect` an event in the web3 transaction object
+ * @param events {{name: string, event: Object}} - `events` property of the web3 transaction object
+ * @param {string} eventName - event to expect
+ * @param {{key: string, value: any}} [eventArgs] - (optional) event arguments to expect
+ * @return {Object|null} - if found, `event` object from `events`
+ */
+function expectEvent(events, eventName, eventArgs = {}) {
+  const event = findEvent(events, eventName, eventArgs);
+  if (event === null) {
+    throw new Error(`Expected event (${eventName}) has not been found`);
+  }
+  return event;
+}
+
 module.exports = {
   getEngineContractInstanceForContractType,
   generateSchedule,
+  expectEvent,
+  findEvent,
   removeNullEvents,
   ZERO_ADDRESS,
   ZERO_BYTES32,

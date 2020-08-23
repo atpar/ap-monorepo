@@ -1,11 +1,11 @@
 /*jslint node*/
-/*global before, beforeEach, describe, it*/
+/*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const { BN } = require('openzeppelin-test-helpers');
 
 const { ZERO_ADDRESS } = require('../helper/utils');
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
+const { getSnapshotTaker } = require('../helper/setupTestEnvironment');
 const {
   buildCreate2Eip1167ProxyAddress: buildProxyAddr,
   getEip1167ProxyLogicAddress: extractLogicAddr,
@@ -13,7 +13,6 @@ const {
 
 describe('ICTFactory', () => {
   const logicContract = 'ProxySafeICT'
-  const txOpts = {};
   const b32 = web3.utils.hexToBytes;
   const ictParams = [
     // Valid params
@@ -26,32 +25,38 @@ describe('ICTFactory', () => {
   ];
   let creator, owner, owner2;
 
-  before(async () => {
-    await setupTestEnvironment(bre);
-    [ creator, owner, owner2 ] = bre.usrNs.accounts;
-    txOpts.from = creator;
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.instances =  await setupTestEnvironment(bre);
+    [creator, owner, owner2] = self.accounts;
+    self.txOpts.from = creator;
+
     ictParams.forEach((e) => {
-      e.assetRegistry = e.assetRegistry || this.instances.ANNRegistryInstance.options.address;
-      e.dataRegistry = e.dataRegistry || this.instances.DataRegistryInstance.options.address;
+      e.assetRegistry = e.assetRegistry || self.ANNRegistryInstance.options.address;
+      e.dataRegistry = e.dataRegistry || self.DataRegistryInstance.options.address;
       e.name = "Investment Certificate Token";
       e.symbol = "ICT";
       if (typeof e.owner === 'function') e.owner = e.owner();
     });
 
     // expected values
-    this.exp = {
-      logicAbi: this.instances.ProxySafeICTInstance.options.jsonInterface,
-      logicAddr: this.instances.ProxySafeICTInstance.options.address,
-      deployingAddr: this.instances.ICTFactoryInstance.options.address,
+    self.exp = {
+      logicAbi: self.ProxySafeICTInstance.options.jsonInterface,
+      logicAddr: self.ProxySafeICTInstance.options.address,
+      deployingAddr: self.ICTFactoryInstance.options.address,
       salt: [ictParams[0].salt, ictParams[1].salt],
     };
+  });
+
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   describe('createICToken(...)', async () => {
 
     before(async() => {
+      await this.setupTestEnvironment()
       await invokeCreateIctFunction.bind(this)('createICToken')
     });
 
@@ -183,9 +188,9 @@ describe('ICTFactory', () => {
     for (let i = 0; i < ictParams.length; i++) {
       const {assetRegistry, dataRegistry, marketObjectCode, owner, salt} = ictParams[i];
       try {
-        const tx = await self.instances.ICTFactoryInstance
+        const tx = await self.ICTFactoryInstance
             .methods[fnName](assetRegistry, dataRegistry, marketObjectCode, owner, salt)
-            .send(txOpts);
+            .send(this.txOpts);
         const actual = decodeEvents(tx);
         actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
         actual.icToken = await readTokenStorage(

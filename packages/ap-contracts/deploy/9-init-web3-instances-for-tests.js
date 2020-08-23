@@ -1,12 +1,10 @@
 const { isLinkingNeeded, linkLibraries } = require("../scripts/linkLibraries");
 
 module.exports = initInstances;
-module.exports.tags = ["instances-tests"];
-// module.exports.dependencies = ["_env-tests", "_deployment"];
+module.exports.tags = ["_instances-tests"];
 
 /** @param {import('./1-extend-buidler-env-for-tests').ExtendedTestBRE} bre */
 async function initInstances(bre) {
-
     if ( typeof bre.usrNs !== 'object' || typeof bre.usrNs.package !== 'object' ) {
         throw new Error("unexpected Buidler Runtime Environment");
     }

@@ -1,19 +1,18 @@
 /*jslint node*/
-/*global before, beforeEach, describe, it*/
+/*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const { BN } = require('openzeppelin-test-helpers');
 
 const { ZERO_ADDRESS } = require('../helper/utils');
-const { setupTestEnvironment, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { getSnapshotTaker, deployPaymentToken } = require('../helper/setupTestEnvironment');
 const {
   buildCreate2Eip1167ProxyAddress: buildProxyAddr,
   getEip1167ProxyLogicAddress: extractLogicAddr,
 } = require('../helper/proxy/create2.js')(web3);
 
 describe('FDTFactory', () => {
-  const txOpts = {};
-  let creator, owner, owner2, tokenHolder1, anyone;
+  let creator, owner, owner2, tokenHolder, tokenHolder2;
 
   // (sets of) Parameters to create FDTokens with
   const fdtParams = [
@@ -21,52 +20,64 @@ describe('FDTFactory', () => {
     { name: 'test_FDT1', symbol: 'FDT1', totalSupply: '1000000', owner: () => owner, salt: 0xbadC0FEbebebe },
     { name: 'test_FDT2', symbol: 'FDT2', totalSupply: '3000000', owner: () => owner2, salt: 8954 },
     // Invalid params
-    { name: 'non-unique_salt', symbol: 'FTD3', totalSupply: '2000000', owner: () => owner2, salt: 8954 },
+    { name: 'non-unique_salt', symbol: 'FTD3', totalSupply: '2000000', owner: () => owner, salt: 8954 },
     { name: 'invalid_funds-token', symbol: 'FTD4', totalSupply: '4000000', owner: () => owner2, salt: 0xDEAD, fundsToken: ZERO_ADDRESS},
   ];
 
-  before(async () => {
-    await setupTestEnvironment(bre);
-    [ creator, owner, owner2, tokenHolder1, anyone ] = bre.usrNs.accounts;
-    txOpts.from = creator;
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.instances =  await setupTestEnvironment(bre);
-    this.fundsToken = await deployPaymentToken(
-        owner,
-        [owner2, tokenHolder1, anyone],
-        this.instances.SettlementTokenInstance,
+    console.error('*** snapshotTaker start');
+    [ creator, owner, owner2, tokenHolder, tokenHolder2 ] = self.accounts;
+    self.txOpts.from = creator;
+
+    const { options: { address: fundsTokenAddress }} = await deployPaymentToken(
+        bre, owner, [ tokenHolder, tokenHolder2 ],
     );
 
     fdtParams.forEach((e) => {
       if (typeof e.owner === 'function') e.owner = e.owner();
-      if (!e.fundsToken) e.fundsToken = this.fundsToken.options.address;
+      if (!e.fundsToken) e.fundsToken = fundsTokenAddress;
     });
 
     // expected values
-    this.exp = {
+    self.exp = {
       logicAbi: {
-        ProxySafeVanillaFDT: this.instances.ProxySafeVanillaFDTInstance.options.jsonInterface,
-        ProxySafeSimpleRestrictedFDT: this.instances.ProxySafeSimpleRestrictedFDTInstance.options.jsonInterface,
+        ProxySafeVanillaFDT: self.ProxySafeVanillaFDTInstance.options.jsonInterface,
+        ProxySafeSimpleRestrictedFDT: self.ProxySafeSimpleRestrictedFDTInstance.options.jsonInterface,
       },
       logicAddr: {
-        ProxySafeVanillaFDT: this.instances.ProxySafeVanillaFDTInstance.options.address,
-        ProxySafeSimpleRestrictedFDT: this.instances.ProxySafeSimpleRestrictedFDTInstance.options.address,
+        ProxySafeVanillaFDT: self.ProxySafeVanillaFDTInstance.options.address,
+        ProxySafeSimpleRestrictedFDT: self.ProxySafeSimpleRestrictedFDTInstance.options.address,
       },
-      deployingAddr: this.instances.FDTFactoryInstance.options.address,
+      deployingAddr: self.FDTFactoryInstance.options.address,
       salt: [ fdtParams[0].salt, fdtParams[1].salt ],
     };
+    console.error('*** snapshotTaker end');
+  });
+
+  before(async () => {
+    console.error('*** before');
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   describe('createERC20Distributor(...)', async () => {
     before(async() => {
+      console.error('*** before in describe 1 start');
+      await this.setupTestEnvironment()
       await invokeCreateFdtFunction.bind(this)('createERC20Distributor', 'ProxySafeVanillaFDT')
+      console.error('*** before in describe 1 end');
     });
     assertInvocationResults.bind(this)('ProxySafeVanillaFDT');
   });
 
   describe('createRestrictedERC20Distributor(...)', async () => {
     before(async() => {
+      console.error('*** before in describe 2 start');
+      await this.setupTestEnvironment()
       await invokeCreateFdtFunction.bind(this)('createRestrictedERC20Distributor', 'ProxySafeSimpleRestrictedFDT')
+      console.error('*** before in describe 2 end');
     });
     assertInvocationResults.bind(this)('ProxySafeSimpleRestrictedFDT');
   });
@@ -74,8 +85,10 @@ describe('FDTFactory', () => {
   function assertInvocationResults(logicContract) {
 
     describe('Following the "proxy-implementation" pattern', () => {
+      console.error(`*** describe in assertInvocationResults start for ${logicContract}`);
 
       it(`should deploy a new proxy`, () => {
+        console.error('*** it 1 in describe in assertInvocationResults');
         assert(this.act[0].proxyBytecode.length > 0);
         assert(this.act[1].proxyBytecode.length > 0);
       });
@@ -192,11 +205,11 @@ describe('FDTFactory', () => {
 
     // deploy FDTokens calling `fnName` for every `fdtParams[i]`
     for (let i = 0; i < fdtParams.length; i++) {
-      const {name, symbol, totalSupply, owner, fundsToken, salt} = fdtParams[i];
+      const { name, symbol, totalSupply, owner, fundsToken, salt } = fdtParams[i];
       try {
-        const tx = await self.instances.FDTFactoryInstance
+        const tx = await self.FDTFactoryInstance
             .methods[fnName](name, symbol, totalSupply, fundsToken, owner, salt)
-            .send(txOpts);
+            .send(this.txOpts);
         const actual = decodeEvents(tx);
         actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
         actual.fdToken = await readTokenStorage(

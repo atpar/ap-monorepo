@@ -4,15 +4,12 @@ const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
-const { getDefaultTerms, deployPaymentToken, setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
+const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/blockchain');
 const { ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils');
 
 
 describe('ANNActor', () => {
-
-  const txOpts = {};
-
   let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
 
   const getEventTime = async (_event, terms) => {
@@ -24,52 +21,52 @@ describe('ANNActor', () => {
     ).call());
   }
 
-  before(async () => {
-    await setupTestEnvironment(bre, this);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    const accounts = bre.usrNs.accounts;
-    txOpts.from = accounts[9];
+    [ ,, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary ] = self.accounts;
 
-    creatorObligor = accounts[2];
-    creatorBeneficiary = accounts[3];
-    counterpartyObligor = accounts[4];
-    counterpartyBeneficiary = accounts[5];
+    self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
 
-    this.ownership = {creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary};
-    this.terms = {
-      ...await getDefaultTerms('ANN'),
-      gracePeriod: {i: 1, p: 2, isSet: true},
-      delinquencyPeriod: {i: 1, p: 3, isSet: true}
+    // deploy a test ERC20 token to use it as the terms currency
+    self.PaymentTokenInstance = await deployPaymentToken(
+        bre, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+    );
+    const { options: { address: paymentTokenAddress }} = self.PaymentTokenInstance;
+
+    self.terms = {
+      ...await getDefaultTerms("ANN"),
+      gracePeriod: { i: 1, p: 2, isSet: true },
+      delinquencyPeriod: { i: 1, p: 3, isSet: true },
+      currency: paymentTokenAddress,
+      settlementCurrency: paymentTokenAddress,
     };
+    self.terms.statusDate = self.terms.contractDealDate;
+
+    self.schedule = [];
+    self.state = web3ResponseToState(
+        await self.ANNEngineInstance.methods.computeInitialState(self.terms).call()
+    );
+
+    const tx = await self.ANNActorInstance.methods.initialize(
+        self.terms,
+        self.schedule,
+        self.ownership,
+        self.ANNEngineInstance.options.address,
+        ZERO_ADDRESS
+    ).send(self.txOpts);
+
+    self.assetId = tx.events.InitializedAsset.returnValues.assetId;
+  });
+
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   beforeEach(async () => {
-    await setupTestEnvironment(bre, this);
-
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(
-        creatorObligor,
-        [counterpartyObligor, counterpartyBeneficiary],
-        this.SettlementTokenInstance,
-    );
-
-    // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.options.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.options.address;
-    this.terms.statusDate = this.terms.contractDealDate;
-
-    this.schedule = [];
-    this.state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.terms).call());
-
-    const tx = await this.ANNActorInstance.methods.initialize(
-        this.terms,
-        this.schedule,
-        this.ownership,
-        this.ANNEngineInstance.options.address,
-        ZERO_ADDRESS
-    ).send(txOpts);
-
-    this.assetId = tx.events.InitializedAsset.returnValues.assetId;
+    // take (on the 1st call) or restore (on further calls) the snapshot
+    await this.setupTestEnvironment()
   });
 
   it('should process the next cyclic event', async () => {

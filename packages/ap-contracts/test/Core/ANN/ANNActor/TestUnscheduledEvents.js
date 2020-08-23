@@ -1,18 +1,17 @@
 /*jslint node*/
-/*global before, beforeEach, describe, it*/
+/*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
+const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, ZERO_BYTES32 } = require('../../../helper/utils');
 const { encodeEvent } = require('../../../helper/scheduleUtils');
 const { mineBlock } = require('../../../helper/blockchain');
 
 
 describe('ANNActor', () => {
-  const txOpts = {};
-  let admin, creatorObligor, creatorBeneficiary, counterpartyObligor, countecounterpartyBeneficiary;
+  let admin;
 
   const getEventTime = async (_event, terms) => {
     return Number(await this.ANNEngineInstance.methods.computeEventTimeForEvent(
@@ -23,43 +22,38 @@ describe('ANNActor', () => {
     ).call());
   }
 
-  before(async () => {
-    await setupTestEnvironment(bre, this);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    const accounts = bre.usrNs.accounts;
-    txOpts.from = accounts[9];
+    admin = self.accounts[0];
+    const [ ,, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary ] = self.accounts;
 
-    admin = accounts[0];
-    creatorObligor = accounts[2];
-    creatorBeneficiary = accounts[3];
-    counterpartyObligor = accounts[4];
-    counterpartyBeneficiary = accounts[5];
+    self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
+
+    // deploy a test ERC20 token to use it as the terms currency
+    const { options: { address: paymentTokenAddress }} = await deployPaymentToken(
+        bre, creatorObligor, [ counterpartyBeneficiary ]
+    );
+    self.terms = {
+      ...await getDefaultTerms("ANN"),
+      gracePeriod: { i: 1, p: 2, isSet: true },
+      delinquencyPeriod: { i: 1, p: 3, isSet: true },
+      currency: paymentTokenAddress,
+      settlementCurrency: paymentTokenAddress,
+    };
+    self.terms.statusDate = self.terms.contractDealDate;
+
+    self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
   });
 
   before(async () => {
-    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = {
-      ...await getDefaultTerms("ANN"),
-      gracePeriod: { i: 1, p: 2, isSet: true },
-      delinquencyPeriod: { i: 1, p: 3, isSet: true }
-    };
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   beforeEach(async () => {
-    await setupTestEnvironment(bre, this);
-
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(
-        creatorObligor,
-        [counterpartyBeneficiary],
-        this.SettlementTokenInstance,
-    );
-    // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.options.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.options.address;
-    this.terms.statusDate = this.terms.contractDealDate;
-
-    this.schedule = await generateSchedule(this.ANNEngineInstance, this.terms);
+    // take (on the 1st call) or restore (on further calls) the snapshot
+    await this.setupTestEnvironment()
   });
 
   it('should process next state for an unscheduled event', async () => {
@@ -69,7 +63,7 @@ describe('ANNActor', () => {
       this.ownership,
       this.ANNEngineInstance.options.address,
       admin
-    ).send(txOpts);
+    ).send(this.txOpts);
 
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
@@ -107,7 +101,7 @@ describe('ANNActor', () => {
       this.ownership,
       this.ANNEngineInstance.options.address,
       admin
-    ).send(txOpts);
+    ).send(this.txOpts);
 
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
