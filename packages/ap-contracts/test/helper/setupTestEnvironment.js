@@ -98,6 +98,27 @@ async function deployVanillaFDT(bre, {
   return new bre.web3.eth.Contract(abi, address);
 }
 
+/**
+ * @param {ExtendedTestBRE} bre
+ */
+async function deploySimpleRestrictedFDT(bre, {
+  name = 'FundsDistributionToken',
+  symbol = 'FDT',
+  fundsToken,
+  owner,
+  initialAmount = 0,
+})
+{
+  const { deployments: { deploy, log }, web3 } = bre;
+  const { abi, address } = await deploy("SimpleRestrictedFDT", {
+    args: [name, symbol, fundsToken, owner, initialAmount],
+    from: owner,
+    // deploy a new instance rather than re-use the one already deployed with another "from" address
+    fieldsToCompare: [ "data", "from" ],
+  });
+  return new bre.web3.eth.Contract(abi, address);
+}
+
 function parseToContractTerms(contract, terms) {
   return require('@atpar/actus-solidity/test/helper/parser').parseTermsFromObject(contract, terms);
 }
@@ -122,5 +143,6 @@ module.exports = {
   getZeroTerms,
   getComplexTerms,
   deployPaymentToken,
+  deploySimpleRestrictedFDT,
   deployVanillaFDT
 };
