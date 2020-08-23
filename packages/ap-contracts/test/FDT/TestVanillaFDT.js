@@ -1,580 +1,820 @@
-const { BN, constants, ether, balance, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const bre = require('@nomiclabs/buidler');
+const { BN, balance, ether, shouldFail } = require('openzeppelin-test-helpers');
 
-const VanillaFDT = artifacts.require('VanillaFDT');
-
-const { ZERO_ADDRESS } = require('../helper/utils');
-const { deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
+const { getSnapshotTaker, deployPaymentToken, deployVanillaFDT } = require('../helper/setupTestEnvironment');
 
 
-contract('VanillaFDT', function (accounts) {
-  const [owner, tokenHolder1, tokenHolder2, tokenHolder3, anyone] = accounts;
+describe('VanillaFDT', () => {
+  let owner, tokenHolder1, tokenHolder2, tokenHolder3, anyone, spender;
   const gasPrice = new BN('1');
 
-  // before each `it`, even in `describe`
-  beforeEach(async function () {
-    // deploy test ERC20 token
-    this.fundsToken = await deployPaymentToken(owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone]);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.fundsDistributionToken = await VanillaFDT.new(
-      'FundsDistributionToken',
-      'FDT',
-      this.fundsToken.address,
-      owner,
-      '0'
+    [ owner, tokenHolder1, tokenHolder2, tokenHolder3, anyone ] = self.accounts;
+    spender = anyone;
+
+    self.fundsToken = await deployPaymentToken( // test ERC20
+      bre, owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone],
+    );
+    self.fundsDistributionToken = await deployVanillaFDT(
+      bre, { owner, fundsToken: self.fundsToken.options.address },
     );
   });
 
-  describe('mint', function () {
-    describe('when someone other than the owner tries to mint tokens', function () {
-      it('reverts', async function () {
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+  });
+
+  // before each `it`, even in `describe`
+  beforeEach(async () => {
+    await this.setupTestEnvironment();
+  });
+
+  describe('mint', () => {
+    describe('when someone other than the owner tries to mint tokens', () => {
+      it('reverts', async () => {
         await shouldFail.reverting(
-          this.fundsDistributionToken.mint(anyone, ether('1'), {from: anyone})
+          this.fundsDistributionToken.methods.mint(anyone, ether('1').toString())
+              .send({from: anyone})
         );
       });
     });
 
-    describe('when the contract owner tries to mint tokens', function () {
-      describe('when the recipient is the zero address', function () {
-        it('reverts', async function () {
+    describe('when the contract owner tries to mint tokens', () => {
+      describe('when the recipient is the zero address', () => {
+        it('reverts', async () => {
           await shouldFail.reverting(
-            this.fundsDistributionToken.mint(ZERO_ADDRESS, ether('1'), {from: owner})
+            this.fundsDistributionToken.methods.mint(ZERO_ADDRESS, ether('1').toString())
+                .send({from: owner})
           );
         });
       });
 
-      describe('when the recipient is not the zero address', function () {
-        it('mint tokens to the recipient', async function () {
-          await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
+      describe('when the recipient is not the zero address', () => {
+        it('mint tokens to the recipient', async () => {
+          await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+              .send({from: owner});
 
-          (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal(ether('1'));
-          (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+              .should.be.equal(ether('1').toString());
+          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
         });
       });
     });
   });
 
-  describe('sending funds', function () {
-    describe('when anyone tries to pay and distribute funds', function () {
-      describe('when the total supply is 0', function () {
-        it('reverts', async function () {
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
+  describe('sending funds', () => {
+    describe('when anyone tries to pay and distribute funds', () => {
+      describe('when the total supply is 0', () => {
+        it('reverts', async () => {
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+              .send({from: anyone});
           await shouldFail.reverting(
-            this.fundsDistributionToken.updateFundsReceived({from: anyone})
+            this.fundsDistributionToken.methods.updateFundsReceived()
+                .send({from: anyone})
           );
         });
       });
 
-      describe('when paying 0 ether', function () {
-        it('should succeed but nothing happens', async function () {
-          await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
+      describe('when paying 0 ether', () => {
+        it('should succeed but nothing happens', async () => {
+          await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+              .send({from: owner});
 
-          // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('0')});
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('0'), {from: anyone});
-          await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+          // await this.fundsDistributionToken.methods.distributeFunds()
+          //   .send({from: anyone, value: ether('0').toString()});
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('0').toString())
+              .send({from: anyone});
+          await this.fundsDistributionToken.methods.updateFundsReceived()
+              .send({from: anyone});
 
-          (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
         });
       });
 
-      describe('when the total supply is not 0', function () {
-        it('should pay and distribute funds to token holders', async function () {
-          await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-          await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
+      describe('when the total supply is not 0', () => {
+        it('should pay and distribute funds to token holders', async () => {
+          await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+              .send({from: owner});
+          await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+              .send({from: owner});
 
-          // const { logs } = await this.fundsDistributionToken.sendTransaction({from: anyone, value: ether('1')});
-          // await expectEvent.inLogs(logs, 'FundsDistributed', {
+          // const { events } = await this.fundsDistributionToken.sendTransaction()
+          //   .send({from: anyone, value: ether('1').toString()});
+          // expectEvent(events, 'FundsDistributed', {
           //     from: anyone,
-          //     weiAmount: ether('1'),
+          //     weiAmount: ether('1').toString(),
           //   }
           // );
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-          const { logs } = await this.fundsDistributionToken.updateFundsReceived({from: anyone});
-          await expectEvent.inLogs(logs, 'FundsDistributed', {
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+              .send({from: anyone});
+          const { events } = await this.fundsDistributionToken.methods.updateFundsReceived()
+              .send({from: anyone});
+          expectEvent(events, 'FundsDistributed', {
             by: anyone,
-            fundsDistributed: ether('1'),
+            fundsDistributed: ether('1').toString(),
           });
 
-          (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-          (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0.25').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0.25').toString());
+          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
 
-          (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-          (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+              .should.be.equal(ether('0.75').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+              .should.be.equal(ether('0.75').toString());
+          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+              .should.be.equal(ether('0').toString());
         });
       });
     });
 
-    describe('when anyone tries to pay and distribute funds by sending ether to the contract', function () {
-      describe('when the total supply is 0', function () {
-        it('reverts', async function () {
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
+    describe('when anyone tries to pay and distribute funds by sending ether to the contract', () => {
+      describe('when the total supply is 0', () => {
+        it('reverts', async () => {
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+              .send({from: anyone});
           await shouldFail.reverting(
-            this.fundsDistributionToken.updateFundsReceived({from: anyone})
+            this.fundsDistributionToken.methods.updateFundsReceived()
+                .send({from: anyone})
           );
         });
       });
 
-      describe('when paying 0 ether', function () {
-        it('should succeed but nothing happens', async function () {
-          await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
+      describe('when paying 0 ether', () => {
+        it('should succeed but nothing happens', async () => {
+          await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+              .send({from: owner});
 
-          // await this.fundsDistributionToken.sendTransaction({from: anyone, value: ether('0')});
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('0'), {from: anyone});
-          await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+          // await this.fundsDistributionToken.sendTransaction()
+          //   .send({from: anyone, value: ether('0').toString()});
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('0').toString())
+              .send({from: anyone});
+          await this.fundsDistributionToken.methods.updateFundsReceived()
+              .send({from: anyone});
 
-          (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-          (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
+          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0').toString());
         });
       });
 
-      describe('when the total supply is not 0', function () {
-        it('should pay and distribute funds to token holders', async function () {
-          await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-          await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
+      describe('when the total supply is not 0', () => {
+        it('should pay and distribute funds to token holders', async () => {
+          await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+              .send({from: owner});
+          await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+              .send({from: owner});
 
-          // const { logs } = await this.fundsDistributionToken.sendTransaction({from: anyone, value: ether('1')});
-          // await expectEvent.inLogs(logs, 'FundsDistributed', {
+          // const { events } = await this.fundsDistributionToken.sendTransaction()
+          //   .send({from: anyone, value: ether('1').toString()});
+          // expectEvent(events, 'FundsDistributed', {
           //     from: anyone,
-          //     weiAmount: ether('1'),
+          //     weiAmount: ether('1').toString(),
           //   }
           // );
-          await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-          const { logs } = await this.fundsDistributionToken.updateFundsReceived({from: anyone});
-          await expectEvent.inLogs(logs, 'FundsDistributed', {
+          await this.fundsToken.methods
+              .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+              .send({from: anyone});
+          const { events } = await this.fundsDistributionToken.methods.updateFundsReceived()
+              .send({from: anyone});
+          expectEvent(events, 'FundsDistributed', {
             by: anyone,
-            fundsDistributed: ether('1'),
+            fundsDistributed: ether('1').toString(),
           });
 
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-          (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+              .should.be.equal(ether('0.25').toString());
+          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+              .should.be.equal(ether('0.75').toString());
         });
       });
     });
   });
 
-  describe('transfer', function () {
-    beforeEach(async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
+  describe('transfer', () => {
+    beforeEach(async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+          .send({from: owner});
     });
 
-    describe('when the recipient is the zero address', function () {
-      it('reverts', async function () {
+    describe('when the recipient is the zero address', () => {
+      it('reverts', async () => {
         await shouldFail.reverting(
-          this.fundsDistributionToken.transfer(ZERO_ADDRESS, ether('0.5'), {from: tokenHolder1})
+          this.fundsDistributionToken.methods.transfer(ZERO_ADDRESS, ether('0.5').toString())
+              .send({from: tokenHolder1})
         );
       });
     });
 
-    describe('when the recipient is not the zero address', function () {
-      describe('when the sender does not have enough balance', function () {
-        it('reverts', async function () {
+    describe('when the recipient is not the zero address', () => {
+      describe('when the sender does not have enough balance', () => {
+        it('reverts', async () => {
           await shouldFail.reverting(
-            this.fundsDistributionToken.transfer(tokenHolder2, ether('2'), {from: tokenHolder1})
+            this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('2').toString())
+                .send({from: tokenHolder1})
           );
         });
       });
 
-      describe('when the sender has enough balance', function () {
-        it('transfers the requested amount', async function () {
-          await this.fundsDistributionToken.transfer(tokenHolder2, ether('0.25'), {from: tokenHolder1});
+      describe('when the sender has enough balance', () => {
+        it('transfers the requested amount', async () => {
+          await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('0.25').toString())
+              .send({from: tokenHolder1});
 
-          (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal(ether('0.75'));
-          (await this.fundsDistributionToken.balanceOf(tokenHolder2)).should.be.bignumber.equal(ether('0.25'));
+          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+              .should.be.equal(ether('0.75').toString());
+          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
+              .should.be.equal(ether('0.25').toString());
           });
 
-        it('emits a transfer event', async function () {
-          const { logs } = await this.fundsDistributionToken.transfer(tokenHolder2, ether('0.25'), {from: tokenHolder1});
-
-          expectEvent.inLogs(logs, 'Transfer', {
+        it('emits a transfer event', async () => {
+          const { events } = await this.fundsDistributionToken.methods
+              .transfer(tokenHolder2, ether('0.25').toString())
+              .send({from: tokenHolder1});
+          expectEvent(events, 'Transfer', {
             from: tokenHolder1,
             to: tokenHolder2,
-            value: ether('0.25'),
+            value: ether('0.25').toString(),
           });
         });
       });
     });
   });
 
-  describe('transfer from', function () {
+  describe('transfer from', () => {
     const mintAmount = ether('9');
     const approveAmount = ether('3');
     const transferAmount = ether('1');
-    const spender = anyone;
 
-    beforeEach(async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, mintAmount, {from: owner});
+    beforeEach(async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, mintAmount.toString())
+          .send({from: owner});
     });
 
-    describe('when the recipient is not the zero address', function () {
-      describe('when the spender has enough approved balance', function () {
-        beforeEach(async function () {
-          await this.fundsDistributionToken.approve(spender, approveAmount, { from: tokenHolder1 });
+    describe('when the recipient is not the zero address', () => {
+      describe('when the spender has enough approved balance', () => {
+        beforeEach(async () => {
+          await this.fundsDistributionToken.methods.approve(spender, approveAmount.toString())
+              .send({from: tokenHolder1});
         });
 
-        describe('when the initial holder has enough balance', function () {
-          let logs;
+        describe('when the initial holder has enough balance', () => {
+          let events;
 
-          beforeEach(async function () {
-            const receipt = await this.fundsDistributionToken.transferFrom(tokenHolder1, tokenHolder2, transferAmount, { from: spender });
-            logs = receipt.logs;
+          beforeEach(async () => {
+            const receipt = await this.fundsDistributionToken.methods
+                .transferFrom(tokenHolder1, tokenHolder2, transferAmount.toString())
+                .send({from: spender});
+            events = receipt.events;
           });
 
-          it('transfers the requested amount', async function () {
-            (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal( mintAmount.sub(transferAmount) );
-            (await this.fundsDistributionToken.balanceOf(tokenHolder2)).should.be.bignumber.equal( transferAmount );
+          it('transfers the requested amount', async () => {
+            (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+                .should.be.equal( mintAmount.sub(transferAmount).toString() );
+            (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
+                .should.be.equal( transferAmount.toString() );
           });
 
-          it('decreases the spender allowance', async function () {
-            (await this.fundsDistributionToken.allowance(tokenHolder1, spender)).should.be.bignumber.equal( approveAmount.sub(transferAmount) );
+          it('decreases the spender allowance', async () => {
+            (await this.fundsDistributionToken.methods.allowance(tokenHolder1, spender).call())
+                .should.be.equal( approveAmount.sub(transferAmount).toString() );
           });
 
-          it('emits a transfer event', async function () {
-            expectEvent.inLogs(logs, 'Transfer', {
+          it('emits a transfer event', async () => {
+            expectEvent(events, 'Transfer', {
               from: tokenHolder1,
               to: tokenHolder2,
-              value: transferAmount,
+              value: transferAmount.toString(),
             });
           });
 
-          it('emits an approval event', async function () {
-            expectEvent.inLogs(logs, 'Approval', {
+          it('emits an approval event', async () => {
+            expectEvent(events, 'Approval', {
               owner: tokenHolder1,
               spender: spender,
-              value: approveAmount.sub(transferAmount),
+              value: approveAmount.sub(transferAmount).toString(),
             });
           });
         });
 
-        describe('when the initial holder does not have enough balance', function () {
+        describe('when the initial holder does not have enough balance', () => {
           const _approveAmount = mintAmount.addn(1);
           const _transferAmount = _approveAmount;
 
-          beforeEach(async function () {
-            await this.fundsDistributionToken.approve(spender, _approveAmount, { from: tokenHolder1 });
+          beforeEach(async () => {
+            await this.fundsDistributionToken.methods.approve(spender, _approveAmount.toString())
+                .send({from: tokenHolder1});
           });
 
-          it('reverts', async function () {
-            await shouldFail.reverting(this.fundsDistributionToken.transferFrom(tokenHolder1, tokenHolder2, _transferAmount, { from: spender }));
+          it('reverts', async () => {
+            await shouldFail.reverting(this.fundsDistributionToken.methods
+                .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
+                .send({from: spender}));
           });
         });
       });
 
-      describe('when the spender does not have enough approved balance', function () {
-        beforeEach(async function () {
-          await this.fundsDistributionToken.approve(spender, approveAmount, { from: tokenHolder1 });
+      describe('when the spender does not have enough approved balance', () => {
+        beforeEach(async () => {
+          await this.fundsDistributionToken.methods.approve(spender, approveAmount.toString())
+              .send({from: tokenHolder1});
         });
 
-        describe('when the initial holder has enough balance', function () {
+        describe('when the initial holder has enough balance', () => {
           const _transferAmount = approveAmount.addn(1);
 
-          it('reverts', async function () {
-            await shouldFail.reverting(this.fundsDistributionToken.transferFrom(tokenHolder1, tokenHolder2, _transferAmount, { from: spender }));
+          it('reverts', async () => {
+            await shouldFail.reverting(this.fundsDistributionToken.methods
+                .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
+                .send({from: spender}));
           });
         });
 
-        describe('when the initial holder does not have enough balance', function () {
+        describe('when the initial holder does not have enough balance', () => {
           const _transferAmount = mintAmount.addn(1);
 
-          it('reverts', async function () {
-            await shouldFail.reverting(this.fundsDistributionToken.transferFrom(tokenHolder1, tokenHolder2, _transferAmount, { from: spender }));
+          it('reverts', async () => {
+            await shouldFail.reverting(this.fundsDistributionToken.methods
+                .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
+                .send({from: spender}));
           });
         });
       });
     });
 
-    describe('when the recipient is the zero address', function () {
-      beforeEach(async function () {
-        await this.fundsDistributionToken.approve(spender, approveAmount, { from: tokenHolder1 });
+    describe('when the recipient is the zero address', () => {
+      beforeEach(async () => {
+        await this.fundsDistributionToken.methods.approve(spender, approveAmount.toString())
+            .send({from: tokenHolder1});
       });
 
-      it('reverts', async function () {
-        await shouldFail.reverting(this.fundsDistributionToken.transferFrom(tokenHolder1, ZERO_ADDRESS, transferAmount, { from: spender }));
+      it('reverts', async () => {
+        await shouldFail.reverting(this.fundsDistributionToken.methods
+            .transferFrom(tokenHolder1, ZERO_ADDRESS, transferAmount.toString())
+            .send({from: spender}));
       });
     });
   });
 
-  describe('withdrawFunds', function () {
-    it('should be able to withdraw funds', async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('1')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+  describe('withdrawFunds', () => {
+    it('should be able to withdraw funds', async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('1').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
 
-      // const balance1 = await balance.current(tokenHolder1);
-      const balance1 = await this.fundsToken.balanceOf(tokenHolder1);
-      const receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1, gasPrice: gasPrice});
-      expectEvent.inLogs(receipt.logs, 'FundsWithdrawn', {
+      // const balance1 = await balance.current(tokenHolder1).call();
+      const balance1 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
+      const { events } = await this.fundsDistributionToken.methods.withdrawFunds()
+          .send({from: tokenHolder1, gasPrice: gasPrice});
+      expectEvent(events, 'FundsWithdrawn', {
           by: tokenHolder1,
-          fundsWithdrawn: ether('0.25'),
+          fundsWithdrawn: ether('0.25').toString(),
         }
       );
 
       // const balance2 = await balance.current(tokenHolder1);
-      const balance2 = await this.fundsToken.balanceOf(tokenHolder1);
+      const balance2 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balance2.should.be.bignumber.equal( balance1.add(ether('0.25')).sub(fee) );
-      balance2.should.be.bignumber.equal(balance1.add(ether('0.25')));
+      // balance2.should.be.equal( balance1.add(ether('0.25').toString()).sub(fee) );
+      balance2.should.be.equal((new BN(balance1)).add(ether('0.25')).toString());
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
 
       // withdraw again. should succeed and withdraw nothing
-      // const receipt2 = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1, gasPrice: gasPrice});
+      // const receipt2 = await this.fundsDistributionToken.methods.withdrawFunds()
+      //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // const balance3 = await balance.current(tokenHolder1);
-      const balance3 = await this.fundsToken.balanceOf(tokenHolder1);
+      const balance3 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee2 = gasPrice.mul(new BN(receipt2.receipt.gasUsed));
-      // balance3.should.be.bignumber.equal( balance2.sub(fee2));
-      balance3.should.be.bignumber.equal(balance2);
+      // balance3.should.be.equal( balance2.sub(fee2).toString());
+      balance3.should.be.equal(balance2);
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
     });
   });
 
-  describe('keep funds unchanged in several cases', function () {
-    it('should keep funds unchanged after minting tokens', async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('1')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+  describe('keep funds unchanged in several cases', () => {
+    it('should keep funds unchanged after minting tokens', async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString(),)
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods
+      //   .distributeFunds({from: anyone, value: ether('1').toString()})
+      //   .send({from: anyone});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+          .send({from: owner});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
     });
 
-    it('should keep funds unchanged after transferring tokens', async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('1')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+    it('should keep funds unchanged after transferring tokens', async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('1').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      await this.fundsDistributionToken.transfer(tokenHolder2, ether('1'), {from: tokenHolder1});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('1').toString())
+          .send({from: tokenHolder1});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0.75').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0.75').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
     });
 
-    it('should keep funds unchanged after transferFrom', async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('1'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('1')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('1'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+    it('should keep funds unchanged after transferFrom', async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods
+      //   .distributeFunds({from: anyone, value: ether('1').toString()})
+      //   .send({from: anyone});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      await this.fundsDistributionToken.approve(tokenHolder3, ether('1'), {from: tokenHolder1});
-      await this.fundsDistributionToken.transferFrom(tokenHolder1, tokenHolder2, ether('1'), {from: tokenHolder3});
+      await this.fundsDistributionToken.methods.approve(tokenHolder3, ether('1').toString())
+          .send({from: tokenHolder1});
+      await this.fundsDistributionToken.methods
+          .transferFrom(tokenHolder1, tokenHolder2, ether('1').toString())
+          .send({from: tokenHolder3});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0.25'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0.25').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0.75'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0.75').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0.75').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
     });
 
-    it('should correctly distribute funds after transferring tokens', async function () {
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('2'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('3'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('5')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('5'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+    it('should correctly distribute funds after transferring tokens', async () => {
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('2').toString())
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('5').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('5').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      await this.fundsDistributionToken.transfer(tokenHolder2, ether('1'), {from: tokenHolder1});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('50')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('50'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('1').toString())
+          .send({from: tokenHolder1});
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('50').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('50').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('12'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('12'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('12').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('12').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('43'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('43'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('43').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('43').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
     });
   });
 
-  describe('end-to-end test', function () {
-    it('should pass end-to-end test', async function () {
+  describe('end-to-end test', () => {
+    it('should pass end-to-end test', async () => {
       let balanceBefore;
       let balanceAfter;
       let receipt;
       let fee;
 
       // mint and distributeFunds
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('2'), {from: owner});
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('10')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('10'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('2').toString())
+          .send({from: owner});
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('10').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('10').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
 
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call()).
+      should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
 
       // transfer
-      await this.fundsDistributionToken.transfer(tokenHolder2, ether('2'), {from: tokenHolder1});
-      (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.balanceOf(tokenHolder2)).should.be.bignumber.equal(ether('2'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('2').toString())
+          .send({from: tokenHolder1});
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
+          .should.be.equal(ether('2').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
 
       // tokenHolder1 withdraw
-      // balanceBefore = await balance.current(tokenHolder1);
-      // receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1, gasPrice: gasPrice});
-      // balanceAfter = await balance.current(tokenHolder1);
+      // balanceBefore = await balance.current(tokenHolder1).call();
+      // receipt = await this.fundsDistributionToken.methods.withdrawFunds()
+      //   .send({from: tokenHolder1, gasPrice: gasPrice});
+      // balanceAfter = await balance.current(tokenHolder1).call();
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.bignumber.equal( balanceBefore.add(ether('10')).sub(fee));
-      balanceBefore = await this.fundsToken.balanceOf(tokenHolder1);
-      await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1 });
-      balanceAfter = await this.fundsToken.balanceOf(tokenHolder1);
-      balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('10')));
+      // balanceAfter.should.be.equal( balanceBefore.add(ether('10').sub(fee).toString());
+      balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
+      await this.fundsDistributionToken.methods.withdrawFunds()
+          .send({from: tokenHolder1});
+      balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
+      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('10')).toString());
 
-
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
 
       // deposit
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('10')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('10'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('10').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('10').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
 
       // mint
-      await this.fundsDistributionToken.mint(tokenHolder1, ether('3'), {from: owner});
-      (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal(ether('3'));
+      await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('3').toString())
+          .send({from: owner});
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+          .should.be.equal(ether('3').toString());
 
       // deposit
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('10')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('10'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('16'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('6'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('14'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('14'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('10').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('10').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('16').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('6').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('14').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('14').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
 
       // now tokens: 3, 2
 
-      await this.fundsDistributionToken.transfer(tokenHolder3, ether('2'), {from: tokenHolder2});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder3, ether('2').toString())
+          .send({from: tokenHolder2});
 
       // 3, 0, 2
 
-      await this.fundsDistributionToken.mint(tokenHolder2, ether('4'), {from: owner});
-      await this.fundsDistributionToken.mint(tokenHolder3, ether('1'), {from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('4').toString())
+          .send({from: owner});
+      await this.fundsDistributionToken.methods.mint(tokenHolder3, ether('1').toString())
+          .send({from: owner});
 
       // 3 4 3
 
-      await this.fundsDistributionToken.transfer(tokenHolder1, ether('2'), {from: tokenHolder2});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder1, ether('2').toString())
+          .send({from: tokenHolder2});
 
       // 5 2 3
 
-      await this.fundsDistributionToken.transfer(tokenHolder3, ether('5'), {from: tokenHolder1});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder3, ether('5').toString())
+          .send({from: tokenHolder1});
 
       // 0 2 8
 
-      await this.fundsDistributionToken.transfer(tokenHolder2, ether('2'), {from: tokenHolder3});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('2').toString())
+          .send({from: tokenHolder3});
 
       // 0 4 6
 
-      await this.fundsDistributionToken.transfer(tokenHolder1, ether('3'), {from: tokenHolder2});
+      await this.fundsDistributionToken.methods.transfer(tokenHolder1, ether('3').toString())
+          .send({from: tokenHolder2});
 
       // 3, 1, 6
 
-      (await this.fundsDistributionToken.balanceOf(tokenHolder1)).should.be.bignumber.equal(ether('3'));
-      (await this.fundsDistributionToken.balanceOf(tokenHolder2)).should.be.bignumber.equal(ether('1'));
-      (await this.fundsDistributionToken.balanceOf(tokenHolder3)).should.be.bignumber.equal(ether('6'));
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
+          .should.be.equal(ether('3').toString());
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
+          .should.be.equal(ether('1').toString());
+      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder3).call())
+          .should.be.equal(ether('6').toString());
 
       // deposit
-      // await this.fundsDistributionToken.distributeFunds({from: anyone, value: ether('10')});
-      await this.fundsToken.transfer(this.fundsDistributionToken.address, ether('10'), {from: anyone});
-      await this.fundsDistributionToken.updateFundsReceived({from: anyone});
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('19'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('9'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('10'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('15'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('15'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('6'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('6'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('0'));
+      // await this.fundsDistributionToken.methods.distributeFunds()
+      //   .send({from: anyone, value: ether('10').toString()});
+      await this.fundsToken.methods
+          .transfer(this.fundsDistributionToken.options.address, ether('10').toString())
+          .send({from: anyone});
+      await this.fundsDistributionToken.methods.updateFundsReceived()
+          .send({from: anyone});
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('19').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('9').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('10').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('15').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('15').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('6').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('6').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('0').toString());
 
 
       // tokenHolder1 withdraw
       // balanceBefore = await balance.current(tokenHolder1);
-      // receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1, gasPrice: gasPrice});
+      // receipt = await this.fundsDistributionToken.methods.withdrawFunds()
+      //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder1);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.bignumber.equal( balanceBefore.add(ether('9')).sub(fee));
-      balanceBefore = await this.fundsToken.balanceOf(tokenHolder1);
-      receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder1});
-      balanceAfter = await this.fundsToken.balanceOf(tokenHolder1);
-      balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('9')));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('19'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder1)).should.be.bignumber.equal(ether('19'));
+      // balanceAfter.should.be.equal( balanceBefore.add(ether('9').sub(fee).toString());
+      balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
+      await this.fundsDistributionToken.methods.withdrawFunds()
+          .send({from: tokenHolder1});
+      balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
+      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('9')).toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('19').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
+          .should.be.equal(ether('19').toString());
 
       // tokenHolder2 withdraw
       // balanceBefore = await balance.current(tokenHolder2);
-      // receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder2, gasPrice: gasPrice});
+      // receipt = await this.fundsDistributionToken.methods.withdrawFunds()
+      //   .send({from: tokenHolder2, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder2);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.bignumber.equal( balanceBefore.add(ether('15')).sub(fee));
-      balanceBefore = await this.fundsToken.balanceOf(tokenHolder2);
-      await this.fundsDistributionToken.withdrawFunds({from: tokenHolder2});
-      balanceAfter = await this.fundsToken.balanceOf(tokenHolder2);
-      balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('15')));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('15'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder2)).should.be.bignumber.equal(ether('15'));
+      // balanceAfter.should.be.equal( balanceBefore.add(ether('15').sub(fee).toString());
+      balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
+      await this.fundsDistributionToken.methods.withdrawFunds()
+          .send({from: tokenHolder2});
+      balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
+      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('15')).toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('15').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
+          .should.be.equal(ether('15').toString());
 
       // tokenHolder3 withdraw
       // balanceBefore = await balance.current(tokenHolder3);
-      // receipt = await this.fundsDistributionToken.withdrawFunds({from: tokenHolder3, gasPrice: gasPrice});
+      // receipt = await this.fundsDistributionToken.methods.withdrawFunds()
+      //   .send({from: tokenHolder3, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder3);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.bignumber.equal( balanceBefore.add(ether('6')).sub(fee));
-      balanceBefore = await this.fundsToken.balanceOf(tokenHolder3);
-      await this.fundsDistributionToken.withdrawFunds({from: tokenHolder3});
-      balanceAfter = await this.fundsToken.balanceOf(tokenHolder3);
-      balanceAfter.should.be.bignumber.equal(balanceBefore.add(ether('6')));
-      (await this.fundsDistributionToken.accumulativeFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('6'));
-      (await this.fundsDistributionToken.withdrawableFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('0'));
-      (await this.fundsDistributionToken.withdrawnFundsOf(tokenHolder3)).should.be.bignumber.equal(ether('6'));
+      // balanceAfter.should.be.equal( balanceBefore.add(ether('6').sub(fee).toString());
+      balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
+      await this.fundsDistributionToken.methods.withdrawFunds()
+          .send({from: tokenHolder3});
+      balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
+      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('6')).toString());
+      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('6').toString());
+      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('0').toString());
+      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call())
+          .should.be.equal(ether('6').toString());
     });
   });
 });
