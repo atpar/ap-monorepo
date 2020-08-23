@@ -103,6 +103,12 @@ contract ProxySafeICT is
         createDeposit(
             _event,
             scheduleTime,
+            // latest registration date on XD
+            (eventType == EventType.RFD)
+                ? getTimestampPlusPeriod(
+                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
+                    scheduleTime)
+                : 0,
             (eventType == EventType.RFD),
             currency
         );
@@ -155,26 +161,21 @@ contract ProxySafeICT is
 
         Deposit storage deposit = deposits[_event];
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
-        int256 totalQuantity = assetRegistry.getIntValueForTermsAttribute(assetId, "quantity");
+        int256 quantity = assetRegistry.getIntValueForStateAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
-        int256 quantity = ratioSignaled.floatMult(totalQuantity);
+        int256 exerciseQuantity = ratioSignaled.floatMult(quantity);
 
         (EventType eventType, ) = decodeEvent(_event);
 
         uint256 timestamp = shiftCalcTime(
-            (eventType != EventType.RFD)
-                ? deposit.scheduledFor
-                : getTimestampPlusPeriod(
-                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
-                    deposit.scheduledFor
-                ),
+            (eventType != EventType.RFD) ? deposit.scheduledFor : deposit.signalingCutoff,
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
         );
 
-        dataRegistry.publishDataPoint(marketObjectCode, timestamp, quantity);
+        dataRegistry.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
     }
 
     /**
@@ -193,26 +194,21 @@ contract ProxySafeICT is
 
         Deposit storage deposit = deposits[_event];
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
-        int256 totalQuantity = assetRegistry.getIntValueForTermsAttribute(assetId, "quantity");
+        int256 quantity = assetRegistry.getIntValueForStateAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
         int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
-        int256 quantity = ratioSignaled.floatMult(totalQuantity);
+        int256 exerciseQuantity = ratioSignaled.floatMult(quantity);
 
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+        (EventType eventType, ) = decodeEvent(_event);
 
         uint256 timestamp = shiftCalcTime(
-            (eventType != EventType.RFD)
-                ? deposit.scheduledFor
-                : getTimestampPlusPeriod(
-                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
-                    scheduleTime
-                ),
+            (eventType != EventType.RFD) ? deposit.scheduledFor : deposit.signalingCutoff,
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
         );
 
-        dataRegistry.publishDataPoint(marketObjectCode, timestamp, quantity);
+        dataRegistry.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
     }
 
     function mint(address account, uint256 amount)

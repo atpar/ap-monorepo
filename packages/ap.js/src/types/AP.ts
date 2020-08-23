@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from "../utils/Constants";
+import { ZERO_ADDRESS } from '../utils/Constants';
 
 export interface AddressBook {
   ANNActor: string;
@@ -14,12 +14,12 @@ export interface AddressBook {
   CERTFEngine: string;
   CERTFRegistry: string;
   Custodian: string;
-  FDTFactory: string;
   DataRegistry: string;
+  DvPSettlement: string;
+  FDTFactory: string;
   PAMActor: string;
   PAMEngine: string;
   PAMRegistry: string;
-  DvPSettlement: string;
 }
 
 export interface AssetOwnership {
@@ -44,12 +44,12 @@ export function isAddressBook (obj: any): obj is AddressBook {
   if (obj.CERTFEngine == undefined || typeof obj.CERTFEngine !== 'string' || obj.CERTFEngine === ZERO_ADDRESS) { return false; }
   if (obj.CERTFRegistry == undefined || typeof obj.CERTFRegistry !== 'string' || obj.CERTFRegistry === ZERO_ADDRESS) { return false; }
   if (obj.Custodian == undefined || typeof obj.Custodian !== 'string' || obj.Custodian === ZERO_ADDRESS) { return false; }
-  if (obj.FDTFactory == undefined || typeof obj.FDTFactory !== 'string' || obj.FDTFactory === ZERO_ADDRESS) { return false; }
   if (obj.DataRegistry == undefined || typeof obj.DataRegistry !== 'string' || obj.DataRegistry === ZERO_ADDRESS) { return false; }
+  if (obj.DvPSettlement == undefined || typeof obj.DvPSettlement !== 'string' || obj.DvPSettlement === ZERO_ADDRESS) { return false; }
+  if (obj.FDTFactory == undefined || typeof obj.FDTFactory !== 'string' || obj.FDTFactory === ZERO_ADDRESS) { return false; }
   if (obj.PAMActor == undefined || typeof obj.PAMActor !== 'string' || obj.PAMActor === ZERO_ADDRESS) { return false; }
   if (obj.PAMEngine == undefined || typeof obj.PAMEngine !== 'string' || obj.PAMEngine === ZERO_ADDRESS) { return false; }
   if (obj.PAMRegistry == undefined || typeof obj.PAMRegistry !== 'string' || obj.PAMRegistry === ZERO_ADDRESS) { return false; }
-  if (obj.DvPSettlement == undefined || typeof obj.DvPSettlement !== 'string' || obj.DvPSettlement === ZERO_ADDRESS) { return false; }
 
   return true;
 }
