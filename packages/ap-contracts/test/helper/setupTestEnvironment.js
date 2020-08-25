@@ -88,14 +88,14 @@ async function deployVanillaFDT(bre, {
   initialAmount = 0,
 })
 {
-  const { deployments: { deploy, log }, web3 } = bre;
+  const { deployments: { deploy }, web3 } = bre;
   const { abi, address } = await deploy("VanillaFDT", {
     args: [name, symbol, fundsToken, owner, initialAmount],
     from: owner,
     // deploy a new instance rather than re-use the one already deployed with another "from" address
     fieldsToCompare: [ "data", "from" ],
   });
-  return new bre.web3.eth.Contract(abi, address);
+  return new web3.eth.Contract(abi, address);
 }
 
 /**
@@ -109,14 +109,41 @@ async function deploySimpleRestrictedFDT(bre, {
   initialAmount = 0,
 })
 {
-  const { deployments: { deploy, log }, web3 } = bre;
+  const { deployments: { deploy }, web3 } = bre;
   const { abi, address } = await deploy("SimpleRestrictedFDT", {
     args: [name, symbol, fundsToken, owner, initialAmount],
     from: owner,
     // deploy a new instance rather than re-use the one already deployed with another "from" address
     fieldsToCompare: [ "data", "from" ],
   });
-  return new bre.web3.eth.Contract(abi, address);
+  return new web3.eth.Contract(abi, address);
+}
+
+/** @param {ExtendedTestBRE} bre */
+async function deployICToken(bre, {
+  assetRegistry,
+  dataRegistry,
+  marketObjectCode,
+  deployer = '',
+})
+{
+  // const { deployments: { deploy }, usrNs: { instances, roles: { deployer: defaultDeployer }}, web3 } = bre;
+  // const bytes32 = (str) => '0x' + web3.utils.padLeft(str.replace('0x', ''), 64);
+  // const { abi, address } = await deploy("ICT", {
+  //   args: [assetRegistry, dataRegistry, bytes32(marketObjectCode)],
+  //   from: deployer || defaultDeployer,
+  //   // deploy a new instance rather than re-use the one already deployed with another "from" address
+  //   fieldsToCompare: [ "data", "from" ],
+  // });
+  // return new web3.eth.Contract(abi, address);
+  const { deployments: { getArtifact }, usrNs: { instances, roles: { deployer: defaultDeployer }}, web3 } = bre;
+  const { abi, bytecode } = await getArtifact("ICT");
+  const instance = new web3.eth.Contract(abi);
+  return (await instance
+          // bytecode linking is unneeded for this contract
+          .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode ]})
+          .send({ from: deployer || defaultDeployer })
+  );
 }
 
 function parseToContractTerms(contract, terms) {
@@ -142,6 +169,7 @@ module.exports = {
   getDefaultTerms,
   getZeroTerms,
   getComplexTerms,
+  deployICToken,
   deployPaymentToken,
   deploySimpleRestrictedFDT,
   deployVanillaFDT
