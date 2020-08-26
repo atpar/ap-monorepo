@@ -6,25 +6,31 @@ const BigNumber = require('bignumber.js');
 
 const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState } = require('../../../helper/utils');
+const {
+  generateSchedule, expectEvent, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState,
+} = require('../../../helper/utils');
 
 describe('ANNActor', () => {
-  let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
+  let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   const getEventTime = async (_event, terms) => {
-    return Number(await this.ANNEngineInstance.methods.computeEventTimeForEvent(
-      _event,
-      terms.businessDayConvention,
-      terms.calendar,
-      terms.maturityDate
-    ).call());
+    return Number(
+        await this.ANNEngineInstance.methods.computeEventTimeForEvent(
+            _event,
+            terms.businessDayConvention,
+            terms.calendar,
+            terms.maturityDate
+        ).call()
+    );
   }
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
   const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    [ ,, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary ] = self.accounts;
+    [
+      /*deployer*/, /*actor*/, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
+    ] = self.accounts;
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
 
@@ -48,15 +54,16 @@ describe('ANNActor', () => {
         await self.ANNEngineInstance.methods.computeInitialState(self.terms).call()
     );
 
-    const tx = await self.ANNActorInstance.methods.initialize(
+    const { events } = await self.ANNActorInstance.methods.initialize(
         self.terms,
         self.schedule,
         self.ownership,
         self.ANNEngineInstance.options.address,
         ZERO_ADDRESS
-    ).send(self.txOpts);
+    ).send({ from: nobody });
+    await expectEvent(events, 'InitializedAsset');
 
-    self.assetId = tx.events.InitializedAsset.returnValues.assetId;
+    self.assetId = events.InitializedAsset.returnValues.assetId;
   });
 
   before(async () => {
@@ -69,15 +76,15 @@ describe('ANNActor', () => {
   });
 
   it('should initialize an asset', async () => {
-    const storedTerms = await this.ANNRegistryInstance
-        .methods.getTerms(web3.utils.toHex(this.assetId)).call();
+    const storedTerms = await this.ANNRegistryInstance.methods
+        .getTerms(web3.utils.toHex(this.assetId)).call();
     const storedState = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
     );
-    const storedOwnership = await this.ANNRegistryInstance
-        .methods.getOwnership(web3.utils.toHex(this.assetId)).call();
-    const storedEngineAddress = await this.ANNRegistryInstance
-        .methods.getEngine(web3.utils.toHex(this.assetId)).call();
+    const storedOwnership = await this.ANNRegistryInstance.methods
+        .getOwnership(web3.utils.toHex(this.assetId)).call();
+    const storedEngineAddress = await this.ANNRegistryInstance.methods
+        .getEngine(web3.utils.toHex(this.assetId)).call();
 
     assert.deepStrictEqual(parseTerms(storedTerms), parseTerms(Object.values(this.terms)));
     assert.deepStrictEqual(storedState, this.state);
@@ -90,31 +97,34 @@ describe('ANNActor', () => {
   });
 
   it('should process next state with contract status equal to PF', async () => {
-    const _event = await this.ANNRegistryInstance
-        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const _event = await this.ANNRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms)
 
-    const payoff = new BigNumber(await this.ANNEngineInstance.methods.computePayoffForEvent(
-      this.terms,
-      this.state,
-      _event,
-      web3.utils.toHex(eventTime)
-    ).call());
+    const payoff = new BigNumber(
+        await this.ANNEngineInstance.methods.computePayoffForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
+    );
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.methods.approve(
-      this.ANNActorInstance.options.address,
-      value,
+        this.ANNActorInstance.options.address,
+        value,
     ).send({ from: creatorObligor });
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const tx = await this.ANNActorInstance.methods.progress(
+    const { events } = await this.ANNActorInstance.methods.progress(
         web3.utils.toHex(this.assetId)
     ).send({ from: creatorObligor });
-    const emittedAssetId = tx.events.ProgressedAsset.returnValues.assetId;
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
@@ -122,31 +132,33 @@ describe('ANNActor', () => {
     const isEventSettled = await this.ANNRegistryInstance
         .methods.isEventSettled(web3.utils.toHex(this.assetId), _event).call();
     const projectedNextState = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     assert.strictEqual(emittedAssetId, this.assetId);
     assert.strictEqual(storedNextState.statusDate.toString(), eventTime.toString());
-    assert.strictEqual(isEventSettled[0], true );
-    assert.strictEqual(isEventSettled[1].toString(), payoff.toFixed().toString());
+    assert.strictEqual(isEventSettled[0], true);
+    assert.strictEqual(isEventSettled[1].toString(), payoff.toFixed());
     assert.deepStrictEqual(storedNextState, projectedNextState);
   });
 
   it('should process next state transitioning from PF to DL', async () => {
-    const _event = await this.ANNRegistryInstance
-        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const _event = await this.ANNRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state
     await mineBlock(eventTime);
 
-    const tx = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send(this.txOpts);
-    const emittedAssetId = tx.events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    await expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
@@ -159,12 +171,12 @@ describe('ANNActor', () => {
 
     // compute expected next state
     const projectedNextState = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     projectedNextState.nonPerformingDate = String(eventTime); // eventTime of first event
@@ -187,8 +199,11 @@ describe('ANNActor', () => {
     // progress asset state to after grace period
     await mineBlock(Number(eventTime) + 3000000);
 
-    const tx = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send(this.txOpts);
-    const emittedAssetId = tx.events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+
     const storedNextState = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
     );
@@ -200,12 +215,12 @@ describe('ANNActor', () => {
 
     // compute expected next state
     const projectedNextState = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     projectedNextState.nonPerformingDate = String(eventTime); // eventTime of first event
@@ -221,15 +236,18 @@ describe('ANNActor', () => {
   });
 
   it('should process next state transitioning from PF to DF', async () => {
-    const _event = await this.ANNRegistryInstance
-        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const _event = await this.ANNRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state to after deliquency period
     await mineBlock(Number(eventTime) + 30000000);
 
-    const tx = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send(this.txOpts);
-    const emittedAssetId = tx.events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+
     const storedNextState = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
     );
@@ -241,12 +259,12 @@ describe('ANNActor', () => {
 
     // compute expected next state
     const projectedNextState = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     projectedNextState.nonPerformingDate = String(eventTime); // eventTime of first event
@@ -262,34 +280,37 @@ describe('ANNActor', () => {
   });
 
   it('should process next state transitioning from DL to PF', async () => {
-    const _event = await this.ANNRegistryInstance
-        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const _event = await this.ANNRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms);
 
     // progress asset state
     await mineBlock(eventTime);
 
-    const tx = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send(this.txOpts);
-    const emittedAssetId_DL = tx.events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId_DL = events.ProgressedAsset.returnValues.assetId;
+
     const storedNextState_DL = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
     );
     const storedFinalizedState_DL = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getFinalizedState(web3.utils.toHex(this.assetId)).call()
     );
-    const storedPendingEvent_DL = await this.ANNRegistryInstance
-        .methods.getPendingEvent(web3.utils.toHex(this.assetId)).call();
-    const isEventSettled_DL = await this.ANNRegistryInstance
-        .methods.isEventSettled(web3.utils.toHex(this.assetId), _event).call();
+    const storedPendingEvent_DL = await this.ANNRegistryInstance.methods
+        .getPendingEvent(web3.utils.toHex(this.assetId)).call();
+    const isEventSettled_DL = await this.ANNRegistryInstance.methods
+        .isEventSettled(web3.utils.toHex(this.assetId), _event).call();
 
     // compute expected next state
     const projectedNextState_DL = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     projectedNextState_DL.nonPerformingDate = String(eventTime); // eventTime of first event
@@ -304,23 +325,28 @@ describe('ANNActor', () => {
     assert.strictEqual(isEventSettled_DL[1].toString(), '0');
     assert.deepStrictEqual(storedNextState_DL, projectedNextState_DL);
 
-    const payoff = new BigNumber(await this.ANNEngineInstance.methods.computePayoffForEvent(
-      this.terms,
-      this.state,
-      _event,
-      web3.utils.toHex(eventTime)
-    ).call());
+    const payoff = new BigNumber(
+        await this.ANNEngineInstance.methods.computePayoffForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
+    );
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
     // set allowance for Payment Router
     await this.PaymentTokenInstance.methods.approve(
-      this.ANNActorInstance.options.address,
-      value,
+        this.ANNActorInstance.options.address,
+        value,
     ).send({ from: creatorObligor });
 
-    const tx2 = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send(this.txOpts);
-    const emittedAssetId_PF = tx2.events.ProgressedAsset.returnValues.assetId;
+    const { events: events_PF } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events_PF, 'ProgressedAsset');
+    const emittedAssetId_PF = events.ProgressedAsset.returnValues.assetId;
+
     const storedNextState_PF = web3ResponseToState(
         await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
     );
@@ -334,12 +360,12 @@ describe('ANNActor', () => {
 
     // compute expected next state
     const projectedNextState_PF = web3ResponseToState(
-      await this.ANNEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(eventTime)
+        ).call()
     );
 
     projectedNextState_PF.nonPerformingDate = String(0); // 0
