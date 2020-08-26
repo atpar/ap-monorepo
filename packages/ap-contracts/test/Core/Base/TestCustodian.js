@@ -1,6 +1,5 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 const { shouldFail } = require('openzeppelin-test-helpers');

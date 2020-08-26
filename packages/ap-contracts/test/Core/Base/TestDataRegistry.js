@@ -1,81 +1,78 @@
-const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const bre = require('@nomiclabs/buidler');
+const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment } = require('../../helper/setupTestEnvironment');
+const { getSnapshotTaker } = require('../../helper/setupTestEnvironment');
+const { expectEvent } = require('../../helper/utils');
 
-const DataRegistry = artifacts.require('DataRegistry');
 
+describe('DataRegistry', () => {
+  let admin, marketObjectProvider, unregisteredProvider;
 
-contract('DataRegistry', (accounts) => {
-  const admin = accounts[0];
-  const marketObjectProvider = accounts[1];
-  const unregisteredProvider = accounts[2];
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
+
+    [ admin, marketObjectProvider, unregisteredProvider ] = self.accounts;
+    self.marketObjectId = web3.utils.toHex('MOID_1');
+  });
 
   before(async () => {
-    const instances = await setupTestEnvironment(accounts);
-    Object.keys(instances).forEach((instance) => this[instance] = instances[instance]);
-
-    this.marketObjectId = web3.utils.toHex('MOID_1');
+    this.setupTestEnvironment = snapshotTaker(this);
+    await this.setupTestEnvironment();
   });
 
   it('should register a data provider', async () => {
-    const { tx: txHash } = await this.DataRegistryInstance.setDataProvider(
+    const { events } = await this.DataRegistryInstance.methods.setDataProvider(
       this.marketObjectId,
       marketObjectProvider,
-      { from: admin }
-    );
+    ).send({ from: admin });
 
-    await expectEvent.inTransaction(
-      txHash, DataRegistry, 'UpdatedDataProvider'
-    );
+    await expectEvent(events, 'UpdatedDataProvider');
   });
 
   it('should register a data point for a registered data provider', async () => {
-    const { tx: txHash } = await this.DataRegistryInstance.publishDataPoint(
+    const { events } = await this.DataRegistryInstance.methods.publishDataPoint(
       this.marketObjectId,
       1,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
-      { from: marketObjectProvider }
-    );
+    ).send({ from: marketObjectProvider });
 
-    await expectEvent.inTransaction(
-      txHash, DataRegistry, 'PublishedDataPoint'
-    );
+    await expectEvent(events, 'PublishedDataPoint');
   });
 
   it('should register a data point with an earlier timestamp for a registered data provider', async () => {
-    const { tx: txHash } = await this.DataRegistryInstance.publishDataPoint(
+    const { events } = await this.DataRegistryInstance.methods.publishDataPoint(
       this.marketObjectId,
       0,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
-      { from: marketObjectProvider }
-  );
+  ).send({ from: marketObjectProvider });
 
-    await expectEvent.inTransaction(
-      txHash, DataRegistry, 'PublishedDataPoint'
-    );
+    await expectEvent(events, 'PublishedDataPoint');
   });
 
   it('should revert if an unregistered account tries to publish a data point', async () => {
     await shouldFail.reverting.withMessage(
-      this.DataRegistryInstance.publishDataPoint(
+      this.DataRegistryInstance.methods.publishDataPoint(
         this.marketObjectId,
         1,
         '0x0000000000000000000000000000000000000000000000000000000000000001',
-        { from: unregisteredProvider }
-      ),
+      ).send({ from: unregisteredProvider }),
       'DataRegistry.publishDataPoint: UNAUTHORIZED_SENDER'
     );
   });
 
   it('should retrieve the correct data point', async () => {
-    const result = await this.DataRegistryInstance.getDataPoint(this.marketObjectId, 1);
+    const result = await this.DataRegistryInstance.methods.getDataPoint(this.marketObjectId, 1).call();
 
     assert.equal(result[0].toString(), '1');
     assert.equal(result[1], true);
   });
 
   it('should retrieve the correct last updated timestamp', async () => {
-    const lastUpdated = await this.DataRegistryInstance.getLastUpdatedTimestamp(this.marketObjectId);
+    const lastUpdated = await this.DataRegistryInstance.methods.getLastUpdatedTimestamp(this.marketObjectId).call();
 
     assert.equal(lastUpdated.toString(), '1');
   });
