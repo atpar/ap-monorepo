@@ -19,7 +19,7 @@ describe('CECRegistry', () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-        /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
+        /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
     ] = self.accounts;
     self.assetId = 'CEC_01';
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };

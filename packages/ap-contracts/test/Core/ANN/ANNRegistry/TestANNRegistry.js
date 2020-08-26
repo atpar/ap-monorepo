@@ -12,14 +12,14 @@ const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
 
 
 describe('ANNRegistry', () => {
-  let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
+  let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
   const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary
+      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
     ] = self.accounts;
 
     self.assetId = 'ANN_01';
@@ -88,7 +88,7 @@ describe('ANNRegistry', () => {
       this.ANNRegistryInstance.methods.setState(
         web3.utils.toHex(this.assetId),
         this.state,
-      ).send(this.txOpts),
+      ).send({ from: nobody }),
       'AccessControl.isAuthorized: ' + UNAUTHORIZED_SENDER
     );
   });
