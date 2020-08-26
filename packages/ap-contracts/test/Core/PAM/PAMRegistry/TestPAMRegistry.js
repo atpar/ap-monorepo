@@ -51,13 +51,13 @@ describe('PAMRegistry', () => {
     const storedOwnership = await this.PAMRegistryInstance.methods.getOwnership(web3.utils.toHex(this.assetId)).call();
     const storedEngineAddress = await this.PAMRegistryInstance.methods.getEngine(web3.utils.toHex(this.assetId)).call();
 
-    assert.deepEqual(parseTerms(storedTerms), parseTerms(Object.values({ ...this.terms })));
-    assert.deepEqual(storedState, this.state);
-    assert.deepEqual(storedEngineAddress, this.PAMEngineInstance.options.address);
-    assert.equal(storedOwnership.creatorObligor, creatorObligor);
-    assert.equal(storedOwnership.creatorBeneficiary, creatorBeneficiary);
-    assert.equal(storedOwnership.counterpartyObligor, counterpartyObligor);
-    assert.equal(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
+    assert.deepStrictEqual(parseTerms(storedTerms), parseTerms(Object.values({ ...this.terms })));
+    assert.deepStrictEqual(storedState, this.state);
+    assert.deepStrictEqual(storedEngineAddress, this.PAMEngineInstance.options.address);
+    assert.strictEqual(storedOwnership.creatorObligor, creatorObligor);
+    assert.strictEqual(storedOwnership.creatorBeneficiary, creatorBeneficiary);
+    assert.strictEqual(storedOwnership.counterpartyObligor, counterpartyObligor);
+    assert.strictEqual(storedOwnership.counterpartyBeneficiary, counterpartyBeneficiary);
   });
 
   it('should not overwrite an existing asset', async () => {
