@@ -1,51 +1,54 @@
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const bre = require('@nomiclabs/buidler');
+
 const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
-
-const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot } = require('../../../helper/blockchain');
 const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
+const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
-contract('PAMActor', (accounts) => {
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
+describe('PAMActor', () => {
+  let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
 
-  let snapshot;
-
-  before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
-
-    snapshot = await createSnapshot()
+  /** @param {any} self - `this` inside `before()`/`it()` */
+  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
+    [
+      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary,
+    ] = self.accounts;
   });
 
-  after(async () => {
-    await revertToSnapshot(snapshot);
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+  });
+
+  beforeEach(async () => {
+    await this.setupTestEnvironment();
   });
 
   it('should initialize Asset with ContractType PAM', async () => {
     const terms = (await getTestCases('PAM'))['pam01']['terms'];
     const schedule = await generateSchedule(this.PAMEngineInstance, terms);
-    const state = await this.PAMEngineInstance.computeInitialState(terms);
+    const state = await this.PAMEngineInstance.methods.computeInitialState(terms).call();
     const ownership = {
-      creatorObligor, 
-      creatorBeneficiary, 
-      counterpartyObligor, 
+      creatorObligor,
+      creatorBeneficiary,
+      counterpartyObligor,
       counterpartyBeneficiary
     };
-  
-    const tx = await this.PAMActorInstance.initialize(
+
+    const tx = await this.PAMActorInstance.methods.initialize(
       terms,
       schedule,
       ownership,
-      this.PAMEngineInstance.address,
+      this.PAMEngineInstance.options.address,
       ZERO_ADDRESS
-    );
+    ).send({ from: actor });
 
-    const assetId = tx.logs[0].args.assetId;
-    const storedState = await this.PAMRegistryInstance.getState(assetId);
+    const assetId = tx.events.InitializedAsset.returnValues.assetId;
+    const storedState = await this.PAMRegistryInstance.methods.getState(assetId).call();
 
-    assert.deepEqual(storedState, state);
+    assert.deepStrictEqual(storedState, state);
   });
 });

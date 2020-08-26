@@ -2,28 +2,29 @@
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
 const bre = require('@nomiclabs/buidler');
+
 const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
 const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
 describe('ANNActor', () => {
-  let setupTestEnvironment;
-  let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
+  let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary;
 
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    [ creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary ] = self.accounts;
+    [
+      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary,
+    ] = self.accounts;
   });
 
   before(async () => {
-    setupTestEnvironment = snapshotTaker(this);
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   beforeEach(async () => {
-    // take (on the 1st call) or restore (on further calls) the snapshot
-    await setupTestEnvironment();
+    await this.setupTestEnvironment();
   });
 
   it('should initialize Asset with ContractType ANN', async () => {
@@ -43,7 +44,7 @@ describe('ANNActor', () => {
       ownership,
       this.ANNEngineInstance.options.address,
       ZERO_ADDRESS
-    ).send(this.txOpts);
+    ).send({ from: actor });
 
     const assetId = tx.events.InitializedAsset.returnValues.assetId;
     const storedState = await this.ANNRegistryInstance.methods.getState(assetId).call();
