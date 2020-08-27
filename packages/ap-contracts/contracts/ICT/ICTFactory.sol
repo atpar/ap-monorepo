@@ -4,7 +4,10 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "./IInitializableICT.sol";
-import "../proxy/ProxyFactory.sol";
+
+import "../helper/CloneFactory.sol";
+import "../helper/ProxyFactory.sol";
+
 
 // @dev Mock lib to link pre-deployed ProxySafeICT contract
 library ICTLogic {
@@ -15,10 +18,32 @@ library ICTLogic {
  * @title ICTFactory
  * @notice Factory for deploying ProxySafeICT contracts
  */
-contract ICTFactory is ProxyFactory {
+contract ICTFactory is ProxyFactory, CloneFactory {
 
     event DeployedICT(address icToken, address creator);
 
+    /*
+     * deploys and initializes a new ICT contract
+     * @param assetRegistry
+     * @param dataRegistry
+     * @param marketObjectCode
+     * @param owner of the new ICT contract
+     */
+    function createICToken(
+        address assetRegistry,
+        address dataRegistry,
+        bytes32 marketObjectCode,
+        address owner
+    )
+        external
+    {
+        address logic = address(ICTLogic);
+
+        address icToken = createClone(logic);
+        IInitializableICT(icToken).initialize(assetRegistry, dataRegistry, marketObjectCode, owner);
+
+        emit DeployedICT(icToken, msg.sender);
+    }
 
     /*
      * deploys and initializes a new ICT (proxy) contract
@@ -28,7 +53,7 @@ contract ICTFactory is ProxyFactory {
      * @param owner of the new ICT contract
      * @param salt as defined by EIP-1167
      */
-    function createICToken(
+    function create2ICToken(
         address assetRegistry,
         address dataRegistry,
         bytes32 marketObjectCode,

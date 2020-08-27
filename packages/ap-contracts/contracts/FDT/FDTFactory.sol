@@ -4,11 +4,10 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 
-import "./SimpleRestrictedFDT.sol";
-import "./VanillaFDT.sol";
 import "./IInitializableFDT.sol";
 
-import "../proxy/ProxyFactory.sol";
+import "../helper/ProxyFactory.sol";
+import "../helper/CloneFactory.sol";
 
 
 // @dev Mock lib to link pre-deployed ProxySafeVanillaFDT contract
@@ -25,7 +24,7 @@ library SimpleRestrictedFDTLogic {
  * @title FDTFactory
  * @notice Factory for deploying FDT contracts
  */
-contract FDTFactory is ProxyFactory {
+contract FDTFactory is ProxyFactory, CloneFactory {
 
     event DeployedDistributor(address distributor, address creator);
 
@@ -48,14 +47,8 @@ contract FDTFactory is ProxyFactory {
     )
         external
     {
-        require(
-            address(token) != address(0),
-            "FDTFactory.createFDT: INVALID_FUNCTION_PARAMETERS"
-        );
-
-        VanillaFDT distributor = new VanillaFDT(name, symbol, token, owner, initialSupply);
-
-        emit DeployedDistributor(address(distributor), msg.sender);
+        address logic = address(VanillaFDTLogic);
+        createFDT(name, symbol, initialSupply, token, owner, logic);
     }
 
     /**
@@ -76,14 +69,8 @@ contract FDTFactory is ProxyFactory {
     )
         external
     {
-        require(
-            address(token) != address(0),
-            "FDTFactory.createFDT: INVALID_FUNCTION_PARAMETERS"
-        );
-
-        SimpleRestrictedFDT distributor = new SimpleRestrictedFDT(name, symbol, token, owner, initialSupply);
-
-        emit DeployedDistributor(address(distributor), msg.sender);
+        address logic = address(SimpleRestrictedFDTLogic);
+        createFDT(name, symbol, initialSupply, token, owner, logic);
     }
 
     /**
@@ -107,7 +94,7 @@ contract FDTFactory is ProxyFactory {
         external
     {
         address logic = address(VanillaFDTLogic);
-        createFDT(name, symbol, initialSupply, token, owner, logic, salt);
+        create2FDT(name, symbol, initialSupply, token, owner, logic, salt);
     }
 
     /**
@@ -131,10 +118,31 @@ contract FDTFactory is ProxyFactory {
         external
     {
         address logic = address(SimpleRestrictedFDTLogic);
-        createFDT(name, symbol, initialSupply, token, owner, logic, salt);
+        create2FDT(name, symbol, initialSupply, token, owner, logic, salt);
     }
 
     function createFDT(
+        string calldata name,
+        string calldata symbol,
+        uint256 initialSupply,
+        IERC20 token,
+        address owner,
+        address logic
+    )
+        private
+    {
+        require(
+            address(token) != address(0),
+            "FDTFactory.create2FDT: INVALID_FUNCTION_PARAMETERS"
+        );
+
+        address distributor = createClone(logic);
+        IInitializableFDT(distributor).initialize(name, symbol, token, owner, initialSupply);
+
+        emit DeployedDistributor(distributor, msg.sender);
+    }
+
+    function create2FDT(
         string calldata name,
         string calldata symbol,
         uint256 initialSupply,
@@ -147,7 +155,7 @@ contract FDTFactory is ProxyFactory {
     {
         require(
             address(token) != address(0),
-            "FDTFactory.createFDT: INVALID_FUNCTION_PARAMETERS"
+            "FDTFactory.create2FDT: INVALID_FUNCTION_PARAMETERS"
         );
 
         address distributor = create2Eip1167Proxy(logic, salt);

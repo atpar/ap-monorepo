@@ -32,14 +32,14 @@ contract('ICTFactory', function (accounts) {
     });
   });
 
-  describe('createICToken(...)', async () => {
-    testCreateICToken.bind(this)('createICToken');
+  describe('create2ICToken(...)', async () => {
+    testCreate2ICToken.bind(this)('create2ICToken');
   });
 
-  function testCreateICToken(fnName) {
+  function testCreate2ICToken(fnName) {
     // reserved for more `fName`s
     const [logicName, tokenName] = ({
-      createICToken: ['ProxySafeICT', 'ICT'],
+      create2ICToken: ['ProxySafeICT', 'ICT'],
     })[fnName];
     if (!logicName) throw new Error('invalid fnName');
 
@@ -57,7 +57,7 @@ contract('ICTFactory', function (accounts) {
       const createFn = this.instances.ICTFactoryInstance[fnName].bind(this.instances.ICTFactoryInstance);
       this.act = await Promise.all(ictParams.map(async (params) => {
         try {
-          let actual = decodeEvents(await createICT(createFn, params));
+          let actual = decodeEvents(await create2ICT(createFn, params));
           actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
           actual.icToken = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, actual.proxy));
           return actual;
@@ -180,7 +180,7 @@ contract('ICTFactory', function (accounts) {
     });
   }
 
-  async function createICT(createFn, {assetRegistry, dataRegistry, marketObjectCode, owner, salt}) {
+  async function create2ICT(createFn, {assetRegistry, dataRegistry, marketObjectCode, owner, salt}) {
     return createFn(assetRegistry, dataRegistry, marketObjectCode, owner, salt);
   }
 

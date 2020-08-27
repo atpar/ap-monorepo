@@ -13,6 +13,7 @@ contract ProxyFactory {
 
     event NewEip1167Proxy(address proxy, address logic, uint256 salt);
 
+
     /**
      * @dev `create2` a new EIP-1167 proxi instance
      * https://eips.ethereum.org/EIPS/eip-1167

@@ -26,18 +26,18 @@ contract('FDTFactory', function (accounts) {
     fdtParams.forEach(e => e.fundsToken = e.fundsToken || this.fundsToken.address);
   });
 
-  describe('createERC20Distributor(...)', async () => {
-    testCreateDistributor.bind(this)('createERC20Distributor');
+  describe('create2ERC20Distributor(...)', async () => {
+    testCreate2Distributor.bind(this)('create2ERC20Distributor');
   });
 
-  describe('createRestrictedERC20Distributor(...)', async () => {
-    testCreateDistributor.bind(this)('createRestrictedERC20Distributor');
+  describe('create2RestrictedERC20Distributor(...)', async () => {
+    testCreate2Distributor.bind(this)('create2RestrictedERC20Distributor');
   });
 
-  function testCreateDistributor(fnName) {
+  function testCreate2Distributor(fnName) {
     const [logicName, tokenName] = ({
-      createERC20Distributor: ['ProxySafeVanillaFDT', 'VanillaFDT'],
-      createRestrictedERC20Distributor: ['ProxySafeSimpleRestrictedFDT', 'SimpleRestrictedFDT'],
+      create2ERC20Distributor: ['ProxySafeVanillaFDT', 'VanillaFDT'],
+      create2RestrictedERC20Distributor: ['ProxySafeSimpleRestrictedFDT', 'SimpleRestrictedFDT'],
     })[fnName];
     if (!logicName) throw new Error('invalid fnName');
 
@@ -54,7 +54,7 @@ contract('FDTFactory', function (accounts) {
       const createFn = this.instances.FDTFactoryInstance[fnName].bind(this.instances.FDTFactoryInstance);
       this.act = await Promise.all(fdtParams.map(async (params) => {
         try {
-          let actual = decodeEvents(await createFDT(createFn, params));
+          let actual = decodeEvents(await create2FDT(createFn, params));
           actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
           actual.fdToken = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, actual.proxy));
           return actual;
@@ -169,7 +169,7 @@ contract('FDTFactory', function (accounts) {
     });
   }
 
-  async function createFDT(createFn, {name, symbol, totalSupply, owner, fundsToken, salt}) {
+  async function create2FDT(createFn, {name, symbol, totalSupply, owner, fundsToken, salt}) {
     return createFn(name, symbol, totalSupply, fundsToken, owner, salt);
   }
 
