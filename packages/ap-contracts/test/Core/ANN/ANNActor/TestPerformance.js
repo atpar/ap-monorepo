@@ -61,7 +61,7 @@ describe('ANNActor', () => {
         self.ANNEngineInstance.options.address,
         ZERO_ADDRESS
     ).send({ from: nobody });
-    await expectEvent(events, 'InitializedAsset');
+    expectEvent(events, 'InitializedAsset');
 
     self.assetId = events.InitializedAsset.returnValues.assetId;
   });
@@ -157,7 +157,7 @@ describe('ANNActor', () => {
 
     const { events } = await this.ANNActorInstance.methods.progress(web3.utils.toHex(this.assetId))
         .send({ from: nobody });
-    await expectEvent(events, 'ProgressedAsset');
+    expectEvent(events, 'ProgressedAsset');
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = web3ResponseToState(

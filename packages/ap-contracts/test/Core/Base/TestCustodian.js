@@ -85,7 +85,7 @@ describe('Custodian', () => {
       this.ownership
     ).send(this.txOpts);
 
-    await expectEvent(
+    expectEvent(
       events,
       'LockedCollateral',
       {
@@ -121,7 +121,7 @@ describe('Custodian', () => {
     const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
         .send(this.txOpts);
 
-    await expectEvent(
+    expectEvent(
       events,
       'ReturnedCollateral',
       {
@@ -153,7 +153,7 @@ describe('Custodian', () => {
     const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
         .send(this.txOpts);
 
-    await expectEvent(
+    expectEvent(
       events,
       'ReturnedCollateral',
       {

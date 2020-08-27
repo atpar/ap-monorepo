@@ -30,7 +30,7 @@ describe('DataRegistry', () => {
       marketObjectProvider,
     ).send({ from: admin });
 
-    await expectEvent(events, 'UpdatedDataProvider');
+    expectEvent(events, 'UpdatedDataProvider');
   });
 
   it('should register a data point for a registered data provider', async () => {
@@ -40,7 +40,7 @@ describe('DataRegistry', () => {
       '0x0000000000000000000000000000000000000000000000000000000000000001',
     ).send({ from: marketObjectProvider });
 
-    await expectEvent(events, 'PublishedDataPoint');
+    expectEvent(events, 'PublishedDataPoint');
   });
 
   it('should register a data point with an earlier timestamp for a registered data provider', async () => {
@@ -50,7 +50,7 @@ describe('DataRegistry', () => {
       '0x0000000000000000000000000000000000000000000000000000000000000001',
   ).send({ from: marketObjectProvider });
 
-    await expectEvent(events, 'PublishedDataPoint');
+    expectEvent(events, 'PublishedDataPoint');
   });
 
   it('should revert if an unregistered account tries to publish a data point', async () => {
