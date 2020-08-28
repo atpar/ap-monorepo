@@ -6,7 +6,7 @@ const BigNumber = require('bignumber.js');
 
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils');
 const { decodeEvent } = require('../helper/scheduleUtils');
-const { getSnapshotTaker, deployICToken, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { deployICToken, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
 const { mineBlock } = require('../helper/blockchain');
 
 
@@ -52,7 +52,7 @@ describe('ICT', function () {
     self.terms = { ...require('./CERTF-Terms.json'), currency: self.PaymentTokenInstance.options.address };
     self.schedule = await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000);
 
-    self.ict = await   deployICToken(bre, {
+    self.ict = await deployICToken(bre, {
       assetRegistry: self.CERTFRegistryInstance.options.address,
       dataRegistry: self.DataRegistryInstance.options.address,
       marketObjectCode: self.terms.contractReference_2.object,

@@ -25,8 +25,7 @@ ganache_pid=$!
 
 sleep 1
 
-npx --quiet truffle migrate --network ap-chain
-# npx --quiet buidler run --network ap-chain scripts/deploy-contracts.js 
+npx --quiet buidler deploy --network ap-chain --tags u-tests
 
 echo "✓ ready"
 
