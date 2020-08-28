@@ -327,7 +327,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleOfInterestPayment,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextInterestPaymentDate == 0) return bytes32(0);
                 if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
@@ -344,7 +346,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     cycleOfInterestCapitalization,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextInterestCapitalizationDate == 0) return bytes32(0);
                 return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
@@ -358,7 +362,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleOfRateReset,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfRateReset,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextRateResetDate == 0) return bytes32(0);
                 return encodeEvent(EventType.RR, nextRateResetDate);
@@ -373,7 +379,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleOfFee,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
@@ -387,7 +395,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                     terms.cycleOfScalingIndex,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfScalingIndex,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextScalingDate == 0) return bytes32(0);
                 return encodeEvent(EventType.SC, nextScalingDate);

@@ -228,7 +228,9 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
                     terms.cycleOfFee,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);

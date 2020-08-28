@@ -132,14 +132,20 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
     /**
      * Computes the next date for a given an IPS cycle.
      * @param cycle IPS cycle
+     * @param eomc end of month convention
+     * @param anchorDate anchor date of the cycle
      * @param precedingDate the previous date of the cycle
+     * @param addEndDate end date of the cycle should be added to the result if it falls in the segment
+     * @param cycleEnd end date of the cyclic schedule
      * @return next date of the cycle
      */
     function computeNextCycleDateFromPrecedingDate(
         IPS memory cycle,
         EndOfMonthConvention eomc,
         uint256 anchorDate,
-        uint256 precedingDate
+        uint256 precedingDate,
+        bool addEndDate,
+        uint256 cycleEnd
     )
         internal
         pure
@@ -147,44 +153,21 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
     {
         if (cycle.isSet == false || precedingDate == 0) return anchorDate;
 
-        return (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
+        uint256 nextCyclicDate = (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
             ? shiftEndOfMonth(getNextCycleDate(cycle, precedingDate, 1))
             : getNextCycleDate(cycle, precedingDate, 1);
+
+        if (addEndDate && cycleEnd != 0) {
+            // handle infinite loop (since preceding date is cycleEnd)
+            if (precedingDate == cycleEnd) return 0;
+            // add occurence at cycle end if date is greater than cycle end
+            if (nextCyclicDate > cycleEnd) return cycleEnd;
+        }
+        // remove occurence if it is one cycle end
+        if (addEndDate == false && cycleEnd != 0 && nextCyclicDate == cycleEnd) return 0;
+
+        return nextCyclicDate;
     }
-
-    // /**
-    //  * Computes the next date for a given an IPS cycle.
-    //  * @param cycle IPS cycle
-    //  * @param eomc end of month convention
-    //  * @param anchorDate anchor date of the cycle
-    //  * @param precedingDate the previous date of the cycle
-    //  * @param addEndDate end date of the cycle should be added to the result if it falls in the segment
-    //  * @param cycleEnd end date of the cyclic schedule
-    //  * @return next date of the cycle
-    //  */
-    // function computeNextCycleDateFromPrecedingDate(
-    //     IPS memory cycle,
-    //     EndOfMonthConvention eomc,
-    //     uint256 anchorDate,
-    //     uint256 precedingDate,
-    //     bool addEndDate,
-    //     uint256 cycleEnd
-    // )
-    //     internal
-    //     pure
-    //     returns (uint256)
-    // {
-    //     if (cycle.isSet == false || precedingDate == 0) return anchorDate;
-
-    //     uint256 nextCyclicDate = (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
-    //         ? shiftEndOfMonth(getNextCycleDate(cycle, precedingDate, 1))
-    //         : getNextCycleDate(cycle, precedingDate, 1);
-
-    //     if (addEndDate && nextCyclicDate > cycleEnd) return cycleEnd;
-    //     if (addEndDate == false && nextCyclic)
-
-    //     return nextCyclicDate;
-    // }
 
     /*
      * @notice Checks if a timestamp is in a given range.
