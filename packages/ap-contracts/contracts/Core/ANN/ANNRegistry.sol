@@ -233,8 +233,11 @@ contract ANNRegistry is BaseRegistry, IANNRegistry {
                 || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
                 || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
-                nextEventType = eventType;
+                // don't add PR at MD
+                if (scheduleTimeOffset != terms.maturityDate) {
+                    nextScheduleTimeOffset = scheduleTimeOffset;
+                    nextEventType = eventType;
+                }
             }        
         }
 
