@@ -84,10 +84,10 @@ const web3ResponseToState = (arr) => ({
 function findEvent (events, eventName, eventArgs = {}) {
   const foundName = Object.keys(events).find((key) => {
     if (key === eventName) {
-      let isMismatched = false;
       for (const [k, v] of Object.entries(eventArgs)) {
-        if (events[eventName].returnValues[k] !== v) {
-          return false;
+        const eventsArray = Array.isArray(events[eventName]) ? events[eventName] : [ events[eventName] ];
+        for(const e of eventsArray) {
+          if ( e.returnValues[k] !== v ) return false;
         }
       }
       return true;

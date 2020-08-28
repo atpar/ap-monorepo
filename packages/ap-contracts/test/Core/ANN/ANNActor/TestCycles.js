@@ -50,7 +50,7 @@ describe('ANNActor', () => {
         await self.ANNEngineInstance.methods.computeInitialState(self.terms).call()
     );
 
-    const tx = await self.ANNActorInstance.methods.initialize(
+    const { events } = await self.ANNActorInstance.methods.initialize(
         self.terms,
         self.schedule,
         self.ownership,
