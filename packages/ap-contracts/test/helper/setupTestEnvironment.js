@@ -68,14 +68,6 @@ async function deployPaymentToken(bre, owner, holders= []) {
   console.error('*** deployPaymentToken end');
   return instance;
 }
-// async function deployPaymentToken(bre, owner, holders) {
-//   console.error('*** deployPaymentToken start');
-//   bre.usrNs.roles.SettlementToken = { owner };
-//   if (holders) bre.usrNs.roles.SettlementToken.holders = holders;
-//   const { SettlementToken: { abi, address }} = await bre.deployments.run("extra-settlement-token");
-//   console.error('*** deployPaymentToken end');
-//   return new bre.web3.eth.Contract(abi, address);
-// }
 
 /**
  * @param {ExtendedTestBRE} bre
@@ -127,21 +119,25 @@ async function deployICToken(bre, {
   deployer = '',
 })
 {
-  // const { deployments: { deploy }, usrNs: { instances, roles: { deployer: defaultDeployer }}, web3 } = bre;
-  // const bytes32 = (str) => '0x' + web3.utils.padLeft(str.replace('0x', ''), 64);
-  // const { abi, address } = await deploy("ICT", {
-  //   args: [assetRegistry, dataRegistry, bytes32(marketObjectCode)],
-  //   from: deployer || defaultDeployer,
-  //   // deploy a new instance rather than re-use the one already deployed with another "from" address
-  //   fieldsToCompare: [ "data", "from" ],
-  // });
-  // return new web3.eth.Contract(abi, address);
-  const { deployments: { getArtifact }, usrNs: { instances, roles: { deployer: defaultDeployer }}, web3 } = bre;
+  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = bre;
   const { abi, bytecode } = await getArtifact("ICT");
   const instance = new web3.eth.Contract(abi);
   return (await instance
           // bytecode linking is unneeded for this contract
           .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode ]})
+          .send({ from: deployer || defaultDeployer })
+  );
+}
+
+/** @param {ExtendedTestBRE} bre */
+async function deployDvPSettlement(bre, deployer = '')
+{
+  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = bre;
+  const { abi, bytecode } = await getArtifact("DvPSettlement");
+  const instance = new web3.eth.Contract(abi);
+  return (await instance
+          // bytecode linking is unneeded for this contract
+          .deploy({ data: bytecode })
           .send({ from: deployer || defaultDeployer })
   );
 }
@@ -169,6 +165,7 @@ module.exports = {
   getDefaultTerms,
   getZeroTerms,
   getComplexTerms,
+  deployDvPSettlement,
   deployICToken,
   deployPaymentToken,
   deploySimpleRestrictedFDT,
