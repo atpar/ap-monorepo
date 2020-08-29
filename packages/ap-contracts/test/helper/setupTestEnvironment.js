@@ -62,7 +62,7 @@ async function deployPaymentToken(bre, owner, holders= []) {
 
   for (let holder of holders) {
     console.error('*** deployPaymentToken transfer');
-    await instance.methods.transfer(holder, web3.utils.toWei('5000')).send({ from: owner });
+    await instance.methods.transfer(holder, web3.utils.toWei('10000')).send({ from: owner });
   }
 
   console.error('*** deployPaymentToken end');
