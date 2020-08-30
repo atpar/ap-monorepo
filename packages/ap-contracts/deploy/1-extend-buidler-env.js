@@ -16,14 +16,17 @@ module.exports.tags = ["_env"];
  * @property {UserNamespace} usrNs - extension
  */
 
-/** @param bre {ExtendedBRE} */
-async function extendBuidlerEnv(bre) {
-    if (typeof bre.usrNs !== 'undefined') throw new Error("unexpected Buidler Runtime Environment");
+/** @param buidlerRuntime {ExtendedBRE} */
+async function extendBuidlerEnv(buidlerRuntime) {
+    if (typeof buidlerRuntime.usrNs !== 'undefined') throw new Error("unexpected Buidler Runtime Environment");
 
-    const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = bre;
+    const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = buidlerRuntime;
 
     const { admin, deployer } = await getNamedAccounts();
-    const chainId = `${await getChainId()}`;
+    const id = `${await getChainId()}`;
+
+    // ganache hardcoded to return 1337 on 'eth_chainId' RPC request that buidler uses
+    const chainId = ( id === '1337' ) ? `${await web3.eth.net.getId()}` : id;
 
     const accounts = await web3.eth.getAccounts();
     const roles = {
@@ -42,7 +45,7 @@ async function extendBuidlerEnv(bre) {
         web3.eth.Contract.defaultAccount = deployer;
     }
 
-    bre.usrNs = {
+    buidlerRuntime.usrNs = {
         chainId,
         accounts,
         roles,

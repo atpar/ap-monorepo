@@ -1,8 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
-const { BN, balance, ether, shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('@nomiclabs/buidler');
+const { BN, /*balance,*/ ether, shouldFail } = require('openzeppelin-test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
 const { getSnapshotTaker, deployPaymentToken, deployVanillaFDT } = require('../helper/setupTestEnvironment');
@@ -13,17 +12,17 @@ describe('VanillaFDT', () => {
   const gasPrice = new BN('1');
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [ owner, tokenHolder1, tokenHolder2, tokenHolder3, anyone ] = self.accounts;
     spender = anyone;
 
     self.fundsToken = await deployPaymentToken( // test ERC20
-      bre, owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone],
+      buidlerRuntime, owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone],
     );
     self.fundsDistributionToken = await deployVanillaFDT(
-      bre, { owner, fundsToken: self.fundsToken.options.address },
+      buidlerRuntime, { owner, fundsToken: self.fundsToken.options.address },
     );
   });
 
@@ -581,8 +580,8 @@ describe('VanillaFDT', () => {
     it('should pass end-to-end test', async () => {
       let balanceBefore;
       let balanceAfter;
-      let receipt;
-      let fee;
+      // let receipt;
+      // let fee;
 
       // mint and distributeFunds
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('2').toString())

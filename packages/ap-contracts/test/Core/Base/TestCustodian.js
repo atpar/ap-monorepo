@@ -1,6 +1,6 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 const { shouldFail } = require('openzeppelin-test-helpers');
 const { expectEvent } = require('../../helper/utils');
@@ -12,7 +12,7 @@ describe('Custodian', () => {
   let deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody;
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
@@ -21,7 +21,7 @@ describe('Custodian', () => {
     self.txOpts.from = nobody;
 
     // deploy test ERC20 token
-    self.PaymentTokenInstance = await deployPaymentToken(bre, deployer, [
+    self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, deployer, [
         creatorObligor, creatorBeneficiary, counterpartyBeneficiary,
     ]);
 

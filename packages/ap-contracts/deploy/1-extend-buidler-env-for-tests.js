@@ -9,10 +9,10 @@ module.exports.dependencies = ["_env"];
  * @property {Instances} instances
  */
 
-/** @param {ExtendedBRE} bre */
-async function extendBuidlerEnvForTests(bre) {
+/** @param {ExtendedBRE} buidlerRuntime */
+async function extendBuidlerEnvForTests(buidlerRuntime) {
 
-    const { deployments: { log }, usrNs, web3 } = bre;
+    const { deployments: { log }, usrNs, web3 } = buidlerRuntime;
     const { accounts, roles } = usrNs;
 
     if (!usrNs.instances) usrNs.instances = {};

@@ -1,7 +1,7 @@
 /* jslint node */
 /* global before, beforeEach, contract, describe, it, web3 */
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils');
@@ -41,18 +41,18 @@ describe('ICT', function () {
   };
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [ deployer, /*actor*/, owner, issuer, counterparty, investor1, nobody ] = self.accounts;
 
     // deploy test ERC20 token
-    self.PaymentTokenInstance = await deployPaymentToken(bre, issuer, [issuer]);
+    self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, issuer, [issuer]);
 
     self.terms = { ...require('./CERTF-Terms.json'), currency: self.PaymentTokenInstance.options.address };
     self.schedule = await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000);
 
-    self.ict = await deployICToken(bre, {
+    self.ict = await deployICToken(buidlerRuntime, {
       assetRegistry: self.CERTFRegistryInstance.options.address,
       dataRegistry: self.DataRegistryInstance.options.address,
       marketObjectCode: self.terms.contractReference_2.object,

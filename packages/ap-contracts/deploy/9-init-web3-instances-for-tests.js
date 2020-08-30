@@ -3,13 +3,13 @@ const { isLinkingNeeded, linkLibraries } = require("../scripts/linkLibraries");
 module.exports = initInstances;
 module.exports.tags = ["_instances-tests"];
 
-/** @param {import('./1-extend-buidler-env-for-tests').ExtendedTestBRE} bre */
-async function initInstances(bre) {
-    if ( typeof bre.usrNs !== 'object' || typeof bre.usrNs.package !== 'object' ) {
+/** @param {import('./1-extend-buidler-env-for-tests').ExtendedTestBRE} buidlerRuntime */
+async function initInstances(buidlerRuntime) {
+    if ( typeof buidlerRuntime.usrNs !== 'object' || typeof buidlerRuntime.usrNs.package !== 'object' ) {
         throw new Error("unexpected Buidler Runtime Environment");
     }
 
-    const { deployments: { getArtifact, log }, usrNs, web3 } = bre;
+    const { deployments: { getArtifact, log }, usrNs, web3 } = buidlerRuntime;
     const { package: { contracts } } = usrNs;
 
     await Promise.all(

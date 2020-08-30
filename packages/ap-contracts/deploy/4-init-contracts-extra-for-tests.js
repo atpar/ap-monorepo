@@ -5,23 +5,23 @@ module.exports.dependencies = ["_env-tests", "_deployment"];
 // never run on the mainnet
 module.exports.skip = ({ usrNs: { chainId }}) => Promise.resolve(parseInt(chainId) < 2);
 
-/** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
-async function initContractsForTests(bre) {
+/** @param {import('./1-extend-buidler-env').ExtendedBRE} buidlerRuntime */
+async function initContractsForTests(buidlerRuntime) {
 
-    const { usrNs: { roles: { admin, defaultActor }, helpers: { registerActor } }} = bre;
+    const { usrNs: { roles: { admin, defaultActor }, helpers: { registerActor } }} = buidlerRuntime;
     if ( !admin || !defaultActor || typeof registerActor !== "function" ) {
         throw new Error("unexpected Buidler Runtime Environment");
     }
 
-    await registerActor(bre, "ANNRegistry", admin);
-    await registerActor(bre, "CECRegistry", admin);
-    await registerActor(bre, "CEGRegistry", admin);
-    await registerActor(bre, "CERTFRegistry", admin);
-    await registerActor(bre, "PAMRegistry", admin);
+    await registerActor(buidlerRuntime, "ANNRegistry", admin);
+    await registerActor(buidlerRuntime, "CECRegistry", admin);
+    await registerActor(buidlerRuntime, "CEGRegistry", admin);
+    await registerActor(buidlerRuntime, "CERTFRegistry", admin);
+    await registerActor(buidlerRuntime, "PAMRegistry", admin);
 
-    await registerActor(bre, "ANNRegistry", defaultActor);
-    await registerActor(bre, "CECRegistry", defaultActor);
-    await registerActor(bre, "CEGRegistry", defaultActor);
-    await registerActor(bre, "CERTFRegistry", defaultActor);
-    await registerActor(bre, "PAMRegistry", defaultActor);
+    await registerActor(buidlerRuntime, "ANNRegistry", defaultActor);
+    await registerActor(buidlerRuntime, "CECRegistry", defaultActor);
+    await registerActor(buidlerRuntime, "CEGRegistry", defaultActor);
+    await registerActor(buidlerRuntime, "CERTFRegistry", defaultActor);
+    await registerActor(buidlerRuntime, "PAMRegistry", defaultActor);
 }

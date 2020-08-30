@@ -14,13 +14,13 @@ module.exports.dependencies = ["_package"];
  * @property {Deployment} deployment
  */
 
-/** @param {ExtendedBRE} bre */
-async function deployContracts(bre) {
+/** @param {ExtendedBRE} buidlerRuntime */
+async function deployContracts(buidlerRuntime) {
 
     const {
         deployments: { deploy, log },
         usrNs: { package: { contracts, defaultDeployOptions }, helpers },
-    } = bre;
+    } = buidlerRuntime;
 
     if ( typeof contracts !== 'object' || typeof defaultDeployOptions !== 'object'|| typeof helpers !== 'object' ) {
         throw new Error("unexpected Buidler Runtime Environment");
@@ -38,13 +38,14 @@ async function deployContracts(bre) {
                 const { name, getOptions, options: rawOptions } = contract;
                 const deployOptions = rawOptions
                     ? processRawOptions(rawOptions, addresses)
-                    : (getOptions ? getOptions(bre) : {});
+                    : (getOptions ? getOptions(buidlerRuntime) : {});
 
                 log(`"${name}" ...`);
                 contract.deployment = await deploy(
                     name,
                     Object.assign({}, defaultDeployOptions, deployOptions),
                 );
+                log(`... txHash: ${contract.deployment.receipt.transactionHash}`);
                 addresses[name] = contract.deployment.address;
             }
         ),

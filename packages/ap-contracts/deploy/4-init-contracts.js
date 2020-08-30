@@ -2,33 +2,33 @@ module.exports = initContracts;
 module.exports.tags = ["_init"];
 module.exports.dependencies = ["_env", "_deployment"];
 
-/** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
-async function initContracts(bre) {
+/** @param {import('./1-extend-buidler-env').ExtendedBRE} buidlerRuntime */
+async function initContracts(buidlerRuntime) {
 
-    const { usrNs: { helpers }} = bre;
+    const { usrNs: { helpers }} = buidlerRuntime;
     if ( typeof helpers !== "object" ) {
         throw new Error("unexpected Buidler Runtime Environment");
     }
     helpers.registerActor = registerActor;
 
-    await registerActor(bre,"ANNRegistry", "ANNActor");
-    await registerActor(bre,"CECRegistry", "CECActor");
-    await registerActor(bre,"CEGRegistry", "CEGActor");
-    await registerActor(bre,"CERTFRegistry", "CERTFActor");
-    await registerActor(bre,"PAMRegistry", "PAMActor");
+    await registerActor(buidlerRuntime,"ANNRegistry", "ANNActor");
+    await registerActor(buidlerRuntime,"CECRegistry", "CECActor");
+    await registerActor(buidlerRuntime,"CEGRegistry", "CEGActor");
+    await registerActor(buidlerRuntime,"CERTFRegistry", "CERTFActor");
+    await registerActor(buidlerRuntime,"PAMRegistry", "PAMActor");
 }
 
 /**
- * @param {import('./1-extend-buidler-env').ExtendedBRE} bre
+ * @param {import('./1-extend-buidler-env').ExtendedBRE} buidlerRuntime
  * @param {string} registry - Contract name
  * @param {string} actor  - address or Contract name
  */
-async function registerActor(bre, registry, actor) {
+async function registerActor(buidlerRuntime, registry, actor) {
     const {
         deployments: { log },
         usrNs: { roles: {deployer}, package: { contracts } },
         web3,
-    } = bre;
+    } = buidlerRuntime;
 
     /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} instances */
     const instances = contracts;

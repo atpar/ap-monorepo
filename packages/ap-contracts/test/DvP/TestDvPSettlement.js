@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
@@ -16,17 +16,17 @@ describe('DvPSettlement', () => {
   const counterpartyAmount = '1000';
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [ /*deployer*/, /*actor*/, creator, counterparty, creatorBeneficiary, someone, anyone ] = self.accounts;
 
     // deploy test ERC20 tokens for creator and counterparty
-    self.creatorToken = await deployPaymentToken(bre, creator);
-    self.counterpartyToken = await deployPaymentToken(bre, counterparty);
+    self.creatorToken = await deployPaymentToken(buidlerRuntime, creator);
+    self.counterpartyToken = await deployPaymentToken(buidlerRuntime, counterparty);
 
     // deploy DvPSettlement Contract
-    self.dvpSettlementContract = await deployDvPSettlement(bre, someone);
+    self.dvpSettlementContract = await deployDvPSettlement(buidlerRuntime, someone);
   });
 
   before(async () => {

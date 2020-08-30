@@ -5,10 +5,10 @@ module.exports = updateDeploymentsJson;
 module.exports.tags = ["_export"];
 module.exports.dependencies = ["_env", "_deployment"];
 
-/** @param {import('./1-extend-buidler-env').ExtendedBRE} bre */
-async function updateDeploymentsJson(bre) {
+/** @param {import('./1-extend-buidler-env').ExtendedBRE} buidlerRuntime */
+async function updateDeploymentsJson(buidlerRuntime) {
 
-    const {  deployments: { log }, usrNs: { chainId, package: { contracts }}} = bre;
+    const {  deployments: { log }, usrNs: { chainId, package: { contracts }}} = buidlerRuntime;
 
     if ( !chainId || !contracts ) {
         throw new Error("unexpected Buidler Runtime Environment");

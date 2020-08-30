@@ -1,7 +1,7 @@
 /* jslint node */
 /* global before, beforeEach, contract, describe, it, web3 */
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
@@ -29,7 +29,7 @@ describe('ICT', () => {
   };
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [ deployer, /*actor*/, owner, tokenHolder1, tokenHolder2, spender ] = self.accounts;
@@ -38,7 +38,7 @@ describe('ICT', () => {
     ictParams.dataRegistry = self.DataRegistryInstance.options.address;
     ictParams.deployer = owner;
 
-    self.icToken = await deployICToken(bre, ictParams);
+    self.icToken = await deployICToken(buidlerRuntime, ictParams);
 
     await self.icToken.methods.mint(tokenHolder1, mintAmount).send({ from: owner });
   });
@@ -55,31 +55,31 @@ describe('ICT', () => {
 
     describe('When called with valid asset and data registry addresses', () => {
       it('does NOT revert', async () =>
-          deployICToken(bre, Object.assign({}, ictParams))
+          deployICToken(buidlerRuntime, Object.assign({}, ictParams))
       );
     });
 
     describe('When called with zero address of the asset registry', () => {
       it('reverts', async () => await shouldFail.reverting(
-          deployICToken(bre, Object.assign({}, ictParams, { assetRegistry: ZERO_ADDRESS }))
+          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with zero address of the data registry', () => {
       it('reverts', async () => await shouldFail.reverting(
-          deployICToken(bre, Object.assign({}, ictParams, { dataRegistry: ZERO_ADDRESS }))
+          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with the asset registry address bing EOA', () => {
       it('reverts', async () => await shouldFail.reverting(
-          deployICToken(bre, Object.assign({}, ictParams, { assetRegistry: tokenHolder1 }))
+          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: tokenHolder1 }))
       ));
     });
 
     describe('When called with the data registry address bing EOA', () => {
       it('reverts', async () => await shouldFail.reverting(
-          deployICToken(bre, Object.assign({}, ictParams, { dataRegistry: tokenHolder1 }))
+          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: tokenHolder1 }))
       ));
     });
   });

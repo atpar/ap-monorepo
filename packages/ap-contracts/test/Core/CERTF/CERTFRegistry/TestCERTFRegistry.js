@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
@@ -15,7 +15,7 @@ describe('CERTFRegistry', () => {
   let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [

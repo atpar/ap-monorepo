@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { mineBlock } = require('../../../helper/blockchain');
@@ -26,14 +26,14 @@ describe('PAMActor', () => {
   }
 
   /** @param {any} self - `this` inside `before()`/`it()` */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
     [
       /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary,
     ] = self.accounts;
     // deploy a test ERC20 token to use it as the terms currency
     self.PaymentTokenInstance = await deployPaymentToken(
-        bre, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
     );
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };

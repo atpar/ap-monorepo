@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
@@ -23,7 +23,7 @@ describe('ANNActor', () => {
   }
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     admin = self.accounts[0];
@@ -33,7 +33,7 @@ describe('ANNActor', () => {
 
     // deploy a test ERC20 token to use it as the terms currency
     const { options: { address: paymentTokenAddress }} = await deployPaymentToken(
-        bre, creatorObligor, [ counterpartyBeneficiary ]
+        buidlerRuntime, creatorObligor, [ counterpartyBeneficiary ]
     );
     self.terms = {
       ...await getDefaultTerms("ANN"),

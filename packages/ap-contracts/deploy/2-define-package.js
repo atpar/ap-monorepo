@@ -17,10 +17,10 @@ module.exports.dependencies = ["_env"];
  * @property {DeployOptions} defaultDeployOptions
  */
 
-/** @param {ExtendedBRE} bre */
-async function definePackage(bre) {
+/** @param {ExtendedBRE} buidlerRuntime */
+async function definePackage(buidlerRuntime) {
 
-    const { deployments: { log }, usrNs } = bre;
+    const { deployments: { log }, usrNs } = buidlerRuntime;
     if ( typeof usrNs !== 'object' || typeof usrNs.package !== 'object' ) {
         throw new Error("unexpected Buidler Runtime Environment");
     }

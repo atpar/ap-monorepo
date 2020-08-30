@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
@@ -25,7 +25,7 @@ describe('PAMActor', () => {
   }
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
@@ -40,7 +40,11 @@ describe('PAMActor', () => {
     };
 
     // deploy test ERC20 token
-    self.PaymentTokenInstance = await deployPaymentToken(bre, creatorObligor, [counterpartyBeneficiary]);
+    self.PaymentTokenInstance = await deployPaymentToken(
+        buidlerRuntime,
+        creatorObligor,
+        [counterpartyBeneficiary]
+    );
     // set address of payment token as currency in terms
     self.terms.currency = self.PaymentTokenInstance.options.address;
     self.terms.settlementCurrency = self.PaymentTokenInstance.options.address;

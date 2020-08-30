@@ -25,7 +25,8 @@ ganache_pid=$!
 
 sleep 1
 
-npx --quiet buidler deploy --network ap-chain --tags u-tests
+[ "$1" == "--no-deploy" ] || \
+  npx --quiet buidler deploy --network ap-chain --tags deploy-ap-chain
 
 echo "✓ ready"
 

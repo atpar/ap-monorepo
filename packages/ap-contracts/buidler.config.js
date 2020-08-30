@@ -1,7 +1,6 @@
 const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-tasks/task-names');
 
 
-// usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
 usePlugin('solidity-coverage');
 usePlugin("buidler-deploy");
@@ -66,13 +65,18 @@ module.exports = {
       }
     },
     ropsten: {
-      url: `https://ropsten.infura.io/v3/${process.env.INFURA_KEY}`,
-      accounts: (process.env.PRIV_KEYS || '').split('.')
+      url: 'https://ropsten.infura.io/v3/16b0bb612ec14abeb3617cff126ea5c0',
+      accounts: {
+        mnemonic: getMnemonic(),
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 5
+      }
     }
   },
   namedAccounts: {
     deployer: {
-      default: 0, // here this will by default take the first account as deployer
+      default: 0, // the first account
     },
     admin: {
       default: 1,

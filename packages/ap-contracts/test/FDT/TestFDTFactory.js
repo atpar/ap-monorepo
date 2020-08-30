@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it, web3*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const { BN } = require('openzeppelin-test-helpers');
 
 const { ZERO_ADDRESS } = require('../helper/utils');
@@ -25,15 +25,14 @@ describe('FDTFactory', () => {
   ];
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    console.error('*** snapshotTaker start');
     [ creator, owner, owner2, tokenHolder, tokenHolder2 ] = self.accounts;
     self.txOpts.from = creator;
 
     const { options: { address: fundsTokenAddress }} = await deployPaymentToken(
-        bre, owner, [ tokenHolder, tokenHolder2 ],
+        buidlerRuntime, owner, [ tokenHolder, tokenHolder2 ],
     );
 
     fdtParams.forEach((e) => {
@@ -54,30 +53,24 @@ describe('FDTFactory', () => {
       deployingAddr: self.FDTFactoryInstance.options.address,
       salt: [ fdtParams[0].salt, fdtParams[1].salt ],
     };
-    console.error('*** snapshotTaker end');
   });
 
   before(async () => {
-    console.error('*** before');
     this.setupTestEnvironment = snapshotTaker(this);
   });
 
   describe('createERC20Distributor(...)', async () => {
     before(async() => {
-      console.error('*** before in describe 1 start');
       await this.setupTestEnvironment()
       await invokeCreateFdtFunction.bind(this)('createERC20Distributor', 'ProxySafeVanillaFDT')
-      console.error('*** before in describe 1 end');
     });
     assertInvocationResults.bind(this)('ProxySafeVanillaFDT');
   });
 
   describe('createRestrictedERC20Distributor(...)', async () => {
     before(async() => {
-      console.error('*** before in describe 2 start');
       await this.setupTestEnvironment()
       await invokeCreateFdtFunction.bind(this)('createRestrictedERC20Distributor', 'ProxySafeSimpleRestrictedFDT')
-      console.error('*** before in describe 2 end');
     });
     assertInvocationResults.bind(this)('ProxySafeSimpleRestrictedFDT');
   });
@@ -85,10 +78,8 @@ describe('FDTFactory', () => {
   function assertInvocationResults(logicContract) {
 
     describe('Following the "proxy-implementation" pattern', () => {
-      console.error(`*** describe in assertInvocationResults start for ${logicContract}`);
 
       it(`should deploy a new proxy`, () => {
-        console.error('*** it 1 in describe in assertInvocationResults');
         assert(this.act[0].proxyBytecode.length > 0);
         assert(this.act[1].proxyBytecode.length > 0);
       });

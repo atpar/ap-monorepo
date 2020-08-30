@@ -1,7 +1,7 @@
 /*jslint node*/
 /*global before, beforeEach, describe, it*/
 const assert = require('assert');
-const bre = require('@nomiclabs/buidler');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
@@ -24,16 +24,18 @@ describe('ANNActor', () => {
   }
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  const snapshotTaker = (self) => getSnapshotTaker(bre, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    [, , creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody] = self.accounts;
+    [ /*deployer*/, /*actor*/,
+      creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
+    ] = self.accounts;
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
 
     // deploy a test ERC20 token to use it as the terms currency
     self.PaymentTokenInstance = await deployPaymentToken(
-        bre, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
     );
 
     self.terms = {
