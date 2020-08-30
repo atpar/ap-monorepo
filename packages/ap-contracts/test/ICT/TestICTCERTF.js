@@ -121,7 +121,7 @@ describe('ICT', function () {
     ).send({ from: owner });
   });
 
-  it('should register investor1 for redemption for the first RFD event', async () => {
+  it('should register investor1 for redemption for the first RFD event [ @skip-on-coverage ]', async () => {
     const rfdEvent = this.schedule[1];
     const { eventType } = decodeEvent(rfdEvent);
     assert.strictEqual(eventType, '23');
@@ -182,7 +182,7 @@ describe('ICT', function () {
     ).send({ from: owner });
   });
 
-  it('should process the first RPD event', async () => {
+  it('should process the first RPD event [ @skip-on-coverage ]', async () => {
     const rpdEvent = await this.CERTFRegistryInstance.methods.getNextScheduledEvent(
         web3.utils.toHex(this.assetId)
     ).call();
@@ -210,7 +210,7 @@ describe('ICT', function () {
     );
   });
 
-  it('should withdraw the share for investor1', async () => {
+  it('should withdraw the share for investor1 [ @skip-on-coverage ]', async () => {
     await this.ict.methods.claimDeposit(this.schedule[1]).send({ from: investor1 });
 
     const deposit = await this.ict.methods.getDeposit(this.schedule[1]).call();

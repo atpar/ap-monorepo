@@ -22,7 +22,7 @@ function getMnemonic() {
 
 module.exports = {
   paths: {
-    artifacts: './test/artifacts',
+    artifacts: './build',
     deployments: 'deployments',
   },
   defaultNetwork: 'buidlerevm',
