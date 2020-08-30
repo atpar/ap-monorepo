@@ -35,7 +35,9 @@ async function deployContracts(buidlerRuntime) {
         // deploy one by one (but not in parallel)
         (promiseChain, contract) => promiseChain.then(
             async () => {
-                const { name, getOptions, options: rawOptions } = contract;
+                const { name, deployable = true, getOptions, options: rawOptions } = contract;
+                if (!deployable) return;
+
                 const deployOptions = rawOptions
                     ? processRawOptions(rawOptions, addresses)
                     : (getOptions ? getOptions(buidlerRuntime) : {});

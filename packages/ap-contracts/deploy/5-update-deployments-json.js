@@ -20,9 +20,9 @@ async function updateDeploymentsJson(buidlerRuntime) {
     /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} deployed */
     const deployed = contracts;
     deployments[chainId] = deployed.reduce(
-        (acc, { name, exportDeployment = false, deployment: { address } }) => {
-            if (exportDeployment) {
-                acc[name] = address;
+        (acc, { name, deployable = true, exportable = true, deployment }) => {
+            if (deployable && exportable) {
+                acc[name] = deployment.address;
                 if (!acc[name]) throw new Error('unexpected address');
             }
             return acc;
@@ -31,8 +31,15 @@ async function updateDeploymentsJson(buidlerRuntime) {
     );
 
     await new Promise(
-        res => fs.writeFile(deploymentsFile, JSON.stringify(deployments, null, 2), 'utf8', res)
+        (res, rej) => fs.writeFile(
+            deploymentsFile,
+            JSON.stringify(deployments, null, 2),
+            'utf8',
+            err => {
+                if (err) return rej(err);
+                log(`deployments.json saved`);
+                res();
+            }
+        )
     );
-
-    log("deployments.json updated");
 }

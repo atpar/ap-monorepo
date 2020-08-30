@@ -44,8 +44,8 @@
     "migrate:rinkeby": "scripts/deploy-contracts.sh rinkeby",
     "migrate:ropsten": "scripts/deploy-contracts.sh ropsten",
     "migrate:testnets": "npm run migrate:goerli && npm run migrate:kovan && npm run migrate:rinkeby && npm run migrate:ropsten",
-    "setup:ap-chain": "./scripts/setup-ap-chain.sh --with-deploy",
-    "run:ap-chain": "./scripts/setup-ap-chain.sh --no-deploy",
+    "setup-ap-chain": "./scripts/setup-ap-chain.sh --with-deploy",
+    "run-ap-chain": "./scripts/setup-ap-chain.sh --no-deploy",
     "test": "node ./node_modules/.bin/buidler test"
   },
   "resolutions": {

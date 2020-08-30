@@ -14,8 +14,12 @@ async function initInstances(buidlerRuntime) {
 
     await Promise.all(
         /** @type {import('./2-define-package').ContractsListItem[]} contracts */
-        contracts.map(async ({ name, deployment: { abi, address, bytecode, libraries }}) => {
+        contracts.map(async ({ name, deployable = true, deployment }) => {
+            if (!deployable) {
+                return;
+            }
 
+            const { abi, address, bytecode, libraries } = deployment;
             const instance = new web3.eth.Contract(abi, address);
             if (isLinkingNeeded(bytecode)) {
                 const artifact = await getArtifact(name);

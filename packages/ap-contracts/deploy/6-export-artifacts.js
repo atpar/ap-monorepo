@@ -15,10 +15,14 @@ async function exportArtifacts(buidlerRuntime) {
 
     /** @param {import('./3-deploy-contracts').ContractsListDeployedItem} contract */
     await Promise.all(contracts.map(async (contract) => {
-        if (!contract.exportDeployment) return Promise.resolve();
+        const { name, deployment = {}, exportable = true, options: deployOptions } = contract;
+        if (!exportable) {
+            return Promise.resolve();
+        }
 
-        const { name, deployment: { metadata }, options: deployOptions } = contract;
         const { abi, bytecode, contractName, linkReferences } = await getArtifact(name);
+        const { metadata } = deployment;
+
         const artifact = JSON.stringify(
             { contractName, abi, metadata, bytecode, linkReferences, deployOptions },
             null,

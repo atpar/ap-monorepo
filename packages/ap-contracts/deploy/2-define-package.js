@@ -10,7 +10,8 @@ module.exports.dependencies = ["_env"];
  * @property {string} name - contract name
  * @property {DeployOptions} [options]
  * @property {function (ExtendedBRE): DeployOptions} [getOptions] - getter for options
- * @property {boolean} [exportDeployment] - `true` to export into `../deployments.json` and `../artifacts/`
+ * @property {boolean} [exportable] - `true` to export into `deployments.json` and `artifacts/` (default - `true`)
+ * @property {boolean} [deployable] - if `false`, neither deploy nor export to `deployments.json` (default - `true`)
  *
  * @typedef {Object} Package
  * @property {ContractsListItem[]} contracts
@@ -28,87 +29,75 @@ async function definePackage(buidlerRuntime) {
     usrNs.package.contracts = [
 
         // ACTUS-Solidity
-        { name: "ANNEngine", exportDeployment: true },
-        { name: "CECEngine", exportDeployment: true },
-        { name: "CEGEngine", exportDeployment: true },
-        { name: "CERTFEngine", exportDeployment: true },
-        { name: "PAMEngine", exportDeployment: true },
+        { name: "ANNEngine" },
+        { name: "CECEngine" },
+        { name: "CEGEngine" },
+        { name: "CERTFEngine" },
+        { name: "PAMEngine" },
 
         // Asset Registry
-        { name: "ANNEncoder" },
-        { name: "CECEncoder" },
-        { name: "CEGEncoder" },
-        { name: "CERTFEncoder" },
-        { name: "PAMEncoder" },
+        { name: "ANNEncoder", exportable: false },
+        { name: "CECEncoder", exportable: false },
+        { name: "CEGEncoder", exportable: false },
+        { name: "CERTFEncoder", exportable: false },
+        { name: "PAMEncoder", exportable: false },
         {
             name: "ANNRegistry",
-            exportDeployment: true,
             options: { libraries: { ANNEncoder: "{{ANNEncoder.address}}" }},
         },
         {
             name: "CECRegistry",
-            exportDeployment: true,
             options: { libraries: { CECEncoder: "{{CECEncoder.address}}" }},
         },
         {
             name: "CEGRegistry",
-            exportDeployment: true,
             options: { libraries: { CEGEncoder: "{{CEGEncoder.address}}" }},
         },
         {
             name: "CERTFRegistry",
-            exportDeployment: true,
             options: { libraries: { CERTFEncoder: "{{CERTFEncoder.address}}" }},
         },
         {
             name: "PAMRegistry",
-            exportDeployment: true,
             options: { libraries: { PAMEncoder: "{{PAMEncoder.address}}" }},
         },
 
         // Data Registry
-        { name: "DataRegistry", exportDeployment: true },
+        { name: "DataRegistry" },
 
         // Asset Actor
         {
             name: "ANNActor",
-            exportDeployment: true,
             options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
         {
             name: "CECActor",
-            exportDeployment: true,
             options: { args: [ "{{CECRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
         {
             name: "CEGActor",
-            exportDeployment: true,
             options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
         {
             name: "CERTFActor",
-            exportDeployment: true,
             options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
         {
             name: "PAMActor",
-            exportDeployment: true,
             options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
 
         // Custodian
         {
             name: "Custodian",
-            exportDeployment: true,
             options: { args: [ "{{CECActor.address}}", "{{CECRegistry.address}}" ]},
         },
 
         // FDT
-        { name: "ProxySafeVanillaFDT" },
-        { name: "ProxySafeSimpleRestrictedFDT" },
+        { name: "ProxySafeVanillaFDT", exportable: false },
+        { name: "ProxySafeSimpleRestrictedFDT", exportable: false },
         {
             name: "FDTFactory",
-            exportDeployment: true,
             options: { libraries: {
                     VanillaFDTLogic: "{{ProxySafeVanillaFDT.address}}",
                     SimpleRestrictedFDTLogic: "{{ProxySafeSimpleRestrictedFDT.address}}",
@@ -116,17 +105,26 @@ async function definePackage(buidlerRuntime) {
         },
 
         // ICT
-        { name: "ProxySafeICT" },
+        { name: "ProxySafeICT", exportable: false },
         {
             name: "ICTFactory",
+            exportable: false,
             options: { libraries: { ICTLogic: "{{ProxySafeICT.address}}" }},
         },
 
         // DvPSettlement
-        { name: "DvPSettlement", exportDeployment: true },
+        { name: "DvPSettlement" },
 
         // settlement token (for templates on testnets)
-        { name: "SettlementToken" },
+        { name: "SettlementToken", exportable: false },
+
+        // export artifacts only (do not deploy)
+        { name: "BaseActor", deployable: false },
+        { name: "BaseRegistry", deployable: false },
+        { name: "ERC20", deployable: false },
+        { name: "ERC1404", deployable: false },
+        { name: "VanillaFDT", deployable: false }
+
     ];
 
     usrNs.package.defaultDeployOptions = {
