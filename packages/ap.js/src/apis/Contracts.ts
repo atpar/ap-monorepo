@@ -19,6 +19,7 @@ import CERTFRegistryArtifact from '@atpar/ap-contracts/artifacts/CERTFRegistry.m
 import PAMRegistryArtifact from '@atpar/ap-contracts/artifacts/PAMRegistry.min.json';
 import CustodianArtifact from '@atpar/ap-contracts/artifacts/Custodian.min.json';
 import DataRegistryArtifact from '@atpar/ap-contracts/artifacts/DataRegistry.min.json';
+import DvPSettlementArtifact from '@atpar/ap-contracts/artifacts/DvPSettlement.min.json';
 import FDTFactoryArtifact from '@atpar/ap-contracts/artifacts/FDTFactory.min.json';
 import ERC20Artifact from '@atpar/ap-contracts/artifacts/ERC20.min.json';
 import ERC1404Artifact from '@atpar/ap-contracts/artifacts/ERC1404.min.json';
@@ -43,6 +44,7 @@ import { CERTFRegistry } from '@atpar/ap-contracts/ts-bindings/CERTFRegistry';
 import { PAMRegistry } from '@atpar/ap-contracts/ts-bindings/PAMRegistry';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { DataRegistry } from '@atpar/ap-contracts/ts-bindings/DataRegistry';
+import { DvPSettlement } from '@atpar/ap-contracts/ts-bindings/DvPSettlement';
 import { FDTFactory } from '@atpar/ap-contracts/ts-bindings/FDTFactory';
 import { ERC20 } from '@atpar/ap-contracts/ts-bindings/ERC20';
 import { ERC1404 } from '@atpar/ap-contracts/ts-bindings/ERC1404';
@@ -80,6 +82,7 @@ export class Contracts {
 
   public custodian: Custodian;
   public dataRegistry: DataRegistry;
+  public dvpSettlement: DvPSettlement;
   public fdtFactory: FDTFactory;
 
 
@@ -129,6 +132,8 @@ export class Contracts {
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
     this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
+    // @ts-ignore
+    this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
     // @ts-ignore
     this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
     // @ts-ignore

@@ -112,7 +112,7 @@ contract('ICT', function (accounts) {
 
     const { scheduleTime: scheduleTimeXD } = decodeEvent(this.schedule[2]);
 
-    const quantity = (await this.DataRegistryInstance.getDataPoint(
+    const exerciseQuantity = (await this.DataRegistryInstance.getDataPoint(
       this.terms.contractReference_2.object,
       await computeCalcTime(scheduleTimeXD)
     ))[0].toString();
@@ -120,11 +120,11 @@ contract('ICT', function (accounts) {
     const deposit = await this.ict.getDeposit(rfdEvent);
     const totalSupply = await this.ict.totalSupply();
     const ratioSignaled = (new BigNumber(deposit.totalAmountSignaled.toString())).dividedBy(totalSupply.toString()).shiftedBy(18).decimalPlaces(0);
-    const expectedQuantity = ratioSignaled.multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed();
+    const expectedExerciseQuantity = ratioSignaled.multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed();
 
-    assert.equal(quantity, expectedQuantity);
+    assert.equal(exerciseQuantity, expectedExerciseQuantity);
 
-    this.quantity = quantity;
+    this.exerciseQuantity = exerciseQuantity;
   });
 
   it('should process the first RedemptionFixingDay event', async () => {
@@ -174,7 +174,7 @@ contract('ICT', function (accounts) {
 
     assert.equal(
       deposit.amount.toString(),
-      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.quantity).shiftedBy(-18).toFixed()
+      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()
     );
   });
 
@@ -185,7 +185,7 @@ contract('ICT', function (accounts) {
 
     assert.equal(
       deposit.claimedAmount.toString(),
-      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.quantity).shiftedBy(-18).toFixed()  
+      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()  
     )
   });
 });

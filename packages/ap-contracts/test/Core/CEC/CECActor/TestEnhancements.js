@@ -104,7 +104,7 @@ contract('CECActor', (accounts) => {
     // counterparty should have paid collateral
     assert.equal(
       (await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary)).toString(),
-      (new BigNumber(web3.utils.toWei('5000')).minus(collateralAmount)).toFixed()
+      (new BigNumber(web3.utils.toWei('10000')).minus(collateralAmount)).toFixed()
     );
     // custodian should have received collateral
     assert.equal(
@@ -173,7 +173,7 @@ contract('CECActor', (accounts) => {
     // counterparty (collateralizer) should have received not executed amount (overcollateral)
     assert.equal(
       (await this.PaymentTokenInstance.balanceOf(counterpartyBeneficiary)).toString(),
-      web3.utils.toWei('5000')
+      web3.utils.toWei('10000')
     );
   });
 });

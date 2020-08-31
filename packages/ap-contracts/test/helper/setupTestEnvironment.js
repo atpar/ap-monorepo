@@ -193,7 +193,7 @@ async function deployPaymentToken(owner, holders) {
   const PaymentTokenInstance = await SettlementToken.new({ from: owner });
 
   for (let holder of holders) {
-    await PaymentTokenInstance.transfer(holder, web3.utils.toWei('5000'), { from: owner });
+    await PaymentTokenInstance.transfer(holder, web3.utils.toWei('10000'), { from: owner });
   }
 
   return PaymentTokenInstance;

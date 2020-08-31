@@ -332,16 +332,16 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 contractReference_1._type == ContractReferenceType.MOC
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
-                (int256 redemptionAmountScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
+                (int256 marketValueScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
                     contractReference_1.object,
                     timestamp
                 );
-                (int256 redemptionAmountAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
+                (int256 marketValueAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
                     contractReference_1.object,
                     assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
-                    return bytes32(redemptionAmountScheduleTime.floatDiv(redemptionAmountAnchorDate));
+                    return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
                 }
             }
             return bytes32(0);

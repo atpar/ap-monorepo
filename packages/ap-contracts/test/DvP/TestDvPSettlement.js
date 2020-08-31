@@ -15,6 +15,12 @@ contract('DvPSettlement', function (accounts) {
   const creatorAmount = new BN(20000);
   const counterpartyAmount = new BN(1000);
 
+  let snapshot
+
+  before(async () => {
+    snapshot = await createSnapshot();
+  });
+
   beforeEach(async function () {
     // deploy test ERC20 tokens for creator and counterparty
     this.creatorToken = await SettlementToken.new({ from: creator });
@@ -23,7 +29,10 @@ contract('DvPSettlement', function (accounts) {
     // deploy DvPSettlement Contract
     this.dvpSettlementContract = await DvPSettlement.new({ from: someone })
   });
-
+  
+  after(async () => {
+    await revertToSnapshot(snapshot);
+  });
 
   describe('end to end test', function () {
     it('should pass end to end test', async function () {
