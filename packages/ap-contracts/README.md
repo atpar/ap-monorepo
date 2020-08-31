@@ -18,5 +18,5 @@ yarn test
 
 ### Deploy to local ganache chain
 ```sh
-yarn setup:ap-chain
+yarn setup-ap-chain
 ```
