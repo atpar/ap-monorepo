@@ -23,20 +23,20 @@ function getEngineContractInstanceForContractType(instances, contractType) {
 
 async function generateSchedule(engineContractInstance, terms, tMax) {
   const events = [];
-  events.push(...(await engineContractInstance.computeNonCyclicScheduleSegment(terms, 0, 1000000000000)));
-  
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24)));
-  events.push(...(await engineContractInstance.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26)));
+  events.push(...(await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).call()));
+
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24).call()));
+  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26).call()));
 
   return sortEvents(removeNullEvents(events));
 }
@@ -62,10 +62,10 @@ function parseTerms (array) {
   });
 }
 
-const web3ResponseToState = (arr) => ({ 
+const web3ResponseToState = (arr) => ({
   ...Object.keys(arr).reduce((obj, element) => (
     (!Number.isInteger(Number(element)))
-      ? { 
+      ? {
         ...obj,
         [element]: (Array.isArray(arr[element]))
           ? web3ResponseToState(arr[element])
@@ -75,9 +75,47 @@ const web3ResponseToState = (arr) => ({
   ), {})
 });
 
+/**
+ * @param events {{name: string, event: Object}} - `events` property of the web3 transaction object
+ * @param eventName {string}
+ * @param eventArgs{{key: string, value: any}}
+ * @return {Object|null} - if found, `event` object from `events`
+ */
+function findEvent (events, eventName, eventArgs = {}) {
+  const foundName = Object.keys(events).find((key) => {
+    if (key === eventName) {
+      for (const [k, v] of Object.entries(eventArgs)) {
+        const eventsArray = Array.isArray(events[eventName]) ? events[eventName] : [ events[eventName] ];
+        for(const e of eventsArray) {
+          if ( e.returnValues[k] !== v ) return false;
+        }
+      }
+      return true;
+    }
+  });
+  return foundName ? events[foundName] : null;
+}
+
+/**
+ * `expect` an event in the web3 transaction object
+ * @param events {{name: string, event: Object}} - `events` property of the web3 transaction object
+ * @param {string} eventName - event to expect
+ * @param {{key: string, value: any}} [eventArgs] - (optional) event arguments to expect
+ * @return {Object|null} - if found, `event` object from `events`
+ */
+function expectEvent(events, eventName, eventArgs = {}) {
+  const event = findEvent(events, eventName, eventArgs);
+  if (event === null) {
+    throw new Error(`Expected event (${eventName}) has not been found`);
+  }
+  return event;
+}
+
 module.exports = {
   getEngineContractInstanceForContractType,
   generateSchedule,
+  expectEvent,
+  findEvent,
   removeNullEvents,
   ZERO_ADDRESS,
   ZERO_BYTES32,
