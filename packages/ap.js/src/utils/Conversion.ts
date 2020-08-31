@@ -216,16 +216,19 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   cycleAnchorDateOfRedemption: terms.cycleAnchorDateOfRedemption,
   cycleAnchorDateOfTermination: terms.cycleAnchorDateOfTermination,
   cycleAnchorDateOfCoupon: terms.cycleAnchorDateOfCoupon,
+
   nominalPrice: terms.nominalPrice,
   issuePrice: terms.issuePrice,
   quantity: terms.quantity,
   denominationRatio: terms.denominationRatio,
   couponRate: terms.couponRate,
+
   gracePeriod: terms.gracePeriod,
   delinquencyPeriod: terms.delinquencyPeriod,
   settlementPeriod: terms.settlementPeriod,
   fixingPeriod: terms.fixingPeriod,
   exercisePeriod: terms.exercisePeriod,
+
   cycleOfRedemption: terms.cycleOfRedemption,
   cycleOfTermination: terms.cycleOfTermination,
   cycleOfCoupon: terms.cycleOfCoupon,

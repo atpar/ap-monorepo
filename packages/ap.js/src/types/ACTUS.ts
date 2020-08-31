@@ -114,6 +114,11 @@ export interface Terms {
   lifeFloor: number | string;
   periodCap: number | string;
   periodFloor: number | string;
+  nominalPrice: number | string;
+  issuePrice: number | string;
+  quantity: number | string;
+  denominationRatio: number | string;
+  couponRate: number | string;
 
   gracePeriod: IP;
   delinquencyPeriod: IP;
