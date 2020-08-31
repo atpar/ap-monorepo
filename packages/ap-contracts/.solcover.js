@@ -13,7 +13,7 @@ module.exports = {
     "default_balance_ether": 5000
   },
   mocha: {
-    timeout: 60000,
+    timeout: 90000,
     grep: "@skip-on-coverage",  // Find everything with this tag
     invert: true                // Run the grep's inverse set.
   }
