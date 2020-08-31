@@ -1,103 +1,105 @@
-const { expectEvent } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
 
-const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
-
-const PAMActor = artifacts.require('PAMActor');
+const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { mineBlock } = require('../../../helper/blockchain');
+const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../../../helper/utils');
 
 
-contract('PAMActor', (accounts) => {
+describe('PAMActor', () => {
+  let deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
-
-  let snapshot;
-  let snapshot_asset;
-  
   const getEventTime = async (_event, terms) => {
-    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
-      _event,
-      terms.businessDayConvention,
-      terms.calendar,
-      terms.maturityDate
-    ));
+    return Number(
+        await this.PAMEngineInstance.methods.computeEventTimeForEvent(
+            _event,
+            terms.businessDayConvention,
+            terms.calendar,
+            terms.maturityDate
+        ).call()
+    );
   }
 
-  before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.ownership = {
-      creatorObligor, 
-      creatorBeneficiary, 
-      counterpartyObligor, 
+    [
+      deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
+    ] = self.accounts;
+
+    self.ownership = {
+      creatorObligor,
+      creatorBeneficiary,
+      counterpartyObligor,
       counterpartyBeneficiary
     };
     // schedule with RR
-    this.terms = require('../../../helper/terms/PAMTerms-external-data.json');
-  
+    self.terms = require('../../../helper/terms/PAMTerms-external-data.json');
+
     // only want RR events in the schedules
-    this.schedule = (await generateSchedule(this.PAMEngineInstance, this.terms)).filter((event) => event.startsWith('0x0d'));
-  
-    const tx = await this.PAMActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.PAMEngineInstance.address,
-      ZERO_ADDRESS
+    self.schedule = (
+        await generateSchedule(self.PAMEngineInstance, self.terms)).filter((event) => event.startsWith('0x0d')
     );
 
-    this.assetId = tx.logs[0].args.assetId;
-    this.state = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const { events } = await self.PAMActorInstance.methods.initialize(
+        self.terms,
+        self.schedule,
+        self.ownership,
+        self.PAMEngineInstance.options.address,
+        ZERO_ADDRESS
+    ).send({ from: actor });
+    expectEvent(events,'InitializedAsset');
+    self.assetId = events.InitializedAsset.returnValues.assetId;
 
-    this.resetRate = web3.utils.toWei('100'); // TODO: investigate overflow if set to non zero
+    self.state = await self.PAMRegistryInstance.methods.getState(web3.utils.toHex(self.assetId)).call();
 
-    snapshot = await createSnapshot();
+    self.resetRate = web3.utils.toWei('100'); // TODO: investigate overflow if set to non zero
   });
 
-  after(async () => {
-    await revertToSnapshot(snapshot);
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+    await this.setupTestEnvironment();
   });
 
   it('should process next state with external rate', async () => {
-    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.PAMRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms);
-    
+
     await mineBlock(Number(eventTime));
-    
-    await this.DataRegistryInstance.setDataProvider(
-      this.terms.marketObjectCodeRateReset,
-      accounts[0]
-    );
-      
-    await this.DataRegistryInstance.publishDataPoint(
-      this.terms.marketObjectCodeRateReset,
-      eventTime,
-      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
-    );
-        
-    const { tx: txHash } = await this.PAMActorInstance.progress(web3.utils.toHex(this.assetId));
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, PAMActor, 'ProgressedAsset'
-    );
-    const storedNextState = await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId));
+
+    await this.DataRegistryInstance.methods.setDataProvider(
+        this.terms.marketObjectCodeRateReset,
+        actor
+    ).send({ from: deployer });
+
+    await this.DataRegistryInstance.methods.publishDataPoint(
+        this.terms.marketObjectCodeRateReset,
+        eventTime,
+        web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+    ).send({ from: actor });
+
+    const { events } = await this.PAMActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+
+    const storedNextState = await this.PAMRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
     // compute expected next state
-    const projectedNextState = await this.PAMEngineInstance.computeStateForEvent(
-      this.terms,
-      this.state,
-      _event,
-      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
-    );
+    const projectedNextState = await this.PAMEngineInstance.methods.computeStateForEvent(
+        this.terms,
+        this.state,
+        _event,
+        web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+    ).call();
 
     // compare results
-    assert.equal(emittedAssetId, this.assetId);
-    assert.equal(storedNextState.statusDate, eventTime);
-    assert.deepEqual(storedNextState, projectedNextState);
-
-    await revertToSnapshot(snapshot_asset);
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.strictEqual(storedNextState.statusDate, eventTime.toString());
+    assert.deepStrictEqual(storedNextState, projectedNextState);
   });
 });

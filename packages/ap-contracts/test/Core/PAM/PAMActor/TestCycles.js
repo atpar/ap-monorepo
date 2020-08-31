@@ -1,174 +1,185 @@
+/*jslint node*/
+/*global before, beforeEach, describe, it*/
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
-const { expectEvent } = require('openzeppelin-test-helpers');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken, parseToContractTerms } = require('../../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState } = require('../../../helper/utils');
-
-const PAMActor = artifacts.require('PAMActor');
+const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
+const { mineBlock } = require('../../../helper/blockchain');
+const { generateSchedule, expectEvent, ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils');
 
 
-contract('PAMActor', (accounts) => {
+describe('PAMActor', () => {
+  let creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
-
-  let snapshot;
-  let snapshot_asset;
-  
   const getEventTime = async (_event, terms) => {
-    return Number(await this.PAMEngineInstance.computeEventTimeForEvent(
-      _event,
-      terms.businessDayConvention,
-      terms.calendar,
-      terms.maturityDate
-    ));
+    return Number(
+        await this.PAMEngineInstance.methods.computeEventTimeForEvent(
+            _event,
+            terms.businessDayConvention,
+            terms.calendar,
+            terms.maturityDate
+        ).call()
+    );
   }
 
-  before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    this.terms = { 
+    [, , creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody] = self.accounts;
+
+    self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
+
+    // deploy a test ERC20 token to use it as the terms currency
+    self.PaymentTokenInstance = await deployPaymentToken(
+        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+    );
+
+    self.terms = {
       ...await getDefaultTerms('PAM'),
       gracePeriod: { i: 1, p: 2, isSet: true },
-      delinquencyPeriod: { i: 1, p: 3, isSet: true }
+      delinquencyPeriod: { i: 1, p: 3, isSet: true },
+      currency: self.PaymentTokenInstance.options.address,
+      settlementCurrency: self.PaymentTokenInstance.options.address,
     };
+    self.terms.statusDate = self.terms.contractDealDate;
 
-    // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(creatorObligor, [counterpartyObligor, counterpartyBeneficiary]);
-
-    // set address of payment token as currency in terms
-    this.terms.currency = this.PaymentTokenInstance.address;
-    this.terms.settlementCurrency = this.PaymentTokenInstance.address;
-    this.terms.statusDate = this.terms.contractDealDate;
-
-    this.schedule = await generateSchedule(this.PAMEngineInstance, this.terms);
-    this.state = web3ResponseToState(await this.PAMEngineInstance.computeInitialState(this.terms));
-
-    const tx = await this.PAMActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.PAMEngineInstance.address,
-      ZERO_ADDRESS
+    self.schedule = await generateSchedule(self.PAMEngineInstance, self.terms);
+    self.state = web3ResponseToState(
+        await self.PAMEngineInstance.methods.computeInitialState(self.terms).call()
     );
-    await expectEvent.inTransaction(
-      tx.tx, PAMActor, 'InitializedAsset'
-    );
-    this.assetId = tx.logs[0].args.assetId;
 
-    snapshot = await createSnapshot();
+    const { events } = await this.PAMActorInstance.methods.initialize(
+        self.terms,
+        self.schedule,
+        self.ownership,
+        self.PAMEngineInstance.options.address,
+        ZERO_ADDRESS
+    ).send({ from: nobody });
+    expectEvent(events, 'InitializedAsset');
+
+    self.assetId = events.InitializedAsset.returnValues.assetId;
   });
 
-  after(async () => {
-    await revertToSnapshot(snapshot);
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+    await this.setupTestEnvironment();
   });
 
   it('should process the first non-cyclic event', async () => {
-    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.terms)
+    const _event = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
+    const eventTime = await getEventTime(_event, this.terms);
 
-    const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
-      this.terms, 
-      this.state, 
-      _event,
-      web3.utils.toHex(0)
-    ));
+    const payoff = new BigNumber(
+        await this.PAMEngineInstance.methods.computePayoffForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(0)
+        ).call()
+    );
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
     // set allowance for Payment Router
-    await this.PaymentTokenInstance.approve(
-      this.PAMActorInstance.address,
-      value,
-      { from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor }
-    );
+    await this.PaymentTokenInstance.methods.approve(
+        this.PAMActorInstance.options.address,
+        value,
+    ).send({ from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor });
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const tx = await this.PAMActorInstance.progress(
-      web3.utils.toHex(this.assetId), 
-      { from: creatorObligor }
-    );
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      tx.tx, PAMActor, 'ProgressedAsset'
-    );
+    const { events } = await this.PAMActorInstance.methods.progress(
+        web3.utils.toHex(this.assetId)
+    ).send({ from: creatorObligor });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
-    const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
-    const projectedNextState = web3ResponseToState(await this.PAMEngineInstance.computeStateForEvent(
-      this.terms,
-      this.state,
-      _event,
-      web3.utils.toHex(0)
-    ));
-    const storedNextEvent = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    
-    assert.equal(emittedAssetId, this.assetId);
-    assert.notEqual(storedNextEvent, _event);
-    assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(isEventSettled[0], true);
-    assert.equal(isEventSettled[1].toString(), payoff.toFixed());
-    assert.deepEqual(storedNextState, projectedNextState);
+    const storedNextState = web3ResponseToState(
+        await this.PAMRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
+    );
+    const isEventSettled = await this.PAMRegistryInstance.methods.isEventSettled(
+        web3.utils.toHex(this.assetId), _event
+    ).call();
+    const projectedNextState = web3ResponseToState(
+        await this.PAMEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(0)
+        ).call()
+    );
+    const storedNextEvent = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
+
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.notStrictEqual(storedNextEvent, _event);
+    assert.strictEqual(storedNextState.statusDate, eventTime.toString());
+    assert.strictEqual(isEventSettled[0], true);
+    assert.strictEqual(isEventSettled[1], payoff.toFixed());
+    assert.deepStrictEqual(storedNextState, projectedNextState);
 
     this.state = storedNextState;
-
-    // await revertToSnapshot(snapshot_asset);
-    // snapshot_asset = await createSnapshot();
   });
 
   it('should process the next cyclic event', async () => {
-    const _event = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    const eventTime = await getEventTime(_event, this.terms)
+    const _event = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
+    const eventTime = await getEventTime(_event, this.terms);
 
-    const payoff = new BigNumber(await this.PAMEngineInstance.computePayoffForEvent(
-      this.terms, 
-      this.state, 
-      _event,
-      web3.utils.toHex(0)
-    ));
+    const payoff = new BigNumber(
+        await this.PAMEngineInstance.methods.computePayoffForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(0)
+        ).call()
+    );
 
     const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
     // set allowance for Payment Router
-    await this.PaymentTokenInstance.approve(
-      this.PAMActorInstance.address,
-      value,
-      { from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor }
-    );
+    await this.PaymentTokenInstance.methods.approve(
+        this.PAMActorInstance.options.address,
+        value,
+    ).send({ from: (payoff.isGreaterThan(0)) ? counterpartyObligor : creatorObligor });
 
     // settle and progress asset state
     await mineBlock(eventTime);
-    const tx = await this.PAMActorInstance.progress(
-      web3.utils.toHex(this.assetId), 
-      { from: creatorObligor }
-    );
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      tx.tx, PAMActor, 'ProgressedAsset'
-    );
+    const { events } = await this.PAMActorInstance.methods.progress(
+        web3.utils.toHex(this.assetId)
+    ).send({ from: creatorObligor });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
-    const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.getState(web3.utils.toHex(this.assetId)));
-    const isEventSettled = await this.PAMRegistryInstance.isEventSettled(web3.utils.toHex(this.assetId), _event);
-    const projectedNextState = web3ResponseToState(await this.PAMEngineInstance.computeStateForEvent(
-      this.terms,
-      this.state,
-      _event,
-      web3.utils.toHex(0)
-    ));
-    const storedNextEvent = await this.PAMRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
-    
-    assert.equal(emittedAssetId, this.assetId);
-    assert.notEqual(storedNextEvent, _event);
-    assert.equal(storedNextState.statusDate, eventTime);
-    assert.equal(isEventSettled[0], true);
-    assert.equal(isEventSettled[1].toString(), payoff.toFixed());
-    assert.deepEqual(storedNextState, projectedNextState);
+    const storedNextState = web3ResponseToState(
+        await this.PAMRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
+    );
+    const isEventSettled = await this.PAMRegistryInstance.methods.isEventSettled(
+        web3.utils.toHex(this.assetId), _event
+    ).call();
+    const projectedNextState = web3ResponseToState(
+        await this.PAMEngineInstance.methods.computeStateForEvent(
+            this.terms,
+            this.state,
+            _event,
+            web3.utils.toHex(0)
+        ).call()
+    );
+    const storedNextEvent = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
 
-    await revertToSnapshot(snapshot_asset);
-    snapshot_asset = await createSnapshot();
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.notStrictEqual(storedNextEvent, _event);
+    assert.strictEqual(storedNextState.statusDate, eventTime.toString());
+    assert.strictEqual(isEventSettled[0], true);
+    assert.strictEqual(isEventSettled[1], payoff.toFixed());
+    assert.deepStrictEqual(storedNextState, projectedNextState);
   });
 });

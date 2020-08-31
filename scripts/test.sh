@@ -23,7 +23,7 @@ sleep 1
 
 (
 	cd packages/ap-contracts
-	truffle migrate --network development | 1>/dev/null
+	npx --quiet buidler deploy --network ap-chain --tags deploy-ap-chain | 1>/dev/null
 )
 
 lerna run test --stream --no-prefix "$@"

@@ -1,9 +1,9 @@
 const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-tasks/task-names');
 
 
-usePlugin('@nomiclabs/buidler-truffle5');
 usePlugin('@nomiclabs/buidler-web3');
 usePlugin('solidity-coverage');
+usePlugin("buidler-deploy");
 // usePlugin('buidler-gas-reporter');
 
 task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
@@ -22,7 +22,8 @@ function getMnemonic() {
 
 module.exports = {
   paths: {
-    artifacts: './test/artifacts'
+    artifacts: './build/contracts',
+    deployments: 'deployments',
   },
   defaultNetwork: 'buidlerevm',
   networks: {
@@ -71,6 +72,14 @@ module.exports = {
         initialIndex: 0,
         count: 5
       }
+    }
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0, // the first account
+    },
+    admin: {
+      default: 1,
     }
   },
   solc: {

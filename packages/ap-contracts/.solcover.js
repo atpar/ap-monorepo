@@ -8,6 +8,13 @@ module.exports = {
     'token/FDT/IFundsDistributionToken.sol',
     'token/FDT/SafeMathInt.sol',
     'token/FDT/SafeMathUint.sol',
-    'Migrations.sol'
-  ]
+  ],
+  providerOptions: {
+    "default_balance_ether": 5000
+  },
+  mocha: {
+    timeout: 90000,
+    grep: "@skip-on-coverage",  // Find everything with this tag
+    invert: true                // Run the grep's inverse set.
+  }
 };

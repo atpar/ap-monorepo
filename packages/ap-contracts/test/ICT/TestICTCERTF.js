@@ -1,191 +1,223 @@
+/* jslint node */
 /* global before, beforeEach, contract, describe, it, web3 */
-const { BN, ether, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
-const ICToken = artifacts.require('ICT');
-
-const { ZERO_ADDRESS, generateSchedule } = require('../helper/utils');
+const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils');
 const { decodeEvent } = require('../helper/scheduleUtils');
-const { setupTestEnvironment, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { deployICToken, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
 const { mineBlock } = require('../helper/blockchain');
 
 
-contract('ICT', function (accounts) {
-  const [owner, issuer, counterparty, investor1] = accounts;
+describe('ICT', function () {
+  let deployer, owner, issuer, counterparty, investor1, nobody;
 
   const computeEventTime = async (scheduleTime) => {
-    return (await this.CERTFEngineInstance.shiftEventTime(
-      scheduleTime,
-      this.terms.businessDayConvention,
-      this.terms.calendar,
-      this.terms.maturityDate
-    )).toString();
+    return (await this.CERTFEngineInstance.methods.shiftEventTime(
+        scheduleTime,
+        this.terms.businessDayConvention,
+        this.terms.calendar,
+        this.terms.maturityDate
+    ).call());
   };
 
   const computeCalcTime = async (scheduleTime) => {
-    return (await this.CERTFEngineInstance.shiftCalcTime(
-      scheduleTime,
-      this.terms.businessDayConvention,
-      this.terms.calendar,
-      this.terms.maturityDate
-    )).toString();
+    return (await this.CERTFEngineInstance.methods.shiftCalcTime(
+        scheduleTime,
+        this.terms.businessDayConvention,
+        this.terms.calendar,
+        this.terms.maturityDate
+    ).call());
   };
 
   const encodeNumberAsBytes32 = (number) => {
     return web3.utils.padLeft(
-      web3.utils.numberToHex(
-        web3.utils.toWei(String(number))
-      ),
-      64
+        web3.utils.numberToHex(
+            web3.utils.toWei(String(number))
+        ),
+        64
     );
   };
 
-  before(async () => {
-    this.instances =  await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
+
+    [ deployer, /*actor*/, owner, issuer, counterparty, investor1, nobody ] = self.accounts;
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(issuer, [issuer]);
+    self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, issuer, [issuer]);
 
-    this.terms = { ...require('./CERTF-Terms.json'), currency: this.PaymentTokenInstance.address };
-    this.schedule = await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000);
+    self.terms = { ...require('./CERTF-Terms.json'), currency: self.PaymentTokenInstance.options.address };
+    self.schedule = await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000);
 
-    this.ict = await ICToken.new(
-      this.CERTFRegistryInstance.address,
-      this.DataRegistryInstance.address,
-      this.terms.contractReference_2.object
-    );
+    self.ict = await deployICToken(buidlerRuntime, {
+      assetRegistry: self.CERTFRegistryInstance.options.address,
+      dataRegistry: self.DataRegistryInstance.options.address,
+      marketObjectCode: self.terms.contractReference_2.object,
+      deployer: owner,
+    });
 
     // mint 100% of all ICTs to investor1
-    await this.ict.mint(issuer, web3.utils.toWei('2500'));
-    await this.ict.mint(investor1, web3.utils.toWei('5000'));
+    await self.ict.methods.mint(issuer, web3.utils.toWei('2500')).send({ from: owner });
+    await self.ict.methods.mint(investor1, web3.utils.toWei('5000')).send({ from: owner });
 
-    this.ownership = {
-      creatorObligor: issuer, 
-      creatorBeneficiary: ict.address, 
-      counterpartyObligor: issuer, 
+    self.ownership = {
+      creatorObligor: issuer,
+      creatorBeneficiary: self.ict.options.address,
+      counterpartyObligor: issuer,
       counterpartyBeneficiary: issuer
     };
 
-    const tx = await this.CERTFActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.CERTFEngineInstance.address,
-      ZERO_ADDRESS
-    );
+    const { events } = await self.CERTFActorInstance.methods.initialize(
+        self.terms,
+        self.schedule,
+        self.ownership,
+        self.CERTFEngineInstance.options.address,
+        ZERO_ADDRESS
+    ).send({ from: owner });
+    expectEvent(events, 'InitializedAsset');
 
-    this.assetId = tx.logs[0].args.assetId;
-    this.state = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    self.assetId = events.InitializedAsset.returnValues.assetId;
+    self.state = await self.CERTFRegistryInstance.methods.getState(
+        web3.utils.toHex(self.assetId)
+    ).call();
 
-    await this.ict.setAssetId(web3.utils.toHex(this.assetId));
+    await self.ict.methods.setAssetId(web3.utils.toHex(self.assetId)).send({ from: owner });
 
-    await this.DataRegistryInstance.setDataProvider(this.terms.contractReference_2.object, this.ict.address);
-    await this.DataRegistryInstance.setDataProvider(this.terms.contractReference_1.object, owner);
+    await self.DataRegistryInstance.methods.setDataProvider(
+        self.terms.contractReference_2.object,
+        self.ict.options.address
+    ).send({ from: deployer });
+    await self.DataRegistryInstance.methods.setDataProvider(
+        self.terms.contractReference_1.object,
+        owner
+    ).send({ from: deployer });
 
-    await DataRegistryInstance.publishDataPoint(
-      this.terms.contractReference_1.object,
-      this.terms.issueDate,
-      encodeNumberAsBytes32(this.terms.nominalPrice)
-    );
+    await self.DataRegistryInstance.methods.publishDataPoint(
+        self.terms.contractReference_1.object,
+        self.terms.issueDate,
+        encodeNumberAsBytes32(self.terms.nominalPrice)
+    ).send({ from: owner });
   });
-  
+
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+    await this.setupTestEnvironment();
+  });
+
   it('should process the IssueDate event', async () => {
-    const idEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const idEvent = await this.CERTFRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
     const { eventType, scheduleTime } = decodeEvent(idEvent);
-    assert.equal(eventType, '1');
+    assert.strictEqual(eventType, '1');
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
+    await this.CERTFActorInstance.methods.progress(
+        web3.utils.toHex(this.assetId)
+    ).send({ from: owner });
   });
 
-  it('should register investor1 for redemption for the first RFD event', async () => {
+  it('should register investor1 for redemption for the first RFD event [ @skip-on-coverage ]', async () => {
     const rfdEvent = this.schedule[1];
     const { eventType } = decodeEvent(rfdEvent);
-    assert.equal(eventType, '23');
-   
+    assert.strictEqual(eventType, '23');
+
     const tokensToRedeem = web3.utils.toWei('1000');
 
-    await this.ict.createDepositForEvent(rfdEvent); 
-    await this.ict.registerForRedemption(rfdEvent, tokensToRedeem, { from: investor1 });
+    await this.ict.methods.createDepositForEvent(rfdEvent).send({ from: owner });
+    await this.ict.methods.registerForRedemption(rfdEvent, tokensToRedeem).send({ from: investor1 });
 
     const { scheduleTime: scheduleTimeXD } = decodeEvent(this.schedule[2]);
 
-    const exerciseQuantity = (await this.DataRegistryInstance.getDataPoint(
-      this.terms.contractReference_2.object,
-      await computeCalcTime(scheduleTimeXD)
-    ))[0].toString();
+    const exerciseQuantity = (await this.DataRegistryInstance.methods.getDataPoint(
+        this.terms.contractReference_2.object,
+        await computeCalcTime(scheduleTimeXD)
+    ).call())[0];
 
-    const deposit = await this.ict.getDeposit(rfdEvent);
-    const totalSupply = await this.ict.totalSupply();
-    const ratioSignaled = (new BigNumber(deposit.totalAmountSignaled.toString())).dividedBy(totalSupply.toString()).shiftedBy(18).decimalPlaces(0);
+    const deposit = await this.ict.methods.getDeposit(rfdEvent).call();
+    const totalSupply = await this.ict.methods.totalSupply().call();
+    const ratioSignaled = (new BigNumber(deposit.totalAmountSignaled))
+        .dividedBy(totalSupply).shiftedBy(18).decimalPlaces(0);
     const expectedExerciseQuantity = ratioSignaled.multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed();
 
-    assert.equal(exerciseQuantity, expectedExerciseQuantity);
+    assert.strictEqual(exerciseQuantity, expectedExerciseQuantity);
 
     this.exerciseQuantity = exerciseQuantity;
   });
 
   it('should process the first RedemptionFixingDay event', async () => {
-    const rfdEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const rfdEvent = await this.CERTFRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
     const { eventType, scheduleTime } = decodeEvent(rfdEvent);
-    assert.equal(eventType, '23');
+    assert.strictEqual(eventType, '23');
 
-    await DataRegistryInstance.publishDataPoint(
-      this.terms.contractReference_1.object,
-      await computeCalcTime(scheduleTime),
-      encodeNumberAsBytes32(this.terms.nominalPrice)
-    );
+    await this.DataRegistryInstance.methods.publishDataPoint(
+        this.terms.contractReference_1.object,
+        await computeCalcTime(scheduleTime),
+        encodeNumberAsBytes32(this.terms.nominalPrice)
+    ).send({ from: owner });
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
+    await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: owner });
+    await this.CERTFRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
   });
 
   it('should process the first ExecutionDate event', async () => {
-    const xdEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const xdEvent = await this.CERTFRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { eventType, scheduleTime } = decodeEvent(xdEvent);
-    assert.equal(eventType, '26');
+    assert.strictEqual(eventType, '26');
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
+    await this.CERTFActorInstance.methods.progress(
+        web3.utils.toHex(this.assetId)
+    ).send({ from: owner });
   });
 
-    it('should process the first RPD event', async () => {
-    const rpdEvent = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+  it('should process the first RPD event [ @skip-on-coverage ]', async () => {
+    const rpdEvent = await this.CERTFRegistryInstance.methods.getNextScheduledEvent(
+        web3.utils.toHex(this.assetId)
+    ).call();
     const { eventType, scheduleTime } = decodeEvent(rpdEvent);
-    assert.equal(eventType, '24');
+    assert.strictEqual(eventType, '24');
 
     // set allowance for CERTFActor
-    await this.PaymentTokenInstance.approve(
-      this.CERTFActorInstance.address,
-      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed(),
-      { from: issuer }
-    );
+    await this.PaymentTokenInstance.methods.approve(
+        this.CERTFActorInstance.options.address,
+        (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.terms.quantity).shiftedBy(-18).toFixed(),
+    ).send({ from: issuer });
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
-    await this.ict.fetchDepositAmountForEvent(this.schedule[1]);
+    await this.CERTFActorInstance.methods.progress(web3.utils.toHex(
+        this.assetId)
+    ).send({ from: owner });
+    await this.ict.methods.fetchDepositAmountForEvent(this.schedule[1]).send({ from: owner });
 
-    const deposit = await this.ict.getDeposit(this.schedule[1]);
+    const deposit = await this.ict.methods.getDeposit(this.schedule[1]).call();
 
-    assert.equal(
-      deposit.amount.toString(),
-      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()
+    assert.strictEqual(
+        deposit.amount,
+        (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()
     );
   });
 
-  it('should withdraw the share for investor1', async () => {
-    await this.ict.claimDeposit(this.schedule[1], { from: investor1 });
+  it('should withdraw the share for investor1 [ @skip-on-coverage ]', async () => {
+    await this.ict.methods.claimDeposit(this.schedule[1]).send({ from: investor1 });
 
-    const deposit = await this.ict.getDeposit(this.schedule[1]);
+    const deposit = await this.ict.methods.getDeposit(this.schedule[1]).call();
 
-    assert.equal(
-      deposit.claimedAmount.toString(),
-      (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()  
-    )
+    assert.strictEqual(
+        deposit.claimedAmount,
+        (new BigNumber(this.terms.nominalPrice)).multipliedBy(this.exerciseQuantity).shiftedBy(-18).toFixed()
+    );
   });
 });

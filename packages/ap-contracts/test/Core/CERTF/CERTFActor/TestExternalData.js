@@ -1,80 +1,82 @@
-const { expectEvent } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
 
-const { setupTestEnvironment } = require('../../../helper/setupTestEnvironment');
-const { createSnapshot, revertToSnapshot, mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
+const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { mineBlock } = require('../../../helper/blockchain');
+const { expectEvent, generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
 const { decodeEvent } = require('../../../helper/scheduleUtils');
 
-const CERTFActor = artifacts.require('CERTFActor');
 
+describe('CERTFActor', () => {
+  let deployer, actor, actor2, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
-contract('CERTFActor', (accounts) => {
-
-  const creatorObligor = accounts[1];
-  const creatorBeneficiary = accounts[2];
-  const counterpartyObligor = accounts[3];
-  const counterpartyBeneficiary = accounts[4];
-
-  let snapshot;
-  let snapshot_asset;
-  
   const getEventTime = async (_event, terms) => {
-    return Number(await this.CERTFEngineInstance.computeEventTimeForEvent(
-      _event,
-      terms.businessDayConvention,
-      terms.calendar,
-      terms.maturityDate
-    ));
+    return Number(
+        await this.CERTFEngineInstance.computeEventTimeForEvent(
+            _event,
+            terms.businessDayConvention,
+            terms.calendar,
+            terms.maturityDate
+        ).call()
+    );
   }
 
-  before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-    this.ownership = {
-      creatorObligor, 
-      creatorBeneficiary, 
-      counterpartyObligor, 
+    [
+      deployer, actor, actor2, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
+    ] = self.accounts;
+
+    self.ownership = {
+      creatorObligor,
+      creatorBeneficiary,
+      counterpartyObligor,
       counterpartyBeneficiary
     };
     // schedule with RR
-    this.terms = require('../../../helper/terms/CERTFTerms-external-data.json');
-  
+    self.terms = require('../../../helper/terms/CERTFTerms-external-data.json');
+
     // only want RR events in the schedules
-    this.schedule = (await generateSchedule(this.CERTFEngineInstance, this.terms, 1623456000)).filter((event) => (event.startsWith('0x17') || event.startsWith('0x1a')));
+    self.schedule = ( await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000))
+        .filter((event) => (event.startsWith('0x17') || event.startsWith('0x1a')));
 
-    const tx = await this.CERTFActorInstance.initialize(
-      this.terms,
-      this.schedule,
-      this.ownership,
-      this.CERTFEngineInstance.address,
+    const { events } = await this.CERTFActorInstance.methods.initialize(
+      self.terms,
+      self.schedule,
+      self.ownership,
+      self.CERTFEngineInstance.options.address,
       ZERO_ADDRESS
-    );
+    ).send({ from: actor });
+    expectEvent(events,'InitializedAsset');
+    self.assetId = events.InitializedAsset.returnValues.assetId;
 
-    this.assetId = tx.logs[0].args.assetId;
-    this.state = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
-    this.redemptionAmounts = [100, 110];
-    this.quantity = [100];
-
-    snapshot = await createSnapshot();
+    self.state = await self.CERTFRegistryInstance.methods.getState(web3.utils.toHex(self.assetId)).call();
+    self.redemptionAmounts = [100, 110];
+    self.quantity = [100];
   });
 
-  after(async () => {
-    await revertToSnapshot(snapshot);
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+    await this.setupTestEnvironment();
   });
 
   it('should process next state with external redemption amount', async () => {
-    const _event = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.CERTFRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { scheduleTime } = decodeEvent(_event);
-    
-    await mineBlock(Number(scheduleTime));
-    
-    await this.DataRegistryInstance.setDataProvider(
-      this.terms.contractReference_1.object,
-      accounts[0]
-    );
 
-    await this.DataRegistryInstance.publishDataPoint(
+    await mineBlock(Number(scheduleTime));
+
+    await this.DataRegistryInstance.methods.setDataProvider(
+      this.terms.contractReference_1.object,
+      actor
+    ).send({ from: deployer });
+
+    await this.DataRegistryInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       this.terms.issueDate,
       web3.utils.padLeft(
@@ -83,9 +85,9 @@ contract('CERTFActor', (accounts) => {
         ),
         64
       )
-    );
-      
-    await this.DataRegistryInstance.publishDataPoint(
+    ).send({ from: actor });
+
+    await this.DataRegistryInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       scheduleTime,
       web3.utils.padLeft(
@@ -94,16 +96,17 @@ contract('CERTFActor', (accounts) => {
         ),
         64
       )
-    );
+    ).send({ from: actor });
 
-    const { tx: txHash } = await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, CERTFActor, 'ProgressedAsset'
-    );
-    const storedNextState = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+
+    const storedNextState = await this.CERTFRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
     // compute expected next state
-    const projectedNextState = await this.CERTFEngineInstance.computeStateForEvent(
+    const projectedNextState = await this.CERTFEngineInstance.methods.computeStateForEvent(
       this.terms,
       this.state,
       _event,
@@ -113,28 +116,29 @@ contract('CERTFActor', (accounts) => {
         ),
         64
       )
-    );
+    ).call();
 
     // compare results
-    assert.equal(emittedAssetId, this.assetId);
-    assert.equal(storedNextState.statusDate, scheduleTime);
-    assert.deepEqual(storedNextState, projectedNextState);
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.strictEqual(storedNextState.statusDate, scheduleTime);
+    assert.deepStrictEqual(storedNextState, projectedNextState);
 
     this.state = storedNextState;
   });
 
   it('should process next state with external quantity', async () => {
-    const _event = await this.CERTFRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
+    const _event = await this.CERTFRegistryInstance.methods
+        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { scheduleTime } = decodeEvent(_event);
-    
-    await mineBlock(Number(scheduleTime));
-    
-    await this.DataRegistryInstance.setDataProvider(
-      this.terms.contractReference_2.object,
-      accounts[0]
-    );
 
-    await this.DataRegistryInstance.publishDataPoint(
+    await mineBlock(Number(scheduleTime));
+
+    await this.DataRegistryInstance.methods.setDataProvider(
+      this.terms.contractReference_2.object,
+      actor2
+    ).send({ from: deployer });
+
+    await this.DataRegistryInstance.methods.publishDataPoint(
       this.terms.contractReference_2.object,
       scheduleTime,
       web3.utils.padLeft(
@@ -143,16 +147,17 @@ contract('CERTFActor', (accounts) => {
         ),
         64
       )
-    );
+    ).send({ from: actor2 });
 
-    const { tx: txHash } = await this.CERTFActorInstance.progress(web3.utils.toHex(this.assetId));
-    const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
-      txHash, CERTFActor, 'ProgressedAsset'
-    );
-    const storedNextState = await this.CERTFRegistryInstance.getState(web3.utils.toHex(this.assetId));
+    const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+        .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset');
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+
+    const storedNextState = await this.CERTFRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
     // compute expected next state
-    const projectedNextState = await this.CERTFEngineInstance.computeStateForEvent(
+    const projectedNextState = await this.CERTFEngineInstance.methods.computeStateForEvent(
       this.terms,
       this.state,
       _event,
@@ -162,13 +167,11 @@ contract('CERTFActor', (accounts) => {
         ),
         64
       )
-    );
+    ).call();
 
     // compare results
-    assert.equal(emittedAssetId, this.assetId);
-    assert.equal(storedNextState.statusDate, scheduleTime);
-    assert.deepEqual(storedNextState, projectedNextState);
-
-    await revertToSnapshot(snapshot_asset);
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.strictEqual(storedNextState.statusDate, scheduleTime);
+    assert.deepStrictEqual(storedNextState, projectedNextState);
   });
 });
