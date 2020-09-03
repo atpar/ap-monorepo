@@ -18,13 +18,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_NE (
         ANNTerms memory /* terms */,
-        State memory state,
+        ANNState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         return state;
     }
@@ -36,13 +36,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_AD (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -77,13 +77,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_FP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -113,13 +113,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_PP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -155,13 +155,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_PY (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -196,13 +196,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_RRF (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -238,13 +238,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_TD (
         ANNTerms memory /* terms */,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         state.notionalPrincipal = 0;
         state.nominalInterestRate = 0;
@@ -263,13 +263,13 @@ contract ANNSTF is Core {
      */
     function STF_ANN_CE (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns(State memory)
+        returns(ANNState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
@@ -315,13 +315,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_IED (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
@@ -333,13 +333,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_IPCI (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -373,13 +373,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_IP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -404,13 +404,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_PR (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -456,13 +456,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_MD (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -494,13 +494,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_RR (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         // riskFactor not supported
         int256 rate = int256(externalData) * terms.rateMultiplier + terms.rateSpread;
@@ -545,13 +545,13 @@ contract ANNSTF is Core {
 
     function STF_ANN_SC (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         int256 timeFromLastEvent;
         {

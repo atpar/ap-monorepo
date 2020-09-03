@@ -17,7 +17,7 @@ contract CECPOF is Core {
      */
     function POF_CEC_STD (
         CECTerms memory /* terms */,
-        State memory state,
+        CECState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )

@@ -18,13 +18,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_ID (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.quantity = terms.quantity;
         state.statusDate = scheduleTime;
@@ -39,13 +39,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_IED (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -58,13 +58,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_CFD (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         if (terms.couponType == CouponType.FIX) {
             state.couponAmountFixed = yearFraction(
@@ -89,13 +89,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_CPD (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.couponAmountFixed = 0;
         state.statusDate = scheduleTime;
@@ -110,13 +110,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_RFD (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.exerciseAmount = int256(externalData)
         .floatMult(terms.nominalPrice)
@@ -135,13 +135,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_XD (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.exerciseQuantity = int256(externalData);
         state.statusDate = scheduleTime;
@@ -156,13 +156,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_RPD (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.quantity = state.quantity.sub(state.exerciseQuantity);
         state.exerciseQuantity = 0;
@@ -185,13 +185,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_TD (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.quantity = 0;
         state.terminationDate = scheduleTime;
@@ -207,13 +207,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_MD (
         CERTFTerms memory /* terms */,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         state.maturityDate = scheduleTime;
         state.statusDate = scheduleTime;
@@ -228,13 +228,13 @@ contract CERTFSTF is Core {
      */
     function STF_CERTF_CE (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)

@@ -12,13 +12,13 @@ contract TestCECSTF is CECSTF {
 
     function _STF_CEC_CE(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         return STF_CEC_CE(
             terms,
@@ -30,13 +30,13 @@ contract TestCECSTF is CECSTF {
 
     function _STF_CEC_MD(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         return STF_CEC_MD(
             terms,
@@ -48,13 +48,13 @@ contract TestCECSTF is CECSTF {
 
     function _STF_CEC_XD(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         return STF_CEC_XD(
             terms,
@@ -66,13 +66,13 @@ contract TestCECSTF is CECSTF {
 
     function _STF_CEC_STD(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         return STF_CEC_STD(
             terms,

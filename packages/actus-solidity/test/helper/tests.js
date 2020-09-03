@@ -128,32 +128,6 @@ function assertEqualStates (newState, expectedState) {
   assert.notStrictEqual(web3ResponseToState(newState), expectedState);
 }
 
-function getDefaultState () {
-  return {
-    contractPerformance: 0, // PF
-    statusDate: 0,
-    nonPerformingDate: 0,
-    maturityDate: 31536000, // (1 year from 0)
-    exerciseDate: 31536000, 
-    terminationDate: 31536000, 
-    lastCouponDay: 0, 
-
-    notionalPrincipal: web3.utils.toWei('1000000'),
-    accruedInterest: web3.utils.toWei('100'),
-    feeAccrued: web3.utils.toWei('10'),
-    nominalInterestRate: web3.utils.toWei('0.05'),
-    interestScalingMultiplier: web3.utils.toWei('1.1'),
-    notionalScalingMultiplier: web3.utils.toWei('0.9'),
-    nextPrincipalRedemptionPayment: web3.utils.toWei('2500'),
-    exerciseAmount: web3.utils.toWei('5000'),
-    exerciseQuantity: '0',
-    quantity: '0',
-    couponAmountFixed: '0',
-    marginFactor: '0',
-    adjustmentFactor: '0'
-  }
-}
-
 const web3ResponseToState = (arr) => ({ 
   ...Object.keys(arr).reduce((obj, element) => (
     (!Number.isInteger(Number(element)))
@@ -171,7 +145,6 @@ module.exports = {
   assertEqualStates,
   getTestCases,
   getDefaultTestTerms,
-  getDefaultState,
   compareTestResults,
   web3ResponseToState
 }

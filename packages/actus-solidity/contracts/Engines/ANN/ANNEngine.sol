@@ -29,14 +29,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      */
     function computeStateForEvent(
         ANNTerms calldata terms,
-        State calldata state,
+        ANNState calldata state,
         bytes32 _event,
         bytes32 externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (ANNState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -56,7 +56,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      */
     function computePayoffForEvent(
         ANNTerms calldata terms,
-        State calldata state,
+        ANNState calldata state,
         bytes32 _event,
         bytes32 externalData
     )
@@ -93,9 +93,9 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (ANNState memory)
     {
-        State memory state;
+        ANNState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.notionalScalingMultiplier = ONE_POINT_ZERO;
@@ -383,16 +383,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
      * param state current state of the contract
-     * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 /* _event */,
         ANNTerms calldata /* terms */,
-        State calldata /* state */,
-        bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        ANNState calldata /* state */,
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
@@ -415,13 +413,13 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      */
     function stateTransitionFunction(
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (ANNState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -461,7 +459,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      */
     function payoffFunction(
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         bytes32 _event,
         bytes32 externalData
     )

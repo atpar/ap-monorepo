@@ -30,14 +30,14 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
      */
     function computeStateForEvent(
         CECTerms calldata terms,
-        State calldata state,
+        CECState calldata state,
         bytes32 _event,
         bytes32 externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (CECState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -57,7 +57,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
      */
     function computePayoffForEvent(
         CECTerms calldata terms,
-        State calldata state,
+        CECState calldata state,
         bytes32 _event,
         bytes32 externalData
     )
@@ -93,9 +93,9 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (CECState memory)
     {
-        State memory state;
+        CECState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.statusDate = terms.statusDate;
@@ -193,16 +193,14 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
      * param state current state of the contract
-     * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 /* _event */,
         CECTerms calldata /* terms */,
-        State calldata /* state */,
-        bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        CECState calldata /* state */,
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
@@ -224,13 +222,13 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
      */
     function stateTransitionFunction(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         bytes32 _event,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -254,7 +252,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
      */
     function payoffFunction(
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         bytes32 _event,
         bytes32 externalData
     )

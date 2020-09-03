@@ -12,13 +12,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_NE(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_NE(
             terms,
@@ -30,13 +30,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_AD(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_AD(
             terms,
@@ -48,13 +48,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_FP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_FP(
             terms,
@@ -66,13 +66,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_IED(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_IED(
             terms,
@@ -84,13 +84,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_IPCI(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_IPCI(
             terms,
@@ -102,13 +102,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_IP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_IP(
             terms,
@@ -120,13 +120,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_PP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_PP(
             terms,
@@ -138,13 +138,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_PR(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_PR(
             terms,
@@ -156,13 +156,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_PY(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_PY(
             terms,
@@ -174,13 +174,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_RRF(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_RRF(
             terms,
@@ -192,13 +192,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_RR(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_RR(
             terms,
@@ -210,13 +210,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_SC(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_SC(
             terms,
@@ -228,13 +228,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_MD(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_MD(
             terms,
@@ -246,13 +246,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_TD(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_TD(
             terms,
@@ -264,13 +264,13 @@ contract TestPAMSTF is PAMSTF {
 
     function _STF_PAM_CE(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return STF_PAM_CE(
             terms,

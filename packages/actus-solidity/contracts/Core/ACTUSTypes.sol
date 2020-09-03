@@ -53,15 +53,18 @@ struct ContractReference {
     ContractReferenceRole role;
 }
 
-struct State {
+struct UnderlyingState {
+    int256 exerciseAmount;
+    bool isSet;
+}
+
+struct ANNState {
     ContractPerformance contractPerformance;
 
     uint256 statusDate;
     uint256 nonPerformingDate;
     uint256 maturityDate;
-    uint256 exerciseDate;
     uint256 terminationDate;
-    uint256 lastCouponDay;
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -74,14 +77,72 @@ struct State {
     int256 interestScalingMultiplier;
     int256 notionalScalingMultiplier;
     int256 nextPrincipalRedemptionPayment;
+}
+
+struct CECState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    int256 feeAccrued;
+    int256 exerciseAmount;
+}
+
+struct CEGState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    int256 feeAccrued;
+    int256 exerciseAmount;
+}
+
+struct CERTFState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+    uint256 lastCouponDay;
+
     int256 exerciseAmount;
     int256 exerciseQuantity;
-    
     int256 quantity;
     int256 couponAmountFixed;
     // int256 exerciseQuantityOrdered;
     int256 marginFactor;
     int256 adjustmentFactor;
+}
+
+struct PAMState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    // int256 notionalPrincipal2;
+    int256 accruedInterest;
+    // int256 accruedInterest2;
+    int256 feeAccrued;
+    int256 nominalInterestRate;
+    // int256 nominalInterestRate2;
+    // int256 interestCalculationBaseAmount;
+    int256 interestScalingMultiplier;
+    int256 notionalScalingMultiplier;
 }
 
 struct ANNTerms {

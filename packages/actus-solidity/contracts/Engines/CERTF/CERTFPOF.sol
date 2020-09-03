@@ -17,7 +17,7 @@ contract CERTFPOF is Core {
      */
     function POF_CERTF_IED (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
@@ -36,7 +36,7 @@ contract CERTFPOF is Core {
      */
     function POF_CERTF_CPD (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
@@ -55,7 +55,7 @@ contract CERTFPOF is Core {
      */
     function POF_CERTF_RPD (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
@@ -74,7 +74,7 @@ contract CERTFPOF is Core {
      */
     function POF_CERTF_TD (
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )

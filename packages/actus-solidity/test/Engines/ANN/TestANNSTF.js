@@ -2,21 +2,37 @@ const { toWei } = require('web3-utils');
 
 const TestSTF = artifacts.require('TestANNSTF.sol');
 const ANNEngine = artifacts.require('ANNEngine.sol');
-const { getDefaultTestTerms, getDefaultState, assertEqualStates } = require('../../helper/tests');
+const { getDefaultTestTerms, assertEqualStates } = require('../../helper/tests');
 
 
 contract('TestANNSTF', () => {
   before(async () => {
     this.ANNEngineInstance = await ANNEngine.new();
-    this.ANNTerms = await getDefaultTestTerms('ANN');
     this.TestSTF = await TestSTF.new();
+    
+    this.ANNTerms = await getDefaultTestTerms('ANN');
+    
+    this.DefaultState = {
+      contractPerformance: 0, // PF
+      statusDate: 0,
+      nonPerformingDate: 0,
+      maturityDate: 31536000, // (1 year from 0)
+      terminationDate: 31536000, 
+      notionalPrincipal: web3.utils.toWei('1000000'),
+      accruedInterest: web3.utils.toWei('100'),
+      feeAccrued: web3.utils.toWei('10'),
+      nominalInterestRate: web3.utils.toWei('0.05'),
+      interestScalingMultiplier: web3.utils.toWei('1.1'),
+      notionalScalingMultiplier: web3.utils.toWei('0.9'),
+      nextPrincipalRedemptionPayment: web3.utils.toWei('2500'),
+    };
   });
 
   /*
   * TEST STF_ANN_AD
   */
   it('ANN Analysis Event STF', async () => {
-    const oldState = getDefaultState();
+    const oldState = this.DefaultState;
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -25,7 +41,7 @@ contract('TestANNSTF', () => {
     this.ANNTerms.businessDayConvention = 0; // NULL
 
     // Construct expected state from default state
-    const expectedState = getDefaultState();
+    const expectedState = this.DefaultState;
     expectedState.accruedInterest = toWei('10100');
     expectedState.feeAccrued = toWei('2010');
     expectedState.statusDate = 6307200;
@@ -44,7 +60,7 @@ contract('TestANNSTF', () => {
   * TEST STF_ANN_FP
   */
   it('ANN Fee Payment STF', async () => {
-    const oldState = getDefaultState();
+    const oldState = this.DefaultState;
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -54,7 +70,7 @@ contract('TestANNSTF', () => {
     this.ANNTerms.businessDayConvention = 0; // NULL
 
     // Construct expected state from default state
-    const expectedState = getDefaultState();
+    const expectedState = this.DefaultState;
     expectedState.accruedInterest = toWei('10100');
     expectedState.feeAccrued = toWei('0');
     expectedState.statusDate = 6307200;
@@ -73,7 +89,7 @@ contract('TestANNSTF', () => {
   * TEST STF_ANN_PP
   */
   it('ANN Principal Payment STF', async () => {
-    const oldState = getDefaultState();
+    const oldState = this.DefaultState;
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -83,7 +99,7 @@ contract('TestANNSTF', () => {
     this.ANNTerms.businessDayConvention = 0; // NULL
 
     // Construct expected state from default state
-    const expectedState = getDefaultState();
+    const expectedState = this.DefaultState;
     expectedState.accruedInterest = toWei('10100');
     expectedState.feeAccrued = toWei('2010');
     expectedState.notionalPrincipal = toWei('1000000');
@@ -105,7 +121,7 @@ contract('TestANNSTF', () => {
   * TEST STF_ANN_PY
   */
   it('ANN Princiapl Redemption STF', async () => {
-    const oldState = getDefaultState();
+    const oldState = this.DefaultState;
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -115,7 +131,7 @@ contract('TestANNSTF', () => {
     this.ANNTerms.businessDayConvention = 0; // NULL
 
     // Construct expected state from default state
-    const expectedState = getDefaultState();
+    const expectedState = this.DefaultState;
     expectedState.accruedInterest = toWei('10100');
     expectedState.feeAccrued = toWei('2010');
     expectedState.statusDate = 6307200;
@@ -135,7 +151,7 @@ contract('TestANNSTF', () => {
   * TEST STF_ANN_RRF
   */
   it('ANN Fixed Rate Reset STF', async () => {
-    const oldState = getDefaultState();
+    const oldState = this.DefaultState;
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
 
@@ -146,7 +162,7 @@ contract('TestANNSTF', () => {
     this.ANNTerms.nextResetRate = toWei('0.06')
 
     // Construct expected state from default state
-    const expectedState = getDefaultState();
+    const expectedState = this.DefaultState;
     expectedState.accruedInterest = toWei('10100');
     expectedState.feeAccrued = toWei('2010');
     expectedState.nominalInterestRate = toWei('0.06')

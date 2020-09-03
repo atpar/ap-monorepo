@@ -12,19 +12,19 @@ import "../../Core/Core.sol";
 contract CEGSTF is Core {
 
     /**
-     * State transition for PAM credit events
+     * CEGState transition for PAM credit events
      * @param state the old state
      * @return the new state
      */
     function STF_CEG_CE (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns(State memory)
+        returns(CEGState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
@@ -70,13 +70,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_MD (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;
@@ -87,13 +87,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_XD (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -125,13 +125,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_STD (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         state.notionalPrincipal = 0;
         state.feeAccrued = 0;
@@ -141,32 +141,15 @@ contract CEGSTF is Core {
         return state;
     }
 
-    function STF_CEG_PRD (
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.nominalInterestRate = terms.feeRate;
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
     function STF_CEG_FP (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;

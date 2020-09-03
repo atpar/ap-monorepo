@@ -11,13 +11,13 @@ contract TestCEGSTF is CEGSTF {
 
     function _STF_CEG_CE(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_CE(
             terms,
@@ -29,13 +29,13 @@ contract TestCEGSTF is CEGSTF {
 
     function _STF_CEG_MD(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_MD(
             terms,
@@ -47,13 +47,13 @@ contract TestCEGSTF is CEGSTF {
 
     function _STF_CEG_XD(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_XD(
             terms,
@@ -65,13 +65,13 @@ contract TestCEGSTF is CEGSTF {
 
     function _STF_CEG_STD(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_STD(
             terms,
@@ -81,33 +81,15 @@ contract TestCEGSTF is CEGSTF {
         );
     }
 
-    function _STF_CEG_PRD(
-        CEGTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_CEG_PRD(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
     function _STF_CEG_FP(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_FP(
             terms,

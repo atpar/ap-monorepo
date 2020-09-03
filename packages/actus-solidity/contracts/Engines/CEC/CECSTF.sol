@@ -18,26 +18,26 @@ contract CECSTF is Core {
      */
     function STF_CEC_CE (
         CECTerms memory /* terms */,
-        State memory state,
+        CECState memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns(State memory)
+        returns(CECState memory)
     {
         return state;
     }
 
     function STF_CEC_MD (
         CECTerms memory /* terms */,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;
@@ -48,13 +48,13 @@ contract CECSTF is Core {
 
     function STF_CEC_XD (
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -86,13 +86,13 @@ contract CECSTF is Core {
 
     function STF_CEC_STD (
         CECTerms memory /* terms */,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CECState memory)
     {
         state.notionalPrincipal = 0;
         state.feeAccrued = 0;
