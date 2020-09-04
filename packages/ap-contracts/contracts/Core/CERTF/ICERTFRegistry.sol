@@ -11,7 +11,7 @@ interface ICERTFRegistry is IAssetRegistry {
     function registerAsset(
         bytes32 assetId,
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -26,5 +26,21 @@ interface ICERTFRegistry is IAssetRegistry {
         returns (CERTFTerms memory);
 
     function setTerms(bytes32 assetId, CERTFTerms calldata terms)
+        external;
+
+    function getState(bytes32 assetId)
+        external
+        view
+        returns (CERTFState memory);
+
+    function setState(bytes32 assetId, CERTFState calldata terms)
+        external;
+
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        returns (CERTFState memory);
+
+    function setFinalizedState(bytes32 assetId, CERTFState calldata terms)
         external;
 }

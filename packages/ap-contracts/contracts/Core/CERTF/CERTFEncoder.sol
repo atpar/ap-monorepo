@@ -13,6 +13,12 @@ library CERTFEncoder {
         if (asset.packedTerms[attributeKey] == value) return;
         asset.packedTerms[attributeKey] = value;
     }
+
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
+        // skip if value did not change
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
+    }
     
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
@@ -235,7 +241,7 @@ library CERTFEncoder {
         );
     }
 
-    function decodeAndGetEnumValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetEnumValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint8)
@@ -259,7 +265,7 @@ library CERTFEncoder {
         }
     }
 
-    function decodeAndGetAddressValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetAddressValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (address)
@@ -273,7 +279,7 @@ library CERTFEncoder {
         }
     }
 
-    function decodeAndGetBytes32ValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetBytes32ValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (bytes32)
@@ -281,7 +287,7 @@ library CERTFEncoder {
         return asset.packedTerms[attributeKey];
     }
 
-    function decodeAndGetUIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetUIntValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint256)
@@ -289,7 +295,7 @@ library CERTFEncoder {
         return uint256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetIntValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetIntValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (int256)
@@ -297,7 +303,7 @@ library CERTFEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetPeriodValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetPeriodValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (IP memory)
@@ -319,7 +325,7 @@ library CERTFEncoder {
         }
     }
 
-    function decodeAndGetCycleValueForForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetCycleValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (IPS memory)
@@ -340,7 +346,7 @@ library CERTFEncoder {
         }
     }
 
-    function decodeAndGetContractReferenceValueForCERTFAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetContractReferenceValueForCERTFTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (ContractReference memory)
@@ -367,5 +373,123 @@ library CERTFEncoder {
                 ContractReferenceRole(0)
             );
         }
+    }
+
+    /**
+     * @dev Tightly pack and store CERTFState
+     */
+    function encodeAndSetCERTFState(Asset storage asset, CERTFState memory state) external {
+        storeInPackedState(asset, "contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "lastCouponDay", bytes32(state.lastCouponDay));
+        storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
+        storeInPackedState(asset, "exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "adjustmentFactor", bytes32(state.adjustmentFactor));
+    }
+
+    /**
+     * @dev Tightly pack and store finalized CERTFState
+     */
+    function encodeAndSetFinalizedCERTFState(Asset storage asset, CERTFState memory state) external {
+        storeInPackedState(asset, "F_contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "F_statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "F_nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "F_exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "F_lastCouponDay", bytes32(state.lastCouponDay));
+        storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
+        storeInPackedState(asset, "F_exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "F_quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "F_couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "F_marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "F_adjustmentFactor", bytes32(state.adjustmentFactor));
+    }
+
+    /**
+     * @dev Decode and load the CERTFState of the asset
+     */
+    function decodeAndGetCERTFState(Asset storage asset)
+        external
+        view
+        returns (CERTFState memory)
+    {
+        return CERTFState(
+            ContractPerformance(uint8(uint256(asset.packedState["contractPerformance"] >> 248))),
+            uint256(asset.packedState["statusDate"]),
+            uint256(asset.packedState["nonPerformingDate"]),
+            uint256(asset.packedState["maturityDate"]),
+            uint256(asset.packedState["exerciseDate"]),
+            uint256(asset.packedState["terminationDate"]),
+            uint256(asset.packedState["lastCouponDate"]),
+            int256(asset.packedState["exerciseAmomunt"]),
+            int256(asset.packedState["exerciseQuantity"]),
+            int256(asset.packedState["quantity"]),
+            int256(asset.packedState["couponAmountFixed"]),
+            int256(asset.packedState["marginFactor"]),
+            int256(asset.packedState["adjustmentFactor"])
+        );
+    }
+
+    /**
+     * @dev Decode and load the finalized CERTFState of the asset
+     */
+    function decodeAndGetFinalizedCERTFState(Asset storage asset)
+        external
+        view
+        returns (CERTFState memory)
+    {
+        return CERTFState(
+            ContractPerformance(uint8(uint256(asset.packedState["F_contractPerformance"] >> 248))),
+            uint256(asset.packedState["F_statusDate"]),
+            uint256(asset.packedState["F_nonPerformingDate"]),
+            uint256(asset.packedState["F_maturityDate"]),
+            uint256(asset.packedState["F_exerciseDate"]),
+            uint256(asset.packedState["F_terminationDate"]),
+            uint256(asset.packedState["F_lastCouponDate"]),
+            int256(asset.packedState["F_exerciseAmomunt"]),
+            int256(asset.packedState["F_exerciseQuantity"]),
+            int256(asset.packedState["F_quantity"]),
+            int256(asset.packedState["F_couponAmountFixed"]),
+            int256(asset.packedState["F_marginFactor"]),
+            int256(asset.packedState["F_adjustmentFactor"])
+        );
+    }
+
+    function decodeAndGetEnumValueForCERTFStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
+    }
+
+    function decodeAndGetUIntValueForCERTFStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint256)
+    {
+        return uint256(asset.packedState[attributeKey]);
+    }
+
+    function decodeAndGetIntValueForCERTFStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (int256)
+    {
+        return int256(asset.packedState[attributeKey]);
     }
 }

@@ -120,7 +120,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
         ContractRole contractRole = ContractRole(cecRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
         ContractReference memory contractReference_2 = cecRegistry.getContractReferenceValueForTermsAttribute(assetId, "contractReference_2");
-        State memory state = cecRegistry.getState(assetId);
+        CECState memory state = cecRegistry.getState(assetId);
         AssetOwnership memory ownership = cecRegistry.getOwnership(assetId);
 
         // derive address of collateralizer

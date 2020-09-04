@@ -11,7 +11,7 @@ interface ICECRegistry is IAssetRegistry {
     function registerAsset(
         bytes32 assetId,
         CECTerms calldata terms,
-        State calldata state,
+        CECState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -26,5 +26,21 @@ interface ICECRegistry is IAssetRegistry {
         returns (CECTerms memory);
 
     function setTerms(bytes32 assetId, CECTerms calldata terms)
+        external;
+    
+    function getState(bytes32 assetId)
+        external
+        view
+        returns (CECState memory);
+
+    function setState(bytes32 assetId, CECState calldata terms)
+        external;
+
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        returns (CECState memory);
+
+    function setFinalizedState(bytes32 assetId, CECState calldata terms)
         external;
 }

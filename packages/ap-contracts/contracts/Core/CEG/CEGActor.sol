@@ -56,7 +56,7 @@ contract CEGActor is BaseActor {
         // todo add guarantee validation logic for contract reference 2
 
         // compute the initial state of the asset
-        State memory initialState = ICEGEngine(engine).computeInitialState(terms);
+        CEGState memory initialState = ICEGEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
         ICEGRegistry(address(assetRegistry)).registerAsset(
@@ -73,16 +73,28 @@ contract CEGActor is BaseActor {
         emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
-    function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
+    /**
+     * @notice Contract-type specific logic for processing an event required by the use of
+     * contract-type specific Terms and State.
+     */
+    function settleEventAndUpdateState(bytes32 assetId, bytes32 _event)
         internal
-        view
         override
-        returns (State memory, int256)
+        returns (bool, int256)
     {
-        address engine = assetRegistry.getEngine(assetId);
         CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
+        CEGState memory state = ICEGRegistry(address(assetRegistry)).getState(assetId);
+        address engine = assetRegistry.getEngine(assetId);
+
+        // get finalized state if asset is not performant
+        if (state.contractPerformance != ContractPerformance.PF) {
+            state = ICEGRegistry(address(assetRegistry)).getFinalizedState(assetId);
+        }
+
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
+        // get external data for the next event
+        // compute payoff and the next state by applying the event to the current state
         int256 payoff = ICEGEngine(engine).computePayoffForEvent(
             terms,
             state,
@@ -93,7 +105,7 @@ contract CEGActor is BaseActor {
                 shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
             )
         );
-        state = ICEGEngine(engine).computeStateForEvent(
+        CEGState memory nextState = ICEGEngine(engine).computeStateForEvent(
             terms,
             state,
             _event,
@@ -104,6 +116,40 @@ contract CEGActor is BaseActor {
             )
         );
 
-        return (state, payoff);
+        // try to settle payoff of event
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
+
+        if (settledPayoff == false) {
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
+            // store the last performant state of the asset
+            // (if the obligation is later fulfilled before the asset reaches default,
+            // the last performant state is used to derive subsequent states of the asset)
+            if (state.contractPerformance == ContractPerformance.PF) {
+                ICEGRegistry(address(assetRegistry)).setFinalizedState(assetId, state);
+            }
+
+            // store event as pending event for future settlement
+            assetRegistry.pushPendingEvent(assetId, _event);
+
+            // create CreditEvent
+            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
+            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
+            nextState = ICEGEngine(engine).computeStateForEvent(
+                terms,
+                state,
+                ceEvent,
+                getExternalDataForSTF(
+                    assetId,
+                    EventType.CE,
+                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+                )
+            );
+        }
+
+        // store the resulting state
+        ICEGRegistry(address(assetRegistry)).setState(assetId, nextState);
+
+        return (settledPayoff, payoff);
     }
 }

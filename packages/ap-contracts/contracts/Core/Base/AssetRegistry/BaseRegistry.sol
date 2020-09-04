@@ -72,11 +72,11 @@ abstract contract BaseRegistry is
 
     /**
      * @notice Stores the addresses of the owners (owner of creator-side payment obligations,
-     * owner of creator-side payment claims), the initial state of an asset, the schedule of the asset
+     * owner of creator-side payment claims), the schedule of the asset
      * and sets the address of the actor (address of account which is allowed to update the state).
+     * Terms and State are contract-type specific and have to be handled by the deriving contracts.
      * @dev The state of the asset can only be updates by a whitelisted actor.
      * @param assetId id of the asset
-     * @param state initial state of the asset
      * @param schedule schedule of the asset
      * @param ownership ownership of the asset
      * @param engine ACTUS Engine of the asset
@@ -85,7 +85,6 @@ abstract contract BaseRegistry is
      */
     function setAsset(
         bytes32 assetId,
-        State memory state,
         bytes32[] memory schedule,
         AssetOwnership memory ownership,
         address engine,
@@ -112,8 +111,6 @@ abstract contract BaseRegistry is
         asset.engine = engine;
         asset.actor = actor;
 
-        asset.encodeAndSetState(state);
-        asset.encodeAndSetFinalizedState(state);
         asset.encodeAndSetSchedule(schedule);
 
         // set external admin if specified

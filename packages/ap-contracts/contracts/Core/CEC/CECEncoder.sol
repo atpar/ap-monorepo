@@ -13,6 +13,12 @@ library CECEncoder {
         if (asset.packedTerms[attributeKey] == value) return;
         asset.packedTerms[attributeKey] = value;
     }
+
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
+        // skip if value did not change
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
+    }
     
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
@@ -114,7 +120,7 @@ library CECEncoder {
         );
     }
 
-    function decodeAndGetEnumValueForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetEnumValueForCECTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint8)
@@ -140,7 +146,7 @@ library CECEncoder {
         }
     }
 
-    function decodeAndGetAddressValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetAddressValueForCECTermsAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         external
         pure
         returns (address)
@@ -148,7 +154,7 @@ library CECEncoder {
         return address(0);
     }
 
-    function decodeAndGetBytes32ValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetBytes32ValueForCECTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (bytes32)
@@ -156,7 +162,7 @@ library CECEncoder {
         return asset.packedTerms[attributeKey];
     }
 
-    function decodeAndGetUIntValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetUIntValueForCECTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint256)
@@ -164,7 +170,7 @@ library CECEncoder {
         return uint256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetIntValueForForCECAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetIntValueForCECTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (int256)
@@ -172,7 +178,7 @@ library CECEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetPeriodValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetPeriodValueForCECTermsAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         external
         pure
         returns (IP memory)
@@ -180,7 +186,7 @@ library CECEncoder {
         return IP(0, P(0), false);
     }
 
-    function decodeAndGetCycleValueForForCECAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetCycleValueForCECTermsAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         external
         pure
         returns (IPS memory)
@@ -188,7 +194,7 @@ library CECEncoder {
         return IPS(0, P(0), S(0), false);
     }
 
-    function decodeAndGetContractReferenceValueForCECAttribute(Asset storage asset , bytes32 attributeKey )
+    function decodeAndGetContractReferenceValueForCECTermsAttribute(Asset storage asset , bytes32 attributeKey )
         external
         view
         returns (ContractReference memory)
@@ -215,5 +221,105 @@ library CECEncoder {
                 ContractReferenceRole(0)
             );
         }
+    }
+
+    /**
+     * @dev Tightly pack and store CECState
+     */
+    function encodeAndSetCECState(Asset storage asset, CECState memory state) external {
+        storeInPackedState(asset, "contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "feeAccrued", bytes32(state.feeAccrued));
+        storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
+    }
+
+    /**
+     * @dev Tightly pack and store finalized CECState
+     */
+    function encodeAndSetFinalizedCECState(Asset storage asset, CECState memory state) external {
+        storeInPackedState(asset, "F_contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "F_statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "F_exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "F_feeAccrued", bytes32(state.feeAccrued));
+        storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
+    }
+
+    /**
+     * @dev Decode and load the CECState of the asset
+     */
+    function decodeAndGetCECState(Asset storage asset)
+        external
+        view
+        returns (CECState memory)
+    {
+        return CECState(
+            ContractPerformance(uint8(uint256(asset.packedState["contractPerformance"] >> 248))),
+            uint256(asset.packedState["statusDate"]),
+            uint256(asset.packedState["maturityDate"]),
+            uint256(asset.packedState["exerciseDate"]),
+            uint256(asset.packedState["terminationDate"]),
+
+            int256(asset.packedState["notionalPrincipal"]),
+            int256(asset.packedState["feeAccrued"]),
+            int256(asset.packedState["exerciseAmomunt"])
+        );
+    }
+
+    /**
+     * @dev Decode and load the finalized CECState of the asset
+     */
+    function decodeAndGetFinalizedCECState(Asset storage asset)
+        external
+        view
+        returns (CECState memory)
+    {
+        return CECState(
+            ContractPerformance(uint8(uint256(asset.packedState["F_contractPerformance"] >> 248))),
+            uint256(asset.packedState["F_statusDate"]),
+            uint256(asset.packedState["F_maturityDate"]),
+            uint256(asset.packedState["F_exerciseDate"]),
+            uint256(asset.packedState["F_terminationDate"]),
+
+            int256(asset.packedState["F_notionalPrincipal"]),
+            int256(asset.packedState["F_feeAccrued"]),
+            int256(asset.packedState["F_exerciseAmomunt"])
+        );
+    }
+
+    function decodeAndGetEnumValueForCECStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
+    }
+
+    function decodeAndGetUIntValueForCECStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint256)
+    {
+        return uint256(asset.packedState[attributeKey]);
+    }
+
+    function decodeAndGetIntValueForCECStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (int256)
+    {
+        return int256(asset.packedState[attributeKey]);
     }
 }
