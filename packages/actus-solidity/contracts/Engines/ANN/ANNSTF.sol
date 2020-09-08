@@ -503,7 +503,7 @@ contract ANNSTF is Core {
         returns (State memory)
     {
         // riskFactor not supported
-        int256 rate = int256(externalData) * terms.rateMultiplier + terms.rateSpread;
+        int256 rate = int256(externalData).mul(terms.rateMultiplier).add(terms.rateSpread);
         int256 deltaRate = rate.sub(state.nominalInterestRate);
 
         // apply period cap/floor

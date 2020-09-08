@@ -2,6 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
@@ -17,6 +18,7 @@ import "./PeriodUtils.sol";
 contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
 
     using BokkyPooBahsDateTimeLibrary for uint;
+    using SafeMath for uint;
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date
@@ -29,17 +31,17 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         uint256 newTimestamp;
 
         if (cycle.p == P.D) {
-            newTimestamp = cycleStart.addDays(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i.mul(cycleIndex));
         } else if (cycle.p == P.W) {
-            newTimestamp = cycleStart.addDays(cycle.i * 7 * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i.mul(7).mul(cycleIndex));
         } else if (cycle.p == P.M) {
-            newTimestamp = cycleStart.addMonths(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(cycleIndex));
         } else if (cycle.p == P.Q) {
-            newTimestamp = cycleStart.addMonths(cycle.i * 3 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(3).mul(cycleIndex));
         } else if (cycle.p == P.H) {
-            newTimestamp = cycleStart.addMonths(cycle.i * 6 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(6).mul(cycleIndex));
         } else if (cycle.p == P.Y) {
-            newTimestamp = cycleStart.addYears(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addYears(cycle.i.mul(cycleIndex));
         } else {
             revert("Schedule.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
         }

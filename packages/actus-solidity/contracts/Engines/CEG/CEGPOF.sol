@@ -25,7 +25,7 @@ contract CEGPOF is Core {
         pure
         returns(int256)
     {
-        return state.exerciseAmount + state.feeAccrued;
+        return state.exerciseAmount.add(state.feeAccrued);
     }
 
     /**

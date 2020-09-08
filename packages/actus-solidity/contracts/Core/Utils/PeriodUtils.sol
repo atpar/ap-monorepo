@@ -2,6 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
@@ -13,6 +14,7 @@ import "../ACTUSTypes.sol";
 contract PeriodUtils {
 
     using BokkyPooBahsDateTimeLibrary for uint;
+    using SafeMath for uint;
 
     /**
      * @notice Applies a period in IP notation to a given timestamp
@@ -27,13 +29,13 @@ contract PeriodUtils {
         if (period.p == P.D) {
             newTimestamp = timestamp.addDays(period.i);
         } else if (period.p == P.W) {
-            newTimestamp = timestamp.addDays(period.i * 7);
+            newTimestamp = timestamp.addDays(period.i.mul(7));
         } else if (period.p == P.M) {
             newTimestamp = timestamp.addMonths(period.i);
         } else if (period.p == P.Q) {
-            newTimestamp = timestamp.addMonths(period.i * 3);
+            newTimestamp = timestamp.addMonths(period.i.mul(3));
         } else if (period.p == P.H) {
-            newTimestamp = timestamp.addMonths(period.i * 6);
+            newTimestamp = timestamp.addMonths(period.i.mul(6));
         } else if (period.p == P.Y) {
             newTimestamp = timestamp.addYears(period.i);
         } else {
