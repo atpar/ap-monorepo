@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/actus-protocol-logo.jpg" width="100px">
+<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/actus-protocol-logo.jpg" width="150px">
 
 [![Build Status](https://travis-ci.org/atpar/ap-monorepo.svg?branch=master)](https://travis-ci.org/atpar/ap-monorepo)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -6,7 +6,7 @@
 
 ---
 
-ACTUS Protocol is a smart contract system and Typescript library for issuing and servicing financial assets on Ethereum. It is build on top of actus-solidity a free and open-source implementation of the ACTUS standard. 
+ACTUS Protocol is a smart contract system and Typescript library for issuing and servicing financial assets on Ethereum. It is build on top of actus-solidity, a free and open-source implementation of the [ACTUS standard](https://www.actusfrf.org/). 
 
 **The ACTUS Protocol is a work in progress and has NOT been audited. Use at your own risk.**
 
