@@ -13,7 +13,7 @@ Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine imp
 ### Basic workflow
 1. Define an ACTUS term sheet depending on the financial contract you want to model and set up the ownership structure
 2. Use the appropriate Asset Actor contract (e.g. the PAMActor) to initialize and register the new asset on chain
-3. Make sure that the Asset Actor has the required token allowances and progress the asset vie the `progress function.`
+3. Make sure that the Asset Actor has the required token allowances and progress the asset vie the `progress()` function.
 
 For an example, please review the [Issue and service a loan](https://docs.actus-protocol.io/guides/issue-and-service) guide.
 
