@@ -47,6 +47,7 @@ yarn test
 - [x] A/365 (Actual Three Sixty Five)
 - [x] 30E/360ISDA (Thirty E Three Sixty ISDA)
 - [x] 30E/360 (Thirty E Three Sixty)
+- [ ] 28E336 (Twhenty-Eight E Three Thirty-Six)
 - [ ] BUS/252 (Business Two Fifty Two)
 - [ ] 1/1
 
