@@ -1,12 +1,14 @@
-# AP-Monorepo
+# ACTUS Protocol
+<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/actus-protocol-logo.jpg" width="100px" >
+---
 
 [![Build Status](https://travis-ci.org/atpar/ap-monorepo.svg?branch=master)](https://travis-ci.org/atpar/ap-monorepo)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Coverage Status](https://coveralls.io/repos/github/atpar/ap-monorepo/badge.svg?branch=master)](https://coveralls.io/github/atpar/ap-monorepo?branch=master)
 
-**DISCLAIMER: THIS IS A WORK IN PROGRESS AND NOT AUDITED. USE IT AT YOUR OWN RISK.**
+**The ACTUS Protocl is a work in progress and has NOT been audited. Use at your own risk.**
 
-Monorepo containing all packages related to the ACTUS Protocol.
+This is a monorepo containing all packages related to the ACTUS Protocol.
 
 ## Documentation
 https://docs.actus-protocol.io/
@@ -41,3 +43,8 @@ yarn build
 ```sh
 yarn test
 ```
+
+---
+
+ACTUS Protocl is maintained by  
+[<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/logo.png" width="200px" >](https://www.atpar.io)
