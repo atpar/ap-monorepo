@@ -2,7 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import {SafeMath as SafeMul} from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
@@ -18,7 +18,7 @@ import "./PeriodUtils.sol";
 contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
 
     using BokkyPooBahsDateTimeLibrary for uint;
-    using SafeMath for uint;
+    using SafeMul for uint;
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date
