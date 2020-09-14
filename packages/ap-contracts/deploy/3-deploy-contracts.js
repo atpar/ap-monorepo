@@ -41,13 +41,17 @@ async function deployContracts(buidlerRuntime) {
                 const deployOptions = rawOptions
                     ? processRawOptions(rawOptions, addresses)
                     : (getOptions ? getOptions(buidlerRuntime) : {});
+                
+                log(`${name}: `);
 
-                log(`"${name}" ...`);
                 contract.deployment = await deploy(
                     name,
-                    Object.assign({}, defaultDeployOptions, deployOptions),
+                    { ...defaultDeployOptions, ...deployOptions, log: false },
                 );
-                log(`... txHash: ${contract.deployment.receipt.transactionHash}`);
+                log(`    TxHash:           ${contract.deployment.receipt.transactionHash}`);
+                log(`    Contract Address: ${contract.deployment.receipt.contractAddress}`);
+                log(`    Gas Used:         ${contract.deployment.receipt.gasUsed.toString()}`);
+                log(``);
                 addresses[name] = contract.deployment.address;
             }
         ),
