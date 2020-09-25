@@ -389,6 +389,22 @@ contract ProxySafeCMTA20FDT is
     }
 
     /**
+     * @notice Exposes the ability to mint new FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function mint(address account, uint256 amount) public whenNotPaused onlyOwner returns (bool) {
+        _mint(account, amount);
+        return true;
+    }
+
+    /**
+     * @notice Exposes the ability to burn exisiting FDTs for a given account. Caller has to be the owner of the FDT.
+     */
+    function burn(address account, uint256 amount) public whenNotPaused onlyOwner returns (bool) {
+        _burn(account, amount);
+        return true;
+    }
+
+    /**
      * @dev check if _value token can be transferred from _from to _to
      * @param _from address The address which you want to send tokens from
      * @param _to address The address which you want to transfer to
