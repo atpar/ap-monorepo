@@ -123,7 +123,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     function processEvent(bytes32 assetId, bytes32 _event) internal {
         State memory state = assetRegistry.getState(assetId);
 
-        // block progression if asset is has defaulted, terminated or reached maturity
+        // block progression if asset has defaulted, terminated or reached maturity
         require(
             state.contractPerformance == ContractPerformance.PF
             || state.contractPerformance == ContractPerformance.DL

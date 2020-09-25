@@ -76,7 +76,7 @@ struct State {
     int256 nextPrincipalRedemptionPayment;
     int256 exerciseAmount;
     int256 exerciseQuantity;
-    
+
     int256 quantity;
     int256 couponAmountFixed;
     // int256 exerciseQuantityOrdered;
@@ -345,7 +345,7 @@ struct PAMTerms {
     int256 lifeFloor;
     int256 periodCap;
     int256 periodFloor;
-    
+
     IP gracePeriod;
     IP delinquencyPeriod;
     // IP prepaymentPeriod; // not implemented
@@ -356,4 +356,58 @@ struct PAMTerms {
     IPS cycleOfScalingIndex;
     IPS cycleOfFee;
     // IPS cycleOfOptionality; // not implemented
+}
+
+struct STKTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    CouponType couponType;
+    // ContractPerformance contractPerformance; state only
+
+    address currency;
+    address settlementCurrency;
+
+    // bytes32 marketObjectCode; // not implemented
+
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    // e.g., Retractable or Redeemable preferred stock
+    uint256 maturityDate;
+    // uint256 nonPerformingDate; // state only
+    uint256 issueDate;
+    // uint256 lastCouponDay; // state only
+    uint256 cycleAnchorDateOfRedemption;
+    uint256 cycleAnchorDateOfTermination;
+    uint256 cycleAnchorDateOfCoupon;
+
+    int256 nominalPrice;
+    int256 issuePrice;
+    // int256 delinquencyRate; // not implemented
+    int256 quantity;
+    // int256 exerciseQuantity; // state only
+    // int256 exerciseQuantityOrdered; // state only
+    // int256 marginFactor;  // state only
+    // int256 adjustmentFactor; // state only
+    int256 denominationRatio;
+    int256 couponRate;
+    // int256 exerciseAmount; // state only
+    // int256 couponAmountFixed; // state only
+
+    IP gracePeriod;
+    IP delinquencyPeriod;
+    IP settlementPeriod;
+    IP fixingPeriod;
+    IP exercisePeriod;
+
+    IPS cycleOfRedemption;
+    IPS cycleOfTermination;
+    IPS cycleOfCoupon;
+
+    ContractReference contractReference_1;
+    ContractReference contractReference_2;
 }
