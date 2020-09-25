@@ -4,9 +4,10 @@ pragma solidity ^0.6.10;
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Pausable.sol";
-import "./FundsDistributionToken.sol";
-import "./IFundsDistributionToken.sol";
-import "./IInitializableFDT.sol";
+import "../FundsDistributionToken.sol";
+import "../IFundsDistributionToken.sol";
+import "../IInitializableFDT.sol";
+
 
 /**
  * @title IContactable
@@ -172,6 +173,20 @@ contract ProxySafeCMTA20FDT is
     }
 
     /**
+     * @dev Triggers stopped state.
+     */
+    function pause() external whenNotPaused onlyOwner {
+        _pause();
+    }
+
+    /**
+     * @dev Returns to normal state.
+     */
+    function unpause() external whenPaused onlyOwner {
+        _unpause();
+    }
+
+    /**
      * @notice Purpose: set optional rule engine by owner()
      * @param _ruleEngine - the rule engine that will approve/reject transfers
      */
@@ -202,7 +217,7 @@ contract ProxySafeCMTA20FDT is
     /**
      * @notice Withdraws all available funds for a token holder
      */
-    function withdrawFunds() external override {
+    function withdrawFunds() external override whenNotPaused {
         _withdrawFundsFor(msg.sender);
     }
 
@@ -211,7 +226,7 @@ contract ProxySafeCMTA20FDT is
      * @dev Calls _updateFundsTokenBalance(), whereby the contract computes the delta of the previous and the new
      * funds token balance and increments the total received funds (cumulative) by delta by calling _registerFunds()
      */
-    function updateFundsReceived() external {
+    function updateFundsReceived() external whenNotPaused {
         int256 newFunds = _updateFundsTokenBalance();
 
         if (newFunds > 0) {
@@ -240,6 +255,7 @@ contract ProxySafeCMTA20FDT is
         _mint(replacement, originalBalance);
         
         emit LogReassigned(original, replacement, originalBalance);
+        emit Transfer(original, replacement, originalBalance);
     }
 
     /**
@@ -247,12 +263,13 @@ contract ProxySafeCMTA20FDT is
      * Conditions: only issuer can execute this function.
      * @param shareholders - list of shareholders
     */
-    function destroy(address[] calldata shareholders) external override onlyOwner {
+    function destroy(address[] calldata shareholders) external override whenNotPaused onlyOwner {
         for (uint256 i = 0; i < shareholders.length; i++) {
             require(shareholders[i] != owner(), "CM06");
             uint256 shareholderBalance = balanceOf(shareholders[i]);
             _burn(shareholders[i], balanceOf(shareholders[i]));
             _mint(owner(), shareholderBalance);
+            emit Transfer(shareholders[i], owner(), shareholderBalance);
         }
         emit LogDestroyed(shareholders);
     }
@@ -293,7 +310,7 @@ contract ProxySafeCMTA20FDT is
     /**
      * @notice Withdraws funds for a set of token holders
      */
-    function pushFunds(address[] memory owners) public {
+    function pushFunds(address[] memory owners) public whenNotPaused {
         for (uint256 i = 0; i < owners.length; i++) {
             _withdrawFundsFor(owners[i]);
         }
@@ -302,7 +319,7 @@ contract ProxySafeCMTA20FDT is
     /**
      * @notice Overrides the parent class token transfer function to enforce restrictions.
     */
-    function transfer(address to, uint256 value) public override returns (bool) {
+    function transfer(address to, uint256 value) public override whenNotPaused returns (bool) {
         if (address(ruleEngine) != address(0)) {
             require(ruleEngine.validateTransfer(msg.sender, to, value), "CM04");
             return super.transfer(to, value);
@@ -314,7 +331,7 @@ contract ProxySafeCMTA20FDT is
     /**
      * @notice Overrides the parent class token transferFrom function to enforce restrictions.
      */
-    function transferFrom(address from, address to, uint256 value) public override returns (bool) {
+    function transferFrom(address from, address to, uint256 value) public override whenNotPaused returns (bool) {
         if (address(ruleEngine) != address(0)) {
             require(ruleEngine.validateTransfer(from, to, value), "CM04");
             return super.transferFrom(from, to, value);
@@ -324,11 +341,39 @@ contract ProxySafeCMTA20FDT is
     }
 
     /**
+     * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
+     * @param _spender The address which will spend the funds.
+     * @param _value The amount of tokens to be spent.
+     */
+    function approve(address _spender, uint256 _value) public override whenNotPaused returns (bool) {
+        return super.approve(_spender, _value);
+    }
+
+    /**
+     * @dev Increase the amount of tokens that an owner allowed to a spender.
+     * @param _spender The address which will spend the funds.
+     * @param _addedValue The amount of tokens to increase the allowance by.
+     */
+    function increaseAllowance(address _spender, uint256 _addedValue) public override whenNotPaused returns (bool) {
+        return super.increaseAllowance(_spender, _addedValue);
+    }
+
+    /**
+     * @dev Decrease the amount of tokens that an owner allowed to a spender.
+     * @param _spender The address which will spend the funds.
+     * @param _subtractedValue The amount of tokens to decrease the allowance by.
+     */
+    function decreaseAllowance(address _spender, uint256 _subtractedValue) public override whenNotPaused returns (bool) {
+        return super.decreaseAllowance(_spender, _subtractedValue);
+    }
+
+    /**
      * @notice Purpose: Issue tokens on the owner() address
      * @param _value - amount of newly issued tokens
      */
-    function issue(uint256 _value) public override onlyOwner {
+    function issue(uint256 _value) public override whenNotPaused onlyOwner {
         _mint(owner(), _value);
+        emit Transfer(address(0), owner(), _value);
         emit LogIssued(_value);
     }
 
@@ -337,8 +382,9 @@ contract ProxySafeCMTA20FDT is
      * @notice Purpose: Redeem tokens on the owner() address
      * @param _value - amount of redeemed tokens
      */
-    function redeem(uint256 _value) public override onlyOwner {
+    function redeem(uint256 _value) public override whenNotPaused onlyOwner {
         _burn(owner(), _value);
+        emit Transfer(owner(), address(0), _value);
         emit LogRedeemed(_value);
     }
 

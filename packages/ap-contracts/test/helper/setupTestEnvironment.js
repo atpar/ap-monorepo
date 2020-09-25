@@ -103,6 +103,41 @@ async function deploySimpleRestrictedFDT(buidlerRuntime, {
   return new web3.eth.Contract(abi, address);
 }
 
+/**
+ * @param {ExtendedTestBRE} buidlerRuntime
+ */
+async function deployCMTA20FDT(buidlerRuntime, {
+  name = 'CMTA 20',
+  symbol = 'CMTA20',
+  fundsToken,
+  owner,
+  initialAmount = 0,
+})
+{
+  const { deployments: { deploy }, web3 } = buidlerRuntime;
+  const { abi, address } = await deploy("CMTA20FDT", {
+    args: [name, symbol, fundsToken, owner, initialAmount],
+    from: owner,
+    // deploy a new instance rather than re-use the one already deployed with another "from" address
+    fieldsToCompare: [ "data", "from" ],
+  });
+  return new web3.eth.Contract(abi, address);
+}
+
+/**
+ * @param {ExtendedTestBRE} buidlerRuntime
+ */
+async function deployRuleEngineMock(buidlerRuntime, { owner }) {
+  const { deployments: { deploy }, web3 } = buidlerRuntime;
+  const { abi, address } = await deploy("RuleEngineMock", {
+    args: [],
+    from: owner,
+    // deploy a new instance rather than re-use the one already deployed with another "from" address
+    fieldsToCompare: [ "data", "from" ],
+  });
+  return new web3.eth.Contract(abi, address);
+}
+
 /** @param {ExtendedTestBRE} buidlerRuntime */
 async function deployICToken(buidlerRuntime, {
   assetRegistry,
@@ -161,5 +196,7 @@ module.exports = {
   deployICToken,
   deployPaymentToken,
   deploySimpleRestrictedFDT,
-  deployVanillaFDT
+  deployVanillaFDT,
+  deployCMTA20FDT,
+  deployRuleEngineMock
 };
