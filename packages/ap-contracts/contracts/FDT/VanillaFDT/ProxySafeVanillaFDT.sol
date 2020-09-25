@@ -3,9 +3,10 @@ pragma solidity ^0.6.10;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
-import "./FundsDistributionToken.sol";
-import "./IFundsDistributionToken.sol";
-import "./IInitializableFDT.sol";
+import "../FundsDistributionToken.sol";
+import "../IFundsDistributionToken.sol";
+import "../IInitializableFDT.sol";
+
 
 contract ProxySafeVanillaFDT is
     IFundsDistributionToken,
