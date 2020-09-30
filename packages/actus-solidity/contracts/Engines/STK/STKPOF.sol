@@ -12,25 +12,6 @@ import "../../Core/Core.sol";
 contract STKPOF is Core {
 
     /**
-     * Payoff Function for STK initial exchange
-     * @return the payoff at initial exchange
-     */
-    function POF_STK_IED (
-        STKTerms memory terms,
-        State memory state,
-        uint256 /* scheduleTime */,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns(int256)
-    {
-        return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(terms.issuePrice)
-        );
-    }
-
-    /**
      * Payoff Function for STK dividend payment day
      * @return the dividend payoff
      */
@@ -45,7 +26,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(state.couponAmountFixed)
+            roleSign(terms.contractRole) * state.dividendPaymentAmount
         );
     }
 
@@ -64,7 +45,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.exerciseQuantity.floatMult(state.exerciseAmount)
+            roleSign(terms.contractRole) * state.exerciseQuantity.floatMult(state.redemptionPrice)
         );
     }
 
@@ -83,7 +64,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(state.exerciseAmount)
+            roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
         );
     }
 }
