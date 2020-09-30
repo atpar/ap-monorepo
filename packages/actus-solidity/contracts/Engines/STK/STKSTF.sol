@@ -12,7 +12,7 @@ import "../../Core/Core.sol";
 contract STKSTF is Core {
 
     /**
-     * State transition for STK issue day events
+     * State transition for STK issue date events
      * @param state the old state
      * @return the new state
      */
@@ -34,7 +34,7 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK dividend declaration day
+     * State transition for STK dividend declaration date events
      * @param state the old state
      * @return the new state
      */
@@ -48,31 +48,36 @@ contract STKSTF is Core {
         pure
         returns (State memory)
     {
-        state.dividendPaymentAmount = terms.dividendPaymentAmount == 0 ?
-            uint256(externalData) : terms.dividendPaymentAmount;
+        state.dividendPaymentAmount = terms.dividendPaymentAmount == 0
+            ? int256(externalData)
+            : terms.dividendPaymentAmount;
 
         state.lastDividendDeclarationDate = scheduleTime;
-        state.statusDate = scheduleTime;
 
         state.dividendExDate = shiftCalcTime(
-            terms.dividendExDate == 0 ? scheduleTime + terms.dividendRecordPeriod : terms.dividendExDate ,
+            terms.dividendExDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
+                : terms.dividendExDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
         state.dividendPaymentDate = shiftCalcTime(
-            terms.dividendPaymentDate == 0 ? scheduleTime + terms.dividendPaymentPeriod : terms.dividendPaymentDate,
+            terms.dividendPaymentDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.dividendPaymentPeriod)
+                : terms.dividendPaymentDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
+        state.statusDate = scheduleTime;
         return state;
     }
 
     /**
-     * State transition for STK dividend payment day events
+     * State transition for STK dividend payment date events
      * @param state the old state
      * @return the new state
      */
@@ -88,13 +93,13 @@ contract STKSTF is Core {
     {
         state.dividendPaymentAmount = 0;
         state.dividendDeclarationDate = 0;
-        state.statusDate = scheduleTime;
 
+        state.statusDate = scheduleTime;
         return state;
     }
 
     /**
-     * State transition for STK split declaration day
+     * State transition for STK split declaration date events
      * @param state the old state
      * @return the new state
      */
@@ -108,28 +113,34 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        state.dividendPaymentAmount = terms.splitRatio == 0 ? uint256(externalData) : terms.splitRatio;
-        state.statusDate = scheduleTime;
+        state.dividendPaymentAmount = terms.dividendPaymentAmount == 0
+            ? int256(externalData)
+            : terms.dividendPaymentAmount;
 
         state.splitExDate = shiftCalcTime(
-            terms.splitExDate == 0 ? scheduleTime + terms.splitRecordPeriod : terms.splitExDate,
+            terms.splitExDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.splitRecordPeriod)
+                : terms.splitExDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
         state.splitSettlementDate = shiftCalcTime(
-            terms.splitSettlementDate == 0 ? scheduleTime + terms.splitSettlementPeriod : terms.splitSettlementDate,
+            terms.splitSettlementDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.splitSettlementPeriod)
+                : terms.splitSettlementDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
+        state.statusDate = scheduleTime;
         return state;
     }
 
     /**
-     * State transition for STK split settlement day
+     * State transition for STK split settlement date events
      * @param state the old state
      * @return the new state
      */
@@ -143,15 +154,15 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        state.quantity = terms.splitRatio.mul(state.quantity);
+        state.quantity = terms.splitRatio.floatMult(state.quantity);
         state.splitRatio = 0;
-        state.statusDate = scheduleTime;
 
+        state.statusDate = scheduleTime;
         return state;
     }
 
     /**
-     * State transition for STK redemption declaration day
+     * State transition for STK redemption declaration date events
      * @param state the old state
      * @return the new state
      */
@@ -170,80 +181,52 @@ contract STKSTF is Core {
         }
 
         state.redemptionPrice = terms.redemptionPrice;
-        state.exerciseQuantity = uint256(externalData);
-        state.statusDate = scheduleTime;
+        state.exerciseQuantity = int256(externalData);
 
         state.redemptionExDate = shiftCalcTime(
-            terms.redemptionExDate == 0 ? scheduleTime + terms.redemptionRecordPeriod : terms.redemptionExDate,
+            terms.redemptionExDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)
+                : terms.redemptionExDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
         state.redemptionPaymentDate = shiftCalcTime(
-            terms.redemptionPaymentDate == 0 ? scheduleTime + terms.redemptionPaymentPeriod : terms.redemptionPaymentDate,
+            terms.redemptionPaymentDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionPaymentPeriod)
+                : terms.redemptionPaymentDate,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
 
+        state.statusDate = scheduleTime;
         return state;
     }
 
     /**
-     * State transition for STK settlement
+     * State transition for STK termination date event
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_CE (
+    function STF_STK_TD (
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
-        internal
-        pure
-        returns (State memory)
+    internal
+    pure
+    returns (State memory)
     {
-        // handle maturity date
-        uint256 nonPerformingDate = (state.nonPerformingDate == 0)
-            ? shiftEventTime(
-                scheduleTime,
-                terms.businessDayConvention,
-                terms.calendar,
-                terms.maturityDate
-            ) : state.nonPerformingDate;
+        // TODO: check against the `actus-specs` as soon as specs define `STF_STK_TD`
+        state.terminationDate = terms.terminationDate;
+        state.priceAtTerminationDate = terms.priceAtTerminationDate == 0
+            ? int256(externalData)
+            : terms.priceAtTerminationDate;
 
-        uint256 currentTimestamp = uint256(externalData);
-
-        bool isInGracePeriod = false;
-        if (terms.gracePeriod.isSet) {
-            uint256 graceDate = getTimestampPlusPeriod(terms.gracePeriod, nonPerformingDate);
-            if (currentTimestamp <= graceDate) {
-                state.contractPerformance = ContractPerformance.DL;
-                isInGracePeriod = true;
-            }
-        }
-
-        if (terms.delinquencyPeriod.isSet && !isInGracePeriod) {
-            uint256 delinquencyDate = getTimestampPlusPeriod(terms.delinquencyPeriod, nonPerformingDate);
-            if (currentTimestamp <= delinquencyDate) {
-                state.contractPerformance = ContractPerformance.DQ;
-            } else {
-                state.contractPerformance = ContractPerformance.DF;
-            }
-        }
-
-        if (state.nonPerformingDate == 0) {
-            // handle maturity date
-            state.nonPerformingDate = shiftEventTime(
-                scheduleTime,
-                terms.businessDayConvention,
-                terms.calendar,
-                terms.maturityDate
-            );
-        }
-
+        state.statusDate = scheduleTime;
         return state;
     }
 }

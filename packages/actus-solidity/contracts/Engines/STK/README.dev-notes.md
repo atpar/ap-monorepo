@@ -179,7 +179,7 @@ Payments occur on: DPD, RPD, TD
   POF: X_cur_to_curs(t) * Sign(CNTRL) * RPR * Xa // Xa - exercise amount , RPR - redemptionPrice
 
 ## State transition function
-- Event: AD, TD, DED, RED, IED
+- Event: AD, TD, DED, RED, IED, CE
   STF: Sd = t
 
 - Event: ID
@@ -199,11 +199,8 @@ Payments occur on: DPD, RPD, TD
   STF: Qt = Sra * Qt, Sra = 0, Sd = t
 
 - Event: RDD
-  STF: Xa = riskFactorObserver("${CID}_RXA", t), Sd = t
-   // Xa - exercise amount, RXA - redemption exercise amount ??
+  STF: Xq = riskFactorObserver("${CID}_RXQ", t), Sd = t
+   // Xq - exercise quantity, RXQ - redemption exercise quantity
 
 - Event: RPD
-  STF: Qt = Qt - Xa, Xa = 0, Sd = t
-
-- Event: CE
-  STF: Ipac = Ipac + Y(Sd,t)*Ipnr*Nt, Sd = t
+  STF: Qt = Qt - Xq, Xq = 0, Sd = t
