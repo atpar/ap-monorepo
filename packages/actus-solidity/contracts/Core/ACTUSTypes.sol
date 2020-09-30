@@ -62,6 +62,14 @@ struct State {
     uint256 exerciseDate;
     uint256 terminationDate;
     uint256 lastCouponDay;
+    uint256 dividendDeclarationDate;
+    uint256 lastDividendDeclarationDate;
+    uint256 dividendExDate;
+    uint256 dividendPaymentDate;
+    uint256 splitExDate;
+    uint256 splitSettlementDate;
+    uint256 redemptionExDate;
+    uint256 redemptionPaymentDate;
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -82,17 +90,8 @@ struct State {
     // int256 exerciseQuantityOrdered;
     int256 marginFactor;
     int256 adjustmentFactor;
-
-    uint256 dividendDeclarationDate;
-    uint256 lastDividendDeclarationDate;
-    uint256 dividendPaymentAmount;
-    uint256 dividendExDate;
-    uint256 dividendPaymentDate;
-    uint256 splitRatio;
-    uint256 splitExDate;
-    uint256 splitSettlementDate;
-    uint256 redemptionExDate;
-    uint256 redemptionPaymentDate;
+    int256 dividendPaymentAmount;
+    int256 splitRatio;
 }
 
 struct ANNTerms {
@@ -370,142 +369,56 @@ struct PAMTerms {
 }
 
 struct STKTerms {
-
-    uint256 statusDate;
-
-    /* General params */
     ContractType contractType;
-    uint256 contractDealDate;
-    // bytes32 marketObjectCode; // not implemented
-    // Seniority seniority; // not implemented
-    address currency;
-    address settlementCurrency;
     Calendar calendar;
+    ContractRole contractRole;
     DayCountConvention dayCountConvention;
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
+    // ContractPerformance contractPerformance; state only
+    // Seniority seniority; // not implemented
 
-    ContractRole contractRole;
+    bool redeemableByIssuer;
 
-    ContractReference contractReference_1;
-    ContractReference contractReference_2;
+    address currency;
+    address settlementCurrency;
 
-    /* Issue */
+    // bytes32 marketObjectCode; // not implemented
+
+    uint256 contractDealDate;
+    uint256 statusDate;
     uint256 issueDate;
+    uint256 purchaseDate;
+    uint256 cycleAnchorDateOfDividend;
+    uint256 dividendExDate;
+    uint256 dividendPaymentDate;
+    uint256 splitExDate;
+    uint256 splitSettlementDate;
+    uint256 redemptionExDate;
+    uint256 redemptionPaymentDate;
+    uint256 terminationDate;
+    // uint256 nonPerformingDate; state only
+    // uint256 exerciseDate; state only
+
+    int256 nominalPrice;
     int256 notionalPrincipal;
     int256 issuePrice;
     int256 quantity;
-
-    /* Purchase */
-    uint256 purchaseDate;
     int256 priceAtPurchaseDate;
-    int256 nominalPrice;
-
-    /* Dividends */
-    uint256 dividendPaymentAmount;
-    uint256 dividendRecordPeriod;
-    uint256 dividendExDate;
-    uint256 dividendPaymentPeriod;
-    uint256 dividendPaymentDate;
-    uint256 cycleAnchorDateOfDividend;
-    IPS cycleOfDividend;
-
-    /* Split */
-    uint256 splitRatio;
-    uint256 splitRecordPeriod;
-    uint256 splitExDate;
-    uint256 splitSettlementPeriod;
-    uint256 splitSettlementDate;
-
-    /* Redemption */
-    bool redeemableByIssuer;
-    uint256 redemptionPrice;
-    uint256 redemptionRecordPeriod;
-    uint256 redemptionExDate;
-    uint256 redemptionPaymentPeriod;
-    uint256 redemptionPaymentDate;
-
-    /* Termination */
-    uint256 terminationDate;
+    int256 dividendPaymentAmount;
+    int256 splitRatio;
+    int256 redemptionPrice;
     int256 priceAtTerminationDate;
+    // int256 exerciseAmount; state only
+    // int256 exerciseQuantity; state only
+    // int256 exerciseQuantityOrdered; state only
 
-    /* State only params:
-       ContractPerformance contractPerformance;
-       uint256 nonPerformingDate;
-       uint256 exerciseDate
-       int256 exerciseAmount;
-       int256 exerciseQuantity;
-       int256 exerciseQuantityOrdered;
-     */
+    IP dividendRecordPeriod;
+    IP dividendPaymentPeriod;
+    IP splitRecordPeriod;
+    IP splitSettlementPeriod;
+    IP redemptionRecordPeriod;
+    IP redemptionPaymentPeriod;
 
-    /* Inapplicable params:
-       accruedInterest;
-       adjustmentFactor;
-       ammortizationDate;
-       capitalizationEndDate;
-       couponAmountFixed;
-       couponRate;
-       couponType;
-       coverageOfCreditEnhancement;
-       creditEventTypeCovered;
-       creditLineAmount;
-       cycleAnchorDateOfCoupon
-       cycleAnchorDateOfFee;
-       cycleAnchorDateOfInterestCalculationBase;
-       cycleAnchorDateOfInterestPayment;
-       cycleAnchorDateOfOptionality;
-       cycleAnchorDateOfPrincipalRedemption;
-       cycleAnchorDateOfRateReset;
-       cycleAnchorDateOfRedemption;
-       cycleAnchorDateOfScalingIndex;
-       cycleAnchorDateOfTermination;
-       cycleOfCoupon;
-       cycleOfFee;
-       cycleOfInterestCalculationBase;
-       cycleOfInterestPayment;
-       cycleOfOptionality;
-       cycleOfPrincipalRedemption;
-       cycleOfRateReset;
-       cycleOfRedemption;
-       cycleOfScalingIndex;
-       cycleOfTermination;
-       cyclePointOfInterestPayment;
-       cyclePointOfRateReset;
-       delinquencyPeriod;
-       delinquencyRate;
-       denominationRatio
-       exercisePeriod;
-       feeAccrued;
-       feeBasis;
-       feeRate;
-       fixingPeriod;
-       gracePeriod;
-       guaranteedExposure;
-       initialExchangeDate;
-       interestCalculationBase;
-       interestCalculationBaseAmount;
-       lastCouponDay; // state only
-       lifeCap;
-       lifeFloor;
-       marginFactor;
-       marketObjectCodeOfScalingIndex;
-       marketObjectCodeRateReset;
-       marketValueObserved;
-       maturityDate;
-       nextPrincipalRedemptionPayment;
-       nextResetRate;
-       nominalInterestRate;
-       penaltyRate;
-       penaltyType;
-       periodCap;
-       periodFloor;
-       premiumDiscountAtIED;
-       prepaymentEffect;
-       prepaymentPeriod;
-       rateMultiplier;
-       rateSpread;
-       scalingEffect;
-       scalingIndexAtStatusDate;
-       settlementPeriod;
-    */
+    IPS cycleOfDividend;
 }
