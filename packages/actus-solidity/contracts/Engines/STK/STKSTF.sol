@@ -172,12 +172,10 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        if (!terms.redeemableByIssuer) {
+        // TODO: move redeemableByIssuer logic to STKEngine
+        /*if (!terms.redeemableByIssuer) {
             return state;
-        }
-
-        state.exerciseQuantity = int256(externalData);
-
+        }*/
         // TODO: make the actor generate DED and DPD events
         /* state.redemptionExDate = shiftCalcTime(
             terms.redemptionExDate == 0
@@ -195,6 +193,8 @@ contract STKSTF is Core {
             terms.calendar,
             0
         );*/
+
+        state.exerciseQuantity = int256(externalData);
 
         state.statusDate = scheduleTime;
         return state;

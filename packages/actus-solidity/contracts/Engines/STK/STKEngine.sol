@@ -157,7 +157,25 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index;
 
-        // TODO: implement computeCyclicScheduleSegment
+        if (eventType == EventType.DDD) {
+            if (terms.cycleAnchorDateOfDividend != 0) {
+                uint256[MAX_CYCLE_SIZE] memory dividendSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfDividend,
+                    segmentEnd,
+                    terms.cycleOfDividend,
+                    terms.endOfMonthConvention,
+                    false,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (dividendSchedule[i] == 0) break;
+                    if (isInSegment(dividendSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.DDD, dividendSchedule[i]);
+                    index++;
+                }
+            }
+        }
 
         // remove null entries from returned array
         bytes32[] memory schedule = new bytes32[](index);
@@ -186,7 +204,20 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         override
         returns(bytes32)
     {
-        // TODO: implement computeNextCyclicEvent
+        if (eventType == EventType.DDD) {
+            if (terms.cycleAnchorDateOfDividend != 0) {
+                uint256 nextDividendDeclarationDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfDividend,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfCoupon,
+                    lastScheduleTime,
+                    true,
+                    0
+                );
+                if (nextDividendDeclarationDate == uint256(0)) return bytes32(0);
+                return encodeEvent(EventType.DDD, nextDividendDeclarationDate);
+            }
+        }
 
         return bytes32(0);
     }
