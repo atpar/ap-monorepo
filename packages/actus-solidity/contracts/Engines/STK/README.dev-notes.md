@@ -30,41 +30,41 @@ purchaseDate               | (PRD)   |  NN       | STKTerms.purchaseDate        
 priceAtPurchaseDate        | (PPRD)  |  NN       | STKTerms.priceAtPurchaseDate         |
 nominalPrice               | (NPR)   |  NN       | STKTerms.nominalPrice                |
                            |         |           |                                      |
-                           |         |           |                                      | >> +State.dividendDeclarationDate
+                           |         |           |                                      |
                            |         |           |                                      | >> +State.lastDividendDeclarationDate
-dividendPaymentAmount      | (DPA)   |  x(1,0,)  | +STKTerms.dividendPaymentAmount      | +State.dividendPaymentAmount
-dividendRecordPeriod       | (DRP)   |  x(1,1,)  | +STKTerms.dividendRecordPeriod       |
-dividendExDate             | (DED)   |  x(1,1,)  | +STKTerms.dividendExDate             | +State.dividendExDate
-dividendPaymentPeriod      | (DPP)   |  x(1,1,)  | +STKTerms.dividendPaymentPeriod      |
-dividendPaymentDate        | (DPD)   |  x(1,1,)  | +STKTerms.dividendPaymentDate        | +State.dividendPaymentDate
+dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                                      | +State.dividendPaymentAmount
+dividendRecordPeriod       | (DRP)   |  x(1,1,)  |                                      |
+dividendExDate             | (DED)   |  x(1,1,)  |                                      |
+dividendPaymentPeriod      | (DPP)   |  x(1,1,)  |                                      |
+dividendPaymentDate        | (DPD)   |  x(1,1,)  |                                      |
 cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +STKTerms.cycleAnchorDateOfDividend  |
 cycleOfDividend            | (DCL)   |  x(1,0,)  | +STKTerms.cycleOfDividend            |
                            |         |           |                                      |
-splitRatio                 | (SRA)   |  x        | +STKTerms.splitRatio                 | +State.splitRatio
-splitRecordPeriod          | (SRP)   |  x        | +STKTerms.splitRecordPeriod          |
-splitExDate                | (SED)   |  x        | +STKTerms.splitExDate                | +State.splitExDate
-+splitSettlementPeriod     | (+SSP)  |           | +STKTerms.splitSettlementPeriod      |
-                           |         |           | +STKTerms.splitSettlementDate        | +State.splitSettlementDate
+splitRatio                 | (SRA)   |  x        |                                      | +State.splitRatio
+splitRecordPeriod          | (SRP)   |  x        |                                      |
+splitExDate                | (SED)   |  x        |                                      | +State.splitExDate
++splitSettlementPeriod     | (+SSP)  |           |                                      |
+                           |         |           |                                      |
                            |         |           |                                      |
 redeemableByIssuer         | (RBI)   |  x(7,0,)  | +STKTerms.redeemableByIssuer         |
-redemptionPrice            | (RPR)   |  NN(7,1,) | +STKTerms.redemptionPrice            | >> State.nextPrincipalRedemptionPayment
+redemptionPrice            | (RPR)   |  NN(7,1,) | +State.redemptionPrice               |
+                           |         |           |                                      | >> State.nextPrincipalRedemptionPayment ?
 redemptionRecordPeriod     | (RRP)   |  x        | +STKTerms.redemptionRecordPeriod     |
-redemptionExDate           | (RED)   |  x        | +STKTerms.redemptionExDate           | +State.redemptionExDate
+redemptionExDate           | (RED)   |  x        |                                      | //State.redemptionExDate
 redemptionPaymentPeriod    | (RPP)   |  x        | +STKTerms.redemptionPaymentPeriod    |
-redemptionPaymentDate      | (RPD)   |  x        | +STKTerms.redemptionPaymentDate      | +State.redemptionPaymentDate
+redemptionPaymentDate      | (RPD)   |  x        |                                      | //State.redemptionPaymentDate
                            |         |           |                                      |
-terminationDate            | (TD)    |  x(6,0,1) | +STKTerms.terminationDate            | State.terminationDate
-priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| STKTerms.priceAtTerminationDate      |
+terminationDate            | (TD)    |  x(6,0,1) |                                      | //State.terminationDate
+priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| +STKTerms.priceAtTerminationDate    |
                            |         |           |                                      |
 marketValueObserved        | (MVO)   |  x        |                                      |
 settlementPeriod           | (STP)   |  x        |                                      |
-                           |         |           |                                      | (1) >> State.exerciseDate, State.exerciseAmount, State.exerciseQuantity
+                           |         |           |                                      | State.exerciseDate, State.exerciseAmount, State.exerciseQuantity
 
 > Notes:
 * "+" - a new property added (to the _Terms_, _State_ or dict)
 * "//" - a property commented out (in the _Terms_ or _State_)
 * ">>" - a state param is dependant upon a term
-* (1) _State.exerciseQuantity_ is missing in the actus-dict list of the state params
 * Not applicable State params:
 accruedInterest, accruedInterest2, feeAccrued, interestCalculationBaseAmount, interestScalingMultiplier, maturityDate, 
 nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMultiplier
@@ -168,7 +168,7 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
 Payments occur on: DPD, RPD, TD
 
 ## Payof Function
-- Event: AD, ID, DDD, DED, SDD, SSD, RDD, REX, CE, IED   
+- Event: AD, ID, DDD, DED, SDD, SSD, RDD, RED, CE, IED   
   POF: 0
   // it could be for ID or IED: X_cur_to_curs(t) * Sign(CNTRL) * IPR * QT
 - Event: TD
@@ -179,7 +179,7 @@ Payments occur on: DPD, RPD, TD
   POF: X_cur_to_curs(t) * Sign(CNTRL) * RPR * Xa // Xa - exercise amount , RPR - redemptionPrice
 
 ## State transition function
-- Event: AD, TD, DED, RED, IED, CE
+- Event: AD, DED, SED, RED, CE, TD(?)
   STF: Sd = t
 
 - Event: ID

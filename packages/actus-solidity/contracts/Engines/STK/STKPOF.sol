@@ -38,14 +38,15 @@ contract STKPOF is Core {
         STKTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes32 externalData
     )
         internal
         pure
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.exerciseQuantity.floatMult(state.redemptionPrice)
+            roleSign(terms.contractRole) * state.exerciseQuantity
+                .floatMult(terms.redemptionPrice != 0 ? terms.redemptionPrice : int256(externalData))
         );
     }
 
