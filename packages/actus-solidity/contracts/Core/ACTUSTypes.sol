@@ -45,6 +45,7 @@ enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
 enum ScalingEffect {_000, I00, _0N0, IN0}
 // enum Seniority {S, J} // not implemented
+enum RedeemableByIssuer {N, Y}
 
 struct ContractReference {
     bytes32 object;
@@ -67,8 +68,8 @@ struct State {
     uint256 dividendPaymentDate;
     uint256 splitExDate;
     uint256 splitSettlementDate;
-    // uint256 redemptionExDate; not implemented
-    // uint256 redemptionPaymentDate; not implemented
+    // uint256 redemptionExDate; // not implemented
+    // uint256 redemptionPaymentDate; // not implemented
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -377,7 +378,7 @@ struct STKTerms {
     // ContractPerformance contractPerformance; state only
     // Seniority seniority; // not implemented
 
-    bool redeemableByIssuer;
+    RedeemableByIssuer redeemableByIssuer;
 
     address currency;
     address settlementCurrency;
@@ -404,8 +405,8 @@ struct STKTerms {
     int256 issuePrice;
     int256 quantity;
     int256 priceAtPurchaseDate;
-    int256 priceAtTerminationDate;
     int256 redemptionPrice;
+    // int256 priceAtTerminationDate; // not implemented
     // int256 dividendPaymentAmount; state only
     // int256 splitRatio; state only
     // int256 exerciseAmount; state only

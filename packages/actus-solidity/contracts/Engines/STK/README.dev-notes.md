@@ -47,7 +47,7 @@ splitExDate                | (SED)   |  x        |                              
                            |         |           |                                      |
                            |         |           |                                      |
 redeemableByIssuer         | (RBI)   |  x(7,0,)  | +STKTerms.redeemableByIssuer         |
-redemptionPrice            | (RPR)   |  NN(7,1,) | +State.redemptionPrice               |
+redemptionPrice            | (RPR)   |  NN(7,1,) | +terms.redemptionPrice               |
                            |         |           |                                      | >> State.nextPrincipalRedemptionPayment ?
 redemptionRecordPeriod     | (RRP)   |  x        | +STKTerms.redemptionRecordPeriod     |
 redemptionExDate           | (RED)   |  x        |                                      | //State.redemptionExDate
@@ -55,7 +55,7 @@ redemptionPaymentPeriod    | (RPP)   |  x        | +STKTerms.redemptionPaymentPe
 redemptionPaymentDate      | (RPD)   |  x        |                                      | //State.redemptionPaymentDate
                            |         |           |                                      |
 terminationDate            | (TD)    |  x(6,0,1) |                                      | //State.terminationDate
-priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| +STKTerms.priceAtTerminationDate    |
+priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| //STKTerms.priceAtTerminationDate    |
                            |         |           |                                      |
 marketValueObserved        | (MVO)   |  x        |                                      |
 settlementPeriod           | (STP)   |  x        |                                      |
