@@ -37,7 +37,7 @@ enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
 //               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
-enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
+enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD, DDD, DED, DPD, SDD, SED, SSD, RDD, RED}
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
@@ -62,14 +62,13 @@ struct State {
     uint256 exerciseDate;
     uint256 terminationDate;
     uint256 lastCouponDay;
-    uint256 dividendDeclarationDate;
     uint256 lastDividendDeclarationDate;
     uint256 dividendExDate;
     uint256 dividendPaymentDate;
     uint256 splitExDate;
     uint256 splitSettlementDate;
-    uint256 redemptionExDate;
-    uint256 redemptionPaymentDate;
+    // uint256 redemptionExDate; not implemented
+    // uint256 redemptionPaymentDate; not implemented
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -390,13 +389,13 @@ struct STKTerms {
     uint256 issueDate;
     uint256 purchaseDate;
     uint256 cycleAnchorDateOfDividend;
-    uint256 dividendExDate;
-    uint256 dividendPaymentDate;
-    uint256 splitExDate;
-    uint256 splitSettlementDate;
-    uint256 redemptionExDate;
-    uint256 redemptionPaymentDate;
-    uint256 terminationDate;
+    // uint256 dividendExDate; state only
+    // uint256 dividendPaymentDate; only
+    // uint256 splitExDate; state only
+    // uint256 splitSettlementDate; state only
+    // uint256 redemptionExDate; state only
+    // uint256 redemptionPaymentDate; state only
+    // uint256 terminationDate; state only
     // uint256 nonPerformingDate; state only
     // uint256 exerciseDate; state only
 
@@ -405,10 +404,10 @@ struct STKTerms {
     int256 issuePrice;
     int256 quantity;
     int256 priceAtPurchaseDate;
-    int256 dividendPaymentAmount;
-    int256 splitRatio;
-    int256 redemptionPrice;
     int256 priceAtTerminationDate;
+    int256 redemptionPrice;
+    // int256 dividendPaymentAmount; state only
+    // int256 splitRatio; state only
     // int256 exerciseAmount; state only
     // int256 exerciseQuantity; state only
     // int256 exerciseQuantityOrdered; state only
