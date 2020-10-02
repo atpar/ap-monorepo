@@ -8,6 +8,7 @@ artifacts/
 ts-bindings
 mnemonic.js
 ts-bindings/
+deployments.json
 
 # sol-coverage
 coverage.json
