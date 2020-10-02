@@ -10,7 +10,7 @@ async function updateDeploymentsJson(buidlerRuntime) {
 
     const {  deployments: { log }, usrNs: { chainId, package: { contracts }}} = buidlerRuntime;
 
-    if ( !chainId || !contracts ) {
+    if (!chainId || !contracts) {
         throw new Error("unexpected Buidler Runtime Environment");
     }
 
