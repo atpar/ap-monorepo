@@ -1,70 +1,69 @@
 ## The Attributes, the Terms and the State for STK
 
-actus-dict.identifier      | Acronym | Rules     | actus-sol.Terms                      | actus-sol.State
--------------------------- |---------|-----------|--------------------------------------|--------------------------
-statusDate                 | (SD)    |  NN(,,1)  | STKTerms.statusDate                  | State.statusDate
-contractPerformance        | (PRF)   |  x(,,1)   |                                      | State.contractPerformance
-nonPerformingDate          | (NPD)   |  x(,,1)   |                                      | State.nonPerformingDate
-                           |         |           |                                      |
-contractID                 | (CID)   |  NN       |                                      |
-contractType               | (CT)    |  NN       | STKTerms.contractType                |
-contractDealDate           | (CDD)   |  NN(,,1)  | STKTerms.contractDealDate            |
-marketObjectCode           | (MOC)   |  x        | //STKTerms.marketObjectCode          |
-seniority                  | (SEN)   |  x(,,1)   | //STKTerms.seniority                 |
-currency                   | (CUR)   |  NN       | STKTerms.currency                    |
-settlementCurrency         | (CURS)  |  x        | STKTerms.settlementCurrency          |
-calendar                   | (CLDR)  |  x        | STKTerms.calendar,dayCountConvention |
-businessDayConvention      | (BDC)   |  x        | STKTerms.businessDayConvention,      |
-endOfMonthConvention       | (EOMC)  |  x        | STKTerms.endOfMonthConvention        |
-                           |         |           |                                      |
-creatorID                  | (CRID)  |  NN(,,1)  |                                      |
-contractRole               | (CNTRL) |  NN       | STKTerms.contractRole                |
-counterpartyID             | (CPID)  |  NN(,,2)  |                                      |
-                           |         |           |                                      |
-issueDate                  | (ID)    |  NN       | STKTerms.issueDate                   |
-issuePrice                 | (IPR)   |  NN       | STKTerms.issuePrice                  |
-notionalPrincipal          | (NT)    |  NN       | +STKTerms.notionalPrincipal          | State.notionalPrincipal
-quantity                   | (QT)    |  NN(,,3)  | STKTerms.quantity                    | State.quantity
-                           |         |           |                                      |
-purchaseDate               | (PRD)   |  NN       | STKTerms.purchaseDate                |
-priceAtPurchaseDate        | (PPRD)  |  NN       | STKTerms.priceAtPurchaseDate         |
-nominalPrice               | (NPR)   |  NN       | STKTerms.nominalPrice                |
-                           |         |           |                                      |
-                           |         |           |                                      |
-                           |         |           |                                      | >> +State.lastDividendDeclarationDate
-dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                                      | +State.dividendPaymentAmount
-dividendRecordPeriod       | (DRP)   |  x(1,1,)  |                                      |
-dividendExDate             | (DED)   |  x(1,1,)  |                                      |
-dividendPaymentPeriod      | (DPP)   |  x(1,1,)  |                                      |
-dividendPaymentDate        | (DPD)   |  x(1,1,)  |                                      |
-cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +STKTerms.cycleAnchorDateOfDividend  |
-cycleOfDividend            | (DCL)   |  x(1,0,)  | +STKTerms.cycleOfDividend            |
-                           |         |           |                                      |
-splitRatio                 | (SRA)   |  x        |                                      | +State.splitRatio
-splitRecordPeriod          | (SRP)   |  x        |                                      |
-splitExDate                | (SED)   |  x        |                                      | +State.splitExDate
-+splitSettlementPeriod     | (+SSP)  |           |                                      |
-                           |         |           |                                      |
-                           |         |           |                                      |
-redeemableByIssuer         | (RBI)   |  x(7,0,)  | +STKTerms.redeemableByIssuer         |
-redemptionPrice            | (RPR)   |  NN(7,1,) | +terms.redemptionPrice               |
-                           |         |           |                                      | >> State.nextPrincipalRedemptionPayment ?
-redemptionRecordPeriod     | (RRP)   |  x        | +STKTerms.redemptionRecordPeriod     |
-redemptionExDate           | (RED)   |  x        |                                      | //State.redemptionExDate
-redemptionPaymentPeriod    | (RPP)   |  x        | +STKTerms.redemptionPaymentPeriod    |
-redemptionPaymentDate      | (RPD)   |  x        |                                      | //State.redemptionPaymentDate
-                           |         |           |                                      |
-terminationDate            | (TD)    |  x(6,0,1) |                                      | //State.terminationDate
-priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| //STKTerms.priceAtTerminationDate    |
-                           |         |           |                                      |
-marketValueObserved        | (MVO)   |  x        |                                      |
-settlementPeriod           | (STP)   |  x        |                                      |
-                           |         |           |                                      | State.exerciseDate, State.exerciseAmount, State.exerciseQuantity
+actus-dict.identifier      | Acronym | Rules     | ACTUSTypes.sol::Terms       | ACTUSTypes.sol::State
+-------------------------- |---------|-----------|-----------------------------|--------------------------
+statusDate                 | (SD)    |  NN(,,1)  | statusDate                  | statusDate
+                           |         |           |                             |
+creatorID                  | (CRID)  |  NN(,,1)  |                             |
+contractID                 | (CID)   |  NN       |                             |
+counterpartyID             | (CPID)  |  NN(,,2)  |                             |
+                           |         |           |                             | >>exerciseDate
+                           |         |           |                             | >>exerciseAmount
+                           |         |           |                             | >>exerciseQuantity
+businessDayConvention      | (BDC)   |  x        | businessDayConvention,      |
+calendar                   | (CLDR)  |  x        | calendar,dayCountConvention |
+contractDealDate           | (CDD)   |  NN(,,1)  | contractDealDate            |
+contractPerformance        | (PRF)   |  x(,,1)   |                             | contractPerformance
+contractRole               | (CNTRL) |  NN       | contractRole                |
+contractType               | (CT)    |  NN       | contractType                |
+currency                   | (CUR)   |  NN       | currency                    |
+endOfMonthConvention       | (EOMC)  |  x        | endOfMonthConvention        |
+marketObjectCode           | (MOC)   |  x        | //marketObjectCode          |
+nonPerformingDate          | (NPD)   |  x(,,1)   |                             | nonPerformingDate
+seniority                  | (SEN)   |  x(,,1)   | //seniority                 |
+settlementCurrency         | (CURS)  |  x        | settlementCurrency          |
+                           |         |           |                             |
+issueDate                  | (ID)    |  NN       | issueDate                   |
+issuePrice                 | (IPR)   |  NN       | issuePrice                  |
+notionalPrincipal          | (NT)    |  NN       | +notionalPrincipal          | notionalPrincipal
+quantity                   | (QT)    |  NN(,,3)  | quantity                    | quantity
+                           |         |           |                             |
+nominalPrice               | (NPR)   |  NN       | nominalPrice                |
+purchaseDate               | (PRD)   |  NN       | purchaseDate                |
+priceAtPurchaseDate        | (PPRD)  |  NN       | priceAtPurchaseDate         |
+                           |         |           |                             |
+cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +cycleAnchorDateOfDividend  | >> +lastDividendDeclarationDate
+cycleOfDividend            | (DCL)   |  x(1,0,)  | +cycleOfDividend            |
+dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                             | +dividendPaymentAmount
+dividendRecordPeriod       | (DRP)   |  x(1,1,)  | +dividendRecordPeriod       |
+dividendExDate             | (DED)   |  x(1,1,)  |                             |
+dividendPaymentPeriod      | (DPP)   |  x(1,1,)  | +dividendPaymentPeriod      |
+dividendPaymentDate        | (DPD)   |  x(1,1,)  |                             |
+                           |         |           |                             |
+splitRatio                 | (SRA)   |  x        |                             | +splitRatio
+splitRecordPeriod          | (SRP)   |  x        | +splitRecordPeriod          |
+splitExDate                | (SED)   |  x        |                             | +splitExDate
++splitSettlementPeriod     | (+SSP)  |           | +splitSettlementPeriod      |
+                           |         |           |                             |
+                           |         |           |                             |
+redeemableByIssuer         | (RBI)   |  x(7,0,)  | +redeemableByIssuer         |
+redemptionPrice            | (RPR)   |  NN(7,1,) | +redemptionPrice            |
+                           |         |           |                             | >> nextPrincipalRedemptionPayment ?
+redemptionRecordPeriod     | (RRP)   |  x        | +redemptionRecordPeriod     |
+redemptionExDate           | (RED)   |  x        |                             | //redemptionExDate
+redemptionPaymentPeriod    | (RPP)   |  x        | +redemptionPaymentPeriod    |
+redemptionPaymentDate      | (RPD)   |  x        |                             | //redemptionPaymentDate
+                           |         |           |                             |
+terminationDate            | (TD)    |  x(6,0,1) |                             | //terminationDate
+priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| //priceAtTerminationDate    |
+                           |         |           |                             |
+marketValueObserved        | (MVO)   |  x        |                             |
+settlementPeriod           | (STP)   |  x        |                             |
 
 > Notes:
-* "+" - a new property added (to the _Terms_, _State_ or dict)
-* "//" - a property commented out (in the _Terms_ or _State_)
-* ">>" - a state param is dependant upon a term
+* "+" - a newly added property (to the _Terms_, _State_ or dict)
+* "//" - a property commented out (unused in the _Terms_ or _State_)
+* ">>" - a state param is indirectly dependant upon a term but not
 * Not applicable State params:
 accruedInterest, accruedInterest2, feeAccrued, interestCalculationBaseAmount, interestScalingMultiplier, maturityDate, 
 nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMultiplier
