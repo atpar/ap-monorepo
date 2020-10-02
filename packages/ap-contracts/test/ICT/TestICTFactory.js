@@ -1,105 +1,96 @@
-/* global assert, before, describe, it */
-const { BN, expectEvent } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
+const { BN } = require('openzeppelin-test-helpers');
 
 const { ZERO_ADDRESS } = require('../helper/utils');
-const { setupTestEnvironment } = require('../helper/setupTestEnvironment');
+const { getSnapshotTaker } = require('../helper/setupTestEnvironment');
 const {
   buildCreate2Eip1167ProxyAddress: buildProxyAddr,
   getEip1167ProxyLogicAddress: extractLogicAddr,
 } = require('../helper/proxy/create2.js')(web3);
 
-contract('ICTFactory', function (accounts) {
-  const [creator, owner, owner2] = accounts;
+describe('ICTFactory', () => {
+  const logicContract = 'ProxySafeICT'
   const b32 = web3.utils.hexToBytes;
-
   const ictParams = [
     // Valid params
-    { marketObjectCode: b32('0xDAD'), owner: owner, salt: 0xbadC0FEbebebe },
-    { marketObjectCode: b32('0xADA'), owner: owner2, salt: 8954 },
+    { marketObjectCode: b32('0xDAD'), owner: () => owner, salt: 0xbadC0FEbebebe },
+    { marketObjectCode: b32('0xADA'), owner: () => owner2, salt: 8954 },
     // Invalid params
-    { marketObjectCode: b32('0xBAB'), owner: owner2, salt: 8954 }, // duplicated salt
-    { marketObjectCode: b32('0xABA'), owner: owner2, salt: 0xDEAD, assetRegistry: ZERO_ADDRESS},
-    { marketObjectCode: b32('0xAAA'), owner: owner2, salt: 0xDEAD2, dataRegistry: ZERO_ADDRESS},
+    { marketObjectCode: b32('0xBAB'), owner: () => owner2, salt: 8954 }, // duplicated salt
+    { marketObjectCode: b32('0xABA'), owner: () => owner2, salt: 0xDEAD, assetRegistry: ZERO_ADDRESS},
+    { marketObjectCode: b32('0xAAA'), owner: () => owner2, salt: 0xDEAD2, dataRegistry: ZERO_ADDRESS},
   ];
+  let creator, owner, owner2;
 
-  before(async () => {
-    this.instances =  await setupTestEnvironment(accounts);
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
+
+    [creator, owner, owner2] = self.accounts;
+    self.txOpts.from = creator;
+
     ictParams.forEach((e) => {
-      e.assetRegistry = e.assetRegistry || this.instances.ANNRegistryInstance.address;
-      e.dataRegistry = e.dataRegistry || this.instances.DataRegistryInstance.address;
+      e.assetRegistry = e.assetRegistry || self.ANNRegistryInstance.options.address;
+      e.dataRegistry = e.dataRegistry || self.DataRegistryInstance.options.address;
       e.name = "Investment Certificate Token";
       e.symbol = "ICT";
+      if (typeof e.owner === 'function') e.owner = e.owner();
     });
+
+    // expected values
+    self.exp = {
+      logicAbi: self.ProxySafeICTInstance.options.jsonInterface,
+      logicAddr: self.ProxySafeICTInstance.options.address,
+      deployingAddr: self.ICTFactoryInstance.options.address,
+      salt: [ictParams[0].salt, ictParams[1].salt],
+    };
+  });
+
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   describe('createICToken(...)', async () => {
-    testCreateICToken.bind(this)('createICToken');
-  });
 
-  function testCreateICToken(fnName) {
-    // reserved for more `fName`s
-    const [logicName, tokenName] = ({
-      createICToken: ['ProxySafeICT', 'ICT'],
-    })[fnName];
-    if (!logicName) throw new Error('invalid fnName');
-
-    before(async () => {
-      // assetRegistry, dataRegistry, marketObjectCode, owner
-      const exp = {
-        logicAbi: this.instances[`${logicName}Instance`].abi,
-        logicAddr: this.instances[`${logicName}Instance`].address,
-        deployingAddr: this.instances.ICTFactoryInstance.address,
-        salt: [ ictParams[0].salt, ictParams[1].salt ],
-      };
-      this.exp = exp;
-
-      // deploy ICTokens
-      const createFn = this.instances.ICTFactoryInstance[fnName].bind(this.instances.ICTFactoryInstance);
-      this.act = await Promise.all(ictParams.map(async (params) => {
-        try {
-          let actual = decodeEvents(await createICT(createFn, params));
-          actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
-          actual.icToken = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, actual.proxy));
-          return actual;
-        }
-        // 3rd, 4th and 5th tokens expected to fail
-        catch (error) {
-          return error; }
-      }));
-      this.act.logicStorage = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, exp.logicAddr));
+    before(async() => {
+      await this.setupTestEnvironment()
+      await invokeCreateIctFunction.bind(this)('createICToken')
     });
 
     describe('Following the "proxy-implementation" pattern', () => {
 
       it(`should deploy a new proxy`, () => {
-        assert(act[0].proxyBytecode.length > 0);
-        assert(act[1].proxyBytecode.length > 0);
+        assert(this.act[0].proxyBytecode.length > 0);
+        assert(this.act[1].proxyBytecode.length > 0);
       });
 
       describe('The new proxy deployed', () => {
         it('should be the EIP-1167 proxy', () => {
-          assert(web3.utils.isAddress(extractLogicAddr(act[0].proxyBytecode)));
-          assert(web3.utils.isAddress(extractLogicAddr(act[1].proxyBytecode)));
+          assert(web3.utils.isAddress(extractLogicAddr(this.act[0].proxyBytecode)));
+          assert(web3.utils.isAddress(extractLogicAddr(this.act[1].proxyBytecode)));
         });
       });
 
       describe('Being a `delegatecall`', () => {
 
-        it(`should be forwarded to a pre-deployed ${logicName}`, () => {
-          assert(extractLogicAddr(act[0].proxyBytecode) === exp.logicAddr);
-          assert(extractLogicAddr(act[1].proxyBytecode) === exp.logicAddr);
+        it(`should be forwarded to a pre-deployed ${logicContract}`, () => {
+          assert.strictEqual(extractLogicAddr(this.act[0].proxyBytecode), this.exp.logicAddr);
+          assert.strictEqual(extractLogicAddr(this.act[1].proxyBytecode), this.exp.logicAddr);
         });
 
         it('should write to the storage of the proxy', () => {
-          assert(act[0].icToken.symbol === ictParams[0].symbol);
-          assert(act[1].icToken.symbol === ictParams[1].symbol);
+          assert.strictEqual(this.act[0].icToken.symbol, ictParams[0].symbol);
+          assert.strictEqual(this.act[1].icToken.symbol, ictParams[1].symbol);
         });
 
-        it(`should not write to the pre-deployed ${logicName} storage`, () => {
-          assert(this.act.logicStorage.symbol === '');
-          assert(this.act.logicStorage.name === '');
-          assert(this.act.logicStorage.assetRegistry === '0x0000000000000000000000000000000000000000');
-          assert(this.act.logicStorage.dataRegistry === '0x0000000000000000000000000000000000000000');
+        it(`should not write to the pre-deployed ${logicContract} storage`, () => {
+          assert.strictEqual(this.act.logicStorage.symbol, '');
+          assert.strictEqual(this.act.logicStorage.name, '');
+          assert.strictEqual(this.act.logicStorage.assetRegistry, '0x0000000000000000000000000000000000000000');
+          assert.strictEqual(this.act.logicStorage.dataRegistry, '0x0000000000000000000000000000000000000000');
         });
 
       });
@@ -109,52 +100,60 @@ contract('ICTFactory', function (accounts) {
 
       describe('For a salt given', () => {
         it('should deploy a new proxy instance at a pre-defined address', () => {
-          assert(act[0].proxy === buildProxyAddr(exp.deployingAddr, exp.salt[0], exp.logicAddr));
-          assert(act[1].proxy === buildProxyAddr(exp.deployingAddr, exp.salt[1], exp.logicAddr));
+          assert.strictEqual(this.act[0].proxy, buildProxyAddr(
+              this.exp.deployingAddr,
+              this.exp.salt[0],
+              this.exp.logicAddr
+          ));
+          assert.strictEqual(this.act[1].proxy, buildProxyAddr(
+              this.exp.deployingAddr,
+              this.exp.salt[1],
+              this.exp.logicAddr
+          ));
         });
       });
 
       describe('If the salt was already used to deploy another proxy', () => {
         it('reverts', () => {
-          assert(act[2].message.toLowerCase().includes('revert'));
+          assert(this.act[2].message.toLowerCase().includes('revert'));
         });
       });
     });
 
     describe('When called with valid params', () => {
 
-      it(`should instantiate a new ${logicName} instance`, () => {
+      it(`should instantiate a new ${logicContract} instance`, () => {
         ([ictParams[0], ictParams[1]]).map((expected, i) => {
-          const actual = act[i].icToken;
+          const actual = this.act[i].icToken;
           ['name', 'symbol', 'assetRegistry', 'dataRegistry', 'owner'].forEach(
-              key => assert(actual[key] === expected[key], `${key} (${i})`),
+              key => assert.strictEqual(actual[key], expected[key], `${key} (${i})`),
           )
         });
       });
 
       describe('With the NewEip1167Proxy event emitted', () => {
         it('should provide the new proxy address', () => {
-          assert(web3.utils.isAddress(act[0].proxy));
-          assert(web3.utils.isAddress(act[1].proxy));
+          assert(web3.utils.isAddress(this.act[0].proxy));
+          assert(web3.utils.isAddress(this.act[1].proxy));
         });
-        it(`should provide the pre-deployed ${logicName} address`, () => {
-          assert(act[0].logic === exp.logicAddr);
-          assert(act[1].logic === exp.logicAddr);
+        it(`should provide the pre-deployed ${logicContract} address`, () => {
+          assert.strictEqual(this.act[0].logic, this.exp.logicAddr);
+          assert.strictEqual(this.act[1].logic, this.exp.logicAddr);
         });
         it('should provide the CREATE2 salt', () => {
-          assert(act[0].salt === (new BN(exp.salt[0])).toString());
-          assert(act[1].salt === (new BN(exp.salt[1])).toString());
+          assert.strictEqual(this.act[0].salt, (new BN(this.exp.salt[0])).toString());
+          assert.strictEqual(this.act[1].salt, (new BN(this.exp.salt[1])).toString());
         });
       });
 
       describe('With the DeployedICT event emitted', () => {
-        it(`should provide the new instantiated ${logicName} address`, async () => {
-          assert(web3.utils.isAddress(act[0].icTokenAddr));
-          assert(web3.utils.isAddress(act[1].icTokenAddr));
+        it(`should provide the new instantiated ${logicContract} address`, async () => {
+          assert(web3.utils.isAddress(this.act[0].icTokenAddr));
+          assert(web3.utils.isAddress(this.act[1].icTokenAddr));
         });
         it('should provide the creator address', () => {
-          assert(act[0].creator === creator);
-          assert(act[1].creator === creator);
+          assert.strictEqual(this.act[0].creator, creator);
+          assert.strictEqual(this.act[1].creator, creator);
         });
       });
 
@@ -162,31 +161,56 @@ contract('ICTFactory', function (accounts) {
 
     describe('When called with zero address of the asset registry', () => {
       it('reverts', () => {
-        assert(act[3].message.toLowerCase().includes('revert'));
+        assert(this.act[3].message.toLowerCase().includes('revert'));
       });
     });
 
     describe('When called with zero address of the data registry', () => {
       it('reverts', () => {
-        assert(act[4].message.toLowerCase().includes('revert'));
+        assert(this.act[4].message.toLowerCase().includes('revert'));
       });
     });
 
-    describe(`New ${logicName} instance instantiated`, () => {
+    describe(`New ${logicContract} instance instantiated`, () => {
       it('should have the address of the proxy', () => {
-        assert(act[0].icTokenAddr === act[0].proxy);
-        assert(act[1].icTokenAddr === act[1].proxy);
+        assert.strictEqual(this.act[0].icTokenAddr, this.act[0].proxy);
+        assert.strictEqual(this.act[1].icTokenAddr, this.act[1].proxy);
       });
     });
-  }
+  });
 
-  async function createICT(createFn, {assetRegistry, dataRegistry, marketObjectCode, owner, salt}) {
-    return createFn(assetRegistry, dataRegistry, marketObjectCode, owner, salt);
+  async function invokeCreateIctFunction(fnName) {
+    const self = this;
+    // actual values
+    this.act = [];
+
+    // deploy ICTokens calling `fnName` for every `ictParams[i]`
+    for (let i = 0; i < ictParams.length; i++) {
+      const {assetRegistry, dataRegistry, marketObjectCode, owner, salt} = ictParams[i];
+      try {
+        const tx = await self.ICTFactoryInstance
+            .methods[fnName](assetRegistry, dataRegistry, marketObjectCode, owner, salt)
+            .send(this.txOpts);
+        const actual = decodeEvents(tx);
+        actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
+        actual.icToken = await readTokenStorage(
+            new web3.eth.Contract(this.exp.logicAbi, actual.proxy)
+        );
+        this.act.push(actual);
+      }
+      // values may be intentionally invalid
+      catch (error) {
+        this.act.push(error);
+      }
+    }
+    this.act.logicStorage = await readTokenStorage(
+        new web3.eth.Contract(this.exp.logicAbi, this.exp.logicAddr)
+    );
   }
 
   function decodeEvents(tx) {
-    const {args: { proxy, logic, salt: saltBN }, address: proxyFactory} = expectEvent.inLogs(tx.logs, 'NewEip1167Proxy');
-    const { icToken: icTokenAddr, creator } = expectEvent.inLogs(tx.logs, 'DeployedICT').args;
+    const {returnValues: { proxy, logic, salt: saltBN }, address: proxyFactory} = tx.events.NewEip1167Proxy;
+    const { icToken: icTokenAddr, creator } = tx.events.DeployedICT.returnValues;
     const salt = saltBN.toString();
     return { proxy, logic, salt, icTokenAddr, creator, proxyFactory };
   }

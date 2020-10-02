@@ -1,100 +1,112 @@
-/* global assert, before, describe, it */
-const { BN, expectEvent } = require('openzeppelin-test-helpers');
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const assert = require('assert');
+const buidlerRuntime = require('@nomiclabs/buidler');
+const { BN } = require('openzeppelin-test-helpers');
 
 const { ZERO_ADDRESS } = require('../helper/utils');
-const { setupTestEnvironment, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { getSnapshotTaker, deployPaymentToken } = require('../helper/setupTestEnvironment');
 const {
   buildCreate2Eip1167ProxyAddress: buildProxyAddr,
   getEip1167ProxyLogicAddress: extractLogicAddr,
 } = require('../helper/proxy/create2.js')(web3);
 
-contract('FDTFactory', function (accounts) {
-  const [creator, owner, owner2, tokenHolder1, anyone] = accounts;
+describe('FDTFactory', () => {
+  let creator, owner, owner2, tokenHolder, tokenHolder2;
 
+  // (sets of) Parameters to create FDTokens with
   const fdtParams = [
     // Valid params
-    { name: 'test FDT1', symbol: 'FDT1', totalSupply: '1000000', owner: owner, salt: 0xbadC0FEbebebe },
-    { name: 'test FDT2', symbol: 'FDT2', totalSupply: '3000000', owner: owner2, salt: 8954 },
+    { name: 'test_FDT1', symbol: 'FDT1', totalSupply: '1000000', owner: () => owner, salt: 0xbadC0FEbebebe },
+    { name: 'test_FDT2', symbol: 'FDT2', totalSupply: '3000000', owner: () => owner2, salt: 8954 },
     // Invalid params
-    { name: 'non-unique salt', symbol: 'FTD3', totalSupply: '2000000', owner: owner2, salt: 8954 },
-    { name: 'zero_address', symbol: 'FTD4', totalSupply: '4000000', owner: owner2, salt: 0xDEAD, fundsToken: ZERO_ADDRESS},
+    { name: 'non-unique_salt', symbol: 'FTD3', totalSupply: '2000000', owner: () => owner, salt: 8954 },
+    { name: 'invalid_funds-token', symbol: 'FTD4', totalSupply: '4000000', owner: () => owner2, salt: 0xDEAD, fundsToken: ZERO_ADDRESS},
   ];
 
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
+
+    [ creator, owner, owner2, tokenHolder, tokenHolder2 ] = self.accounts;
+    self.txOpts.from = creator;
+
+    const { options: { address: fundsTokenAddress }} = await deployPaymentToken(
+        buidlerRuntime, owner, [ tokenHolder, tokenHolder2 ],
+    );
+
+    fdtParams.forEach((e) => {
+      if (typeof e.owner === 'function') e.owner = e.owner();
+      if (!e.fundsToken) e.fundsToken = fundsTokenAddress;
+    });
+
+    // expected values
+    self.exp = {
+      logicAbi: {
+        ProxySafeVanillaFDT: self.ProxySafeVanillaFDTInstance.options.jsonInterface,
+        ProxySafeSimpleRestrictedFDT: self.ProxySafeSimpleRestrictedFDTInstance.options.jsonInterface,
+      },
+      logicAddr: {
+        ProxySafeVanillaFDT: self.ProxySafeVanillaFDTInstance.options.address,
+        ProxySafeSimpleRestrictedFDT: self.ProxySafeSimpleRestrictedFDTInstance.options.address,
+      },
+      deployingAddr: self.FDTFactoryInstance.options.address,
+      salt: [ fdtParams[0].salt, fdtParams[1].salt ],
+    };
+  });
+
   before(async () => {
-    this.instances =  await setupTestEnvironment(accounts);
-    this.fundsToken = await deployPaymentToken(owner, [owner2, tokenHolder1, anyone]);
-    fdtParams.forEach(e => e.fundsToken = e.fundsToken || this.fundsToken.address);
+    this.setupTestEnvironment = snapshotTaker(this);
   });
 
   describe('createERC20Distributor(...)', async () => {
-    testCreateDistributor.bind(this)('createERC20Distributor');
+    before(async() => {
+      await this.setupTestEnvironment()
+      await invokeCreateFdtFunction.bind(this)('createERC20Distributor', 'ProxySafeVanillaFDT')
+    });
+    assertInvocationResults.bind(this)('ProxySafeVanillaFDT');
   });
 
   describe('createRestrictedERC20Distributor(...)', async () => {
-    testCreateDistributor.bind(this)('createRestrictedERC20Distributor');
+    before(async() => {
+      await this.setupTestEnvironment()
+      await invokeCreateFdtFunction.bind(this)('createRestrictedERC20Distributor', 'ProxySafeSimpleRestrictedFDT')
+    });
+    assertInvocationResults.bind(this)('ProxySafeSimpleRestrictedFDT');
   });
 
-  function testCreateDistributor(fnName) {
-    const [logicName, tokenName] = ({
-      createERC20Distributor: ['ProxySafeVanillaFDT', 'VanillaFDT'],
-      createRestrictedERC20Distributor: ['ProxySafeSimpleRestrictedFDT', 'SimpleRestrictedFDT'],
-    })[fnName];
-    if (!logicName) throw new Error('invalid fnName');
-
-    before(async () => {
-      const exp = {
-        logicAbi: this.instances[`${logicName}Instance`].abi,
-        logicAddr: this.instances[`${logicName}Instance`].address,
-        deployingAddr: this.instances.FDTFactoryInstance.address,
-        salt: [ fdtParams[0].salt, fdtParams[1].salt ],
-      };
-      this.exp = exp;
-
-      // deploy FDTokens
-      const createFn = this.instances.FDTFactoryInstance[fnName].bind(this.instances.FDTFactoryInstance);
-      this.act = await Promise.all(fdtParams.map(async (params) => {
-        try {
-          let actual = decodeEvents(await createFDT(createFn, params));
-          actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
-          actual.fdToken = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, actual.proxy));
-          return actual;
-        }
-        // 3rd and 4th tokens expected to fail
-        catch (error) { return error; }
-      }));
-      this.act.logicStorage = await readTokenStorage(new web3.eth.Contract(exp.logicAbi, exp.logicAddr));
-    });
+  function assertInvocationResults(logicContract) {
 
     describe('Following the "proxy-implementation" pattern', () => {
 
       it(`should deploy a new proxy`, () => {
-        assert(act[0].proxyBytecode.length > 0);
-        assert(act[1].proxyBytecode.length > 0);
+        assert(this.act[0].proxyBytecode.length > 0);
+        assert(this.act[1].proxyBytecode.length > 0);
       });
 
       describe('The new proxy deployed', () => {
         it('should be the EIP-1167 proxy', () => {
-          assert(web3.utils.isAddress(extractLogicAddr(act[0].proxyBytecode)));
-          assert(web3.utils.isAddress(extractLogicAddr(act[1].proxyBytecode)));
+          assert(web3.utils.isAddress(extractLogicAddr(this.act[0].proxyBytecode)));
+          assert(web3.utils.isAddress(extractLogicAddr(this.act[1].proxyBytecode)));
         });
       });
 
       describe('Being a `delegatecall`', () => {
 
-        it(`should be forwarded to a pre-deployed ${logicName}`, () => {
-          assert(extractLogicAddr(act[0].proxyBytecode) === exp.logicAddr);
-          assert(extractLogicAddr(act[1].proxyBytecode) === exp.logicAddr);
+        it(`should be forwarded to a pre-deployed ${logicContract}`, () => {
+          assert.strictEqual(extractLogicAddr(this.act[0].proxyBytecode), this.exp.logicAddr[logicContract]);
+          assert.strictEqual(extractLogicAddr(this.act[1].proxyBytecode), this.exp.logicAddr[logicContract]);
         });
 
         it('should write to the storage of the proxy', () => {
-          assert(act[0].fdToken.symbol === fdtParams[0].symbol);
-          assert(act[1].fdToken.symbol === fdtParams[1].symbol);
+          assert.strictEqual(this.act[0].fdToken.symbol, fdtParams[0].symbol);
+          assert.strictEqual(this.act[1].fdToken.symbol, fdtParams[1].symbol);
         });
 
-        it(`should not write to the pre-deployed ${logicName} storage`, () => {
-          assert(this.act.logicStorage.symbol === '');
-          assert(this.act.logicStorage.name === '');
-          assert(this.act.logicStorage.totalSupply === '0');
+        it(`should not write to the pre-deployed ${logicContract} storage`, () => {
+          assert.strictEqual(this.act.logicStorage.symbol, '');
+          assert.strictEqual(this.act.logicStorage.name, '');
+          assert.strictEqual(this.act.logicStorage.totalSupply, '0');
         });
 
       });
@@ -104,52 +116,60 @@ contract('FDTFactory', function (accounts) {
 
       describe('For a salt given', () => {
         it('should deploy a new proxy instance at a pre-defined address', () => {
-          assert(act[0].proxy === buildProxyAddr(exp.deployingAddr, exp.salt[0], exp.logicAddr));
-          assert(act[1].proxy === buildProxyAddr(exp.deployingAddr, exp.salt[1], exp.logicAddr));
+          assert.strictEqual(this.act[0].proxy, buildProxyAddr(
+              this.exp.deployingAddr,
+              this.exp.salt[0],
+              this.exp.logicAddr[logicContract]
+          ));
+          assert.strictEqual(this.act[1].proxy, buildProxyAddr(
+              this.exp.deployingAddr,
+              this.exp.salt[1],
+              this.exp.logicAddr[logicContract]
+          ));
         });
       });
 
       describe('If the salt was already used to deploy another proxy', () => {
         it('reverts', () => {
-          assert(act[2].message.toLowerCase().includes('revert'));
+          assert(this.act[2].message.toLowerCase().includes('revert'));
         });
       });
     });
 
     describe('When called with valid params', () => {
 
-      it(`should instantiate a new ${logicName} instance`, () => {
+      it(`should instantiate a new ${logicContract} instance`, () => {
         ([fdtParams[0], fdtParams[1]]).map((expected, i) => {
-          const actual = act[i].fdToken;
+          const actual = this.act[i].fdToken;
           ['name', 'symbol', 'totalSupply', 'owner'].forEach(
-              key => assert(actual[key] === expected[key], `${key} (${i})`),
+              key => assert.strictEqual(actual[key], expected[key], `${key} (${i})`),
           )
         });
       });
 
       describe('With the NewEip1167Proxy event emitted', () => {
         it('should provide the new proxy address', () => {
-          assert(web3.utils.isAddress(act[0].proxy));
-          assert(web3.utils.isAddress(act[1].proxy));
+          assert(web3.utils.isAddress(this.act[0].proxy));
+          assert(web3.utils.isAddress(this.act[1].proxy));
         });
-        it(`should provide the pre-deployed ${logicName} address`, () => {
-          assert(act[0].logic === exp.logicAddr);
-          assert(act[1].logic === exp.logicAddr);
+        it(`should provide the pre-deployed ${logicContract} address`, () => {
+          assert.strictEqual(this.act[0].logic, this.exp.logicAddr[logicContract]);
+          assert.strictEqual(this.act[1].logic, this.exp.logicAddr[logicContract]);
         });
         it('should provide the CREATE2 salt', () => {
-          assert(act[0].salt === (new BN(exp.salt[0])).toString());
-          assert(act[1].salt === (new BN(exp.salt[1])).toString());
+          assert.strictEqual(this.act[0].salt, (new BN(this.exp.salt[0])).toString());
+          assert.strictEqual(this.act[1].salt, (new BN(this.exp.salt[1])).toString());
         });
       });
 
       describe('With the DeployedDistributor event emitted', () => {
-        it(`should provide the new instantiated ${logicName} address`, async () => {
-          assert(web3.utils.isAddress(act[0].distributor));
-          assert(web3.utils.isAddress(act[1].distributor));
+        it(`should provide the new instantiated ${logicContract} address`, async () => {
+          assert(web3.utils.isAddress(this.act[0].distributor));
+          assert(web3.utils.isAddress(this.act[1].distributor));
         });
         it('should provide the creator address', () => {
-          assert(act[0].creator === creator);
-          assert(act[1].creator === creator);
+          assert.strictEqual(this.act[0].creator, creator);
+          assert.strictEqual(this.act[1].creator, creator);
         });
       });
 
@@ -157,25 +177,50 @@ contract('FDTFactory', function (accounts) {
 
     describe('When called with zero address of the funds token', () => {
       it('reverts', () => {
-        assert(act[3].message.toLowerCase().includes('revert'));
+        assert(this.act[3].message.toLowerCase().includes('revert'));
       });
     });
 
-    describe(`New ${logicName} instance instantiated`, () => {
+    describe(`New ${logicContract} instance instantiated`, () => {
       it('should have the address of the proxy', () => {
-        assert(act[0].distributor === act[0].proxy);
-        assert(act[1].distributor === act[1].proxy);
+        assert.strictEqual(this.act[0].distributor, this.act[0].proxy);
+        assert.strictEqual(this.act[1].distributor, this.act[1].proxy);
       });
     });
   }
 
-  async function createFDT(createFn, {name, symbol, totalSupply, owner, fundsToken, salt}) {
-    return createFn(name, symbol, totalSupply, fundsToken, owner, salt);
+  async function invokeCreateFdtFunction(fnName, logicContract) {
+    const self = this;
+    // actual values
+    this.act = [];
+
+    // deploy FDTokens calling `fnName` for every `fdtParams[i]`
+    for (let i = 0; i < fdtParams.length; i++) {
+      const { name, symbol, totalSupply, owner, fundsToken, salt } = fdtParams[i];
+      try {
+        const tx = await self.FDTFactoryInstance
+            .methods[fnName](name, symbol, totalSupply, fundsToken, owner, salt)
+            .send(this.txOpts);
+        const actual = decodeEvents(tx);
+        actual.proxyBytecode = await web3.eth.getCode(actual.proxy);
+        actual.fdToken = await readTokenStorage(
+            new web3.eth.Contract(this.exp.logicAbi[logicContract], actual.proxy)
+        );
+        this.act.push(actual);
+      }
+          // values may be intentionally invalid
+      catch (error) {
+        this.act.push(error);
+      }
+    }
+    this.act.logicStorage = await readTokenStorage(
+        new web3.eth.Contract(this.exp.logicAbi[logicContract], this.exp.logicAddr[logicContract])
+    );
   }
 
   function decodeEvents(tx) {
-    const {args: { proxy, logic, salt: saltBN }, address: proxyFactory} = expectEvent.inLogs(tx.logs, 'NewEip1167Proxy');
-    const { distributor, creator } = expectEvent.inLogs(tx.logs, 'DeployedDistributor').args;
+    const {returnValues: { proxy, logic, salt: saltBN }, address: proxyFactory} = tx.events.NewEip1167Proxy;
+    const { distributor, creator } = tx.events.DeployedDistributor.returnValues;
     const salt = saltBN.toString();
     return { proxy, logic, salt, distributor, creator, proxyFactory };
   }

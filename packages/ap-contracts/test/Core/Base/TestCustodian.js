@@ -1,83 +1,94 @@
+/*jslint node*/
+/*global before, beforeEach, describe, it, web3*/
+const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
-const { shouldFail, expectEvent } = require('openzeppelin-test-helpers');
+const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectEvent } = require('../../helper/utils');
 
-const { setupTestEnvironment, getDefaultTerms, deployPaymentToken } = require('../../helper/setupTestEnvironment');
+const { deployPaymentToken, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 const { generateSchedule } = require('../../helper/utils');
-const { createSnapshot, revertToSnapshot } = require('../../helper/blockchain')
 
-const Custodian = artifacts.require('Custodian');
+describe('Custodian', () => {
+  let deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody;
 
+  /** @param {any} self - `this` inside `before()` (and `it()`) */
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+    // code bellow runs right before the EVM snapshot gets taken
 
-contract('Custodian', (accounts) => {
-
-  before(async () => {
-    this.instances = await setupTestEnvironment(accounts);
-    Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
+    [
+        deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody,
+    ] = self.accounts;
+    self.txOpts.from = nobody;
 
     // deploy test ERC20 token
-    this.PaymentTokenInstance = await deployPaymentToken(accounts[0], accounts);
+    self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, deployer, [
+        creatorObligor, creatorBeneficiary, counterpartyBeneficiary,
+    ]);
 
-    this.assetId = 'CEC_01';
+    self.assetId = 'CEC_01';
 
-    this.ownership = {
-      creatorObligor: accounts[1],
-      creatorBeneficiary: accounts[2],
-      counterpartyObligor: this.CustodianInstance.address,
-      counterpartyBeneficiary: accounts[4]
+    self.ownership = {
+      creatorObligor,
+      creatorBeneficiary,
+      counterpartyObligor: self.CustodianInstance.options.address,
+      counterpartyBeneficiary,
     };
 
-    this.terms = require('../../helper/terms/CECTerms-collateral.json');
+    self.terms = require('../../helper/terms/CECTerms-collateral.json');
 
     // encode collateral token address and collateral amount (notionalPrincipal of underlying + some over-collateralization)
     const overCollateral = web3.utils.toWei('100').toString();
-    this.collateralAmount = (new BigNumber(this.terms.notionalPrincipal)).plus(overCollateral);
+    self.collateralAmount = (new BigNumber(self.terms.notionalPrincipal)).plus(overCollateral);
     // encode collateralToken and collateralAmount in object of second contract reference
-    this.terms.contractReference_2.object = await this.CustodianInstance.encodeCollateralAsObject(
-      this.PaymentTokenInstance.address,
-      this.collateralAmount
-    );
+    self.terms.contractReference_2.object = await self.CustodianInstance.methods.encodeCollateralAsObject(
+      self.PaymentTokenInstance.options.address,
+      self.collateralAmount.toString(),
+    ).call();
 
-    this.state = await this.CECEngineInstance.computeInitialState(this.terms);
+    self.state = await self.CECEngineInstance.methods.computeInitialState(self.terms).call();
 
-    this.schedule = await generateSchedule(this.CECEngineInstance, this.terms);
-    
-    await this.CECRegistryInstance.registerAsset(
-      web3.utils.toHex(this.assetId),
-      this.terms,
-      this.state,
-      this.schedule,
-      this.ownership,
-      this.CECEngineInstance.address,
-      this.CECActorInstance.address,
-      accounts[0]
-    );
+    self.schedule = await generateSchedule(self.CECEngineInstance, self.terms);
 
-    this.snapshot = await createSnapshot();
+    if (! await self.CECRegistryInstance.methods.approvedActors(defaultActor).call()) {
+      throw new Error('unexpected defaultActor or CECRegistryInstance');
+    }
+
+    await self.CECRegistryInstance.methods.registerAsset(
+      web3.utils.toHex(self.assetId),
+      self.terms,
+      self.state,
+      self.schedule,
+      self.ownership,
+      self.CECEngineInstance.options.address,
+      self.CECActorInstance.options.address,
+      deployer,
+    ).send({from: defaultActor});
   });
 
-  afterEach(async () => {
-    await revertToSnapshot(this.snapshot);
-    this.snapshot = await createSnapshot();
+  before(async () => {
+    this.setupTestEnvironment = snapshotTaker(this);
+  });
+
+  beforeEach(async () => {
+    await this.setupTestEnvironment();
   });
 
   it('should lock collateral', async () => {
-    await this.PaymentTokenInstance.approve(
-      this.CustodianInstance.address,
-      this.collateralAmount,
-      { from: this.ownership.counterpartyBeneficiary }
-    );
+    await this.PaymentTokenInstance.methods.approve(
+      this.CustodianInstance.options.address,
+      this.collateralAmount.toString(),
+    ).send({ from: this.ownership.counterpartyBeneficiary });
 
-    const { tx: txHash } = await this.CustodianInstance.lockCollateral(
+    const { events } = await this.CustodianInstance.methods.lockCollateral(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.ownership
-    );
+    ).send(this.txOpts);
 
-    await expectEvent.inTransaction(
-      txHash,
-      Custodian,
-      'LockedCollateral', 
-      { 
+    expectEvent(
+      events,
+      'LockedCollateral',
+      {
         assetId: web3.utils.padRight(web3.utils.toHex(this.assetId), 64),
         collateralizer: this.ownership.counterpartyBeneficiary,
         collateralAmount: this.collateralAmount.toFixed()
@@ -86,17 +97,16 @@ contract('Custodian', (accounts) => {
   });
 
   it('should return not executed amount after collateral was triggered', async () => {
-    await this.PaymentTokenInstance.approve(
-      this.CustodianInstance.address,
-      this.collateralAmount,
-      { from: this.ownership.counterpartyBeneficiary }
-    );
-    await this.CustodianInstance.lockCollateral(
+    await this.PaymentTokenInstance.methods.approve(
+      this.CustodianInstance.options.address,
+      this.collateralAmount.toString(),
+    ).send({ from: this.ownership.counterpartyBeneficiary });
+    await this.CustodianInstance.methods.lockCollateral(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.ownership
-    );
-    
+    ).send(this.txOpts);
+
     const state = { ...this.state };
     state.contractPerformance = '3';
     state.exerciseDate = this.state.statusDate;
@@ -105,15 +115,16 @@ contract('Custodian', (accounts) => {
     state[4] = state.exerciseDate;
     state[13] = state.exerciseAmount;
 
-    await this.CECRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
-    
-    const { tx: txHash } = await this.CustodianInstance.returnCollateral(web3.utils.toHex(this.assetId));
+    await this.CECRegistryInstance.methods.setState(web3.utils.toHex(this.assetId), state)
+        .send({from: deployer});
 
-    await expectEvent.inTransaction(
-      txHash,
-      Custodian,
-      'ReturnedCollateral', 
-      { 
+    const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
+        .send(this.txOpts);
+
+    expectEvent(
+      events,
+      'ReturnedCollateral',
+      {
         assetId: web3.utils.padRight(web3.utils.toHex(this.assetId), 64),
         collateralizer: this.ownership.counterpartyBeneficiary,
         returnedAmount: this.collateralAmount.div(2).toFixed()
@@ -122,30 +133,30 @@ contract('Custodian', (accounts) => {
   });
 
   it('should return entire collateral amount if collateral was not triggered before maturity', async () => {
-    await this.PaymentTokenInstance.approve(
-      this.CustodianInstance.address,
-      this.collateralAmount,
-      { from: this.ownership.counterpartyBeneficiary }
-    );
-    await this.CustodianInstance.lockCollateral(
+    await this.PaymentTokenInstance.methods.approve(
+      this.CustodianInstance.options.address,
+      this.collateralAmount.toString(),
+    ).send({ from: this.ownership.counterpartyBeneficiary });
+    await this.CustodianInstance.methods.lockCollateral(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.ownership
-    );
-    
+    ).send(this.txOpts);
+
     const state = { ...this.state };
     state.contractPerformance = '4';
     state[0] = state.contractPerformance;
 
-    await this.CECRegistryInstance.setState(web3.utils.toHex(this.assetId), state);
-    
-    const { tx: txHash } = await this.CustodianInstance.returnCollateral(web3.utils.toHex(this.assetId));
+    await this.CECRegistryInstance.methods.setState(web3.utils.toHex(this.assetId), state)
+        .send({from: deployer});
 
-    await expectEvent.inTransaction(
-      txHash,
-      Custodian,
-      'ReturnedCollateral', 
-      { 
+    const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
+        .send(this.txOpts);
+
+    expectEvent(
+      events,
+      'ReturnedCollateral',
+      {
         assetId: web3.utils.padRight(web3.utils.toHex(this.assetId), 64),
         collateralizer: this.ownership.counterpartyBeneficiary,
         returnedAmount: this.collateralAmount.toFixed()
@@ -154,19 +165,18 @@ contract('Custodian', (accounts) => {
   });
 
   it('should revert if collateral was not triggered and maturity / termination is not reached', async () => {
-    await this.PaymentTokenInstance.approve(
-      this.CustodianInstance.address,
-      this.collateralAmount,
-      { from: this.ownership.counterpartyBeneficiary }
-    );
-    await this.CustodianInstance.lockCollateral(
+    await this.PaymentTokenInstance.methods.approve(
+      this.CustodianInstance.options.address,
+      this.collateralAmount.toString(),
+    ).send({ from: this.ownership.counterpartyBeneficiary });
+    await this.CustodianInstance.methods.lockCollateral(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.ownership
-    );
-    
+    ).send(this.txOpts);
+
     await shouldFail.reverting.withMessage(
-      this.CustodianInstance.returnCollateral(web3.utils.toHex(this.assetId)),
+      this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId)).send(this.txOpts),
       'Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED'
     );
   });

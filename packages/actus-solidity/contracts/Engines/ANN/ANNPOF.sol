@@ -266,10 +266,10 @@ contract ANNPOF is Core {
                     roleSign(terms.contractRole)
                     * (
                         state.nextPrincipalRedemptionPayment
-                        - state.accruedInterest
-                        - timeFromLastEvent
-                        .floatMult(state.nominalInterestRate)
-                        .floatMult(state.notionalPrincipal)
+                        .sub(state.accruedInterest)
+                        .sub(timeFromLastEvent
+                            .floatMult(state.nominalInterestRate)
+                            .floatMult(state.notionalPrincipal))
                     )
                 )
             )

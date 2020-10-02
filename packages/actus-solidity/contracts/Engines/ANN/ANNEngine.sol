@@ -314,7 +314,9 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleOfInterestPayment,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextInterestPaymentDate == 0) return bytes32(0);
                 if (nextInterestPaymentDate <= terms.capitalizationEndDate) return bytes32(0);
@@ -331,7 +333,9 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     cycleOfInterestCapitalization,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfInterestPayment,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextInterestCapitalizationDate == 0) return bytes32(0);
                 return encodeEvent(EventType.IPCI, nextInterestCapitalizationDate);
@@ -345,7 +349,9 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleOfFee,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfFee,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
@@ -359,7 +365,9 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     terms.cycleOfPrincipalRedemption,
                     terms.endOfMonthConvention,
                     terms.cycleAnchorDateOfPrincipalRedemption,
-                    lastScheduleTime
+                    lastScheduleTime,
+                    false,
+                    terms.maturityDate
                 );
                 if (nextPrincipalRedemptionDate == 0) return bytes32(0);
                 return encodeEvent(EventType.PR, nextPrincipalRedemptionDate);

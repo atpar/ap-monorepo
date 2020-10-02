@@ -2,6 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
+import {SafeMath as SafeMul} from "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
@@ -17,6 +18,7 @@ import "./PeriodUtils.sol";
 contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
 
     using BokkyPooBahsDateTimeLibrary for uint;
+    using SafeMul for uint;
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date
@@ -29,17 +31,17 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         uint256 newTimestamp;
 
         if (cycle.p == P.D) {
-            newTimestamp = cycleStart.addDays(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i.mul(cycleIndex));
         } else if (cycle.p == P.W) {
-            newTimestamp = cycleStart.addDays(cycle.i * 7 * cycleIndex);
+            newTimestamp = cycleStart.addDays(cycle.i.mul(7).mul(cycleIndex));
         } else if (cycle.p == P.M) {
-            newTimestamp = cycleStart.addMonths(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(cycleIndex));
         } else if (cycle.p == P.Q) {
-            newTimestamp = cycleStart.addMonths(cycle.i * 3 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(3).mul(cycleIndex));
         } else if (cycle.p == P.H) {
-            newTimestamp = cycleStart.addMonths(cycle.i * 6 * cycleIndex);
+            newTimestamp = cycleStart.addMonths(cycle.i.mul(6).mul(cycleIndex));
         } else if (cycle.p == P.Y) {
-            newTimestamp = cycleStart.addYears(cycle.i * cycleIndex);
+            newTimestamp = cycleStart.addYears(cycle.i.mul(cycleIndex));
         } else {
             revert("Schedule.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
         }
@@ -55,7 +57,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
      * @param cycleEnd end time of the cycle
      * @param cycle IPS cycle
      * @param eomc end of month convention
-     * @param addEndTime timestamp of the end of the cycle should be added to the result if it falls in the segment
+     * @param addEndDate end date of the cycle should be added to the result if it falls in the segment
      * @param segmentStart start time of the segment
      * @param segmentEnd end time of the segment
      * @return an array of timestamps from the given cycle that fall within the specified segement
@@ -65,7 +67,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         uint256 cycleEnd,
         IPS memory cycle,
         EndOfMonthConvention eomc,
-        bool addEndTime,
+        bool addEndDate,
         uint256 segmentStart,
         uint256 segmentEnd
     )
@@ -85,7 +87,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
                 index++;
             }
             if (isInSegment(cycleEnd, segmentStart, segmentEnd)) {
-                if (addEndTime == true) dates[index] = cycleEnd;
+                if (addEndDate == true) dates[index] = cycleEnd;
             }
             return dates;
         }
@@ -111,8 +113,8 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
                 : getNextCycleDate(cycle, cycleStart, cycleIndex);
         }
 
-        // add additional time at the end if addEndTime
-        if (addEndTime == true) {
+        // add additional time at the end if addEndDate
+        if (addEndDate == true) {
             if (isInSegment(cycleEnd, segmentStart, segmentEnd)) {
                 dates[index] = cycleEnd;
             }
@@ -132,14 +134,20 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
     /**
      * Computes the next date for a given an IPS cycle.
      * @param cycle IPS cycle
+     * @param eomc end of month convention
+     * @param anchorDate anchor date of the cycle
      * @param precedingDate the previous date of the cycle
+     * @param addEndDate end date of the cycle should be added to the result if it falls in the segment
+     * @param cycleEnd end date of the cyclic schedule
      * @return next date of the cycle
      */
     function computeNextCycleDateFromPrecedingDate(
         IPS memory cycle,
         EndOfMonthConvention eomc,
         uint256 anchorDate,
-        uint256 precedingDate
+        uint256 precedingDate,
+        bool addEndDate,
+        uint256 cycleEnd
     )
         internal
         pure
@@ -147,9 +155,20 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
     {
         if (cycle.isSet == false || precedingDate == 0) return anchorDate;
 
-        return (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
+        uint256 nextCyclicDate = (adjustEndOfMonthConvention(eomc, anchorDate, cycle) == EndOfMonthConvention.EOM)
             ? shiftEndOfMonth(getNextCycleDate(cycle, precedingDate, 1))
             : getNextCycleDate(cycle, precedingDate, 1);
+
+        if (addEndDate && cycleEnd != 0) {
+            // handle infinite loop (since preceding date is cycleEnd)
+            if (precedingDate == cycleEnd) return 0;
+            // add occurence at cycle end if date is greater than cycle end
+            if (nextCyclicDate > cycleEnd) return cycleEnd;
+        }
+        // remove occurence if it is one cycle end
+        if (addEndDate == false && cycleEnd != 0 && nextCyclicDate == cycleEnd) return 0;
+
+        return nextCyclicDate;
     }
 
     /*
