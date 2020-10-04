@@ -10,11 +10,19 @@ async function updateDeploymentsJson(buidlerRuntime) {
 
     const {  deployments: { log }, usrNs: { chainId, package: { contracts }}} = buidlerRuntime;
 
-    if ( !chainId || !contracts ) {
+    if (!chainId || !contracts) {
         throw new Error("unexpected Buidler Runtime Environment");
     }
 
-    const deploymentsFile = path.resolve(__dirname, '../', 'deployments.json');
+    // store addresses for ap-chain in ap-chain-snapshot
+    const deploymentsFile = (chainId !== '1994')
+        ? path.resolve(__dirname, '../', 'deployments.json')
+        : path.resolve(__dirname, '../ap-chain-snapshot', 'deployments.json');
+
+    if (!fs.existsSync(deploymentsFile)) {
+        fs.writeFileSync(deploymentsFile, JSON.stringify({}, null, 2), { encoding: 'utf-8', flag: 'w'});
+    }
+
     const deployments = JSON.parse(fs.readFileSync(deploymentsFile, 'utf8'));
 
     /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} deployed */
@@ -34,8 +42,8 @@ async function updateDeploymentsJson(buidlerRuntime) {
         (res, rej) => fs.writeFile(
             deploymentsFile,
             JSON.stringify(deployments, null, 2),
-            'utf8',
-            err => {
+            { encoding: 'utf8', flag: 'w' },
+            (err) => {
                 if (err) return rej(err);
                 log(`deployments.json saved`);
                 res();

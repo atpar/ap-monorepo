@@ -13,7 +13,7 @@ task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
 
 module.exports = {
   paths: {
-    artifacts: './test/artifacts'
+    artifacts: './build/contracts'
   },
   defaultNetwork: 'buidlerevm',
   networks: {
