@@ -1,0 +1,22 @@
+{
+  "contractName": "Checkpoint",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "checkpointId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CheckpointCreated",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea264697066735822122022fc2879520a69fce42fa5e8766e52b9589a38a5662b232028dbc600e2e4129664736f6c634300060b0033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122022fc2879520a69fce42fa5e8766e52b9589a38a5662b232028dbc600e2e4129664736f6c634300060b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

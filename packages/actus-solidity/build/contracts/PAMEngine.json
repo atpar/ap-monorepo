@@ -1,0 +1,3532 @@
+{
+  "contractName": "PAMEngine",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "MAX_CYCLE_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_EVENT_SCHEDULE_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ONE_POINT_ZERO",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "PRECISION",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum EndOfMonthConvention",
+          "name": "eomc",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startTime",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum P",
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum S",
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IPS",
+          "name": "cycle",
+          "type": "tuple"
+        }
+      ],
+      "name": "adjustEndOfMonthConvention",
+      "outputs": [
+        {
+          "internalType": "enum EndOfMonthConvention",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "segmentStart",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "segmentEnd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum EventType",
+          "name": "eventType",
+          "type": "uint8"
+        }
+      ],
+      "name": "computeCyclicScheduleSegment",
+      "outputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "enum BusinessDayConvention",
+          "name": "bdc",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum Calendar",
+          "name": "calendar",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maturityDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeEventTimeForEvent",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        }
+      ],
+      "name": "computeInitialState",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "lastScheduleTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum EventType",
+          "name": "eventType",
+          "type": "uint8"
+        }
+      ],
+      "name": "computeNextCyclicEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "segmentStart",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "segmentEnd",
+          "type": "uint256"
+        }
+      ],
+      "name": "computeNonCyclicScheduleSegment",
+      "outputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "state",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalData",
+          "type": "bytes32"
+        }
+      ],
+      "name": "computePayoffForEvent",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "state",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalData",
+          "type": "bytes32"
+        }
+      ],
+      "name": "computeStateForEvent",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "contractType",
+      "outputs": [
+        {
+          "internalType": "enum ContractType",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        }
+      ],
+      "name": "decodeEvent",
+      "outputs": [
+        {
+          "internalType": "enum EventType",
+          "name": "",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum EventType",
+          "name": "eventType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "scheduleTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "encodeEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum EventType",
+          "name": "eventType",
+          "type": "uint8"
+        }
+      ],
+      "name": "getEpochOffset",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponDay",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "name": "isEventScheduled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum BusinessDayConvention",
+          "name": "convention",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum Calendar",
+          "name": "calendar",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maturityDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "shiftCalcTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum BusinessDayConvention",
+          "name": "convention",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum Calendar",
+          "name": "calendar",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maturityDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "shiftEventTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50614223806100206000396000f3fe608060405234801561001057600080fd5b50600436106101215760003560e01c8063aaf5eb68116100ad578063e05a66e011610071578063e05a66e014610269578063e726d6801461027c578063e8d0c6721461028f578063edc0465f14610219578063f5586e05146102a257610121565b8063aaf5eb6814610211578063c40c5a9814610219578063cb2ef6f714610221578063dceda25414610236578063dd37acde1461025657610121565b80636942d1a8116100f45780636942d1a8146101a25780636f37e55b146101b557806372540003146101bd578063811322fb146101de578063931172d1146101f157610121565b8063179331f3146101265780631a2e165d1461014f5780634c7c3fd61461016f5780635ada17d81461018f575b600080fd5b61013961013436600461342e565b6102b5565b6040516101469190613a17565b60405180910390f35b61016261015d366004613366565b610385565b60405161014691906139fa565b61018261017d3660046134e9565b6103ac565b604051610146919061409c565b61016261019d366004613505565b610424565b6101826101b0366004613505565b6104f9565b610162610529565b6101d06101cb36600461334e565b610535565b604051610146929190613a25565b6101626101ec36600461346c565b61055e565b6102046101ff3660046135b9565b610572565b60405161014691906139ab565b610162610ad7565b610162610adc565b610229610ae1565b6040516101469190613a03565b6102496102443660046133ac565b610ae6565b60405161014691906139ef565b61016261026436600461354c565b610af1565b610162610277366004613487565b610de7565b61016261028a366004613988565b610e05565b61020461029d366004613583565b610f51565b6101626102b0366004613988565b6110c4565b600060018460018111156102c557fe5b1415610341576102d48361112f565b6102dd84611151565b14801561032c57506002826020015160058111156102f757fe5b1480610312575060038260200151600581111561031057fe5b145b8061032c575060048260200151600581111561032a57fe5b145b156103395750600161037e565b50600061037e565b600084600181111561034f57fe5b141561035d5750600061037e565b60405162461bcd60e51b815260040161037590613fa9565b60405180910390fd5b9392505050565b60008061039186610535565b9150506103a081868686610e05565b9150505b949350505050565b6103b46130ea565b6103bc6130ea565b60008152670de0b6b3a764000061018082018190526101608201526101a083013560208201526101e083013560608201526102c083013560e08201526102e08301356101408201526103008301356101008201526103a083013561012082015290505b919050565b60008061043961016087016101408801613317565b6001600160a01b031614158015610484575061045d61016086016101408701613317565b6001600160a01b031661047861014087016101208801613317565b6001600160a01b031614155b156104c8576104c1826104b561049f36899003890189613605565b6104ae3689900389018961388b565b8787611160565b9063ffffffff61132e16565b90506103a4565b6104f06104da36879003870187613605565b6104e93687900387018761388b565b8585611160565b95945050505050565b6105016130ea565b6104f061051336879003870187613605565b6105223687900387018761388b565b85856113cc565b670de0b6b3a764000081565b6000808060f884901c601c81111561054957fe5b92505067ffffffffffffffff83169050915091565b600081601c81111561056c57fe5b92915050565b606061057c613184565b6000600984601c81111561058c57fe5b141561069a576102408701351561069a576105a5613184565b6105e06102408901356101e08a01356105c7368c90038c016105808d016134ce565b6105d760c08d0160a08e01613412565b60018c8c61159d565b905060005b60788160ff16101561069757818160ff166078811061060057fe5b602002015161060e57610697565b886102200135828260ff166078811061062357fe5b6020020151116106325761068f565b610650828260ff166078811061064457fe5b60200201518989611787565b6106595761068f565b6106776009838360ff166078811061066d57fe5b6020020151610de7565b84846078811061068357fe5b60200201526001909201915b6001016105e5565b50505b600a84601c8111156106a857fe5b14156107ad57610240870135158015906106c6575061022087013515155b156107ad576106d36131a3565b6106e63689900389016105808a016134ce565b6001604082015290506106f7613184565b6107206102408a01356102208b01358461071760c08e0160a08f01613412565b60018d8d61159d565b905060005b60788160ff1610156107a957818160ff166078811061074057fe5b602002015161074e576107a9565b61076c828260ff166078811061076057fe5b60200201518a8a611787565b610775576107a1565b610789600a838360ff166078811061066d57fe5b85856078811061079557fe5b60200201526001909301925b600101610725565b5050505b600d84601c8111156107bb57fe5b141561088f576102608701351561088f576107d4613184565b61080f6102608901356101e08a01356107f6368c90038c016106008d016134ce565b61080660c08d0160a08e01613412565b60008c8c61159d565b905060005b60788160ff16101561088c57818160ff166078811061082f57fe5b602002015161083d5761088c565b61084f828260ff166078811061064457fe5b61085857610884565b61086c600d838360ff166078811061066d57fe5b84846078811061087857fe5b60200201526001909201915b600101610814565b50505b600384601c81111561089d57fe5b1415610958576102a087013515610958576108b6613184565b6108d86102a08901356101e08a01356105c7368c90038c016107008d016134ce565b905060005b60788160ff16101561095557818160ff16607881106108f857fe5b602002015161090657610955565b610918828260ff166078811061064457fe5b6109215761094d565b6109356003838360ff166078811061066d57fe5b84846078811061094157fe5b60200201526001909201915b6001016108dd565b50505b601284601c81111561096657fe5b1415610a4a57600061097e60e0890160c08a016134b2565b600381111561098957fe5b1415801561099b575061028087013515155b15610a4a576109a8613184565b6109ca6102808901356101e08a01356105c7368c90038c016106808d016134ce565b905060005b60788160ff161015610a4757818160ff16607881106109ea57fe5b60200201516109f857610a47565b610a0a828260ff166078811061064457fe5b610a1357610a3f565b610a276012838360ff166078811061066d57fe5b848460788110610a3357fe5b60200201526001909201915b6001016109cf565b50505b60608167ffffffffffffffff81118015610a6357600080fd5b50604051908082528060200260200182016040528015610a8d578160200160208202803683370190505b50905060005b82811015610acb57838160788110610aa757fe5b6020020151828281518110610ab857fe5b6020908102919091010152600101610a93565b50979650505050505050565b601281565b607881565b600090565b600195945050505050565b6000600982601c811115610b0157fe5b1415610ba957610b1961060085016105e08601613332565b15156001148015610b2e575061024084013515155b15610ba9576000610b6f610b4b36879003870161058088016134ce565b610b5b60c0880160a08901613412565b8761024001358760018a6101e001356117b6565b905080610b8057506000905061037e565b8461022001358111610b9657506000905061037e565b610ba1600982610de7565b91505061037e565b600a82601c811115610bb757fe5b1415610c4f5761024084013515801590610bd5575061022084013515155b15610c4f57610be26131a3565b610bf536869003860161058087016134ce565b6001604082015290506000610c2882610c1460c0890160a08a01613412565b8861024001358860018b6101e001356117b6565b905080610c3b57506000915061037e9050565b610c46600a82610de7565b9250505061037e565b600d82601c811115610c5d57fe5b1415610cc65761026084013515610cc6576000610caa610c8636879003870161060088016134ce565b610c9660c0880160a08901613412565b8761026001358760018a6101e001356117b6565b905080610cbb57506000905061037e565b610ba1600d82610de7565b600382601c811115610cd457fe5b1415610d3d576102a084013515610d3d576000610d21610cfd36879003870161070088016134ce565b610d0d60c0880160a08901613412565b876102a001358760018a6101e001356117b6565b905080610d3257506000905061037e565b610ba1600382610de7565b601282601c811115610d4b57fe5b1415610ddd576000610d6360e0860160c087016134b2565b6003811115610d6e57fe5b14158015610d80575061028084013515155b15610ddd576000610dc1610d9d36879003870161068088016134ce565b610dad60c0880160a08901613412565b8761028001358760018a6101e001356117b6565b905080610dd257506000905061037e565b610ba1601282610de7565b5060009392505050565b60008160f884601c811115610df857fe5b60ff16901b179392505050565b600081851415610e165750836103a4565b6001846008811115610e2457fe5b1480610e3b57506003846008811115610e3957fe5b145b15610e4a576104c1858461187d565b6002846008811115610e5857fe5b1480610e6f57506004846008811115610e6d57fe5b145b15610eb3576000610e80868561187d565b9050610e8b866118d9565b610e94826118d9565b1415610ea15790506103a4565b610eab86856118f0565b9150506103a4565b6005846008811115610ec157fe5b1480610ed857506007846008811115610ed657fe5b145b15610ee7576104c185846118f0565b6006846008811115610ef557fe5b1480610f0c57506008846008811115610f0a57fe5b145b15610f48576000610f1d86856118f0565b9050610f28866118d9565b610f31826118d9565b1415610f3e5790506103a4565b610eab868561187d565b50929392505050565b6060610f5b613184565b6000610200860135158015610f7b5750610f7b866101c001358686611787565b15610fa957610f906002876101c00135610de7565b828261ffff1660788110610fa057fe5b60200201526001015b61020086013515610ff257610fc48661020001358686611787565b15610ff257610fd9600f876102000135610de7565b828261ffff1660788110610fe957fe5b60200201526001015b611002866101e001358686611787565b15611030576110176014876101e00135610de7565b828261ffff166078811061102757fe5b60200201526001015b60608161ffff1667ffffffffffffffff8111801561104d57600080fd5b50604051908082528060200260200182016040528015611077578160200160208202803683370190505b50905060005b8261ffff168110156110b95783816078811061109557fe5b60200201518282815181106110a657fe5b602090810291909101015260010161107d565b509695505050505050565b600060038460088111156110d457fe5b14806110eb575060048460088111156110e957fe5b145b80611101575060078460088111156110ff57fe5b145b806111175750600884600881111561111557fe5b145b156111235750836103a4565b6104f085858585610e05565b6000808061114262015180855b0461193e565b50915091506103a482826119d4565b60006103a4620151808361113c565b600080600061116e85610535565b9092509050601c82601c81111561118157fe5b1415611192576000925050506103a4565b600a82601c8111156111a057fe5b14156111b1576000925050506103a4565b600c82601c8111156111bf57fe5b14156111d0576000925050506103a4565b600d82601c8111156111de57fe5b14156111ef576000925050506103a4565b601282601c8111156111fd57fe5b141561120e576000925050506103a4565b600b82601c81111561121c57fe5b141561122d576000925050506103a4565b600382601c81111561123b57fe5b14156112565761124d87878387611a5a565b925050506103a4565b600282601c81111561126457fe5b14156112765761124d87878387611b14565b600982601c81111561128457fe5b14156112965761124d87878387611b52565b600882601c8111156112a457fe5b14156112b65761124d87878387611bc1565b601482601c8111156112c457fe5b14156112d65761124d87878387611be2565b600782601c8111156112e457fe5b14156112f65761124d87878387611c00565b601182601c81111561130457fe5b14156113165761124d87878387611cb7565b60405162461bcd60e51b815260040161037590613ce6565b600082158061133b575081155b156113485750600061056c565b8260001914801561135c5750600160ff1b82145b156113795760405162461bcd60e51b815260040161037590613c9f565b8282028284828161138657fe5b05146113a45760405162461bcd60e51b815260040161037590613c9f565b670de0b6b3a76400008105806103a45760405162461bcd60e51b815260040161037590613bb8565b6113d46130ea565b6000806113e085610535565b9092509050601c82601c8111156113f357fe5b14156114055761124d87878387611d41565b600382601c81111561141357fe5b14156114255761124d87878387611de0565b600282601c81111561143357fe5b14156114455761124d87878387611e4a565b600a82601c81111561145357fe5b14156114655761124d87878387611e91565b600982601c81111561147357fe5b14156114855761124d87878387611f23565b600882601c81111561149357fe5b14156114a55761124d87878387611d41565b601482601c8111156114b357fe5b14156114c55761124d87878387611f7c565b600782601c8111156114d357fe5b14156114e55761124d87878387611d41565b600c82601c8111156114f357fe5b14156115055761124d87878387612014565b600d82601c81111561151357fe5b14156115255761124d878783876120b0565b601282601c81111561153357fe5b14156115455761124d87878387612201565b601182601c81111561155357fe5b14156115655761124d87878387612304565b600b82601c81111561157357fe5b14156115855761124d8787838761233b565b60405162461bcd60e51b815260040161037590613e69565b6115a5613184565b6115ad613184565b6060870151600090611615576115c48a8686611787565b156115df57898282607881106115d657fe5b60200201526001015b6115ea898686611787565b1561160d576001861515141561160d578882826078811061160757fe5b60200201525b50905061177c565b896000806116248a848d6102b5565b90505b8b8310156116b95761163a838989611787565b15611678576076841061165f5760405162461bcd60e51b815260040161037590613a90565b8285856078811061166c57fe5b60200201526001909301925b60019182019181600181111561168a57fe5b1461169f5761169a8b8e84612426565b6116b2565b6116b26116ad8c8f85612426565b61259c565b9250611627565b600189151514156116e7576116cf8c8989611787565b156116e7578b8585607881106116e157fe5b60200201525b600084118015611704575061170485600186036078811061064457fe5b156117745760008b60400151600181111561171b57fe5b1480156117285750600184115b80156117345750828c14155b156117745784846078811061174557fe5b602002015185600186036078811061175957fe5b602002015284846078811061176a57fe5b6020020160008152505b509293505050505b979650505050505050565b6000818311156117995750600061037e565b8383111580156117a95750818411155b15610ddd5750600161037e565b606086015160009015806117c8575083155b156117d4575083611873565b600060016117e388888b6102b5565b60018111156117ee57fe5b14611804576117ff88866001612426565b611813565b6118136116ad89876001612426565b905083801561182157508215155b156118495782851415611838576000915050611873565b828111156118495782915050611873565b8315801561185657508215155b801561186157508281145b15611870576000915050611873565b90505b9695505050505050565b6000600182600181111561188d57fe5b14156118d25761189c836125cb565b600614156118b6576118af8360026125de565b905061056c565b6118bf836125cb565b600714156118d2576118af8360016125de565b5090919050565b60006118e8620151808361113c565b509392505050565b6000600182600181111561190057fe5b14156118d25761190f836125cb565b60061415611922576118af8360016125f3565b61192b836125cb565b600714156118d2576118af8360026125f3565b60008080836226496581018262023ab1600483020590506004600362023ab18302010590910390600062164b09610fa0600185010205905060046105b58202058303601f019250600061098f846050028161199557fe5b0590506000605061098f83020585039050600b820560301994909401606402929092018301996002600c90940290910392909201975095509350505050565b600081600114806119e55750816003145b806119f05750816005145b806119fb5750816007145b80611a065750816008145b80611a11575081600a145b80611a1c575081600c145b15611a295750601f61056c565b81600214611a395750601e61056c565b611a4283612608565b611a4d57601c611a50565b601d5b60ff169392505050565b6000808561010001516001811115611a6e57fe5b1415611a9257846103800151611a87866040015161262d565b60000b0290506103a4565b6000611add611ab48660200151886080015189602001518a6101e001516110c4565b611acd8689608001518a602001518b6101e001516110c4565b8860600151896101e001516126f1565b90506103a0611b028660e001516104b58961038001518561132e90919063ffffffff16565b6101208701519063ffffffff6127ee16565b6000611b33856104000151866102c001516127ee90919063ffffffff16565b611b40866040015161262d565b6000190260000b029050949350505050565b600080611b75611ab48660200151886080015189602001518a6101e001516110c4565b90506103a0611baf611b9d8760e001516104b58961014001518661132e90919063ffffffff16565b6101008801519063ffffffff6127ee16565b6101608701519063ffffffff61132e16565b60008360e00151611bd5866040015161262d565b60000b0295945050505050565b60006104f08460e0015185610180015161132e90919063ffffffff16565b600080611c23611ab48660200151886080015189602001518a6101e001516110c4565b905060018660e001516003811115611c3757fe5b1415611c5c57856103c00151611c50876040015161262d565b60000b029150506103a4565b60028660e001516003811115611c6e57fe5b1415611ca157611c948560e001516104b5886103c001518461132e90919063ffffffff16565b611c50876040015161262d565b60e0850151611c9490829063ffffffff61132e16565b600080611cda611ab48660200151886080015189602001518a6101e001516110c4565b9050611d26611cff8660e001516104b58861014001518561132e90919063ffffffff16565b610100870151610420890151611d1a9163ffffffff6127ee16565b9063ffffffff6127ee16565b611d33876040015161262d565b60000b029695505050505050565b611d496130ea565b6000611d6b611ab48660200151886080015189602001518a6101e001516110c4565b9050611da2611d90826104b58860e0015189610140015161132e90919063ffffffff16565b6101008701519063ffffffff6127ee16565b61010086015260e0850151610380870151611dcd91611b029184916104b5919063ffffffff61132e16565b6101208601525050506020820152919050565b611de86130ea565b6000611e0a611ab48660200151886080015189602001518a6101e001516110c4565b9050611e2f611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015250506000610120840152506020820152919050565b611e526130ea565b846102c00151611e65866040015161262d565b60000b0260e085015250506102e083015161014083015260208201526103009091015161010082015290565b611e996130ea565b6000611ebb611ab48660200151886080015189602001518a6101e001516110c4565b9050611ef4611ee3611b9d836104b58960e001518a610140015161132e90919063ffffffff16565b60e08701519063ffffffff6127ee16565b60e086018190526000610100870152610380870151611dcd91611b029184916104b5919063ffffffff61132e16565b611f2b6130ea565b6000611f4d611ab48660200151886080015189602001518a6101e001516110c4565b600061010087015260e0860151610380880151919250611dcd91611b029184916104b59163ffffffff61132e16565b611f846130ea565b6000611fa6611ab48660200151886080015189602001518a6101e001516110c4565b9050611fcb611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e0850151610380870151611ff691611b029184916104b5919063ffffffff61132e16565b6101208601525050600060e084015250600482526020820152919050565b61201c6130ea565b600061203e611ab48660200151886080015189602001518a6101e001516110c4565b9050612063611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e085015161038087015161208e91611b029184916104b5919063ffffffff61132e16565b6101208601525050506103609290920151610140820152602081019190915290565b6120b86130ea565b6103408501516103208601516000916120dc91611d1a90869063ffffffff61132e16565b905060006120f88661014001518361283490919063ffffffff16565b905061212787610480015161211b896104a001518461287a90919063ffffffff16565b9063ffffffff61288a16565b610140870151909150612140908263ffffffff6127ee16565b915061216387610440015161211b8961046001518561287a90919063ffffffff16565b915060006121b061218788602001518a608001518b602001518c6101e001516110c4565b6121a0888b608001518c602001518d6101e001516110c4565b8a606001518b6101e001516126f1565b90506121e76121d5826104b58a60e001518b610140015161132e90919063ffffffff16565b6101008901519063ffffffff6127ee16565b610100880152505061014085015250506020820152919050565b6122096130ea565b600061222b611ab48660200151886080015189602001518a6101e001516110c4565b9050612250611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e085015161038087015161227b91611b029184916104b5919063ffffffff61132e16565b61012086015260018660c00151600381111561229357fe5b14806122ae575060038660c0015160038111156122ac57fe5b145b156122bc5760006101608601525b60028660c0015160038111156122ce57fe5b14806122e9575060038660c0015160038111156122e757fe5b145b156122f75760006101808601525b5050506020820152919050565b61230c6130ea565b5050600060e0830181905261014083018190526101008301819052610120830152600582526020820152919050565b6123436130ea565b6000846040015160001461235b578460400151612374565b6123748487608001518860200151896101e00151610e05565b6104c0870151604001519091508390600090156123af57600061239c896104c001518561289a565b90508083116123ad57600180895291505b505b876104e001516040015180156123c3575080155b156123f25760006123d9896104e001518561289a565b90508083116123eb57600288526123f0565b600388525b505b604087015161241a576124148689608001518a602001518b6101e00151610e05565b60408801525b50949695505050505050565b600080808560200151600581111561243a57fe5b14156124635784516104c190612456908563ffffffff6129e316565b859063ffffffff6125de16565b60018560200151600581111561247557fe5b14156124a45784516104c19061245690859061249890600763ffffffff6129e316565b9063ffffffff6129e316565b6002856020015160058111156124b657fe5b14156124df5784516104c1906124d2908563ffffffff6129e316565b859063ffffffff612a1d16565b6003856020015160058111156124f157fe5b14156125145784516104c1906124d290859061249890600363ffffffff6129e316565b60048560200151600581111561252657fe5b14156125495784516104c1906124d290859061249890600663ffffffff6129e316565b60058560200151600581111561255b57fe5b14156125845784516104c190612577908563ffffffff6129e316565b859063ffffffff612a9716565b60405162461bcd60e51b815260040161037590613ade565b6000806000806125ab85612abe565b9194509250905060006125be84846119d4565b9050611873848483612adc565b6007620151809091046003010660010190565b62015180810282018281101561056c57600080fd5b62015180810282038281111561056c57600080fd5b60006004820615801561261d57506064820615155b8061056c57505061019090061590565b60008082600c81111561263c57fe5b141561264a5750600161041f565b600182600c81111561265857fe5b1415612667575060001961041f565b600682600c81111561267557fe5b14156126835750600161041f565b600782600c81111561269157fe5b14156126a0575060001961041f565b600282600c8111156126ae57fe5b14156126bc5750600161041f565b600382600c8111156126ca57fe5b14156126d9575060001961041f565b60405162461bcd60e51b815260040161037590613c4b565b6000848410156127135760405162461bcd60e51b815260040161037590613de1565b600083600581111561272157fe5b1415612731576104c18585612af6565b600183600581111561273f57fe5b141561274f576104c18585612c0a565b600283600581111561275d57fe5b141561276d576104c18585612c35565b600483600581111561277b57fe5b141561278b576104c18585612c54565b600383600581111561279957fe5b14156127aa576104c1858584612d15565b60058360058111156127b857fe5b14156127d65760405162461bcd60e51b815260040161037590613d33565b60405162461bcd60e51b815260040161037590613b2c565b60008282018183128015906128035750838112155b80612818575060008312801561281857508381125b61037e5760405162461bcd60e51b815260040161037590613c0a565b60008183038183128015906128495750838113155b8061285e575060008312801561285e57508381135b61037e5760405162461bcd60e51b815260040161037590614014565b6000818312156118d25750919050565b6000818313156118d2578161037e565b60008080846020015160058111156128ae57fe5b14156128ce5783516128c790849063ffffffff6125de16565b905061037e565b6001846020015160058111156128e057fe5b141561290a5783516128c7906128fd90600763ffffffff6129e316565b849063ffffffff6125de16565b60028460200151600581111561291c57fe5b14156129355783516128c790849063ffffffff612a1d16565b60038460200151600581111561294757fe5b14156129715783516128c79061296490600363ffffffff6129e316565b849063ffffffff612a1d16565b60048460200151600581111561298357fe5b14156129a05783516128c79061296490600663ffffffff6129e316565b6005846020015160058111156129b257fe5b14156129cb5783516128c790849063ffffffff612a9716565b60405162461bcd60e51b815260040161037590613f4c565b6000826129f25750600061056c565b828202828482816129ff57fe5b041461037e5760405162461bcd60e51b815260040161037590613e28565b6000808080612a2f620151808761113c565b600c918801600019810183810494909401965094509250900660010191506000612a5984846119d4565b905080821115612a67578091505b62015180870662015180612a7c868686612deb565b0201945086851015612a8d57600080fd5b5050505092915050565b6000808080612aa9620151808761113c565b9187019450925090506000612a5984846119d4565b60008080612acf620151808561113c565b9196909550909350915050565b600062015180612aed858585612deb565b02949350505050565b600080612b0284612e67565b90506000612b0f84612e67565b90506000612b1c86612e7f565b612b285761016d612b2c565b61016e5b61ffff16905081831415612b5e57612b5481612b488888612e9c565b9063ffffffff612eb716565b935050505061056c565b6000612b6986612e7f565b612b755761016d612b79565b61016e5b61ffff1690506000612baa83612b488a612ba5612b9d8a600163ffffffff612f7316565b600180612adc565b612e9c565b90506000612bc783612b48612bc188600180612adc565b8b612e9c565b9050612bfd612bed6001612be1888a63ffffffff612f9816565b9063ffffffff612f9816565b611d1a848463ffffffff6127ee16565b9998505050505050505050565b600061037e610168612b4862015180612c29868863ffffffff612f9816565b9063ffffffff612fda16565b600061037e61016d612b4862015180612c29868863ffffffff612f9816565b6000806000806000806000612c6889612abe565b975095509350612c7788612abe565b945092509050601f861415612c8b57601e95505b82601f1415612c9957601e92505b6000612cab848863ffffffff61283416565b90506000612cbf848863ffffffff61283416565b90506000612cd3848863ffffffff61283416565b9050612d05610168612b4885611d1a612cf387601e63ffffffff61301c16565b611d1a8761016863ffffffff61301c16565b9c9b505050505050505050505050565b6000806000806000806000612d298a612abe565b975095509350612d3889612abe565b945092509050612d478a61112f565b861415612d5357601e95505b8789148015612d625750816002145b158015612d765750612d738961112f565b83145b15612d8057601e92505b6000612d92848863ffffffff61283416565b90506000612da6848863ffffffff61283416565b90506000612dba848863ffffffff61283416565b9050612dda610168612b4885611d1a612cf387601e63ffffffff61301c16565b9d9c50505050505050505050505050565b60006107b2841015612dfc57600080fd5b838383600062253d8c600460036064611324600c600d19890105890101050205600c80600d19870105600c02600287030361016f0281612e3857fe5b0560046105b5600c600d1989010589016112c0010205617d4b8603010103039050809450505050509392505050565b6000612e76620151808361113c565b50909392505050565b600080612e8f620151808461113c565b5050905061037e81612608565b600081831115612eab57600080fd5b50620151809190030490565b600081612ed65760405162461bcd60e51b815260040161037590614058565b82612ee35750600061056c565b670de0b6b3a764000083810290848281612ef957fe5b0514612f175760405162461bcd60e51b815260040161037590613f06565b82600019148015612f2b5750600160ff1b84145b15612f485760405162461bcd60e51b815260040161037590613f06565b6000838281612f5357fe5b059050806103a45760405162461bcd60e51b815260040161037590613d90565b60008282018381101561037e5760405162461bcd60e51b815260040161037590613b81565b600061037e83836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f770000815250613087565b600061037e83836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f0000000000008152506130b3565b60008261302b5750600061056c565b8260001914801561303f5750600160ff1b82145b1561305c5760405162461bcd60e51b815260040161037590613ebf565b8282028284828161306957fe5b051461037e5760405162461bcd60e51b815260040161037590613ebf565b600081848411156130ab5760405162461bcd60e51b81526004016103759190613a3d565b505050900390565b600081836130d45760405162461bcd60e51b81526004016103759190613a3d565b5060008385816130e057fe5b0495945050505050565b6040805161028081019091528060008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081525090565b60405180610f0001604052806078906020820280368337509192915050565b604080516080810190915260008082526020820190815260200160008152600060209091015290565b80356001600160a01b038116811461056c57600080fd5b80356009811061056c57600080fd5b803561056c816141b9565b803561056c816141c6565b8035600d811061056c57600080fd5b80356013811061056c57600080fd5b8035601d811061056c57600080fd5b803561056c816141e0565b600060808284031215613251578081fd5b61325b6080614181565b905081358152602082013561326f816141c6565b60208201526040820135613282816141b9565b60408201526060820135613295816141a8565b606082015292915050565b6000606082840312156132b1578081fd5b6132bb6060614181565b90508135815260208201356132cf816141c6565b602082015260408201356132e2816141a8565b604082015292915050565b600061078082840312156132ff578081fd5b50919050565b600061028082840312156132ff578081fd5b600060208284031215613328578081fd5b61037e83836131cc565b600060208284031215613343578081fd5b813561037e816141a8565b60006020828403121561335f578081fd5b5035919050565b6000806000806080858703121561337b578283fd5b8435935061338c86602087016131e3565b9250604085013561339c816141b9565b9396929550929360600135925050565b6000806000806000610cc086880312156133c4578283fd5b853594506133d587602088016132ed565b93506133e5876107a08801613305565b9250610a208601356133f6816141a8565b915061340687610a408801613305565b90509295509295909350565b600060208284031215613423578081fd5b813561037e816141b9565b600080600060c08486031215613442578081fd5b833561344d816141b9565b9250602084013591506134638560408601613240565b90509250925092565b60006020828403121561347d578081fd5b61037e8383613226565b60008060408385031215613499578182fd5b82356134a4816141d3565b946020939093013593505050565b6000602082840312156134c3578081fd5b813561037e816141e0565b6000608082840312156134df578081fd5b61037e8383613240565b600061078082840312156134fb578081fd5b61037e83836132ed565b600080600080610a40858703121561351b578182fd5b61352586866132ed565b9350613535866107808701613305565b9396939550505050610a0082013591610a20013590565b60008060006107c08486031215613561578081fd5b61356b85856132ed565b92506107808401359150613463856107a08601613226565b60008060006107c08486031215613598578081fd5b6135a285856132ed565b9561078085013595506107a0909401359392505050565b6000806000806107e085870312156135cf578182fd5b6135d986866132ed565b935061078085013592506107a085013591506107c08501356135fa816141d3565b939692955090935050565b60006107808284031215613617578081fd5b61058061362381614181565b61362d8585613217565b815261363c85602086016131f2565b602082015261364e8560408601613208565b604082015261366085606086016131fd565b606082015261367285608086016131e3565b60808201526136848560a086016131f2565b60a08201526136968560c08601613235565b60c08201526136a88560e08601613235565b60e08201526101006136bc868287016131f2565b908201526101206136cf868683016131cc565b908201526101406136e2868683016131cc565b90820152610160848101359082015261018080850135908201526101a080850135908201526101c080850135908201526101e08085013590820152610200808501359082015261022080850135908201526102408085013590820152610260808501359082015261028080850135908201526102a080850135908201526102c080850135908201526102e08085013590820152610300808501359082015261032080850135908201526103408085013590820152610360808501359082015261038080850135908201526103a080850135908201526103c080850135908201526103e08085013590820152610400808501359082015261042080850135908201526104408085013590820152610460808501359082015261048080850135908201526104a080850135908201526104c061381e868287016132a0565b90820152610520613831868683016132a0565b6104e083015261384386848701613240565b610500830152613857866106008701613240565b90820152613869856106808601613240565b61054082015261387d856107008601613240565b610560820152949350505050565b600061028080838503121561389e578182fd5b6138a781614181565b6138b185856131fd565b81526020848101359082015260408085013590820152606080850135908201526080808501359082015260a0808501359082015260c0808501359082015260e08085013590820152610100808501359082015261012080850135908201526101408085013590820152610160808501359082015261018080850135908201526101a080850135908201526101c080850135908201526101e080850135908201526102008085013590820152610220808501359082015261024080850135908201526102609384013593810193909352509092915050565b6000806000806080858703121561337b578182fd5b600681106139a757fe5b9052565b6020808252825182820181905260009190848201906040850190845b818110156139e3578351835292840192918401916001016139c7565b50909695505050505050565b901515815260200190565b90815260200190565b6020810160138310613a1157fe5b91905290565b6020810160028310613a1157fe5b60408101601d8410613a3357fe5b9281526020015290565b6000602080835283518082850152825b81811015613a6957858101830151858201604001528201613a4d565b81811115613a7a5783604083870101525b50601f01601f1916929092016040019392505050565b6020808252602e908201527f5363686564756c652e636f6d70757465446174657346726f6d4379636c653a2060408201526d4d41585f4359434c455f53495a4560901b606082015260800190565b6020808252602e908201527f5363686564756c652e6765744e6578744379636c65446174653a20415454524960408201526d1095551157d393d517d193d5539160921b606082015260800190565b60208082526035908201527f446179436f756e74436f6e76656e74696f6e2e796561724672616374696f6e3a6040820152741020aa2a2924a12aaa22afa727aa2fa327aaa7221760591b606082015260800190565b6020808252601b908201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604082015260600190565b60208082526032908201527f5369676e65644d6174682e666c6f61744d756c743a2043414e4e4f545f524550604082015271524553454e545f4752414e554c415249545960701b606082015260800190565b60208082526021908201527f5369676e6564536166654d6174683a206164646974696f6e206f766572666c6f6040820152607760f81b606082015260800190565b60208082526034908201527f436f6e7472616374526f6c65436f6e76656e74696f6e2e726f6c655369676e3a6040820152730810551514925095551157d393d517d193d5539160621b606082015260800190565b60208082526027908201527f5369676e65644d6174682e666c6f61744d756c743a204f564552464c4f575f4460408201526611551150d5115160ca1b606082015260800190565b6020808252602d908201527f50414d456e67696e652e7061796f666646756e6374696f6e3a2041545452494260408201526c15551157d393d517d193d55391609a1b606082015260800190565b60208082526039908201527f446179436f756e74436f6e76656e74696f6e2e796561724672616374696f6e3a60408201527f204154545249425554455f4e4f545f535550504f525445442e00000000000000606082015260800190565b60208082526031908201527f5369676e65644d6174682e666c6f61744469763a2043414e4e4f545f524550526040820152704553454e545f4752414e554c415249545960781b606082015260800190565b60208082526027908201527f436f72652e796561724672616374696f6e3a2053544152545f4e4f545f42454660408201526613d49157d1539160ca1b606082015260800190565b60208082526021908201527f536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f6040820152607760f81b606082015260800190565b60208082526036908201527f50414d456e67696e652e73746174655472616e736974696f6e46756e6374696f6040820152751b8e8810551514925095551157d393d517d193d5539160521b606082015260800190565b60208082526027908201527f5369676e6564536166654d6174683a206d756c7469706c69636174696f6e206f604082015266766572666c6f7760c81b606082015260800190565b60208082526026908201527f5369676e65644d6174682e666c6f61744469763a204f564552464c4f575f4445604082015265151150d5115160d21b606082015260800190565b60208082526037908201527f506572696f645574696c732e67657454696d657374616d70506c75735065726960408201527f6f643a204154545249425554455f4e4f545f464f554e44000000000000000000606082015260800190565b60208082526045908201527f456e644f664d6f6e7468436f6e76656e74696f6e2e61646a757374456e644f6660408201527f4d6f6e7468436f6e76656e74696f6e3a204154545249425554455f4e4f545f4660608201526427aaa7221760d91b608082015260a00190565b60208082526024908201527f5369676e6564536166654d6174683a207375627472616374696f6e206f766572604082015263666c6f7760e01b606082015260800190565b60208082526024908201527f5369676e65644d6174682e666c6f61744469763a20444956494445445f42595f6040820152635a45524f60e01b606082015260800190565b6000610280820190506140b082845161399d565b6020838101519083015260408084015190830152606080840151908301526080808401519083015260a0808401519083015260c0808401519083015260e08084015190830152610100808401519083015261012080840151908301526101408084015190830152610160808401519083015261018080840151908301526101a080840151908301526101c080840151908301526101e0808401519083015261020080840151908301526102208084015190830152610240808401519083015261026092830151929091019190915290565b60405181810167ffffffffffffffff811182821017156141a057600080fd5b604052919050565b80151581146141b657600080fd5b50565b600281106141b657600080fd5b600681106141b657600080fd5b601d81106141b657600080fd5b600481106141b657600080fdfea2646970667358221220d52fee44c494f2b39ed4f148251f6a1f6136becc1e4ee45f68fa293e9fa9fb3864736f6c634300060b0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106101215760003560e01c8063aaf5eb68116100ad578063e05a66e011610071578063e05a66e014610269578063e726d6801461027c578063e8d0c6721461028f578063edc0465f14610219578063f5586e05146102a257610121565b8063aaf5eb6814610211578063c40c5a9814610219578063cb2ef6f714610221578063dceda25414610236578063dd37acde1461025657610121565b80636942d1a8116100f45780636942d1a8146101a25780636f37e55b146101b557806372540003146101bd578063811322fb146101de578063931172d1146101f157610121565b8063179331f3146101265780631a2e165d1461014f5780634c7c3fd61461016f5780635ada17d81461018f575b600080fd5b61013961013436600461342e565b6102b5565b6040516101469190613a17565b60405180910390f35b61016261015d366004613366565b610385565b60405161014691906139fa565b61018261017d3660046134e9565b6103ac565b604051610146919061409c565b61016261019d366004613505565b610424565b6101826101b0366004613505565b6104f9565b610162610529565b6101d06101cb36600461334e565b610535565b604051610146929190613a25565b6101626101ec36600461346c565b61055e565b6102046101ff3660046135b9565b610572565b60405161014691906139ab565b610162610ad7565b610162610adc565b610229610ae1565b6040516101469190613a03565b6102496102443660046133ac565b610ae6565b60405161014691906139ef565b61016261026436600461354c565b610af1565b610162610277366004613487565b610de7565b61016261028a366004613988565b610e05565b61020461029d366004613583565b610f51565b6101626102b0366004613988565b6110c4565b600060018460018111156102c557fe5b1415610341576102d48361112f565b6102dd84611151565b14801561032c57506002826020015160058111156102f757fe5b1480610312575060038260200151600581111561031057fe5b145b8061032c575060048260200151600581111561032a57fe5b145b156103395750600161037e565b50600061037e565b600084600181111561034f57fe5b141561035d5750600061037e565b60405162461bcd60e51b815260040161037590613fa9565b60405180910390fd5b9392505050565b60008061039186610535565b9150506103a081868686610e05565b9150505b949350505050565b6103b46130ea565b6103bc6130ea565b60008152670de0b6b3a764000061018082018190526101608201526101a083013560208201526101e083013560608201526102c083013560e08201526102e08301356101408201526103008301356101008201526103a083013561012082015290505b919050565b60008061043961016087016101408801613317565b6001600160a01b031614158015610484575061045d61016086016101408701613317565b6001600160a01b031661047861014087016101208801613317565b6001600160a01b031614155b156104c8576104c1826104b561049f36899003890189613605565b6104ae3689900389018961388b565b8787611160565b9063ffffffff61132e16565b90506103a4565b6104f06104da36879003870187613605565b6104e93687900387018761388b565b8585611160565b95945050505050565b6105016130ea565b6104f061051336879003870187613605565b6105223687900387018761388b565b85856113cc565b670de0b6b3a764000081565b6000808060f884901c601c81111561054957fe5b92505067ffffffffffffffff83169050915091565b600081601c81111561056c57fe5b92915050565b606061057c613184565b6000600984601c81111561058c57fe5b141561069a576102408701351561069a576105a5613184565b6105e06102408901356101e08a01356105c7368c90038c016105808d016134ce565b6105d760c08d0160a08e01613412565b60018c8c61159d565b905060005b60788160ff16101561069757818160ff166078811061060057fe5b602002015161060e57610697565b886102200135828260ff166078811061062357fe5b6020020151116106325761068f565b610650828260ff166078811061064457fe5b60200201518989611787565b6106595761068f565b6106776009838360ff166078811061066d57fe5b6020020151610de7565b84846078811061068357fe5b60200201526001909201915b6001016105e5565b50505b600a84601c8111156106a857fe5b14156107ad57610240870135158015906106c6575061022087013515155b156107ad576106d36131a3565b6106e63689900389016105808a016134ce565b6001604082015290506106f7613184565b6107206102408a01356102208b01358461071760c08e0160a08f01613412565b60018d8d61159d565b905060005b60788160ff1610156107a957818160ff166078811061074057fe5b602002015161074e576107a9565b61076c828260ff166078811061076057fe5b60200201518a8a611787565b610775576107a1565b610789600a838360ff166078811061066d57fe5b85856078811061079557fe5b60200201526001909301925b600101610725565b5050505b600d84601c8111156107bb57fe5b141561088f576102608701351561088f576107d4613184565b61080f6102608901356101e08a01356107f6368c90038c016106008d016134ce565b61080660c08d0160a08e01613412565b60008c8c61159d565b905060005b60788160ff16101561088c57818160ff166078811061082f57fe5b602002015161083d5761088c565b61084f828260ff166078811061064457fe5b61085857610884565b61086c600d838360ff166078811061066d57fe5b84846078811061087857fe5b60200201526001909201915b600101610814565b50505b600384601c81111561089d57fe5b1415610958576102a087013515610958576108b6613184565b6108d86102a08901356101e08a01356105c7368c90038c016107008d016134ce565b905060005b60788160ff16101561095557818160ff16607881106108f857fe5b602002015161090657610955565b610918828260ff166078811061064457fe5b6109215761094d565b6109356003838360ff166078811061066d57fe5b84846078811061094157fe5b60200201526001909201915b6001016108dd565b50505b601284601c81111561096657fe5b1415610a4a57600061097e60e0890160c08a016134b2565b600381111561098957fe5b1415801561099b575061028087013515155b15610a4a576109a8613184565b6109ca6102808901356101e08a01356105c7368c90038c016106808d016134ce565b905060005b60788160ff161015610a4757818160ff16607881106109ea57fe5b60200201516109f857610a47565b610a0a828260ff166078811061064457fe5b610a1357610a3f565b610a276012838360ff166078811061066d57fe5b848460788110610a3357fe5b60200201526001909201915b6001016109cf565b50505b60608167ffffffffffffffff81118015610a6357600080fd5b50604051908082528060200260200182016040528015610a8d578160200160208202803683370190505b50905060005b82811015610acb57838160788110610aa757fe5b6020020151828281518110610ab857fe5b6020908102919091010152600101610a93565b50979650505050505050565b601281565b607881565b600090565b600195945050505050565b6000600982601c811115610b0157fe5b1415610ba957610b1961060085016105e08601613332565b15156001148015610b2e575061024084013515155b15610ba9576000610b6f610b4b36879003870161058088016134ce565b610b5b60c0880160a08901613412565b8761024001358760018a6101e001356117b6565b905080610b8057506000905061037e565b8461022001358111610b9657506000905061037e565b610ba1600982610de7565b91505061037e565b600a82601c811115610bb757fe5b1415610c4f5761024084013515801590610bd5575061022084013515155b15610c4f57610be26131a3565b610bf536869003860161058087016134ce565b6001604082015290506000610c2882610c1460c0890160a08a01613412565b8861024001358860018b6101e001356117b6565b905080610c3b57506000915061037e9050565b610c46600a82610de7565b9250505061037e565b600d82601c811115610c5d57fe5b1415610cc65761026084013515610cc6576000610caa610c8636879003870161060088016134ce565b610c9660c0880160a08901613412565b8761026001358760018a6101e001356117b6565b905080610cbb57506000905061037e565b610ba1600d82610de7565b600382601c811115610cd457fe5b1415610d3d576102a084013515610d3d576000610d21610cfd36879003870161070088016134ce565b610d0d60c0880160a08901613412565b876102a001358760018a6101e001356117b6565b905080610d3257506000905061037e565b610ba1600382610de7565b601282601c811115610d4b57fe5b1415610ddd576000610d6360e0860160c087016134b2565b6003811115610d6e57fe5b14158015610d80575061028084013515155b15610ddd576000610dc1610d9d36879003870161068088016134ce565b610dad60c0880160a08901613412565b8761028001358760018a6101e001356117b6565b905080610dd257506000905061037e565b610ba1601282610de7565b5060009392505050565b60008160f884601c811115610df857fe5b60ff16901b179392505050565b600081851415610e165750836103a4565b6001846008811115610e2457fe5b1480610e3b57506003846008811115610e3957fe5b145b15610e4a576104c1858461187d565b6002846008811115610e5857fe5b1480610e6f57506004846008811115610e6d57fe5b145b15610eb3576000610e80868561187d565b9050610e8b866118d9565b610e94826118d9565b1415610ea15790506103a4565b610eab86856118f0565b9150506103a4565b6005846008811115610ec157fe5b1480610ed857506007846008811115610ed657fe5b145b15610ee7576104c185846118f0565b6006846008811115610ef557fe5b1480610f0c57506008846008811115610f0a57fe5b145b15610f48576000610f1d86856118f0565b9050610f28866118d9565b610f31826118d9565b1415610f3e5790506103a4565b610eab868561187d565b50929392505050565b6060610f5b613184565b6000610200860135158015610f7b5750610f7b866101c001358686611787565b15610fa957610f906002876101c00135610de7565b828261ffff1660788110610fa057fe5b60200201526001015b61020086013515610ff257610fc48661020001358686611787565b15610ff257610fd9600f876102000135610de7565b828261ffff1660788110610fe957fe5b60200201526001015b611002866101e001358686611787565b15611030576110176014876101e00135610de7565b828261ffff166078811061102757fe5b60200201526001015b60608161ffff1667ffffffffffffffff8111801561104d57600080fd5b50604051908082528060200260200182016040528015611077578160200160208202803683370190505b50905060005b8261ffff168110156110b95783816078811061109557fe5b60200201518282815181106110a657fe5b602090810291909101015260010161107d565b509695505050505050565b600060038460088111156110d457fe5b14806110eb575060048460088111156110e957fe5b145b80611101575060078460088111156110ff57fe5b145b806111175750600884600881111561111557fe5b145b156111235750836103a4565b6104f085858585610e05565b6000808061114262015180855b0461193e565b50915091506103a482826119d4565b60006103a4620151808361113c565b600080600061116e85610535565b9092509050601c82601c81111561118157fe5b1415611192576000925050506103a4565b600a82601c8111156111a057fe5b14156111b1576000925050506103a4565b600c82601c8111156111bf57fe5b14156111d0576000925050506103a4565b600d82601c8111156111de57fe5b14156111ef576000925050506103a4565b601282601c8111156111fd57fe5b141561120e576000925050506103a4565b600b82601c81111561121c57fe5b141561122d576000925050506103a4565b600382601c81111561123b57fe5b14156112565761124d87878387611a5a565b925050506103a4565b600282601c81111561126457fe5b14156112765761124d87878387611b14565b600982601c81111561128457fe5b14156112965761124d87878387611b52565b600882601c8111156112a457fe5b14156112b65761124d87878387611bc1565b601482601c8111156112c457fe5b14156112d65761124d87878387611be2565b600782601c8111156112e457fe5b14156112f65761124d87878387611c00565b601182601c81111561130457fe5b14156113165761124d87878387611cb7565b60405162461bcd60e51b815260040161037590613ce6565b600082158061133b575081155b156113485750600061056c565b8260001914801561135c5750600160ff1b82145b156113795760405162461bcd60e51b815260040161037590613c9f565b8282028284828161138657fe5b05146113a45760405162461bcd60e51b815260040161037590613c9f565b670de0b6b3a76400008105806103a45760405162461bcd60e51b815260040161037590613bb8565b6113d46130ea565b6000806113e085610535565b9092509050601c82601c8111156113f357fe5b14156114055761124d87878387611d41565b600382601c81111561141357fe5b14156114255761124d87878387611de0565b600282601c81111561143357fe5b14156114455761124d87878387611e4a565b600a82601c81111561145357fe5b14156114655761124d87878387611e91565b600982601c81111561147357fe5b14156114855761124d87878387611f23565b600882601c81111561149357fe5b14156114a55761124d87878387611d41565b601482601c8111156114b357fe5b14156114c55761124d87878387611f7c565b600782601c8111156114d357fe5b14156114e55761124d87878387611d41565b600c82601c8111156114f357fe5b14156115055761124d87878387612014565b600d82601c81111561151357fe5b14156115255761124d878783876120b0565b601282601c81111561153357fe5b14156115455761124d87878387612201565b601182601c81111561155357fe5b14156115655761124d87878387612304565b600b82601c81111561157357fe5b14156115855761124d8787838761233b565b60405162461bcd60e51b815260040161037590613e69565b6115a5613184565b6115ad613184565b6060870151600090611615576115c48a8686611787565b156115df57898282607881106115d657fe5b60200201526001015b6115ea898686611787565b1561160d576001861515141561160d578882826078811061160757fe5b60200201525b50905061177c565b896000806116248a848d6102b5565b90505b8b8310156116b95761163a838989611787565b15611678576076841061165f5760405162461bcd60e51b815260040161037590613a90565b8285856078811061166c57fe5b60200201526001909301925b60019182019181600181111561168a57fe5b1461169f5761169a8b8e84612426565b6116b2565b6116b26116ad8c8f85612426565b61259c565b9250611627565b600189151514156116e7576116cf8c8989611787565b156116e7578b8585607881106116e157fe5b60200201525b600084118015611704575061170485600186036078811061064457fe5b156117745760008b60400151600181111561171b57fe5b1480156117285750600184115b80156117345750828c14155b156117745784846078811061174557fe5b602002015185600186036078811061175957fe5b602002015284846078811061176a57fe5b6020020160008152505b509293505050505b979650505050505050565b6000818311156117995750600061037e565b8383111580156117a95750818411155b15610ddd5750600161037e565b606086015160009015806117c8575083155b156117d4575083611873565b600060016117e388888b6102b5565b60018111156117ee57fe5b14611804576117ff88866001612426565b611813565b6118136116ad89876001612426565b905083801561182157508215155b156118495782851415611838576000915050611873565b828111156118495782915050611873565b8315801561185657508215155b801561186157508281145b15611870576000915050611873565b90505b9695505050505050565b6000600182600181111561188d57fe5b14156118d25761189c836125cb565b600614156118b6576118af8360026125de565b905061056c565b6118bf836125cb565b600714156118d2576118af8360016125de565b5090919050565b60006118e8620151808361113c565b509392505050565b6000600182600181111561190057fe5b14156118d25761190f836125cb565b60061415611922576118af8360016125f3565b61192b836125cb565b600714156118d2576118af8360026125f3565b60008080836226496581018262023ab1600483020590506004600362023ab18302010590910390600062164b09610fa0600185010205905060046105b58202058303601f019250600061098f846050028161199557fe5b0590506000605061098f83020585039050600b820560301994909401606402929092018301996002600c90940290910392909201975095509350505050565b600081600114806119e55750816003145b806119f05750816005145b806119fb5750816007145b80611a065750816008145b80611a11575081600a145b80611a1c575081600c145b15611a295750601f61056c565b81600214611a395750601e61056c565b611a4283612608565b611a4d57601c611a50565b601d5b60ff169392505050565b6000808561010001516001811115611a6e57fe5b1415611a9257846103800151611a87866040015161262d565b60000b0290506103a4565b6000611add611ab48660200151886080015189602001518a6101e001516110c4565b611acd8689608001518a602001518b6101e001516110c4565b8860600151896101e001516126f1565b90506103a0611b028660e001516104b58961038001518561132e90919063ffffffff16565b6101208701519063ffffffff6127ee16565b6000611b33856104000151866102c001516127ee90919063ffffffff16565b611b40866040015161262d565b6000190260000b029050949350505050565b600080611b75611ab48660200151886080015189602001518a6101e001516110c4565b90506103a0611baf611b9d8760e001516104b58961014001518661132e90919063ffffffff16565b6101008801519063ffffffff6127ee16565b6101608701519063ffffffff61132e16565b60008360e00151611bd5866040015161262d565b60000b0295945050505050565b60006104f08460e0015185610180015161132e90919063ffffffff16565b600080611c23611ab48660200151886080015189602001518a6101e001516110c4565b905060018660e001516003811115611c3757fe5b1415611c5c57856103c00151611c50876040015161262d565b60000b029150506103a4565b60028660e001516003811115611c6e57fe5b1415611ca157611c948560e001516104b5886103c001518461132e90919063ffffffff16565b611c50876040015161262d565b60e0850151611c9490829063ffffffff61132e16565b600080611cda611ab48660200151886080015189602001518a6101e001516110c4565b9050611d26611cff8660e001516104b58861014001518561132e90919063ffffffff16565b610100870151610420890151611d1a9163ffffffff6127ee16565b9063ffffffff6127ee16565b611d33876040015161262d565b60000b029695505050505050565b611d496130ea565b6000611d6b611ab48660200151886080015189602001518a6101e001516110c4565b9050611da2611d90826104b58860e0015189610140015161132e90919063ffffffff16565b6101008701519063ffffffff6127ee16565b61010086015260e0850151610380870151611dcd91611b029184916104b5919063ffffffff61132e16565b6101208601525050506020820152919050565b611de86130ea565b6000611e0a611ab48660200151886080015189602001518a6101e001516110c4565b9050611e2f611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015250506000610120840152506020820152919050565b611e526130ea565b846102c00151611e65866040015161262d565b60000b0260e085015250506102e083015161014083015260208201526103009091015161010082015290565b611e996130ea565b6000611ebb611ab48660200151886080015189602001518a6101e001516110c4565b9050611ef4611ee3611b9d836104b58960e001518a610140015161132e90919063ffffffff16565b60e08701519063ffffffff6127ee16565b60e086018190526000610100870152610380870151611dcd91611b029184916104b5919063ffffffff61132e16565b611f2b6130ea565b6000611f4d611ab48660200151886080015189602001518a6101e001516110c4565b600061010087015260e0860151610380880151919250611dcd91611b029184916104b59163ffffffff61132e16565b611f846130ea565b6000611fa6611ab48660200151886080015189602001518a6101e001516110c4565b9050611fcb611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e0850151610380870151611ff691611b029184916104b5919063ffffffff61132e16565b6101208601525050600060e084015250600482526020820152919050565b61201c6130ea565b600061203e611ab48660200151886080015189602001518a6101e001516110c4565b9050612063611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e085015161038087015161208e91611b029184916104b5919063ffffffff61132e16565b6101208601525050506103609290920151610140820152602081019190915290565b6120b86130ea565b6103408501516103208601516000916120dc91611d1a90869063ffffffff61132e16565b905060006120f88661014001518361283490919063ffffffff16565b905061212787610480015161211b896104a001518461287a90919063ffffffff16565b9063ffffffff61288a16565b610140870151909150612140908263ffffffff6127ee16565b915061216387610440015161211b8961046001518561287a90919063ffffffff16565b915060006121b061218788602001518a608001518b602001518c6101e001516110c4565b6121a0888b608001518c602001518d6101e001516110c4565b8a606001518b6101e001516126f1565b90506121e76121d5826104b58a60e001518b610140015161132e90919063ffffffff16565b6101008901519063ffffffff6127ee16565b610100880152505061014085015250506020820152919050565b6122096130ea565b600061222b611ab48660200151886080015189602001518a6101e001516110c4565b9050612250611d90826104b58860e0015189610140015161132e90919063ffffffff16565b61010086015260e085015161038087015161227b91611b029184916104b5919063ffffffff61132e16565b61012086015260018660c00151600381111561229357fe5b14806122ae575060038660c0015160038111156122ac57fe5b145b156122bc5760006101608601525b60028660c0015160038111156122ce57fe5b14806122e9575060038660c0015160038111156122e757fe5b145b156122f75760006101808601525b5050506020820152919050565b61230c6130ea565b5050600060e0830181905261014083018190526101008301819052610120830152600582526020820152919050565b6123436130ea565b6000846040015160001461235b578460400151612374565b6123748487608001518860200151896101e00151610e05565b6104c0870151604001519091508390600090156123af57600061239c896104c001518561289a565b90508083116123ad57600180895291505b505b876104e001516040015180156123c3575080155b156123f25760006123d9896104e001518561289a565b90508083116123eb57600288526123f0565b600388525b505b604087015161241a576124148689608001518a602001518b6101e00151610e05565b60408801525b50949695505050505050565b600080808560200151600581111561243a57fe5b14156124635784516104c190612456908563ffffffff6129e316565b859063ffffffff6125de16565b60018560200151600581111561247557fe5b14156124a45784516104c19061245690859061249890600763ffffffff6129e316565b9063ffffffff6129e316565b6002856020015160058111156124b657fe5b14156124df5784516104c1906124d2908563ffffffff6129e316565b859063ffffffff612a1d16565b6003856020015160058111156124f157fe5b14156125145784516104c1906124d290859061249890600363ffffffff6129e316565b60048560200151600581111561252657fe5b14156125495784516104c1906124d290859061249890600663ffffffff6129e316565b60058560200151600581111561255b57fe5b14156125845784516104c190612577908563ffffffff6129e316565b859063ffffffff612a9716565b60405162461bcd60e51b815260040161037590613ade565b6000806000806125ab85612abe565b9194509250905060006125be84846119d4565b9050611873848483612adc565b6007620151809091046003010660010190565b62015180810282018281101561056c57600080fd5b62015180810282038281111561056c57600080fd5b60006004820615801561261d57506064820615155b8061056c57505061019090061590565b60008082600c81111561263c57fe5b141561264a5750600161041f565b600182600c81111561265857fe5b1415612667575060001961041f565b600682600c81111561267557fe5b14156126835750600161041f565b600782600c81111561269157fe5b14156126a0575060001961041f565b600282600c8111156126ae57fe5b14156126bc5750600161041f565b600382600c8111156126ca57fe5b14156126d9575060001961041f565b60405162461bcd60e51b815260040161037590613c4b565b6000848410156127135760405162461bcd60e51b815260040161037590613de1565b600083600581111561272157fe5b1415612731576104c18585612af6565b600183600581111561273f57fe5b141561274f576104c18585612c0a565b600283600581111561275d57fe5b141561276d576104c18585612c35565b600483600581111561277b57fe5b141561278b576104c18585612c54565b600383600581111561279957fe5b14156127aa576104c1858584612d15565b60058360058111156127b857fe5b14156127d65760405162461bcd60e51b815260040161037590613d33565b60405162461bcd60e51b815260040161037590613b2c565b60008282018183128015906128035750838112155b80612818575060008312801561281857508381125b61037e5760405162461bcd60e51b815260040161037590613c0a565b60008183038183128015906128495750838113155b8061285e575060008312801561285e57508381135b61037e5760405162461bcd60e51b815260040161037590614014565b6000818312156118d25750919050565b6000818313156118d2578161037e565b60008080846020015160058111156128ae57fe5b14156128ce5783516128c790849063ffffffff6125de16565b905061037e565b6001846020015160058111156128e057fe5b141561290a5783516128c7906128fd90600763ffffffff6129e316565b849063ffffffff6125de16565b60028460200151600581111561291c57fe5b14156129355783516128c790849063ffffffff612a1d16565b60038460200151600581111561294757fe5b14156129715783516128c79061296490600363ffffffff6129e316565b849063ffffffff612a1d16565b60048460200151600581111561298357fe5b14156129a05783516128c79061296490600663ffffffff6129e316565b6005846020015160058111156129b257fe5b14156129cb5783516128c790849063ffffffff612a9716565b60405162461bcd60e51b815260040161037590613f4c565b6000826129f25750600061056c565b828202828482816129ff57fe5b041461037e5760405162461bcd60e51b815260040161037590613e28565b6000808080612a2f620151808761113c565b600c918801600019810183810494909401965094509250900660010191506000612a5984846119d4565b905080821115612a67578091505b62015180870662015180612a7c868686612deb565b0201945086851015612a8d57600080fd5b5050505092915050565b6000808080612aa9620151808761113c565b9187019450925090506000612a5984846119d4565b60008080612acf620151808561113c565b9196909550909350915050565b600062015180612aed858585612deb565b02949350505050565b600080612b0284612e67565b90506000612b0f84612e67565b90506000612b1c86612e7f565b612b285761016d612b2c565b61016e5b61ffff16905081831415612b5e57612b5481612b488888612e9c565b9063ffffffff612eb716565b935050505061056c565b6000612b6986612e7f565b612b755761016d612b79565b61016e5b61ffff1690506000612baa83612b488a612ba5612b9d8a600163ffffffff612f7316565b600180612adc565b612e9c565b90506000612bc783612b48612bc188600180612adc565b8b612e9c565b9050612bfd612bed6001612be1888a63ffffffff612f9816565b9063ffffffff612f9816565b611d1a848463ffffffff6127ee16565b9998505050505050505050565b600061037e610168612b4862015180612c29868863ffffffff612f9816565b9063ffffffff612fda16565b600061037e61016d612b4862015180612c29868863ffffffff612f9816565b6000806000806000806000612c6889612abe565b975095509350612c7788612abe565b945092509050601f861415612c8b57601e95505b82601f1415612c9957601e92505b6000612cab848863ffffffff61283416565b90506000612cbf848863ffffffff61283416565b90506000612cd3848863ffffffff61283416565b9050612d05610168612b4885611d1a612cf387601e63ffffffff61301c16565b611d1a8761016863ffffffff61301c16565b9c9b505050505050505050505050565b6000806000806000806000612d298a612abe565b975095509350612d3889612abe565b945092509050612d478a61112f565b861415612d5357601e95505b8789148015612d625750816002145b158015612d765750612d738961112f565b83145b15612d8057601e92505b6000612d92848863ffffffff61283416565b90506000612da6848863ffffffff61283416565b90506000612dba848863ffffffff61283416565b9050612dda610168612b4885611d1a612cf387601e63ffffffff61301c16565b9d9c50505050505050505050505050565b60006107b2841015612dfc57600080fd5b838383600062253d8c600460036064611324600c600d19890105890101050205600c80600d19870105600c02600287030361016f0281612e3857fe5b0560046105b5600c600d1989010589016112c0010205617d4b8603010103039050809450505050509392505050565b6000612e76620151808361113c565b50909392505050565b600080612e8f620151808461113c565b5050905061037e81612608565b600081831115612eab57600080fd5b50620151809190030490565b600081612ed65760405162461bcd60e51b815260040161037590614058565b82612ee35750600061056c565b670de0b6b3a764000083810290848281612ef957fe5b0514612f175760405162461bcd60e51b815260040161037590613f06565b82600019148015612f2b5750600160ff1b84145b15612f485760405162461bcd60e51b815260040161037590613f06565b6000838281612f5357fe5b059050806103a45760405162461bcd60e51b815260040161037590613d90565b60008282018381101561037e5760405162461bcd60e51b815260040161037590613b81565b600061037e83836040518060400160405280601e81526020017f536166654d6174683a207375627472616374696f6e206f766572666c6f770000815250613087565b600061037e83836040518060400160405280601a81526020017f536166654d6174683a206469766973696f6e206279207a65726f0000000000008152506130b3565b60008261302b5750600061056c565b8260001914801561303f5750600160ff1b82145b1561305c5760405162461bcd60e51b815260040161037590613ebf565b8282028284828161306957fe5b051461037e5760405162461bcd60e51b815260040161037590613ebf565b600081848411156130ab5760405162461bcd60e51b81526004016103759190613a3d565b505050900390565b600081836130d45760405162461bcd60e51b81526004016103759190613a3d565b5060008385816130e057fe5b0495945050505050565b6040805161028081019091528060008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081526020016000815260200160008152602001600081525090565b60405180610f0001604052806078906020820280368337509192915050565b604080516080810190915260008082526020820190815260200160008152600060209091015290565b80356001600160a01b038116811461056c57600080fd5b80356009811061056c57600080fd5b803561056c816141b9565b803561056c816141c6565b8035600d811061056c57600080fd5b80356013811061056c57600080fd5b8035601d811061056c57600080fd5b803561056c816141e0565b600060808284031215613251578081fd5b61325b6080614181565b905081358152602082013561326f816141c6565b60208201526040820135613282816141b9565b60408201526060820135613295816141a8565b606082015292915050565b6000606082840312156132b1578081fd5b6132bb6060614181565b90508135815260208201356132cf816141c6565b602082015260408201356132e2816141a8565b604082015292915050565b600061078082840312156132ff578081fd5b50919050565b600061028082840312156132ff578081fd5b600060208284031215613328578081fd5b61037e83836131cc565b600060208284031215613343578081fd5b813561037e816141a8565b60006020828403121561335f578081fd5b5035919050565b6000806000806080858703121561337b578283fd5b8435935061338c86602087016131e3565b9250604085013561339c816141b9565b9396929550929360600135925050565b6000806000806000610cc086880312156133c4578283fd5b853594506133d587602088016132ed565b93506133e5876107a08801613305565b9250610a208601356133f6816141a8565b915061340687610a408801613305565b90509295509295909350565b600060208284031215613423578081fd5b813561037e816141b9565b600080600060c08486031215613442578081fd5b833561344d816141b9565b9250602084013591506134638560408601613240565b90509250925092565b60006020828403121561347d578081fd5b61037e8383613226565b60008060408385031215613499578182fd5b82356134a4816141d3565b946020939093013593505050565b6000602082840312156134c3578081fd5b813561037e816141e0565b6000608082840312156134df578081fd5b61037e8383613240565b600061078082840312156134fb578081fd5b61037e83836132ed565b600080600080610a40858703121561351b578182fd5b61352586866132ed565b9350613535866107808701613305565b9396939550505050610a0082013591610a20013590565b60008060006107c08486031215613561578081fd5b61356b85856132ed565b92506107808401359150613463856107a08601613226565b60008060006107c08486031215613598578081fd5b6135a285856132ed565b9561078085013595506107a0909401359392505050565b6000806000806107e085870312156135cf578182fd5b6135d986866132ed565b935061078085013592506107a085013591506107c08501356135fa816141d3565b939692955090935050565b60006107808284031215613617578081fd5b61058061362381614181565b61362d8585613217565b815261363c85602086016131f2565b602082015261364e8560408601613208565b604082015261366085606086016131fd565b606082015261367285608086016131e3565b60808201526136848560a086016131f2565b60a08201526136968560c08601613235565b60c08201526136a88560e08601613235565b60e08201526101006136bc868287016131f2565b908201526101206136cf868683016131cc565b908201526101406136e2868683016131cc565b90820152610160848101359082015261018080850135908201526101a080850135908201526101c080850135908201526101e08085013590820152610200808501359082015261022080850135908201526102408085013590820152610260808501359082015261028080850135908201526102a080850135908201526102c080850135908201526102e08085013590820152610300808501359082015261032080850135908201526103408085013590820152610360808501359082015261038080850135908201526103a080850135908201526103c080850135908201526103e08085013590820152610400808501359082015261042080850135908201526104408085013590820152610460808501359082015261048080850135908201526104a080850135908201526104c061381e868287016132a0565b90820152610520613831868683016132a0565b6104e083015261384386848701613240565b610500830152613857866106008701613240565b90820152613869856106808601613240565b61054082015261387d856107008601613240565b610560820152949350505050565b600061028080838503121561389e578182fd5b6138a781614181565b6138b185856131fd565b81526020848101359082015260408085013590820152606080850135908201526080808501359082015260a0808501359082015260c0808501359082015260e08085013590820152610100808501359082015261012080850135908201526101408085013590820152610160808501359082015261018080850135908201526101a080850135908201526101c080850135908201526101e080850135908201526102008085013590820152610220808501359082015261024080850135908201526102609384013593810193909352509092915050565b6000806000806080858703121561337b578182fd5b600681106139a757fe5b9052565b6020808252825182820181905260009190848201906040850190845b818110156139e3578351835292840192918401916001016139c7565b50909695505050505050565b901515815260200190565b90815260200190565b6020810160138310613a1157fe5b91905290565b6020810160028310613a1157fe5b60408101601d8410613a3357fe5b9281526020015290565b6000602080835283518082850152825b81811015613a6957858101830151858201604001528201613a4d565b81811115613a7a5783604083870101525b50601f01601f1916929092016040019392505050565b6020808252602e908201527f5363686564756c652e636f6d70757465446174657346726f6d4379636c653a2060408201526d4d41585f4359434c455f53495a4560901b606082015260800190565b6020808252602e908201527f5363686564756c652e6765744e6578744379636c65446174653a20415454524960408201526d1095551157d393d517d193d5539160921b606082015260800190565b60208082526035908201527f446179436f756e74436f6e76656e74696f6e2e796561724672616374696f6e3a6040820152741020aa2a2924a12aaa22afa727aa2fa327aaa7221760591b606082015260800190565b6020808252601b908201527f536166654d6174683a206164646974696f6e206f766572666c6f770000000000604082015260600190565b60208082526032908201527f5369676e65644d6174682e666c6f61744d756c743a2043414e4e4f545f524550604082015271524553454e545f4752414e554c415249545960701b606082015260800190565b60208082526021908201527f5369676e6564536166654d6174683a206164646974696f6e206f766572666c6f6040820152607760f81b606082015260800190565b60208082526034908201527f436f6e7472616374526f6c65436f6e76656e74696f6e2e726f6c655369676e3a6040820152730810551514925095551157d393d517d193d5539160621b606082015260800190565b60208082526027908201527f5369676e65644d6174682e666c6f61744d756c743a204f564552464c4f575f4460408201526611551150d5115160ca1b606082015260800190565b6020808252602d908201527f50414d456e67696e652e7061796f666646756e6374696f6e3a2041545452494260408201526c15551157d393d517d193d55391609a1b606082015260800190565b60208082526039908201527f446179436f756e74436f6e76656e74696f6e2e796561724672616374696f6e3a60408201527f204154545249425554455f4e4f545f535550504f525445442e00000000000000606082015260800190565b60208082526031908201527f5369676e65644d6174682e666c6f61744469763a2043414e4e4f545f524550526040820152704553454e545f4752414e554c415249545960781b606082015260800190565b60208082526027908201527f436f72652e796561724672616374696f6e3a2053544152545f4e4f545f42454660408201526613d49157d1539160ca1b606082015260800190565b60208082526021908201527f536166654d6174683a206d756c7469706c69636174696f6e206f766572666c6f6040820152607760f81b606082015260800190565b60208082526036908201527f50414d456e67696e652e73746174655472616e736974696f6e46756e6374696f6040820152751b8e8810551514925095551157d393d517d193d5539160521b606082015260800190565b60208082526027908201527f5369676e6564536166654d6174683a206d756c7469706c69636174696f6e206f604082015266766572666c6f7760c81b606082015260800190565b60208082526026908201527f5369676e65644d6174682e666c6f61744469763a204f564552464c4f575f4445604082015265151150d5115160d21b606082015260800190565b60208082526037908201527f506572696f645574696c732e67657454696d657374616d70506c75735065726960408201527f6f643a204154545249425554455f4e4f545f464f554e44000000000000000000606082015260800190565b60208082526045908201527f456e644f664d6f6e7468436f6e76656e74696f6e2e61646a757374456e644f6660408201527f4d6f6e7468436f6e76656e74696f6e3a204154545249425554455f4e4f545f4660608201526427aaa7221760d91b608082015260a00190565b60208082526024908201527f5369676e6564536166654d6174683a207375627472616374696f6e206f766572604082015263666c6f7760e01b606082015260800190565b60208082526024908201527f5369676e65644d6174682e666c6f61744469763a20444956494445445f42595f6040820152635a45524f60e01b606082015260800190565b6000610280820190506140b082845161399d565b6020838101519083015260408084015190830152606080840151908301526080808401519083015260a0808401519083015260c0808401519083015260e08084015190830152610100808401519083015261012080840151908301526101408084015190830152610160808401519083015261018080840151908301526101a080840151908301526101c080840151908301526101e0808401519083015261020080840151908301526102208084015190830152610240808401519083015261026092830151929091019190915290565b60405181810167ffffffffffffffff811182821017156141a057600080fd5b604052919050565b80151581146141b657600080fd5b50565b600281106141b657600080fd5b600681106141b657600080fd5b601d81106141b657600080fd5b600481106141b657600080fdfea2646970667358221220d52fee44c494f2b39ed4f148251f6a1f6136becc1e4ee45f68fa293e9fa9fb3864736f6c634300060b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

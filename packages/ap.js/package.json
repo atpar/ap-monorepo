@@ -21,7 +21,6 @@
   },
   "scripts": {
     "build": "webpack",
-    "generate-docs": "./scripts/generate-docs.sh",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "prebuild": "rm -rf dist/ && tsc",

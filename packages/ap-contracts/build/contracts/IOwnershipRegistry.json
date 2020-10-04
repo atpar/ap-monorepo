@@ -1,0 +1,122 @@
+{
+  "contractName": "IOwnershipRegistry",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getOwnership",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creatorObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "creatorBeneficiary",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyBeneficiary",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct AssetOwnership",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCounterpartyBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "setCounterpartyBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCounterpartyObligor",
+          "type": "address"
+        }
+      ],
+      "name": "setCounterpartyObligor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCreatorBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "setCreatorBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCreatorObligor",
+          "type": "address"
+        }
+      ],
+      "name": "setCreatorObligor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
