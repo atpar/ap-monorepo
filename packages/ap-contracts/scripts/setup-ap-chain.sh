@@ -19,14 +19,24 @@ npx --quiet ganache-cli \
   --gasLimit "8000000" \
   --defaultBalanceEther "5000000000" \
   --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
+  `if [[ $* == *--take-snapshot* ]]; then echo --db "./ap-chain-snapshot/db"; fi` \
   1>/dev/null &
 
 ganache_pid=$!
 
 sleep 1
 
-[ "$1" == "--no-deploy" ] || \
+if [[ $* != *--no-deploy* ]]; then
   npx --quiet buidler deploy --network ap-chain --tags deploy-ap-chain
+fi
+
+if [[ $* == *--take-snapshot* ]]; then
+  sleep 3
+  tar -zcf ap-chain-snapshot.tar.gz ap-chain-snapshot
+  rm -r ap-chain-snapshot
+  echo "✓ created snapshot"
+  exit 0
+fi
 
 echo "✓ ready"
 
