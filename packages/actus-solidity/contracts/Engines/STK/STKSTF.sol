@@ -215,7 +215,7 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        if (!terms.redeemableByIssuer) {
+        if (terms.redeemableByIssuer != RedeemableByIssuer.Y) {
             return state;
         }
 

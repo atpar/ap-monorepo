@@ -8,6 +8,7 @@ const CEC_TERMS = require('./definitions/CECTerms.json');
 const CEG_TERMS = require('./definitions/CEGTerms.json');
 const CERTF_TERMS = require('./definitions/CERTFTerms.json');
 const PAM_TERMS = require('./definitions/PAMTerms.json');
+const STF_TERMS = require('./definitions/STKTerms.json');
 
 const PRECISION = 18; // solidity precision
 
@@ -20,7 +21,7 @@ const unixToISO = (unix) => {
   return new Date(unix * 1000).toISOString();
 }
 
-const toHex = (value) => {  
+const toHex = (value) => {
   return web3Utils.asciiToHex(value);
 }
 
@@ -60,16 +61,16 @@ const fromPrecision = (value) => {
 const roundToDecimals = (value, decimals) => {
   decimals = (decimals > 2) ? (decimals - 2) : decimals;
   // console.log(value, decimals, numberOfDecimals(value));
- 
+
   const roundedValue = Number(BigNumber(value).decimalPlaces(decimals));
   const decimalDiff = decimals - numberOfDecimals(roundedValue);
 
   if (decimalDiff > 0) {
-    // return Number(String(value).substring(0, String(value).length - (numberOfDecimals(value) - decimals)));  
+    // return Number(String(value).substring(0, String(value).length - (numberOfDecimals(value) - decimals)));
     return Number(value.toFixed(decimals));
   }
 
-  return roundedValue; 
+  return roundedValue;
 }
 
 const numberOfDecimals = (number) => {
@@ -113,7 +114,7 @@ const parseAttributeValue = (attribute, value) => {
         object2: toHex(''),
         _type: getIndexForContractReferenceAttribute('type', value[0].type),
         role: getIndexForContractReferenceAttribute('role', value[0].role)
-      };  
+      };
     }
     return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
   }
@@ -124,7 +125,7 @@ const parseAttributeValue = (attribute, value) => {
         object2: toHex(''),
         _type: getIndexForContractReferenceAttribute('type', value[1].type),
         role: getIndexForContractReferenceAttribute('role', value[1].role)
-      };  
+      };
     }
     return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
   } else if (attribute === 'currency' || attribute === 'settlementCurrency') {
@@ -141,12 +142,12 @@ const parseAttributeValue = (attribute, value) => {
     return parseCycleToIPS(value);
   } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Period') {
     return parsePeriodToIP(value);
-  } 
+  }
 
   return undefined;
 }
 
-const parseResultsFromObject = (schedule) => {  
+const parseResultsFromObject = (schedule) => {
   const parsedResults = [];
 
   for (const event of schedule) {
@@ -240,10 +241,20 @@ const parseCERTFTermsFromObject = (terms) => {
   return parsedTerms;
 }
 
-const parsePAMTermsFromObject = (terms) => { 
+const parsePAMTermsFromObject = (terms) => {
   const parsedTerms = {};
 
   for (const attribute of PAM_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+  }
+
+  return parsedTerms;
+}
+
+const parseSTKTermsFromObject = (terms) => {
+  const parsedTerms = {};
+
+  for (const attribute of STF_TERMS) {
     parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
   }
 
@@ -261,16 +272,19 @@ const parseTermsFromObject = (contract, terms) => {
     return parseCERTFTermsFromObject(terms);
   } else if (contract === 'PAM') {
     return parsePAMTermsFromObject(terms);
+  } else if (contract === 'STK') {
+    return parseSTKTermsFromObject(terms);
   }
 
   throw new Error('Could not parse Terms. Unsupported contract type.');
 }
 
-module.exports = { 
+module.exports = {
   parseANNTermsFromObject,
   parseCECTermsFromObject,
   parseCEGTermsFromObject,
   parsePAMTermsFromObject,
+  parseSTKTermsFromObject,
   parseTermsFromObject,
   parseResultsFromObject,
   parseToTestEvent,

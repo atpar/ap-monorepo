@@ -36,6 +36,47 @@ enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
+/* in actus-dictionary dev branch:
+'28.AD.monitoring',
+'1.ID.issueDate',
+'2.IED.initialExchange',
+'3.FP.feePayment',
+'4.PR.principalRedemption',
+'5.PD.principalDrawing',
+'6.PRF.principalPaymentAmountFixing',
+'7.PY.penalytPayment',
+'8.PP.principalPrepayment',
+'9.IP.interestPayment',
+'10.IPCI.interestCapitalization',
+'11.CE.creditEvent',
+'12.RRF.rateResetFixed',
+'13.RR.rateResetVariable',
+'14.DDD.dividendDeclarationDate',
+'15.DED.dividendExDate',
+'16.DPD.dividendPaymentDate',
+'17.PRD.purchase',
+'18.MR.marginCall',
+'19.TD.termination',
+'20.SC.scalingIndexFixing',
+'21.IPCB.interestCalculationBaseFixing',
+'22.MD.maturity',
+'23.CFD.couponFixingDay',
+'24.CPD.couponPaymentDay',
+'25.RFD.redemptionFixingDay',
+'26.RPD.redemptionPaymentDay',
+'27.XO.exerciseOrder',
+'28.XD.exerciseDay',
+'29.STD.settlement',
+'30.SDD.splitDeclarationDate',
+'31.SED.splitExDate',
+'32.SSD.splitSettlementDate',
+'33.RDD.redemptionDeclarationDate',
+'34.RED.redemptionExDate',
+'35.RPD.redemptionPaymentDate'
+== in actus-solidity:
+//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
+enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
+*/
 //               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
 enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD, DDD, DED, DPD, SDD, SED, SSD, RDD, RED}
 enum FeeBasis {A, N}
@@ -64,10 +105,10 @@ struct State {
     uint256 terminationDate;
     uint256 lastCouponDay;
     uint256 lastDividendDeclarationDate;
-    uint256 dividendExDate;
-    uint256 dividendPaymentDate;
-    uint256 splitExDate;
-    uint256 splitSettlementDate;
+    // uint256 dividendExDate; // not implemented
+    // uint256 dividendPaymentDate; // not implemented
+    // uint256 splitExDate; // not implemented
+    // uint256 splitSettlementDate; // not implemented
     // uint256 redemptionExDate; // not implemented
     // uint256 redemptionPaymentDate; // not implemented
 
@@ -391,7 +432,7 @@ struct STKTerms {
     uint256 purchaseDate;
     uint256 cycleAnchorDateOfDividend;
     // uint256 dividendExDate; state only
-    // uint256 dividendPaymentDate; only
+    // uint256 dividendPaymentDate; state only
     // uint256 splitExDate; state only
     // uint256 splitSettlementDate; state only
     // uint256 redemptionExDate; state only
@@ -416,7 +457,7 @@ struct STKTerms {
     IP dividendRecordPeriod;
     IP dividendPaymentPeriod;
     IP splitRecordPeriod;
-    IP splitSettlementPeriod;
+    // IP splitSettlementPeriod; // not implemented
     IP redemptionRecordPeriod;
     IP redemptionPaymentPeriod;
 

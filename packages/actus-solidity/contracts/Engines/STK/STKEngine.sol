@@ -209,7 +209,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
                 uint256 nextDividendDeclarationDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfDividend,
                     terms.endOfMonthConvention,
-                    terms.cycleAnchorDateOfCoupon,
+                    terms.cycleAnchorDateOfDividend,
                     lastScheduleTime,
                     true,
                     0

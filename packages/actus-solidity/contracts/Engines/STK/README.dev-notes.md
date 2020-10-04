@@ -36,14 +36,14 @@ cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +cycleAnchorDateOfDividend  |
 cycleOfDividend            | (DCL)   |  x(1,0,)  | +cycleOfDividend            |
 dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                             | +dividendPaymentAmount
 dividendRecordPeriod       | (DRP)   |  x(1,1,)  | +dividendRecordPeriod       |
-dividendExDate             | (DED)   |  x(1,1,)  |                             |
+dividendExDate             | (DED)   |  x(1,1,)  |                             | //dividendExDate
 dividendPaymentPeriod      | (DPP)   |  x(1,1,)  | +dividendPaymentPeriod      |
-dividendPaymentDate        | (DPD)   |  x(1,1,)  |                             |
+dividendPaymentDate        | (DPD)   |  x(1,1,)  |                             | //dividendPaymentDate
                            |         |           |                             |
 splitRatio                 | (SRA)   |  x        |                             | +splitRatio
 splitRecordPeriod          | (SRP)   |  x        | +splitRecordPeriod          |
-splitExDate                | (SED)   |  x        |                             | +splitExDate
-+splitSettlementPeriod     | (+SSP)  |           | +splitSettlementPeriod      |
+splitExDate                | (SED)   |  x        |                             | //splitExDate
++splitSettlementPeriod     | (+SSP)  |           | +splitSettlementPeriod      |>> //splitSettlementDate
                            |         |           |                             |
                            |         |           |                             |
 redeemableByIssuer         | (RBI)   |  x(7,0,)  | +redeemableByIssuer         |
