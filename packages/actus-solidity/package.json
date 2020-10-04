@@ -1,6 +1,6 @@
 {
   "name": "@atpar/actus-solidity",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "ACTUS smart contracts",
   "author": "atpar AG",
   "authors": [
@@ -10,11 +10,9 @@
   "license": "Apache-2.0",
   "files": [
     "actus-resources",
-    "artifacts/",
-    "build/",
+    "buidler.config.js",
     "contracts/",
-    "deployments/",
-    "scripts/",
+    "migrations/",
     "test/",
     "truffle-config.js"
   ],
@@ -34,19 +32,11 @@
     "ACTUS"
   ],
   "scripts": {
-    "build": "npm run compile && npm run generate-artifacts",
-    "compile": "node --max-old-space-size=4096 ./node_modules/.bin/truffle compile",
+    "build": "npm run compile",
+    "compile": "node --max-old-space-size=4096 ./node_modules/.bin/buidler compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
-    "generate-artifacts": "rm -rf ./artifacts && ./scripts/truffle-minimize.sh ./build/contracts ./artifacts",
-    "generate-docs": "./scripts/generate-docs.sh",
     "lint": "solhint contracts/**/*.sol",
     "lint:fix": "solhint contracts/**/*.sol --fix",
-    "migrate:ap-chain": "./scripts/setup-ap-chain.sh",
-    "migrate:goerli": "truffle migrate --network goerli",
-    "migrate:kovan": "truffle migrate --network kovan",
-    "migrate:rinkeby": "truffle migrate --network rinkeby",
-    "migrate:ropsten": "truffle migrate --network ropsten",
-    "migrate:testnets": "npm run migrate:goerli && npm run migrate:kovan && npm run migrate:rinkeby && npm run migrate:ropsten",
     "test": "buidler test"
   },
   "resolutions": {
@@ -67,7 +57,6 @@
     "solhint": "^3.0.0",
     "solidity-coverage": "^0.7.4",
     "truffle": "5.1.36",
-    "truffle-hdwallet-provider": "^1.0.9",
     "web3-utils": "^1.2.4"
   }
 }

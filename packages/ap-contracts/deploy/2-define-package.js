@@ -123,8 +123,10 @@ async function definePackage(buidlerRuntime) {
         { name: "BaseRegistry", deployable: false },
         { name: "ERC20", deployable: false },
         { name: "ERC1404", deployable: false },
-        { name: "VanillaFDT", deployable: false }
-
+        { name: "VanillaFDT", deployable: false },
+        { name: "SimpleRestrictedFDT", deployable: false },
+        { name: "NoSettlementToken", deployable: false },
+        { name: "ERC20Token", deployable: false }
     ];
 
     usrNs.package.defaultDeployOptions = {

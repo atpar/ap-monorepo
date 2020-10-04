@@ -3,9 +3,6 @@ dist/
 CNAME
 
 # actus-solditiy, ap-contracts
-build/
-artifacts/
-ts-bindings
 mnemonic.js
 ts-bindings/
 
@@ -15,9 +12,6 @@ coverage/
 
 # buidler
 cache/
-test/artifacts/
-
-docs/
 
 # node
 node_modules/

@@ -1,0 +1,34 @@
+{
+  "contractName": "ProxyFactory",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "proxy",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "logic",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "salt",
+          "type": "uint256"
+        }
+      ],
+      "name": "NewEip1167Proxy",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220322141b70532ef40c55e097be34699a9805b99946752bda4fb1d5d8eabab9ac664736f6c634300060b0033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220322141b70532ef40c55e097be34699a9805b99946752bda4fb1d5d8eabab9ac664736f6c634300060b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
