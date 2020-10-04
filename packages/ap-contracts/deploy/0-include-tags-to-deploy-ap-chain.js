@@ -7,6 +7,7 @@ module.exports.dependencies = [
     "_package",
     "_deployment",
     "_init",
+    "_export"
 ];
 
 // run on the ap-chain only
