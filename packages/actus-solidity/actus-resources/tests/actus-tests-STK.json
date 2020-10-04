@@ -179,7 +179,7 @@
             },
             {
                 "eventDate": "2021-02-08T00:00:00",
-                "eventType": "DEX",
+                "eventType": "DED",
                 "payoff": 0,
                 "contractPerformance": "PF",
                 "dividendPaymentAmount": 600000,
@@ -231,11 +231,11 @@
         ]
     },
     "stk02": {
-        "identifier": "stk01",
+        "identifier": "stk02",
         "terms": {
-            "contractID": "STK01",
-            "counterpartyID": "2490L72UCL4",
-            "creatorID": "549300L7V4",
+            "contractID": "STK02",
+            "counterpartyID": "549300L7V4",
+            "creatorID": "2490L72UCL4",
 
             "businessDayConvention": null,
             "calendar": "NC",
@@ -271,7 +271,22 @@
             "seniority": null
         },
         "tMax": "",
-        "dataObserved": { },
+        "dataObserved": {
+            "STK01DPA": {
+                "_comment_": "Dividend Payment Amount",
+                "identifier": "STK02_DPA",
+                "data": [
+                    {
+                        "timestamp": "2020-10-12T00:00:00",
+                        "value": "500000"
+                    },
+                    {
+                        "timestamp": "2021-01-11T00:00:00",
+                        "value": "600000"
+                    }
+                ]
+            }
+        },
         "eventsObserved": [ ],
         "results": [
             {
@@ -395,7 +410,7 @@
             },
             {
                 "eventDate": "2021-01-21T00:00:00",
-                "eventType": "DEX",
+                "eventType": "DED",
                 "payoff": 0,
                 "contractPerformance": "PF",
                 "dividendPaymentAmount": 600000,
