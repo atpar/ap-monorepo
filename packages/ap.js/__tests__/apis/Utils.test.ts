@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 // @ts-ignore
-import Deployments from '@atpar/ap-contracts/deployments.json';
+import ADDRESS_BOOK from '@atpar/ap-contracts/ap-chain/addresses.json';
 
 import { Utils, Contracts } from '../../src/apis';
 import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms } from '../../src/types';
@@ -19,7 +19,7 @@ describe('Utils', (): void => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 
     // @ts-ignore
-    const addressBook = Deployments[await web3.eth.net.getId()];
+    const addressBook = ADDRESS_BOOK;
     contracts = new Contracts(web3, addressBook);
   });
 

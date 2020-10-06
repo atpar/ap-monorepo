@@ -7,6 +7,5 @@ module.exports.dependencies = [
     "_balance",         // assert deployer balance
     "_deployment",      // deploy contracts
     "_init",            // init contracts
-    "_export",          // update '../deployments.js'
     "_verification",    // do contract verification
 ];
