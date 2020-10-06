@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import * as APTypes from './types';
 
 import { Contracts, Utils } from './apis';
-import { AddressBook } from './types';
 
 
 export class AP {
