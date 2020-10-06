@@ -148,7 +148,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
                 assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
             ) <= block.timestamp,
-            "ANNActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
+            "BaseActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
 
         // get external data for the next event
