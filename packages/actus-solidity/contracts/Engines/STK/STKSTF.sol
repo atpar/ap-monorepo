@@ -71,7 +71,7 @@ contract STKSTF is Core {
 
         state.lastDividendDeclarationDate = scheduleTime;
 
-        // TODO: make the actor generate DED and DPD events
+        // TODO: make the actor generate DIX and DIP events
         /*state.dividendExDate = shiftCalcTime(
             terms.dividendExDate == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
@@ -162,7 +162,7 @@ contract STKSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_RDD (
+    function STF_STK_REF (
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -176,7 +176,7 @@ contract STKSTF is Core {
         /*if (!terms.redeemableByIssuer) {
             return state;
         }*/
-        // TODO: make the actor generate DED and DPD events
+        // TODO: make the actor generate DIX and DIP events
         /* state.redemptionExDate = shiftCalcTime(
             terms.redemptionExDate == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)

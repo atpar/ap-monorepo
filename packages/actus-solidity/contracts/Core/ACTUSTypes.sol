@@ -36,49 +36,8 @@ enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
-/* in actus-dictionary dev branch:
-'28.AD.monitoring',
-'1.ID.issueDate',
-'2.IED.initialExchange',
-'3.FP.feePayment',
-'4.PR.principalRedemption',
-'5.PD.principalDrawing',
-'6.PRF.principalPaymentAmountFixing',
-'7.PY.penalytPayment',
-'8.PP.principalPrepayment',
-'9.IP.interestPayment',
-'10.IPCI.interestCapitalization',
-'11.CE.creditEvent',
-'12.RRF.rateResetFixed',
-'13.RR.rateResetVariable',
-'14.DDD.dividendDeclarationDate',
-'15.DED.dividendExDate',
-'16.DPD.dividendPaymentDate',
-'17.PRD.purchase',
-'18.MR.marginCall',
-'19.TD.termination',
-'20.SC.scalingIndexFixing',
-'21.IPCB.interestCalculationBaseFixing',
-'22.MD.maturity',
-'23.CFD.couponFixingDay',
-'24.CPD.couponPaymentDay',
-'25.RFD.redemptionFixingDay',
-'26.RPD.redemptionPaymentDay',
-'27.XO.exerciseOrder',
-'28.XD.exerciseDay',
-'29.STD.settlement',
-'30.SDD.splitDeclarationDate',
-'31.SED.splitExDate',
-'32.SSD.splitSettlementDate',
-'33.RDD.redemptionDeclarationDate',
-'34.RED.redemptionExDate',
-'35.RPD.redemptionPaymentDate'
-== in actus-solidity:
-//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
-enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
-*/
-//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
-enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD, DDD, DED, DPD, SDD, SED, SSD, RDD, RED}
+//               0   1    2   3   4    5   6   7   8   9    10  11   12  13   14   15   16   17  18  19  20    21  22   23   24   25   26   27   28   29   30   31   32  33  34  35
+enum EventType {NE, ISS, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DIF, DIX, DIP, PRD, MR, TD, SC, IPCB, MD, COF, COP, REF, REF, RED, RPD, STD, SDD, SED, SSD, XO, XD, AD}
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented

@@ -17,7 +17,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_AD
   */
-  it('STK Analysis Event STF', async () => {
+  xit('STK Analysis Event STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -45,7 +45,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_FP
   */
-  it('STK Fee Payment STF', async () => {
+  xit('STK Fee Payment STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -74,7 +74,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_IED
   */
-  it('STK Initial Exchange STF', async () => {
+  xit('STK Initial Exchange STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -106,7 +106,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_IPCI
   */
-  it('STK Interest Capitalization STF', async () => {
+  xit('STK Interest Capitalization STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -138,7 +138,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_IP
   */
-  it('STK Interest Payment STF', async () => {
+  xit('STK Interest Payment STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -167,7 +167,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_PP
   */
-  it('STK Principal Payment STF', async () => {
+  xit('STK Principal Payment STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -198,7 +198,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_PR
   */
-  it('STK Princiapl Redemption STF', async () => {
+  xit('STK Princiapl Redemption STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -229,7 +229,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_PY
   */
-  it('STK Princiapl Redemption STF', async () => {
+  xit('STK Princiapl Redemption STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years
@@ -259,7 +259,7 @@ contract('TestSTKSTF', () => {
   /*
   * TEST STF_STK_RRF
   */
-  it('STK Fixed Rate Reset STF', async () => {
+  xit('STK Fixed Rate Reset STF', async () => {
     const oldState = getDefaultState();
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const scheduleTime = 6307200; // .2 years

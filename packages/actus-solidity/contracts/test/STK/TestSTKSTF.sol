@@ -118,7 +118,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_RDD(
+    function _STF_STK_REF(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -128,7 +128,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_RDD(
+        return STF_STK_REF(
             terms,
             state,
             scheduleTime,

@@ -22,31 +22,31 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      21 // CFD
+      23 // CFD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      22 // CPD
+      24 // CPD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      23 // RFD
+      27 // RFD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      24 // RPD
+      28 // RPD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      26 // XD
+      34 // XD
     ));
 
     return sortEvents(schedule);

@@ -56,7 +56,7 @@ contract CERTFSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_CFD (
+    function STF_CERTF_COF (
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -77,7 +77,7 @@ contract CERTFSTF is Core {
 
         state.lastCouponDay = scheduleTime;
         state.statusDate = scheduleTime;
-        
+
         return state;
     }
 
@@ -87,7 +87,7 @@ contract CERTFSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_CPD (
+    function STF_CERTF_COP (
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
@@ -108,7 +108,7 @@ contract CERTFSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_RFD (
+    function STF_CERTF_REF (
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -168,7 +168,7 @@ contract CERTFSTF is Core {
         state.exerciseQuantity = 0;
         state.exerciseAmount = 0;
         state.statusDate = scheduleTime;
-        
+
         if (scheduleTime == state.maturityDate) {
             state.contractPerformance = ContractPerformance.MD;
         } else if (scheduleTime == state.terminationDate) {

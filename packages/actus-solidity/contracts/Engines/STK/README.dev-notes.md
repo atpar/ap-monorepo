@@ -23,7 +23,7 @@ nonPerformingDate          | (NPD)   |  x(,,1)   |                             |
 seniority                  | (SEN)   |  x(,,1)   | //seniority                 |
 settlementCurrency         | (CURS)  |  x        | settlementCurrency          |
                            |         |           |                             |
-issueDate                  | (ID)    |  NN       | issueDate                   |
+issueDate                  | (ISS)    |  NN       | issueDate                   |
 issuePrice                 | (IPR)   |  NN       | issuePrice                  |
 notionalPrincipal          | (NT)    |  NN       | +notionalPrincipal          | notionalPrincipal
 quantity                   | (QT)    |  NN(,,3)  | quantity                    | quantity
@@ -36,9 +36,9 @@ cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +cycleAnchorDateOfDividend  |
 cycleOfDividend            | (DCL)   |  x(1,0,)  | +cycleOfDividend            |
 dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                             | +dividendPaymentAmount
 dividendRecordPeriod       | (DRP)   |  x(1,1,)  | +dividendRecordPeriod       |
-dividendExDate             | (DED)   |  x(1,1,)  |                             | //dividendExDate
+dividendExDate             | (DIX)   |  x(1,1,)  |                             | //dividendExDate
 dividendPaymentPeriod      | (DPP)   |  x(1,1,)  | +dividendPaymentPeriod      |
-dividendPaymentDate        | (DPD)   |  x(1,1,)  |                             | //dividendPaymentDate
+dividendPaymentDate        | (DIP)   |  x(1,1,)  |                             | //dividendPaymentDate
                            |         |           |                             |
 splitRatio                 | (SRA)   |  x        |                             | +splitRatio
 splitRecordPeriod          | (SRP)   |  x        | +splitRecordPeriod          |
@@ -74,14 +74,14 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
   - issuePrice (IPR)
   - quantity (QT)
     we will interpret quantity as token supply, similar to CERTF
-  - dividends params, defined on the (optional) Dividend Declaration Date (DDD)
+  - dividends params, defined on the (optional) Dividend Declaration Date (DIF)
     - dividendPaymentAmount (DPA)
     - dividendRecordPeriod (DRP)
-    - dividendExDate (DED)
-        DED = DDD + DRP
+    - dividendExDate (DIX)
+        DIX = DIF + DRP
     - dividendPaymentPeriod (DPP)
-    - dividendPaymentDate (DPD)
-        DPD = DDD + DPP
+    - dividendPaymentDate (DIP)
+        DIP = DIF + DPP
     - cycleAnchorDateOfDividend (DANX)
     - cycleOfDividend (DCL)
     - lastDividendDeclarationDate (DLDD)
@@ -94,16 +94,16 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
     - Split Settlement Date (SSD)
         SSD = SDD + SRP
   - redeemableByIssuer (RBI)
-    if "Y", then the issuer can at any time insert the Redemption Declaration Date (RDD) event
-  - Redemption params, defined on the (optional) Redemption Declaration Date (RDD) event:
+    if "Y", then the issuer can at any time insert the Redemption Declaration Date (REF) event
+  - Redemption params, defined on the (optional) Redemption Declaration Date (REF) event:
     - redemptionPrice (RPR)
     - numberOfShares (to be redeemed)
     - redemptionRecordPeriod (RRP)
     - redemptionExDate (RED)
-        RED = RDD + RED
+        RED = REF + RED
     - redemptionPaymentPeriod (RPP)
     - redemptionPaymentDate (RPD)
-        RPD = RDD + RPD
+        RPD = REF + RPD
   - Termination params, if applicable
     - terminationDate (TD)
     - priceAtTerminationDate (PTD)
@@ -111,10 +111,10 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
 ##  STK events:
   - AD: Monitoring
      > Same as PAM
-  - ID: Issue Date
+  - ISS: Issue Date
      > Issuer issues STK by selling quantity shares worth nominalPrice at issuePrice (we will interpret quantity as token supply, similar to CERTF)
      At issuance, issuer fixes with terms: a dividend schedule (optional), right to redeem shares, etc...
-     Dividend/redemption/split terms are optional and if not defined, no DDD/RDD/SDD events get generated.
+     Dividend/redemption/split terms are optional and if not defined, no DIF/REF/SDD events get generated.
   - IED: Initial exchange date
      > not applicable (out of the scope)
   - TD: Termination Date
@@ -123,15 +123,15 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
      It refers to the date at which the payment (of PTD) and transfer of the security happens.
      In other words, TD - if set - takes the role otherwise MD has from a cash flow perspective.
      If not otherwise set, STK is a perpetual instrument so no natural schedule end date (TD)
-  - DDD: Dividend Declaration Date
-     > The timestamp of the next DDD event (if scheduled).
+  - DIF: Dividend Declaration Date
+     > The timestamp of the next DIF event (if scheduled).
      The management fixes and announces the next upcoming dividend payment x
-     Creates also DED and DPD events according to dividendRecordPeriod, dividendPaymentPeriod
-  - DED: Dividend Ex Date
+     Creates also DIX and DIP events according to dividendRecordPeriod, dividendPaymentPeriod
+  - DIX: Dividend Ex Date
      > Date from which new shareholders are not considered for the next dividend distribution
        For simplicity, Dividend Ex Date = Dividend Declaration Date + dividendRecordPeriod
-  - DPD: Dividend Payment Date
-     > The timestamp of the next DPD event (if scheduled).
+  - DIP: Dividend Payment Date
+     > The timestamp of the next DIP event (if scheduled).
      For simplicity, Dividend Payment Date = Dividend Declaration Date + dividendPaymentPeriod
   - SDD: Split Declaration Date
      > Declaration of a stock split or reverse split
@@ -144,7 +144,7 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
   - SSD: Split Settlement Date
      > The timestamp of the next SSD event (if scheduled).
      At following splitSettlementDate event each share/token holder's balance is adjusted by the splitRatio
-  - RDD: Redemption Declaration Date
+  - REF: Redemption Declaration Date
      > Declaration of the redemption of units of an instrument by the initiating party
      if redeemableByIssuer=Y then the issuer can at any time insert the event
      At redemptionDeclarationDate event the number of shares to be redeemed is fixed by the issuer
@@ -164,30 +164,30 @@ nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMu
         we thus trust the operator of a shares contract to separately call e.g. a mint/burn function in combination with a splitSettlementDate event
 
 ### Payments
-Payments occur on: DPD, RPD, TD
+Payments occur on: DIP, RPD, TD
 
 ## Payof Function
-- Event: AD, ID, DDD, DED, SDD, SSD, RDD, RED, CE, IED   
+- Event: AD, ISS, DIF, DIX, SDD, SSD, REF, RED, CE, IED   
   POF: 0
-  // it could be for ID or IED: X_cur_to_curs(t) * Sign(CNTRL) * IPR * QT
+  // it could be for ISS or IED: X_cur_to_curs(t) * Sign(CNTRL) * IPR * QT
 - Event: TD
   POF: X_cur_to_curs(t) * Sign(CNTRL) * PTD * Qt // PTD - terms.priceAtTerminationDate
-- Event: DPD
+- Event: DIP
   POF: X_cur_to_curs(t) * Sign(CNTRL) * Dpa
 - Event: RPD
   POF: X_cur_to_curs(t) * Sign(CNTRL) * RPR * Xa // Xa - exercise amount , RPR - redemptionPrice
 
 ## State transition function
-- Event: AD, DED, SED, RED, CE, TD(?)
+- Event: AD, DIX, SED, RED, CE, TD(?)
   STF: Sd = t
 
-- Event: ID
+- Event: ISS
   STF: sets Nt = NT, Qt = QT, Sd = t
 
-- Event: DDD
+- Event: DIF
   STF: Dldd = t, Dpa = riskFactorObserver("${CID}_DPD", t), Sd = t
 
-- Event: DPD
+- Event: DIP
   STF: Dpa = 0, Sd = t
 
 - Event: SDD
@@ -197,7 +197,7 @@ Payments occur on: DPD, RPD, TD
 - Event: SSD
   STF: Qt = Sra * Qt, Sra = 0, Sd = t
 
-- Event: RDD
+- Event: REF
   STF: Xq = riskFactorObserver("${CID}_RXQ", t), Sd = t
    // Xq - exercise quantity, RXQ - redemption exercise quantity
 

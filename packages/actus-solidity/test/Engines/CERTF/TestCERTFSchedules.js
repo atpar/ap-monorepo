@@ -1,4 +1,5 @@
 const CERTFEngine = artifacts.require('CERTFEngine.sol');
+const { DEBUG_LOG } = require("../../../../../del.me/debug-log");
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
 const { parseToTestEventCERTF, isoToUnix, unixToISO } = require('../../helper/parser');
@@ -18,37 +19,38 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      21 // CFD
+      23 // CFD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      22 // CPD
+      24 // CPD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      23 // RFD
+      26 // RFD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      24 // RPD
+      28 // RPD
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      26 // XD
+      34 // XD
     ));
-    
+
+    DEBUG_LOG(`schedule: ${JSON.stringify(sortEvents(schedule))}`);
     return sortEvents(schedule);
   }
 
-  before(async () => {    
+  before(async () => {
     this.CERTFEngineInstance = await CERTFEngine.new();
     this.testCases = await getTestCases('CERTF');
   });
@@ -113,9 +115,9 @@ contract('CERTFEngine', () => {
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
       const nextState = await this.CERTFEngineInstance.computeStateForEvent(
-        terms, 
-        state, 
-        _event, 
+        terms,
+        state,
+        _event,
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
 
@@ -126,7 +128,7 @@ contract('CERTFEngine', () => {
 
     return evaluatedSchedule;
   };
- 
+
   it('should yield the expected evaluated contract schedule for test certf01', async () => {
     const testDetails = this.testCases['certf01'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);

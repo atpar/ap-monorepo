@@ -133,7 +133,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         // issue date
         if (terms.issueDate != 0) {
             if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
-                events[index] = encodeEvent(EventType.ID, terms.issueDate);
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
                 index++;
             }
         }
@@ -186,7 +186,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint256 index;
 
-        if (eventType == EventType.CFD) {
+        if (eventType == EventType.COF) {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
@@ -200,13 +200,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (couponSchedule[i] == 0) break;
                     if (isInSegment(couponSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.CFD, couponSchedule[i]);
+                    events[index] = encodeEvent(EventType.COF, couponSchedule[i]);
                     index++;
                 }
             }
         }
 
-         if (eventType == EventType.CPD) {
+         if (eventType == EventType.COP) {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256[MAX_CYCLE_SIZE] memory couponSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfCoupon,
@@ -221,13 +221,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     if (couponSchedule[i] == 0) break;
                     uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, couponSchedule[i]);
                     if (isInSegment(couponPaymentDayScheduleTime, segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.CFD, couponPaymentDayScheduleTime);
+                    events[index] = encodeEvent(EventType.COF, couponPaymentDayScheduleTime);
                     index++;
                 }
             }
         }
 
-        if (eventType == EventType.RFD) {
+        if (eventType == EventType.REF) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
@@ -241,7 +241,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (redemptionSchedule[i] == 0) break;
                     if (isInSegment(redemptionSchedule[i], segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.RFD, redemptionSchedule[i]);
+                    events[index] = encodeEvent(EventType.REF, redemptionSchedule[i]);
                     index++;
                 }
             }
@@ -317,7 +317,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         override
         returns(bytes32)
     {
-        if (eventType == EventType.CFD) {
+        if (eventType == EventType.COF) {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
@@ -328,11 +328,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.maturityDate
                 );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
-                return encodeEvent(EventType.CFD, nextCouponDate);
+                return encodeEvent(EventType.COF, nextCouponDate);
             }
         }
 
-         if (eventType == EventType.CPD) {
+         if (eventType == EventType.COP) {
             if (terms.cycleAnchorDateOfCoupon != 0) {
                 uint256 nextCouponDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfCoupon,
@@ -344,11 +344,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 );
                 if (nextCouponDate == uint256(0)) return bytes32(0);
                 uint256 couponPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextCouponDate);
-                return encodeEvent(EventType.CFD, couponPaymentDayScheduleTime);
+                return encodeEvent(EventType.COF, couponPaymentDayScheduleTime);
             }
         }
 
-        if (eventType == EventType.RFD) {
+        if (eventType == EventType.REF) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
@@ -359,7 +359,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     terms.maturityDate
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
-                return encodeEvent(EventType.RFD, nextRedemptionDate);
+                return encodeEvent(EventType.REF, nextRedemptionDate);
             }
         }
 
@@ -447,11 +447,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        if (eventType == EventType.ID) return STF_CERTF_ID(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_CERTF_ID(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_CERTF_IED(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CFD) return STF_CERTF_CFD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CPD) return STF_CERTF_CPD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RFD) return STF_CERTF_RFD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.COF) return STF_CERTF_COF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.COP) return STF_CERTF_COP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REF) return STF_CERTF_REF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.XD) return STF_CERTF_XD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RPD) return STF_CERTF_RPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return STF_CERTF_TD(terms, state, scheduleTime, externalData);
@@ -483,14 +483,14 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        if (eventType == EventType.ID) return 0;
-        if (eventType == EventType.CFD) return 0;
-        if (eventType == EventType.RFD) return 0;
+        if (eventType == EventType.ISS) return 0;
+        if (eventType == EventType.COF) return 0;
+        if (eventType == EventType.REF) return 0;
         if (eventType == EventType.XD) return 0;
         if (eventType == EventType.MD) return 0;
         if (eventType == EventType.CE) return 0;
         if (eventType == EventType.IED) return POF_CERTF_IED(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.CPD) return POF_CERTF_CPD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.COP) return POF_CERTF_COP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RPD) return POF_CERTF_RPD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_CERTF_TD(terms, state, scheduleTime, externalData);
 
