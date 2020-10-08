@@ -277,6 +277,11 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
     string public constant UNKNOWN_ERROR = "Unknown Error Code";
 
 
+    constructor(address owner) public {
+        super.__Ownable_init();
+        transferOwnership(owner);
+    }
+
     function setRules(IRule[] calldata rules) external override onlyOwner {
         revert("Can not set any additional rules");
     }

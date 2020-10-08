@@ -138,6 +138,20 @@ async function deployRuleEngineMock(buidlerRuntime, { owner }) {
   return new web3.eth.Contract(abi, address);
 }
 
+/**
+ * @param {ExtendedTestBRE} buidlerRuntime
+ */
+async function deploySimpleRestrictedRuleEngine(buidlerRuntime, { owner }) {
+  const { deployments: { deploy }, web3 } = buidlerRuntime;
+  const { abi, address } = await deploy("SimpleRestrictedRuleEngine", {
+    args: [owner],
+    from: owner,
+    // deploy a new instance rather than re-use the one already deployed with another "from" address
+    fieldsToCompare: [ "data", "from" ],
+  });
+  return new web3.eth.Contract(abi, address);
+}
+
 /** @param {ExtendedTestBRE} buidlerRuntime */
 async function deployICToken(buidlerRuntime, {
   assetRegistry,
@@ -198,5 +212,6 @@ module.exports = {
   deploySimpleRestrictedFDT,
   deployVanillaFDT,
   deployCMTA20FDT,
-  deployRuleEngineMock
+  deployRuleEngineMock,
+  deploySimpleRestrictedRuleEngine
 };
