@@ -19,7 +19,7 @@ npx --quiet ganache-cli \
   --gasLimit "8000000" \
   --defaultBalanceEther "5000000000" \
   --deterministic --mnemonic "helmet copy pause hood gun soon fork drum educate curious despair embrace" \
-  `if [[ $* == *--take-snapshot* ]]; then echo --db "./ap-chain-snapshot/db"; fi` \
+  `if [[ $* == *--take-snapshot* ]]; then echo --db "./ap-chain/snapshot"; fi` \
   1>/dev/null &
 
 ganache_pid=$!
@@ -32,8 +32,8 @@ fi
 
 if [[ $* == *--take-snapshot* ]]; then
   sleep 3
-  tar -zcf ap-chain-snapshot.tar.gz ap-chain-snapshot
-  rm -r ap-chain-snapshot
+  tar -zcf ap-chain/snapshot.tar.gz ap-chain/snapshot
+  rm -r ap-chain/snapshot
   echo "✓ created snapshot"
   exit 0
 fi

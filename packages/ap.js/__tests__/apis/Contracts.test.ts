@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 // @ts-ignore
-import Deployments from '@atpar/ap-contracts/deployments.json';
+import ADDRESS_BOOK from '@atpar/ap-contracts/ap-chain/addresses.json';
 
 import { Contracts } from '../../src/apis';
 import { AddressBook } from '../../src/types';
@@ -18,7 +18,7 @@ describe('Contracts', (): void => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
 
     // @ts-ignore
-    addressBook = Deployments[await web3.eth.net.getId()];
+    addressBook = ADDRESS_BOOK;
   });
 
   it('should instantiate ContractsAPI', async (): Promise<void> => {
