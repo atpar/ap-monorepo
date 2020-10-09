@@ -292,7 +292,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             // get current timestamp
             // solium-disable-next-line
             return bytes32(block.timestamp);
-        } else if (eventType == EventType.XD) {
+        } else if (eventType == EventType.EXE) {
             // get the remaining notionalPrincipal from the underlying
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
                 assetId,
@@ -323,7 +323,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 );
                 if (isSet) return bytes32(quantity);
             }
-        } else if (eventType == EventType.RFD) {
+        } else if (eventType == EventType.REF) {
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
                 assetId,
                 "contractReference_1"

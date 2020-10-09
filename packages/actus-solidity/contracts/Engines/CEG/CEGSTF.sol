@@ -85,7 +85,7 @@ contract CEGSTF is Core {
         return state;
     }
 
-    function STF_CEG_XD (
+    function STF_CEG_EXE (
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -123,7 +123,7 @@ contract CEGSTF is Core {
         return state;
     }
 
-    function STF_CEG_STD (
+    function STF_CEG_ST (
         CEGTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,

@@ -112,7 +112,7 @@ describe('ICT', function () {
         web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(idEvent);
-    assert.strictEqual(eventType, '1');
+    assert.strictEqual(eventType, '2');
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
@@ -121,10 +121,10 @@ describe('ICT', function () {
     ).send({ from: owner });
   });
 
-  it('should register investor1 for redemption for the first RFD event [ @skip-on-coverage ]', async () => {
+  it('should register investor1 for redemption for the first REF event [ @skip-on-coverage ]', async () => {
     const rfdEvent = this.schedule[1];
     const { eventType } = decodeEvent(rfdEvent);
-    assert.strictEqual(eventType, '23');
+    assert.strictEqual(eventType, '19');
 
     const tokensToRedeem = web3.utils.toWei('1000');
 
@@ -154,7 +154,7 @@ describe('ICT', function () {
         web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(rfdEvent);
-    assert.strictEqual(eventType, '23');
+    assert.strictEqual(eventType, '19');
 
     await this.DataRegistryInstance.methods.publishDataPoint(
         this.terms.contractReference_1.object,
@@ -173,7 +173,7 @@ describe('ICT', function () {
     const xdEvent = await this.CERTFRegistryInstance.methods
         .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { eventType, scheduleTime } = decodeEvent(xdEvent);
-    assert.strictEqual(eventType, '26');
+    assert.strictEqual(eventType, '25');
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
@@ -182,12 +182,12 @@ describe('ICT', function () {
     ).send({ from: owner });
   });
 
-  it('should process the first RPD event [ @skip-on-coverage ]', async () => {
+  it('should process the first REP event [ @skip-on-coverage ]', async () => {
     const rpdEvent = await this.CERTFRegistryInstance.methods.getNextScheduledEvent(
         web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(rpdEvent);
-    assert.strictEqual(eventType, '24');
+    assert.strictEqual(eventType, '21');
 
     // set allowance for CERTFActor
     await this.PaymentTokenInstance.methods.approve(

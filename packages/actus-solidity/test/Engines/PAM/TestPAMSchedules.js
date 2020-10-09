@@ -1,14 +1,14 @@
 const PAMEngine = artifacts.require('PAMEngine.sol');
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
-const { parseToTestEvent, isoToUnix, unixToISO } = require('../../helper/parser');
+const { parseToTestEvent, isoToUnix } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 contract('PAMEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
     const schedule = [];
-      
+
     schedule.push(... await this.PAMEngineInstance.computeNonCyclicScheduleSegment(
       terms,
       segmentStart,
@@ -18,25 +18,25 @@ contract('PAMEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      3 // FP
+      5 // FP
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      10 // IPCI
+      11 // IPCI
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      9 // IP
+      10 // IP
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      4 // PR
+      6 // PR
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
@@ -44,11 +44,11 @@ contract('PAMEngine', () => {
       segmentEnd,
       13 // RR
     ));
-    
+
     return sortEvents(schedule);
   }
 
-  before(async () => {    
+  before(async () => {
     this.PAMEngineInstance = await PAMEngine.new();
     this.testCases = await getTestCases('PAM');
   });
@@ -64,13 +64,11 @@ contract('PAMEngine', () => {
     const evaluatedSchedule = [];
     let state = initialState;
 
-    let rrIndex = 0;
-
     for (_event of schedule) {
       const { eventType, scheduleTime } = decodeEvent(_event);
 
       if (scheduleTime == 0) { break; }
-      
+
       let externalData = web3.utils.toHex('0');
 
       if (eventType === 13) {
@@ -91,18 +89,18 @@ contract('PAMEngine', () => {
         _event,
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
-      
+
       const nextState = await this.PAMEngineInstance.computeStateForEvent(
-        terms, 
-        state, 
-        _event, 
+        terms,
+        state,
+        _event,
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
 
       state = nextState;
-      
+
       // if (eventType == 16) {console.log(payoff, nextState)}
-        
+
       const eventTime = await this.PAMEngineInstance.computeEventTimeForEvent(
         _event,
         terms.businessDayConvention,
@@ -115,7 +113,7 @@ contract('PAMEngine', () => {
 
     return evaluatedSchedule;
   };
- 
+
   it('should yield the expected evaluated contract schedule for test pam01', async () => {
     const testDetails = this.testCases['pam01'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
@@ -133,7 +131,7 @@ contract('PAMEngine', () => {
   it('should yield the expected evaluated contract schedule for test pam03', async () => {
     const testDetails = this.testCases['pam03'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
-  
+
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
 
@@ -191,15 +189,15 @@ contract('PAMEngine', () => {
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
-  }); 
-  
+  });
+
   // TODO: Purchase/Termination not supported
   // it('should yield the expected evaluated contract schedule for test PAM10012', async () => {
   //   const testDetails = this.testCases['10012'];
   //   const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
   //   compareTestResults(evaluatedSchedule, testDetails['results']);
-  // });  
+  // });
 
   // TODO: Precision Error
   // it('should yield the expected evaluated contract schedule for test PAM10013', async () => {
@@ -236,10 +234,10 @@ contract('PAMEngine', () => {
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
- 
+
   it('should yield the expected evaluated contract schedule for test pam18', async () => {
     const testDetails = this.testCases['pam18'];
-    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);    
+    const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms']);
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
@@ -273,7 +271,7 @@ contract('PAMEngine', () => {
 
     compareTestResults(evaluatedSchedule, testDetails['results']);
   });
- 
+
   // different results
   // it('should yield the expected evaluated contract schedule for test pam23', async () => {
   //   const testDetails = this.testCases['pam23'];

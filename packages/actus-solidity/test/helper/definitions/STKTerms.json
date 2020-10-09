@@ -27,7 +27,7 @@
   "redemptionPrice",
   "redemptionRecordPeriod",
   "settlementCurrency",
-  "splitRecordPeriod",
+  "splitSettlementPeriod",
   "statusDate",
   "marketObjectCode",
   "priceAtTerminationDate",

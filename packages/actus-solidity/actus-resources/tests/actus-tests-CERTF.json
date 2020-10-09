@@ -66,7 +66,7 @@
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -80,7 +80,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "110",
@@ -94,7 +94,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "110",
@@ -108,7 +108,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -122,7 +122,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "120",
@@ -136,7 +136,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "120",
@@ -150,7 +150,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -164,7 +164,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "130",
@@ -178,7 +178,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "130",
@@ -192,7 +192,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -206,7 +206,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "140",
@@ -220,7 +220,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "140",
@@ -234,7 +234,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -315,7 +315,7 @@
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -329,7 +329,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "90",
@@ -343,7 +343,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "90",
@@ -357,7 +357,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -371,7 +371,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "80",
@@ -385,7 +385,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "80",
@@ -399,7 +399,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -413,7 +413,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "70",
@@ -427,7 +427,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "70",
@@ -441,7 +441,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -455,7 +455,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "60",
@@ -469,7 +469,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "60",
@@ -483,7 +483,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -564,7 +564,7 @@
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -578,7 +578,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -592,7 +592,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -606,7 +606,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -620,7 +620,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1200",
@@ -634,7 +634,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1200",
@@ -648,7 +648,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -662,7 +662,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1300",
@@ -676,7 +676,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1300",
@@ -690,7 +690,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -704,7 +704,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1400",
@@ -718,7 +718,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1400",
@@ -732,7 +732,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -813,7 +813,7 @@
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -827,7 +827,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -841,7 +841,7 @@
             },
             {
                 "eventDate": "2020-09-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -855,7 +855,7 @@
             },
             {
                 "eventDate": "2020-10-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -869,7 +869,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1200",
@@ -883,7 +883,7 @@
             },
             {
                 "eventDate": "2020-12-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1200",
@@ -897,7 +897,7 @@
             },
             {
                 "eventDate": "2021-01-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -911,7 +911,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1300",
@@ -925,7 +925,7 @@
             },
             {
                 "eventDate": "2021-03-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1300",
@@ -939,7 +939,7 @@
             },
             {
                 "eventDate": "2021-04-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -953,7 +953,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1400",
@@ -967,7 +967,7 @@
             },
             {
                 "eventDate": "2021-06-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1400",
@@ -981,7 +981,7 @@
             },
             {
                 "eventDate": "2021-07-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1078,7 +1078,7 @@
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1092,7 +1092,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "900",
@@ -1106,7 +1106,7 @@
             },
             {
                 "eventDate": "2020-09-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "900",
@@ -1120,7 +1120,7 @@
             },
             {
                 "eventDate": "2020-10-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1134,7 +1134,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "800",
@@ -1148,7 +1148,7 @@
             },
             {
                 "eventDate": "2020-12-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "800",
@@ -1162,7 +1162,7 @@
             },
             {
                 "eventDate": "2021-01-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1176,7 +1176,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "700",
@@ -1190,7 +1190,7 @@
             },
             {
                 "eventDate": "2021-03-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "700",
@@ -1204,7 +1204,7 @@
             },
             {
                 "eventDate": "2021-04-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1218,7 +1218,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "600",
@@ -1232,7 +1232,7 @@
             },
             {
                 "eventDate": "2021-06-15T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "600",
@@ -1246,7 +1246,7 @@
             },
             {
                 "eventDate": "2021-07-01T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1324,29 +1324,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1360,7 +1360,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1374,7 +1374,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1388,7 +1388,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1402,7 +1402,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -1416,7 +1416,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -1430,7 +1430,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -1444,7 +1444,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -1458,7 +1458,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 120000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -1472,7 +1472,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -1486,7 +1486,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -1500,7 +1500,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -1514,7 +1514,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -1528,7 +1528,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -1542,7 +1542,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -1556,7 +1556,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -1570,7 +1570,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 140000,
                 "quantity": "99600",
                 "exerciseAmount": "0",
@@ -1648,29 +1648,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -1684,7 +1684,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1698,7 +1698,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1712,7 +1712,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -1726,7 +1726,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 11000,
                 "quantity": "99990",
                 "exerciseAmount": "0",
@@ -1740,7 +1740,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99990",
                 "exerciseAmount": "1200",
@@ -1754,7 +1754,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99990",
                 "exerciseAmount": "1200",
@@ -1768,7 +1768,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99990",
                 "exerciseAmount": "1200",
@@ -1782,7 +1782,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 12000,
                 "quantity": "99980",
                 "exerciseAmount": "0",
@@ -1796,7 +1796,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99980",
                 "exerciseAmount": "1300",
@@ -1810,7 +1810,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99980",
                 "exerciseAmount": "1300",
@@ -1824,7 +1824,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99980",
                 "exerciseAmount": "1300",
@@ -1838,7 +1838,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 13000,
                 "quantity": "99970",
                 "exerciseAmount": "0",
@@ -1852,7 +1852,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99970",
                 "exerciseAmount": "1400",
@@ -1866,7 +1866,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99970",
                 "exerciseAmount": "1400",
@@ -1880,7 +1880,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99970",
                 "exerciseAmount": "1400",
@@ -1894,7 +1894,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 14000,
                 "quantity": "99960",
                 "exerciseAmount": "0",
@@ -1972,29 +1972,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -2008,7 +2008,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2022,7 +2022,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2036,7 +2036,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2050,7 +2050,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000000,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -2064,7 +2064,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1200",
@@ -2078,7 +2078,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1200",
@@ -2092,7 +2092,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1200",
@@ -2106,7 +2106,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -2120,7 +2120,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1300",
@@ -2134,7 +2134,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1300",
@@ -2148,7 +2148,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1300",
@@ -2162,7 +2162,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -2176,7 +2176,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1400",
@@ -2190,7 +2190,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1400",
@@ -2204,7 +2204,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "1400",
@@ -2218,7 +2218,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 0,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -2296,29 +2296,29 @@
         "eventsObserved": [
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2022-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -2332,7 +2332,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2346,7 +2346,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2360,7 +2360,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2374,7 +2374,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -2388,7 +2388,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -2402,7 +2402,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -2416,7 +2416,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -2430,7 +2430,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -2444,7 +2444,7 @@
             },
             {
                 "eventDate": "2021-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -2458,7 +2458,7 @@
             },
             {
                 "eventDate": "2021-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -2472,7 +2472,7 @@
             },
             {
                 "eventDate": "2021-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -2486,7 +2486,7 @@
             },
             {
                 "eventDate": "2021-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -2500,7 +2500,7 @@
             },
             {
                 "eventDate": "2022-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -2514,7 +2514,7 @@
             },
             {
                 "eventDate": "2022-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -2528,7 +2528,7 @@
             },
             {
                 "eventDate": "2022-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -2542,7 +2542,7 @@
             },
             {
                 "eventDate": "2022-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 140000,
                 "quantity": "99600",
                 "exerciseAmount": "0",
@@ -2637,44 +2637,44 @@
         "eventsObserved": [
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 500
             },
             {
                 "time": "2021-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2022-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 1
             },
             {
                 "time": "2022-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2023-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 50000
             },
             {
                 "time": "2023-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10000
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -2688,7 +2688,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2702,7 +2702,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2716,7 +2716,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -2730,7 +2730,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -2744,7 +2744,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -2758,7 +2758,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -2772,7 +2772,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -2786,7 +2786,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 750000,
                 "quantity": "99400",
                 "exerciseAmount": "0",
@@ -2800,7 +2800,7 @@
             },
             {
                 "eventDate": "2021-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -2814,7 +2814,7 @@
             },
             {
                 "eventDate": "2021-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -2828,7 +2828,7 @@
             },
             {
                 "eventDate": "2021-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -2842,7 +2842,7 @@
             },
             {
                 "eventDate": "2021-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 10000,
                 "quantity": "99390",
                 "exerciseAmount": "0",
@@ -2856,7 +2856,7 @@
             },
             {
                 "eventDate": "2022-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -2870,7 +2870,7 @@
             },
             {
                 "eventDate": "2022-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -2884,7 +2884,7 @@
             },
             {
                 "eventDate": "2022-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -2898,7 +2898,7 @@
             },
             {
                 "eventDate": "2022-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 500,
                 "quantity": "99389",
                 "exerciseAmount": "0",
@@ -2912,7 +2912,7 @@
             },
             {
                 "eventDate": "2022-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -2926,7 +2926,7 @@
             },
             {
                 "eventDate": "2022-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -2940,7 +2940,7 @@
             },
             {
                 "eventDate": "2022-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -2954,7 +2954,7 @@
             },
             {
                 "eventDate": "2022-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99289",
                 "exerciseAmount": "0",
@@ -2968,7 +2968,7 @@
             },
             {
                 "eventDate": "2023-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -2982,7 +2982,7 @@
             },
             {
                 "eventDate": "2023-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -2996,7 +2996,7 @@
             },
             {
                 "eventDate": "2023-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -3010,7 +3010,7 @@
             },
             {
                 "eventDate": "2023-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 100000000,
                 "quantity": "49289",
                 "exerciseAmount": "0",
@@ -3024,7 +3024,7 @@
             },
             {
                 "eventDate": "2023-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3038,7 +3038,7 @@
             },
             {
                 "eventDate": "2023-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3052,7 +3052,7 @@
             },
             {
                 "eventDate": "2023-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3066,7 +3066,7 @@
             },
             {
                 "eventDate": "2023-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 15000000,
                 "quantity": "39289",
                 "exerciseAmount": "0",
@@ -3080,7 +3080,7 @@
             },
             {
                 "eventDate": "2024-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "39289",
                 "exerciseAmount": "900",
@@ -3190,44 +3190,44 @@
         "eventsObserved": [
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 500
             },
             {
                 "time": "2021-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2022-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 1
             },
             {
                 "time": "2022-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2023-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 50000
             },
             {
                 "time": "2023-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10000
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -3255,7 +3255,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3269,7 +3269,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3283,7 +3283,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3297,7 +3297,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -3311,7 +3311,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3325,7 +3325,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3339,7 +3339,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3353,7 +3353,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 750000,
                 "quantity": "99400",
                 "exerciseAmount": "0",
@@ -3367,7 +3367,7 @@
             },
             {
                 "eventDate": "2021-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3381,7 +3381,7 @@
             },
             {
                 "eventDate": "2021-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3395,7 +3395,7 @@
             },
             {
                 "eventDate": "2021-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3409,7 +3409,7 @@
             },
             {
                 "eventDate": "2021-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 10000,
                 "quantity": "99390",
                 "exerciseAmount": "0",
@@ -3423,7 +3423,7 @@
             },
             {
                 "eventDate": "2022-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -3437,7 +3437,7 @@
             },
             {
                 "eventDate": "2022-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -3451,7 +3451,7 @@
             },
             {
                 "eventDate": "2022-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -3465,7 +3465,7 @@
             },
             {
                 "eventDate": "2022-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 500,
                 "quantity": "99389",
                 "exerciseAmount": "0",
@@ -3479,7 +3479,7 @@
             },
             {
                 "eventDate": "2022-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -3493,7 +3493,7 @@
             },
             {
                 "eventDate": "2022-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -3507,7 +3507,7 @@
             },
             {
                 "eventDate": "2022-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -3521,7 +3521,7 @@
             },
             {
                 "eventDate": "2022-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99289",
                 "exerciseAmount": "0",
@@ -3535,7 +3535,7 @@
             },
             {
                 "eventDate": "2023-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -3549,7 +3549,7 @@
             },
             {
                 "eventDate": "2023-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -3563,7 +3563,7 @@
             },
             {
                 "eventDate": "2023-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -3577,7 +3577,7 @@
             },
             {
                 "eventDate": "2023-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 100000000,
                 "quantity": "49289",
                 "exerciseAmount": "0",
@@ -3591,7 +3591,7 @@
             },
             {
                 "eventDate": "2023-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3605,7 +3605,7 @@
             },
             {
                 "eventDate": "2023-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3619,7 +3619,7 @@
             },
             {
                 "eventDate": "2023-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -3633,7 +3633,7 @@
             },
             {
                 "eventDate": "2023-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 15000000,
                 "quantity": "39289",
                 "exerciseAmount": "0",
@@ -3647,7 +3647,7 @@
             },
             {
                 "eventDate": "2024-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "39289",
                 "exerciseAmount": "900",
@@ -3757,44 +3757,44 @@
         "eventsObserved": [
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 500
             },
             {
                 "time": "2021-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2022-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 1
             },
             {
                 "time": "2022-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100
             },
             {
                 "time": "2023-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 50000
             },
             {
                 "time": "2023-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10000
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -3822,7 +3822,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3836,7 +3836,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3850,7 +3850,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -3864,7 +3864,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -3878,7 +3878,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3892,7 +3892,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3906,7 +3906,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1500",
@@ -3920,7 +3920,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 750000,
                 "quantity": "99400",
                 "exerciseAmount": "0",
@@ -3934,7 +3934,7 @@
             },
             {
                 "eventDate": "2021-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3948,7 +3948,7 @@
             },
             {
                 "eventDate": "2021-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3962,7 +3962,7 @@
             },
             {
                 "eventDate": "2021-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99400",
                 "exerciseAmount": "1000",
@@ -3976,7 +3976,7 @@
             },
             {
                 "eventDate": "2021-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 10000,
                 "quantity": "99390",
                 "exerciseAmount": "0",
@@ -3990,7 +3990,7 @@
             },
             {
                 "eventDate": "2022-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -4004,7 +4004,7 @@
             },
             {
                 "eventDate": "2022-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -4018,7 +4018,7 @@
             },
             {
                 "eventDate": "2022-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99390",
                 "exerciseAmount": "500",
@@ -4032,7 +4032,7 @@
             },
             {
                 "eventDate": "2022-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 500,
                 "quantity": "99389",
                 "exerciseAmount": "0",
@@ -4046,7 +4046,7 @@
             },
             {
                 "eventDate": "2022-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -4060,7 +4060,7 @@
             },
             {
                 "eventDate": "2022-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -4074,7 +4074,7 @@
             },
             {
                 "eventDate": "2022-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99389",
                 "exerciseAmount": "1100",
@@ -4088,7 +4088,7 @@
             },
             {
                 "eventDate": "2022-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99289",
                 "exerciseAmount": "0",
@@ -4102,7 +4102,7 @@
             },
             {
                 "eventDate": "2023-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -4116,7 +4116,7 @@
             },
             {
                 "eventDate": "2023-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -4130,7 +4130,7 @@
             },
             {
                 "eventDate": "2023-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99289",
                 "exerciseAmount": "2000",
@@ -4144,7 +4144,7 @@
             },
             {
                 "eventDate": "2023-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 100000000,
                 "quantity": "49289",
                 "exerciseAmount": "0",
@@ -4158,7 +4158,7 @@
             },
             {
                 "eventDate": "2023-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -4172,7 +4172,7 @@
             },
             {
                 "eventDate": "2023-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -4186,7 +4186,7 @@
             },
             {
                 "eventDate": "2023-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "49289",
                 "exerciseAmount": "1500",
@@ -4200,7 +4200,7 @@
             },
             {
                 "eventDate": "2023-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 15000000,
                 "quantity": "39289",
                 "exerciseAmount": "0",
@@ -4214,7 +4214,7 @@
             },
             {
                 "eventDate": "2024-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "39289",
                 "exerciseAmount": "900",
@@ -4311,29 +4311,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -4348,7 +4348,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -4356,7 +4356,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -4364,7 +4364,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4372,7 +4372,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -4380,7 +4380,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4388,7 +4388,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-02T00:00:00",
@@ -4396,7 +4396,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4404,7 +4404,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-06T00:00:00",
@@ -4412,7 +4412,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248633.8798,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4420,7 +4420,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -4428,7 +4428,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -4436,7 +4436,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -4444,7 +4444,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4452,7 +4452,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -4460,7 +4460,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4468,7 +4468,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -4476,7 +4476,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4484,7 +4484,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-02T00:00:00",
@@ -4492,7 +4492,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4500,7 +4500,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-06T00:00:00",
@@ -4508,7 +4508,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248385.2459,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4516,7 +4516,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -4524,7 +4524,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -4532,7 +4532,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -4540,7 +4540,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -4548,7 +4548,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -4556,7 +4556,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -4564,7 +4564,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -4572,7 +4572,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -4580,7 +4580,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-02T00:00:00",
@@ -4588,7 +4588,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -4596,7 +4596,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-06T00:00:00",
@@ -4604,7 +4604,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 245850.6026,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -4612,7 +4612,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -4620,7 +4620,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -4628,7 +4628,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -4636,7 +4636,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -4644,7 +4644,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-01T00:00:00",
@@ -4652,7 +4652,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -4660,7 +4660,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-01T00:00:00",
@@ -4668,7 +4668,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -4676,7 +4676,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-02T00:00:00",
@@ -4684,7 +4684,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -4692,7 +4692,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-06T00:00:00",
@@ -4700,7 +4700,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 251298.6301,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -4708,7 +4708,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-11T00:00:00",
@@ -4716,7 +4716,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 140000,
                 "quantity": "99600",
                 "exerciseAmount": "0",
@@ -4724,7 +4724,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-11T00:00:00",
@@ -4801,29 +4801,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-06-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -4838,7 +4838,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4846,14 +4846,14 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
                 "couponYearFractionHelper": "0"
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4861,14 +4861,14 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-02T00:00:00",
                 "couponYearFractionHelper": "0"
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -4876,14 +4876,14 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-06T00:00:00",
                 "couponYearFractionHelper": "0"
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -4891,7 +4891,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -4899,7 +4899,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4907,7 +4907,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "4.97267759562842",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -4915,7 +4915,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4923,7 +4923,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "4.97267759562842",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -4931,7 +4931,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4939,7 +4939,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "4.97267759562842",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-02T00:00:00",
@@ -4947,7 +4947,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4955,7 +4955,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "4.97267759562842",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-06T00:00:00",
@@ -4963,7 +4963,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 496770.4918,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -4971,7 +4971,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -4979,7 +4979,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -4987,7 +4987,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -4995,7 +4995,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5003,7 +5003,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -5011,7 +5011,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5019,7 +5019,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-02T00:00:00",
@@ -5027,7 +5027,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5035,7 +5035,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-06T00:00:00",
@@ -5043,7 +5043,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -5051,7 +5051,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -5059,7 +5059,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5067,7 +5067,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-01T00:00:00",
@@ -5075,7 +5075,7 @@
             },
             {
                 "eventDate": "2021-06-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5083,7 +5083,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-01T00:00:00",
@@ -5091,7 +5091,7 @@
             },
             {
                 "eventDate": "2021-06-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5099,7 +5099,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-02T00:00:00",
@@ -5107,7 +5107,7 @@
             },
             {
                 "eventDate": "2021-06-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5115,7 +5115,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-06T00:00:00",
@@ -5123,7 +5123,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 496902.8894,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5131,7 +5131,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-11T00:00:00",
@@ -5139,7 +5139,7 @@
             },
             {
                 "eventDate": "2021-06-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 140000,
                 "quantity": "99600",
                 "exerciseAmount": "0",
@@ -5147,7 +5147,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-06-11T00:00:00",
@@ -5225,29 +5225,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-05-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -5262,7 +5262,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -5270,7 +5270,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -5278,7 +5278,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5286,7 +5286,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -5294,7 +5294,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5302,7 +5302,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-02T00:00:00",
@@ -5310,7 +5310,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5318,7 +5318,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-06T00:00:00",
@@ -5326,7 +5326,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248633.8798,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5334,7 +5334,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -5342,7 +5342,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -5350,7 +5350,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -5358,7 +5358,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5366,7 +5366,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -5374,7 +5374,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5382,7 +5382,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -5390,7 +5390,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5398,7 +5398,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-02T00:00:00",
@@ -5406,7 +5406,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5414,7 +5414,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-06T00:00:00",
@@ -5422,7 +5422,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248385.2459,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5430,7 +5430,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -5438,7 +5438,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -5446,7 +5446,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -5454,7 +5454,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5462,7 +5462,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -5470,7 +5470,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5478,7 +5478,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -5486,7 +5486,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5494,7 +5494,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-02T00:00:00",
@@ -5502,7 +5502,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5510,7 +5510,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-06T00:00:00",
@@ -5518,7 +5518,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 245850.6026,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -5526,7 +5526,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -5534,7 +5534,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -5542,7 +5542,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -5550,14 +5550,14 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseQuantity": "0",
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5565,7 +5565,7 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5573,7 +5573,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5589,7 +5589,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5597,7 +5597,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 251298.6301,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -5605,7 +5605,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",
@@ -5613,7 +5613,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 139580000,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -5621,7 +5621,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",
@@ -5699,29 +5699,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-05-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -5736,7 +5736,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -5744,7 +5744,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -5752,7 +5752,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5760,7 +5760,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -5768,7 +5768,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5776,7 +5776,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-02T00:00:00",
@@ -5784,7 +5784,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5792,7 +5792,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-06T00:00:00",
@@ -5800,7 +5800,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248633.8798,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -5808,7 +5808,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -5816,7 +5816,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -5824,7 +5824,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -5832,7 +5832,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5840,7 +5840,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -5848,7 +5848,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5856,7 +5856,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -5864,7 +5864,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5872,7 +5872,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-02T00:00:00",
@@ -5880,7 +5880,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5888,7 +5888,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-06T00:00:00",
@@ -5896,7 +5896,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 248385.2459,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -5904,7 +5904,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -5912,7 +5912,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -5920,7 +5920,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -5928,14 +5928,14 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseQuantity": "0",
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5943,7 +5943,7 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1400",
@@ -5951,7 +5951,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5967,7 +5967,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "4.98398083688899",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -5975,7 +5975,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": 497401.2875,
                 "quantity": "99800",
                 "exerciseAmount": "1400",
@@ -5983,7 +5983,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",
@@ -5991,7 +5991,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": 139720000,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -5999,7 +5999,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",
@@ -6077,29 +6077,29 @@
         "eventsObserved": [
             {
                 "time": "2020-09-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 100000
             },
             {
                 "time": "2020-12-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-03-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             },
             {
                 "time": "2021-05-02T00:00:00",
-                "type": "XO",
+                "type": "EXO",
                 "value": 10
             }
         ],
         "results": [
             {
                 "eventDate": "2020-06-02T00:00:00",
-                "eventType": "ID",
+                "eventType": "ISS",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -6129,7 +6129,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "0",
@@ -6137,7 +6137,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -6145,7 +6145,7 @@
             },
             {
                 "eventDate": "2020-09-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -6153,7 +6153,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-01T00:00:00",
@@ -6161,7 +6161,7 @@
             },
             {
                 "eventDate": "2020-09-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -6169,7 +6169,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-02T00:00:00",
@@ -6177,7 +6177,7 @@
             },
             {
                 "eventDate": "2020-09-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -6185,7 +6185,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-06T00:00:00",
@@ -6193,7 +6193,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": -248633.8798,
                 "quantity": "100000",
                 "exerciseAmount": "1100",
@@ -6201,7 +6201,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -6209,7 +6209,7 @@
             },
             {
                 "eventDate": "2020-09-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": -110000,
                 "quantity": "99900",
                 "exerciseAmount": "0",
@@ -6217,7 +6217,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-09-01T00:00:00",
+                "lastCouponFixingDate": "2020-09-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-09-11T00:00:00",
@@ -6225,7 +6225,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -6233,7 +6233,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -6241,7 +6241,7 @@
             },
             {
                 "eventDate": "2020-12-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -6249,7 +6249,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-01T00:00:00",
@@ -6257,7 +6257,7 @@
             },
             {
                 "eventDate": "2020-12-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -6265,7 +6265,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-02T00:00:00",
@@ -6273,7 +6273,7 @@
             },
             {
                 "eventDate": "2020-12-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -6281,7 +6281,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "2.48633879781421",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-06T00:00:00",
@@ -6289,7 +6289,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": -248385.2459,
                 "quantity": "99900",
                 "exerciseAmount": "1200",
@@ -6297,7 +6297,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -6305,7 +6305,7 @@
             },
             {
                 "eventDate": "2020-12-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": -1200000,
                 "quantity": "99800",
                 "exerciseAmount": "0",
@@ -6313,7 +6313,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2020-12-01T00:00:00",
+                "lastCouponFixingDate": "2020-12-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2020-12-11T00:00:00",
@@ -6321,7 +6321,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -6329,7 +6329,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -6337,7 +6337,7 @@
             },
             {
                 "eventDate": "2021-03-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -6345,7 +6345,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-01T00:00:00",
@@ -6353,7 +6353,7 @@
             },
             {
                 "eventDate": "2021-03-02T00:00:00",
-                "eventType": "XO",
+                "eventType": "EXO",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -6361,7 +6361,7 @@
                 "exerciseQuantityOrdered": "100",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-02T00:00:00",
@@ -6369,7 +6369,7 @@
             },
             {
                 "eventDate": "2021-03-06T00:00:00",
-                "eventType": "XD",
+                "eventType": "EXE",
                 "payoff": 0,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -6377,7 +6377,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "2.46343289168351",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-06T00:00:00",
@@ -6385,7 +6385,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": -245850.6026,
                 "quantity": "99800",
                 "exerciseAmount": "1300",
@@ -6393,7 +6393,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -6401,7 +6401,7 @@
             },
             {
                 "eventDate": "2021-03-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": -130000,
                 "quantity": "99700",
                 "exerciseAmount": "0",
@@ -6409,7 +6409,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-03-01T00:00:00",
+                "lastCouponFixingDate": "2021-03-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-03-11T00:00:00",
@@ -6417,14 +6417,14 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "CFD",
+                "eventType": "COF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseQuantity": "0",
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -6432,7 +6432,7 @@
             },
             {
                 "eventDate": "2021-05-01T00:00:00",
-                "eventType": "RFD",
+                "eventType": "REF",
                 "payoff": 0,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -6440,7 +6440,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -6456,7 +6456,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "2.52054794520548",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-01T00:00:00",
@@ -6464,7 +6464,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "CPD",
+                "eventType": "COP",
                 "payoff": -251298.6301,
                 "quantity": "99700",
                 "exerciseAmount": "1400",
@@ -6472,7 +6472,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",
@@ -6480,7 +6480,7 @@
             },
             {
                 "eventDate": "2021-05-11T00:00:00",
-                "eventType": "RPD",
+                "eventType": "REP",
                 "payoff": -139580000,
                 "quantity": "0",
                 "exerciseAmount": "0",
@@ -6488,7 +6488,7 @@
                 "exerciseQuantityOrdered": "0",
                 "marginFactor": "1",
                 "adjustmentFactor": "1",
-                "lastCouponDay": "2021-06-01T00:00:00",
+                "lastCouponFixingDate": "2021-06-01T00:00:00",
                 "couponAmountFixed": "0",
                 "contractPerformance": "PF",
                 "statusDate": "2021-05-11T00:00:00",

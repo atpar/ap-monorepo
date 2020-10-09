@@ -2,7 +2,7 @@ const CERTFEngine = artifacts.require('CERTFEngine.sol');
 const { DEBUG_LOG } = require("../../../../../del.me/debug-log");
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
-const { parseToTestEventCERTF, isoToUnix, unixToISO } = require('../../helper/parser');
+const { parseToTestEventCERTF, isoToUnix } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
 contract('CERTFEngine', () => {
@@ -19,31 +19,31 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      23 // CFD
+      17 // COF
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      24 // CPD
+      18 // COP
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      26 // RFD
+      19 // REF
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      28 // RPD
+      21 // REP
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      34 // XD
+      25 // EXE
     ));
 
     DEBUG_LOG(`schedule: ${JSON.stringify(sortEvents(schedule))}`);
@@ -82,7 +82,7 @@ contract('CERTFEngine', () => {
 
       let externalData = web3.utils.toHex('0');
 
-      if (eventType === 23) { // RFD
+      if (eventType === 19) { // REF
         const marketObjectCode = web3.utils.toAscii(terms.contractReference_1.object);
         if (externalDataObject[marketObjectCode] == undefined) {
           throw new Error('No external data found for ' + marketObjectCode + '.');
@@ -99,7 +99,7 @@ contract('CERTFEngine', () => {
         externalData = web3.utils.toWei(String(Number(dataPointScheduleTime.value) / Number(dataPointIssueDate.value)));
       }
 
-      if (eventType === 26 && eventsObserved != undefined) { // XD
+      if (eventType === 25 && eventsObserved != undefined) { // EXE
         // const dataPoint = eventsObserved.find(({ time }) => {
         //   return String(isoToUnix(time)) === scheduleTime.toString()
         // });

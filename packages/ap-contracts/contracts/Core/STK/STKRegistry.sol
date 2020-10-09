@@ -20,7 +20,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
 
     using STKEncoder for Asset;
 
-    
+
     constructor()
         public
         BaseRegistry()
@@ -168,12 +168,12 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         EventType nextEventType;
         uint256 nextScheduleTimeOffset;
 
-        // CFD
+        // COF
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CFD],
-                EventType.CFD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COF],
+                EventType.COF
             ));
 
             if (
@@ -183,15 +183,15 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // CPD
+        // COP
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CPD],
-                EventType.CPD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COP],
+                EventType.COP
             ));
 
             if (
@@ -201,15 +201,15 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // RFD
+        // REF
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RFD],
-                EventType.RFD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REF],
+                EventType.REF
             ));
 
             if (
@@ -219,15 +219,15 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // RPD
+        // REP
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RPD],
-                EventType.RPD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REP],
+                EventType.REP
             ));
 
             if (
@@ -237,15 +237,15 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // XD
+        // EXE
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.XD],
-                EventType.XD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.EXE],
+                EventType.EXE
             ));
 
             if (
@@ -255,7 +255,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         return encodeEvent(nextEventType, nextScheduleTimeOffset);

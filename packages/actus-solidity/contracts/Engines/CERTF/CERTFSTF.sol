@@ -12,11 +12,11 @@ import "../../Core/Core.sol";
 contract CERTFSTF is Core {
 
     /**
-     * State transition for CERTF issue day events
+     * State transition for CERTF issue events
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_ID (
+    function STF_CERTF_ISS (
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -68,14 +68,14 @@ contract CERTFSTF is Core {
     {
         if (terms.couponType == CouponType.FIX) {
             state.couponAmountFixed = yearFraction(
-                shiftCalcTime(state.lastCouponDay, terms.businessDayConvention, terms.calendar, terms.maturityDate),
+                shiftCalcTime(state.lastCouponFixingDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
                 shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
                 terms.dayCountConvention,
                 terms.maturityDate
             ).floatMult(terms.nominalPrice).floatMult(terms.couponRate);
         }
 
-        state.lastCouponDay = scheduleTime;
+        state.lastCouponFixingDate = scheduleTime;
         state.statusDate = scheduleTime;
 
         return state;
@@ -133,7 +133,7 @@ contract CERTFSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_XD (
+    function STF_CERTF_EXE (
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
@@ -154,7 +154,7 @@ contract CERTFSTF is Core {
      * @param state the old state
      * @return the new state
      */
-    function STF_CERTF_RPD (
+    function STF_CERTF_REP (
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,

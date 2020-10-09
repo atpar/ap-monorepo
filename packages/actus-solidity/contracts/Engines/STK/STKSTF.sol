@@ -31,11 +31,11 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK issue date events
+     * State transition for STK issue fixing events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_ID (
+    function STF_STK_ISS (
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -53,12 +53,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK dividend declaration date events
+     * State transition for STK dividend fixing events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_DDD (
-        STKTerms memory terms,
+    function STF_STK_DIF (
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -69,21 +69,21 @@ contract STKSTF is Core {
     {
         state.dividendPaymentAmount = int256(externalData);
 
-        state.lastDividendDeclarationDate = scheduleTime;
+        state.lastDividendFixingDate = scheduleTime;
 
         // TODO: make the actor generate DIX and DIP events
-        /*state.dividendExDate = shiftCalcTime(
-            terms.dividendExDate == 0
+        /*state.dividendEx = shiftCalcTime(
+            terms.dividendEx == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
-                : terms.dividendExDate,
+                : terms.dividendEx,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
-        state.dividendPaymentDate = shiftCalcTime(
-            terms.dividendPaymentDate == 0
+        state.dividendPayment = shiftCalcTime(
+            terms.dividendPayment == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.dividendPaymentPeriod)
-                : terms.dividendPaymentDate,
+                : terms.dividendPayment,
             terms.businessDayConvention,
             terms.calendar,
             0
@@ -94,12 +94,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK dividend payment date events
+     * State transition for STK dividend payment events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_DPD (
-        STKTerms memory terms,
+    function STF_STK_DIP (
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -115,12 +115,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK split declaration date events
+     * State transition for STK split fixing events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_SDD (
-        STKTerms memory terms,
+    function STF_STK_SPF (
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -136,12 +136,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK split settlement date events
+     * State transition for STK split settlement events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_SSD (
-        STKTerms memory terms,
+    function STF_STK_SPS (
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -158,12 +158,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK redemption declaration date events
+     * State transition for STK redemption fixing events
      * @param state the old state
      * @return the new state
      */
     function STF_STK_REF (
-        STKTerms memory terms,
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -177,18 +177,18 @@ contract STKSTF is Core {
             return state;
         }*/
         // TODO: make the actor generate DIX and DIP events
-        /* state.redemptionExDate = shiftCalcTime(
-            terms.redemptionExDate == 0
+        /* state.redemptionEx = shiftCalcTime(
+            terms.redemptionEx == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)
-                : terms.redemptionExDate,
+                : terms.redemptionEx,
             terms.businessDayConvention,
             terms.calendar,
             0
         );
-        state.redemptionPaymentDate = shiftCalcTime(
-            terms.redemptionPaymentDate == 0
+        state.redemptionPayment = shiftCalcTime(
+            terms.redemptionPayment == 0
                 ? getTimestampPlusPeriod(scheduleTime, terms.redemptionPaymentPeriod)
-                : terms.redemptionPaymentDate,
+                : terms.redemptionPayment,
             terms.businessDayConvention,
             terms.calendar,
             0
@@ -201,11 +201,11 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK redemption payment date events
+     * State transition for STK redemption payment events
      * @param state the old state
      * @return the new state
      */
-    function STF_STK_RPD (
+    function STF_STK_REP (
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -227,12 +227,12 @@ contract STKSTF is Core {
     }
 
     /**
-     * State transition for STK termination date event
+     * State transition for STK termination event
      * @param state the old state
      * @return the new state
      */
     function STF_STK_TD (
-        STKTerms memory terms,
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData

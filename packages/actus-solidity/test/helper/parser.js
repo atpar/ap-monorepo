@@ -153,8 +153,9 @@ const parseResultsFromObject = (schedule) => {
   for (const event of schedule) {
     const eventTypeIndex = Number(getIndexForEventType(event.eventType));
 
-    if (eventTypeIndex === 0) { continue; } // filter out AD events
-    if (eventTypeIndex === 25) { continue; } // filter out XO events
+    if (eventTypeIndex === 0) { continue; } // filter out NE events
+    if (eventTypeIndex === 33) { continue; } // filter out AD events
+    if (eventTypeIndex === 24) { continue; } // filter out EXO events
     const result = { ...event };
 
     if (result.eventDate !== undefined) result.eventDate = new Date(result.eventDate + 'Z').toISOString();

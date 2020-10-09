@@ -138,21 +138,21 @@ describe('CECActor', () => {
         .send({ from: creatorObligor });
     await this.PAMActorInstance.methods.progress(this.assetId)
         .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(iedEvent).eventType), 2);
+    assert.strictEqual(Number(decodeEvent(iedEvent).eventType), 3);
 
     // progress to schedule time of first IP (payoff == 0)
     const ipEvent_1 = await this.PAMRegistryInstance.methods.getNextScheduledEvent(this.assetId).call();
     await mineBlock(Number(await getEventTime(ipEvent_1, this.terms)));
     await this.PAMActorInstance.methods.progress(this.assetId)
         .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(ipEvent_1).eventType), 9);
+    assert.strictEqual(Number(decodeEvent(ipEvent_1).eventType), 10);
 
     // progress to post-grace period of IP
     const ipEvent_2 = await this.PAMRegistryInstance.methods.getNextScheduledEvent(this.assetId).call();
     await mineBlock(Number(await getEventTime(ipEvent_2, this.terms)) + 10000000);
     await this.PAMActorInstance.methods.progress(this.assetId)
         .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(ipEvent_2).eventType), 9);
+    assert.strictEqual(Number(decodeEvent(ipEvent_2).eventType), 10);
 
     // progress collateral enhancement
     const xdEvent = await this.CECRegistryInstance.methods
@@ -160,7 +160,7 @@ describe('CECActor', () => {
     await mineBlock(Number(await getEventTime(xdEvent, termsCEC)));
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
         .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(xdEvent).eventType), 26);
+    assert.strictEqual(Number(decodeEvent(xdEvent).eventType), 25);
 
     // progress collateral enhancement
     const stdEvent = await this.CECRegistryInstance.methods
@@ -168,7 +168,7 @@ describe('CECActor', () => {
     await mineBlock(Number(await getEventTime(stdEvent, termsCEC)));
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
         .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(stdEvent).eventType), 27);
+    assert.strictEqual(Number(decodeEvent(stdEvent).eventType), 26);
 
     // creator should have received seized collateral from custodian
     assert.strictEqual(

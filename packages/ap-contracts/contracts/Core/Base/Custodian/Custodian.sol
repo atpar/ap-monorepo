@@ -82,7 +82,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
             "Custodian.lockCollateral: TRANSFER_FAILED"
         );
 
-        // set allowance for AssetActor to later transfer collateral when XD is triggered
+        // set allowance for AssetActor to later transfer collateral when EXE is triggered
         uint256 allowance = IERC20(collateralToken).allowance(address(this), cecActor);
         require(
             IERC20(collateralToken).approve(cecActor, allowance.add(collateralAmount)),
@@ -133,18 +133,18 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
         // calculate amount to return
         uint256 notExecutedAmount;
-        // if XD was triggerd
+        // if EXE was triggerd
         if (state.exerciseDate != uint256(0)) {
             notExecutedAmount = collateralAmount.sub(
                 (state.exerciseAmount >= 0) ? uint256(state.exerciseAmount) : uint256(-1 * state.exerciseAmount)
             );
-        // if XD was not triggered and (reached maturity or was terminated)
+        // if EXE was not triggered and (reached maturity or was terminated)
         } else if (
             state.exerciseDate == uint256(0)
             && (state.contractPerformance == ContractPerformance.MD || state.contractPerformance == ContractPerformance.TD)
         ) {
             notExecutedAmount = collateralAmount;
-        // throw if XD was not triggered and maturity is not reached
+        // throw if EXE was not triggered and maturity is not reached
         } else {
             revert("Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED");
         }

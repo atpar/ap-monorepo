@@ -105,15 +105,15 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     /**
      * @notice Computes a schedule segment of non-cyclic contract events based on the contract terms
      * and the specified timestamps.
-     * @param terms terms of the contract
-     * @param segmentStart start timestamp of the segment
-     * @param segmentEnd end timestamp of the segement
+     * _param terms terms of the contract
+     * _param segmentStart start timestamp of the segment
+     * _param segmentEnd end timestamp of the segement
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        STKTerms calldata terms,
-        uint256 segmentStart,
-        uint256 segmentEnd
+        STKTerms calldata /* terms */,
+        uint256 /* segmentStart */,
+        uint256 /* segmentEnd */
     )
         external
         pure
@@ -270,16 +270,15 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         if (eventType == EventType.AD) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.ISS) return STF_STK_ID(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.DIF) return STF_STK_DDD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_STK_ISS(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.DIF) return STF_STK_DIF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.DIX) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.DIP) return STF_STK_DPD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.SDD) return STF_STK_SDD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.SED) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.SSD) return STF_STK_SSD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.DIP) return STF_STK_DIP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SPF) return STF_STK_SPF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SPS) return STF_STK_SPS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.REF) return STF_STK_REF(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RED) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RPD) return STF_STK_RPD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REX) return STF_STK_AD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REP) return STF_STK_REP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return STF_STK_AD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return STF_STK_TD(terms, state, scheduleTime, externalData);
 
@@ -312,13 +311,12 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.DIF) return 0;
         if (eventType == EventType.DIX) return 0;
-        if (eventType == EventType.DIP) return POF_STK_DPD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.SDD) return 0;
-        if (eventType == EventType.SED) return 0;
-        if (eventType == EventType.SSD) return 0;
+        if (eventType == EventType.DIP) return POF_STK_DIP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.SPF) return 0;
+        if (eventType == EventType.SPS) return 0;
         if (eventType == EventType.REF) return 0;
-        if (eventType == EventType.RED) return 0;
-        if (eventType == EventType.RPD) return POF_STK_RPD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REX) return 0;
+        if (eventType == EventType.REP) return POF_STK_REP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return 0;
         if (eventType == EventType.TD) return POF_STK_TD(terms, state, scheduleTime, externalData);
 

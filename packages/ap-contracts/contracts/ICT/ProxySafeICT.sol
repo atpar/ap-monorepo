@@ -90,11 +90,11 @@ contract ProxySafeICT is
         );
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
-        
-        // redemption is comprised of RFD, XD, RPD events
-        // only RFD is needed for the ICT redemption workflow
+
+        // redemption is comprised of REF, EXE, REP events
+        // only REF is needed for the ICT redemption workflow
         require(
-            eventType != EventType.XD && eventType != EventType.RPD,
+            eventType != EventType.EXE && eventType != EventType.REP,
             "ICT.createDepositForEvent: FORBIDDEN_EVEN_TYPE"
         );
 
@@ -103,13 +103,13 @@ contract ProxySafeICT is
         createDeposit(
             _event,
             scheduleTime,
-            // latest registration date on XD
-            (eventType == EventType.RFD)
+            // latest registration date on EXE
+            (eventType == EventType.REF)
                 ? getTimestampPlusPeriod(
                     assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
                     scheduleTime)
                 : 0,
-            (eventType == EventType.RFD),
+            (eventType == EventType.REF),
             currency
         );
     }
@@ -122,10 +122,10 @@ contract ProxySafeICT is
 
         (bool isSettled, int256 payoff) = assetRegistry.isEventSettled(
             assetId,
-            (eventType != EventType.RFD) 
+            (eventType != EventType.REF)
                 ? _event
                 : encodeEvent(
-                    EventType.RPD,
+                    EventType.REP,
                     getTimestampPlusPeriod(
                         assetRegistry.getPeriodValueForTermsAttribute(assetId, "settlementPeriod"),
                         scheduleTime
@@ -169,7 +169,7 @@ contract ProxySafeICT is
         (EventType eventType, ) = decodeEvent(_event);
 
         uint256 timestamp = shiftCalcTime(
-            (eventType != EventType.RFD) ? deposit.scheduledFor : deposit.signalingCutoff,
+            (eventType != EventType.REF) ? deposit.scheduledFor : deposit.signalingCutoff,
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
@@ -202,7 +202,7 @@ contract ProxySafeICT is
         (EventType eventType, ) = decodeEvent(_event);
 
         uint256 timestamp = shiftCalcTime(
-            (eventType != EventType.RFD) ? deposit.scheduledFor : deposit.signalingCutoff,
+            (eventType != EventType.REF) ? deposit.scheduledFor : deposit.signalingCutoff,
             BusinessDayConvention(assetRegistry.getEnumValueForTermsAttribute(assetId, "businessDayConvention")),
             Calendar(assetRegistry.getEnumValueForTermsAttribute(assetId, "calendar")),
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")

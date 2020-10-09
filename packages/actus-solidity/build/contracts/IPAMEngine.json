@@ -767,7 +767,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -833,6 +838,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],
@@ -1975,7 +1990,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -2041,6 +2061,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],
@@ -2455,7 +2485,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -2521,6 +2556,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],
@@ -2575,7 +2620,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -2641,6 +2691,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],
@@ -3055,7 +3115,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -3121,6 +3186,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],
@@ -3167,7 +3242,12 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastCouponDay",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
               "type": "uint256"
             },
             {
@@ -3233,6 +3313,16 @@
             {
               "internalType": "int256",
               "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
               "type": "int256"
             }
           ],

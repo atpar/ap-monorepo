@@ -22,31 +22,31 @@ contract('ANNEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      2 // FP
+      5 // FP
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      9 // IPCI
+      11 // IPCI
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      8 // IP
+      10 // IP
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      3 // PR
+      6 // PR
     ));
     schedule.push(... await this.ANNEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      12 // RR
+      13 // RR
     ));
 
     return sortEvents(schedule);

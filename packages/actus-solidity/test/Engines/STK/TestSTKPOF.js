@@ -13,12 +13,8 @@ contract('TestSTKPOF', () => {
   });
 
 
-  // _POF_STK_DPD(
-  //     _POF_STK_RPD(
-  //         _POF_STK_TD(
-
   /*
-   * TEST POF_STK_DPD
+   * TEST POF_STK_DIP
    */
   it('Should yield a dividend payment amount', async () => {
     const state = web3ResponseToState(await this.STKEngineInstance.computeInitialState(this.STKTerms));
@@ -28,7 +24,7 @@ contract('TestSTKPOF', () => {
     const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
     state.dividendPaymentAmount = '50000'+e18;
 
-    const payoff = await this.TestPOF._POF_STK_DPD(
+    const payoff = await this.TestPOF._POF_STK_DIP(
       this.STKTerms,
       state,
       scheduleTime,
@@ -39,7 +35,7 @@ contract('TestSTKPOF', () => {
   });
 
   /*
-  * TEST POF_STK_RPD
+  * TEST POF_STK_REP
   */
   describe('Yielding a redemption payment amount', () => {
     it('Should use the redemption price from terms, if set', async () => {
@@ -51,7 +47,7 @@ contract('TestSTKPOF', () => {
       const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
       state.exerciseQuantity = '1000'+e18;
 
-      const payoff = await this.TestPOF._POF_STK_RPD(
+      const payoff = await this.TestPOF._POF_STK_REP(
           terms,
           state,
           scheduleTime,
@@ -69,7 +65,7 @@ contract('TestSTKPOF', () => {
       const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
       state.exerciseQuantity = '1000'+e18;
 
-      const payoff = await this.TestPOF._POF_STK_RPD(
+      const payoff = await this.TestPOF._POF_STK_REP(
           this.STKTerms,
           state,
           scheduleTime,

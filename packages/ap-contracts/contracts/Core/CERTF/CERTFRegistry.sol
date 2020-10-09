@@ -18,7 +18,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
 
     using CERTFEncoder for Asset;
 
-    
+
     constructor()
         public
         BaseRegistry()
@@ -166,12 +166,12 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         EventType nextEventType;
         uint256 nextScheduleTimeOffset;
 
-        // CFD
+        // COF
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CFD],
-                EventType.CFD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COF],
+                EventType.COF
             ));
 
             if (
@@ -181,15 +181,15 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // CPD
+        // COP
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.CPD],
-                EventType.CPD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COP],
+                EventType.COP
             ));
 
             if (
@@ -199,15 +199,15 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // RFD
+        // REF
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RFD],
-                EventType.RFD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REF],
+                EventType.REF
             ));
 
             if (
@@ -217,15 +217,15 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // RPD
+        // REP
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.RPD],
-                EventType.RPD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REP],
+                EventType.REP
             ));
 
             if (
@@ -235,15 +235,15 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
-        // XD
+        // EXE
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.XD],
-                EventType.XD
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.EXE],
+                EventType.EXE
             ));
 
             if (
@@ -253,7 +253,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         return encodeEvent(nextEventType, nextScheduleTimeOffset);

@@ -1,4 +1,3 @@
-const { DEBUG_LOG } = require("../../../../del.me/debug-log");
 const {
   parseTermsFromObject,
   parseResultsFromObject,
@@ -31,8 +30,7 @@ async function getTestCases (contract) {
 
 async function getDefaultTestTerms (contract) {
   const testCases = await getTestCases(contract);
-  return testCases[Object.keys(testCases)[0]].terms;
-  // return Object.assign({}, testCases[Object.keys(testCases)[0]].terms);
+  return Object.assign({}, testCases[Object.keys(testCases)[0]].terms);
 }
 
 function compareTestResults (actualResults, expectedResults) {
@@ -40,9 +38,7 @@ function compareTestResults (actualResults, expectedResults) {
 
   for (let i = 0; i < numberOfEvents; i++) {
     const actualEvent = actualResults[i];
-    DEBUG_LOG(`i: ${i}, actualEvent: ${JSON.stringify(actualEvent)}`);
     const expectedEvent = expectedResults[i];
-    DEBUG_LOG(`i: ${i}, expectedEvent: ${JSON.stringify(expectedEvent)}`);
 
     if (expectedEvent.eventValue) {
       const decimals = (numberOfDecimals(actualEvent.eventValue) < numberOfDecimals(expectedEvent.eventValue))
@@ -140,7 +136,7 @@ function getDefaultState () {
     maturityDate: 31536000, // (1 year from 0)
     exerciseDate: 31536000,
     terminationDate: 31536000,
-    lastCouponDay: 0,
+    lastCouponFixingDate: 0,
 
     notionalPrincipal: web3.utils.toWei('1000000'),
     accruedInterest: web3.utils.toWei('100'),
@@ -156,7 +152,7 @@ function getDefaultState () {
     marginFactor: '0',
     adjustmentFactor: '0',
     dividendPaymentAmount: '0',
-    lastDividendDeclarationDate: '0',
+    lastDividendFixingDate: '0',
     splitRatio: '0',
   }
 }

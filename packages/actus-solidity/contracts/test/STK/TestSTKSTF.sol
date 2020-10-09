@@ -28,7 +28,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_ID(
+    function _STF_STK_ISS(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -38,7 +38,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_ID(
+        return STF_STK_ISS(
             terms,
             state,
             scheduleTime,
@@ -46,7 +46,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_DDD(
+    function _STF_STK_DIF(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -56,7 +56,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_DDD(
+        return STF_STK_DIF(
             terms,
             state,
             scheduleTime,
@@ -64,7 +64,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_DPD(
+    function _STF_STK_DIP(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -74,7 +74,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_DPD(
+        return STF_STK_DIP(
             terms,
             state,
             scheduleTime,
@@ -82,7 +82,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_SDD(
+    function _STF_STK_SPF(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -92,7 +92,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_SDD(
+        return STF_STK_SPF(
             terms,
             state,
             scheduleTime,
@@ -100,7 +100,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_SSD(
+    function _STF_STK_SPS(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -110,7 +110,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_SSD(
+        return STF_STK_SPS(
             terms,
             state,
             scheduleTime,
@@ -136,7 +136,7 @@ contract TestSTKSTF is STKSTF {
         );
     }
 
-    function _STF_STK_RPD(
+    function _STF_STK_REP(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -146,7 +146,7 @@ contract TestSTKSTF is STKSTF {
         pure
         returns (State memory)
     {
-        return STF_STK_RPD(
+        return STF_STK_REP(
             terms,
             state,
             scheduleTime,

@@ -234,9 +234,9 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        if (eventType == EventType.XD) return STF_CEC_XD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.EXE) return STF_CEC_EXE(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_CEC_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.STD) return STF_CEC_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ST) return STF_CEC_ST(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return STF_CEC_CE(terms, state, scheduleTime, externalData);
 
         revert("CECEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
@@ -265,8 +265,8 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
         if (eventType == EventType.CE) return 0;
-        if (eventType == EventType.XD) return 0;
-        if (eventType == EventType.STD) return POF_CEC_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.EXE) return 0;
+        if (eventType == EventType.ST) return POF_CEC_ST(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return 0;
 
         revert("CECEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

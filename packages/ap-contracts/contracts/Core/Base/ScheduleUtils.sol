@@ -11,7 +11,7 @@ contract ScheduleUtils {
         pure
         returns (bool)
     {
-        if (eventType == EventType.CE || eventType == EventType.XD) {
+        if (eventType == EventType.CE || eventType == EventType.EXE) {
             return true;
         }
 

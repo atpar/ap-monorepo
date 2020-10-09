@@ -37,7 +37,7 @@ library StateEncoder {
         storeInPackedState(asset, "couponAmountFixed", bytes32(state.couponAmountFixed));
         storeInPackedState(asset, "marginFactor", bytes32(state.marginFactor));
         storeInPackedState(asset, "adjustmentFactor", bytes32(state.adjustmentFactor));
-        storeInPackedState(asset, "lastCouponDay", bytes32(state.lastCouponDay));
+        storeInPackedState(asset, "lastCouponFixingDate", bytes32(state.lastCouponFixingDate));
     }
 
     /**
@@ -64,7 +64,7 @@ library StateEncoder {
         storeInPackedState(asset, "F_couponAmountFixed", bytes32(state.couponAmountFixed));
         storeInPackedState(asset, "F_marginFactor", bytes32(state.marginFactor));
         storeInPackedState(asset, "F_adjustmentFactor", bytes32(state.adjustmentFactor));
-        storeInPackedState(asset, "F_lastCouponDay", bytes32(state.lastCouponDay));
+        storeInPackedState(asset, "F_lastCouponFixingDate", bytes32(state.lastCouponFixingDate));
     }
 
     /**
@@ -79,8 +79,8 @@ library StateEncoder {
             uint256(asset.packedState["exerciseDate"]),
             uint256(asset.packedState["terminationDate"]),
 
-            uint256(asset.packedState["lastCouponDay"]),
-            
+            uint256(asset.packedState["lastCouponFixingDate"]),
+
             int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["accruedInterest"]),
             int256(asset.packedState["feeAccrued"]),
@@ -110,7 +110,7 @@ library StateEncoder {
             uint256(asset.packedState["F_exerciseDate"]),
             uint256(asset.packedState["F_terminationDate"]),
 
-            uint256(asset.packedState["F_lastCouponDay"]),
+            uint256(asset.packedState["F_lastCouponFixingDate"]),
 
             int256(asset.packedState["F_notionalPrincipal"]),
             int256(asset.packedState["F_accruedInterest"]),

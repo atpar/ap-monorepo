@@ -11,7 +11,7 @@ import "../../Engines/STK/STKPOF.sol";
 contract TestSTKPOF is STKPOF {
 
 
-    function _POF_STK_DPD(
+    function _POF_STK_DIP(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -21,7 +21,7 @@ contract TestSTKPOF is STKPOF {
     pure
     returns (int256)
     {
-        return POF_STK_DPD(
+        return POF_STK_DIP(
             terms,
             state,
             scheduleTime,
@@ -29,7 +29,7 @@ contract TestSTKPOF is STKPOF {
         );
     }
 
-    function _POF_STK_RPD(
+    function _POF_STK_REP(
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -39,7 +39,7 @@ contract TestSTKPOF is STKPOF {
     pure
     returns (int256)
     {
-        return POF_STK_RPD(
+        return POF_STK_REP(
             terms,
             state,
             scheduleTime,

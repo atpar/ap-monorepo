@@ -36,8 +36,9 @@ enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
-//               0   1    2   3   4    5   6   7   8   9    10  11   12  13   14   15   16   17  18  19  20    21  22   23   24   25   26   27   28   29   30   31   32  33  34  35
-enum EventType {NE, ISS, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DIF, DIX, DIP, PRD, MR, TD, SC, IPCB, MD, COF, COP, REF, REF, RED, RPD, STD, SDD, SED, SSD, XO, XD, AD}
+//               0   1    2    3    4   5   6   7   8   9  10    11  12   13   14   15   16   17   18   19   20   21   22   23   24   25  26  27    28   29  30  31  32  33
+enum EventType {NE, CE, ISS, IED, PRD, FP, PR, PD, PY, PP, IP, IPCI, RRF, RR, DIF, DIX, DIP, COF, COP, REF, REX, REP, SPF, SPS, EXO, EXE, ST, SC, IPCB, PRF, MC, TD, MD, AD}
+
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
@@ -62,11 +63,10 @@ struct State {
     uint256 maturityDate;
     uint256 exerciseDate;
     uint256 terminationDate;
-    uint256 lastCouponDay;
-    uint256 lastDividendDeclarationDate;
-    // uint256 dividendExDate; // not implemented
+    uint256 lastCouponFixingDate;
+    uint256 lastDividendFixingDate;
+    // uint256 dividendFixingDate // not implemented
     // uint256 dividendPaymentDate; // not implemented
-    // uint256 splitExDate; // not implemented
     // uint256 splitSettlementDate; // not implemented
     // uint256 redemptionExDate; // not implemented
     // uint256 redemptionPaymentDate; // not implemented
@@ -265,7 +265,7 @@ struct CERTFTerms {
     uint256 maturityDate;
     // uint256 nonPerformingDate; // state only
     uint256 issueDate;
-    // uint256 lastCouponDay; // state only
+    // uint256 lastCouponFixingDate; // state only
     uint256 cycleAnchorDateOfRedemption;
     uint256 cycleAnchorDateOfTermination;
     uint256 cycleAnchorDateOfCoupon;
@@ -390,9 +390,9 @@ struct STKTerms {
     uint256 issueDate;
     uint256 purchaseDate;
     uint256 cycleAnchorDateOfDividend;
-    // uint256 dividendExDate; state only
+    // uint256 dividendFixingDate; state only
+    // uint256 dividendEx; not implemented
     // uint256 dividendPaymentDate; state only
-    // uint256 splitExDate; state only
     // uint256 splitSettlementDate; state only
     // uint256 redemptionExDate; state only
     // uint256 redemptionPaymentDate; state only
@@ -415,8 +415,7 @@ struct STKTerms {
 
     IP dividendRecordPeriod;
     IP dividendPaymentPeriod;
-    IP splitRecordPeriod;
-    // IP splitSettlementPeriod; // not implemented
+    IP splitSettlementPeriod;
     IP redemptionRecordPeriod;
     IP redemptionPaymentPeriod;
 

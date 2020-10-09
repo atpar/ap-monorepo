@@ -12,10 +12,10 @@ import "../../Core/Core.sol";
 contract STKPOF is Core {
 
     /**
-     * Payoff Function for STK dividend payment date events
+     * Payoff Function for STK dividend payment events
      * @return the dividend payoff
      */
-    function POF_STK_DPD (
+    function POF_STK_DIP (
         STKTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
@@ -31,10 +31,10 @@ contract STKPOF is Core {
     }
 
     /**
-     * Payoff Function for STK redemption payment date events
+     * Payoff Function for STK redemption payment events
      * @return the redemption payoff
      */
-    function POF_STK_RPD (
+    function POF_STK_REP (
         STKTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
@@ -51,7 +51,7 @@ contract STKPOF is Core {
     }
 
      /**
-     * Payoff Function for STK termination date events
+     * Payoff Function for STK termination events
      * @return the termination payoff
      */
     function POF_STK_TD (

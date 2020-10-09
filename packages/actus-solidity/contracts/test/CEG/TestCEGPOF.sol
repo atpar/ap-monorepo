@@ -9,7 +9,7 @@ import "../../Engines/CEG/CEGPOF.sol";
 */
 contract TestCEGPOF is CEGPOF {
 
-    function _POF_CEG_STD(
+    function _POF_CEG_ST(
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -19,7 +19,7 @@ contract TestCEGPOF is CEGPOF {
         pure
         returns (int256)
     {
-        return POF_CEG_STD(
+        return POF_CEG_ST(
             terms,
             state,
             scheduleTime,
@@ -44,5 +44,5 @@ contract TestCEGPOF is CEGPOF {
             externalData
         );
     }
-    
+
 }

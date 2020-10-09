@@ -8,8 +8,8 @@ import "../../Engines/CEC/CECPOF.sol";
 * These helper contracts expose internal functions for unit testing.
 */
 contract TestCECPOF is CECPOF {
-    
-    function _POF_CEC_STD (
+
+    function _POF_CEC_ST (
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -19,7 +19,7 @@ contract TestCECPOF is CECPOF {
         pure
         returns(int256)
     {
-         return POF_CEC_STD(
+         return POF_CEC_ST(
             terms,
             state,
             scheduleTime,

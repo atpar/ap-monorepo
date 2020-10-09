@@ -1,5 +1,5 @@
 {
-  "contractName": "ICECEngine",
+  "contractName": "ISTKEngine",
   "abi": [
     {
       "inputs": [
@@ -36,14 +36,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -52,8 +62,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -62,70 +87,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },
@@ -191,14 +309,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -207,8 +335,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -217,70 +360,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         }
@@ -448,14 +684,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -464,8 +710,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -474,70 +735,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },
@@ -598,14 +952,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -614,8 +978,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -624,70 +1003,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },
@@ -748,14 +1220,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -764,8 +1246,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -774,70 +1271,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },
@@ -1020,14 +1610,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -1036,8 +1636,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -1046,70 +1661,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },
@@ -1427,14 +2135,24 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum ContractPerformance",
-              "name": "creditEventTypeCovered",
+              "internalType": "enum RedeemableByIssuer",
+              "name": "redeemableByIssuer",
               "type": "uint8"
             },
             {
-              "internalType": "enum FeeBasis",
-              "name": "feeBasis",
-              "type": "uint8"
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -1443,8 +2161,23 @@
             },
             {
               "internalType": "uint256",
-              "name": "maturityDate",
+              "name": "issueDate",
               "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfDividend",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalPrice",
+              "type": "int256"
             },
             {
               "internalType": "int256",
@@ -1453,70 +2186,163 @@
             },
             {
               "internalType": "int256",
-              "name": "feeRate",
+              "name": "issuePrice",
               "type": "int256"
             },
             {
               "internalType": "int256",
-              "name": "coverageOfCreditEnhancement",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "redemptionPrice",
               "type": "int256"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_1",
+              "internalType": "struct IP",
+              "name": "dividendRecordPeriod",
               "type": "tuple"
             },
             {
               "components": [
                 {
-                  "internalType": "bytes32",
-                  "name": "object",
-                  "type": "bytes32"
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
                 },
                 {
-                  "internalType": "bytes32",
-                  "name": "object2",
-                  "type": "bytes32"
-                },
-                {
-                  "internalType": "enum ContractReferenceType",
-                  "name": "_type",
+                  "internalType": "enum P",
+                  "name": "p",
                   "type": "uint8"
                 },
                 {
-                  "internalType": "enum ContractReferenceRole",
-                  "name": "role",
-                  "type": "uint8"
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct ContractReference",
-              "name": "contractReference_2",
+              "internalType": "struct IP",
+              "name": "dividendPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "splitSettlementPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionRecordPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "redemptionPaymentPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfDividend",
               "type": "tuple"
             }
           ],
-          "internalType": "struct CECTerms",
+          "internalType": "struct STKTerms",
           "name": "terms",
           "type": "tuple"
         },

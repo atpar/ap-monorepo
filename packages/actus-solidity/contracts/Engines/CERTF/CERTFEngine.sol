@@ -100,7 +100,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         state.exerciseQuantity = 0;
         state.marginFactor = ONE_POINT_ZERO;
         state.adjustmentFactor = ONE_POINT_ZERO;
-        state.lastCouponDay = terms.issueDate;
+        state.lastCouponFixingDate = terms.issueDate;
         state.couponAmountFixed = 0;
 
         state.contractPerformance = ContractPerformance.PF;
@@ -247,7 +247,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             }
         }
 
-        if (eventType == EventType.RPD) {
+        if (eventType == EventType.REP) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
@@ -262,13 +262,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     if (redemptionSchedule[i] == 0) break;
                     uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, redemptionSchedule[i]);
                     if (isInSegment(redemptionPaymentDayScheduleTime, segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.RPD, redemptionPaymentDayScheduleTime);
+                    events[index] = encodeEvent(EventType.REP, redemptionPaymentDayScheduleTime);
                     index++;
                 }
             }
         }
 
-        if (eventType == EventType.XD) {
+        if (eventType == EventType.EXE) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256[MAX_CYCLE_SIZE] memory redemptionSchedule = computeDatesFromCycleSegment(
                     terms.cycleAnchorDateOfRedemption,
@@ -284,7 +284,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                     if (redemptionSchedule[i] == terms.maturityDate) continue;
                     uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, redemptionSchedule[i]);
                     if (isInSegment(executionDateScheduleTime, segmentStart, segmentEnd) == false) continue;
-                    events[index] = encodeEvent(EventType.XD, executionDateScheduleTime);
+                    events[index] = encodeEvent(EventType.EXE, executionDateScheduleTime);
                     index++;
                 }
             }
@@ -363,7 +363,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
             }
         }
 
-        if (eventType == EventType.RPD) {
+        if (eventType == EventType.REP) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
@@ -375,11 +375,11 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 uint256 redemptionPaymentDayScheduleTime = getTimestampPlusPeriod(terms.settlementPeriod, nextRedemptionDate);
-                return encodeEvent(EventType.RPD, redemptionPaymentDayScheduleTime);
+                return encodeEvent(EventType.REP, redemptionPaymentDayScheduleTime);
             }
         }
 
-        if (eventType == EventType.XD) {
+        if (eventType == EventType.EXE) {
             if (terms.cycleAnchorDateOfRedemption != 0) {
                 uint256 nextRedemptionDate = computeNextCycleDateFromPrecedingDate(
                     terms.cycleOfRedemption,
@@ -392,7 +392,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 if (nextRedemptionDate == terms.maturityDate) return bytes32(0);
                 uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, nextRedemptionDate);
-                return encodeEvent(EventType.XD, executionDateScheduleTime);
+                return encodeEvent(EventType.EXE, executionDateScheduleTime);
             }
         }
 
@@ -447,13 +447,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        if (eventType == EventType.ISS) return STF_CERTF_ID(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_CERTF_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_CERTF_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.COF) return STF_CERTF_COF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.COP) return STF_CERTF_COP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.REF) return STF_CERTF_REF(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.XD) return STF_CERTF_XD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RPD) return STF_CERTF_RPD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.EXE) return STF_CERTF_EXE(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REP) return STF_CERTF_REP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return STF_CERTF_TD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_CERTF_MD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return STF_CERTF_CE(terms, state, scheduleTime, externalData);
@@ -486,12 +486,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.COF) return 0;
         if (eventType == EventType.REF) return 0;
-        if (eventType == EventType.XD) return 0;
+        if (eventType == EventType.EXE) return 0;
         if (eventType == EventType.MD) return 0;
         if (eventType == EventType.CE) return 0;
         if (eventType == EventType.IED) return POF_CERTF_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.COP) return POF_CERTF_COP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.RPD) return POF_CERTF_RPD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REP) return POF_CERTF_REP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_CERTF_TD(terms, state, scheduleTime, externalData);
 
         revert("CERTFEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
