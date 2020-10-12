@@ -222,7 +222,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -613,7 +613,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -1106,7 +1106,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -1492,7 +1492,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -1878,7 +1878,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -2386,7 +2386,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {
@@ -3029,7 +3029,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "exercisePeriod",
+              "name": "redemptionExercisePeriod",
               "type": "tuple"
             },
             {

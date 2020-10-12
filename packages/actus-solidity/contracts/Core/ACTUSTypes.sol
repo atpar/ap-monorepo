@@ -287,7 +287,7 @@ struct CERTFTerms {
     IP delinquencyPeriod;
     IP settlementPeriod;
     IP fixingPeriod;
-    IP exercisePeriod;
+    IP redemptionExercisePeriod;
 
     IPS cycleOfRedemption;
     IPS cycleOfTermination;

@@ -95,12 +95,12 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   scalingEffect: terms.scalingEffect,
   penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
-  
+
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
-  
+
   contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
@@ -151,7 +151,7 @@ export const extractCECTerms = (terms: Terms): CECTerms => ({
   endOfMonthConvention: terms.endOfMonthConvention,
   feeBasis: terms.feeBasis,
   creditEventTypeCovered: terms.creditEventTypeCovered,
-  
+
   statusDate: terms.statusDate,
   maturityDate: terms.maturityDate,
 
@@ -172,10 +172,10 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   endOfMonthConvention: terms.endOfMonthConvention,
   feeBasis: terms.feeBasis,
   creditEventTypeCovered: terms.creditEventTypeCovered,
-  
+
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
-  
+
   contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   maturityDate: terms.maturityDate,
@@ -225,7 +225,7 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   delinquencyPeriod: terms.delinquencyPeriod,
   settlementPeriod: terms.settlementPeriod,
   fixingPeriod: terms.fixingPeriod,
-  exercisePeriod: terms.exercisePeriod,
+  redemptionExercisePeriod: terms.redemptionExercisePeriod,
   cycleOfRedemption: terms.cycleOfRedemption,
   cycleOfTermination: terms.cycleOfTermination,
   cycleOfCoupon: terms.cycleOfCoupon,
@@ -243,12 +243,12 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   scalingEffect: terms.scalingEffect,
   penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
-  
+
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
-  
+
   contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
@@ -287,10 +287,10 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   cycleOfFee: terms.cycleOfFee
 });
 
-const associativeArrayToObject = (arr: any): object => ({ 
+const associativeArrayToObject = (arr: any): object => ({
   ...Object.keys(arr).reduce((obj: object, element: any): object => (
     (!Number.isInteger(Number(element)))
-      ? { 
+      ? {
         ...obj,
         [element]: (Array.isArray(arr[element]))
           ? associativeArrayToObject(arr[element])

@@ -282,7 +282,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (redemptionSchedule[i] == 0) break;
                     if (redemptionSchedule[i] == terms.maturityDate) continue;
-                    uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, redemptionSchedule[i]);
+                    uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionExercisePeriod, redemptionSchedule[i]);
                     if (isInSegment(executionDateScheduleTime, segmentStart, segmentEnd) == false) continue;
                     events[index] = encodeEvent(EventType.EXE, executionDateScheduleTime);
                     index++;
@@ -391,7 +391,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 if (nextRedemptionDate == terms.maturityDate) return bytes32(0);
-                uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.exercisePeriod, nextRedemptionDate);
+                uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionExercisePeriod, nextRedemptionDate);
                 return encodeEvent(EventType.EXE, executionDateScheduleTime);
             }
         }

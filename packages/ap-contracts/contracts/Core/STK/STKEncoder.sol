@@ -15,7 +15,7 @@ library STKEncoder {
         if (asset.packedTerms[attributeKey] == value) return;
         asset.packedTerms[attributeKey] = value;
     }
-    
+
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
      * @notice All non zero values of the overwrittenTerms object are stored.
@@ -82,10 +82,10 @@ library STKEncoder {
         );
         storeInPackedTerms(
             asset,
-            "exercisePeriod",
-            bytes32(uint256(terms.exercisePeriod.i)) << 24 |
-            bytes32(uint256(terms.exercisePeriod.p)) << 16 |
-            bytes32(uint256((terms.exercisePeriod.isSet) ? 1 : 0)) << 8
+            "redemptionExercisePeriod",
+            bytes32(uint256(terms.redemptionExercisePeriod.i)) << 24 |
+            bytes32(uint256(terms.redemptionExercisePeriod.p)) << 16 |
+            bytes32(uint256((terms.redemptionExercisePeriod.isSet) ? 1 : 0)) << 8
         );
 
         storeInPackedTerms(
@@ -200,9 +200,9 @@ library STKEncoder {
                 (asset.packedTerms["fixingPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["exercisePeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["exercisePeriod"] >> 16))),
-                (asset.packedTerms["exercisePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["redemptionExercisePeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["redemptionExercisePeriod"] >> 16))),
+                (asset.packedTerms["redemptionExercisePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
                 uint256(asset.packedTerms["cycleOfRedemption"] >> 24),
@@ -309,7 +309,7 @@ library STKEncoder {
             || attributeKey == bytes32("delinquencyPeriod")
             || attributeKey == bytes32("settlementPeriod")
             || attributeKey == bytes32("fixingPeriod")
-            || attributeKey == bytes32("exercisePeriod")
+            || attributeKey == bytes32("redemptionExercisePeriod")
         ) {
             return IP(
                 uint256(asset.packedTerms[attributeKey] >> 24),

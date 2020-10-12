@@ -119,7 +119,7 @@ export interface Terms {
   delinquencyPeriod: IP;
   settlementPeriod: IP;
   fixingPeriod: IP;
-  exercisePeriod: IP;
+  redemptionExercisePeriod: IP;
 
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
@@ -278,7 +278,7 @@ export interface CERTFTerms {
   delinquencyPeriod: IP;
   settlementPeriod: IP;
   fixingPeriod: IP;
-  exercisePeriod: IP;
+  redemptionExercisePeriod: IP;
 
   cycleOfRedemption: IPS;
   cycleOfTermination: IPS;
@@ -619,7 +619,7 @@ export function isCERTFTerms (obj: any): obj is CERTFTerms {
   if (!isIP(obj.delinquencyPeriod)) { return false; }
   if (!isIP(obj.settlementPeriod)) { return false; }
   if (!isIP(obj.fixingPeriod)) { return false; }
-  if (!isIP(obj.exercisePeriod)) { return false; }
+  if (!isIP(obj.redemptionExercisePeriod)) { return false; }
 
   if (!isIPS(obj.cycleOfRedemption)) { return false; }
   if (!isIPS(obj.cycleOfTermination)) { return false; }

@@ -193,7 +193,7 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   delinquencyPeriod: EMPTY_IP,
   settlementPeriod: EMPTY_IP,
   fixingPeriod: EMPTY_IP,
-  exercisePeriod: EMPTY_IP,
+  redemptionExercisePeriod: EMPTY_IP,
 
   cycleOfRedemption: EMPTY_IPS,
   cycleOfTermination: EMPTY_IPS,

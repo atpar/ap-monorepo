@@ -106,7 +106,7 @@ contract ProxySafeICT is
             // latest registration date on EXE
             (eventType == EventType.REF)
                 ? getTimestampPlusPeriod(
-                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "exercisePeriod"),
+                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "redemptionExercisePeriod"),
                     scheduleTime)
                 : 0,
             (eventType == EventType.REF),
