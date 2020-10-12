@@ -1,4 +1,4 @@
-/* global artifacts, before, beforeEach, describe, it, web3 */
+/* global artifacts, before, beforeEach, contract, describe, it, web3 */
 const TestPOF = artifacts.require('TestSTKPOF.sol');
 const STKEngine = artifacts.require('STKEngine.sol');
 const { getDefaultTestTerms, web3ResponseToState } = require('../../helper/tests');
@@ -11,7 +11,6 @@ contract('TestSTKPOF', () => {
     this.STKTerms = await getDefaultTestTerms('STK');
     this.TestPOF = await TestPOF.new();
   });
-
 
   /*
    * TEST POF_STK_DIP

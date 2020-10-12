@@ -1,196 +1,156 @@
 ## The Attributes, the Terms and the State for STK
 
-actus-dict.identifier      | Acronym | Rules     | ACTUSTypes.sol::Terms       | ACTUSTypes.sol::State
--------------------------- |---------|-----------|-----------------------------|--------------------------
-statusDate                 | (SD)    |  NN(,,1)  | statusDate                  | statusDate
-                           |         |           |                             |
-creatorID                  | (CRID)  |  NN(,,1)  |                             |
-contractID                 | (CID)   |  NN       |                             |
-counterpartyID             | (CPID)  |  NN(,,2)  |                             |
-                           |         |           |                             | >>exerciseDate
-                           |         |           |                             | >>exerciseAmount
-                           |         |           |                             | >>exerciseQuantity
-businessDayConvention      | (BDC)   |  x        | businessDayConvention,      |
-calendar                   | (CLDR)  |  x        | calendar,dayCountConvention |
-contractDealDate           | (CDD)   |  NN(,,1)  | contractDealDate            |
-contractPerformance        | (PRF)   |  x(,,1)   |                             | contractPerformance
-contractRole               | (CNTRL) |  NN       | contractRole                |
-contractType               | (CT)    |  NN       | contractType                |
-currency                   | (CUR)   |  NN       | currency                    |
-endOfMonthConvention       | (EOMC)  |  x        | endOfMonthConvention        |
-marketObjectCode           | (MOC)   |  x        | //marketObjectCode          |
-nonPerformingDate          | (NPD)   |  x(,,1)   |                             | nonPerformingDate
-seniority                  | (SEN)   |  x(,,1)   | //seniority                 |
-settlementCurrency         | (CURS)  |  x        | settlementCurrency          |
-                           |         |           |                             |
-issueDate                  | (ISS)    |  NN       | issueDate                   |
-issuePrice                 | (IPR)   |  NN       | issuePrice                  |
-notionalPrincipal          | (NT)    |  NN       | +notionalPrincipal          | notionalPrincipal
-quantity                   | (QT)    |  NN(,,3)  | quantity                    | quantity
-                           |         |           |                             |
-nominalPrice               | (NPR)   |  NN       | nominalPrice                |
-purchaseDate               | (PRD)   |  NN       | purchaseDate                |
-priceAtPurchaseDate        | (PPRD)  |  NN       | priceAtPurchaseDate         |
-                           |         |           |                             |
-cycleAnchorDateOfDividend  | (DANX)  |  NN(1,1,) | +cycleAnchorDateOfDividend  | >> +lastDividendFixingDate
-cycleOfDividend            | (DCL)   |  x(1,0,)  | +cycleOfDividend            |
-dividendPaymentAmount      | (DPA)   |  x(1,0,)  |                             | +dividendPaymentAmount
-dividendRecordPeriod       | (DRP)   |  x(1,1,)  | +dividendRecordPeriod       |
-dividendEx                 | (DIX)   |  x(1,1,)  |                             | //dividendEx
-dividendPaymentPeriod      | (DPP)   |  x(1,1,)  | +dividendPaymentPeriod      |
-dividendPayment            | (DIP)   |  x(1,1,)  |                             | //dividendPayment
-                           |         |           |                             |
-splitRatio                 | (SRA)   |  x        |                             | +splitRatio
-+splitSettlementPeriod     | (+SSP)  |           | +splitSettlementPeriod      |>> splitSettlement
-                           |         |           |                             |
-                           |         |           |                             |
-redeemableByIssuer         | (RBI)   |  x(7,0,)  | +redeemableByIssuer         |
-redemptionPrice            | (RPR)   |  NN(7,1,) | +redemptionPrice            |
-                           |         |           |                             | >> nextPrincipalRedemptionPayment ?
-redemptionRecordPeriod     | (RRP)   |  x        | +redemptionRecordPeriod     |
-redemptionEx               | (REX)   |  x        |                             | //redemptionEx
-redemptionPaymentPeriod    | (RPP)   |  x        | +redemptionPaymentPeriod    |
-redemptionPayment          | (REP)   |  x        |                             | //redemptionPayment
-                           |         |           |                             |
-terminationDate            | (TD)    |  x(6,0,1) |                             | //terminationDate
-priceAtTerminationDate     | (PTD)   |  NN(6,1,1)| //priceAtTerminationDate    |
-                           |         |           |                             |
-marketValueObserved        | (MVO)   |  x        |                             |
-settlementPeriod           | (STP)   |  x        |                             |
-
+actus-dict:: identifier    Acronym  Rules     | ACTUSTypes.sol::Terms       | ACTUSTypes.sol::State
+----------------------------------------------|-----------------------------|--------------------------
+statusDate                 (SD)      NN(,,1)  | statusDate                  | statusDate
+                                              |                             |
+creatorID                  (CRID)    NN(,,1)  |                             |
+contractID                 (CID)     NN       |                             |
+counterpartyID             (CPID)    NN(,,2)  |                             |
+                                              |                             |
+businessDayConvention      (BDC)     x        | businessDayConvention       |
+calendar                   (CLDR)    x        | calendar,dayCountConvention |
+contractDealDate           (CDD)     NN(,,1)  | contractDealDate            |
+contractPerformance        (PRF)     x(,,1)   |                             | contractPerformance
+contractRole               (CNTRL)   NN       | contractRole                |
+contractType               (CT)      NN       | contractType                |
+currency                   (CUR)     NN       | currency                    |
+endOfMonthConvention       (EOMC)    x        | endOfMonthConvention        |
+marketObjectCode           (MOC)     x        | //marketObjectCode          |
+nonPerformingDate          (NPD)     x(,,1)   |                             | nonPerformingDate
+seniority                  (SEN)     x(,,1)   | //seniority                 |
+settlementCurrency         (CURS)    x        | settlementCurrency          |
+                                              |                             |
+issueDate                  (ISD)     NN       | issueDate                   |
+issuePrice                 (ISPR)    NN       | issuePrice                  |
+notionalPrincipal          (NT)      NN       | notionalPrincipal           | notionalPrincipal
+quantity                   (QT)      NN(,,3)  | quantity                    | quantity
+                                              |                             |
+nominalPrice               (NOPR)    NN       | nominalPrice                |
+purchaseDate               (PRD)     NN       | purchaseDate                |
+priceAtPurchaseDate        (PPRD)    NN       | priceAtPurchaseDate         |
+                                              |                             |
+cycleAnchorDateOfDividend  (DIANX)   NN(1,1,) | cycleAnchorDateOfDividend   |
+cycleOfDividend            (DICL)    x(1,0,)  | cycleOfDividend             |
+dividendPaymentAmount      (DIPA)    x(1,0,)  |                             | dividendPaymentAmount
+dividendRecordPeriod       (DIRP)    x(1,1,)  | dividendRecordPeriod        |
+dividendExDate             (DIEX)    x(1,1,)  |                             | //dividendExDate
+dividendPaymentPeriod      (DIPP)    x(1,1,)  | dividendPaymentPeriod       |
+dividendPaymentDate        (DIPD)    x(1,1,)  |                             | //dividendPaymentDate
+dividendFixingDate         (DIFD)             |                             | //dividendFixingDate
+lastDividendFixingDate     (LDIFD)   x        |                             | lastDividendFixingDate
+                                              |                             |
+splitRatio                 (SPR)     x        |                             | splitRatio
+splitSettlementPeriod      (SPSP)    x        | splitSettlementPeriod       |
+splitSettlementDate                           |                             | //splitSettlementDate
+                                              |                             |
+redeemableByIssuer         (REBI)    x(7,0,)  | redeemableByIssuer          |
+redemptionPrice            (REPR)    NN(7,1,) | redemptionPrice             |
+redemptionRecordPeriod     (RERP)    x        | redemptionRecordPeriod      |
+redemptionExDate           (REXD)    x        |                             | //redemptionExDate
+redemptionPaymentPeriod    (REPP)    x        | redemptionPaymentPeriod     |
+redemptionPaymentDate      (REPD)    x        |                             | //redemptionPaymentDate
+                                              |                             |
+terminationDate            (TD)      x(6,0,1) |                             | terminationDate
+priceAtTerminationDate     (PTD)     NN(6,1,1)| //priceAtTerminationDate    |
+                                              |                             |
+marketValueObserved        (MV)      x        |                             |
+                                              |                             | >>exerciseAmount
+                                              |                             | >>exerciseQuantity
 > Notes:
-* "+" - a newly added property (to the _Terms_, _State_ or dict)
 * "//" - a property commented out (unused in the _Terms_ or _State_)
 * ">>" - a state param is indirectly dependant upon a term but not
-* Not applicable State params:
-accruedInterest, accruedInterest2, feeAccrued, interestCalculationBaseAmount, interestScalingMultiplier, maturityDate, 
-nominalInterestRate, nominalInterestRate2, notionalPrincipal2, notionalScalingMultiplier
-
-### terms/state_params mentioned or discussed in misc explanations:
-  - exercise amount (XA)
-  - nominalPrice (NPR)
-  - issuePrice (IPR)
-  - quantity (QT)
-    we will interpret quantity as token supply, similar to CERTF
-  - dividends params, defined on the (optional) Dividend Declaration Date (DIF)
-    - dividendPaymentAmount (DPA)
-    - dividendRecordPeriod (DRP)
-    - dividendEx (DIX)
-        DIX = DIF + DRP
-    - dividendPaymentPeriod (DPP)
-    - dividendPayment (DIP)
-        DIP = DIF + DPP
-    - cycleAnchorDateOfDividend (DANX)
-    - cycleOfDividend (DCL)
-    - lastDividendFixingDate (DLDD)
-  - Split terms, defined on the optional Split Declaration Date (SPF) event
-    - splitRatio (SRA)
-    - splitSettlementPeriod (SSP)
-    - Split Settlement Date (SPS)
-        SPS = SPF + SSP
-  - redeemableByIssuer (RBI)
-    if "Y", then the issuer can at any time insert the Redemption Declaration Date (REF) event
-  - Redemption params, defined on the (optional) Redemption Declaration Date (REF) event:
-    - redemptionPrice (RPR)
-    - numberOfShares (to be redeemed)
-    - redemptionRecordPeriod (RRP)
-    - redemptionEx (REX)
-        REX = REF + REX
-    - redemptionPaymentPeriod (RPP)
-    - redemptionPayment (REP)
-        REP = REF + REP
-  - Termination params, if applicable
-    - terminationDate (TD)
-    - priceAtTerminationDate (PTD)
 
 ##  STK events:
   - AD: Monitoring
-     > Same as PAM
   - ISS: Issue Date
-     > Issuer issues STK by selling quantity shares worth nominalPrice at issuePrice (we will interpret quantity as token supply, similar to CERTF)
-     At issuance, issuer fixes with terms: a dividend schedule (optional), right to redeem shares, etc...
-     Dividend/redemption/split terms are optional and if not defined, no DIF/REF/SPF events get generated.
-  - IED: Initial exchange date
-     > not applicable (out of the scope)
   - TD: Termination Date
-     > Same as PAM
-     > If a contract is sold before MD (for example a bond on the secondary market) this date has to be set.
-     It refers to the date at which the payment (of PTD) and transfer of the security happens.
-     In other words, TD - if set - takes the role otherwise MD has from a cash flow perspective.
-     If not otherwise set, STK is a perpetual instrument so no natural schedule end date (TD)
   - DIF: Dividend Declaration Date
-     > The timestamp of the next DIF event (if scheduled).
-     The management fixes and announces the next upcoming dividend payment x
-     Creates also DIX and DIP events according to dividendRecordPeriod, dividendPaymentPeriod
   - DIX: Dividend Ex Date
-     > Date from which new shareholders are not considered for the next dividend distribution
-       For simplicity, Dividend Ex Date = Dividend Declaration Date + dividendRecordPeriod
   - DIP: Dividend Payment Date
-     > The timestamp of the next DIP event (if scheduled).
-     For simplicity, Dividend Payment Date = Dividend Declaration Date + dividendPaymentPeriod
   - SPF: Split Declaration Date
-     > Declaration of a stock split or reverse split
-     With splitFixing event issuer defines the splitRatio to be applied in the upcoming split
-     Creates splitSettlement events according to splitSettlementPeriod terms
   - SPS: Split Settlement Date
-     > The timestamp of the next SPS event (if scheduled).
-     At following splitSettlement event each share/token holder's balance is adjusted by the splitRatio
   - REF: Redemption Declaration Date
-     > Declaration of the redemption of units of an instrument by the initiating party
-     if redeemableByIssuer=Y then the issuer can at any time insert the event
-     At redemptionFixing event the number of shares to be redeemed is fixed by the issuer
-     Creates a redemptionEx and redemptionPayment events and adds them to the schedule.
   - REX: Redemption Ex Date
-     > The timestamp of the next REX event (if scheduled).
-     Shareholders fixed who will have to sell back a number of shares to issuer proportional to their current shareholding at the redemptionPrice
   - REP: Redemption Payment Date
-     > The timestamp of the next REP event (if scheduled).
-     Announced number of shares are bought back by issuer from identified shareholders by swapping respective tokens against the numberOfShares*redemptionPrice
-     Date on which the redemption value (normally the par value) of a debt instrument is paid to its holder by its issuer.
   - CE: Credit Event
-     > Same as PAM
-
-### Notes:
-    - lets not yet "connect" the asset/engine/actor logic with action on the connected token representing the shares for now.
-        we thus trust the operator of a shares contract to separately call e.g. a mint/burn function in combination with a splitSettlement event
-
-### Payments
-Payments occur on: DIP, REP, TD
 
 ## Payof Function
 - Event: AD, ISS, DIF, DIX, SPF, SPS, REF, REX, CE, IED   
   POF: 0
-  // it could be for ISS or IED: X_cur_to_curs(t) * Sign(CNTRL) * IPR * QT
-- Event: TD
-  POF: X_cur_to_curs(t) * Sign(CNTRL) * PTD * Qt // PTD - terms.priceAtTerminationDate
+
 - Event: DIP
-  POF: X_cur_to_curs(t) * Sign(CNTRL) * Dpa
+  POF: X_cur_to_curs(t) * Sign(CNTRL) * Dipa
+  // Dipa - dividendPaymentAmount (the state)
+
 - Event: REP
-  POF: X_cur_to_curs(t) * Sign(CNTRL) * RPR * Xa // Xa - exercise amount , RPR - redemptionPrice
+  POF: X_cur_to_curs(t) * Sign(CNTRL) * REPR * Xa
+  // Xa - exercise amount (the state)
+
+- Event: TD
+  POF: X_cur_to_curs(t) * Sign(CNTRL) * PTD * Qt
 
 ## State transition function
 - Event: AD, DIX, REX, CE, TD(?)
   STF: Sd = t
 
 - Event: ISS
-  STF: sets Nt = NT, Qt = QT, Sd = t
+  STF: Nt = NT, Qt = QT, Sd = t
 
 - Event: DIF
-  STF: Dldd = t, Dpa = riskFactorObserver("${CID}_DIP", t), Sd = t
+  STF: Ldifd = t, Dipa = riskFactorObserver("${CID}_DIP", t), Sd = t
 
 - Event: DIP
-  STF: Dpa = 0, Sd = t
+  STF: Dipa = 0, Sd = t
 
 - Event: SPF
-  STF: Sra = riskFactorObserver("${CID}_SRA", t), Sd = t
-  // Sra - splitRatio
+  STF: Spr = riskFactorObserver("${CID}_SRA", t), Sd = t
+  // Spr - splitRatio (the state)
 
 - Event: SPS
-  STF: Qt = Sra * Qt, Sra = 0, Sd = t
+  STF: Qt = Spr * Qt, Spr = 0, Sd = t
 
 - Event: REF
   STF: Xq = riskFactorObserver("${CID}_RXQ", t), Sd = t
-   // Xq - exercise quantity, RXQ - redemption exercise quantity
+   // Xq - exercise quantity, RXQ - "redemption exercise quantity"
 
 - Event: REP
   STF: Qt = Qt - Xq, Xq = 0, Sd = t
+
+
+
+        // TODO: make the actor generate DIX and DIP events
+        dividendExDate = shiftCalcTime(
+            terms.dividendExDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
+                : terms.dividendExDate,
+            terms.businessDayConvention,
+            terms.calendar,
+            0
+        );
+        dividendPaymentDate = shiftCalcTime(
+            terms.dividendPaymentDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.dividendPaymentPeriod)
+                : terms.dividendPaymentDate,
+            terms.businessDayConvention,
+            terms.calendar,
+            0
+        );
+
+        // TODO: make the actor generate DIX and DIP events
+        redemptionExDate = shiftCalcTime(
+            terms.redemptionExDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)
+                : terms.redemptionExDate,
+            terms.businessDayConvention,
+            terms.calendar,
+            0
+        );
+        redemptionPaymentDate = shiftCalcTime(
+            terms.redemptionPaymentDate == 0
+                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionPaymentPeriod)
+                : terms.redemptionPaymentDate,
+            terms.businessDayConvention,
+            terms.calendar,
+            0
+        );

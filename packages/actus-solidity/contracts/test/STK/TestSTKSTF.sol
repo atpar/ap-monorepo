@@ -153,22 +153,4 @@ contract TestSTKSTF is STKSTF {
             externalData
         );
     }
-
-    function _STF_STK_TD(
-        STKTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_STK_TD(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
 }

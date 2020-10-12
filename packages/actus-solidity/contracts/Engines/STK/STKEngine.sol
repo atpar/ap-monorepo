@@ -15,6 +15,9 @@ import "./STKPOF.sol";
  */
 contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
 
+    // TODO: move redeemableByIssuer logic to STKEngine
+    /* if (terms.redeemableByIssuer != RedeemableByIssuer.Y) { return state; } */
+
     function contractType() external pure override returns (ContractType) {
         return ContractType.STK;
     }
@@ -280,7 +283,8 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         if (eventType == EventType.REX) return STF_STK_AD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.REP) return STF_STK_REP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.TD) return STF_STK_TD(terms, state, scheduleTime, externalData);
+        // TODO: check against the `actus-specs` as soon as it defines the STF for the TD event
+        if (eventType == EventType.TD) return STF_STK_AD(terms, state, scheduleTime, externalData);
 
         revert("STKEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
     }

@@ -71,24 +71,6 @@ contract STKSTF is Core {
 
         state.lastDividendFixingDate = scheduleTime;
 
-        // TODO: make the actor generate DIX and DIP events
-        /*state.dividendEx = shiftCalcTime(
-            terms.dividendEx == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
-                : terms.dividendEx,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
-        state.dividendPayment = shiftCalcTime(
-            terms.dividendPayment == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.dividendPaymentPeriod)
-                : terms.dividendPayment,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );*/
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -172,28 +154,6 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        // TODO: move redeemableByIssuer logic to STKEngine
-        /*if (!terms.redeemableByIssuer) {
-            return state;
-        }*/
-        // TODO: make the actor generate DIX and DIP events
-        /* state.redemptionEx = shiftCalcTime(
-            terms.redemptionEx == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)
-                : terms.redemptionEx,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
-        state.redemptionPayment = shiftCalcTime(
-            terms.redemptionPayment == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionPaymentPeriod)
-                : terms.redemptionPayment,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );*/
-
         state.exerciseQuantity = int256(externalData);
 
         state.statusDate = scheduleTime;
@@ -215,34 +175,8 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        if (terms.redeemableByIssuer != RedeemableByIssuer.Y) {
-            return state;
-        }
-
         state.quantity = state.quantity.sub(state.exerciseQuantity);
         state.exerciseQuantity = 0;
-
-        state.statusDate = scheduleTime;
-        return state;
-    }
-
-    /**
-     * State transition for STK termination event
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_STK_TD (
-        STKTerms memory /* terms */,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-    internal
-    pure
-    returns (State memory)
-    {
-        // TODO: check against the `actus-specs` as soon as specs define `STF_STK_TD`
-        state.terminationDate = uint256(externalData);
 
         state.statusDate = scheduleTime;
         return state;

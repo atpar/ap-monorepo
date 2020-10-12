@@ -6,6 +6,8 @@ const { getDefaultTestTerms, getDefaultState, assertEqualStates } = require('../
 
 
 contract('TestSTKSTF', () => {
+  const zeroBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
   before(async () => {
     this.STKEngineInstance = await STKEngine.new();
     this.STKTerms = await getDefaultTestTerms('STK');
@@ -13,26 +15,46 @@ contract('TestSTKSTF', () => {
     this.TestSTF = await TestSTF.new();
   });
 
-
   /*
   * TEST STF_STK_AD
   */
-  xit('STK Analysis Event STF', async () => {
+  it('STK Monitoring event STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
+    const externalData = '0x0000000000000000000000000000000000000000000C0FE0000C0FE000DAD00A'; // nonsense
+    const scheduleTime = 6307200;
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
     expectedState.statusDate = 6307200;
 
     const newState = await this.TestSTF._STF_STK_AD(
+        this.STKTerms,
+        oldState,
+        scheduleTime,
+        externalData
+    );
+
+    assertEqualStates(newState, expectedState);
+  });
+
+  /*
+  * TEST STF_STK_ISS
+  */
+  it('STK Issue STF', async () => {
+    const oldState = getDefaultState();
+    const externalData = zeroBytes32;
+    const scheduleTime = 6307200;
+
+    this.STKTerms.notionalPrincipal = toWei(`${500e6}`);
+    this.STKTerms.quantity = toWei(`${1e6}`);
+
+    // Construct expected state from default state
+    const expectedState = getDefaultState();
+    expectedState.notionalPrincipal = toWei(`${500e6}`);
+    expectedState.quantity = toWei(`${1e6}`);
+    expectedState.statusDate = 6307200;
+
+    const newState = await this.TestSTF._STF_STK_ISS(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -43,25 +65,20 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_FP
+  * TEST STF_STK_DIF
   */
-  xit('STK Fee Payment STF', async () => {
+  it('STK Dividend Fixing STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
+    const externalData = '0x0000000000000000000000000000000000000000000422ca8b0a00a425000000'; // 5e6 * 10e18
+    const scheduleTime = 6307200;
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('0');
+    expectedState.lastDividendFixingDate = 6307200;
+    expectedState.dividendPaymentAmount = toWei(`${5e6}`);
     expectedState.statusDate = 6307200;
 
-    const newState = await this.TestSTF._STF_STK_FP(
+    const newState = await this.TestSTF._STF_STK_DIF(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -72,28 +89,19 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_IED
+  * TEST STF_STK_DIP
   */
-  xit('STK Initial Exchange STF', async () => {
+  it('STK Dividend Payment STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
-    this.STKTerms.notionalPrincipal = toWei('1000000'); // NULL
-    this.STKTerms.accruedInterest = toWei('0')
+    const externalData = zeroBytes32;
+    const scheduleTime = 6307200;
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.notionalPrincipal = toWei('1000000')
-    expectedState.nominalInterestRate = toWei('0.05')
+    expectedState.dividendPaymentAmount = 0;
     expectedState.statusDate = 6307200;
-    expectedState.accruedInterest = toWei('0')
 
-    const newState = await this.TestSTF._STF_STK_IED(
+    const newState = await this.TestSTF._STF_STK_DIP(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -104,28 +112,19 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_IPCI
+  * TEST STF_STK_SPF
   */
-  xit('STK Interest Capitalization STF', async () => {
+  it('STK Split Fixing STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
-    this.STKTerms.notionalPrincipal = toWei('1000000')
+    const externalData = '0x00000000000000000000000000000000000000000000000006f05b59d3b20000'; // 0.5 * 10e18
+    const scheduleTime = 6307200;
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.notionalPrincipal = toWei('1010100');
-    expectedState.accruedInterest = toWei('0');
-    expectedState.feeAccrued = toWei('2030.2');
+    expectedState.splitRatio = toWei('0.5');
     expectedState.statusDate = 6307200;
 
-
-    const newState = await this.TestSTF._STF_STK_IPCI(
+    const newState = await this.TestSTF._STF_STK_SPF(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -136,25 +135,21 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_IP
+  * TEST STF_STK_SPS
   */
-  xit('STK Interest Payment STF', async () => {
+  it('STK Split Settlement STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
+    const externalData = zeroBytes32;
+    const scheduleTime = 6307200;
+    oldState.quantity = toWei(`${2e6}`);
+    oldState.splitRatio = toWei('0.5');
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('0');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.statusDate = 6307200;
+    expectedState.quantity = toWei(`${1e6}`);
+    expectedState.splitRatio = 0;
 
-    const newState = await this.TestSTF._STF_STK_IP(
+    const newState = await this.TestSTF._STF_STK_SPS(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -165,27 +160,19 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_PP
+  * TEST STF_STK_REF
   */
-  xit('STK Principal Payment STF', async () => {
+  it('STK Redemption Fixing STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
+    const externalData = '0x00000000000000000000000000000000000000000052b7d2dcc80cd2e4000000'; // 100*10e6 * 10e18
+    const scheduleTime = 6307200;
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.notionalPrincipal = toWei('1000000');
+    expectedState.exerciseQuantity = toWei(`${100e6}`);
     expectedState.statusDate = 6307200;
 
-
-    const newState = await this.TestSTF._STF_STK_PP(
+    const newState = await this.TestSTF._STF_STK_REF(
       this.STKTerms,
       oldState,
       scheduleTime,
@@ -196,89 +183,23 @@ contract('TestSTKSTF', () => {
   });
 
   /*
-  * TEST STF_STK_PR
+  * TEST STF_STK_REP
   */
-  xit('STK Princiapl Redemption STF', async () => {
+  it('STK Redemption Payment STF', async () => {
     const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
+    const externalData = zeroBytes32;
+    const scheduleTime = 6307200;
+    oldState.quantity = toWei(`${30e6}`);
+    oldState.exerciseQuantity = toWei(`${10e6}`);
 
     // Construct expected state from default state
     const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.notionalPrincipal = toWei('0')
+    expectedState.quantity = toWei(`${20e6}`);
+    expectedState.exerciseQuantity = 0;
     expectedState.statusDate = 6307200;
 
 
-    const newState = await this.TestSTF._STF_STK_PR(
-      this.STKTerms,
-      oldState,
-      scheduleTime,
-      externalData
-    );
-
-    assertEqualStates(newState, expectedState);
-  });
-
-  /*
-  * TEST STF_STK_PY
-  */
-  xit('STK Princiapl Redemption STF', async () => {
-    const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
-
-    // Construct expected state from default state
-    const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.statusDate = 6307200;
-
-
-    const newState = await this.TestSTF._STF_STK_PY(
-      this.STKTerms,
-      oldState,
-      scheduleTime,
-      externalData
-    );
-
-    assertEqualStates(newState, expectedState);
-  });
-
-  /*
-  * TEST STF_STK_RRF
-  */
-  xit('STK Fixed Rate Reset STF', async () => {
-    const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
-
-    this.STKTerms.feeRate = toWei('0.01');
-    this.STKTerms.nominalInterestRate = toWei('0.05');
-    this.STKTerms.dayCountConvention = 2; // A_365
-    this.STKTerms.businessDayConvention = 0; // NULL
-    this.STKTerms.nextResetRate = toWei('0.06')
-
-    // Construct expected state from default state
-    const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.nominalInterestRate = toWei('0.06')
-    expectedState.statusDate = 6307200;
-
-
-    const newState = await this.TestSTF._STF_STK_RRF(
+    const newState = await this.TestSTF._STF_STK_REP(
       this.STKTerms,
       oldState,
       scheduleTime,

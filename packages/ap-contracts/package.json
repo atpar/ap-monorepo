@@ -55,7 +55,6 @@
     "openzeppelin-solidity": "^3.0.2"
   },
   "devDependencies": {
-    "actus-dictionary": "https://github.com/actusfrf/actus-dictionary.git",
     "bignumber.js": "^7.2.1",
     "buidler-gas-reporter": "^0.1.3",
     "coveralls": "^3.0.9",

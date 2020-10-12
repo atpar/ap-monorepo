@@ -2,8 +2,8 @@
 pragma solidity ^0.6.11;
 
 /**
- * Commit: https://github.com/actusfrf/actus-dictionary/commit/48338b4bddf34d3367a875020733ddbb97d7de8e
- * Date: 2019-10-23
+ * Commit: https://github.com/atpar/actus-dictionary/commit/b85b9b378967de6bfc4d8b6687b520c48bce9890
+ * Date: 2020-10-06
  */
 
 
@@ -23,7 +23,7 @@ struct IP {
     bool isSet;
 }
 
-// Number of enum options should be limited to 256 (8 bits) such that 32 enums can be packed fit into 256 bits (bytes32)
+// Number of enum options should be limited to 256 (8 bits) such that 255 enums can be packed fit into 256 bits (bytes32)
 enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
 enum Calendar {NC, MF}
 enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
@@ -65,7 +65,8 @@ struct State {
     uint256 terminationDate;
     uint256 lastCouponFixingDate;
     uint256 lastDividendFixingDate;
-    // uint256 dividendFixingDate // not implemented
+    // uint256 dividendFixingDate; // not implemented
+    // uint256 dividendExDate; // not implemented
     // uint256 dividendPaymentDate; // not implemented
     // uint256 splitSettlementDate; // not implemented
     // uint256 redemptionExDate; // not implemented
@@ -375,7 +376,6 @@ struct STKTerms {
     DayCountConvention dayCountConvention;
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
-    // ContractPerformance contractPerformance; state only
     // Seniority seniority; // not implemented
 
     RedeemableByIssuer redeemableByIssuer;
@@ -390,15 +390,6 @@ struct STKTerms {
     uint256 issueDate;
     uint256 purchaseDate;
     uint256 cycleAnchorDateOfDividend;
-    // uint256 dividendFixingDate; state only
-    // uint256 dividendEx; not implemented
-    // uint256 dividendPaymentDate; state only
-    // uint256 splitSettlementDate; state only
-    // uint256 redemptionExDate; state only
-    // uint256 redemptionPaymentDate; state only
-    // uint256 terminationDate; state only
-    // uint256 nonPerformingDate; state only
-    // uint256 exerciseDate; state only
 
     int256 nominalPrice;
     int256 notionalPrincipal;
@@ -407,11 +398,6 @@ struct STKTerms {
     int256 priceAtPurchaseDate;
     int256 redemptionPrice;
     // int256 priceAtTerminationDate; // not implemented
-    // int256 dividendPaymentAmount; state only
-    // int256 splitRatio; state only
-    // int256 exerciseAmount; state only
-    // int256 exerciseQuantity; state only
-    // int256 exerciseQuantityOrdered; state only
 
     IP dividendRecordPeriod;
     IP dividendPaymentPeriod;
