@@ -80,7 +80,7 @@ library StateEncoder {
             uint256(asset.packedState["terminationDate"]),
 
             uint256(asset.packedState["lastCouponFixingDate"]),
-
+            uint256(asset.packedState["lastDividendFixingDate"]),
             int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["accruedInterest"]),
             int256(asset.packedState["feeAccrued"]),
@@ -94,7 +94,9 @@ library StateEncoder {
             int256(asset.packedState["quantity"]),
             int256(asset.packedState["couponAmountFixed"]),
             int256(asset.packedState["marginFactor"]),
-            int256(asset.packedState["adjustmentFactor"])
+            int256(asset.packedState["adjustmentFactor"]),
+            int256(asset.packedState["dividendPaymentAmount"]),
+            int256(asset.packedState["splitRatio"])
         );
     }
 

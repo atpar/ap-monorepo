@@ -23,7 +23,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     }
 
     /**
-     * Applys an event to the current state of a contract and returns the resulting contract state.
+     * Applies an event to the current state of a contract and returns the resulting contract state.
      * @param terms terms of the contract
      * @param state current state of the contract
      * @param _event event to be applied to the contract state
@@ -110,7 +110,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * and the specified timestamps.
      * _param terms terms of the contract
      * _param segmentStart start timestamp of the segment
-     * _param segmentEnd end timestamp of the segement
+     * _param segmentEnd end timestamp of the segment
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
@@ -123,18 +123,8 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         override
         returns (bytes32[] memory)
     {
-        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
-        uint16 index;
-
-        // TODO: implement computeNonCyclicScheduleSegment
-
-        // remove null entries from returned array
-        bytes32[] memory schedule = new bytes32[](index);
-        for (uint256 i = 0; i < index; i++) {
-            schedule[i] = events[i];
-        }
-
-        return schedule;
+        // TODO: implement computeNonCyclicScheduleSegment for STK when 'Ex/Settlement'- dates supported in State/Terms
+        return new bytes32[](0);
     }
 
     /**
@@ -142,7 +132,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * and the specified timestamps.
      * @param terms terms of the contract
      * @param segmentStart start timestamp of the segment
-     * @param segmentEnd end timestamp of the segement
+     * @param segmentEnd end timestamp of the segment
      * @param eventType eventType of the cyclic schedule
      * @return event schedule segment
      */

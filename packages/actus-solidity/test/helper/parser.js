@@ -12,6 +12,7 @@ const STF_TERMS = require('./definitions/STKTerms.json');
 
 const PRECISION = 18; // solidity precision
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 const isoToUnix = (date) => {
   return (new Date(date + 'Z')).getTime() / 1000;
@@ -153,9 +154,9 @@ const parseResultsFromObject = (schedule) => {
   for (const event of schedule) {
     const eventTypeIndex = Number(getIndexForEventType(event.eventType));
 
-    if (eventTypeIndex === 0) { continue; } // filter out NE events
-    if (eventTypeIndex === 33) { continue; } // filter out AD events
-    if (eventTypeIndex === 24) { continue; } // filter out EXO events
+    if (eventTypeIndex === 0) { continue; } // filter out NE events #useEventName
+    if (eventTypeIndex === 33) { continue; } // filter out AD events #useEventName
+    if (eventTypeIndex === 24) { continue; } // filter out EXO events #useEventName
     const result = { ...event };
 
     if (result.eventDate !== undefined) result.eventDate = new Date(result.eventDate + 'Z').toISOString();

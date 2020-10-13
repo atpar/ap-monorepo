@@ -5,6 +5,8 @@ const { getTestCases, compareTestResults } = require('../../helper/tests');
 const { parseToTestEventCERTF, isoToUnix } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
+
 contract('CERTFEngine', () => {
 
   const computeEventScheduleSegment = async (terms, segmentStart, segmentEnd) => {
@@ -19,31 +21,31 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      17 // COF
+      17 // COF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      18 // COP
+      18 // COP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      19 // REF
+      19 // REF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      21 // REP
+      21 // REP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      25 // EXE
+      25 // EXE #useEventName
     ));
 
     DEBUG_LOG(`schedule: ${JSON.stringify(sortEvents(schedule))}`);

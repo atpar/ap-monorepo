@@ -59,7 +59,7 @@ marketValueObserved        (MV)      x        |                             |
                                               |                             | >>exerciseQuantity
 > Notes:
 * "//" - a property commented out (unused in the _Terms_ or _State_)
-* ">>" - a state param is indirectly dependant upon a term but not
+* ">>" - a state param is indirectly affected
 
 ##  STK events:
   - AD: Monitoring

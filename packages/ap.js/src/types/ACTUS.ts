@@ -10,6 +10,7 @@ export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 //                             FP,  PR,  PY,   IP, IPCI,  RR,    SC,  COF,  COP, REF,  REP,  EXE
 export const CYCLIC_EVENTS = ['5', '6', '8', '10', '11', '13', '27', '17', '18', '19', '21', '25'];
 

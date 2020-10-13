@@ -3,6 +3,7 @@ const PAMEngine = artifacts.require('PAMEngine.sol');
 const { getDefaultTestTerms } = require('../../helper/tests');
 const { parseEventSchedule, decodeEvent, sortEvents } = require('../../helper/schedule');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 contract('PAMEngine', () => {
 
@@ -18,31 +19,31 @@ contract('PAMEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      5 // FP
+      5 // FP #useEventName
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      11 // IPCI
+      11 // IPCI #useEventName
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      10 // IP
+      10 // IP #useEventName
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      6 // PR
+      6 // PR #useEventName
     ));
     schedule.push(... await this.PAMEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      13 // RR
+      13 // RR #useEventName
     ));
 
 
