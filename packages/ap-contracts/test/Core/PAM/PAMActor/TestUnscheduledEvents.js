@@ -9,6 +9,7 @@ const { expectEvent, generateSchedule, ZERO_BYTES32 } = require('../../../helper
 const { encodeEvent } = require('../../../helper/scheduleUtils');
 const { mineBlock } = require('../../../helper/blockchain');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 describe('PAMActor', () => {
   let deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
@@ -75,7 +76,7 @@ describe('PAMActor', () => {
     const initialState = await this.PAMRegistryInstance.methods.getState(
         web3.utils.toHex(this.assetId)
     ).call();
-    const event = encodeEvent(9, Number(this.terms.contractDealDate) + 100);
+    const event = encodeEvent(10, Number(this.terms.contractDealDate) + 100); // #useEventName
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));

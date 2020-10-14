@@ -78,9 +78,9 @@ library StateEncoder {
             uint256(asset.packedState["maturityDate"]),
             uint256(asset.packedState["exerciseDate"]),
             uint256(asset.packedState["terminationDate"]),
-
             uint256(asset.packedState["lastCouponFixingDate"]),
             uint256(asset.packedState["lastDividendFixingDate"]),
+
             int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["accruedInterest"]),
             int256(asset.packedState["feeAccrued"]),
@@ -111,8 +111,8 @@ library StateEncoder {
             uint256(asset.packedState["F_maturityDate"]),
             uint256(asset.packedState["F_exerciseDate"]),
             uint256(asset.packedState["F_terminationDate"]),
-
             uint256(asset.packedState["F_lastCouponFixingDate"]),
+            uint256(asset.packedState["F_lastDividendFixingDate"]),
 
             int256(asset.packedState["F_notionalPrincipal"]),
             int256(asset.packedState["F_accruedInterest"]),
@@ -127,7 +127,9 @@ library StateEncoder {
             int256(asset.packedState["F_quantity"]),
             int256(asset.packedState["F_couponAmountFixed"]),
             int256(asset.packedState["F_marginFactor"]),
-            int256(asset.packedState["F_adjustmentFactor"])
+            int256(asset.packedState["F_adjustmentFactor"]),
+            int256(asset.packedState["F_dividendPaymentAmount"]),
+            int256(asset.packedState["F_splitRatio"])
         );
     }
 
