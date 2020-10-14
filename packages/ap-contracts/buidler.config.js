@@ -4,7 +4,8 @@ const { TASK_COMPILE_GET_COMPILER_INPUT } = require('@nomiclabs/buidler/builtin-
 usePlugin('@nomiclabs/buidler-web3');
 usePlugin('solidity-coverage');
 usePlugin("buidler-deploy");
-// usePlugin('buidler-gas-reporter');
+usePlugin('buidler-gas-reporter');
+
 
 task(TASK_COMPILE_GET_COMPILER_INPUT).setAction(async (_, __, runSuper) => {
   const input = await runSuper();
@@ -89,5 +90,8 @@ module.exports = {
       runs: 200
     }
   },
-  // gasReporter: {}
+  gasReporter: {
+    currency: 'CHF',
+    gasPrice: 90
+  }
 };
