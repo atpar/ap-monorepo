@@ -1,3 +1,4 @@
+/* global artifacts, before, beforeEach, contract, describe, it, web3 */
 const { toWei } = require('web3-utils');
 
 const TestSTF = artifacts.require('TestSTKSTF.sol');
@@ -157,6 +158,16 @@ contract('TestSTKSTF', () => {
     );
 
     assertEqualStates(newState, expectedState);
+  });
+
+  describe('FIXME: If redeemableByIssuer is not set in terms', () => {
+    xit('STK Split Fixing STF not applied', async () => {
+      // FIXME: implement the test case
+    });
+
+    xit('FIXME: STK Split Settlement STF not applied', async () => {
+      // FIXME: implement the test case
+    });
   });
 
   /*

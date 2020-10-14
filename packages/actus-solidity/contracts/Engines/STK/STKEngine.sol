@@ -15,9 +15,6 @@ import "./STKPOF.sol";
  */
 contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
 
-    // TODO: move redeemableByIssuer logic to STKEngine
-    /* if (terms.redeemableByIssuer != RedeemableByIssuer.Y) { return state; } */
-
     function contractType() external pure override returns (ContractType) {
         return ContractType.STK;
     }
@@ -123,7 +120,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         override
         returns (bytes32[] memory)
     {
-        // TODO: implement computeNonCyclicScheduleSegment for STK when 'Ex/Settlement'- dates supported in State/Terms
+        // TODO: implement when 'Ex/Settlement'- dates get supported in State/Terms
         return new bytes32[](0);
     }
 
@@ -269,11 +266,19 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         if (eventType == EventType.DIP) return STF_STK_DIP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SPF) return STF_STK_SPF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SPS) return STF_STK_SPS(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.REF) return STF_STK_REF(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REF) return (
+            terms.redeemableByIssuer == RedeemableByIssuer.Y
+                ? STF_STK_REF(terms, state, scheduleTime, externalData)
+                : STF_STK_AD(terms, state, scheduleTime, externalData)
+        );
         if (eventType == EventType.REX) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.REP) return STF_STK_REP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REP) return (
+            terms.redeemableByIssuer == RedeemableByIssuer.Y
+                ? STF_STK_REP(terms, state, scheduleTime, externalData)
+                : STF_STK_AD(terms, state, scheduleTime, externalData)
+            );
         if (eventType == EventType.CE) return STF_STK_AD(terms, state, scheduleTime, externalData);
-        // TODO: check against the `actus-specs` as soon as it defines the STF for the TD event
+        // TODO: check against `actus-specs` as soon as it defines STF for TD event
         if (eventType == EventType.TD) return STF_STK_AD(terms, state, scheduleTime, externalData);
 
         revert("STKEngine.stateTransitionFunction: ATTRIBUTE_NOT_FOUND");
@@ -310,7 +315,11 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         if (eventType == EventType.SPS) return 0;
         if (eventType == EventType.REF) return 0;
         if (eventType == EventType.REX) return 0;
-        if (eventType == EventType.REP) return POF_STK_REP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.REP) return (
+            terms.redeemableByIssuer == RedeemableByIssuer.Y
+                ? POF_STK_REP(terms, state, scheduleTime, externalData)
+                : 0
+            );
         if (eventType == EventType.CE) return 0;
         if (eventType == EventType.TD) return POF_STK_TD(terms, state, scheduleTime, externalData);
 

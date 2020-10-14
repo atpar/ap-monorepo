@@ -75,6 +75,12 @@ contract('TestSTKPOF', () => {
     });
   });
 
+  describe('If redeemableByIssuer is not set in terms', () => {
+    xit('FIXME: Should not yield redemption payment amount', async () => {
+      // FIXME: implement the test case
+    });
+  });
+
   /*
    * TEST POF_STK_TD
    */
