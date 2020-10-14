@@ -6,8 +6,6 @@ import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistryStorage.sol";
 
 
-// TODO: update for stk terms
-
 library STKEncoder {
 
     function storeInPackedTerms(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
@@ -31,7 +29,7 @@ library STKEncoder {
             bytes32(uint256(uint8(terms.dayCountConvention))) << 224 |
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
-            bytes32(uint256(uint8(terms.couponType))) << 200
+            bytes32(uint256(uint8(terms.redeemableByIssuer))) << 200
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -39,113 +37,16 @@ library STKEncoder {
 
         storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
-        storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
-        storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
         storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
-        storeInPackedTerms(asset, "cycleAnchorDateOfRedemption", bytes32(terms.cycleAnchorDateOfRedemption));
-        storeInPackedTerms(asset, "cycleAnchorDateOfTermination", bytes32(terms.cycleAnchorDateOfTermination));
-        storeInPackedTerms(asset, "cycleAnchorDateOfCoupon", bytes32(terms.cycleAnchorDateOfCoupon));
+        storeInPackedTerms(asset, "purchaseDate", bytes32(terms.purchaseDate));
+        storeInPackedTerms(asset, "cycleAnchorDateOfDividend", bytes32(terms.cycleAnchorDateOfDividend));
 
         storeInPackedTerms(asset, "nominalPrice", bytes32(terms.nominalPrice));
+        storeInPackedTerms(asset, "notionalPrincipal", bytes32(terms.notionalPrincipal));
         storeInPackedTerms(asset, "issuePrice", bytes32(terms.issuePrice));
         storeInPackedTerms(asset, "quantity", bytes32(terms.quantity));
-        storeInPackedTerms(asset, "denominationRatio", bytes32(terms.denominationRatio));
-        storeInPackedTerms(asset, "couponRate", bytes32(terms.couponRate));
-
-        storeInPackedTerms(
-            asset,
-            "gracePeriod",
-            bytes32(uint256(terms.gracePeriod.i)) << 24 |
-            bytes32(uint256(terms.gracePeriod.p)) << 16 |
-            bytes32(uint256((terms.gracePeriod.isSet) ? 1 : 0)) << 8
-        );
-        storeInPackedTerms(
-            asset,
-            "delinquencyPeriod",
-            bytes32(uint256(terms.delinquencyPeriod.i)) << 24 |
-            bytes32(uint256(terms.delinquencyPeriod.p)) << 16 |
-            bytes32(uint256((terms.delinquencyPeriod.isSet) ? 1 : 0)) << 8
-        );
-        storeInPackedTerms(
-            asset,
-            "settlementPeriod",
-            bytes32(uint256(terms.settlementPeriod.i)) << 24 |
-            bytes32(uint256(terms.settlementPeriod.p)) << 16 |
-            bytes32(uint256((terms.settlementPeriod.isSet) ? 1 : 0)) << 8
-        );
-        storeInPackedTerms(
-            asset,
-            "fixingPeriod",
-            bytes32(uint256(terms.fixingPeriod.i)) << 24 |
-            bytes32(uint256(terms.fixingPeriod.p)) << 16 |
-            bytes32(uint256((terms.fixingPeriod.isSet) ? 1 : 0)) << 8
-        );
-        storeInPackedTerms(
-            asset,
-            "redemptionExercisePeriod",
-            bytes32(uint256(terms.redemptionExercisePeriod.i)) << 24 |
-            bytes32(uint256(terms.redemptionExercisePeriod.p)) << 16 |
-            bytes32(uint256((terms.redemptionExercisePeriod.isSet) ? 1 : 0)) << 8
-        );
-
-        storeInPackedTerms(
-            asset,
-            "cycleOfRedemption",
-            bytes32(uint256(terms.cycleOfRedemption.i)) << 24 |
-            bytes32(uint256(terms.cycleOfRedemption.p)) << 16 |
-            bytes32(uint256(terms.cycleOfRedemption.s)) << 8 |
-            bytes32(uint256((terms.cycleOfRedemption.isSet) ? 1 : 0))
-        );
-        storeInPackedTerms(
-            asset,
-            "cycleOfTermination",
-            bytes32(uint256(terms.cycleOfTermination.i)) << 24 |
-            bytes32(uint256(terms.cycleOfTermination.p)) << 16 |
-            bytes32(uint256(terms.cycleOfTermination.s)) << 8 |
-            bytes32(uint256((terms.cycleOfTermination.isSet) ? 1 : 0))
-        );
-        storeInPackedTerms(
-            asset,
-            "cycleOfCoupon",
-            bytes32(uint256(terms.cycleOfCoupon.i)) << 24 |
-            bytes32(uint256(terms.cycleOfCoupon.p)) << 16 |
-            bytes32(uint256(terms.cycleOfCoupon.s)) << 8 |
-            bytes32(uint256((terms.cycleOfCoupon.isSet) ? 1 : 0))
-        );
-
-        storeInPackedTerms(
-            asset,
-            "contractReference_1_object",
-            terms.contractReference_1.object
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_1_object2",
-            terms.contractReference_1.object2
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_1_type_role",
-            bytes32(uint256(terms.contractReference_1._type)) << 16 |
-            bytes32(uint256(terms.contractReference_1.role)) << 8
-        );
-
-        storeInPackedTerms(
-            asset,
-            "contractReference_2_object",
-            terms.contractReference_2.object
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_2_object2",
-            terms.contractReference_2.object2
-        );
-        storeInPackedTerms(
-            asset,
-            "contractReference_2_type_role",
-            bytes32(uint256(terms.contractReference_2._type)) << 16 |
-            bytes32(uint256(terms.contractReference_2.role)) << 8
-        );
+        storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
+        storeInPackedTerms(asset, "redemptionPrice", bytes32(terms.redemptionPrice));
     }
 
     /**
@@ -159,80 +60,54 @@ library STKEncoder {
             DayCountConvention(uint8(uint256(asset.packedTerms["enums"] >> 224))),
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
-            CouponType(uint8(uint256(asset.packedTerms["enums"] >> 200))),
+            RedeemableByIssuer(uint8(uint256(asset.packedTerms["enums"] >> 200))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
             uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
-            uint256(asset.packedTerms["initialExchangeDate"]),
-            uint256(asset.packedTerms["maturityDate"]),
             uint256(asset.packedTerms["issueDate"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfRedemption"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfTermination"]),
-            uint256(asset.packedTerms["cycleAnchorDateOfCoupon"]),
+            uint256(asset.packedTerms["purchaseDate"]),
+            uint256(asset.packedTerms["cycleAnchorDateOfDividend"]),
 
             int256(asset.packedTerms["nominalPrice"]),
+            int256(asset.packedTerms["notionalPrincipal"]),
             int256(asset.packedTerms["issuePrice"]),
             int256(asset.packedTerms["quantity"]),
-            int256(asset.packedTerms["denominationRatio"]),
-            int256(asset.packedTerms["couponRate"]),
+            int256(asset.packedTerms["priceAtPurchaseDate"]),
+            int256(asset.packedTerms["redemptionPrice"]),
 
             IP(
-                uint256(asset.packedTerms["gracePeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["gracePeriod"] >> 16))),
-                (asset.packedTerms["gracePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["dividendRecordPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["dividendRecordPeriod"] >> 16))),
+                (asset.packedTerms["dividendRecordPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["delinquencyPeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["delinquencyPeriod"] >> 16))),
-                (asset.packedTerms["delinquencyPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["dividendPaymentPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["dividendPaymentPeriod"] >> 16))),
+                (asset.packedTerms["dividendPaymentPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["settlementPeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["settlementPeriod"] >> 16))),
-                (asset.packedTerms["settlementPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["splitSettlementPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["splitSettlementPeriod"] >> 16))),
+                (asset.packedTerms["splitSettlementPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["fixingPeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["fixingPeriod"] >> 16))),
-                (asset.packedTerms["fixingPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["redemptionRecordPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["redemptionRecordPeriod"] >> 16))),
+                (asset.packedTerms["redemptionRecordPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["redemptionExercisePeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["redemptionExercisePeriod"] >> 16))),
-                (asset.packedTerms["redemptionExercisePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["redemptionPaymentPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["redemptionPaymentPeriod"] >> 16))),
+                (asset.packedTerms["redemptionPaymentPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
-                uint256(asset.packedTerms["cycleOfRedemption"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfRedemption"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfRedemption"] >> 8))),
-                (asset.packedTerms["cycleOfRedemption"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-            IPS(
-                uint256(asset.packedTerms["cycleOfTermination"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfTermination"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfTermination"] >> 8))),
-                (asset.packedTerms["cycleOfTermination"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-            IPS(
-                uint256(asset.packedTerms["cycleOfCoupon"] >> 24),
-                P(uint8(uint256(asset.packedTerms["cycleOfCoupon"] >> 16))),
-                S(uint8(uint256(asset.packedTerms["cycleOfCoupon"] >> 8))),
-                (asset.packedTerms["cycleOfCoupon"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
-            ),
-            ContractReference(
-                asset.packedTerms["contractReference_1_object"],
-                asset.packedTerms["contractReference_1_object2"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
-            ),
-            ContractReference(
-                asset.packedTerms["contractReference_2_object"],
-                asset.packedTerms["contractReference_2_object2"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
+                uint256(asset.packedTerms["cycleOfDividend"] >> 24),
+                P(uint8(uint256(asset.packedTerms["cycleOfDividend"] >> 16))),
+                S(uint8(uint256(asset.packedTerms["cycleOfDividend"] >> 8))),
+                (asset.packedTerms["cycleOfDividend"] & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             )
         );
     }
@@ -254,7 +129,7 @@ library STKEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 216));
         } else if (attributeKey == bytes32("endOfMonthConvention")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
-        } else if (attributeKey == bytes32("couponType")) {
+        } else if (attributeKey == bytes32("redeemableByIssuer")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 200));
         } else {
             return uint8(0);
@@ -305,11 +180,11 @@ library STKEncoder {
         returns (IP memory)
     {
         if (
-            attributeKey == bytes32("gracePeriod")
-            || attributeKey == bytes32("delinquencyPeriod")
-            || attributeKey == bytes32("settlementPeriod")
-            || attributeKey == bytes32("fixingPeriod")
-            || attributeKey == bytes32("redemptionExercisePeriod")
+            attributeKey == bytes32("dividendRecordPeriod")
+            || attributeKey == bytes32("dividendPaymentPeriod")
+            || attributeKey == bytes32("splitSettlementPeriod")
+            || attributeKey == bytes32("redemptionRecordPeriod")
+            || attributeKey == bytes32("redemptionPaymentPeriod")
         ) {
             return IP(
                 uint256(asset.packedTerms[attributeKey] >> 24),
@@ -326,11 +201,7 @@ library STKEncoder {
         view
         returns (IPS memory)
     {
-        if (
-            attributeKey == bytes32("cycleOfRedemption")
-            || attributeKey == bytes32("cycleOfTermination")
-            || attributeKey == bytes32("cycleOfCoupon")
-        ) {
+        if ( attributeKey == bytes32("cycleOfDividend") ) {
             return IPS(
                 uint256(asset.packedTerms[attributeKey] >> 24),
                 P(uint8(uint256(asset.packedTerms[attributeKey] >> 16))),
@@ -339,35 +210,6 @@ library STKEncoder {
             );
         } else {
             return IPS(0, P(0), S(0), false);
-        }
-    }
-
-    function decodeAndGetContractReferenceValueForSTKAttribute(Asset storage asset, bytes32 attributeKey)
-        external
-        view
-        returns (ContractReference memory)
-    {
-        if (attributeKey == bytes32("contractReference_1")) {
-            return ContractReference(
-                asset.packedTerms["contractReference_1_object"],
-                asset.packedTerms["contractReference_1_object2"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_1_type_role"] >> 8)))
-            );
-        } else if (attributeKey == bytes32("contractReference_2")) {
-            return ContractReference(
-                asset.packedTerms["contractReference_2_object"],
-                asset.packedTerms["contractReference_2_object2"],
-                ContractReferenceType(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 16))),
-                ContractReferenceRole(uint8(uint256(asset.packedTerms["contractReference_2_type_role"] >> 8)))
-            );
-        } else {
-            return ContractReference(
-                bytes32(0),
-                bytes32(0),
-                ContractReferenceType(0),
-                ContractReferenceRole(0)
-            );
         }
     }
 }

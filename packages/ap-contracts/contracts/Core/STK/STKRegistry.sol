@@ -10,8 +10,6 @@ import "./STKEncoder.sol";
 import "./ISTKRegistry.sol";
 
 
-// TODO: update for stk terms
-
 /**
  * @title STKRegistry
  * @notice Registry for ACTUS Protocol assets
@@ -153,7 +151,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (ContractReference memory)
     {
-        return assets[assetId].decodeAndGetContractReferenceValueForSTKAttribute(attribute);
+        return ContractReference(0, 0, ContractReferenceType(0), ContractReferenceRole(0));
     }
 
     function getNextCyclicEvent(bytes32 assetId)
@@ -168,90 +166,18 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         EventType nextEventType;
         uint256 nextScheduleTimeOffset;
 
-        // COF
+        // DIF
         {
             (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COF],
-                EventType.COF
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.DIF],
+                EventType.DIF
             ));
 
             if (
                 (nextScheduleTimeOffset == 0)
                 || (scheduleTimeOffset < nextScheduleTimeOffset)
                 || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
-            ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
-                nextEventType = eventType;
-            }
-        }
-
-        // COP
-        {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
-                terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COP],
-                EventType.COP
-            ));
-
-            if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
-            ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
-                nextEventType = eventType;
-            }
-        }
-
-        // REF
-        {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
-                terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REF],
-                EventType.REF
-            ));
-
-            if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
-            ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
-                nextEventType = eventType;
-            }
-        }
-
-        // REP
-        {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
-                terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REP],
-                EventType.REP
-            ));
-
-            if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
-            ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
-                nextEventType = eventType;
-            }
-        }
-
-        // EXE
-        {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
-                terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.EXE],
-                EventType.EXE
-            ));
-
-            if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
                 nextScheduleTimeOffset = scheduleTimeOffset;
                 nextEventType = eventType;

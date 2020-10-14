@@ -80,7 +80,7 @@ contract STKActor is BaseActor {
             getExternalDataForPOF(
                 assetId,
                 eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, 0)
             )
         );
         state = ISTKEngine(engine).computeStateForEvent(
@@ -90,7 +90,7 @@ contract STKActor is BaseActor {
             getExternalDataForSTF(
                 assetId,
                 eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, 0)
             )
         );
 
