@@ -14,6 +14,8 @@ import "./ISTKRegistry.sol";
  */
 contract STKActor is BaseActor {
 
+    enum STKExternalDataType {NA, DIPA, SRA, RXQ}
+
     constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
         public
         BaseActor(assetRegistry, dataRegistry)
@@ -60,7 +62,7 @@ contract STKActor is BaseActor {
             admin
         );
 
-        emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
+        emit InitializedAsset(assetId, ContractType.STK, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
     function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
@@ -87,7 +89,7 @@ contract STKActor is BaseActor {
             terms,
             state,
             _event,
-            getExternalDataForSTF(
+            _getExternalDataForSTF(
                 assetId,
                 eventType,
                 shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, 0)
@@ -95,5 +97,38 @@ contract STKActor is BaseActor {
         );
 
         return (state, payoff);
+    }
+
+    function _getExternalDataForSTF(
+        bytes32 assetId,
+        EventType eventType,
+        uint256 timestamp
+    )
+    private
+    view
+    returns (bytes32)
+    {
+        if (eventType == EventType.DIF) {
+            (int256 dipa, bool isSet) = dataRegistry.getDataPoint(
+            bytes32(uint256(assetId) + uint256(STKExternalDataType.DIPA)),
+                timestamp
+            );
+            return isSet ? bytes32(dipa) : bytes32(0);
+        } else if (eventType == EventType.SPF) {
+            (int256 sra, bool isSet) = dataRegistry.getDataPoint(
+                bytes32(uint256(assetId) + uint256(STKExternalDataType.SRA)),
+                timestamp
+            );
+            if (isSet) return bytes32(sra);
+        } else if (eventType == EventType.REF) {
+            (int256 rxq, bool isSet) = dataRegistry.getDataPoint(
+                bytes32(uint256(assetId) + uint256(STKExternalDataType.RXQ)),
+            timestamp
+            );
+            if (isSet) return bytes32(rxq);
+        } else {
+            return super.getExternalDataForSTF(assetId, eventType, timestamp);
+        }
+        return bytes32(0);
     }
 }

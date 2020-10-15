@@ -7,6 +7,7 @@ const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/blockchain');
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../../../helper/utils');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 describe('PAMActor', () => {
   let deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
@@ -41,7 +42,7 @@ describe('PAMActor', () => {
 
     // only want RR events in the schedules
     self.schedule = (
-        await generateSchedule(self.PAMEngineInstance, self.terms)).filter((event) => event.startsWith('0x0d')
+        await generateSchedule(self.PAMEngineInstance, self.terms)).filter((event) => event.startsWith('0x0d') // #useEventName
     );
 
     const { events } = await self.PAMActorInstance.methods.initialize(

@@ -1,9 +1,10 @@
 /* global artifacts, before, beforeEach, contract, describe, it, web3 */
-const { getDefaultTestTerms } = require('../../helper/tests');
-const { parseEventSchedule, decodeEvent, sortEvents } = require('../../helper/schedule');
+const { getDefaultTestTerms, web3ResponseToState } = require('../../helper/tests');
+const { parseEventSchedule, decodeEvent, encodeEvent, sortEvents } = require('../../helper/schedule');
 
 const STKEngine = artifacts.require('STKEngine.sol');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 contract('STKEngine', () => {
 
@@ -19,7 +20,6 @@ contract('STKEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      // TODO: Replace hardcoded event values ids with names (#useEventName)
       14 // DIF (#useEventName)
     ));
 
@@ -60,16 +60,17 @@ contract('STKEngine', () => {
     assert.equal(Number(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
   });
 
-  xit('should yield correct segment of events', async () => {
+  it('should yield correct segment of events', async () => {
+    const endDate = this.terms.cycleAnchorDateOfDividend + 365 * 24 * 3600;
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
       this.terms.contractDealDate,
-      this.terms.maturityDate
+      endDate
     ));
 
     let schedule = [];
     let statusDate = this.terms['statusDate'];
-    let timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 4;
+    let timestamp = this.terms['statusDate'] + (endDate - this.terms['statusDate']) / 4;
 
     schedule.push(... await computeEventScheduleSegment(
       this.terms,
@@ -78,7 +79,7 @@ contract('STKEngine', () => {
     ));
 
     statusDate = timestamp;
-    timestamp = this.terms['statusDate'] + (this.terms['maturityDate'] - this.terms['statusDate']) / 2;
+    timestamp = this.terms['statusDate'] + (endDate - this.terms['statusDate']) / 2;
 
     schedule.push(... await computeEventScheduleSegment(
       this.terms,
@@ -87,7 +88,7 @@ contract('STKEngine', () => {
     ));
 
     statusDate = timestamp;
-    timestamp = this.terms['maturityDate'];
+    timestamp = endDate;
 
     schedule.push(... await computeEventScheduleSegment(
       this.terms,
@@ -97,6 +98,7 @@ contract('STKEngine', () => {
 
     schedule = parseEventSchedule(sortEvents(schedule));
 
+    assert.isTrue(schedule.length > 0);
     assert.isTrue(schedule.toString() === completeEventSchedule.toString());
   });
 
@@ -126,5 +128,95 @@ contract('STKEngine', () => {
 
       state = nextState;
     }
+  });
+
+  describe('computePayoffForEvent function for REP event', () => {
+      before(async () => {
+        const scheduleTime = 100;
+        const event = encodeEvent(21, scheduleTime); // #useEventName (REP)
+
+        const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
+
+        const getSate = async (terms) => {
+          const state = web3ResponseToState(await this.STKEngineInstance.computeInitialState(terms));
+          state.exerciseQuantity = '1000'+'000000000000000000';
+          state.statusDate = '100';
+          return state;
+        }
+
+        this.terms.redeemableByIssuer = 1;
+        this.payoffIfRedeemable = await this.STKEngineInstance.computePayoffForEvent(
+            this.terms,
+            await getSate(this.terms),
+            event,
+            externalData
+        );
+
+        this.terms.redeemableByIssuer = 0;
+        this.payoffIfNotRedeemable = await this.STKEngineInstance.computePayoffForEvent(
+            this.terms,
+            await getSate(this.terms),
+            event,
+            externalData
+        );
+      });
+
+    describe('If redeemableByIssuer is set in terms', () => {
+      it('Should yield redemption payment amount', async () => {
+        assert.equal(this.payoffIfRedeemable.toString(), '400000' + '000000000000000000');
+      });
+    });
+
+    describe('If redeemableByIssuer is not set in terms', () => {
+      it('Should not yield redemption payment amount', async () => {
+        assert.equal(this.payoffIfNotRedeemable.toString(), '0');
+      });
+    });
+  });
+
+  describe('computeStateForEvent function for REF event', () => {
+    before(async () => {
+      const scheduleTime = 100;
+      const event = encodeEvent(19, scheduleTime); // #useEventName (REF)
+
+      const externalData = '0x00000000000000000000000000000000000000000052b7d2dcc80cd2e4000000'; // 100*10e6 * 10e18
+
+      const getSate = async (terms) => {
+        const state = web3ResponseToState(await this.STKEngineInstance.computeInitialState(terms));
+        state.exerciseQuantity = '0';
+        state.statusDate = '50';
+        return state;
+      }
+
+      this.terms.redeemableByIssuer = 1;
+      this.stateIfRedeemable = await this.STKEngineInstance.computeStateForEvent(
+          this.terms,
+          await getSate(this.terms),
+          event,
+          externalData
+      );
+
+      this.terms.redeemableByIssuer = 0;
+      this.stateIfNotRedeemable = await this.STKEngineInstance.computeStateForEvent(
+          this.terms,
+          await getSate(this.terms),
+          event,
+          externalData
+      );
+    });
+
+    describe('If redeemableByIssuer is set in terms', () => {
+      it('Should set exerciseQuantity', async () => {
+        assert.equal(this.stateIfRedeemable.statusDate.toString(), '100');
+        assert.equal(this.stateIfRedeemable.exerciseQuantity.toString(), '100'+'000000'+'000000000000000000');
+      });
+    });
+
+    describe('If redeemableByIssuer is not set in terms', () => {
+      it('Should not set exerciseQuantity', async () => {
+        assert.equal(this.stateIfNotRedeemable.statusDate.toString(), '100');
+        assert.equal(this.stateIfNotRedeemable.exerciseQuantity.toString(), '0');
+      });
+    });
   });
 });

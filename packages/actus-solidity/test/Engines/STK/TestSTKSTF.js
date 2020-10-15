@@ -160,16 +160,6 @@ contract('TestSTKSTF', () => {
     assertEqualStates(newState, expectedState);
   });
 
-  describe('FIXME: If redeemableByIssuer is not set in terms', () => {
-    xit('STK Split Fixing STF not applied', async () => {
-      // FIXME: implement the test case
-    });
-
-    xit('FIXME: STK Split Settlement STF not applied', async () => {
-      // FIXME: implement the test case
-    });
-  });
-
   /*
   * TEST STF_STK_REF
   */

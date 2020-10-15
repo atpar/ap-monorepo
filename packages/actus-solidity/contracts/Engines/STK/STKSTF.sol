@@ -68,9 +68,7 @@ contract STKSTF is Core {
         returns (State memory)
     {
         state.dividendPaymentAmount = int256(externalData);
-
         state.lastDividendFixingDate = scheduleTime;
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -91,7 +89,6 @@ contract STKSTF is Core {
     returns (State memory)
     {
         state.dividendPaymentAmount = 0;
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -112,7 +109,6 @@ contract STKSTF is Core {
     returns (State memory)
     {
         state.splitRatio = int256(externalData);
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -134,7 +130,6 @@ contract STKSTF is Core {
     {
         state.quantity = state.splitRatio.floatMult(state.quantity);
         state.splitRatio = 0;
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -155,7 +150,6 @@ contract STKSTF is Core {
     returns (State memory)
     {
         state.exerciseQuantity = int256(externalData);
-
         state.statusDate = scheduleTime;
         return state;
     }
@@ -166,7 +160,7 @@ contract STKSTF is Core {
      * @return the new state
      */
     function STF_STK_REP (
-        STKTerms memory terms,
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
@@ -177,7 +171,6 @@ contract STKSTF is Core {
     {
         state.quantity = state.quantity.sub(state.exerciseQuantity);
         state.exerciseQuantity = 0;
-
         state.statusDate = scheduleTime;
         return state;
     }

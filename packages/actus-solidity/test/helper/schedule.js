@@ -14,9 +14,9 @@ function sortEvents (_events) {
     if (scheduleTimeB == 0) { return -1 }
     if (scheduleTimeA > scheduleTimeB) { return 1 }
     if (scheduleTimeA < scheduleTimeB) { return -1 }
-    
-    if (getEpochOffsetForEventType(eventTypeA) > getEpochOffsetForEventType(eventTypeB)) { 
-      return 1; 
+
+    if (getEpochOffsetForEventType(eventTypeA) > getEpochOffsetForEventType(eventTypeB)) {
+      return 1;
     }
     if (getEpochOffsetForEventType(eventTypeA) < getEpochOffsetForEventType(eventTypeB)) {
       return -1;
@@ -46,13 +46,21 @@ function decodeEvent (encodedEvent) {
   };
 }
 
+function encodeEvent (eventType, scheduleTime) {
+  const eventTypeAsHex = Web3Utils.padLeft(Web3Utils.toHex(eventType), 2);
+  const scheduleTimeAsHex = Web3Utils.padLeft(Web3Utils.toHex(scheduleTime), 62);
+
+  return eventTypeAsHex + scheduleTimeAsHex.substr(2, scheduleTimeAsHex.length);
+}
+
 function parseEventSchedule (encodedEventSchedule) {
   return encodedEventSchedule.map((encodedEvent) => decodeEvent(encodedEvent));
 }
 
-module.exports = { 
-  sortEvents, 
-  removeNullEvents, 
+module.exports = {
+  sortEvents,
+  removeNullEvents,
   decodeEvent,
+  encodeEvent,
   parseEventSchedule
 }

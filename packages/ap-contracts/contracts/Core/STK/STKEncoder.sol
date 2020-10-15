@@ -47,6 +47,50 @@ library STKEncoder {
         storeInPackedTerms(asset, "quantity", bytes32(terms.quantity));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
         storeInPackedTerms(asset, "redemptionPrice", bytes32(terms.redemptionPrice));
+
+        storeInPackedTerms(
+            asset,
+            "dividendRecordPeriod",
+            bytes32(uint256(terms.dividendRecordPeriod.i)) << 24 |
+            bytes32(uint256(terms.dividendRecordPeriod.p)) << 16 |
+            bytes32(uint256((terms.dividendRecordPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "dividendPaymentPeriod",
+            bytes32(uint256(terms.dividendPaymentPeriod.i)) << 24 |
+            bytes32(uint256(terms.dividendPaymentPeriod.p)) << 16 |
+            bytes32(uint256((terms.dividendPaymentPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "splitSettlementPeriod",
+            bytes32(uint256(terms.splitSettlementPeriod.i)) << 24 |
+            bytes32(uint256(terms.splitSettlementPeriod.p)) << 16 |
+            bytes32(uint256((terms.splitSettlementPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "redemptionRecordPeriod",
+            bytes32(uint256(terms.redemptionRecordPeriod.i)) << 24 |
+            bytes32(uint256(terms.redemptionRecordPeriod.p)) << 16 |
+            bytes32(uint256((terms.redemptionRecordPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "redemptionPaymentPeriod",
+            bytes32(uint256(terms.redemptionPaymentPeriod.i)) << 24 |
+            bytes32(uint256(terms.redemptionPaymentPeriod.p)) << 16 |
+            bytes32(uint256((terms.redemptionPaymentPeriod.isSet) ? 1 : 0)) << 8
+        );
+        storeInPackedTerms(
+            asset,
+            "cycleOfDividend",
+            bytes32(uint256(terms.cycleOfDividend.i)) << 24 |
+            bytes32(uint256(terms.cycleOfDividend.p)) << 16 |
+            bytes32(uint256(terms.cycleOfDividend.s)) << 8 |
+            bytes32(uint256((terms.cycleOfDividend.isSet) ? 1 : 0))
+        );
     }
 
     /**
