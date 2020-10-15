@@ -16,6 +16,7 @@ async function initContracts(buidlerRuntime) {
     await registerActor(buidlerRuntime,"CEGRegistry", "CEGActor");
     await registerActor(buidlerRuntime,"CERTFRegistry", "CERTFActor");
     await registerActor(buidlerRuntime,"PAMRegistry", "PAMActor");
+    await registerActor(buidlerRuntime,"STKRegistry", "STKActor");
 }
 
 /**
