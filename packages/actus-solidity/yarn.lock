@@ -502,7 +502,7 @@ acorn@^6.0.7:
 
 "actus-dictionary@https://github.com/atpar/actus-dictionary.git#dev":
   version "0.0.0"
-  resolved "https://github.com/atpar/actus-dictionary.git#bab11bda664232e04ba0d8c72e62457f937e121e"
+  resolved "https://github.com/atpar/actus-dictionary.git#b85b9b378967de6bfc4d8b6687b520c48bce9890"
 
 address@^1.0.1:
   version "1.1.2"
