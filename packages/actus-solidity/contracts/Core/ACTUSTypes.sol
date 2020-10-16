@@ -46,7 +46,7 @@ enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
 enum ScalingEffect {_000, I00, _0N0, IN0}
 // enum Seniority {S, J} // not implemented
-enum RedeemableByIssuer {N, Y}
+enum RedeemableByIssuer {Y, N}
 
 struct ContractReference {
     bytes32 object;

@@ -1,5 +1,4 @@
 const CERTFEngine = artifacts.require('CERTFEngine.sol');
-const { DEBUG_LOG } = require("../../../../../del.me/debug-log");
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
 const { parseToTestEventCERTF, isoToUnix } = require('../../helper/parser');
@@ -48,7 +47,6 @@ contract('CERTFEngine', () => {
       25 // EXE #useEventName
     ));
 
-    DEBUG_LOG(`schedule: ${JSON.stringify(sortEvents(schedule))}`);
     return sortEvents(schedule);
   }
 

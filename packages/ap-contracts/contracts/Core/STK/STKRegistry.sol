@@ -145,7 +145,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         return assets[assetId].decodeAndGetCycleValueForForSTKAttribute(attribute);
     }
 
-    function getContractReferenceValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
+    function getContractReferenceValueForTermsAttribute(bytes32 /* assetId */, bytes32 /* attribute */)
         public
         view
         override(ITermsRegistry, TermsRegistry)

@@ -144,7 +144,7 @@ contract('STKEngine', () => {
           return state;
         }
 
-        this.terms.redeemableByIssuer = 1;
+        this.terms.redeemableByIssuer = 0;
         this.payoffIfRedeemable = await this.STKEngineInstance.computePayoffForEvent(
             this.terms,
             await getSate(this.terms),
@@ -152,7 +152,7 @@ contract('STKEngine', () => {
             externalData
         );
 
-        this.terms.redeemableByIssuer = 0;
+        this.terms.redeemableByIssuer = 1;
         this.payoffIfNotRedeemable = await this.STKEngineInstance.computePayoffForEvent(
             this.terms,
             await getSate(this.terms),
@@ -188,7 +188,7 @@ contract('STKEngine', () => {
         return state;
       }
 
-      this.terms.redeemableByIssuer = 1;
+      this.terms.redeemableByIssuer = 0;
       this.stateIfRedeemable = await this.STKEngineInstance.computeStateForEvent(
           this.terms,
           await getSate(this.terms),
@@ -196,7 +196,7 @@ contract('STKEngine', () => {
           externalData
       );
 
-      this.terms.redeemableByIssuer = 0;
+      this.terms.redeemableByIssuer = 1;
       this.stateIfNotRedeemable = await this.STKEngineInstance.computeStateForEvent(
           this.terms,
           await getSate(this.terms),

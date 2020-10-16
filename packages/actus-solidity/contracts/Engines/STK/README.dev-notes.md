@@ -84,8 +84,9 @@ marketValueObserved        (MV)      x        |                             |
   // Dipa - dividendPaymentAmount (the state)
 
 - Event: REP
-  POF: X_cur_to_curs(t) * Sign(CNTRL) * REPR * Xa
-  // Xa - exercise amount (the state)
+  POF: X_cur_to_curs(t) * Sign(CNTRL) * REPR * Exa
+  // Exa - exercise amount (the state)
+  // ... or exercise quantity ?
 
 - Event: TD
   POF: X_cur_to_curs(t) * Sign(CNTRL) * PTD * Qt
@@ -99,6 +100,7 @@ marketValueObserved        (MV)      x        |                             |
 
 - Event: DIF
   STF: Ldifd = t, Dipa = riskFactorObserver("${CID}_DIP", t), Sd = t
+  // Should not be "${CID}_DIPA" ?
 
 - Event: DIP
   STF: Dipa = 0, Sd = t
@@ -111,46 +113,21 @@ marketValueObserved        (MV)      x        |                             |
   STF: Qt = Spr * Qt, Spr = 0, Sd = t
 
 - Event: REF
-  STF: Xq = riskFactorObserver("${CID}_RXQ", t), Sd = t
-   // Xq - exercise quantity, RXQ - "redemption exercise quantity"
+  STF: Exa = riskFactorObserver("${CID}_REXA", t), Sd = t
+   // Exa - exercise amount (or quantity?)
+   // REXA - "redemption exercise quantity"
 
 - Event: REP
   STF: Qt = Qt - Xq, Xq = 0, Sd = t
 
+// TODO: make the actor generate DIX and DIP events
+// TODO: make the actor generate DIX and DIP events
 
-
-        // TODO: make the actor generate DIX and DIP events
-        dividendExDate = shiftCalcTime(
-            terms.dividendExDate == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.dividendRecordPeriod)
-                : terms.dividendExDate,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
-        dividendPaymentDate = shiftCalcTime(
-            terms.dividendPaymentDate == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.dividendPaymentPeriod)
-                : terms.dividendPaymentDate,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
-
-        // TODO: make the actor generate DIX and DIP events
-        redemptionExDate = shiftCalcTime(
-            terms.redemptionExDate == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionRecordPeriod)
-                : terms.redemptionExDate,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
-        redemptionPaymentDate = shiftCalcTime(
-            terms.redemptionPaymentDate == 0
-                ? getTimestampPlusPeriod(scheduleTime, terms.redemptionPaymentPeriod)
-                : terms.redemptionPaymentDate,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        );
+Qs to latest specs
+STK STF for DIF:
+  LDIFD - all letters are capital, shall be the 1st only
+  Should not be "DIPA" (not "DIP") in concat?
+STK STF for REF:
+  Exa (exercise amount) applied. Shall not be Exq (exercise quantity)?  
+  In any case, neither EXA nor EXQ mentioned as applicable attribute for STK in actus-dictionary
+  

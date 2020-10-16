@@ -5,7 +5,7 @@
   "dayCountConvention": 2,
   "businessDayConvention": 3,
   "endOfMonthConvention": 1,
-  "redeemableByIssuer": 1,
+  "redeemableByIssuer": 0,
   "currency": "0x0000000000000000000000000000000000000001",
   "settlementCurrency": "0x0000000000000000000000000000000000000001",
 

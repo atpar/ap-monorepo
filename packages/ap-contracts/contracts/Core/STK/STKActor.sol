@@ -14,7 +14,7 @@ import "./ISTKRegistry.sol";
  */
 contract STKActor is BaseActor {
 
-    enum STKExternalDataType {NA, DIPA, SRA, RXQ}
+    enum STKExternalDataType {NA, DIP, SRA, REXA}
 
     constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
         public
@@ -110,7 +110,7 @@ contract STKActor is BaseActor {
     {
         if (eventType == EventType.DIF) {
             (int256 dipa, bool isSet) = dataRegistry.getDataPoint(
-            bytes32(uint256(assetId) + uint256(STKExternalDataType.DIPA)),
+            bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
                 timestamp
             );
             return isSet ? bytes32(dipa) : bytes32(0);
@@ -121,11 +121,11 @@ contract STKActor is BaseActor {
             );
             if (isSet) return bytes32(sra);
         } else if (eventType == EventType.REF) {
-            (int256 rxq, bool isSet) = dataRegistry.getDataPoint(
-                bytes32(uint256(assetId) + uint256(STKExternalDataType.RXQ)),
+            (int256 rexa, bool isSet) = dataRegistry.getDataPoint(
+                bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
             timestamp
             );
-            if (isSet) return bytes32(rxq);
+            if (isSet) return bytes32(rexa);
         } else {
             return super.getExternalDataForSTF(assetId, eventType, timestamp);
         }

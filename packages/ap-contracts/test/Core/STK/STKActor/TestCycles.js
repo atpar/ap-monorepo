@@ -68,18 +68,18 @@ describe('STKActor', () => {
 
     // prepare external data for DIF events
     const extData = {
-      DIPA: { index: 1, values: [ 10000000, 11000000 ] }, // dividendPaymentAmount
+      DIP: { index: 1, values: [ 10000000, 11000000 ] }, // dividendPaymentAmount
     }
     const dp = {
-      provider: '0x' + toBN(this.assetId).add(toBN(extData.DIPA.index)).toString(16),
+      provider: '0x' + toBN(this.assetId).add(toBN(extData.DIP.index)).toString(16),
       dates:
           [
             await getEventTime(self.schedule[0], self.terms),
             await getEventTime(self.schedule[1], self.terms),
           ],
       values: [
-        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIPA.values[0]))), 64),
-        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIPA.values[1]))), 64),
+        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[0]))), 64),
+        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[1]))), 64),
       ]
     };
     self.dipaValues = dp.values;

@@ -44,9 +44,9 @@ describe('STKActor', () => {
     self.schedule.push(encodeEvent(19, self.terms.issueDate + 3 * minute)); // #useEventName (REF)
     // external data for these events
     self.extData = {
-      DIPA: { index: 1, values: [10000000] }, // dividendPaymentAmount
+      DIP: { index: 1, values: [10000000] }, // dividendPaymentAmount
       SRA: { index: 2, values: [2] }, // splitRatio
-      RXQ: { index: 3, values: [1] }, // exerciseQuantity
+      REXA: { index: 3, values: [1] }, // exerciseQuantity
     }
 
     const { events } = await this.STKActorInstance.methods.initialize(
@@ -75,10 +75,10 @@ describe('STKActor', () => {
     await mineBlock(Number(scheduleTime) + 10);
 
     const point = {
-        provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIPA.index)).toString(16),
+        provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIP.index)).toString(16),
         date: this.terms.cycleAnchorDateOfDividend,
         value:  web3.utils.padLeft(
-            web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIPA.values[0]))),
+            web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))),
             64
         )
     };
@@ -153,10 +153,10 @@ describe('STKActor', () => {
         await mineBlock(Number(scheduleTime) + 10);
 
         const point = {
-            provider: '0x' + toBN(this.assetId).add(toBN(this.extData.RXQ.index)).toString(16),
+            provider: '0x' + toBN(this.assetId).add(toBN(this.extData.REXA.index)).toString(16),
             date: this.terms.issueDate + 3 * minute,
             value:  web3.utils.padLeft(
-                web3.utils.numberToHex(web3.utils.toWei(String(this.extData.RXQ.values[0]))),
+                web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))),
                 64
             )
         };

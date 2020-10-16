@@ -62,12 +62,12 @@ describe('STKActor', () => {
 
     // prepare external data for 1st DIF event
     self.extData = {
-      DIPA: { index: 1, values: [10000000] }, // dividendPaymentAmount
+      DIP: { index: 1, values: [10000000] }, // dividendPaymentAmount
     }
     const dp = {
-      provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIPA.index)).toString(16),
+      provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIP.index)).toString(16),
       date: this.terms.cycleAnchorDateOfDividend,
-      value:  web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIPA.values[0]))), 64)
+      value:  web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
     self.dipaValue = dp.value;
     await this.DataRegistryInstance.methods.setDataProvider(dp.provider, admin).send({ from: admin });
