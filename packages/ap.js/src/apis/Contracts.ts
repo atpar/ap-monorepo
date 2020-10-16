@@ -7,16 +7,19 @@ import CECEngineArtifact from '@atpar/ap-contracts/build/contracts/CECEngine.jso
 import CEGEngineArtifact from '@atpar/ap-contracts/build/contracts/CEGEngine.json';
 import CERTFEngineArtifact from '@atpar/ap-contracts/build/contracts/CERTFEngine.json';
 import PAMEngineArtifact from '@atpar/ap-contracts/build/contracts/PAMEngine.json';
+import STKEngineArtifact from '@atpar/ap-contracts/build/contracts/STKEngine.json';
 import ANNActorArtifact from '@atpar/ap-contracts/build/contracts/ANNActor.json';
 import CECActorArtifact from '@atpar/ap-contracts/build/contracts/CECActor.json';
 import CEGActorArtifact from '@atpar/ap-contracts/build/contracts/CEGActor.json';
 import CERTFActorArtifact from '@atpar/ap-contracts/build/contracts/CERTFActor.json';
 import PAMActorArtifact from '@atpar/ap-contracts/build/contracts/PAMActor.json';
+import STKActorArtifact from '@atpar/ap-contracts/build/contracts/STKActor.json';
 import ANNRegistryArtifact from '@atpar/ap-contracts/build/contracts/ANNRegistry.json';
 import CECRegistryArtifact from '@atpar/ap-contracts/build/contracts/CECRegistry.json';
 import CEGRegistryArtifact from '@atpar/ap-contracts/build/contracts/CEGRegistry.json';
 import CERTFRegistryArtifact from '@atpar/ap-contracts/build/contracts/CERTFRegistry.json';
 import PAMRegistryArtifact from '@atpar/ap-contracts/build/contracts/PAMRegistry.json';
+import STKRegistryArtifact from '@atpar/ap-contracts/build/contracts/STKRegistry.json';
 import CustodianArtifact from '@atpar/ap-contracts/build/contracts/Custodian.json';
 import DataRegistryArtifact from '@atpar/ap-contracts/build/contracts/DataRegistry.json';
 import DvPSettlementArtifact from '@atpar/ap-contracts/build/contracts/DvPSettlement.json';
@@ -32,16 +35,19 @@ import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
 import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
 import { CERTFEngine } from '@atpar/ap-contracts/ts-bindings/CERTFEngine';
 import { PAMEngine } from '@atpar/ap-contracts/ts-bindings/PAMEngine';
+import { STKEngine } from '@atpar/ap-contracts/ts-bindings/STKEngine';
 import { ANNActor } from '@atpar/ap-contracts/ts-bindings/ANNActor';
 import { CEGActor } from '@atpar/ap-contracts/ts-bindings/CEGActor';
 import { CECActor } from '@atpar/ap-contracts/ts-bindings/CECActor';
 import { CERTFActor } from '@atpar/ap-contracts/ts-bindings/CERTFActor';
 import { PAMActor } from '@atpar/ap-contracts/ts-bindings/PAMActor';
+import { STKActor } from '@atpar/ap-contracts/ts-bindings/STKActor';
 import { ANNRegistry } from '@atpar/ap-contracts/ts-bindings/ANNRegistry';
 import { CECRegistry } from '@atpar/ap-contracts/ts-bindings/CECRegistry';
 import { CEGRegistry } from '@atpar/ap-contracts/ts-bindings/CEGRegistry';
 import { CERTFRegistry } from '@atpar/ap-contracts/ts-bindings/CERTFRegistry';
 import { PAMRegistry } from '@atpar/ap-contracts/ts-bindings/PAMRegistry';
+import { STKRegistry } from '@atpar/ap-contracts/ts-bindings/STKRegistry';
 import { Custodian } from '@atpar/ap-contracts/ts-bindings/Custodian';
 import { DataRegistry } from '@atpar/ap-contracts/ts-bindings/DataRegistry';
 import { DvPSettlement } from '@atpar/ap-contracts/ts-bindings/DvPSettlement';
@@ -67,18 +73,21 @@ export class Contracts {
   public cegEngine: CEGEngine;
   public certfEngine: CERTFEngine;
   public pamEngine: PAMEngine;
+  public stkEngine: STKEngine;
 
   public annActor: ANNActor;
   public cecActor: CECActor;
   public cegActor: CEGActor;
   public certfActor: CERTFActor;
   public pamActor: PAMActor;
-  
+  public stkActor: STKActor;
+
   public annRegistry: ANNRegistry;
   public cecRegistry: CECRegistry;
   public cegRegistry: CEGRegistry;
   public certfRegistry: CERTFRegistry;
   public pamRegistry: PAMRegistry;
+  public stkRegistry: STKRegistry;
 
   public custodian: Custodian;
   public dataRegistry: DataRegistry;
@@ -109,6 +118,8 @@ export class Contracts {
     // @ts-ignore
     this.pamEngine = new web3.eth.Contract(PAMEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
     // @ts-ignore
+    this.stkEngine = new web3.eth.Contract(STKEngineArtifact.abi, addressBook.STKEngine, { data: STKEngineArtifact.bytecode }) as STKEngine;
+    // @ts-ignore
     this.annActor = new web3.eth.Contract(ANNActorArtifact.abi, addressBook.ANNActor, { data: ANNActorArtifact.bytecode }) as ANNActor;
     // @ts-ignore
     this.cecActor = new web3.eth.Contract(CECActorArtifact.abi, addressBook.CECActor, { data: CECActorArtifact.bytecode }) as CECActor;
@@ -119,6 +130,8 @@ export class Contracts {
     // @ts-ignore
     this.pamActor = new web3.eth.Contract(PAMActorArtifact.abi, addressBook.PAMActor, { data: PAMActorArtifact.bytecode }) as PAMActor;
     // @ts-ignore
+    this.stkActor = new web3.eth.Contract(STKActorArtifact.abi, addressBook.STKActor, { data: STKActorArtifact.bytecode }) as STKActor;
+    // @ts-ignore
     this.annRegistry = new web3.eth.Contract(ANNRegistryArtifact.abi, addressBook.ANNRegistry, { data: ANNRegistryArtifact.bytecode }) as ANNRegistry;
     // @ts-ignore
     this.cecRegistry = new web3.eth.Contract(CECRegistryArtifact.abi, addressBook.CECRegistry, { data: CECRegistryArtifact.bytecode }) as CECRegistry;
@@ -128,6 +141,8 @@ export class Contracts {
     this.certfRegistry = new web3.eth.Contract(CERTFRegistryArtifact.abi, addressBook.CERTFRegistry, { data: CERTFRegistryArtifact.bytecode }) as CERTFRegistry;
     // @ts-ignore
     this.pamRegistry = new web3.eth.Contract(PAMRegistryArtifact.abi, addressBook.PAMRegistry, { data: PAMRegistryArtifact.bytecode }) as PAMRegistry;
+    // @ts-ignore
+    this.stkRegistry = new web3.eth.Contract(STKRegistryArtifact.abi, addressBook.STKRegistry, { data: STKRegistryArtifact.bytecode }) as STKRegistry;
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
@@ -159,6 +174,10 @@ export class Contracts {
       const annEngine = this.annEngine.clone();
       if (address) { annEngine.options.address = address; }
       return annEngine;
+    } else if (String(contractType) === '8') {
+      const stkEngine = this.stkEngine.clone();
+      if (address) { stkEngine.options.address = address; }
+      return stkEngine;
     } else if (String(contractType) === '16') {
       const cegEngine = this.cegEngine.clone();
       if (address) { cegEngine.options.address = address; }
@@ -180,12 +199,12 @@ export class Contracts {
    * Instantiates asset registry contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific registry
    * @param {string} contractType a supported contract type
-   * @returns {BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry} Instance of asset registry contract
+   * @returns {BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry | STKRegistry} Instance of asset registry contract
    */
   public assetRegistry (
     contractType: string | number | null,
     address?: string
-  ): BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry {
+  ): BaseRegistry | ANNRegistry | CECRegistry | CEGRegistry | CERTFRegistry | PAMRegistry | STKRegistry {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetRegistry. At least one parameter is required.');
     }
@@ -204,6 +223,10 @@ export class Contracts {
       const annRegistry = this.annRegistry.clone();
       if (address) { annRegistry.options.address = address; }
       return annRegistry;
+    } else if (String(contractType) === '8') {
+      const stkRegistry = this.stkRegistry.clone();
+      if (address) { stkRegistry.options.address = address; }
+      return stkRegistry;
     } else if (String(contractType) === '16') {
       const cegRegistry = this.cegRegistry.clone();
       if (address) { cegRegistry.options.address = address; }
@@ -225,12 +248,12 @@ export class Contracts {
    * Instantiates asset actor contract by with a provided address or contract type  and returns the instance.
    * @param {string} address address of the contract type specific asset actor
    * @param {string} contractType a supported contract type
-   * @returns {BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor} Instance of asset actor contract
+   * @returns {BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor | STKActor} Instance of asset actor contract
    */
   public assetActor (
     contractType: string | number | null,
     address?: string
-  ): BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor {
+  ): BaseActor | ANNActor | CECActor | CEGActor | CERTFActor | PAMActor | STKActor {
     if (contractType === null && address == undefined) {
       throw new Error('Could not return instance of AssetActor. At least one parameter is required.');
     }
@@ -249,6 +272,10 @@ export class Contracts {
       const annActor = this.annActor.clone();
       if (address) { annActor.options.address = address; }
       return annActor;
+    } else if (String(contractType) === '8') {
+      const stkActor = this.stkActor.clone();
+      if (address) { stkActor.options.address = address; }
+      return stkActor;
     } else if (String(contractType) === '16') {
       const cegActor = this.cegActor.clone();
       if (address) { cegActor.options.address = address; }

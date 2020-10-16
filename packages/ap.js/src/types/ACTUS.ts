@@ -3,9 +3,10 @@ import { CECEngine } from '@atpar/ap-contracts/ts-bindings/CECEngine';
 import { CEGEngine } from '@atpar/ap-contracts/ts-bindings/CEGEngine';
 import { PAMEngine } from '@atpar/ap-contracts/ts-bindings/PAMEngine';
 import { CERTFEngine } from '@atpar/ap-contracts/ts-bindings/CERTFEngine';
+import {STKEngine} from "@atpar/ap-contracts/ts-bindings/STKEngine";
 
 // Union Types
-export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine;
+export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine | STKEngine;
 export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms;
 
 // schedule ids

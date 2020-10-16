@@ -43,6 +43,9 @@ describe('Contracts', (): void => {
       PAMActor: contracts.pamActor.options.address,
       PAMEngine: contracts.pamEngine.options.address,
       PAMRegistry: contracts.pamRegistry.options.address,
+      STKActor: contracts.stkActor.options.address,
+      STKEngine: contracts.stkEngine.options.address,
+      STKRegistry: contracts.stkRegistry.options.address,
       DvPSettlement: contracts.dvpSettlement.options.address,
     }
 
