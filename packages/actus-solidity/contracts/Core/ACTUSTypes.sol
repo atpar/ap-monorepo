@@ -38,15 +38,14 @@ enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
 //               0   1    2    3    4   5   6   7   8   9  10    11  12   13   14   15   16   17   18   19   20   21   22   23   24   25  26  27    28   29  30  31  32  33
 enum EventType {NE, CE, ISS, IED, PRD, FP, PR, PD, PY, PP, IP, IPCI, RRF, RR, DIF, DIX, DIP, COF, COP, REF, REX, REP, SPF, SPS, EXO, EXE, ST, SC, IPCB, PRF, MC, TD, MD, AD}
-
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
 enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
+enum RedeemableByIssuer {Y, N}
 enum ScalingEffect {_000, I00, _0N0, IN0}
 // enum Seniority {S, J} // not implemented
-enum RedeemableByIssuer {Y, N}
 
 struct ContractReference {
     bytes32 object;
@@ -376,9 +375,8 @@ struct STKTerms {
     DayCountConvention dayCountConvention;
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
-    // Seniority seniority; // not implemented
-
     RedeemableByIssuer redeemableByIssuer;
+    // Seniority seniority; // not implemented
 
     address currency;
     address settlementCurrency;
