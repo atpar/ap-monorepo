@@ -16,12 +16,12 @@ describe('STKActor', () => {
 
   const getEventTime = async (_event, terms) => {
     return Number(
-        await this.STKEngineInstance.methods.computeEventTimeForEvent(
-            _event,
-            terms.businessDayConvention,
-            terms.calendar,
-            0
-        ).call()
+      await this.STKEngineInstance.methods.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        0
+      ).call()
     );
   }
 
@@ -52,15 +52,15 @@ describe('STKActor', () => {
     assert.strictEqual(this.schedule.length, 2);
 
     self.state = web3ResponseToState(
-        await self.STKEngineInstance.methods.computeInitialState(self.terms).call()
+      await self.STKEngineInstance.methods.computeInitialState(self.terms).call()
     );
 
     const { events } = await self.STKActorInstance.methods.initialize(
-        self.terms,
-        self.schedule,
-        self.ownership,
-        self.STKEngineInstance.options.address,
-        ZERO_ADDRESS
+      self.terms,
+      self.schedule,
+      self.ownership,
+      self.STKEngineInstance.options.address,
+      ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
 
@@ -73,10 +73,10 @@ describe('STKActor', () => {
     const dp = {
       provider: '0x' + toBN(this.assetId).add(toBN(extData.DIP.index)).toString(16),
       dates:
-          [
-            await getEventTime(self.schedule[0], self.terms),
-            await getEventTime(self.schedule[1], self.terms),
-          ],
+        [
+          await getEventTime(self.schedule[0], self.terms),
+          await getEventTime(self.schedule[1], self.terms),
+        ],
       values: [
         web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[0]))), 64),
         web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[1]))), 64),
@@ -98,31 +98,31 @@ describe('STKActor', () => {
 
     const doProgressAndCheck = async (dipa) => {
       const _event = await this.STKRegistryInstance.methods.getNextScheduledEvent(
-          web3.utils.toHex(this.assetId)
+        web3.utils.toHex(this.assetId)
       ).call();
       const eventTime = await getEventTime(_event, this.terms);
 
       // progress asset state
       await mineBlock(eventTime);
       const { events } = await this.STKActorInstance.methods.progress(
-          web3.utils.toHex(this.assetId)
+        web3.utils.toHex(this.assetId)
       ).send({ from: creatorObligor });
       expectEvent(events, 'ProgressedAsset');
       const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
       const storedNextState = web3ResponseToState(
-          await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
+        await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call()
       );
       const projectedNextState = web3ResponseToState(
-          await this.STKEngineInstance.methods.computeStateForEvent(
-              this.terms,
-              this.state,
-              _event,
-              dipa
-          ).call()
+        await this.STKEngineInstance.methods.computeStateForEvent(
+          this.terms,
+          this.state,
+          _event,
+          dipa
+        ).call()
       );
       const storedNextEvent = await this.STKRegistryInstance.methods.getNextScheduledEvent(
-          web3.utils.toHex(this.assetId)
+        web3.utils.toHex(this.assetId)
       ).call();
 
       assert.strictEqual(emittedAssetId, this.assetId);

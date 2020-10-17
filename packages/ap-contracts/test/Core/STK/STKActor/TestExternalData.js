@@ -60,41 +60,38 @@ describe('STKActor', () => {
     self.assetId = events.InitializedAsset.returnValues.assetId;
 
     self.state = await self.STKRegistryInstance.methods.getState(web3.utils.toHex(self.assetId)).call();
-  });
+    });
 
-  before(async () => {
+    before(async () => {
     this.setupTestEnvironment = snapshotTaker(this);
     await this.setupTestEnvironment();
   });
 
   it('should process next state with external dividendPaymentAmount', async () => {
-    const _event = await this.STKRegistryInstance.methods
-        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const _event = await this.STKRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { scheduleTime } = decodeEvent(_event);
 
     await mineBlock(Number(scheduleTime) + 10);
 
     const point = {
-        provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIP.index)).toString(16),
-        date: this.terms.cycleAnchorDateOfDividend,
-        value:  web3.utils.padLeft(
-            web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))),
-            64
-        )
+      provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIP.index)).toString(16),
+      date: this.terms.cycleAnchorDateOfDividend,
+      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
     await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
     await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
 
-    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-        .send({ from: nobody });
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
     expectEvent(events, 'ProgressedAsset', { eventType: "14" }); // #useEventName (DIF)
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
-
     // compute expected next state
-    const projectedNextState = await this.STKEngineInstance.methods
-        .computeStateForEvent(this.terms, this.state, _event, point.value,
+    const projectedNextState = await this.STKEngineInstance.methods.computeStateForEvent(
+      this.terms,
+      this.state,
+      _event,
+      point.value,
     ).call();
 
     // compare results
@@ -107,80 +104,74 @@ describe('STKActor', () => {
   });
 
   it('should process next state with external splitRatio', async () => {
-      const _event = await this.STKRegistryInstance.methods
-          .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
-      const { scheduleTime } = decodeEvent(_event);
+    const _event = await this.STKRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const { scheduleTime } = decodeEvent(_event);
 
-      await mineBlock(Number(scheduleTime) + 10);
+    await mineBlock(Number(scheduleTime) + 10);
 
-      const point = {
-          provider: '0x' + toBN(this.assetId).add(toBN(this.extData.SRA.index)).toString(16),
-          date: this.terms.issueDate + 2 * minute,
-          value:  web3.utils.padLeft(
-              web3.utils.numberToHex(web3.utils.toWei(String(this.extData.SRA.values[0]))),
-              64
-          )
-      };
-      await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-      await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
+    const point = {
+      provider: '0x' + toBN(this.assetId).add(toBN(this.extData.SRA.index)).toString(16),
+      date: this.terms.issueDate + 2 * minute,
+      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.SRA.values[0]))), 64)
+    };
+    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
+    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
 
-      const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-          .send({ from: nobody });
-      expectEvent(events, 'ProgressedAsset', { eventType: "22" }); // #useEventName (SPF)
-      const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset', { eventType: "22" }); // #useEventName (SPF)
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
-      const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
+    const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
+    // compute expected next state
+    const projectedNextState = await this.STKEngineInstance.methods.computeStateForEvent(
+      this.terms,
+      this.state,
+      _event,
+      point.value,
+    ).call();
 
-      // compute expected next state
-      const projectedNextState = await this.STKEngineInstance.methods
-          .computeStateForEvent(this.terms, this.state, _event, point.value,
-          ).call();
+    // compare results
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.strictEqual(`${projectedNextState.splitRatio}`, "2000000000000000000");
+    assert.strictEqual(storedNextState.statusDate, scheduleTime);
+    assert.deepStrictEqual(storedNextState, projectedNextState);
 
-      // compare results
-      assert.strictEqual(emittedAssetId, this.assetId);
-      assert.strictEqual(`${projectedNextState.splitRatio}`, "2000000000000000000");
-      assert.strictEqual(storedNextState.statusDate, scheduleTime);
-      assert.deepStrictEqual(storedNextState, projectedNextState);
-
-      this.state = storedNextState;
+    this.state = storedNextState;
   });
 
-    it('should process next state with external exerciseQuantity', async () => {
-        const _event = await this.STKRegistryInstance.methods
-            .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
-        const { scheduleTime } = decodeEvent(_event);
+  it('should process next state with external exerciseQuantity', async () => {
+    const _event = await this.STKRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    const { scheduleTime } = decodeEvent(_event);
 
-        await mineBlock(Number(scheduleTime) + 10);
+    await mineBlock(Number(scheduleTime) + 10);
 
-        const point = {
-            provider: '0x' + toBN(this.assetId).add(toBN(this.extData.REXA.index)).toString(16),
-            date: this.terms.issueDate + 3 * minute,
-            value:  web3.utils.padLeft(
-                web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))),
-                64
-            )
-        };
-        await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-        await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
+    const point = {
+      provider: '0x' + toBN(this.assetId).add(toBN(this.extData.REXA.index)).toString(16),
+      date: this.terms.issueDate + 3 * minute,
+      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))), 64)
+    };
+    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
+    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
 
-        const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-            .send({ from: nobody });
-        expectEvent(events, 'ProgressedAsset', { eventType: "19" }); // #useEventName (REF)
-        const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset', { eventType: "19" }); // #useEventName (REF)
+    const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
-        const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
+    const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
+    // compute expected next state
+    const projectedNextState = await this.STKEngineInstance.methods.computeStateForEvent(
+      this.terms,
+      this.state,
+      _event,
+      point.value
+    ).call();
 
-        // compute expected next state
-        const projectedNextState = await this.STKEngineInstance.methods
-            .computeStateForEvent(this.terms, this.state, _event, point.value,
-            ).call();
+    // compare results
+    assert.strictEqual(emittedAssetId, this.assetId);
+    assert.strictEqual(`${projectedNextState.exerciseQuantity}`, "1000000000000000000");
+    assert.strictEqual(storedNextState.statusDate, scheduleTime);
+    assert.deepStrictEqual(storedNextState, projectedNextState);
 
-        // compare results
-        assert.strictEqual(emittedAssetId, this.assetId);
-        assert.strictEqual(`${projectedNextState.exerciseQuantity}`, "1000000000000000000");
-        assert.strictEqual(storedNextState.statusDate, scheduleTime);
-        assert.deepStrictEqual(storedNextState, projectedNextState);
-
-        this.state = storedNextState;
-    });
+    this.state = storedNextState;
+  });
 });

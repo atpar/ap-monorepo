@@ -52,11 +52,11 @@ describe('STKActor', () => {
     self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [14]); // #useEventName (DIF)
 
     const tx = await self.STKActorInstance.methods.initialize(
-        self.terms,
-        self.schedule,
-        self.ownership,
-        self.STKEngineInstance.options.address,
-        admin
+      self.terms,
+      self.schedule,
+      self.ownership,
+      self.STKEngineInstance.options.address,
+      admin
     ).send(self.txOpts);
     self.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
@@ -124,7 +124,6 @@ describe('STKActor', () => {
   });
 
   it('should not process next state for an unscheduled event with a later schedule time', async () => {
-
     const firstScheduledTime = await getEventTime(this.schedule[0], this.terms);
     const event = encodeEvent(16, 1 * firstScheduledTime + minute); // #useEventName (DIP)
     const eventTime = await getEventTime(event, this.terms);

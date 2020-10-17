@@ -20,7 +20,7 @@ describe('STKRegistry', () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-        /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
+      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
     ] = self.accounts;
     self.assetId = 'STK_01';
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };

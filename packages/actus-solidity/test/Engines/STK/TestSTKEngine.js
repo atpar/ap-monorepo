@@ -44,9 +44,9 @@ contract('STKEngine', () => {
     assert.isTrue(this.terms.cycleAnchorDateOfDividend > 0);
 
     const schedule = await computeEventScheduleSegment(
-        this.terms,
-        this.terms.cycleAnchorDateOfDividend,
-        endDate
+      this.terms,
+      this.terms.cycleAnchorDateOfDividend,
+      endDate
     );
     assert.equal(schedule.length, 3);
 
@@ -131,35 +131,35 @@ contract('STKEngine', () => {
   });
 
   describe('computePayoffForEvent function for REP event', () => {
-      before(async () => {
-        const scheduleTime = 100;
-        const event = encodeEvent(21, scheduleTime); // #useEventName (REP)
+    before(async () => {
+      const scheduleTime = 100;
+      const event = encodeEvent(21, scheduleTime); // #useEventName (REP)
 
-        const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
+      const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
 
-        const getSate = async (terms) => {
-          const state = web3ResponseToState(await this.STKEngineInstance.computeInitialState(terms));
-          state.exerciseQuantity = '1000'+'000000000000000000';
-          state.statusDate = '100';
-          return state;
-        }
+      const getSate = async (terms) => {
+        const state = web3ResponseToState(await this.STKEngineInstance.computeInitialState(terms));
+        state.exerciseQuantity = '1000'+'000000000000000000';
+        state.statusDate = '100';
+        return state;
+      }
 
-        this.terms.redeemableByIssuer = 0;
-        this.payoffIfRedeemable = await this.STKEngineInstance.computePayoffForEvent(
-            this.terms,
-            await getSate(this.terms),
-            event,
-            externalData
-        );
+      this.terms.redeemableByIssuer = 0;
+      this.payoffIfRedeemable = await this.STKEngineInstance.computePayoffForEvent(
+        this.terms,
+        await getSate(this.terms),
+        event,
+        externalData
+      );
 
-        this.terms.redeemableByIssuer = 1;
-        this.payoffIfNotRedeemable = await this.STKEngineInstance.computePayoffForEvent(
-            this.terms,
-            await getSate(this.terms),
-            event,
-            externalData
-        );
-      });
+      this.terms.redeemableByIssuer = 1;
+      this.payoffIfNotRedeemable = await this.STKEngineInstance.computePayoffForEvent(
+        this.terms,
+        await getSate(this.terms),
+        event,
+        externalData
+      );
+    });
 
     describe('If redeemableByIssuer is set in terms', () => {
       it('Should yield redemption payment amount', async () => {
@@ -190,18 +190,18 @@ contract('STKEngine', () => {
 
       this.terms.redeemableByIssuer = 0;
       this.stateIfRedeemable = await this.STKEngineInstance.computeStateForEvent(
-          this.terms,
-          await getSate(this.terms),
-          event,
-          externalData
+        this.terms,
+        await getSate(this.terms),
+        event,
+        externalData
       );
 
       this.terms.redeemableByIssuer = 1;
       this.stateIfNotRedeemable = await this.STKEngineInstance.computeStateForEvent(
-          this.terms,
-          await getSate(this.terms),
-          event,
-          externalData
+        this.terms,
+        await getSate(this.terms),
+        event,
+        externalData
       );
     });
 

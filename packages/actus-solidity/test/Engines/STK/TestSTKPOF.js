@@ -49,10 +49,10 @@ contract('TestSTKPOF', () => {
       state.exerciseQuantity = '1000'+e18;
 
       const payoff = await this.TestPOF._POF_STK_REP(
-          terms,
-          state,
-          scheduleTime,
-          externalData
+        terms,
+        state,
+        scheduleTime,
+        externalData
       );
 
       assert.equal(payoff.toString(), '300000'+e18);
@@ -67,10 +67,10 @@ contract('TestSTKPOF', () => {
       state.exerciseQuantity = '1000'+e18;
 
       const payoff = await this.TestPOF._POF_STK_REP(
-          this.STKTerms,
-          state,
-          scheduleTime,
-          externalData
+        this.STKTerms,
+        state,
+        scheduleTime,
+        externalData
       );
 
       assert.equal(payoff.toString(), '400000'+e18);

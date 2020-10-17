@@ -29,10 +29,10 @@ contract('TestSTKSTF', () => {
     expectedState.statusDate = 6307200;
 
     const newState = await this.TestSTF._STF_STK_AD(
-        this.STKTerms,
-        oldState,
-        scheduleTime,
-        externalData
+      this.STKTerms,
+      oldState,
+      scheduleTime,
+      externalData
     );
 
     assertEqualStates(newState, expectedState);
