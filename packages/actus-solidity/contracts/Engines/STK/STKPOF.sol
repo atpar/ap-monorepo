@@ -44,10 +44,14 @@ contract STKPOF is Core {
         pure
         returns(int256)
     {
-        return (
-            roleSign(terms.contractRole) * state.exerciseQuantity
+        if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
+            return (
+                roleSign(terms.contractRole) * state.exerciseQuantity
                 .floatMult(terms.redemptionPrice != 0 ? terms.redemptionPrice : int256(externalData))
-        );
+            );
+        }
+        
+        return 0;
     }
 
      /**

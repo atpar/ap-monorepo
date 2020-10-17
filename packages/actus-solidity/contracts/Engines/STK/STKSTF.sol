@@ -74,6 +74,26 @@ contract STKSTF is Core {
     }
 
     /**
+     * State transition for STK dividend fixing events
+     * TODO: implement
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_STK_DIX (
+        STKTerms memory /* terms */,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 externalData
+    )
+        internal
+        pure
+        returns (State memory)
+    {
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
      * State transition for STK dividend payment events
      * @param state the old state
      * @return the new state
@@ -140,7 +160,7 @@ contract STKSTF is Core {
      * @return the new state
      */
     function STF_STK_REF (
-        STKTerms memory /* terms */,
+        STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
         bytes32 externalData
@@ -149,7 +169,30 @@ contract STKSTF is Core {
     pure
     returns (State memory)
     {
-        state.exerciseQuantity = int256(externalData);
+        if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
+            state.exerciseQuantity = int256(externalData);
+        }
+
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
+     * State transition for STK redemption payment events
+     * @param state the old state
+     * TODO: implement
+     * @return the new state
+     */
+    function STF_STK_REX (
+        STKTerms memory /* terms */,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 /* externalData */
+    )
+        internal
+        pure
+        returns (State memory)
+    {
         state.statusDate = scheduleTime;
         return state;
     }
@@ -160,17 +203,58 @@ contract STKSTF is Core {
      * @return the new state
      */
     function STF_STK_REP (
+        STKTerms memory terms,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 /* externalData */
+    )
+        internal
+        pure
+        returns (State memory)
+    {
+        if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
+            state.quantity = state.quantity.sub(state.exerciseQuantity);
+            state.exerciseQuantity = 0;
+        }
+
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
+     * State transition for STK redemption payment events
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_STK_TD (
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
         bytes32 /* externalData */
     )
-    internal
-    pure
-    returns (State memory)
+        internal
+        pure
+        returns (State memory)
     {
-        state.quantity = state.quantity.sub(state.exerciseQuantity);
-        state.exerciseQuantity = 0;
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
+     * State transition for CERTF settlement
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_STK_CE (
+        STKTerms memory terms,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 externalData
+    )
+        internal
+        pure
+        returns (State memory)
+    {
         state.statusDate = scheduleTime;
         return state;
     }

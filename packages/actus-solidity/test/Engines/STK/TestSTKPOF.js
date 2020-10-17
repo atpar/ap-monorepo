@@ -10,6 +10,8 @@ contract('TestSTKPOF', () => {
     this.STKEngineInstance = await STKEngine.new();
     this.STKTerms = await getDefaultTestTerms('STK');
     this.TestPOF = await TestPOF.new();
+    
+    this.STKTerms.redeemableByIssuer = '0';
   });
 
   /*
