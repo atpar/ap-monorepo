@@ -110,7 +110,7 @@ contract STKActor is BaseActor {
     {
         if (eventType == EventType.DIF) {
             (int256 dipa, bool isSet) = dataRegistry.getDataPoint(
-            bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
+                bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
                 timestamp
             );
             return isSet ? bytes32(dipa) : bytes32(0);
@@ -123,7 +123,7 @@ contract STKActor is BaseActor {
         } else if (eventType == EventType.REF) {
             (int256 rexa, bool isSet) = dataRegistry.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
-            timestamp
+                timestamp
             );
             if (isSet) return bytes32(rexa);
         } else {
