@@ -15,7 +15,7 @@ contract CECPOF is Core {
      * Calculate the payoff in case of settlement
      * @return the settlement payoff amount for CEG contracts
      */
-    function POF_CEC_STD (
+    function POF_CEC_ST (
         CECTerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,

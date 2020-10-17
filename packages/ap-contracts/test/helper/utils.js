@@ -4,12 +4,15 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 function getEngineContractInstanceForContractType(instances, contractType) {
   if (contractType === 0) {
     return instances.PAMEngineInstance;
   } else if (contractType === 1) {
     return instances.ANNEngineInstance;
+  } else if (contractType === 8) {
+    return instances.STKEngineInstance;
   } else if (contractType === 16) {
     return instances.CEGEngineInstance;
   } else if (contractType === 17) {
@@ -21,22 +24,36 @@ function getEngineContractInstanceForContractType(instances, contractType) {
   }
 }
 
-async function generateSchedule(engineContractInstance, terms, tMax) {
+async function generateSchedule(engineContractInstance, terms, tMax, eventTypes = []) {
   const events = [];
   events.push(...(await engineContractInstance.methods.computeNonCyclicScheduleSegment(terms, 0, 1000000000000).call()));
 
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 3).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 4).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 7).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 9).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 18).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 22).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 23).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 24).call()));
-  events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 26).call()));
+  if (eventTypes.length > 0) {
+    const theEnd = terms.maturityDate > 0 ? terms.maturityDate : (
+        tMax > 0 ? tMax : 1000000000000
+    );
+    await eventTypes.reduce(
+        // one by one (but not in parallel)
+        (promiseChain, eventType) => promiseChain.then(
+            async () => events.push(...(
+                await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, theEnd, eventType).call())
+            )
+        ), Promise.resolve(),
+    );
+  } else {
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 5).call())); // #useEventName (FP)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 6).call())); // #useEventName (PR)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 8).call())); // #useEventName (PY)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 10).call())); // #useEventName (IP)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 11).call())); // #useEventName (IPCI)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 13).call())); // #useEventName (RR)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, terms.maturityDate, 27).call())); // #useEventName (SC)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 17).call())); // #useEventName (COF)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 18).call())); // #useEventName (COP)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 19).call())); // #useEventName (REF)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 21).call())); // #useEventName (REP)
+    events.push(...(await engineContractInstance.methods.computeCyclicScheduleSegment(terms, 0, (terms.maturityDate > 0) ? terms.maturityDate : tMax, 25).call())); // #useEventName (EXE)
+  }
 
   return sortEvents(removeNullEvents(events));
 }

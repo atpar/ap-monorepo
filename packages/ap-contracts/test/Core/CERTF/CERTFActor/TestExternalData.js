@@ -8,6 +8,7 @@ const { mineBlock } = require('../../../helper/blockchain');
 const { expectEvent, generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils');
 const { decodeEvent } = require('../../../helper/scheduleUtils');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 describe('CERTFActor', () => {
   let deployer, actor, actor2, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
@@ -42,7 +43,7 @@ describe('CERTFActor', () => {
 
     // only want RR events in the schedules
     self.schedule = ( await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000))
-        .filter((event) => (event.startsWith('0x17') || event.startsWith('0x1a')));
+        .filter((event) => (event.startsWith('0x13') || event.startsWith('0x19'))); // #useEventName (REF, EXE)
 
     const { events } = await this.CERTFActorInstance.methods.initialize(
       self.terms,

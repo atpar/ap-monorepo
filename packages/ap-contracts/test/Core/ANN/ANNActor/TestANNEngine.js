@@ -112,8 +112,7 @@ describe('ANNActor', () => {
           ).call()
       );
 
-      // FIXME: make next assert succeed
-      // assert.strictEqual(nextExpectedEvent, nextEvent);
+      assert.strictEqual(nextExpectedEvent, nextEvent);
       assert.strictEqual(emittedAssetId, this.assetId);
       assert.strictEqual(storedNextState.statusDate, eventTime.toString());
       assert.deepStrictEqual(storedNextState, projectedNextState);

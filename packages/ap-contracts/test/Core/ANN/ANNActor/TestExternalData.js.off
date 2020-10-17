@@ -16,7 +16,7 @@
 
 //   let snapshot;
 //   let snapshot_asset;
-  
+
 //   const getEventTime = async (_event, terms) => {
 //     return Number(await this.ANNEngineInstance.computeEventTimeForEvent(
 //       _event,
@@ -32,9 +32,9 @@
 //     Object.keys(this.instances).forEach((instance) => this[instance] = this.instances[instance]);
 
 //     this.ownership = {
-//       creatorObligor, 
-//       creatorBeneficiary, 
-//       counterpartyObligor, 
+//       creatorObligor,
+//       creatorBeneficiary,
+//       counterpartyObligor,
 //       counterpartyBeneficiary
 //     };
 //     // schedule with RR
@@ -44,8 +44,8 @@
 //     // only want RR events in the schedules
 //     let x = (await generateSchedule(this.ANNEngineInstance, this.terms))
 //     console.log(x)
-//     this.schedule = (await generateSchedule(this.ANNEngineInstance, this.terms)).filter((event) => event.startsWith('0x0c'));
-  
+//     this.schedule = (await generateSchedule(this.ANNEngineInstance, this.terms)).filter((event) => event.startsWith('0x0c')); // #useEventName
+
 //     // console.log(this.schedule)
 
 //     const tx = await this.ANNActorInstance.initialize(
@@ -72,20 +72,20 @@
 //     const _event = await this.ANNRegistryInstance.getNextScheduledEvent(web3.utils.toHex(this.assetId));
 //     console.log(_event)
 //     const eventTime = await getEventTime(_event, this.terms);
-    
+
 //     await mineBlock(Number(eventTime));
-    
+
 //     await this.MarketObjectRegistryInstance.setMarketObjectProvider(
 //       this.terms.marketObjectCodeRateReset,
 //       accounts[0]
 //     );
-      
+
 //     await this.MarketObjectRegistryInstance.publishDataPointOfMarketObject(
 //       this.terms.marketObjectCodeRateReset,
 //       eventTime,
 //       this.resetRate
 //     );
-        
+
 //     const { tx: txHash } = await this.ANNActorInstance.progress(web3.utils.toHex(this.assetId));
 //     const { args: { 0: emittedAssetId } } = await expectEvent.inTransaction(
 //       txHash, ANNActor, 'ProgressedAsset'

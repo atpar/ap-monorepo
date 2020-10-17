@@ -1,8 +1,10 @@
 const CERTFEngine = artifacts.require('CERTFEngine.sol');
 
 const { getTestCases, compareTestResults } = require('../../helper/tests');
-const { parseToTestEventCERTF, isoToUnix, unixToISO } = require('../../helper/parser');
+const { parseToTestEventCERTF, isoToUnix } = require('../../helper/parser');
 const { decodeEvent, sortEvents } = require('../../helper/schedule');
+
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 contract('CERTFEngine', () => {
 
@@ -18,37 +20,37 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      21 // CFD
+      17 // COF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      22 // CPD
+      18 // COP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      23 // RFD
+      19 // REF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      24 // RPD
+      21 // REP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      26 // XD
+      25 // EXE #useEventName
     ));
-    
+
     return sortEvents(schedule);
   }
 
-  before(async () => {    
+  before(async () => {
     this.CERTFEngineInstance = await CERTFEngine.new();
     this.testCases = await getTestCases('CERTF');
   });
@@ -80,7 +82,7 @@ contract('CERTFEngine', () => {
 
       let externalData = web3.utils.toHex('0');
 
-      if (eventType === 23) { // RFD
+      if (eventType === 19) { // REF
         const marketObjectCode = web3.utils.toAscii(terms.contractReference_1.object);
         if (externalDataObject[marketObjectCode] == undefined) {
           throw new Error('No external data found for ' + marketObjectCode + '.');
@@ -97,7 +99,7 @@ contract('CERTFEngine', () => {
         externalData = web3.utils.toWei(String(Number(dataPointScheduleTime.value) / Number(dataPointIssueDate.value)));
       }
 
-      if (eventType === 26 && eventsObserved != undefined) { // XD
+      if (eventType === 25 && eventsObserved != undefined) { // EXE
         // const dataPoint = eventsObserved.find(({ time }) => {
         //   return String(isoToUnix(time)) === scheduleTime.toString()
         // });
@@ -113,9 +115,9 @@ contract('CERTFEngine', () => {
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
       const nextState = await this.CERTFEngineInstance.computeStateForEvent(
-        terms, 
-        state, 
-        _event, 
+        terms,
+        state,
+        _event,
         web3.utils.padLeft(web3.utils.toHex(externalData), 64)
       );
 
@@ -126,7 +128,7 @@ contract('CERTFEngine', () => {
 
     return evaluatedSchedule;
   };
- 
+
   it('should yield the expected evaluated contract schedule for test certf01', async () => {
     const testDetails = this.testCases['certf01'];
     const evaluatedSchedule = await evaluateEventSchedule(testDetails['terms'], testDetails.externalData, testDetails.tMax);

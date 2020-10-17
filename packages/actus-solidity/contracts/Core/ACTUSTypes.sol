@@ -2,8 +2,8 @@
 pragma solidity ^0.6.11;
 
 /**
- * Commit: https://github.com/actusfrf/actus-dictionary/commit/48338b4bddf34d3367a875020733ddbb97d7de8e
- * Date: 2019-10-23
+ * Commit: https://github.com/atpar/actus-dictionary/commit/b85b9b378967de6bfc4d8b6687b520c48bce9890
+ * Date: 2020-10-06
  */
 
 
@@ -23,7 +23,7 @@ struct IP {
     bool isSet;
 }
 
-// Number of enum options should be limited to 256 (8 bits) such that 32 enums can be packed fit into 256 bits (bytes32)
+// Number of enum options should be limited to 256 (8 bits) such that 255 enums can be packed fit into 256 bits (bytes32)
 enum BusinessDayConvention {NOS, SCF, SCMF, CSF, CSMF, SCP, SCMP, CSP, CSMP}
 enum Calendar {NC, MF}
 enum ContractPerformance {PF, DL, DQ, DF, MD, TD}
@@ -36,13 +36,14 @@ enum CyclePointOfInterestPayment {B, E}
 enum CyclePointOfRateReset {B, E}
 enum DayCountConvention {AA, A360, A365, _30E360ISDA, _30E360, _28E336}
 enum EndOfMonthConvention {SD, EOM}
-//               0   1    2   3   4    5   6   7   8   9    10  11   12  13  14   15  16  17  18    19  20   21   22   23   24  25   26   27  28
-enum EventType {NE, ID, IED, FP, PR, PD, PRF, PY, PP, IP, IPCI, CE, RRF, RR, DV, PRD, MR, TD, SC, IPCB, MD, CFD, CPD, RFD, RPD, XO,  XD, STD, AD}
+//               0   1    2    3    4   5   6   7   8   9  10    11  12   13   14   15   16   17   18   19   20   21   22   23   24   25  26  27    28   29  30  31  32  33
+enum EventType {NE, CE, ISS, IED, PRD, FP, PR, PD, PY, PP, IP, IPCI, RRF, RR, DIF, DIX, DIP, COF, COP, REF, REX, REP, SPF, SPS, EXO, EXE, ST, SC, IPCB, PRF, MC, TD, MD, AD}
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
 enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
+enum RedeemableByIssuer {Y, N}
 enum ScalingEffect {_000, I00, _0N0, IN0}
 // enum Seniority {S, J} // not implemented
 
@@ -61,7 +62,14 @@ struct State {
     uint256 maturityDate;
     uint256 exerciseDate;
     uint256 terminationDate;
-    uint256 lastCouponDay;
+    uint256 lastCouponFixingDate;
+    uint256 lastDividendFixingDate;
+    // uint256 dividendFixingDate; // not implemented
+    // uint256 dividendExDate; // not implemented
+    // uint256 dividendPaymentDate; // not implemented
+    // uint256 splitSettlementDate; // not implemented
+    // uint256 redemptionExDate; // not implemented
+    // uint256 redemptionPaymentDate; // not implemented
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -76,12 +84,14 @@ struct State {
     int256 nextPrincipalRedemptionPayment;
     int256 exerciseAmount;
     int256 exerciseQuantity;
-    
+
     int256 quantity;
     int256 couponAmountFixed;
     // int256 exerciseQuantityOrdered;
     int256 marginFactor;
     int256 adjustmentFactor;
+    int256 dividendPaymentAmount;
+    int256 splitRatio;
 }
 
 struct ANNTerms {
@@ -255,7 +265,7 @@ struct CERTFTerms {
     uint256 maturityDate;
     // uint256 nonPerformingDate; // state only
     uint256 issueDate;
-    // uint256 lastCouponDay; // state only
+    // uint256 lastCouponFixingDate; // state only
     uint256 cycleAnchorDateOfRedemption;
     uint256 cycleAnchorDateOfTermination;
     uint256 cycleAnchorDateOfCoupon;
@@ -277,7 +287,7 @@ struct CERTFTerms {
     IP delinquencyPeriod;
     IP settlementPeriod;
     IP fixingPeriod;
-    IP exercisePeriod;
+    IP redemptionExercisePeriod;
 
     IPS cycleOfRedemption;
     IPS cycleOfTermination;
@@ -345,7 +355,7 @@ struct PAMTerms {
     int256 lifeFloor;
     int256 periodCap;
     int256 periodFloor;
-    
+
     IP gracePeriod;
     IP delinquencyPeriod;
     // IP prepaymentPeriod; // not implemented
@@ -356,4 +366,42 @@ struct PAMTerms {
     IPS cycleOfScalingIndex;
     IPS cycleOfFee;
     // IPS cycleOfOptionality; // not implemented
+}
+
+struct STKTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    RedeemableByIssuer redeemableByIssuer;
+    // Seniority seniority; // not implemented
+
+    address currency;
+    address settlementCurrency;
+
+    // bytes32 marketObjectCode; // not implemented
+
+    uint256 contractDealDate;
+    uint256 statusDate;
+    uint256 issueDate;
+    uint256 purchaseDate;
+    uint256 cycleAnchorDateOfDividend;
+
+    int256 nominalPrice;
+    int256 notionalPrincipal;
+    int256 issuePrice;
+    int256 quantity;
+    int256 priceAtPurchaseDate;
+    int256 redemptionPrice;
+    // int256 priceAtTerminationDate; // not implemented
+
+    IP dividendRecordPeriod;
+    IP dividendPaymentPeriod;
+    IP splitSettlementPeriod;
+    IP redemptionRecordPeriod;
+    IP redemptionPaymentPeriod;
+
+    IPS cycleOfDividend;
 }

@@ -46,7 +46,7 @@ contract CECSTF is Core {
         return state;
     }
 
-    function STF_CEC_XD (
+    function STF_CEC_EXE (
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -84,7 +84,7 @@ contract CECSTF is Core {
         return state;
     }
 
-    function STF_CEC_STD (
+    function STF_CEC_ST (
         CECTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,

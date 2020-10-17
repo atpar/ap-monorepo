@@ -11,7 +11,7 @@ contract('TestCECPOF', () => {
   });
 
   /*
-   * TEST POF_CEC_STD
+   * TEST POF_CEC_ST
    */
   it('Should yield a settlement payoff of 100005', async () => {
     const state = web3ResponseToState(await this.CECEngineInstance.computeInitialState(this.CECTerms));
@@ -22,7 +22,7 @@ contract('TestCECPOF', () => {
     state.exerciseAmount = web3.utils.toWei('100000');
     state.feeAccrued = web3.utils.toWei('5');
 
-    const payoff = await this.TestPOF._POF_CEC_STD(
+    const payoff = await this.TestPOF._POF_CEC_ST(
       this.CECTerms,
       state,
       scheduleTime,

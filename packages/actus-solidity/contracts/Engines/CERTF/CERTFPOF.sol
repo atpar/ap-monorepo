@@ -34,7 +34,7 @@ contract CERTFPOF is Core {
      * Payoff Function for CERTF coupon payment day
      * @return the new state
      */
-    function POF_CERTF_CPD (
+    function POF_CERTF_COP (
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
@@ -53,7 +53,7 @@ contract CERTFPOF is Core {
      * Payoff Function for CERTF Redemption Payment Day
      * @return the new state
      */
-    function POF_CERTF_RPD (
+    function POF_CERTF_REP (
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,

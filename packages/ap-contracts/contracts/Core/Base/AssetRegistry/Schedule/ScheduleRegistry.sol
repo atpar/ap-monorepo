@@ -146,7 +146,7 @@ abstract contract ScheduleRegistry is
             if (exerciseDate > 0) {
                 // insert SettlementDate event
                 return encodeEvent(
-                    EventType.STD,
+                    EventType.ST,
                     // solium-disable-next-line
                     block.timestamp
                 );
@@ -160,19 +160,19 @@ abstract contract ScheduleRegistry is
                 // derive scheduleTimeOffset from performance
                 if (underlyingContractPerformance == ContractPerformance.DL) {
                     return encodeEvent(
-                        EventType.XD,
+                        EventType.EXE,
                         underlyingNonPerformingDate
                     );
                 } else if (underlyingContractPerformance == ContractPerformance.DQ) {
                     IP memory underlyingGracePeriod = ITermsRegistry(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
                     return encodeEvent(
-                        EventType.XD,
+                        EventType.EXE,
                         getTimestampPlusPeriod(underlyingGracePeriod, underlyingNonPerformingDate)
                     );
                 } else if (underlyingContractPerformance == ContractPerformance.DF) {
                     IP memory underlyingDelinquencyPeriod = ITermsRegistry(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
                     return encodeEvent(
-                        EventType.XD,
+                        EventType.EXE,
                         getTimestampPlusPeriod(underlyingDelinquencyPeriod, underlyingNonPerformingDate)
                     );
                 }

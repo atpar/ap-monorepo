@@ -1,4 +1,4 @@
-{ 
+{
   "contractType": 1,
   "calendar": 1,
   "contractRole": 1,
@@ -25,20 +25,20 @@
   "delinquencyPeriod": { "i": 1, "p": 1, "isSet": true },
   "settlementPeriod": { "i": 1, "p": 1, "isSet": true },
   "fixingPeriod": { "i": 1, "p": 1, "isSet": true },
-  "exercisePeriod": { "i": 1, "p": 1, "isSet": true },
+  "redemptionExercisePeriod": { "i": 1, "p": 1, "isSet": true },
   "cycleOfRedemption": { "i": 1, "p": 1, "s": 1, "isSet": true },
   "cycleOfTermination": { "i": 1, "p": 1, "s": 1, "isSet": true },
   "cycleOfCoupon": { "i": 1, "p": 1, "s": 1, "isSet": true },
-  "contractReference_1": { 
+  "contractReference_1": {
     "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
     "object2": "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "_type": 1, 
+    "_type": 1,
     "role": 1
   },
-  "contractReference_2": { 
+  "contractReference_2": {
     "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
     "object2": "0x0000000000000000000000000000000000000000000000000000000000000001",
-    "_type": 1, 
+    "_type": 1,
     "role": 1
   }
 }

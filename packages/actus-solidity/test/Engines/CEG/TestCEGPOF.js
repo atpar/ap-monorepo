@@ -12,7 +12,7 @@ contract('TestCEGPOF', () => {
   });
 
   /*
-   * TEST POF_CEG_STD
+   * TEST POF_CEG_ST
    */
   it('Should yield a settlement payoff of 100005', async () => {
     const state = web3ResponseToState(await this.CEGEngineInstance.computeInitialState(this.CEGTerms));
@@ -23,7 +23,7 @@ contract('TestCEGPOF', () => {
     state.exerciseAmount = web3.utils.toWei('100000');
     state.feeAccrued = web3.utils.toWei('5');
 
-    const payoff = await this.TestPOF._POF_CEG_STD(
+    const payoff = await this.TestPOF._POF_CEG_ST(
       this.CEGTerms,
       state,
       scheduleTime,
@@ -46,10 +46,10 @@ contract('TestCEGPOF', () => {
   //   this.CEGTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
 
   //   const payoff = await this.TestPOF._POF_CEG_PRD(
-  //     this.CEGTerms, 
-  //     state, 
-  //     scheduleTime, 
-  //     externalData 
+  //     this.CEGTerms,
+  //     state,
+  //     scheduleTime,
+  //     externalData
   //     );
   //   assert.equal(payoff.toString(), '-100000000000000000000000');
   // });

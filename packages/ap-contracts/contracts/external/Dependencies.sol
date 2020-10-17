@@ -6,6 +6,7 @@ import "@atpar/actus-solidity/contracts/Engines/CEC/CECEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CEG/CEGEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/PAM/PAMEngine.sol";
 import "@atpar/actus-solidity/contracts/Engines/CERTF/CERTFEngine.sol";
+import "@atpar/actus-solidity/contracts/Engines/STK/STKEngine.sol";
 
 
 contract Dependencies {}

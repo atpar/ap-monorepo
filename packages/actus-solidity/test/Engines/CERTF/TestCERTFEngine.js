@@ -3,6 +3,7 @@ const CERTFEngine = artifacts.require('CERTFEngine.sol');
 const { getDefaultTestTerms } = require('../../helper/tests');
 const { parseEventSchedule, decodeEvent, sortEvents } = require('../../helper/schedule');
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 contract('CERTFEngine', () => {
 
@@ -22,31 +23,31 @@ contract('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      21 // CFD
+      17 // COF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      22 // CPD
+      18 // COP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      23 // RFD
+      19 // REF #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      24 // RPD
+      21 // REP #useEventName
     ));
     schedule.push(... await this.CERTFEngineInstance.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      26 // XD
+      25 // EXE #useEventName
     ));
 
     return sortEvents(schedule);

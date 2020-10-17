@@ -45,7 +45,7 @@ contract TestCEGSTF is CEGSTF {
         );
     }
 
-    function _STF_CEG_XD(
+    function _STF_CEG_EXE(
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -55,7 +55,7 @@ contract TestCEGSTF is CEGSTF {
         pure
         returns (State memory)
     {
-        return STF_CEG_XD(
+        return STF_CEG_EXE(
             terms,
             state,
             scheduleTime,
@@ -63,7 +63,7 @@ contract TestCEGSTF is CEGSTF {
         );
     }
 
-    function _STF_CEG_STD(
+    function _STF_CEG_ST(
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
@@ -73,7 +73,7 @@ contract TestCEGSTF is CEGSTF {
         pure
         returns (State memory)
     {
-        return STF_CEG_STD(
+        return STF_CEG_ST(
             terms,
             state,
             scheduleTime,

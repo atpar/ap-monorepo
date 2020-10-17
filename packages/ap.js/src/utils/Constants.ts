@@ -8,7 +8,7 @@ import {
   CEGTerms,
   CERTFTerms,
   PAMTerms
-} from '../types'; 
+} from '../types';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const ZERO_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
@@ -31,7 +31,7 @@ export const EMPTY_STATE: State = {
   maturityDate: '0',
   exerciseDate: '0',
   terminationDate: '0',
-  lastCouponDay: '0',
+  lastCouponFixingDate: '0',
   notionalPrincipal: '0',
   accruedInterest: '0',
   feeAccrued: '0',
@@ -190,10 +190,10 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   couponRate: '0',
 
   gracePeriod: EMPTY_IP,
-  delinquencyPeriod: EMPTY_IP,  
+  delinquencyPeriod: EMPTY_IP,
   settlementPeriod: EMPTY_IP,
   fixingPeriod: EMPTY_IP,
-  exercisePeriod: EMPTY_IP,
+  redemptionExercisePeriod: EMPTY_IP,
 
   cycleOfRedemption: EMPTY_IPS,
   cycleOfTermination: EMPTY_IPS,

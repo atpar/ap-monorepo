@@ -305,8 +305,8 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
          */
 
         if (eventType == EventType.FP) return STF_CEG_FP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.XD) return STF_CEG_XD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.STD) return STF_CEG_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.EXE) return STF_CEG_EXE(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ST) return STF_CEG_ST(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_CEG_MD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.CE) return STF_CEG_CE(terms, state, scheduleTime, externalData);
 
@@ -342,10 +342,10 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
 
         if (eventType == EventType.CE) return 0;
         if (eventType == EventType.FP) return POF_CEG_FP(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.XD) return 0;
-        if (eventType == EventType.STD) return POF_CEG_STD(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.EXE) return 0;
+        if (eventType == EventType.ST) return POF_CEG_ST(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return 0;
-        
+
         revert("CEGEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");
     }
 }

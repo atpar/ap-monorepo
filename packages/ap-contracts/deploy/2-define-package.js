@@ -34,6 +34,7 @@ async function definePackage(buidlerRuntime) {
         { name: "CEGEngine" },
         { name: "CERTFEngine" },
         { name: "PAMEngine" },
+        { name: "STKEngine" },
 
         // Asset Registry
         { name: "ANNEncoder", exportable: false },
@@ -41,6 +42,7 @@ async function definePackage(buidlerRuntime) {
         { name: "CEGEncoder", exportable: false },
         { name: "CERTFEncoder", exportable: false },
         { name: "PAMEncoder", exportable: false },
+        { name: "STKEncoder", exportable: false },
         {
             name: "ANNRegistry",
             options: { libraries: { ANNEncoder: "{{ANNEncoder.address}}" }},
@@ -60,6 +62,10 @@ async function definePackage(buidlerRuntime) {
         {
             name: "PAMRegistry",
             options: { libraries: { PAMEncoder: "{{PAMEncoder.address}}" }},
+        },
+        {
+            name: "STKRegistry",
+            options: { libraries: { STKEncoder: "{{STKEncoder.address}}" }},
         },
 
         // Data Registry
@@ -85,6 +91,10 @@ async function definePackage(buidlerRuntime) {
         {
             name: "PAMActor",
             options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistry.address}}" ]},
+        },
+        {
+            name: "STKActor",
+            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistry.address}}" ]},
         },
 
         // Custodian
