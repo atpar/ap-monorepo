@@ -8,6 +8,12 @@ https://docs.actus-protocol.io/
 
 ## Usage
 
+Install via yarn or npm
+- Note this package is hosted on GitHub Packages and requires additional configuration. See [GitHub docs](https://docs.github.com/en/free-pro-team@latest/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages).
+```sh
+yarn add @atpar/protocol
+```
+
 Importing contracts
 ```sol
 import "@atpar/protocol/contracts/....sol";
