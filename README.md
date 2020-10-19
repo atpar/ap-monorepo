@@ -6,7 +6,7 @@
 
 ---
 
-[ACTUS Protocol](https://docs.actus-protocol.io/) is an open source smart contract system and Typescript library for issuing and servicing financial assets on Ethereum. It is build on top of actus-solidity, a free and open-source implementation of the [ACTUS standard](https://www.actusfrf.org/). 
+[ACTUS Protocol](https://docs.actus-protocol.io/) is an open source smart contract system and Typescript SDK for issuing and servicing financial assets on Ethereum. It is build on top of a free and open-source implementation of the [ACTUS standard](https://www.actusfrf.org/).
 
 If you're interested to get involved, follow us on [Twitter](https://twitter.com/at_par_), join our [Discord](https://discord.gg/WdAhDYq), and [try one of our guides](https://docs.actus-protocol.io/guides/getting-started)!
 
@@ -19,18 +19,15 @@ https://docs.actus-protocol.io/
 
 This is a monorepo containing all packages related to the ACTUS Protocol.
 
-| Package                                                                                      | Description                                                                |
-|----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`actus-solidity`](https://github.com/atpar/ap-monorepo/tree/master/packages/actus-solidity) | Contains the Solidity implementation of ACTUS contract types               |
-| [`ap-contracts`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap-contracts)     | Contains the ACTUS Protocol smart contracts                                |
-| [`ap.js`](https://github.com/atpar/ap-monorepo/tree/master/packages/ap.js)                   | Typescript library for interacting with the ACTUS Protocol smart contracts |
+| Package                                                                          | Description                                                                    |
+|----------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`protocol`](https://github.com/atpar/ap-monorepo/tree/master/packages/protocol) | Contains the Solidity implementation the ACTUS Protocol and the typescript sdk |
 
 ## Development
 ### Requirements
 The versions provided are confirmed to work without any issues. Newer or older versions of the packages might work too.
 - [node](https://nodejs.org/en/) [10.16.0] (recommended installing it via [nvm](https://github.com/nvm-sh/nvm))
 - [yarn](https://yarnpkg.com/) [1.16.0] (recommended installing it as global npm package)
-- [jq](https://stedolan.github.io/jq/) [1.6] (for macOS jq is available as a homebrew package)
 
 ### Setup
 ```sh
