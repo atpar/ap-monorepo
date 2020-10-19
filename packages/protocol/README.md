@@ -6,6 +6,19 @@ The foundation of the protocol is the Solidity implementation of **ACTUS** Contr
 ## Documentation
 https://docs.actus-protocol.io/
 
+## Usage
+
+Importing contracts
+```sol
+import "@atpar/protocol/contracts/....sol";
+```
+
+Using the Typescript SDK
+```js
+import { AP } from '@atpar/protocol';
+const ap = await AP.init(web3, ADDRESS_BOOK);
+```
+
 ## Development
 
 ### Requirements and Setup
