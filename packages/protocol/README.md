@@ -14,8 +14,9 @@ import "@atpar/protocol/contracts/....sol";
 ```
 
 Using the Typescript SDK
-```js
+```ts
 import { AP } from '@atpar/protocol';
+// tested with web3@1.2.4 - other versions may cause typing issues
 const ap = await AP.init(web3, ADDRESS_BOOK);
 ```
 
@@ -36,11 +37,14 @@ yarn ap-chain:setup
 
 ## Smart Contracts
 
-### Core
+### ACTUS Core
 Contains banking-grade financial logic such as ACTUS day-count & end-of-month conventions, ACTUS datatypes and floating point arithmetic used throughout all ACTUS engines. 
 
-### Engines
+### ACTUS Engines
 Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine implements the state transition & payoff functions and the schedule generation logic for an ACTUS Contract Type. Engines are stateless smart contracts, thus can be used on-chain as well as off-chain (e.g. by using the EVM as a TEE).
+
+### Core
+Contains the protocol which is build on top of ACTUS Core and the ACTUS Engines.
 
 ### Basic workflow
 1. Define an ACTUS term sheet depending on the financial contract you want to model and set up the ownership structure
@@ -49,9 +53,16 @@ Contains ACTUS state machine engines for each ACTUS Contract Type. An Engine imp
 
 For an example, please review the [Issue and service a loan](https://docs.actus-protocol.io/guides/issue-and-service) guide.
 
+## Contract Types
+- [x] ANN (Annuity)
+- [x] CEC (Contract Enhancement Collateral)
+- [x] CEG (Contract Enhancement Guarantee)
+- [x] CERTF (Certificate)
+- [x] PAM (Principal At Maturity)
+- [x] STK (Stock)
+
 ## Implemented Conventions
 - [x] Contract-Role-Sign-Convention (for PAM)
-- [x] Contract-Default-Convention
 
 ### Business-Day-Count-Conventions
 - [x] SCF (Shift/Calculate following)
