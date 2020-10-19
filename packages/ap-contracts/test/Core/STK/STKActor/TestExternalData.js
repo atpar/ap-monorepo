@@ -4,12 +4,12 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
-const { mineBlock } = require('../../../helper/blockchain');
-const { expectEvent, ZERO_ADDRESS } = require('../../../helper/utils');
-const { encodeEvent, decodeEvent } = require('../../../helper/scheduleUtils');
+const { mineBlock } = require('../../../helper/utils/blockchain');
+const { expectEvent, ZERO_ADDRESS } = require('../../../helper/utils/utils');
+const { encodeEvent, decodeEvent } = require('../../../helper/utils/schedule');
+
 
 // TODO: Replace hardcoded event values ids with names (#useEventName)
-
 describe('STKActor', () => {
   let deployer, actor, actor2, creatorObligor, creatorBeneficiary, nobody;
 

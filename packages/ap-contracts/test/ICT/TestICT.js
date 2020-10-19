@@ -5,7 +5,7 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
+const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { deployICToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
 
 

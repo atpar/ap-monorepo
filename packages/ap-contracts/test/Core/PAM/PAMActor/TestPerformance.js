@@ -5,10 +5,10 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
-const { mineBlock } = require('../../../helper/blockchain');
+const { mineBlock } = require('../../../helper/utils/blockchain');
 const {
   generateSchedule, expectEvent, parseTerms, ZERO_ADDRESS, ZERO_BYTES32, web3ResponseToState,
-} = require('../../../helper/utils');
+} = require('../../../helper/utils/utils');
 
 
 describe('PAMActor', () => {

@@ -2,7 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "@atpar/actus-solidity/contracts/Engines/CEC/ICECEngine.sol";
+import "../../ACTUS/Engines/CEC/ICECEngine.sol";
 
 import "../Base/AssetActor/BaseActor.sol";
 import "../Base/Custodian/ICustodian.sol";

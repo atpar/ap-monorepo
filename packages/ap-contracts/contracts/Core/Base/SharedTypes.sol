@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.11;
 
-import "@atpar/actus-solidity/contracts/Core/ACTUSTypes.sol";
-import "@atpar/actus-solidity/contracts/Core/ACTUSConstants.sol";
+import "../../ACTUS/Core/ACTUSTypes.sol";
+import "../../ACTUS/Core/ACTUSConstants.sol";
 
 
 struct AssetOwnership {

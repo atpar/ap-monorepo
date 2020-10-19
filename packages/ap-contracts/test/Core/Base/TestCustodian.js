@@ -3,10 +3,10 @@
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 const { shouldFail } = require('openzeppelin-test-helpers');
-const { expectEvent } = require('../../helper/utils');
 
 const { deployPaymentToken, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
-const { generateSchedule } = require('../../helper/utils');
+const { expectEvent, generateSchedule } = require('../../helper/utils/utils');
+
 
 describe('Custodian', () => {
   let deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody;

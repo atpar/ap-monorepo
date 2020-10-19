@@ -4,11 +4,11 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
-const { mineBlock } = require('../../../helper/blockchain');
-const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../../../helper/utils');
+const { mineBlock } = require('../../../helper/utils/blockchain');
+const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../../../helper/utils/utils');
+
 
 // TODO: Replace hardcoded event values ids with names (#useEventName)
-
 describe('PAMActor', () => {
   let deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 

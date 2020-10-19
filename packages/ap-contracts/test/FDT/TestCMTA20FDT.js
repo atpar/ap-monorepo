@@ -1,7 +1,7 @@
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { BN, ether, shouldFail } = require('openzeppelin-test-helpers');
 
-const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
+const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
   getSnapshotTaker, deployPaymentToken, deployCMTA20FDT, deployRuleEngineMock
 } = require('../helper/setupTestEnvironment');

@@ -2,7 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "@atpar/actus-solidity/contracts/Engines/PAM/IPAMEngine.sol";
+import "../../ACTUS/Engines/PAM/IPAMEngine.sol";
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";

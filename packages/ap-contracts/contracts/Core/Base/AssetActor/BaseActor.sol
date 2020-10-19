@@ -5,9 +5,9 @@ pragma experimental ABIEncoderV2;
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
-import "@atpar/actus-solidity/contracts/Core/SignedMath.sol";
-import "@atpar/actus-solidity/contracts/Core/Conventions/BusinessDayConventions.sol";
-import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
+import "../../../ACTUS/Core/SignedMath.sol";
+import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
+import "../../../ACTUS/Core/Utils/EventUtils.sol";
 
 import "../SharedTypes.sol";
 import "../Conversions.sol";

@@ -5,8 +5,8 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { getDefaultTerms, getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
-const { mineBlock } = require('../../../helper/blockchain');
-const { expectEvent, ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils');
+const { mineBlock } = require('../../../helper/utils/blockchain');
+const { expectEvent, ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils/utils');
 
 
 describe('ANNActor', () => {

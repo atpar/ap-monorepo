@@ -5,7 +5,7 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker } = require('../../helper/setupTestEnvironment');
-const { expectEvent } = require('../../helper/utils');
+const { expectEvent } = require('../../helper/utils/utils');
 
 
 describe('DataRegistry', () => {

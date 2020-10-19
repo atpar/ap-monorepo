@@ -2,7 +2,7 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "@atpar/actus-solidity/contracts/Engines/CERTF/ICERTFEngine.sol";
+import "../../ACTUS/Engines/CERTF/ICERTFEngine.sol";
 
 import "../Base/AssetActor/BaseActor.sol";
 import "./ICERTFRegistry.sol";

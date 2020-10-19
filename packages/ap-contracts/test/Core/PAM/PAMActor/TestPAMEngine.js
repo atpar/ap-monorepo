@@ -4,12 +4,12 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
-const { mineBlock } = require('../../../helper/blockchain');
-const { getTestCases } = require('@atpar/actus-solidity/test/helper/tests');
+const { mineBlock } = require('../../../helper/utils/blockchain');
+const { getTestCases } = require('../../../helper/ACTUS/tests');
 const { getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const {
   expectEvent, generateSchedule, web3ResponseToState, ZERO_ADDRESS, ZERO_BYTES32
-} = require('../../../helper/utils');
+} = require('../../../helper/utils/utils');
 
 
 describe('PAMActor', () => {

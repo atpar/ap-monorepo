@@ -5,9 +5,9 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
-const { mineBlock } = require('../../../helper/blockchain')
-const { decodeEvent } = require('../../../helper/scheduleUtils');
-const { generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils');
+const { mineBlock } = require('../../../helper/utils/blockchain')
+const { decodeEvent } = require('../../../helper/utils/schedule');
+const { generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils/utils');
 
 // TODO: Replace hardcoded event values ids with names (#useEventName)
 

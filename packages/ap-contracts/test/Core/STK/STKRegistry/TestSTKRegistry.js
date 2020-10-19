@@ -5,13 +5,13 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
-const { generateSchedule, parseTerms, ZERO_ADDRESS } = require('../../../helper/utils');
+const { generateSchedule, parseTerms, ZERO_ADDRESS } = require('../../../helper/utils/utils');
 
 const ASSET_ALREADY_EXISTS = 'ASSET_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 
+// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKRegistry', () => {
   let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 

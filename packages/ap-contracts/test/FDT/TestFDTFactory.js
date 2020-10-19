@@ -4,12 +4,13 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { BN } = require('openzeppelin-test-helpers');
 
-const { ZERO_ADDRESS } = require('../helper/utils');
+const { ZERO_ADDRESS } = require('../helper/utils/utils');
 const { getSnapshotTaker, deployPaymentToken } = require('../helper/setupTestEnvironment');
 const {
   buildCreate2Eip1167ProxyAddress: buildProxyAddr,
   getEip1167ProxyLogicAddress: extractLogicAddr,
-} = require('../helper/proxy/create2.js')(web3);
+} = require('../helper/utils/create2.js')(web3);
+
 
 describe('FDTFactory', () => {
   let creator, owner, owner2, tokenHolder, tokenHolder2;

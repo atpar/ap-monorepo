@@ -5,12 +5,12 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
-const { expectEvent, generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils');
-const { encodeEvent } = require('../../../helper/scheduleUtils');
-const { mineBlock } = require('../../../helper/blockchain');
+const { expectEvent, generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils/utils');
+const { encodeEvent } = require('../../../helper/utils/schedule');
+const { mineBlock } = require('../../../helper/utils/blockchain');
+
 
 // TODO: Replace hardcoded event values ids with names (#useEventName)
-
 describe('STKActor', () => {
   let admin;
   const minute = 60;

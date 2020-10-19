@@ -4,13 +4,13 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
-const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils');
-const { decodeEvent } = require('../helper/scheduleUtils');
+const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
+const { decodeEvent } = require('../helper/utils/schedule');
+const { mineBlock } = require('../helper/utils/blockchain');
 const { deployICToken, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
-const { mineBlock } = require('../helper/blockchain');
+
 
 // TODO: Replace hardcoded event values ids with names (#useEventName)
-
 describe('ICT', function () {
   let deployer, owner, issuer, counterparty, investor1, nobody;
 

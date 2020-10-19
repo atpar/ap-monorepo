@@ -2,8 +2,8 @@
 pragma solidity ^0.6.11;
 pragma experimental ABIEncoderV2;
 
-import "@atpar/actus-solidity/contracts/Core/Utils/EventUtils.sol";
-import "@atpar/actus-solidity/contracts/Core/Utils/PeriodUtils.sol";
+import "../../../../ACTUS/Core/Utils/EventUtils.sol";
+import "../../../../ACTUS/Core/Utils/PeriodUtils.sol";
 
 import "../BaseRegistryStorage.sol";
 import "../IBaseRegistry.sol";

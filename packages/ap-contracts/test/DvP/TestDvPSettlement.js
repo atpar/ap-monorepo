@@ -4,8 +4,8 @@ const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
-const { expectEvent, ZERO_ADDRESS } = require('../helper/utils');
-const { mineBlock } = require('../helper/blockchain');
+const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
+const { mineBlock } = require('../helper/utils/blockchain');
 const { getSnapshotTaker, deployDvPSettlement, deployPaymentToken } = require('../helper/setupTestEnvironment');
 
 
