@@ -35,7 +35,7 @@
     "ap-chain:setup": "./scripts/setup-ap-chain.sh",
     "build": "npm run compile && npm run generate-ts-bindings && npm run generate-ap-chain-snapshot && webpack",
     "compile": "node --max-old-space-size=4096 ./node_modules/.bin/buidler compile",
-    "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
+    "coverage": "node --max-old-space-size=8192 ./node_modules/.bin/buidler coverage",
     "generate-ap-chain-snapshot": "./scripts/setup-ap-chain.sh --take-snapshot",
     "generate-ts-bindings": "rm -rf ./ts-bindings && typechain --target web3-v1 --outDir ./src/types/contracts './build/contracts/*.json'",
     "lint": "solhint contracts/**/*.sol && eslint src/**/*.ts",
