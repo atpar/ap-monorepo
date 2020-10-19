@@ -31,6 +31,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
+    "ap-chain:start": "./scripts/setup-ap-chain.sh --no-deploy",
+    "ap-chain:setup": "./scripts/setup-ap-chain.sh",
     "build": "npm run compile && npm run generate-ts-bindings && npm run generate-ap-chain-snapshot && webpack",
     "compile": "node --max-old-space-size=4096 ./node_modules/.bin/buidler compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
@@ -43,10 +45,8 @@
     "migrate:rinkeby": "scripts/deploy-contracts.sh rinkeby",
     "migrate:ropsten": "scripts/deploy-contracts.sh ropsten",
     "prebuild": "rm -rf dist/ && tsc",
-    "start:ap-chain": "./scripts/setup-ap-chain.sh --no-deploy",
-    "setup:ap-chain": "./scripts/setup-ap-chain.sh",
     "test:contracts": "buidler test",
-    "test:ts": "./scripts/setup-ap-chain-ts.sh 'jest --runInBand --detectOpenHandles --forceExit --verbose --colors'",
+    "test:ts": "./scripts/setup-ap-chain.sh --from-snapshot --no-deploy --eval-and-exit 'jest --runInBand --detectOpenHandles --forceExit --verbose --colors'",
     "test": "npm run test:contracts && npm run test:ts"
   },
   "resolutions": {
