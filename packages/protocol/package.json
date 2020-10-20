@@ -9,6 +9,7 @@
   "module": "./dist/esm/src/index.js",
   "types": "./dist/typings/index.d.ts",
   "files": [
+    "ap-chain/",
     "build/",
     "contracts/",
     "deployments/",
