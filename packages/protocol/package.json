@@ -9,15 +9,11 @@
   "module": "./dist/esm/src/index.js",
   "types": "./dist/typings/index.d.ts",
   "files": [
-    "buidler.config.js",
     "build/",
     "contracts/",
-    "deploy/",
-    "deployments.json",
+    "deployments/",
     "dist/",
-    "scripts/",
-    "test/",
-    "ts-bindings/"
+    "src/"
   ],
   "repository": {
     "type": "git",
