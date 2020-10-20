@@ -1,10 +1,6 @@
-# ap.js
-dist/
-CNAME
-
-# actus-solditiy, ap-contracts
+# protocol
 mnemonic.js
-ts-bindings/
+dist/
 
 # sol-coverage
 coverage.json
