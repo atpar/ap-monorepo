@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "main": "./dist/umd/index.js",
   "module": "./dist/esm/src/index.js",
-  "types": "./dist/typings/index.d.ts",
+  "types": "./dist/typings/src/index.d.ts",
   "files": [
     "ap-chain/",
     "build/",
