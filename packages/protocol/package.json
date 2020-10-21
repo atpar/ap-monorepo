@@ -30,18 +30,19 @@
   "scripts": {
     "ap-chain:start": "./scripts/setup-ap-chain.sh --no-deploy",
     "ap-chain:setup": "./scripts/setup-ap-chain.sh",
-    "build": "npm run compile && npm run generate-ts-bindings && npm run generate-ap-chain-snapshot && webpack",
+    "build": "npm run build:contracts && npm run build:ts",
+    "build:contracts": "npm run compile && npm run generate-ts-bindings && npm run generate-ap-chain-snapshot",
+    "build:ts": "rm -rf dist/ && tsc && copyfiles src/types/contracts/**/*.d.ts dist/typings && webpack",
     "compile": "node --max-old-space-size=4096 ./node_modules/.bin/buidler compile",
     "coverage": "node --max-old-space-size=4096 ./node_modules/.bin/buidler coverage",
     "generate-ap-chain-snapshot": "./scripts/setup-ap-chain.sh --take-snapshot",
-    "generate-ts-bindings": "rm -rf ./ts-bindings && typechain --target web3-v1 --outDir ./src/types/contracts './build/contracts/*.json'",
+    "generate-ts-bindings": "rm -rf ./src/types/contracts/* && typechain --target web3-v1 --outDir ./src/types/contracts './build/contracts/*.json'",
     "lint": "solhint contracts/**/*.sol && eslint src/**/*.ts",
     "lint:fix": "solhint contracts/**/*.sol --fix && eslint src/**/*.ts --fix",
     "migrate:goerli": "scripts/deploy-contracts.sh goerli",
     "migrate:kovan": "scripts/deploy-contracts.sh kovan",
     "migrate:rinkeby": "scripts/deploy-contracts.sh rinkeby",
     "migrate:ropsten": "scripts/deploy-contracts.sh ropsten",
-    "prebuild": "rm -rf dist/ && tsc",
     "test:contracts": "buidler test",
     "test:ts": "./scripts/setup-ap-chain.sh --from-snapshot --no-deploy --eval-and-exit 'jest --runInBand --detectOpenHandles --forceExit --verbose --colors'",
     "test": "npm run test:contracts && npm run test:ts"
@@ -52,7 +53,9 @@
   },
   "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^3.0.0",
-    "openzeppelin-solidity": "^3.0.2"
+    "bn.js": "^4.4.0",
+    "openzeppelin-solidity": "^3.0.2",
+    "web3": "1.2.4"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "1.4.3",
@@ -65,6 +68,7 @@
     "bignumber.js": "^7.2.1",
     "buidler-deploy": "^0.5.11",
     "buidler-gas-reporter": "^0.1.4",
+    "copyfiles": "^2.4.0",
     "coveralls": "^3.0.9",
     "csvtojson": "^2.0.8",
     "eslint": "^5.16.0",
@@ -80,7 +84,6 @@
     "typechain-target-web3-v1": "^1.0.4",
     "typedoc": "^0.15.4",
     "typescript": "^3.2.2",
-    "web3": "1.2.4",
     "webpack": "^4.29.1",
     "webpack-cli": "^3.2.1"
   }

@@ -1,5 +1,4 @@
 import * as web3Utils from 'web3-utils';
-import BN from 'bn.js';
 
 import {
   AssetOwnership,
@@ -33,11 +32,11 @@ export const toChecksumAddress = (address: string): string => (
   web3Utils.toChecksumAddress(address)
 );
 
-export const toPrecision = (number: number | string | BN): string => (
+export const toPrecision = (number: number | string): string => (
   web3Utils.toWei((typeof number === 'string') ? number : number.toString())
 );
 
-export const fromPrecision = (number: number | string | BN): string => (
+export const fromPrecision = (number: number | string): string => (
   web3Utils.fromWei((typeof number === 'string') ? number : number.toString())
 );
 
