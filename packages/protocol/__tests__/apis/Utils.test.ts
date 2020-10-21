@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import ADDRESS_BOOK from '../../ap-chain/addresses.json';
 
 import { Utils, Contracts } from '../../src/apis';
-import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms } from '../../src/types';
+import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms, isSTKTerms } from '../../src/types';
 import { removeNullEvents } from '../../src/utils/Schedule';
 
 import DEFAULT_TERMS from '../Default-Terms.json';
@@ -104,6 +104,12 @@ describe('Utils', (): void => {
       const terms: Terms = DEFAULT_TERMS;
       const pamTerms = Utils.conversion.extractPAMTerms(terms);
       expect(isPAMTerms(pamTerms))
+    });
+    
+    it('should convert full terms to STKTerms', async (): Promise<void> => {
+      const terms: Terms = DEFAULT_TERMS;
+      const stkTerms = Utils.conversion.extractSTKTerms(terms);
+      expect(isSTKTerms(stkTerms))
     });
   });
 

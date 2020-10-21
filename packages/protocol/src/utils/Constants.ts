@@ -7,7 +7,8 @@ import {
   CECTerms,
   CEGTerms,
   CERTFTerms,
-  PAMTerms
+  PAMTerms,
+  STKTerms
 } from '../types';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -32,6 +33,7 @@ export const EMPTY_STATE: State = {
   exerciseDate: '0',
   terminationDate: '0',
   lastCouponFixingDate: '0',
+  lastDividendFixingDate: '0',
   notionalPrincipal: '0',
   accruedInterest: '0',
   feeAccrued: '0',
@@ -45,6 +47,8 @@ export const EMPTY_STATE: State = {
   couponAmountFixed: '0',
   marginFactor: '0',
   adjustmentFactor: '0',
+  dividendPaymentAmount: '0',
+  splitRatio: '0'
 };
 
 export const EMPTY_ANN_TERMS: ANNTerms = {
@@ -113,8 +117,6 @@ export const EMPTY_CEC_TERMS: CECTerms = {
   endOfMonthConvention: '0',
   feeBasis: '0',
   creditEventTypeCovered: '0',
-
-
 
   statusDate: '0',
   maturityDate: '0',
@@ -255,7 +257,40 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   cycleOfRateReset: EMPTY_IPS,
   cycleOfScalingIndex: EMPTY_IPS,
   cycleOfFee: EMPTY_IPS,
+};
 
+export const EMPTY_STK_TERMS: STKTerms = {
+  contractType: '0',
+  calendar: '0',
+  contractRole: '0',
+  dayCountConvention: '0',
+  businessDayConvention: '0',
+  endOfMonthConvention: '0',
+  redeemableByIssuer: '0',
+
+  currency: ZERO_ADDRESS,
+  settlementCurrency: ZERO_ADDRESS,
+
+  contractDealDate: '0',
+  statusDate: '0',
+  issueDate: '0',
+  purchaseDate: '0',
+  cycleAnchorDateOfDividend: '0',
+
+  nominalPrice: '0',
+  notionalPrincipal: '0',
+  issuePrice: '0',
+  quantity: '0',
+  priceAtPurchaseDate: '0',
+  redemptionPrice: '0',
+
+  dividendRecordPeriod: EMPTY_IP,
+  dividendPaymentPeriod: EMPTY_IP,
+  splitSettlementPeriod: EMPTY_IP,
+  redemptionRecordPeriod: EMPTY_IP,
+  redemptionPaymentPeriod: EMPTY_IP,
+
+  cycleOfDividend: EMPTY_IPS
 };
 
 export const EMPTY_OWNERSHIP = {

@@ -8,6 +8,7 @@ import {
   CEGTerms,
   CERTFTerms,
   PAMTerms,
+  STKTerms,
   State
 } from '../types';
 
@@ -284,6 +285,40 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   cycleOfRateReset: terms.cycleOfRateReset,
   cycleOfScalingIndex: terms.cycleOfScalingIndex,
   cycleOfFee: terms.cycleOfFee
+});
+
+export const extractSTKTerms = (terms: Terms): STKTerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  redeemableByIssuer: terms.redeemableByIssuer,
+
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+
+  contractDealDate: terms.contractDealDate,
+  statusDate: terms.statusDate,
+  issueDate: terms.issueDate,
+  purchaseDate: terms.purchaseDate,
+  cycleAnchorDateOfDividend: terms.cycleAnchorDateOfDividend,
+
+  nominalPrice: terms.nominalPrice,
+  notionalPrincipal: terms.notionalPrincipal,
+  issuePrice: terms.issuePrice,
+  quantity: terms.quantity,
+  priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  redemptionPrice: terms.redemptionPrice,
+
+  dividendRecordPeriod: terms.dividendRecordPeriod,
+  dividendPaymentPeriod: terms.dividendPaymentPeriod,
+  splitSettlementPeriod: terms.splitSettlementPeriod,
+  redemptionRecordPeriod: terms.redemptionRecordPeriod,
+  redemptionPaymentPeriod: terms.redemptionPaymentPeriod,
+
+  cycleOfDividend: terms.cycleOfDividend
 });
 
 const associativeArrayToObject = (arr: any): object => ({
