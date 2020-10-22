@@ -81,6 +81,10 @@ export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
   associativeArrayToObject(web3Response) as CERTFTerms
 );
 
+export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
+  associativeArrayToObject(web3Response) as STKTerms
+);
+
 export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (
   associativeArrayToObject(web3Response) as PAMTerms
 );

@@ -365,8 +365,8 @@ export interface STKTerms {
   endOfMonthConvention: string | number;
   redeemableByIssuer: string | number;
 
-  currency: string | number;
-  settlementCurrency: string | number;
+  currency: string;
+  settlementCurrency: string;
 
   contractDealDate: string | number;
   statusDate: string | number;
