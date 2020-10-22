@@ -1,6 +1,6 @@
 {
   "name": "@atpar/protocol",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "description": "ACTUS Protocol smart contracts and typescript sdk",
   "author": "jo-es <johannes.escherich+github@atpar.io>",
   "homepage": "https://github.com/atpar/ap-monorepo#readme",
