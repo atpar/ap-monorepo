@@ -20,6 +20,9 @@ export interface AddressBook {
   PAMActor: string;
   PAMEngine: string;
   PAMRegistry: string;
+  STKActor: string;
+  STKEngine: string;
+  STKRegistry: string;
 }
 
 export interface AssetOwnership {
@@ -50,6 +53,9 @@ export function isAddressBook (obj: any): obj is AddressBook {
   if (obj.PAMActor == undefined || typeof obj.PAMActor !== 'string' || obj.PAMActor === ZERO_ADDRESS) { return false; }
   if (obj.PAMEngine == undefined || typeof obj.PAMEngine !== 'string' || obj.PAMEngine === ZERO_ADDRESS) { return false; }
   if (obj.PAMRegistry == undefined || typeof obj.PAMRegistry !== 'string' || obj.PAMRegistry === ZERO_ADDRESS) { return false; }
+  if (obj.STKActor == undefined || typeof obj.STKActor !== 'string' || obj.STKActor === ZERO_ADDRESS) { return false; }
+  if (obj.STKEngine == undefined || typeof obj.STKEngine !== 'string' || obj.STKEngine === ZERO_ADDRESS) { return false; }
+  if (obj.STKRegistry == undefined || typeof obj.STKRegistry !== 'string' || obj.STKRegistry === ZERO_ADDRESS) { return false; }
 
   return true;
 }

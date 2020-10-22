@@ -1,5 +1,4 @@
 import * as web3Utils from 'web3-utils';
-import BN from 'bn.js';
 
 import {
   AssetOwnership,
@@ -9,6 +8,7 @@ import {
   CEGTerms,
   CERTFTerms,
   PAMTerms,
+  STKTerms,
   State
 } from '../types';
 
@@ -33,11 +33,11 @@ export const toChecksumAddress = (address: string): string => (
   web3Utils.toChecksumAddress(address)
 );
 
-export const toPrecision = (number: number | string | BN): string => (
+export const toPrecision = (number: number | string): string => (
   web3Utils.toWei((typeof number === 'string') ? number : number.toString())
 );
 
-export const fromPrecision = (number: number | string | BN): string => (
+export const fromPrecision = (number: number | string): string => (
   web3Utils.fromWei((typeof number === 'string') ? number : number.toString())
 );
 
@@ -79,6 +79,10 @@ export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
 
 export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
   associativeArrayToObject(web3Response) as CERTFTerms
+);
+
+export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
+  associativeArrayToObject(web3Response) as STKTerms
 );
 
 export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (
@@ -285,6 +289,40 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   cycleOfRateReset: terms.cycleOfRateReset,
   cycleOfScalingIndex: terms.cycleOfScalingIndex,
   cycleOfFee: terms.cycleOfFee
+});
+
+export const extractSTKTerms = (terms: Terms): STKTerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  redeemableByIssuer: terms.redeemableByIssuer,
+
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+
+  contractDealDate: terms.contractDealDate,
+  statusDate: terms.statusDate,
+  issueDate: terms.issueDate,
+  purchaseDate: terms.purchaseDate,
+  cycleAnchorDateOfDividend: terms.cycleAnchorDateOfDividend,
+
+  nominalPrice: terms.nominalPrice,
+  notionalPrincipal: terms.notionalPrincipal,
+  issuePrice: terms.issuePrice,
+  quantity: terms.quantity,
+  priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  redemptionPrice: terms.redemptionPrice,
+
+  dividendRecordPeriod: terms.dividendRecordPeriod,
+  dividendPaymentPeriod: terms.dividendPaymentPeriod,
+  splitSettlementPeriod: terms.splitSettlementPeriod,
+  redemptionRecordPeriod: terms.redemptionRecordPeriod,
+  redemptionPaymentPeriod: terms.redemptionPaymentPeriod,
+
+  cycleOfDividend: terms.cycleOfDividend
 });
 
 const associativeArrayToObject = (arr: any): object => ({

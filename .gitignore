@@ -1,6 +1,7 @@
 # protocol
 mnemonic.js
 dist/
+snapshot.tar.gz
 
 # sol-coverage
 coverage.json
