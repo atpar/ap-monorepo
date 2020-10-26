@@ -7,7 +7,7 @@ import { STKEngine } from "./contracts/STKEngine";
 
 // Union Types
 export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine | STKEngine;
-export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms;
+export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms | STKTerms;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
