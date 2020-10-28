@@ -237,6 +237,28 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             }
         }
 
+        // rate reset
+        if (eventType == EventType.RR) {
+            if (terms.cycleAnchorDateOfRateReset != 0) {
+                uint256[MAX_CYCLE_SIZE] memory rateResetSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfRateReset,
+                    terms.maturityDate,
+                    terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
+                    false,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (rateResetSchedule[i] == 0) break;
+                    if (isInSegment(rateResetSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.RR, rateResetSchedule[i]);
+                    index++;
+                }
+            }
+            // ... nextRateReset
+        }
+
         // fees
         if (eventType == EventType.FP) {
             if (terms.cycleAnchorDateOfFee != 0) {
@@ -253,6 +275,27 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     if (feeSchedule[i] == 0) break;
                     if (isInSegment(feeSchedule[i], segmentStart, segmentEnd) == false) continue;
                     events[index] = encodeEvent(EventType.FP, feeSchedule[i]);
+                    index++;
+                }
+            }
+        }
+
+        // scaling
+        if (eventType == EventType.SC) {
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
+                uint256[MAX_CYCLE_SIZE] memory scalingSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfScalingIndex,
+                    terms.maturityDate,
+                    terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (scalingSchedule[i] == 0) break;
+                    if (isInSegment(scalingSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.SC, scalingSchedule[i]);
                     index++;
                 }
             }
@@ -402,6 +445,23 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             }
         }
 
+        // rate reset
+        if (eventType == EventType.RR) {
+            if (terms.cycleAnchorDateOfRateReset != 0) {
+                uint256 nextRateResetDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfRateReset,
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
+                );
+                if (nextRateResetDate == 0) return bytes32(0);
+                return encodeEvent(EventType.RR, nextRateResetDate);
+            }
+            // ... nextRateReset
+        }
+
         // fees
         if (eventType == EventType.FP) {
             if (terms.cycleAnchorDateOfFee != 0) {
@@ -415,6 +475,22 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
+            }
+        }
+
+        // scaling
+        if (eventType == EventType.SC) {
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
+                uint256 nextScalingDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfScalingIndex,
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
+                );
+                if (nextScalingDate == 0) return bytes32(0);
+                return encodeEvent(EventType.SC, nextScalingDate);
             }
         }
 
