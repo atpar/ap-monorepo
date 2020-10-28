@@ -167,6 +167,42 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
     }
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CECTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        bytes32 nextEvent = bytes32(0);
+
+        // EventTypes ordered after epoch offset
+
+        // maturity event
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            nextEvent = encodeEvent(EventType.MD, terms.maturityDate);
+        }
+
+        return nextEvent;
+    }
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * param terms terms of the contract

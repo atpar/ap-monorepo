@@ -154,108 +154,127 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForCERTFAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         override(TermsRegistry)
-        returns (bytes32)
+        returns (bytes32, bool)
     {
         Asset storage asset = assets[assetId];
         CERTFTerms memory terms = asset.decodeAndGetCERTFTerms();
 
         EventType nextEventType;
-        uint256 nextScheduleTimeOffset;
+        uint256 nextScheduleTime;
+        bool isCyclicEvent = true;
 
         // COF
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COF],
                 EventType.COF
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime < nextScheduleTime)
+                || (nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
         // COP
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.COP],
                 EventType.COP
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
         // REF
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REF],
                 EventType.REF
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
         // REP
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.REP],
                 EventType.REP
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
         // EXE
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.EXE],
                 EventType.EXE
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
-        return encodeEvent(nextEventType, nextScheduleTimeOffset);
+        // Non-Cyclic
+        {
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICERTFEngine(asset.engine).computeNextNonCyclicEvent(
+                terms,
+                asset.schedule.lastNonCyclicEvent
+            ));
+
+            if (
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTime = scheduleTime;
+                nextEventType = eventType;
+                isCyclicEvent = false;
+            }        
+        }
+
+        return (encodeEvent(nextEventType, nextScheduleTime), isCyclicEvent);
     }
 }

@@ -95,6 +95,22 @@ interface ICECEngine is IEngine {
         returns (bytes32[] memory);
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CECTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        returns (bytes32);
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * @param terms terms of the contract

@@ -177,6 +177,26 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     }
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * param terms terms of the contract
+     * param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        STKTerms calldata /* terms */,
+        bytes32 /* lastNonCyclicEvent */
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        return bytes32(0);
+    }
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * @param terms terms of the contract

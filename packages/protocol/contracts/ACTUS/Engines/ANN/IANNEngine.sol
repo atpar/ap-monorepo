@@ -79,23 +79,6 @@ interface IANNEngine is IEngine {
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * @param terms terms of the contract
-     * @param lastScheduleTime last occurrence of cyclic event
-     * @param eventType eventType of the cyclic schedule
-     * @return event schedule segment
-     */
-    function computeNextCyclicEvent(
-        ANNTerms calldata terms,
-        uint256 lastScheduleTime,
-        EventType eventType
-    )
-        external
-        pure
-        returns(bytes32);
-
-    /**
-     * @notice Computes a schedule segment of cyclic contract events based on the contract terms
-     * and the specified timestamps.
-     * @param terms terms of the contract
      * @param segmentStart start timestamp of the segment
      * @param segmentEnd end timestamp of the segement
      * @param eventType eventType of the cyclic schedule
@@ -110,6 +93,39 @@ interface IANNEngine is IEngine {
         external
         pure
         returns (bytes32[] memory);
+
+    /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        ANNTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        returns (bytes32);
+
+    /**
+     * @notice Computes a schedule segment of cyclic contract events based on the contract terms
+     * and the specified timestamps.
+     * @param terms terms of the contract
+     * @param lastScheduleTime last occurrence of cyclic event
+     * @param eventType eventType of the cyclic schedule
+     * @return event schedule segment
+     */
+    function computeNextCyclicEvent(
+        ANNTerms calldata terms,
+        uint256 lastScheduleTime,
+        EventType eventType
+    )
+        external
+        pure
+        returns(bytes32);
 
     /**
      * @notice Verifies that the provided event is still scheduled under the terms, the current state of the

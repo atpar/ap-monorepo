@@ -692,6 +692,151 @@
           "type": "tuple"
         },
         {
+          "internalType": "bytes32",
+          "name": "lastNonCyclicEvent",
+          "type": "bytes32"
+        }
+      ],
+      "name": "computeNextNonCyclicEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "creditEventTypeCovered",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "coverageOfCreditEnhancement",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "object",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "object2",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "enum ContractReferenceType",
+                  "name": "_type",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum ContractReferenceRole",
+                  "name": "role",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct ContractReference",
+              "name": "contractReference_1",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "object",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "object2",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "enum ContractReferenceType",
+                  "name": "_type",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum ContractReferenceRole",
+                  "name": "role",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct ContractReference",
+              "name": "contractReference_2",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct CECTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
           "internalType": "uint256",
           "name": "segmentStart",
           "type": "uint256"
