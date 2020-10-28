@@ -196,6 +196,7 @@ abstract contract ScheduleRegistry is
         Asset storage asset = assets[assetId];
 
         if (asset.schedule.length != 0) {
+            if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
             return asset.schedule.events[asset.schedule.nextScheduleIndex];
         }
 
