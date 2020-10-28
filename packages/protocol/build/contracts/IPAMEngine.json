@@ -1584,6 +1584,374 @@
           "type": "tuple"
         },
         {
+          "internalType": "bytes32",
+          "name": "lastNonCyclicEvent",
+          "type": "bytes32"
+        }
+      ],
+      "name": "computeNextNonCyclicEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct PAMTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
           "internalType": "uint256",
           "name": "segmentStart",
           "type": "uint256"

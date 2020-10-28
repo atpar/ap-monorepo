@@ -154,90 +154,109 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForPAMAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         override(TermsRegistry)
-        returns (bytes32)
+        returns (bytes32, bool)
     {
         Asset storage asset = assets[assetId];
         PAMTerms memory terms = asset.decodeAndGetPAMTerms();
 
         EventType nextEventType;
-        uint256 nextScheduleTimeOffset;
+        uint256 nextScheduleTime;
+        bool isCyclicEvent = true;
 
         // IP
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IP],
                 EventType.IP
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime < nextScheduleTime)
+                || (nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
         // IPCI
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IPCI],
                 EventType.IPCI
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }        
         }
 
         // FP
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.FP],
                 EventType.FP
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }        
         }
 
         // SC
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.SC],
                 EventType.SC
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset != 0 && scheduleTimeOffset < nextScheduleTimeOffset)
-                || (scheduleTimeOffset != 0 && nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }        
         }
 
-        return encodeEvent(nextEventType, nextScheduleTimeOffset);
+        // Non-Cyclic
+        {
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextNonCyclicEvent(
+                terms,
+                asset.schedule.lastNonCyclicEvent
+            ));
+
+            if (
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTime = scheduleTime;
+                nextEventType = eventType;
+                isCyclicEvent = false;
+            }        
+        }
+
+        return (encodeEvent(nextEventType, nextScheduleTime), isCyclicEvent);
     }
 }

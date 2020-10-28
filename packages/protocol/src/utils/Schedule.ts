@@ -14,7 +14,6 @@ export function getEpochOffsetForEventType (eventType: string): number {
 export async function computeScheduleFromTerms(
   engine: UEngine,
   terms: UTerms,
-  generateCyclicEvent?: boolean,
   from?: number | string,
   to?: number | string
 ): Promise<string[]> {
@@ -25,7 +24,7 @@ export async function computeScheduleFromTerms(
   // @ts-ignore
   schedule.push(...(await engine.methods.computeNonCyclicScheduleSegment(terms, from || 0, to || maturityDate).call()));
 
-  if (generateCyclicEvent === true && (to || maturityDate)) {
+  if (to || maturityDate) {
     for (const cyclicEvent of CYCLIC_EVENTS) {
       // @ts-ignore
       schedule.push(...(await engine.methods.computeCyclicScheduleSegment(terms, from || 0, to || maturityDate, cyclicEvent).call()));
