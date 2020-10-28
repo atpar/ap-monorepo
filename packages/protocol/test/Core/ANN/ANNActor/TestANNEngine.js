@@ -60,7 +60,7 @@ describe('ANNActor', () => {
   it('should initialize Asset with ContractType ANN', async () => {
     const { events } = await this.ANNActorInstance.methods.initialize(
         this.terms,
-        this.schedule,
+        [], // this.schedule
         this.ownership,
         this.ANNEngineInstance.options.address,
         ZERO_ADDRESS

@@ -318,37 +318,45 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     {
         (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
 
-        bytes32 nextEvent = bytes32(0);
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
 
-        // EventTypes ordered after epoch offset
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
         // issue date
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
             // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
         ) {
-            nextEvent = encodeEvent(EventType.ISS, terms.issueDate);
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
         }
 
         // initial exchange
         if (
             (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
+            && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
             && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
         ) {
-            nextEvent = encodeEvent(EventType.IED, terms.initialExchangeDate);
+            eventTypeNextEvent = EventType.IED;
+            scheduleTimeNextEvent = terms.initialExchangeDate;
         }
 
         // maturity event
         if (
             (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
             && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
         ) {
-            nextEvent = encodeEvent(EventType.MD, terms.maturityDate);
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
         }
 
-        return nextEvent;
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**

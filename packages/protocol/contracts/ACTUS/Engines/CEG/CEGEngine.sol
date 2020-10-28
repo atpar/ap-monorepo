@@ -222,29 +222,35 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
     {
         (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
 
-        bytes32 nextEvent = bytes32(0);
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
 
-        // EventTypes ordered after epoch offset
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
         // purchase
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.purchaseDate != 0 && (lastScheduleTime <= terms.purchaseDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.purchaseDate < scheduleTimeNextEvent)
             // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.purchaseDate || lastEventType != EventType.PRD)
         ) {
-            nextEvent = encodeEvent(EventType.PRD, terms.purchaseDate);
+            eventTypeNextEvent = EventType.PRD;
+            scheduleTimeNextEvent = terms.purchaseDate;
         }
 
         // maturity event
         if (
             (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
             && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
         ) {
-            nextEvent = encodeEvent(EventType.MD, terms.maturityDate);
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
         }
 
-        return nextEvent;
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**

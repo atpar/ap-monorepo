@@ -307,37 +307,45 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
     {
         (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
 
-        bytes32 nextEvent = bytes32(0);
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
 
-        // EventTypes ordered after epoch offset
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
         // initial exchange
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
             // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
         ) {
-            nextEvent = encodeEvent(EventType.IED, terms.initialExchangeDate);
+            eventTypeNextEvent = EventType.IED;
+            scheduleTimeNextEvent = terms.initialExchangeDate;
         }
 
         // purchase
         if (
             (terms.purchaseDate != 0 && (lastScheduleTime <= terms.purchaseDate))
+            && (scheduleTimeNextEvent == 0 || terms.purchaseDate < scheduleTimeNextEvent)
             && (lastScheduleTime != terms.purchaseDate || lastEventType != EventType.PRD)
         ) {
-            nextEvent = encodeEvent(EventType.PRD, terms.purchaseDate);
+            eventTypeNextEvent = EventType.PRD;
+            scheduleTimeNextEvent = terms.purchaseDate;
         }
 
         // principal redemption at maturity
         if (
             (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
             && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
         ) {
-            nextEvent = encodeEvent(EventType.MD, terms.maturityDate);
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
         }
 
-        return nextEvent;
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**
