@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./ISTKEngine.sol";
 import "./STKSTF.sol";
 import "./STKPOF.sol";
@@ -14,6 +17,10 @@ import "./STKPOF.sol";
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
 contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.STK;

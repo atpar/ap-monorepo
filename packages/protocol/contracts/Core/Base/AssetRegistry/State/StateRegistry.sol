@@ -1,16 +1,19 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../BaseRegistryStorage.sol";
 import "../AccessControl/AccessControl.sol";
 import "./IStateRegistry.sol";
+import "./StateEncoder.sol";
 
 
 /**
  * @title StateRegistry
  */
 contract StateRegistry is BaseRegistryStorage, AccessControl, IStateRegistry {
+
+    using StateEncoder for Asset;
 
     event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
     event UpdatedFinalizedState(bytes32 indexed assetId, uint256 statusDate);

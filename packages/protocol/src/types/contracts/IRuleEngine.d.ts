@@ -37,7 +37,7 @@ export class IRuleEngine extends Contract {
 
     rules(): TransactionObject<string[]>;
 
-    setRules(rules: string[]): TransactionObject<void>;
+    setRules(_rules: string[]): TransactionObject<void>;
 
     validateTransfer(
       _from: string,

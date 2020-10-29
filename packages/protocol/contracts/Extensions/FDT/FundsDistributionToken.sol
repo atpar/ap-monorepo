@@ -1,9 +1,9 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/math/SignedSafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../external/math/SafeConversion.sol";
 import "./IFundsDistributionToken.sol";
@@ -37,10 +37,7 @@ abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20 {
     mapping(address => uint256) internal withdrawnFunds;
 
 
-    constructor(string memory name, string memory symbol)
-        public
-        ERC20(name, symbol)
-    {}
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
 
     /**
      * prev. distributeDividends

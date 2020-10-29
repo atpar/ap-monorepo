@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "../SharedTypes.sol";
 
@@ -11,7 +11,9 @@ import "./IBaseRegistry.sol";
 import "./Ownership/OwnershipRegistry.sol";
 import "./Terms/TermsRegistry.sol";
 import "./State/StateRegistry.sol";
+import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleRegistry.sol";
+import "./Schedule/ScheduleEncoder.sol";
 
 
 /**
@@ -27,6 +29,9 @@ abstract contract BaseRegistry is
     OwnershipRegistry,
     IBaseRegistry
 {
+    using StateEncoder for Asset;
+    using ScheduleEncoder for Asset;
+
     event RegisteredAsset(bytes32 assetId);
     event UpdatedEngine(bytes32 indexed assetId, address prevEngine, address newEngine);
     event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
@@ -42,10 +47,7 @@ abstract contract BaseRegistry is
         _;
     }
 
-    constructor()
-        public
-        BaseRegistryStorage()
-    {}
+    constructor() BaseRegistryStorage() {}
 
     /**
      * @notice Approves the address of an actor contract e.g. for registering assets.

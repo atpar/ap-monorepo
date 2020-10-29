@@ -1,9 +1,10 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../../external/math/SafeConversion.sol";
 import "../FundsDistributionToken.sol";
@@ -284,6 +285,7 @@ contract SimpleRestrictedFDT is
     Restrictable
 {
     using SafeMath for uint256;
+    using SignedSafeMath for int256;
     using SafeConversion for uint256;
     using SafeConversion for int256;
 
@@ -315,7 +317,6 @@ contract SimpleRestrictedFDT is
         address owner,
         uint256 initialAmount
     )
-        public
         FundsDistributionToken(name, symbol)
     {
         require(
@@ -447,7 +448,7 @@ contract SimpleRestrictedFDT is
   	 */
     function messageForTransferRestriction(uint8 restrictionCode)
         public
-        view
+        pure
         override
         returns (string memory)
     {

@@ -1,10 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 import "../../../external/math/SafeConversion.sol";
 import "../FundsDistributionToken.sol";
@@ -123,7 +124,7 @@ interface IRule {
  * @dev IRuleEngine 
  */
 interface IRuleEngine {
-  function setRules(IRule[] calldata rules) external;
+  function setRules(IRule[] calldata _rules) external;
   function ruleLength() external view returns (uint256);
   function rule(uint256 ruleId) external view returns (IRule);
   function rules() external view returns(IRule[] memory);
@@ -144,6 +145,7 @@ contract CMTA20FDT is
     IReassignable
 {
     using SafeMath for uint256;
+    using SignedSafeMath for int256;
     using SafeConversion for uint256;
     using SafeConversion for int256;
 
@@ -180,7 +182,6 @@ contract CMTA20FDT is
         address owner,
         uint256 initialAmount
     )
-        public
         FundsDistributionToken(name, symbol)
     {
         require(

@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 /**
@@ -258,7 +258,7 @@ interface IRule {
  * @dev IRuleEngine 
  */
 interface IRuleEngine {
-  function setRules(IRule[] calldata rules) external;
+  function setRules(IRule[] calldata _rules) external;
   function ruleLength() external view returns (uint256);
   function rule(uint256 ruleId) external view returns (IRule);
   function rules() external view returns(IRule[] memory);
@@ -277,23 +277,23 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
     string public constant UNKNOWN_ERROR = "Unknown Error Code";
 
 
-    constructor(address owner) public {
+    constructor(address owner) {
         transferOwnership(owner);
     }
 
-    function setRules(IRule[] calldata /* rules */) external override onlyOwner {
+    function setRules(IRule[] calldata /* rules */) external view override onlyOwner {
         revert("Can not set any additional rules");
     }
     
-    function ruleLength() external view override returns (uint256) {
+    function ruleLength() external pure override returns (uint256) {
         return 0;
     }
     
-    function rule(uint256 /* ruleId */) external view override returns (IRule) {
+    function rule(uint256 /* ruleId */) external pure override returns (IRule) {
         return IRule(address(0));
     }
     
-    function rules() external view override returns(IRule[] memory _rules) {
+    function rules() external pure override returns(IRule[] memory _rules) {
         return _rules;
     }
 
@@ -335,7 +335,7 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
   	 */
     function messageForTransferRestriction(uint8 restrictionCode)
         public
-        view
+        pure
         override
         returns (string memory)
     {

@@ -37,7 +37,7 @@ export class RuleEngineMock extends Contract {
 
     rules(): TransactionObject<string[]>;
 
-    setRules(rules: string[]): TransactionObject<void>;
+    setRules(__rules: string[]): TransactionObject<void>;
 
     validateTransfer(
       _from: string,

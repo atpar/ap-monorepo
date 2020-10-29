@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 
 
 /**
@@ -10,6 +13,10 @@ import "../../Core/Core.sol";
  * @notice Contains all Payoff Functions (POFs) for STK contracts
  */
 contract STKPOF is Core {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     /**
      * Payoff Function for STK dividend payment events

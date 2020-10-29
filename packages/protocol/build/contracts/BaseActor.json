@@ -2,22 +2,6 @@
   "contractName": "BaseActor",
   "abi": [
     {
-      "inputs": [
-        {
-          "internalType": "contract IAssetRegistry",
-          "name": "_assetRegistry",
-          "type": "address"
-        },
-        {
-          "internalType": "contract IDataRegistry",
-          "name": "_dataRegistry",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {

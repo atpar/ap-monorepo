@@ -1,13 +1,16 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "./Checkpoints.sol";
 
 
 contract CheckpointedToken is ERC20, Checkpoints {
+
+    using SafeMath for uint256;
 
     // Checkpointed total supply
     Checkpoint[] public checkpointTotalSupply;
@@ -20,10 +23,7 @@ contract CheckpointedToken is ERC20, Checkpoints {
     // Number of holders with non-zero balance
     uint256 public holderCount;
 
-    constructor(string memory name, string memory symbol)
-        public
-        ERC20(name, symbol)
-    {}
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
 
     /**
      * @notice returns an array of holders with non zero balance at a given checkpoint

@@ -1,9 +1,9 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../../../ACTUS/Core/SignedMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
@@ -38,12 +38,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     IDataRegistry public dataRegistry;
 
 
-    constructor (
-        IAssetRegistry _assetRegistry,
-        IDataRegistry _dataRegistry
-    )
-        public
-    {
+    constructor(IAssetRegistry _assetRegistry, IDataRegistry _dataRegistry) {
         assetRegistry = _assetRegistry;
         dataRegistry = _dataRegistry;
     }
@@ -374,5 +369,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             );
             if (isSet) return bytes32(fxRate);
         }
+
+        return bytes32(0);
     }
 }

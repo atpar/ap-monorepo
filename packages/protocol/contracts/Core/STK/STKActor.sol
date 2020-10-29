@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/STK/ISTKEngine.sol";
@@ -16,10 +16,7 @@ contract STKActor is BaseActor {
 
     enum STKExternalDataType {NA, DIP, SRA, REXA}
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
-        public
-        BaseActor(assetRegistry, dataRegistry)
-    {}
+    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with

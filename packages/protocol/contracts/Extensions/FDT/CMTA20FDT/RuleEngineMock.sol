@@ -9,7 +9,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. 
  */
 
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
 import "./RuleMock.sol";
 
@@ -30,12 +30,12 @@ contract RuleEngineMock {
 
     IRule[] internal _rules;
 
-    constructor() public {
+    constructor() {
         _rules.push(IRule(address(new RuleMock())));
     }
 
-    function setRules(IRule[] calldata rules) external {
-        _rules = rules;
+    function setRules(IRule[] calldata __rules) external {
+        _rules = __rules;
     }
 
     function ruleLength() external view returns (uint256) {

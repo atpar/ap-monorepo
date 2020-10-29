@@ -9,7 +9,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. 
  */
 
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
 
 contract RuleMock {

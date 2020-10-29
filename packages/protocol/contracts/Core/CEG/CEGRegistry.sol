@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/CEG/ICEGEngine.sol";
@@ -19,10 +19,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
     using CEGEncoder for Asset;
 
     
-    constructor()
-        public
-        BaseRegistry()
-    {}
+    constructor() BaseRegistry() {}
 
     /**
      * @notice

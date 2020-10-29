@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../../../ACTUS/Core/Utils/EventUtils.sol";
@@ -13,6 +13,7 @@ import "../Terms/ITermsRegistry.sol";
 import "../State/StateRegistry.sol";
 import "../State/IStateRegistry.sol";
 import "./IScheduleRegistry.sol";
+import "./ScheduleEncoder.sol";
 
 
 /**
@@ -27,6 +28,9 @@ abstract contract ScheduleRegistry is
     EventUtils,
     PeriodUtils
 {
+    using ScheduleEncoder for Asset;
+
+
     /**
      * @notice Returns an event for a given position (index) in a schedule of a given asset.
      * @param assetId id of the asset
@@ -221,7 +225,6 @@ abstract contract ScheduleRegistry is
 
         if (asset.schedule.length != 0) {
             bytes32 nextScheduledEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(nextScheduledEvent);
             if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
             asset.schedule.nextScheduleIndex += 1;
             return nextScheduledEvent;

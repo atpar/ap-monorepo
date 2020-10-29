@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/ANN/IANNEngine.sol";
@@ -14,10 +14,7 @@ import "./IANNRegistry.sol";
  */
 contract ANNActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
-        public
-        BaseActor(assetRegistry, dataRegistry)
-    {}
+    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with

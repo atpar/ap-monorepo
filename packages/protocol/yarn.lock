@@ -600,6 +600,11 @@
     safe-buffer "^5.1.1"
     util.promisify "^1.0.0"
 
+"@openzeppelin/contracts@3.2.2-solc-0.7":
+  version "3.2.2-solc-0.7"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.2.2-solc-0.7.tgz#8ab169da64438d59f47ca285f1a10efe2f9ba19e"
+  integrity sha512-vFV53E4pvfsAEjzL9Um2VX9MEuXyq7Hyd9JjnP77AGsrEPxkJaYS06zZIVyhAt3rXTM6QGdW0C282Zv7fM93AA==
+
 "@sentry/core@5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-5.22.0.tgz#2fa51c9f547e8b6d7ec820419c7880635f8648a5"
@@ -7439,11 +7444,6 @@ onetime@^2.0.0:
   integrity sha1-BnQoIw/WdEOyeUsiu6UotoZ5YtQ=
   dependencies:
     mimic-fn "^1.0.0"
-
-openzeppelin-solidity@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-3.0.2.tgz#9df65b41e51f0044d4b498edbad2dc032c996ba6"
-  integrity sha512-cgQDBo1vf6flLVKTeSfQGP4Kk4YFw+KDTO7b7SH/QOQbyPFvZlaqcPLRBbQRBtfuXo6/CBM/0mHn+SlkYRMJfA==
 
 openzeppelin-test-helpers@^0.1.2:
   version "0.1.5"

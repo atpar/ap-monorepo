@@ -1,10 +1,10 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 interface ERC20Interface {
@@ -30,17 +30,9 @@ interface ApproveAndCallFallBack {
 contract SettlementToken is ERC20, FaucetInterface, Ownable {
     using SafeMath for uint256;
 
-    constructor() ERC20("STLMT", "Settlement Token") public {
+    constructor() ERC20("STLMT", "Settlement Token") {
         uint256 amount = 1000000 * (10**18);
         _mint(msg.sender, amount);
-    }
-
-    // solhint-disable-next-line no-complex-fallback
-    fallback () external payable {
-        _mint(msg.sender, 1000 * (10**18));
-        if (msg.value > 0) {
-            msg.sender.transfer(msg.value);
-        }
     }
 
     function approveAndCall(address spender, uint256 tokens, bytes memory data) public returns (bool success) {

@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 
 /**
  * Commit: https://github.com/atpar/actus-dictionary/commit/b85b9b378967de6bfc4d8b6687b520c48bce9890

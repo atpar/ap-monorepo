@@ -1,9 +1,9 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import "./CheckpointedToken.sol";
 
@@ -43,10 +43,7 @@ contract DepositAllocater is CheckpointedToken, ReentrancyGuard {
     mapping(address => uint256) public totalAmountSignaledByHolder;
 
 
-    constructor(string memory name, string memory symbol)
-        public
-        CheckpointedToken(name, symbol)
-    {}
+    constructor(string memory name, string memory symbol) CheckpointedToken(name, symbol) {}
 
     function createDeposit(bytes32 depositId, uint256 scheduledFor, uint256 signalingCutoff, bool onlySignaled, address token) public {
         Deposit storage deposit = deposits[depositId];
@@ -92,7 +89,7 @@ contract DepositAllocater is CheckpointedToken, ReentrancyGuard {
         );
 
         require(
-            deposit.signalingCutoff > now,
+            deposit.signalingCutoff > block.timestamp,
             "Deposit.signalAmountForDeposit: SIGNALING_ENDED"
         );
 

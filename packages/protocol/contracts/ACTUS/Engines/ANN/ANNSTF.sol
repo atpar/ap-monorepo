@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 
 
 /**
@@ -10,6 +13,10 @@ import "../../Core/Core.sol";
  * @notice Contains all state transition functions (STFs) currently used by all Engines
  */
 contract ANNSTF is Core {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     /**
      * State transition for PAM analysis events

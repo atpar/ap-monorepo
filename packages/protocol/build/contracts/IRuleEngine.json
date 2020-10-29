@@ -98,7 +98,7 @@
       "inputs": [
         {
           "internalType": "contract IRule[]",
-          "name": "rules",
+          "name": "_rules",
           "type": "address[]"
         }
       ],

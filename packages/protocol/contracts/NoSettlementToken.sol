@@ -1,10 +1,10 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 interface ERC20Interface {
@@ -21,15 +21,12 @@ interface ERC20Interface {
 
 contract NoSettlementToken is ERC20Interface {
 
-    event Transfer(address indexed from, address indexed to, uint tokens);
-    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-
     string public name;
     string public symbol;
     uint8 public decimals;
 
 
-    constructor() public {
+    constructor() {
         symbol = "NO_STLMT";
         name = "No Settlement Token";
         decimals = 18;
@@ -50,15 +47,15 @@ contract NoSettlementToken is ERC20Interface {
         return true;
     }
 
-    function totalSupply() external view override returns (uint) {
+    function totalSupply() external pure override returns (uint) {
         return ~uint256(0);
     }
 
-    function balanceOf(address /* tokenOwner */) external view override returns (uint balance) {
+    function balanceOf(address /* tokenOwner */) external pure override returns (uint balance) {
         return ~uint256(0);
     }
 
-    function allowance(address /* tokenOwner */, address /* spender */) external view override returns (uint remaining) {
+    function allowance(address /* tokenOwner */, address /* spender */) external pure override returns (uint remaining) {
         return ~uint256(0);
     }
 }

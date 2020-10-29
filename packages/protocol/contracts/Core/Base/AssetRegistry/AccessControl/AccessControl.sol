@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../BaseRegistryStorage.sol";
@@ -75,6 +75,7 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
      */
     function hasAccess(bytes32 assetId, bytes4 methodSignature, address account)
         public
+        view
         override
         returns (bool)
     {
@@ -91,6 +92,7 @@ contract AccessControl is BaseRegistryStorage, IAccessControl {
      */
     function hasRootAccess(bytes32 assetId, address account)
         public
+        view
         override
         returns (bool)
     {
