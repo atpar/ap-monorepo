@@ -267,6 +267,80 @@ export class IPAMEngine extends Contract {
       eventType: number | string
     ): TransactionObject<string>;
 
+    computeNextNonCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        scalingEffect: number | string;
+        penaltyType: number | string;
+        feeBasis: number | string;
+        currency: string;
+        settlementCurrency: string;
+        marketObjectCodeRateReset: string | number[];
+        contractDealDate: number | string;
+        statusDate: number | string;
+        initialExchangeDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        capitalizationEndDate: number | string;
+        cycleAnchorDateOfInterestPayment: number | string;
+        cycleAnchorDateOfRateReset: number | string;
+        cycleAnchorDateOfScalingIndex: number | string;
+        cycleAnchorDateOfFee: number | string;
+        notionalPrincipal: number | string;
+        nominalInterestRate: number | string;
+        accruedInterest: number | string;
+        rateMultiplier: number | string;
+        rateSpread: number | string;
+        nextResetRate: number | string;
+        feeRate: number | string;
+        feeAccrued: number | string;
+        penaltyRate: number | string;
+        delinquencyRate: number | string;
+        premiumDiscountAtIED: number | string;
+        priceAtPurchaseDate: number | string;
+        lifeCap: number | string;
+        lifeFloor: number | string;
+        periodCap: number | string;
+        periodFloor: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfInterestPayment: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfRateReset: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfScalingIndex: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+      },
+      lastNonCyclicEvent: string | number[]
+    ): TransactionObject<string>;
+
     computeNonCyclicScheduleSegment(
       terms: {
         contractType: number | string;

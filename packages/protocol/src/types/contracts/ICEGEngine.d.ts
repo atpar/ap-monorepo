@@ -198,6 +198,57 @@ export class ICEGEngine extends Contract {
       eventType: number | string
     ): TransactionObject<string>;
 
+    computeNextNonCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        feeBasis: number | string;
+        creditEventTypeCovered: number | string;
+        currency: string;
+        settlementCurrency: string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        maturityDate: number | string;
+        purchaseDate: number | string;
+        cycleAnchorDateOfFee: number | string;
+        notionalPrincipal: number | string;
+        delinquencyRate: number | string;
+        feeAccrued: number | string;
+        feeRate: number | string;
+        priceAtPurchaseDate: number | string;
+        coverageOfCreditEnhancement: number | string;
+        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
+        delinquencyPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfFee: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+        contractReference_1: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+        contractReference_2: {
+          object: string | number[];
+          object2: string | number[];
+          _type: number | string;
+          role: number | string;
+        };
+      },
+      lastNonCyclicEvent: string | number[]
+    ): TransactionObject<string>;
+
     computeNonCyclicScheduleSegment(
       terms: {
         contractType: number | string;

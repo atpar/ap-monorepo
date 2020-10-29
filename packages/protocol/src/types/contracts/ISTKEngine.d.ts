@@ -216,6 +216,63 @@ export class ISTKEngine extends Contract {
       eventType: number | string
     ): TransactionObject<string>;
 
+    computeNextNonCyclicEvent(
+      terms: {
+        contractType: number | string;
+        calendar: number | string;
+        contractRole: number | string;
+        dayCountConvention: number | string;
+        businessDayConvention: number | string;
+        endOfMonthConvention: number | string;
+        redeemableByIssuer: number | string;
+        currency: string;
+        settlementCurrency: string;
+        contractDealDate: number | string;
+        statusDate: number | string;
+        issueDate: number | string;
+        purchaseDate: number | string;
+        cycleAnchorDateOfDividend: number | string;
+        nominalPrice: number | string;
+        notionalPrincipal: number | string;
+        issuePrice: number | string;
+        quantity: number | string;
+        priceAtPurchaseDate: number | string;
+        redemptionPrice: number | string;
+        dividendRecordPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        dividendPaymentPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        splitSettlementPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        redemptionRecordPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        redemptionPaymentPeriod: {
+          i: number | string;
+          p: number | string;
+          isSet: boolean;
+        };
+        cycleOfDividend: {
+          i: number | string;
+          p: number | string;
+          s: number | string;
+          isSet: boolean;
+        };
+      },
+      lastNonCyclicEvent: string | number[]
+    ): TransactionObject<string>;
+
     computeNonCyclicScheduleSegment(
       terms: {
         contractType: number | string;
