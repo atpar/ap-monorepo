@@ -5,8 +5,8 @@ const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
 
 const { mineBlock } = require('../../../helper/utils/blockchain');
-const { getTestCases } = require('../../../helper/ACTUS/tests');
 const { getSnapshotTaker, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
+const { getTestCases } = require('../../../helper/ACTUS/tests');
 const {
   expectEvent, generateSchedule, web3ResponseToState, ZERO_ADDRESS, ZERO_BYTES32
 } = require('../../../helper/utils/utils');
@@ -17,12 +17,12 @@ describe('ANNActor', () => {
 
   const getEventTime = async (_event, terms) => {
     return Number(
-        await this.ANNEngineInstance.methods.computeEventTimeForEvent(
-            _event,
-            terms.businessDayConvention,
-            terms.calendar,
-            terms.maturityDate
-        ).call());
+      await this.ANNEngineInstance.methods.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        terms.maturityDate
+    ).call());
   }
 
   /** @param {any} self - `this` inside `before()`/`it()` */
@@ -48,7 +48,7 @@ describe('ANNActor', () => {
 
     self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
     self.state = web3ResponseToState(
-        await self.ANNEngineInstance.methods.computeInitialState(self.terms).call()
+      await self.ANNEngineInstance.methods.computeInitialState(self.terms).call()
     );
   });
 
@@ -59,11 +59,11 @@ describe('ANNActor', () => {
 
   it('should initialize Asset with ContractType ANN', async () => {
     const { events } = await this.ANNActorInstance.methods.initialize(
-        this.terms,
-        this.schedule,
-        this.ownership,
-        this.ANNEngineInstance.options.address,
-        ZERO_ADDRESS
+      this.terms,
+      [],
+      this.ownership,
+      this.ANNEngineInstance.options.address,
+      ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events, 'InitializedAsset');
 
@@ -78,21 +78,21 @@ describe('ANNActor', () => {
   it('should correctly settle all events according to the schedule', async () => {
     for (const nextExpectedEvent of this.schedule) {
       const nextEvent = await this.ANNRegistryInstance.methods.getNextScheduledEvent(
-          web3.utils.toHex(this.assetId)
+        web3.utils.toHex(this.assetId)
       ).call();
       const eventTime = await getEventTime(nextEvent, this.terms);
       const payoff = new BigNumber(await this.ANNEngineInstance.methods.computePayoffForEvent(
-          this.terms,
-          this.state,
-          nextEvent,
-          ZERO_BYTES32
+        this.terms,
+        this.state,
+        nextEvent,
+        ZERO_BYTES32
       ).call());
       const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
       // set allowance for Payment Router
       await this.PaymentTokenInstance.methods.approve(
-          this.ANNActorInstance.options.address,
-          value
+        this.ANNActorInstance.options.address,
+        value
       ).send({ from: (payoff.isLessThan(0)) ? creatorObligor : counterpartyObligor });
 
       // settle and progress asset state
@@ -104,12 +104,12 @@ describe('ANNActor', () => {
       const storedNextState = web3ResponseToState(await this.ANNRegistryInstance.methods.getState(this.assetId).call());
       const isEventSettled = await this.ANNRegistryInstance.methods.isEventSettled(this.assetId, nextEvent).call();
       const projectedNextState = web3ResponseToState(
-          await this.ANNEngineInstance.methods.computeStateForEvent(
-              this.terms,
-              this.state,
-              nextEvent,
-              ZERO_BYTES32
-          ).call()
+        await this.ANNEngineInstance.methods.computeStateForEvent(
+          this.terms,
+          this.state,
+          nextEvent,
+          ZERO_BYTES32
+        ).call()
       );
 
       assert.strictEqual(nextExpectedEvent, nextEvent);
@@ -121,5 +121,8 @@ describe('ANNActor', () => {
 
       this.state = storedNextState;
     }
+
+    const noEvent = await this.ANNRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+    assert.strictEqual(noEvent, ZERO_BYTES32);
   });
 });

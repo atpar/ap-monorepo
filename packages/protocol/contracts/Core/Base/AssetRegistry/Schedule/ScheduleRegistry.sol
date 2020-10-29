@@ -194,25 +194,15 @@ abstract contract ScheduleRegistry is
         returns (bytes32)
     {
         Asset storage asset = assets[assetId];
-        bytes32 nextCyclicEvent = getNextCyclicEvent(assetId);
-        bytes32 nextScheduleEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
 
-        if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
-
-        (EventType eventTypeNextCyclicEvent, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
-        (EventType eventTypeNextScheduleEvent, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
-
-        if (
-            (scheduleTimeNextScheduleEvent == 0 || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent))
-            || (
-                scheduleTimeNextCyclicEvent == scheduleTimeNextScheduleEvent
-                && getEpochOffset(eventTypeNextCyclicEvent) < getEpochOffset(eventTypeNextScheduleEvent)
-            )
-        ) {
-            return nextCyclicEvent;
-        } else {
-            return nextScheduleEvent;
+        if (asset.schedule.length != 0) {
+            if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
+            return asset.schedule.events[asset.schedule.nextScheduleIndex];
         }
+
+        // if no schedule is set, return next computed event
+        (bytes32 nextComputedEvent, ) = getNextComputedEvent(assetId);
+        return nextComputedEvent;
     }
 
     /**
@@ -228,40 +218,29 @@ abstract contract ScheduleRegistry is
         returns (bytes32)
     {
         Asset storage asset = assets[assetId];
-        bytes32 nextCyclicEvent = getNextCyclicEvent(assetId);
-        bytes32 nextScheduleEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
 
-        if (asset.schedule.length == 0 && nextCyclicEvent == bytes32(0)) return bytes32(0);
-
-        (EventType eventTypeNextCyclicEvent, uint256 scheduleTimeNextCyclicEvent) = decodeEvent(nextCyclicEvent);
-        (EventType eventTypeNextScheduleEvent, uint256 scheduleTimeNextScheduleEvent) = decodeEvent(nextScheduleEvent);
-
-        // update both next cyclic event and next schedule event if they are the same
-        if (nextCyclicEvent == nextScheduleEvent) {
-            asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
+        if (asset.schedule.length != 0) {
+            bytes32 nextScheduledEvent = asset.schedule.events[asset.schedule.nextScheduleIndex];
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(nextScheduledEvent);
             if (asset.schedule.nextScheduleIndex == asset.schedule.length) return bytes32(0);
             asset.schedule.nextScheduleIndex += 1;
-            // does matter since they are the same
-            return nextCyclicEvent;
+            return nextScheduledEvent;
         }
 
-        // next cyclic event occurs earlier than next schedule event
-        if (
-            (scheduleTimeNextScheduleEvent == 0 || (scheduleTimeNextCyclicEvent != 0 && scheduleTimeNextCyclicEvent < scheduleTimeNextScheduleEvent))
-            || (
-                scheduleTimeNextCyclicEvent == scheduleTimeNextScheduleEvent
-                && getEpochOffset(eventTypeNextCyclicEvent) < getEpochOffset(eventTypeNextScheduleEvent)
-            )
-        ) {
-            asset.schedule.lastScheduleTimeOfCyclicEvent[eventTypeNextCyclicEvent] = scheduleTimeNextCyclicEvent;
-            return nextCyclicEvent;
+        // if no schedule is set, pop next computed event
+        (bytes32 nextComputedEvent, bool isCyclicEvent) = getNextComputedEvent(assetId);
+        if (nextComputedEvent == bytes32(0)) return bytes32(0);
+        
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(nextComputedEvent);
+
+        // if next computed event is a cyclic event
+        if (isCyclicEvent == true) {
+            asset.schedule.lastScheduleTimeOfCyclicEvent[eventType] = scheduleTime;
         } else {
-            if (scheduleTimeNextScheduleEvent == 0 || asset.schedule.nextScheduleIndex == asset.schedule.length) {
-                return bytes32(0);
-            }
-            asset.schedule.nextScheduleIndex += 1;
-            return nextScheduleEvent;
+            asset.schedule.lastNonCyclicEvent = nextComputedEvent;
         }
+
+        return nextComputedEvent;
     }
 
     /**

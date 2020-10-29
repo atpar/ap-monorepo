@@ -154,36 +154,55 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         return ContractReference(0, 0, ContractReferenceType(0), ContractReferenceRole(0));
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         override(TermsRegistry)
-        returns (bytes32)
+        returns (bytes32, bool)
     {
         Asset storage asset = assets[assetId];
         STKTerms memory terms = asset.decodeAndGetSTKTerms();
 
         EventType nextEventType;
-        uint256 nextScheduleTimeOffset;
+        uint256 nextScheduleTime;
+        bool isCyclicEvent = true;
 
         // DIF
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ISTKEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.DIF],
                 EventType.DIF
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime < nextScheduleTime)
+                || (nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }
         }
 
-        return encodeEvent(nextEventType, nextScheduleTimeOffset);
+        // Non-Cyclic
+        {
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ISTKEngine(asset.engine).computeNextNonCyclicEvent(
+                terms,
+                asset.schedule.lastNonCyclicEvent
+            ));
+
+            if (
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTime = scheduleTime;
+                nextEventType = eventType;
+                isCyclicEvent = false;
+            }        
+        }
+
+        return (encodeEvent(nextEventType, nextScheduleTime), isCyclicEvent);
     }
 }

@@ -60,7 +60,7 @@ describe('PAMActor', () => {
   it('should initialize Asset with ContractType PAM', async () => {
     const { events } = await this.PAMActorInstance.methods.initialize(
         this.terms,
-        this.schedule,
+        [],
         this.ownership,
         this.PAMEngineInstance.options.address,
         ZERO_ADDRESS
@@ -121,5 +121,11 @@ describe('PAMActor', () => {
 
       this.state = storedNextState;
     }
+
+    const noEvent = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+      web3.utils.toHex(this.assetId)
+    ).call();
+
+    assert.strictEqual(noEvent, ZERO_BYTES32);
   });
 });
