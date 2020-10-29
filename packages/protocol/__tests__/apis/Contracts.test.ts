@@ -38,7 +38,6 @@ describe('Contracts', (): void => {
       CERTFEngine: contracts.certfEngine.options.address,
       CERTFRegistry: contracts.certfRegistry.options.address,
       Custodian: contracts.custodian.options.address,
-      FDTFactory: contracts.fdtFactory.options.address,
       DataRegistry: contracts.dataRegistry.options.address,
       PAMActor: contracts.pamActor.options.address,
       PAMEngine: contracts.pamEngine.options.address,

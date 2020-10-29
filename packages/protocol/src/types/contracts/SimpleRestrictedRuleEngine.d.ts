@@ -76,13 +76,13 @@ export class SimpleRestrictedRuleEngine extends Contract {
 
     renounceOwnership(): TransactionObject<void>;
 
-    rule(ruleId: number | string): TransactionObject<string>;
+    rule(arg0: number | string): TransactionObject<string>;
 
     ruleLength(): TransactionObject<string>;
 
     rules(): TransactionObject<string[]>;
 
-    setRules(rules: string[]): TransactionObject<void>;
+    setRules(arg0: string[]): TransactionObject<void>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 

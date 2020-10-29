@@ -23,7 +23,6 @@ import STKRegistryArtifact from '../../build/contracts/STKRegistry.json';
 import CustodianArtifact from '../../build/contracts/Custodian.json';
 import DataRegistryArtifact from '../../build/contracts/DataRegistry.json';
 import DvPSettlementArtifact from '../../build/contracts/DvPSettlement.json';
-import FDTFactoryArtifact from '../../build/contracts/FDTFactory.json';
 import ERC20Artifact from '../../build/contracts/ERC20.json';
 import ERC1404Artifact from '../../build/contracts/ERC1404.json';
 import VanillaFDTArtifact from '../../build/contracts/VanillaFDT.json';
@@ -51,7 +50,6 @@ import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
 import { DataRegistry } from '../types/contracts/DataRegistry';
 import { DvPSettlement } from '../types/contracts/DvPSettlement';
-import { FDTFactory } from '../types/contracts/FDTFactory';
 import { ERC20 } from '../types/contracts/ERC20';
 import { ERC1404 } from '../types/contracts/ERC1404';
 import { VanillaFDT } from '../types/contracts/VanillaFDT';
@@ -92,7 +90,6 @@ export class Contracts {
   public custodian: Custodian;
   public dataRegistry: DataRegistry;
   public dvpSettlement: DvPSettlement;
-  public fdtFactory: FDTFactory;
 
 
   /**
@@ -149,8 +146,6 @@ export class Contracts {
     this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
     // @ts-ignore
     this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
-    // @ts-ignore
-    this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore

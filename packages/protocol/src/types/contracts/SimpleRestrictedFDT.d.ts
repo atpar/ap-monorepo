@@ -84,14 +84,6 @@ export class SimpleRestrictedFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    initialize(
-      name: string,
-      symbol: string,
-      _fundsToken: string,
-      owner: string,
-      initialAmount: number | string
-    ): TransactionObject<void>;
-
     isAdministrator(addressToTest: string): TransactionObject<boolean>;
 
     isRestrictionEnabled(): TransactionObject<boolean>;

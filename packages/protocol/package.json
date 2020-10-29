@@ -52,7 +52,6 @@
     "**/web3-utils": "1.2.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts-ethereum-package": "^3.0.0",
     "bn.js": "^4.4.0",
     "openzeppelin-solidity": "^3.0.2",
     "web3": "1.2.4"

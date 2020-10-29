@@ -154,6 +154,7 @@ async function deployICToken(buidlerRuntime, {
   assetRegistry,
   dataRegistry,
   marketObjectCode,
+  owner,
   deployer = '',
 }) {
   const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
@@ -161,7 +162,7 @@ async function deployICToken(buidlerRuntime, {
   const instance = new web3.eth.Contract(abi);
   return (await instance
     // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode ]})
+    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode, owner ]})
     .send({ from: deployer || defaultDeployer })
   );
 }

@@ -40,6 +40,25 @@ export class DepositAllocater extends Contract {
       depositId: string | number[]
     ): TransactionObject<string>;
 
+    checkpointBalances(
+      arg0: string,
+      arg1: number | string
+    ): TransactionObject<{
+      timestamp: string;
+      value: string;
+      0: string;
+      1: string;
+    }>;
+
+    checkpointTotalSupply(
+      arg0: number | string
+    ): TransactionObject<{
+      timestamp: string;
+      value: string;
+      0: string;
+      1: string;
+    }>;
+
     claimDeposit(depositId: string | number[]): TransactionObject<void>;
 
     createDeposit(
@@ -110,12 +129,14 @@ export class DepositAllocater extends Contract {
 
     holderCount(): TransactionObject<string>;
 
+    holderExists(arg0: string): TransactionObject<boolean>;
+
+    holders(arg0: number | string): TransactionObject<string>;
+
     increaseAllowance(
       spender: string,
       addedValue: number | string
     ): TransactionObject<boolean>;
-
-    initialize(name: string, symbol: string): TransactionObject<void>;
 
     name(): TransactionObject<string>;
 

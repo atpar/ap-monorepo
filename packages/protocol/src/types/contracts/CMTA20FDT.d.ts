@@ -68,14 +68,6 @@ export class CMTA20FDT extends Contract {
       _addedValue: number | string
     ): TransactionObject<boolean>;
 
-    initialize(
-      name: string,
-      symbol: string,
-      _fundsToken: string,
-      owner: string,
-      initialAmount: number | string
-    ): TransactionObject<void>;
-
     issue(_value: number | string): TransactionObject<void>;
 
     messageForTransferRestriction(

@@ -103,30 +103,8 @@ async function definePackage(buidlerRuntime) {
             options: { args: [ "{{CECActor.address}}", "{{CECRegistry.address}}" ]},
         },
 
-        // FDT
-        { name: "ProxySafeVanillaFDT", exportable: false },
-        { name: "ProxySafeSimpleRestrictedFDT", exportable: false },
-        {
-            name: "FDTFactory",
-            options: { libraries: {
-                    VanillaFDTLogic: "{{ProxySafeVanillaFDT.address}}",
-                    SimpleRestrictedFDTLogic: "{{ProxySafeSimpleRestrictedFDT.address}}",
-                }},
-        },
-
-        // ICT
-        { name: "ProxySafeICT", exportable: false },
-        {
-            name: "ICTFactory",
-            exportable: false,
-            options: { libraries: { ICTLogic: "{{ProxySafeICT.address}}" }},
-        },
-
         // DvPSettlement
         { name: "DvPSettlement" },
-
-        // settlement token (for templates on testnets)
-        { name: "SettlementToken", exportable: false },
 
         // export artifacts only (do not deploy)
         { name: "BaseActor", deployable: false },
@@ -135,6 +113,7 @@ async function definePackage(buidlerRuntime) {
         { name: "ERC1404", deployable: false },
         { name: "VanillaFDT", deployable: false },
         { name: "SimpleRestrictedFDT", deployable: false },
+        { name: "SettlementToken", deployable: false },
         { name: "NoSettlementToken", deployable: false },
         { name: "ERC20Token", deployable: false }
     ];

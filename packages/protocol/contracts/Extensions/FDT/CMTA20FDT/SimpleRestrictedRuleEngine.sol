@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.6.10;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 
 /**
@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
  * on functions with administrative permissions.  Only the owner of the contract should be allowed
  * to modify the administrator list.
  */
-contract Administratable is OwnableUpgradeSafe {
+contract Administratable is Ownable {
     // The mapping to track administrator accounts - true is reserved for admin addresses.
     mapping(address => bool) public administrators;
 
@@ -213,7 +213,7 @@ contract Whitelistable is Administratable {
  * @notice Restrictions start off as enabled. Once they are disabled, they cannot be re-enabled.
  * Only the owner may disable restrictions.
  */
-contract Restrictable is OwnableUpgradeSafe {
+contract Restrictable is Ownable {
     // State variable to track whether restrictions are enabled.  Defaults to true.
     bool private _restrictionsEnabled = true;
 
@@ -278,11 +278,10 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
 
 
     constructor(address owner) public {
-        super.__Ownable_init();
         transferOwnership(owner);
     }
 
-    function setRules(IRule[] calldata rules) external override onlyOwner {
+    function setRules(IRule[] calldata /* rules */) external override onlyOwner {
         revert("Can not set any additional rules");
     }
     
@@ -290,13 +289,12 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
         return 0;
     }
     
-    function rule(uint256 ruleId) external view override returns (IRule) {
+    function rule(uint256 /* ruleId */) external view override returns (IRule) {
         return IRule(address(0));
     }
     
-    function rules() external view override returns(IRule[] memory) {
-        IRule[] memory rules;
-        return rules;
+    function rules() external view override returns(IRule[] memory _rules) {
+        return _rules;
     }
 
     /**

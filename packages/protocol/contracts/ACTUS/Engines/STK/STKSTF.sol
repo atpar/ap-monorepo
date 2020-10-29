@@ -83,7 +83,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -246,10 +246,10 @@ contract STKSTF is Core {
      * @return the new state
      */
     function STF_STK_CE (
-        STKTerms memory terms,
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure

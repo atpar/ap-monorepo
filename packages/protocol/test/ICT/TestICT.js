@@ -36,6 +36,7 @@ describe('ICT', () => {
 
     ictParams.assetRegistry = self.CERTFRegistryInstance.options.address;
     ictParams.dataRegistry = self.DataRegistryInstance.options.address;
+    ictParams.owner = owner;
     ictParams.deployer = owner;
 
     self.icToken = await deployICToken(buidlerRuntime, ictParams);

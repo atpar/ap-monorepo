@@ -1,3 +1,4 @@
+// "SPDX-License-Identifier: MPL"
 
 /* 
  * Copyright (c) Capital Market and Technology Association, 2018-2019

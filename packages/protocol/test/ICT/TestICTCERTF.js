@@ -57,6 +57,7 @@ describe('ICT', function () {
       assetRegistry: self.CERTFRegistryInstance.options.address,
       dataRegistry: self.DataRegistryInstance.options.address,
       marketObjectCode: self.terms.contractReference_2.object,
+      owner: owner,
       deployer: owner,
     });
 

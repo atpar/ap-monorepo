@@ -50,14 +50,6 @@ export class VanillaFDT extends Contract {
       addedValue: number | string
     ): TransactionObject<boolean>;
 
-    initialize(
-      name: string,
-      symbol: string,
-      _fundsToken: string,
-      owner: string,
-      initialAmount: number | string
-    ): TransactionObject<void>;
-
     mint(account: string, amount: number | string): TransactionObject<boolean>;
 
     name(): TransactionObject<string>;
