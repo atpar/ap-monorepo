@@ -117,9 +117,10 @@ describe('ICT', function () {
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.methods.progress(
+    const { events } = await this.CERTFActorInstance.methods.progress(
       web3.utils.toHex(this.assetId)
     ).send({ from: owner });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('ISS')}` });
   });
 
   it('should register investor1 for redemption for the first REF event [ @skip-on-coverage ]', async () => {
@@ -165,8 +166,9 @@ describe('ICT', function () {
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+    const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
       .send({ from: owner });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('REF')}` });
     await this.CERTFRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
   });
 
@@ -178,9 +180,10 @@ describe('ICT', function () {
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.methods.progress(
+    const { events } = await this.CERTFActorInstance.methods.progress(
       web3.utils.toHex(this.assetId)
     ).send({ from: owner });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('EXE')}` });
   });
 
   it('should process the first REP event [ @skip-on-coverage ]', async () => {
@@ -198,9 +201,10 @@ describe('ICT', function () {
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
-    await this.CERTFActorInstance.methods.progress(web3.utils.toHex(
+    const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(
       this.assetId)
     ).send({ from: owner });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('REP')}` });
     await this.ict.methods.fetchDepositAmountForEvent(this.schedule[1]).send({ from: owner });
 
     const deposit = await this.ict.methods.getDeposit(this.schedule[1]).call();
