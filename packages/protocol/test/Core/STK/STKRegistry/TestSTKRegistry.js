@@ -1,17 +1,16 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, parseTerms, ZERO_ADDRESS } = require('../../../helper/utils/utils');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 const ASSET_ALREADY_EXISTS = 'ASSET_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKRegistry', () => {
   let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
@@ -25,8 +24,10 @@ describe('STKRegistry', () => {
     self.assetId = 'STK_01';
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
     self.terms = require('../../../helper/terms/STKTerms-complex.json');
-    const tMax = 1*self.terms.issueDate + 5 * 365 * 24 * 3600;
-    self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [14]); // #useEventName (DIF)
+    const tMax = 1 * self.terms.issueDate + 5 * 365 * 24 * 3600;
+    self.schedule = await generateSchedule(
+      self.STKEngineInstance, self.terms, tMax, [eventIndex('DIF')]
+    );
     self.state = await self.STKEngineInstance.methods.computeInitialState(self.terms).call();
   });
 

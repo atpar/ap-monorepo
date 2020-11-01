@@ -1,4 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -18,7 +18,7 @@ describe('TestCECPOF', () => {
     await this.setupTestEnvironment();
     this.CECTerms = await getDefaultTestTerms('CEC'); // TODO: create default test cases for CEC
   });
-  
+
   /*
    * TEST POF_CEC_ST
    */

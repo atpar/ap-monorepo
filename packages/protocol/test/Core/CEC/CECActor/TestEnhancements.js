@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
@@ -8,8 +7,8 @@ const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../..
 const { mineBlock } = require('../../../helper/utils/blockchain')
 const { decodeEvent } = require('../../../helper/utils/schedule');
 const { generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils/utils');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 
 describe('CECActor', () => {
 
@@ -41,9 +40,9 @@ describe('CECActor', () => {
 
     // deploy test ERC20 token
     self.PaymentTokenInstance = await deployPaymentToken(
-        buidlerRuntime,
-        creatorObligor,
-        [counterpartyBeneficiary]
+      buidlerRuntime,
+      creatorObligor,
+      [counterpartyBeneficiary]
     );
     // set address of payment token as currency in terms
     self.terms.currency = self.PaymentTokenInstance.options.address;
@@ -73,12 +72,6 @@ describe('CECActor', () => {
   });
 
   it('should trigger collateral', async () => {
-    const ownershipCEC = {
-      creatorObligor: ZERO_ADDRESS,
-      creatorBeneficiary: ZERO_ADDRESS,
-      counterpartyObligor: ZERO_ADDRESS,
-      counterpartyBeneficiary: ZERO_ADDRESS
-    };
     const termsCEC = require('../../../helper/terms/CECTerms-collateral.json');
     termsCEC.maturityDate = this.terms.maturityDate;
     termsCEC.statusDate = this.terms.statusDate;
@@ -99,7 +92,7 @@ describe('CECActor', () => {
 
     // counterparty has to set allowance == collateralAmount for custodian contract
     await this.PaymentTokenInstance.methods.approve(this.CustodianInstance.options.address, collateralAmount)
-        .send({ from: counterpartyBeneficiary });
+      .send({ from: counterpartyBeneficiary });
 
     // issue collateral enhancement
     const { events } = await this.CECActorInstance.methods.initialize(
@@ -136,40 +129,40 @@ describe('CECActor', () => {
     // progress to schedule time of IED
     await mineBlock(Number(await getEventTime(iedEvent, this.terms)));
     await this.PaymentTokenInstance.methods.approve(this.PAMActorInstance.options.address, iedPayoff)
-        .send({ from: creatorObligor });
+      .send({ from: creatorObligor });
     await this.PAMActorInstance.methods.progress(this.assetId)
-        .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(iedEvent).eventType), 3); // #useEventName
+      .send(this.txOpts);
+    assert.strictEqual(Number(decodeEvent(iedEvent).eventType), eventIndex('IED'));
 
     // progress to schedule time of first IP (payoff == 0)
     const ipEvent_1 = await this.PAMRegistryInstance.methods.getNextScheduledEvent(this.assetId).call();
     await mineBlock(Number(await getEventTime(ipEvent_1, this.terms)));
     await this.PAMActorInstance.methods.progress(this.assetId)
-        .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(ipEvent_1).eventType), 10); // #useEventName
+      .send(this.txOpts);
+    assert.strictEqual(Number(decodeEvent(ipEvent_1).eventType), eventIndex('IP'));
 
     // progress to post-grace period of IP
     const ipEvent_2 = await this.PAMRegistryInstance.methods.getNextScheduledEvent(this.assetId).call();
     await mineBlock(Number(await getEventTime(ipEvent_2, this.terms)) + 10000000);
     await this.PAMActorInstance.methods.progress(this.assetId)
-        .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(ipEvent_2).eventType), 10); // #useEventName
+      .send(this.txOpts);
+    assert.strictEqual(Number(decodeEvent(ipEvent_2).eventType), eventIndex('IP'));
 
     // progress collateral enhancement
     const xdEvent = await this.CECRegistryInstance.methods
-        .getNextUnderlyingEvent(web3.utils.toHex(cecAssetId)).call();
+      .getNextUnderlyingEvent(web3.utils.toHex(cecAssetId)).call();
     await mineBlock(Number(await getEventTime(xdEvent, termsCEC)));
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
-        .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(xdEvent).eventType), 25); // #useEventName
+      .send(this.txOpts);
+    assert.strictEqual(Number(decodeEvent(xdEvent).eventType), eventIndex('EXE'));
 
     // progress collateral enhancement
     const stdEvent = await this.CECRegistryInstance.methods
-        .getNextUnderlyingEvent(web3.utils.toHex(cecAssetId)).call();
+      .getNextUnderlyingEvent(web3.utils.toHex(cecAssetId)).call();
     await mineBlock(Number(await getEventTime(stdEvent, termsCEC)));
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
-        .send(this.txOpts);
-    assert.strictEqual(Number(decodeEvent(stdEvent).eventType), 26); // #useEventName
+      .send(this.txOpts);
+    assert.strictEqual(Number(decodeEvent(stdEvent).eventType), eventIndex('ST'));
 
     // creator should have received seized collateral from custodian
     assert.strictEqual(
@@ -184,7 +177,7 @@ describe('CECActor', () => {
 
     // should return not executed amount to the counterparty (collateralizer)
     await this.CustodianInstance.methods.returnCollateral(cecAssetId)
-        .send(this.txOpts);
+      .send(this.txOpts);
 
     // custodian should have nothing left
     assert.strictEqual(

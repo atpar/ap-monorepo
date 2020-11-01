@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { shouldFail } = require('openzeppelin-test-helpers');
@@ -48,7 +47,7 @@ describe('DataRegistry', () => {
       this.marketObjectId,
       0,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
-  ).send({ from: marketObjectProvider });
+    ).send({ from: marketObjectProvider });
 
     expectEvent(events, 'PublishedDataPoint');
   });

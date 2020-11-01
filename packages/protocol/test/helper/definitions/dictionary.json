@@ -1,0 +1,68 @@
+{
+  "_comments_": "actus-dictionary version: https://github.com/atpar/actus-dictionary/commit/b85b9b378967de6bfc4d8b6687b520c48bce9890",
+
+  "ContractType": {
+    "_comments_": "Enum indexes for ContractType acronyms",
+    "allowedValues": {
+      "PAM": 0,
+      "ANN": 1,
+      "NAM": 2,
+      "LAM": 3,
+      "LAX": 4,
+      "CLM": 5,
+      "UMP": 6,
+      "CSH": 7,
+      "STK": 8,
+      "COM": 9,
+      "SWAPS": 10,
+      "SWPPV": 11,
+      "FXOUT": 12,
+      "CAPFL": 13,
+      "FUTUR": 14,
+      "OPTNS": 15,
+      "CEG": 16,
+      "CEC": 17,
+      "CERTF": 18
+    }
+  },
+
+  "EventType": {
+    "_comments_": "Enum indexes for EventType acronyms",
+    "allowedValues": {
+      "NE": 0,
+      "CE": 1,
+      "ISS": 2,
+      "IED": 3,
+      "PRD": 4,
+      "FP": 5,
+      "PR": 6,
+      "PD": 7,
+      "PY": 8,
+      "PP": 9,
+      "IP": 10,
+      "IPCI": 11,
+      "RRF": 12,
+      "RR": 13,
+      "DIF": 14,
+      "DIX": 15,
+      "DIP": 16,
+      "COF": 17,
+      "COP": 18,
+      "REF": 19,
+      "REX": 20,
+      "REP": 21,
+      "SPF": 22,
+      "SPS": 23,
+      "EXO": 24,
+      "EXE": 25,
+      "ST": 26,
+      "SC": 27,
+      "IPCB": 28,
+      "PRF": 29,
+      "MC": 30,
+      "TD": 31,
+      "MD": 32,
+      "AD": 33
+    }
+  }
+}

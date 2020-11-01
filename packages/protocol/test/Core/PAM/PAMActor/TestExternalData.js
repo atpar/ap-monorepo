@@ -1,25 +1,24 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/utils/blockchain');
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../../../helper/utils/utils');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('PAMActor', () => {
   let deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   const getEventTime = async (_event, terms) => {
     return Number(
-        await this.PAMEngineInstance.methods.computeEventTimeForEvent(
-            _event,
-            terms.businessDayConvention,
-            terms.calendar,
-            terms.maturityDate
-        ).call()
+      await this.PAMEngineInstance.methods.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        terms.maturityDate
+      ).call()
     );
   }
 
@@ -41,16 +40,16 @@ describe('PAMActor', () => {
     self.terms = require('../../../helper/terms/PAMTerms-external-data.json');
 
     // only want RR events in the schedules
-    self.schedule = (
-        await generateSchedule(self.PAMEngineInstance, self.terms)).filter((event) => event.startsWith('0x0d') // #useEventName
-    );
+    const prefix = '0x' + eventIndex('RR').toString(16).padStart(2, '0');
+    self.schedule = (await generateSchedule(self.PAMEngineInstance, self.terms))
+      .filter((event) => event.startsWith(prefix));
 
     const { events } = await self.PAMActorInstance.methods.initialize(
-        self.terms,
-        self.schedule,
-        self.ownership,
-        self.PAMEngineInstance.options.address,
-        ZERO_ADDRESS
+      self.terms,
+      self.schedule,
+      self.ownership,
+      self.PAMEngineInstance.options.address,
+      ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events,'InitializedAsset');
     self.assetId = events.InitializedAsset.returnValues.assetId;
@@ -67,24 +66,24 @@ describe('PAMActor', () => {
 
   it('should process next state with external rate', async () => {
     const _event = await this.PAMRegistryInstance.methods
-        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+      .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(_event, this.terms);
 
     await mineBlock(Number(eventTime));
 
     await this.DataRegistryInstance.methods.setDataProvider(
-        this.terms.marketObjectCodeRateReset,
-        actor
+      this.terms.marketObjectCodeRateReset,
+      actor
     ).send({ from: deployer });
 
     await this.DataRegistryInstance.methods.publishDataPoint(
-        this.terms.marketObjectCodeRateReset,
-        eventTime,
-        web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+      this.terms.marketObjectCodeRateReset,
+      eventTime,
+      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
     ).send({ from: actor });
 
     const { events } = await this.PAMActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-        .send({ from: nobody });
+      .send({ from: nobody });
     expectEvent(events, 'ProgressedAsset');
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
@@ -92,10 +91,10 @@ describe('PAMActor', () => {
 
     // compute expected next state
     const projectedNextState = await this.PAMEngineInstance.methods.computeStateForEvent(
-        this.terms,
-        this.state,
-        _event,
-        web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+      this.terms,
+      this.state,
+      _event,
+      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
     ).call();
 
     // compare results
