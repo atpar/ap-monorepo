@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const definitions = require("../definitions/dictionary.json");
+const definitions = require("../../../src/types/dictionary/dictionary.json");
 
 
 module.exports = {
