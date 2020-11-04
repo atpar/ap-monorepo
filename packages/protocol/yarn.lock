@@ -2119,10 +2119,10 @@ bufferutil@^4.0.1:
   dependencies:
     node-gyp-build "~3.7.0"
 
-buidler-deploy@^0.5.11:
-  version "0.5.18"
-  resolved "https://registry.yarnpkg.com/buidler-deploy/-/buidler-deploy-0.5.18.tgz#8c07acb62010512909ed5eb67d82d5f9041c892b"
-  integrity sha512-RfvSR3uB/HOrkCj4baO4OHFVof43mb+8zE2W5Kl0+muEhGLwKEaoVe6D5RTD8dzSQgheDLFfFWwKSFy5B10YVA==
+buidler-deploy@0.6.0-beta.36:
+  version "0.6.0-beta.36"
+  resolved "https://registry.yarnpkg.com/buidler-deploy/-/buidler-deploy-0.6.0-beta.36.tgz#e919fcdcc19722014c3222942a1f76be313fe166"
+  integrity sha512-jIJdxfBSwaQiRZpf07+U4Vm0zKTMHn4GAX37XbLrsH4URiTH5/qsQw96mAyoetkY4u8aXMjyDKHXxcDjE9x//Q==
   dependencies:
     "@ethersproject/abi" "^5.0.2"
     "@ethersproject/abstract-signer" "^5.0.2"

@@ -1,0 +1,494 @@
+{
+  "address": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "dataPoint",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "PublishedDataPoint",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        }
+      ],
+      "name": "UpdatedDataProvider",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "getDataPoint",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getDataProvider",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getLastUpdatedTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isRegistered",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "dataPoint",
+          "type": "int256"
+        }
+      ],
+      "name": "publishDataPoint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        }
+      ],
+      "name": "setDataProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x43f21d07331da0f194b7ca08a677be46a77be0545e0f21cd8710d465c2b12895",
+  "receipt": {
+    "to": null,
+    "from": "0x6C51ECF949882c2183357B860FD82Dd4bb631840",
+    "contractAddress": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
+    "transactionIndex": 0,
+    "gasUsed": "500818",
+    "logsBloom": "0x00000008000000000000000000000000000000000000000000800000000100004000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000001000040000000000000000000000000000000020000000000000000000800000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x0ad26ea393475640bbd4a1e0e868e3fe9a11095272c5df4211c1c8b738ecbc68",
+    "transactionHash": "0x43f21d07331da0f194b7ca08a677be46a77be0545e0f21cd8710d465c2b12895",
+    "logs": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 28,
+        "transactionHash": "0x43f21d07331da0f194b7ca08a677be46a77be0545e0f21cd8710d465c2b12895",
+        "address": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000006c51ecf949882c2183357b860fd82dd4bb631840"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x0ad26ea393475640bbd4a1e0e868e3fe9a11095272c5df4211c1c8b738ecbc68"
+      }
+    ],
+    "blockNumber": 28,
+    "cumulativeGasUsed": "500818",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "0x641332b4189abe50474574ba46977bd7f0a689fca4e1c1910dccc48384971409",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"int256\",\"name\":\"dataPoint\",\"type\":\"int256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"PublishedDataPoint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"}],\"name\":\"UpdatedDataProvider\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"getDataPoint\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"getDataProvider\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"getLastUpdatedTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"isRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"int256\",\"name\":\"dataPoint\",\"type\":\"int256\"}],\"name\":\"publishDataPoint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"}],\"name\":\"setDataProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getDataPoint(bytes32,uint256)\":{\"params\":{\"setId\":\"id of the data set\",\"timestamp\":\"timestamp of the data point\"},\"returns\":{\"_0\":\"data point, bool indicating whether data point exists\"}},\"getDataProvider(bytes32)\":{\"params\":{\"setId\":\"id of the data set\"},\"returns\":{\"_0\":\"address of provider\"}},\"getLastUpdatedTimestamp(bytes32)\":{\"params\":{\"setId\":\"id of the data set\"},\"returns\":{\"_0\":\"last updated timestamp\"}},\"isRegistered(bytes32)\":{\"params\":{\"setId\":\"setId of the data set\"},\"returns\":{\"_0\":\"true if market object exists\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"publishDataPoint(bytes32,uint256,int256)\":{\"details\":\"Can only be called by a whitelisted data provider.\",\"params\":{\"dataPoint\":\"the data point of the data set\",\"setId\":\"id of the data set\",\"timestamp\":\"timestamp of the data point\"}},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"setDataProvider(bytes32,address)\":{\"details\":\"Can only be called by the owner of the DataRegistry.\",\"params\":{\"provider\":\"address of the provider\",\"setId\":\"id of the data set\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"DataRegistry\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getDataPoint(bytes32,uint256)\":{\"notice\":\"Returns a data point of a market object for a given timestamp.\"},\"getDataProvider(bytes32)\":{\"notice\":\"Returns the provider for a market object\"},\"getLastUpdatedTimestamp(bytes32)\":{\"notice\":\"Returns the timestamp on which the last data point for a data set was submitted.\"},\"isRegistered(bytes32)\":{\"notice\":\"@notice Returns true if there is data registered for a given setId\"},\"publishDataPoint(bytes32,uint256,int256)\":{\"notice\":\"Stores a new data point of a data set for a given timestamp.\"},\"setDataProvider(bytes32,address)\":{\"notice\":\"Registers / updates a market object provider.\"}},\"notice\":\"Registry for data which is published by an registered MarketObjectProvider\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Core/Base/DataRegistry/DataRegistry.sol\":\"DataRegistry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/GSN/Context.sol\":{\"keccak256\":\"0x910a2e625b71168563edf9eeef55a50d6d699acfe27ceba3921f291829a8f938\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://248246ac66e6479dce1ad7d4945ec5540c98ceb09881e93c93f7c48d5772925c\",\"dweb:/ipfs/QmXr8tmUiZgEYid6ixeeBRmTdUnASWjKzhP3KRxMPy8fRt\"]},\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x46d2453e9db55eae25c9abdae2c42229086c54f1a6a247e8ce32658bb785f6ae\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://198ef77ef5d9f7a7709d6bbfba1d4d54d82ccc15358e9dced37f1376dac887fa\",\"dweb:/ipfs/QmQHFvCA74s3AHU3NMn4AAYzFTt6UotWq7yk3WzLQs1oJS\"]},\"contracts/Core/Base/DataRegistry/DataRegistry.sol\":{\"keccak256\":\"0x023b5ec754d61c25f21c7799770942b3eadac53c125f3d178881d9cba4e2b746\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://8c440f1b2231163a38526b8e6b60ecb25bde342e5cf820d5feaa42707a67ff9b\",\"dweb:/ipfs/QmUfs7T4mWdNp8sLHuazeZnq6aY3EMsxwFKaWhes6JvJ2x\"]},\"contracts/Core/Base/DataRegistry/DataRegistryStorage.sol\":{\"keccak256\":\"0x5535bb4ce528fa63d80a2162a5a3c35ace4f232d867e5d4ad355fff0a7166d74\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://b111e074c919591be13c9fe820ee82bd0034a622eeceeff25500e77bee83faef\",\"dweb:/ipfs/QmSdnMMq2q8xwA34BKmfFqGGDsccuazioiGSpDyshhaejN\"]},\"contracts/Core/Base/DataRegistry/IDataRegistry.sol\":{\"keccak256\":\"0x0c4f892abfc38288383619f74c2d607f302b6bd76d05a74c2fad2f7e8b39c3fe\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://4063a42133bb607b43feaebb3c612b42b9e1695b0a98d19c12d282dca4b05b64\",\"dweb:/ipfs/QmYXoS7L8W2F4pMPRkAeEmWAB9bUsntrCGdbX5br52UsqR\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600061001b61006e565b600180546001600160a01b0319166001600160a01b038316908117909155604051919250906000907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a350610072565b3390565b6107a9806100816000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c80638da5cb5b116100665780638da5cb5b1461010c578063af37897814610121578063d38db86d14610134578063ecef34f214610147578063f2fde38b1461015a57610093565b806308a4ec101461009857806327258b22146100c2578063715018a6146100e2578063816a7e01146100ec575b600080fd5b6100ab6100a6366004610669565b61016d565b6040516100b99291906106d4565b60405180910390f35b6100d56100d0366004610626565b610196565b6040516100b991906106c9565b6100ea6101b8565b005b6100ff6100fa366004610626565b61026c565b6040516100b99190610744565b610114610281565b6040516100b991906106b5565b6100ea61012f36600461063e565b610290565b6100ea61014236600461068a565b610393565b610114610155366004610626565b6104c1565b6100ea610168366004610605565b6104df565b60009182526020828152604080842092845291905290208054600190910154909160ff90911690565b600081815260208190526040902060020154600160a01b900460ff165b919050565b6101c06105ea565b6001546001600160a01b03908116911614610222576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001546040516000916001600160a01b0316907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600180546001600160a01b0319169055565b60009081526020819052604090206001015490565b6001546001600160a01b031690565b6102986105ea565b6001546001600160a01b039081169116146102fa576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600082815260208190526040902060020180546001600160a01b0319166001600160a01b0383161790819055600160a01b900460ff16610357576000828152602081905260409020600201805460ff60a01b1916600160a01b1790555b817f6d3523ac54f3703c06e93ef7e0e67f963e698a668616fbc72dafb71eb6bd30968260405161038791906106b5565b60405180910390a25050565b6000838152602081905260409020600201546001600160a01b031633146103d55760405162461bcd60e51b81526004016103cc906106f2565b60405180910390fd5b60408051808201825282815260016020808301828152600088815280835285812088825280845295812094518555905193909201805460ff19169315159390931790925585815290526002015460ff600160a01b90910416610454576000838152602081905260409020600201805460ff60a01b1916600160a01b1790555b6000838152602081905260409020600101548211156104825760008381526020819052604090206001018290555b827f183291f60aff981c3c2d6cb02edd75633d383a51f608e397789555ef0e77560282846040516104b49291906106e4565b60405180910390a2505050565b6000908152602081905260409020600201546001600160a01b031690565b6104e76105ea565b6001546001600160a01b03908116911614610549576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b03811661058e5760405162461bcd60e51b815260040180806020018281038252602681526020018061074e6026913960400191505060405180910390fd5b6001546040516001600160a01b038084169216907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e090600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b3390565b80356001600160a01b03811681146101b357600080fd5b600060208284031215610616578081fd5b61061f826105ee565b9392505050565b600060208284031215610637578081fd5b5035919050565b60008060408385031215610650578081fd5b82359150610660602084016105ee565b90509250929050565b6000806040838503121561067b578182fd5b50508035926020909101359150565b60008060006060848603121561069e578081fd5b505081359360208301359350604090920135919050565b6001600160a01b0391909116815260200190565b901515815260200190565b9182521515602082015260400190565b918252602082015260400190565b60208082526032908201527f4461746152656769737472792e7075626c69736844617461506f696e743a20556040820152712720aaaa2427a924ad22a22fa9a2a72222a960711b606082015260800190565b9081526020019056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f2061646472657373a2646970667358221220f44a9021395cc5b779464c60ca9bfd198b42145f6035e63a54d4fff0f2c5f88364736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c80638da5cb5b116100665780638da5cb5b1461010c578063af37897814610121578063d38db86d14610134578063ecef34f214610147578063f2fde38b1461015a57610093565b806308a4ec101461009857806327258b22146100c2578063715018a6146100e2578063816a7e01146100ec575b600080fd5b6100ab6100a6366004610669565b61016d565b6040516100b99291906106d4565b60405180910390f35b6100d56100d0366004610626565b610196565b6040516100b991906106c9565b6100ea6101b8565b005b6100ff6100fa366004610626565b61026c565b6040516100b99190610744565b610114610281565b6040516100b991906106b5565b6100ea61012f36600461063e565b610290565b6100ea61014236600461068a565b610393565b610114610155366004610626565b6104c1565b6100ea610168366004610605565b6104df565b60009182526020828152604080842092845291905290208054600190910154909160ff90911690565b600081815260208190526040902060020154600160a01b900460ff165b919050565b6101c06105ea565b6001546001600160a01b03908116911614610222576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001546040516000916001600160a01b0316907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600180546001600160a01b0319169055565b60009081526020819052604090206001015490565b6001546001600160a01b031690565b6102986105ea565b6001546001600160a01b039081169116146102fa576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600082815260208190526040902060020180546001600160a01b0319166001600160a01b0383161790819055600160a01b900460ff16610357576000828152602081905260409020600201805460ff60a01b1916600160a01b1790555b817f6d3523ac54f3703c06e93ef7e0e67f963e698a668616fbc72dafb71eb6bd30968260405161038791906106b5565b60405180910390a25050565b6000838152602081905260409020600201546001600160a01b031633146103d55760405162461bcd60e51b81526004016103cc906106f2565b60405180910390fd5b60408051808201825282815260016020808301828152600088815280835285812088825280845295812094518555905193909201805460ff19169315159390931790925585815290526002015460ff600160a01b90910416610454576000838152602081905260409020600201805460ff60a01b1916600160a01b1790555b6000838152602081905260409020600101548211156104825760008381526020819052604090206001018290555b827f183291f60aff981c3c2d6cb02edd75633d383a51f608e397789555ef0e77560282846040516104b49291906106e4565b60405180910390a2505050565b6000908152602081905260409020600201546001600160a01b031690565b6104e76105ea565b6001546001600160a01b03908116911614610549576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b03811661058e5760405162461bcd60e51b815260040180806020018281038252602681526020018061074e6026913960400191505060405180910390fd5b6001546040516001600160a01b038084169216907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e090600090a3600180546001600160a01b0319166001600160a01b0392909216919091179055565b3390565b80356001600160a01b03811681146101b357600080fd5b600060208284031215610616578081fd5b61061f826105ee565b9392505050565b600060208284031215610637578081fd5b5035919050565b60008060408385031215610650578081fd5b82359150610660602084016105ee565b90509250929050565b6000806040838503121561067b578182fd5b50508035926020909101359150565b60008060006060848603121561069e578081fd5b505081359360208301359350604090920135919050565b6001600160a01b0391909116815260200190565b901515815260200190565b9182521515602082015260400190565b918252602082015260400190565b60208082526032908201527f4461746152656769737472792e7075626c69736844617461506f696e743a20556040820152712720aaaa2427a924ad22a22fa9a2a72222a960711b606082015260800190565b9081526020019056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f2061646472657373a2646970667358221220f44a9021395cc5b779464c60ca9bfd198b42145f6035e63a54d4fff0f2c5f88364736f6c63430007040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "getDataPoint(bytes32,uint256)": {
+        "params": {
+          "setId": "id of the data set",
+          "timestamp": "timestamp of the data point"
+        },
+        "returns": {
+          "_0": "data point, bool indicating whether data point exists"
+        }
+      },
+      "getDataProvider(bytes32)": {
+        "params": {
+          "setId": "id of the data set"
+        },
+        "returns": {
+          "_0": "address of provider"
+        }
+      },
+      "getLastUpdatedTimestamp(bytes32)": {
+        "params": {
+          "setId": "id of the data set"
+        },
+        "returns": {
+          "_0": "last updated timestamp"
+        }
+      },
+      "isRegistered(bytes32)": {
+        "params": {
+          "setId": "setId of the data set"
+        },
+        "returns": {
+          "_0": "true if market object exists"
+        }
+      },
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "publishDataPoint(bytes32,uint256,int256)": {
+        "details": "Can only be called by a whitelisted data provider.",
+        "params": {
+          "dataPoint": "the data point of the data set",
+          "setId": "id of the data set",
+          "timestamp": "timestamp of the data point"
+        }
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+      },
+      "setDataProvider(bytes32,address)": {
+        "details": "Can only be called by the owner of the DataRegistry.",
+        "params": {
+          "provider": "address of the provider",
+          "setId": "id of the data set"
+        }
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      }
+    },
+    "title": "DataRegistry",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "getDataPoint(bytes32,uint256)": {
+        "notice": "Returns a data point of a market object for a given timestamp."
+      },
+      "getDataProvider(bytes32)": {
+        "notice": "Returns the provider for a market object"
+      },
+      "getLastUpdatedTimestamp(bytes32)": {
+        "notice": "Returns the timestamp on which the last data point for a data set was submitted."
+      },
+      "isRegistered(bytes32)": {
+        "notice": "@notice Returns true if there is data registered for a given setId"
+      },
+      "publishDataPoint(bytes32,uint256,int256)": {
+        "notice": "Stores a new data point of a data set for a given timestamp."
+      },
+      "setDataProvider(bytes32,address)": {
+        "notice": "Registers / updates a market object provider."
+      }
+    },
+    "notice": "Registry for data which is published by an registered MarketObjectProvider",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 32923,
+        "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+        "label": "sets",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_bytes32,t_struct(Set)32919_storage)"
+      },
+      {
+        "astId": 30,
+        "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+        "label": "_owner",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_int256": {
+        "encoding": "inplace",
+        "label": "int256",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_bytes32,t_struct(Set)32919_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct DataRegistryStorage.Set)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Set)32919_storage"
+      },
+      "t_mapping(t_uint256,t_struct(DataPoint)32908_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct DataRegistryStorage.DataPoint)",
+        "numberOfBytes": "32",
+        "value": "t_struct(DataPoint)32908_storage"
+      },
+      "t_struct(DataPoint)32908_storage": {
+        "encoding": "inplace",
+        "label": "struct DataRegistryStorage.DataPoint",
+        "members": [
+          {
+            "astId": 32905,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "dataPoint",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_int256"
+          },
+          {
+            "astId": 32907,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "isSet",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_struct(Set)32919_storage": {
+        "encoding": "inplace",
+        "label": "struct DataRegistryStorage.Set",
+        "members": [
+          {
+            "astId": 32912,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "dataPoints",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_uint256,t_struct(DataPoint)32908_storage)"
+          },
+          {
+            "astId": 32914,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "lastUpdatedTimestamp",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 32916,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "provider",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          },
+          {
+            "astId": 32918,
+            "contract": "contracts/Core/Base/DataRegistry/DataRegistry.sol:DataRegistry",
+            "label": "isSet",
+            "offset": 20,
+            "slot": "2",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  },
+  "gasEstimates": {
+    "creation": {
+      "codeDepositCost": "392200",
+      "executionCost": "22874",
+      "totalCost": "415074"
+    },
+    "external": {
+      "getDataPoint(bytes32,uint256)": "2121",
+      "getDataProvider(bytes32)": "1288",
+      "getLastUpdatedTimestamp(bytes32)": "1247",
+      "isRegistered(bytes32)": "1238",
+      "owner()": "1070",
+      "publishDataPoint(bytes32,uint256,int256)": "86798",
+      "renounceOwnership()": "24246",
+      "setDataProvider(bytes32,address)": "44608",
+      "transferOwnership(address)": "infinite"
+    }
+  }
+}

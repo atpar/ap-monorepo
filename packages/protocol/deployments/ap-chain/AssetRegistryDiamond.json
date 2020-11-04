@@ -1,0 +1,1876 @@
+{
+  "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "facetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes4[]",
+              "name": "functionSelectors",
+              "type": "bytes4[]"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IDiamondCut.Facet[]",
+          "name": "_diamondCut",
+          "type": "tuple[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_init",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "_calldata",
+          "type": "bytes"
+        }
+      ],
+      "name": "DiamondCut",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "facetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes4[]",
+              "name": "functionSelectors",
+              "type": "bytes4[]"
+            }
+          ],
+          "internalType": "struct IDiamondCut.Facet[]",
+          "name": "_diamondCut",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "address",
+          "name": "_init",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_calldata",
+          "type": "bytes"
+        }
+      ],
+      "name": "diamondCut",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "_functionSelector",
+          "type": "bytes4"
+        }
+      ],
+      "name": "facetAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "facetAddress_",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "facetAddresses",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "facetAddresses_",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_facet",
+          "type": "address"
+        }
+      ],
+      "name": "facetFunctionSelectors",
+      "outputs": [
+        {
+          "internalType": "bytes4[]",
+          "name": "facetFunctionSelectors_",
+          "type": "bytes4[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "facets",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "facetAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes4[]",
+              "name": "functionSelectors",
+              "type": "bytes4[]"
+            }
+          ],
+          "internalType": "struct IDiamondLoupe.Facet[]",
+          "name": "facets_",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "_interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        }
+      ],
+      "name": "GrantedAccess",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        }
+      ],
+      "name": "RevokedAccess",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantAccess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasAccess",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRootAccess",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeAccess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "prevActor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newActor",
+          "type": "address"
+        }
+      ],
+      "name": "UpdatedActor",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "prevEngine",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newEngine",
+          "type": "address"
+        }
+      ],
+      "name": "UpdatedEngine",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        }
+      ],
+      "name": "approveActor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getActor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getEngine",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isRegistered",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        }
+      ],
+      "name": "setActor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "engine",
+          "type": "address"
+        }
+      ],
+      "name": "setEngine",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "prevBeneficiary",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "UpdatedBeneficiary",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "prevObligor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "newObligor",
+          "type": "address"
+        }
+      ],
+      "name": "UpdatedObligor",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getOwnership",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creatorObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "creatorBeneficiary",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyBeneficiary",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct AssetOwnership",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCounterpartyBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "setCounterpartyBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCounterpartyObligor",
+          "type": "address"
+        }
+      ],
+      "name": "setCounterpartyObligor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCreatorBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "setCreatorBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "newCreatorObligor",
+          "type": "address"
+        }
+      ],
+      "name": "setCreatorObligor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEventAtIndex",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getNextScheduleIndex",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getNextScheduledEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getNextUnderlyingEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPendingEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getSchedule",
+      "outputs": [
+        {
+          "internalType": "bytes32[]",
+          "name": "",
+          "type": "bytes32[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getScheduleLength",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isEventSettled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_event",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "int256",
+          "name": "_payoff",
+          "type": "int256"
+        }
+      ],
+      "name": "markEventAsSettled",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "popNextScheduledEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "popPendingEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "pendingEvent",
+          "type": "bytes32"
+        }
+      ],
+      "name": "pushPendingEvent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "statusDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "UpdatedFinalizedState",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "statusDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "UpdatedState",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getEnumValueForStateAttribute",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getFinalizedState",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getIntValueForStateAttribute",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getState",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getUintValueForStateAttribute",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "state",
+          "type": "tuple"
+        }
+      ],
+      "name": "setFinalizedState",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "state",
+          "type": "tuple"
+        }
+      ],
+      "name": "setState",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+  "receipt": {
+    "to": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
+    "from": "0x4C588a111417a22458BE5446c4B5E483E015A068",
+    "contractAddress": null,
+    "transactionIndex": 0,
+    "gasUsed": "3950205",
+    "logsBloom": "0x000000000000000000000000000000000000000000008000008000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000080000000000000000000010000000000000000000000c0000000000000020000000000010000000800000000002000200000000000000000400000000000000000000000004000000000020000000000800000000000000800000000000000000000000000000000000000000000000000000000000008001000000000000000000020000000000000000000000000020000000000000020000000000000000000000000000000000000000000000000100000000000040000",
+    "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0",
+    "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+    "logs": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000007528bf29daad47441f5c00ad9157cc8ab7c24069"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e0734f2f7f64e48abd708e0da563f19fbd16312000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001e712b4e100000000000000000000000000000000000000000000000000000000000000000000000000000000ea581d116acd694f8706bf99d6e932919e0ed35900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005adfca15e000000000000000000000000000000000000000000000000000000007a0ed62700000000000000000000000000000000000000000000000000000000cdffacc60000000000000000000000000000000000000000000000000000000052ef6b2c0000000000000000000000000000000000000000000000000000000001ffc9a700000000000000000000000000000000000000000000000000000000000000000000000000000000583156f118292254e14829f25baafb67b48c418300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002f2fde38b000000000000000000000000000000000000000000000000000000008da5cb5b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "logIndex": 1,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
+        "topics": [
+          "0x644ca5b0a8b0418e9faf3880659eeb84eaad45ad838b0173808e5ca72f5efc49"
+        ],
+        "data": "0x0000000000000000000000004a733a67e6d9aabfa3c570ae86858b0b42cd8752",
+        "logIndex": 2,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
+        ],
+        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000740000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000005800000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "logIndex": 3,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000007528bf29daad47441f5c00ad9157cc8ab7c24069",
+          "0x0000000000000000000000004c588a111417a22458be5446c4b5e483e015a068"
+        ],
+        "data": "0x",
+        "logIndex": 4,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      }
+    ],
+    "events": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000007528bf29daad47441f5c00ad9157cc8ab7c24069"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
+        ],
+        "data": "0x0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e0734f2f7f64e48abd708e0da563f19fbd16312000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001e712b4e100000000000000000000000000000000000000000000000000000000000000000000000000000000ea581d116acd694f8706bf99d6e932919e0ed35900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005adfca15e000000000000000000000000000000000000000000000000000000007a0ed62700000000000000000000000000000000000000000000000000000000cdffacc60000000000000000000000000000000000000000000000000000000052ef6b2c0000000000000000000000000000000000000000000000000000000001ffc9a700000000000000000000000000000000000000000000000000000000000000000000000000000000583156f118292254e14829f25baafb67b48c418300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002f2fde38b000000000000000000000000000000000000000000000000000000008da5cb5b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "logIndex": 1,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
+        "topics": [
+          "0x644ca5b0a8b0418e9faf3880659eeb84eaad45ad838b0173808e5ca72f5efc49"
+        ],
+        "data": "0x0000000000000000000000004a733a67e6d9aabfa3c570ae86858b0b42cd8752",
+        "logIndex": 2,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0",
+        "args": [
+          "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752"
+        ],
+        "event": "DiamondCreated",
+        "eventSignature": "DiamondCreated(address)"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
+        ],
+        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000740000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000005800000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "logIndex": 3,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      },
+      {
+        "transactionIndex": 0,
+        "blockNumber": 9,
+        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000007528bf29daad47441f5c00ad9157cc8ab7c24069",
+          "0x0000000000000000000000004c588a111417a22458be5446c4b5e483e015a068"
+        ],
+        "data": "0x",
+        "logIndex": 4,
+        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+      }
+    ],
+    "blockNumber": 9,
+    "cumulativeGasUsed": "3950205",
+    "status": 1,
+    "byzantium": true
+  },
+  "facets": [
+    {
+      "facetAddress": "0x3aFe270E25c5B2fC7679ba431eEF2B5E2d26A52f",
+      "functionSelectors": [
+        "0x1717e867",
+        "0x1b126815",
+        "0xe8f7ca3e",
+        "0x39262e87"
+      ]
+    },
+    {
+      "facetAddress": "0xD288b6ab166Aa99bA28E801e59c028fCc836BE61",
+      "functionSelectors": [
+        "0xe7dc3188",
+        "0xb3c45ebe",
+        "0xee43eda1",
+        "0x27258b22",
+        "0x03a81a2a",
+        "0x512872f4"
+      ]
+    },
+    {
+      "facetAddress": "0xB5883C472f130c9E6f5738BE52bd69172eeA7eE1",
+      "functionSelectors": [
+        "0xe50e0ef7",
+        "0x3549d08d",
+        "0xbd1f0a6c",
+        "0x6031a094",
+        "0x0d62037a"
+      ]
+    },
+    {
+      "facetAddress": "0x53Af5187298c0EAA21F9E68fFA36385f2Ad7cbAd",
+      "functionSelectors": [
+        "0xb02ca0c0",
+        "0x28e0f8a9",
+        "0xb8282041",
+        "0x75e86ae4",
+        "0xf52f84e1",
+        "0x3adc277a",
+        "0xa17b75b5",
+        "0xba4d2d28",
+        "0xde07a173",
+        "0xc3b6e7c2",
+        "0x0c5b75a4",
+        "0xd981e773"
+      ]
+    },
+    {
+      "facetAddress": "0x679ef0c5a8a806c5FaE6A098f1d668C2aF095d01",
+      "functionSelectors": [
+        "0xcf5aed12",
+        "0x37462dba",
+        "0x6a899b9b",
+        "0x09648a9d",
+        "0x606aa07e",
+        "0x842962d5",
+        "0x3a60d6fe"
+      ]
+    }
+  ],
+  "diamondCut": [
+    {
+      "facetAddress": "0x3aFe270E25c5B2fC7679ba431eEF2B5E2d26A52f",
+      "functionSelectors": [
+        "0x1717e867",
+        "0x1b126815",
+        "0xe8f7ca3e",
+        "0x39262e87"
+      ]
+    },
+    {
+      "facetAddress": "0xD288b6ab166Aa99bA28E801e59c028fCc836BE61",
+      "functionSelectors": [
+        "0xe7dc3188",
+        "0xb3c45ebe",
+        "0xee43eda1",
+        "0x27258b22",
+        "0x03a81a2a",
+        "0x512872f4"
+      ]
+    },
+    {
+      "facetAddress": "0xB5883C472f130c9E6f5738BE52bd69172eeA7eE1",
+      "functionSelectors": [
+        "0xe50e0ef7",
+        "0x3549d08d",
+        "0xbd1f0a6c",
+        "0x6031a094",
+        "0x0d62037a"
+      ]
+    },
+    {
+      "facetAddress": "0x53Af5187298c0EAA21F9E68fFA36385f2Ad7cbAd",
+      "functionSelectors": [
+        "0xb02ca0c0",
+        "0x28e0f8a9",
+        "0xb8282041",
+        "0x75e86ae4",
+        "0xf52f84e1",
+        "0x3adc277a",
+        "0xa17b75b5",
+        "0xba4d2d28",
+        "0xde07a173",
+        "0xc3b6e7c2",
+        "0x0c5b75a4",
+        "0xd981e773"
+      ]
+    },
+    {
+      "facetAddress": "0x679ef0c5a8a806c5FaE6A098f1d668C2aF095d01",
+      "functionSelectors": [
+        "0xcf5aed12",
+        "0x37462dba",
+        "0x6a899b9b",
+        "0x09648a9d",
+        "0x606aa07e",
+        "0x842962d5",
+        "0x3a60d6fe"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "address": "0x3aFe270E25c5B2fC7679ba431eEF2B5E2d26A52f",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        }
+      ],
+      "name": "GrantedAccess",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        }
+      ],
+      "name": "RevokedAccess",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantAccess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasAccess",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRootAccess",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes4",
+          "name": "methodSignature",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeAccess",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x0e391c12180464d7b03844ca23914766b7701696d6f4ea442d5e12b78a92ab62",
+  "receipt": {
+    "to": null,
+    "from": "0x4C588a111417a22458BE5446c4B5E483E015A068",
+    "contractAddress": "0x3aFe270E25c5B2fC7679ba431eEF2B5E2d26A52f",
+    "transactionIndex": 0,
+    "gasUsed": "293619",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xfda5c71b112c130fe53a1c6348b2c25e3866a3850d235672e84c7e6012187d7b",
+    "transactionHash": "0x0e391c12180464d7b03844ca23914766b7701696d6f4ea442d5e12b78a92ab62",
+    "logs": [],
+    "blockNumber": 1,
+    "cumulativeGasUsed": "293619",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "0x641332b4189abe50474574ba46977bd7f0a689fca4e1c1910dccc48384971409",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"methodSignature\",\"type\":\"bytes4\"}],\"name\":\"GrantedAccess\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes4\",\"name\":\"methodSignature\",\"type\":\"bytes4\"}],\"name\":\"RevokedAccess\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes4\",\"name\":\"methodSignature\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes4\",\"name\":\"methodSignature\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasAccess\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRootAccess\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"assetId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes4\",\"name\":\"methodSignature\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"grantAccess(bytes32,bytes4,address)\":{\"details\":\"Can only be called by an authorized account.\",\"params\":{\"account\":\"address of the account to grant access to\",\"assetId\":\"id of the asset\",\"methodSignature\":\"function / method signature (4 byte keccak256 hash of the method selector)\"}},\"hasAccess(bytes32,bytes4,address)\":{\"params\":{\"account\":\"address of the account for which to check access\",\"assetId\":\"id of the asset\",\"methodSignature\":\"function / method signature (4 byte keccak256 hash of the method selector)\"},\"returns\":{\"_0\":\"true if allowed access\"}},\"hasRootAccess(bytes32,address)\":{\"params\":{\"account\":\"address of the account for which to check root acccess\",\"assetId\":\"id of the asset\"},\"returns\":{\"_0\":\"true if has root access\"}},\"revokeAccess(bytes32,bytes4,address)\":{\"details\":\"Can only be called by an authorized account.\",\"params\":{\"account\":\"address of the account to revoke access for\",\"assetId\":\"id of the asset\",\"methodSignature\":\"function / method signature (4 byte keccak256 hash of the method selector)\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"grantAccess(bytes32,bytes4,address)\":{\"notice\":\"Grant access to an account to call a specific method on a specific asset.\"},\"hasAccess(bytes32,bytes4,address)\":{\"notice\":\"Check whether an account is allowed to call a specific method on a specific asset.\"},\"hasRootAccess(bytes32,address)\":{\"notice\":\"Check whether an account has root access for a specific asset.\"},\"revokeAccess(bytes32,bytes4,address)\":{\"notice\":\"Revoke access for an account to call a specific method on a specific asset.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Core/Base/AssetRegistryDiamond/Facets/AccessControl/AccessControlFacet.sol\":\"AccessControlFacet\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/ACTUS/Core/ACTUSConstants.sol\":{\"keccak256\":\"0x1568471e72800002ad945bf084f96368f5dfb597105f2e3f11534905abda9495\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://588e2362a6540244a35250faf4ac385734707c7bee6af5b853bf8a65e66336d3\",\"dweb:/ipfs/QmYcPmaTupSMVzPAUkGgLt9j9Cp2PE6gxzNqL9BdU1Wzqx\"]},\"contracts/ACTUS/Core/ACTUSTypes.sol\":{\"keccak256\":\"0x58c525726b2ec1ce52cb6beeb7c2aa7b90d2df28cbfb31a198e3be979fbd9858\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://8bec5f6baac1de225e0c1a26a965ec5835dd7b615637ac4131773dec3ab5c112\",\"dweb:/ipfs/QmPdvciBCdS4Z9dsy5ThRgt4AjseKop6PpeMXMByUTrrNr\"]},\"contracts/Core/Base/AssetRegistryDiamond/Facets/AccessControl/AccessControlFacet.sol\":{\"keccak256\":\"0xa7523e8a8606e687af3fb0dad488e16afb069ada751ea78a11e20f70e8a16c5a\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://ae2daf2c3a808bafef8d73466d97c8c07a74958870a2b76021ebd2cec4811d55\",\"dweb:/ipfs/QmQec7bfnkhAcT2YCE5EkoaDptxV9bE1YoHooEa3zVgqmU\"]},\"contracts/Core/Base/AssetRegistryDiamond/Facets/AccessControl/IAccessControlFacet.sol\":{\"keccak256\":\"0xfde20c2d9aa1853e7cf3b6718aa02174025dd79b0fe11a7797ce498bc9e71708\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://4d1e0d524e85b1744980d183ffad9171062e5c8c5c8d63ac1026807428076ae7\",\"dweb:/ipfs/QmaYzFP88UsjjnsJfuNbn5u9uXdWx4sAq2UTssfjsVnKq2\"]},\"contracts/Core/Base/AssetRegistryDiamond/Facets/BaseFacet.sol\":{\"keccak256\":\"0x157f546b1d83f2be772f2bfc9b8b7b9ac11af92bab5e0f47b2ec8a3d3e85ea5d\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://ab265afcb83065d1a75c610bbe73dd729df75f53ae3d940c269204c46bad4bf7\",\"dweb:/ipfs/QmSioU8nwgpTYH3Psb9kibjZNqtVmoNydCDLgKGPtQZAAw\"]},\"contracts/Core/Base/AssetRegistryDiamond/Lib.sol\":{\"keccak256\":\"0x23dda080815dacb0da54a7d3e513581127659b39c34636e606253dae1f2e20ef\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://dc0c0321cb8dfd0422ce4fec9f6a9db0e381618b2656a495f9a546563547fa4f\",\"dweb:/ipfs/QmTi3gFxa1R1aPFBWpwhaGV6Ao9AjumsK1c9J6vmTaiQkk\"]},\"contracts/Core/Base/SharedTypes.sol\":{\"keccak256\":\"0xadbb252a62b8641f01338ce1650d5d59ccc4a6f3f0e62c49e7b16bf51d2a46b8\",\"license\":\"Apache-2.0\",\"urls\":[\"bzz-raw://2057445b89a6d6c9b3c017e8c96dfa271e3f9921b8c0b8d292be254973d7f6f5\",\"dweb:/ipfs/QmYrp2NTwYaGD99yqdNChG3RYVzJr1CM16J4d99jSwe6e1\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610459806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80631717e867146100515780631b1268151461006657806339262e871461008f578063e8f7ca3e146100a2575b600080fd5b61006461005f366004610366565b6100b5565b005b610079610074366004610366565b610180565b60405161008691906103af565b60405180910390f35b61006461009d366004610366565b610207565b6100796100b036600461033b565b6102bc565b6100cc836000356001600160e01b03191633610180565b6100f15760405162461bcd60e51b81526004016100e8906103cf565b60405180910390fd5b60016100fb6102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b038616808452935290819020805460ff191693151593909317909255905184907face25d271ad11ee299595b3021629bae0349e370d7c2eb7c2dced6e4edb47865906101739086906103ba565b60405180910390a3505050565b600061018a6102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b0386168352909252205460ff16806101ff57506101d06102fb565b600085815260209182526040808220828052600d0183528082206001600160a01b0386168352909252205460ff165b949350505050565b61021e836000356001600160e01b03191633610180565b61023a5760405162461bcd60e51b81526004016100e8906103cf565b60006102446102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b038616808452935290819020805460ff191693151593909317909255905184907f42b1b0e7392ad606bb4f5b003296aba62f16e43aa9372f1f40c1522fa2655ffa906101739086906103ba565b60006102c66102fb565b600093845260209081526040808520858052600d0182528085206001600160a01b039490941685529290525090205460ff1690565b7fed91072810f28ab6b6fc02a2132e36fe987e74def3a4eccfa0a9b6343b1fdaf590565b80356001600160a01b038116811461033657600080fd5b919050565b6000806040838503121561034d578182fd5b8235915061035d6020840161031f565b90509250929050565b60008060006060848603121561037a578081fd5b8335925060208401356001600160e01b031981168114610398578182fd5b91506103a66040850161031f565b90509250925092565b901515815260200190565b6001600160e01b031991909116815260200190565b60208082526034908201527f416363657373436f6e74726f6c46616365742e7265766f6b654163636573733a604082015273102aa720aaaa2427a924ad22a22fa9a2a72222a960611b60608201526080019056fea2646970667358221220149d0a07956eeb756ceaa753be201e918bc0541f92c7f735777b97ac941a2a5464736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80631717e867146100515780631b1268151461006657806339262e871461008f578063e8f7ca3e146100a2575b600080fd5b61006461005f366004610366565b6100b5565b005b610079610074366004610366565b610180565b60405161008691906103af565b60405180910390f35b61006461009d366004610366565b610207565b6100796100b036600461033b565b6102bc565b6100cc836000356001600160e01b03191633610180565b6100f15760405162461bcd60e51b81526004016100e8906103cf565b60405180910390fd5b60016100fb6102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b038616808452935290819020805460ff191693151593909317909255905184907face25d271ad11ee299595b3021629bae0349e370d7c2eb7c2dced6e4edb47865906101739086906103ba565b60405180910390a3505050565b600061018a6102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b0386168352909252205460ff16806101ff57506101d06102fb565b600085815260209182526040808220828052600d0183528082206001600160a01b0386168352909252205460ff165b949350505050565b61021e836000356001600160e01b03191633610180565b61023a5760405162461bcd60e51b81526004016100e8906103cf565b60006102446102fb565b6000858152602091825260408082206001600160e01b031987168352600d0183528082206001600160a01b038616808452935290819020805460ff191693151593909317909255905184907f42b1b0e7392ad606bb4f5b003296aba62f16e43aa9372f1f40c1522fa2655ffa906101739086906103ba565b60006102c66102fb565b600093845260209081526040808520858052600d0182528085206001600160a01b039490941685529290525090205460ff1690565b7fed91072810f28ab6b6fc02a2132e36fe987e74def3a4eccfa0a9b6343b1fdaf590565b80356001600160a01b038116811461033657600080fd5b919050565b6000806040838503121561034d578182fd5b8235915061035d6020840161031f565b90509250929050565b60008060006060848603121561037a578081fd5b8335925060208401356001600160e01b031981168114610398578182fd5b91506103a66040850161031f565b90509250925092565b901515815260200190565b6001600160e01b031991909116815260200190565b60208082526034908201527f416363657373436f6e74726f6c46616365742e7265766f6b654163636573733a604082015273102aa720aaaa2427a924ad22a22fa9a2a72222a960611b60608201526080019056fea2646970667358221220149d0a07956eeb756ceaa753be201e918bc0541f92c7f735777b97ac941a2a5464736f6c63430007040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "grantAccess(bytes32,bytes4,address)": {
+        "details": "Can only be called by an authorized account.",
+        "params": {
+          "account": "address of the account to grant access to",
+          "assetId": "id of the asset",
+          "methodSignature": "function / method signature (4 byte keccak256 hash of the method selector)"
+        }
+      },
+      "hasAccess(bytes32,bytes4,address)": {
+        "params": {
+          "account": "address of the account for which to check access",
+          "assetId": "id of the asset",
+          "methodSignature": "function / method signature (4 byte keccak256 hash of the method selector)"
+        },
+        "returns": {
+          "_0": "true if allowed access"
+        }
+      },
+      "hasRootAccess(bytes32,address)": {
+        "params": {
+          "account": "address of the account for which to check root acccess",
+          "assetId": "id of the asset"
+        },
+        "returns": {
+          "_0": "true if has root access"
+        }
+      },
+      "revokeAccess(bytes32,bytes4,address)": {
+        "details": "Can only be called by an authorized account.",
+        "params": {
+          "account": "address of the account to revoke access for",
+          "assetId": "id of the asset",
+          "methodSignature": "function / method signature (4 byte keccak256 hash of the method selector)"
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "grantAccess(bytes32,bytes4,address)": {
+        "notice": "Grant access to an account to call a specific method on a specific asset."
+      },
+      "hasAccess(bytes32,bytes4,address)": {
+        "notice": "Check whether an account is allowed to call a specific method on a specific asset."
+      },
+      "hasRootAccess(bytes32,address)": {
+        "notice": "Check whether an account has root access for a specific asset."
+      },
+      "revokeAccess(bytes32,bytes4,address)": {
+        "notice": "Revoke access for an account to call a specific method on a specific asset."
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  },
+  "gasEstimates": {
+    "creation": {
+      "codeDepositCost": "222600",
+      "executionCost": "263",
+      "totalCost": "222863"
+    },
+    "external": {
+      "grantAccess(bytes32,bytes4,address)": "infinite",
+      "hasAccess(bytes32,bytes4,address)": "infinite",
+      "hasRootAccess(bytes32,address)": "1531",
+      "revokeAccess(bytes32,bytes4,address)": "infinite"
+    }
+  }
+}

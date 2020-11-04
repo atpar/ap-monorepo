@@ -71,7 +71,7 @@ ganache_pid=$!
 sleep 1
 
 if [[ -z "$NO_DEPLOY" ]]; then
-  npx --quiet buidler deploy --network ap-chain --tags deploy-ap-chain --reset
+  npx --quiet buidler deploy --network ap-chain --tags deploy-ap-chain
 fi
 
 if [[ -n "$TAKE_SNAPSHOT" ]]; then
