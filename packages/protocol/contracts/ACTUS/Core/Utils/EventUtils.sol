@@ -11,7 +11,7 @@ import "../ACTUSTypes.sol";
 contract EventUtils {
 
     function encodeEvent(EventType eventType, uint256 scheduleTime)
-        public
+        internal
         pure
         returns (bytes32)
     {
@@ -22,7 +22,7 @@ contract EventUtils {
     }
 
     function decodeEvent(bytes32 _event)
-        public
+        internal
         pure
         returns (EventType, uint256)
     {
@@ -37,7 +37,7 @@ contract EventUtils {
      * correct order of events if multiple events have the same timestamp
      */
     function getEpochOffset(EventType eventType)
-        public
+        internal
         pure
         returns (uint256)
     {

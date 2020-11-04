@@ -12,6 +12,10 @@ module.exports.dependencies = ["_env"];
  * @property {function (ExtendedBRE): DeployOptions} [getOptions] - getter for options
  * @property {boolean} [exportable] - `true` to export into `deployments.json` and `artifacts/` (default - `true`)
  * @property {boolean} [deployable] - if `false`, neither deploy nor export to `deployments.json` (default - `true`)
+ * 
+ * @typedef {Object} DiamondsListItem
+ * @property {string} name - diamond contract name
+ * @property {ContractsListItem} facets - facet to be added to the diamond contract
  *
  * @typedef {Object} Package
  * @property {ContractsListItem[]} contracts
@@ -27,7 +31,6 @@ async function definePackage(buidlerRuntime) {
     }
 
     usrNs.package.contracts = [
-
         // ACTUS-Solidity
         { name: "ANNEngine" },
         { name: "CECEngine" },
@@ -116,6 +119,21 @@ async function definePackage(buidlerRuntime) {
         { name: "SettlementToken", deployable: false },
         { name: "NoSettlementToken", deployable: false },
         { name: "ERC20Token", deployable: false }
+    ];
+
+    usrNs.package.diamonds = [
+        // Asset Registry Facets
+        {
+            name: "AssetRegistryDiamond",
+            facets: [
+                { name: "AccessControlFacet" },
+                { name: "MetaFacet" },
+                { name: "OwnershipFacet" },
+                { name: "ScheduleFacet" },
+                { name: "StateFacet" },
+                // { name: "ANNFacet" }
+            ]
+        }
     ];
 
     usrNs.package.defaultDeployOptions = {

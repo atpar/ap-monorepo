@@ -32,24 +32,10 @@ export class CECActor extends Contract {
       1: string;
     }>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
     ): TransactionObject<string>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     initialize(
       terms: {

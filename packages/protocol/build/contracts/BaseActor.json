@@ -154,30 +154,6 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
-          "name": "_event",
-          "type": "bytes32"
-        }
-      ],
-      "name": "decodeEvent",
-      "outputs": [
-        {
-          "internalType": "enum EventType",
-          "name": "",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "address",
           "name": "collateralToken",
           "type": "address"
@@ -194,49 +170,6 @@
           "internalType": "bytes32",
           "name": "",
           "type": "bytes32"
-        }
-      ],
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum EventType",
-          "name": "eventType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "scheduleTime",
-          "type": "uint256"
-        }
-      ],
-      "name": "encodeEvent",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum EventType",
-          "name": "eventType",
-          "type": "uint8"
-        }
-      ],
-      "name": "getEpochOffset",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "pure",

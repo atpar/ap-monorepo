@@ -21,18 +21,6 @@ export class ScheduleRegistry extends Contract {
   );
   clone(): ScheduleRegistry;
   methods: {
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
     getAddressValueForTermsAttribute(
       assetId: string | number[],
       attribute: string | number[]
@@ -67,8 +55,6 @@ export class ScheduleRegistry extends Contract {
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     getEventAtIndex(
       assetId: string | number[],

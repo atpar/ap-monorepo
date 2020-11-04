@@ -83,13 +83,6 @@ export class ICT extends Contract {
 
     decimals(): TransactionObject<string>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
     decreaseAllowance(
       spender: string,
       subtractedValue: number | string
@@ -114,11 +107,6 @@ export class ICT extends Contract {
       6: boolean;
     }>;
 
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
     fetchDepositAmountForEvent(
       _event: string | number[]
     ): TransactionObject<void>;
@@ -139,8 +127,6 @@ export class ICT extends Contract {
       4: boolean;
       5: string;
     }>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     getHolderSubsetAt(
       checkpointId: number | string,

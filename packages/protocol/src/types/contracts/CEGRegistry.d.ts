@@ -25,18 +25,6 @@ export class CEGRegistry extends Contract {
 
     approvedActors(arg0: string): TransactionObject<boolean>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
     getActor(assetId: string | number[]): TransactionObject<string>;
 
     getAddressValueForTermsAttribute(
@@ -75,8 +63,6 @@ export class CEGRegistry extends Contract {
       assetId: string | number[],
       attribute: string | number[]
     ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
 
     getEventAtIndex(
       assetId: string | number[],

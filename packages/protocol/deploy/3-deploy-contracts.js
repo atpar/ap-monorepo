@@ -11,6 +11,7 @@ module.exports.dependencies = ["_package"];
  * @property {any} instance - web3 Contract instance
  *
  * @typedef {import('./2-define-package').ContractsListItem} ContractsListDeployedItem
+ * @typedef {import('./2-define-package').DiamondsListItem} DiamondsListDeployedItem
  * @property {Deployment} deployment
  */
 
@@ -19,16 +20,35 @@ async function deployContracts(buidlerRuntime) {
 
     const {
         deployments: { deploy, log },
-        usrNs: { package: { contracts, defaultDeployOptions }, helpers },
+        usrNs: { package: { contracts, diamonds, defaultDeployOptions }, helpers },
+        getNamedAccounts
     } = buidlerRuntime;
 
-    if ( typeof contracts !== 'object' || typeof defaultDeployOptions !== 'object'|| typeof helpers !== 'object' ) {
+    if (typeof contracts !== 'object' || typeof defaultDeployOptions !== 'object'|| typeof helpers !== 'object') {
         throw new Error("unexpected Buidler Runtime Environment");
     }
 
     helpers.replacePlaceholders = replacePlaceholders;
 
     const addresses = {};
+
+    /** @type {DiamondsListDeployedItem[]} diamonds */
+    await diamonds.reduce(
+        // deploy one by one (but not in parallel)
+        (promiseChain, diamond) => promiseChain.then(
+            async () => {
+                const { admin } = await getNamedAccounts();
+                await deployments.diamond.deploy(diamond.name, {
+                    ...defaultDeployOptions,
+                    from: admin, // needs to be the admin for upgrade
+                    owner: admin,
+                    facets: Object.values(diamond.facets).map(({ name }) => name),
+                    deletePreviousDeployments: true
+                });
+            }
+        ),
+        Promise.resolve(),
+    );
 
     /** @type {ContractsListDeployedItem[]} contracts */
     await contracts.reduce(

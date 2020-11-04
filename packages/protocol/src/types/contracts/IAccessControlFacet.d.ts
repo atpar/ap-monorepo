@@ -13,27 +13,36 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class EventUtils extends Contract {
+export class IAccessControlFacet extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): EventUtils;
+  clone(): IAccessControlFacet;
   methods: {
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
+    grantAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
 
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
+    hasAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
 
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
+    hasRootAccess(
+      assetId: string | number[],
+      account: string
+    ): TransactionObject<boolean>;
+
+    revokeAccess(
+      assetId: string | number[],
+      methodSignature: string | number[],
+      account: string
+    ): TransactionObject<void>;
   };
   events: {
     allEvents: (

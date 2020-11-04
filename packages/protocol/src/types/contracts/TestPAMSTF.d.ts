@@ -1907,20 +1907,6 @@ export class TestPAMSTF extends Contract {
       maturityDate: number | string
     ): TransactionObject<string>;
 
-    decodeEvent(
-      _event: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    encodeEvent(
-      eventType: number | string,
-      scheduleTime: number | string
-    ): TransactionObject<string>;
-
-    getEpochOffset(eventType: number | string): TransactionObject<string>;
-
     shiftCalcTime(
       timestamp: number | string,
       convention: number | string,
