@@ -347,31 +347,6 @@ async function deployTestSTKSTF(buidlerRuntime, deployer = '') {
   );
 }
 
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- * @param {string} contractName
- * @param {any} args Constructor arguments
- */
-async function deployContract(buidlerRuntime, contractName, args = [], opts = {}) {
-  const { deployments: { deploy }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const options = Object.assign({ from: defaultDeployer, fieldsToCompare: [ 'data', 'from' ], args }, opts);
-  const { abi, address } = await deploy(contractName, options);
-  return new web3.eth.Contract(abi, address);
-}
-
-/*
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('ICT');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode, owner ]})
-    .send({ from: deployer || defaultDeployer })
-  );
-*/
-
-
-
 function parseToContractTerms(contract, terms) {
   return require('./ACTUS/parser').parseTermsFromObject(contract, terms);
 }
