@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
@@ -22,7 +21,7 @@ describe('ANNActor', () => {
         terms.businessDayConvention,
         terms.calendar,
         terms.maturityDate
-    ).call());
+      ).call());
   }
 
   /** @param {any} self - `this` inside `before()`/`it()` */
@@ -33,7 +32,7 @@ describe('ANNActor', () => {
     ] = self.accounts;
     // deploy a test ERC20 token to use it as the terms currency
     self.PaymentTokenInstance = await deployPaymentToken(
-        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+      buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
     );
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
@@ -69,7 +68,7 @@ describe('ANNActor', () => {
 
     this.assetId = events.InitializedAsset.returnValues.assetId;
     const storedState = web3ResponseToState(
-        await this.ANNRegistryInstance.methods.getState(this.assetId).call()
+      await this.ANNRegistryInstance.methods.getState(this.assetId).call()
     );
 
     assert.deepStrictEqual(storedState, this.state);

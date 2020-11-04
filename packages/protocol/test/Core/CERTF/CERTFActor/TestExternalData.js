@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -7,22 +6,11 @@ const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/utils/blockchain');
 const { expectEvent, generateSchedule, ZERO_ADDRESS } = require('../../../helper/utils/utils');
 const { decodeEvent } = require('../../../helper/utils/schedule');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('CERTFActor', () => {
   let deployer, actor, actor2, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
-
-  const getEventTime = async (_event, terms) => {
-    return Number(
-        await this.CERTFEngineInstance.computeEventTimeForEvent(
-            _event,
-            terms.businessDayConvention,
-            terms.calendar,
-            terms.maturityDate
-        ).call()
-    );
-  }
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -42,8 +30,10 @@ describe('CERTFActor', () => {
     self.terms = require('../../../helper/terms/CERTFTerms-external-data.json');
 
     // only want RR events in the schedules
+    const prefixREF = '0x' + eventIndex('REF').toString(16).padStart(2, '0');
+    const prefixEXE = '0x' + eventIndex('EXE').toString(16).padStart(2, '0');
     self.schedule = ( await generateSchedule(self.CERTFEngineInstance, self.terms, 1623456000))
-        .filter((event) => (event.startsWith('0x13') || event.startsWith('0x19'))); // #useEventName (REF, EXE)
+      .filter((event) => (event.startsWith(prefixREF) || event.startsWith(prefixEXE)));
 
     const { events } = await this.CERTFActorInstance.methods.initialize(
       self.terms,
@@ -67,7 +57,7 @@ describe('CERTFActor', () => {
 
   it('should process next state with external redemption amount', async () => {
     const _event = await this.CERTFRegistryInstance.methods
-        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+      .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { scheduleTime } = decodeEvent(_event);
 
     await mineBlock(Number(scheduleTime));
@@ -100,7 +90,7 @@ describe('CERTFActor', () => {
     ).send({ from: actor });
 
     const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-        .send({ from: nobody });
+      .send({ from: nobody });
     expectEvent(events, 'ProgressedAsset');
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
@@ -129,7 +119,7 @@ describe('CERTFActor', () => {
 
   it('should process next state with external quantity', async () => {
     const _event = await this.CERTFRegistryInstance.methods
-        .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+      .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { scheduleTime } = decodeEvent(_event);
 
     await mineBlock(Number(scheduleTime));
@@ -151,7 +141,7 @@ describe('CERTFActor', () => {
     ).send({ from: actor2 });
 
     const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
-        .send({ from: nobody });
+      .send({ from: nobody });
     expectEvent(events, 'ProgressedAsset');
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 

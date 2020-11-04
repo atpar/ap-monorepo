@@ -1,4 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
@@ -193,7 +193,7 @@ describe('SignedMath', () => {
     // min of 1 and -1 should be -1
     assert.strictEqual(await this.TestSignedMath.methods._min(1, -1).call(), '-1')
   });
-  
+
   it('should test max', async () => {
     // max of 1 and 2 should be 2
     assert.strictEqual(await this.TestSignedMath.methods._max(1, 2).call(), '2')

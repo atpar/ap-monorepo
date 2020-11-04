@@ -26,7 +26,7 @@ function getSnapshotTaker(buidlerRuntime, self = undefined, customCode = undefin
     if (self) {
       // inject into `self` the web3.eth.Contract instances of deployed contracts
       Object.keys(buidlerRuntime.usrNs.instances)
-          .forEach((name) => self[name] = buidlerRuntime.usrNs.instances[name]);
+        .forEach((name) => self[name] = buidlerRuntime.usrNs.instances[name]);
       // ... and a 'fresh' copy of accounts
       self.accounts = ([]).concat(...buidlerRuntime.usrNs.accounts);
       // ... amd default tx options (think of web3 `send`)

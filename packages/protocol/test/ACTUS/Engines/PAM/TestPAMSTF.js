@@ -1,5 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
+/* eslint-disable @typescript-eslint/no-var-requires */
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { toWei } = require('web3-utils');
 
@@ -325,10 +324,10 @@ describe('TestPAMPOF', () => {
 
   // console.log(oldState)
   // const newState = await this.TestSTF.methods._STF_PAM_RR(
-  //   this.PAMTerms, 
-  //   oldState, 
-  //   scheduleTime, 
-  //   externalData 
+  //   this.PAMTerms,
+  //   oldState,
+  //   scheduleTime,
+  //   externalData
   //   ).call();
   // console.log(newState)
   // assertEqualStates(newState, expectedState);

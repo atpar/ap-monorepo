@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const Web3Utils = require('web3-utils');
 
 
@@ -14,9 +15,9 @@ function sortEvents (_events) {
     if (Number(scheduleTimeB) === 0) { return -1; }
     if (Number(scheduleTimeA) > Number(scheduleTimeB)) { return 1; }
     if (Number(scheduleTimeA) < Number(scheduleTimeB)) { return -1; }
-    
-    if (getEpochOffsetForEventType(eventTypeA) > getEpochOffsetForEventType(eventTypeB)) { 
-      return 1; 
+
+    if (getEpochOffsetForEventType(eventTypeA) > getEpochOffsetForEventType(eventTypeB)) {
+      return 1;
     }
     if (getEpochOffsetForEventType(eventTypeA) < getEpochOffsetForEventType(eventTypeB)) {
       return -1;
@@ -33,7 +34,7 @@ function removeNullEvents (eventSchedule) {
 
   for (let event of eventSchedule) {
     if (String(decodeEvent(event).eventType) === '0') {
-      continue; 
+      continue;
     }
     compactEventSchedule.push(event);
   }
@@ -65,4 +66,4 @@ module.exports = {
   decodeEvent,
   encodeEvent,
   parseEventSchedule
-}
+};

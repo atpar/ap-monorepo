@@ -1,4 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -106,7 +106,7 @@ describe('TestPAMPOF', () => {
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
     state.accruedInterest = web3.utils.toWei('100');
@@ -133,7 +133,7 @@ describe('TestPAMPOF', () => {
 
     // used data
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
-    
+
     state.notionalPrincipal = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
     state.statusDate = '0';
 
@@ -169,10 +169,10 @@ describe('TestPAMPOF', () => {
   //   state[5] = web3.utils.toWei('1000000'); // notionalPrincipal = 1M
 
   //   const payoff = await this.TestPOF.methods._POF_PAM_PRD(
-  //     this.PAMTerms, 
-  //     state, 
-  //     scheduleTime, 
-  //     externalData 
+  //     this.PAMTerms,
+  //     state,
+  //     scheduleTime,
+  //     externalData
   //     ).call();
   //   assert.strictEqual(payoff.toString(), '-89900000000000000000000');
   // });
@@ -240,7 +240,7 @@ describe('TestPAMPOF', () => {
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
 
@@ -268,7 +268,7 @@ describe('TestPAMPOF', () => {
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
 
@@ -297,7 +297,7 @@ describe('TestPAMPOF', () => {
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365
     this.PAMTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
     state.accruedInterest = web3.utils.toWei('100');
@@ -309,7 +309,7 @@ describe('TestPAMPOF', () => {
       scheduleTime,
       externalData
     ).call();
-  
+
     assert.strictEqual(payoff.toString(), '110100000000000000000000');
   });
 });

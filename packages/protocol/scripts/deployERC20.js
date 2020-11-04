@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const ERC20Token = require('../build/contracts/ERC20Token.json');
 
 (async () => {

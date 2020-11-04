@@ -1,5 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
+/* eslint-disable @typescript-eslint/no-var-requires */
 const buidlerRuntime = require('@nomiclabs/buidler');
 const { toWei } = require('web3-utils');
 
