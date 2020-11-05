@@ -15,11 +15,11 @@ describe('ANNRegistry', () => {
   let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
-  // const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
+  const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
+      deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
     ] = self.accounts;
 
     self.assetId = 'ANN_01';
@@ -35,7 +35,7 @@ describe('ANNRegistry', () => {
   });
 
   it('should register an asset', async () => {
-    await this.ANNRegistryInstance.methods.registerAsset(
+    await this.AssetRegistryDiamondInstance.methods.registerAsset(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.state,
@@ -46,10 +46,10 @@ describe('ANNRegistry', () => {
       ZERO_ADDRESS
     ).send({ from: actor });
 
-    const storedTerms = await this.ANNRegistryInstance.methods.getTerms(web3.utils.toHex(this.assetId)).call();
-    const storedState = await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
-    const storedOwnership = await this.ANNRegistryInstance.methods.getOwnership(web3.utils.toHex(this.assetId)).call();
-    const storedEngineAddress = await this.ANNRegistryInstance.methods.getEngine(web3.utils.toHex(this.assetId)).call();
+    const storedTerms = await this.AssetRegistryDiamondInstance.methods.getTerms(web3.utils.toHex(this.assetId)).call();
+    const storedState = await this.AssetRegistryDiamondInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
+    const storedOwnership = await this.AssetRegistryDiamondInstance.methods.getOwnership(web3.utils.toHex(this.assetId)).call();
+    const storedEngineAddress = await this.AssetRegistryDiamondInstance.methods.getEngine(web3.utils.toHex(this.assetId)).call();
 
     assert.deepStrictEqual(parseTerms(storedTerms), parseTerms(Object.values({ ...this.terms })));
     assert.deepStrictEqual(storedState, this.state);
@@ -62,7 +62,7 @@ describe('ANNRegistry', () => {
 
   it('should not overwrite an existing asset', async () => {
     await shouldFail.reverting.withMessage(
-      this.ANNRegistryInstance.methods.registerAsset(
+      this.AssetRegistryDiamondInstance.methods.registerAsset(
         web3.utils.toHex(this.assetId),
         this.terms,
         this.state,
@@ -72,12 +72,12 @@ describe('ANNRegistry', () => {
         actor,
         ZERO_ADDRESS
       ).send({ from: actor }),
-      'BaseRegistry.setAsset: ' + ASSET_ALREADY_EXISTS
+      'BaseContractFacet.setAsset: ' + ASSET_ALREADY_EXISTS
     );
   });
 
   it('should let the actor overwrite and update the terms, state of an asset', async () => {
-    await this.ANNRegistryInstance.methods.setState(
+    await this.AssetRegistryDiamondInstance.methods.setState(
       web3.utils.toHex(this.assetId),
       this.state,
     ).send({ from: actor });
@@ -85,11 +85,11 @@ describe('ANNRegistry', () => {
 
   it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
     await shouldFail.reverting.withMessage(
-      this.ANNRegistryInstance.methods.setState(
+      this.AssetRegistryDiamondInstance.methods.setState(
         web3.utils.toHex(this.assetId),
         this.state,
       ).send({ from: nobody }),
-      'AccessControl.isAuthorized: ' + UNAUTHORIZED_SENDER
+      'BaseFacet.isAuthorized: ' + UNAUTHORIZED_SENDER
     );
   });
 });

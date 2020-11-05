@@ -17,6 +17,8 @@ async function initContracts(buidlerRuntime) {
     await registerActor(buidlerRuntime,"CERTFRegistry", "CERTFActor");
     await registerActor(buidlerRuntime,"PAMRegistry", "PAMActor");
     await registerActor(buidlerRuntime,"STKRegistry", "STKActor");
+    
+    await registerActor(buidlerRuntime,"AssetRegistryDiamond", "ANNActor");
 }
 
 /**
@@ -27,12 +29,12 @@ async function initContracts(buidlerRuntime) {
 async function registerActor(buidlerRuntime, registry, actor) {
     const {
         deployments: { log },
-        usrNs: { roles: {deployer}, package: { contracts } },
+        usrNs: { roles: { deployer }, package: { contracts, diamonds } },
         web3,
     } = buidlerRuntime;
 
     /** @type {import('./3-deploy-contracts').ContractsListDeployedItem[]} instances */
-    const instances = contracts;
+    const instances = [ ...contracts, ...diamonds ];
     const contract = instances.find(i => i.name === registry);
     if (!contract) throw new Error("invalid registry contract");
 

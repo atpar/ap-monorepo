@@ -37,11 +37,11 @@ async function deployContracts(buidlerRuntime) {
         // deploy one by one (but not in parallel)
         (promiseChain, diamond) => promiseChain.then(
             async () => {
-                const { admin } = await getNamedAccounts();
-                await deployments.diamond.deploy(diamond.name, {
+                const { deployer } = await getNamedAccounts();
+                diamond.deployment = await deployments.diamond.deploy(diamond.name, {
                     ...defaultDeployOptions,
-                    from: admin, // needs to be the admin for upgrade
-                    owner: admin,
+                    from: deployer, // needs to be the admin for upgrade
+                    owner: deployer,
                     facets: Object.values(diamond.facets).map(({ name }) => name),
                     deletePreviousDeployments: true
                 });

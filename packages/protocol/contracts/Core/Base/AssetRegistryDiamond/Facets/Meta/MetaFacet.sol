@@ -2,11 +2,14 @@
 pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "diamond-3/contracts/libraries/LibDiamond.sol";
+// update when buidler-deploy build-in diamond contract is updated
+import "buidler-deploy/solc_0.7/diamond/libraries/LibDiamondStorage.sol";
 
 import "../../Lib.sol";
 import "../BaseFacet.sol";
 import "./IMetaFacet.sol";
+
+import "@nomiclabs/buidler/console.sol";
 
 
 /**
@@ -19,13 +22,20 @@ contract MetaFacet is BaseFacet, IMetaFacet {
     event UpdatedActor(bytes32 indexed assetId, address prevActor, address newActor);
 
 
+    function approvedActors(address actor) external view override returns (bool) {
+        return permissionStorage().approvedActors[actor];
+    }
+
     /**
      * @notice Approves the address of an actor contract e.g. for registering assets.
      * @dev Can only be called by the owner of the contract.
      * @param actor address of the actor
      */
     function approveActor(address actor) external override {
-        LibDiamond.enforceIsContractOwner();
+        require(
+            msg.sender == LibDiamondStorage.diamondStorage().contractOwner,
+            "MetaFacet.approveActor: UNAUTHORIZED_SENDER"
+        );
         permissionStorage().approvedActors[actor] = true;
     }
 

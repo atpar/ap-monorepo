@@ -5,6 +5,11 @@ pragma experimental ABIEncoderV2;
 
 interface IMetaFacet {
 
+    function approvedActors(address actor)
+        external
+        view
+        returns (bool);
+
     function approveActor(address actor)
         external;
 

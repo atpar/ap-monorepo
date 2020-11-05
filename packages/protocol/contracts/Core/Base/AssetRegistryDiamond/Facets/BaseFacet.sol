@@ -14,7 +14,7 @@ contract BaseFacet {
     modifier onlyApprovedActors {
         require(
             permissionStorage().approvedActors[msg.sender],
-            "LibAsset.setAsset: UNAUTHORIZED_SENDER"
+            "BaseFacet.setAsset: UNAUTHORIZED_SENDER"
         );
         _;
     }
@@ -23,7 +23,7 @@ contract BaseFacet {
         require(
             msg.sender == assetStorage().assets[assetId].actor
             || IAccessControlFacet(address(this)).hasAccess(assetId, msg.sig, msg.sender),
-            "BaseRegistryFacet.isAuthorized: UNAUTHORIZED_SENDER"
+            "BaseFacet.isAuthorized: UNAUTHORIZED_SENDER"
         );
         _;
     }

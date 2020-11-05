@@ -10,7 +10,7 @@ async function initInstances(buidlerRuntime) {
     }
 
     const { deployments: { getArtifact, log }, usrNs, web3 } = buidlerRuntime;
-    const { package: { contracts } } = usrNs;
+    const { package: { contracts, diamonds } } = usrNs;
 
     await Promise.all(
         /** @type {import('./2-define-package').ContractsListItem[]} contracts */
@@ -28,6 +28,16 @@ async function initInstances(buidlerRuntime) {
             } else {
                 instance.options.data = bytecode;
             }
+            usrNs.instances[`${name}Instance`] = instance;
+        }),
+    );
+
+    await Promise.all(
+        /** @type {import('./2-define-package').DiamondsListItem[]} contracts */
+        diamonds.map(async ({ name, deployment }) => {
+            const { abi, address, bytecode, libraries } = deployment;
+            const instance = new web3.eth.Contract(abi, address);
+            instance.options.data = bytecode;
             usrNs.instances[`${name}Instance`] = instance;
         }),
     );

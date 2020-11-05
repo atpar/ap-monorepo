@@ -26,4 +26,7 @@ async function initContractsForTests(buidlerRuntime) {
     await registerActor(buidlerRuntime, "CERTFRegistry", defaultActor);
     await registerActor(buidlerRuntime, "PAMRegistry", defaultActor);
     await registerActor(buidlerRuntime, "STKRegistry", defaultActor);
+    
+    await registerActor(buidlerRuntime, "AssetRegistryDiamond", admin);
+    await registerActor(buidlerRuntime, "AssetRegistryDiamond", defaultActor);
 }

@@ -23,6 +23,8 @@ export class IMetaFacet extends Contract {
   methods: {
     approveActor(actor: string): TransactionObject<void>;
 
+    approvedActors(actor: string): TransactionObject<boolean>;
+
     getActor(assetId: string | number[]): TransactionObject<string>;
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
