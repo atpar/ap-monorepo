@@ -1597,23 +1597,1693 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RegisteredAsset",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "UpdatedTerms",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getAddressValueForTermsAttribute",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getBytes32ValueForTermsAttribute",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getContractReferenceValueForTermsAttribute",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "object",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "object2",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "enum ContractReferenceType",
+              "name": "_type",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractReferenceRole",
+              "name": "role",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct ContractReference",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getCycleValueForTermsAttribute",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum P",
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum S",
+              "name": "s",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IPS",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getEnumValueForTermsAttribute",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getIntValueForTermsAttribute",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getNextComputedEvent",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getPeriodValueForTermsAttribute",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "i",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum P",
+              "name": "p",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "isSet",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct IP",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getTerms",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfPrincipalRedemption",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfPrincipalRedemption",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ANNTerms",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "attribute",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getUIntValueForTermsAttribute",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfPrincipalRedemption",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfPrincipalRedemption",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ANNTerms",
+          "name": "terms",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractPerformance",
+              "name": "contractPerformance",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "nonPerformingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "exerciseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "terminationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastCouponFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastDividendFixingDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "interestScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalScalingMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "exerciseQuantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "quantity",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "couponAmountFixed",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "marginFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "adjustmentFactor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "dividendPaymentAmount",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "splitRatio",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct State",
+          "name": "state",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes32[]",
+          "name": "schedule",
+          "type": "bytes32[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creatorObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "creatorBeneficiary",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyObligor",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyBeneficiary",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct AssetOwnership",
+          "name": "ownership",
+          "type": "tuple"
+        },
+        {
+          "internalType": "address",
+          "name": "engine",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "admin",
+          "type": "address"
+        }
+      ],
+      "name": "registerAsset",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum ContractType",
+              "name": "contractType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum Calendar",
+              "name": "calendar",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ContractRole",
+              "name": "contractRole",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum DayCountConvention",
+              "name": "dayCountConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum BusinessDayConvention",
+              "name": "businessDayConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum EndOfMonthConvention",
+              "name": "endOfMonthConvention",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ScalingEffect",
+              "name": "scalingEffect",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum PenaltyType",
+              "name": "penaltyType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum FeeBasis",
+              "name": "feeBasis",
+              "type": "uint8"
+            },
+            {
+              "internalType": "address",
+              "name": "currency",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "settlementCurrency",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "marketObjectCodeRateReset",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "contractDealDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "statusDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "initialExchangeDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "purchaseDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "capitalizationEndDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfInterestPayment",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfRateReset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfScalingIndex",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfFee",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "cycleAnchorDateOfPrincipalRedemption",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "notionalPrincipal",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nominalInterestRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "accruedInterest",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateMultiplier",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "rateSpread",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextResetRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "feeAccrued",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "penaltyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "delinquencyRate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "premiumDiscountAtIED",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "nextPrincipalRedemptionPayment",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "lifeFloor",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodCap",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "periodFloor",
+              "type": "int256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "gracePeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IP",
+              "name": "delinquencyPeriod",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfInterestPayment",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfRateReset",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfScalingIndex",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfFee",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "i",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum P",
+                  "name": "p",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum S",
+                  "name": "s",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isSet",
+                  "type": "bool"
+                }
+              ],
+              "internalType": "struct IPS",
+              "name": "cycleOfPrincipalRedemption",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ANNTerms",
+          "name": "terms",
+          "type": "tuple"
+        }
+      ],
+      "name": "setTerms",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
   ],
-  "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+  "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
   "receipt": {
     "to": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
     "from": "0x4C588a111417a22458BE5446c4B5E483E015A068",
     "contractAddress": null,
     "transactionIndex": 0,
-    "gasUsed": "3950205",
+    "gasUsed": "4384549",
     "logsBloom": "0x000000000000000000000000000000000000000000008000008000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000080000000000000000000010000000000000000000000c0000000000000020000000000010000000800000000002000200000000000000000400000000000000000000000004000000000020000000000800000000000000800000000000000000000000000000000000000000000000000000000000008001000000000000000000020000000000000000000000000020000000000000020000000000000000000000000000000000000000000000000100000000000040000",
-    "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0",
-    "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+    "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5",
+    "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
     "logs": [
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
@@ -1622,48 +3292,48 @@
         ],
         "data": "0x",
         "logIndex": 0,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
         ],
         "data": "0x0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e0734f2f7f64e48abd708e0da563f19fbd16312000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001e712b4e100000000000000000000000000000000000000000000000000000000000000000000000000000000ea581d116acd694f8706bf99d6e932919e0ed35900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005adfca15e000000000000000000000000000000000000000000000000000000007a0ed62700000000000000000000000000000000000000000000000000000000cdffacc60000000000000000000000000000000000000000000000000000000052ef6b2c0000000000000000000000000000000000000000000000000000000001ffc9a700000000000000000000000000000000000000000000000000000000000000000000000000000000583156f118292254e14829f25baafb67b48c418300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002f2fde38b000000000000000000000000000000000000000000000000000000008da5cb5b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "logIndex": 1,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
         "topics": [
           "0x644ca5b0a8b0418e9faf3880659eeb84eaad45ad838b0173808e5ca72f5efc49"
         ],
         "data": "0x0000000000000000000000004a733a67e6d9aabfa3c570ae86858b0b42cd8752",
         "logIndex": 2,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
         ],
-        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000740000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000005800000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000940000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002c000000000000000000000000000000000000000000000000000000000000003c000000000000000000000000000000000000000000000000000000000000005a000000000000000000000000000000000000000000000000000000000000006e00000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe00000000000000000000000000000000000000000000000000000000000000000000000000000000d2fefd3785fec49698496a2edb82aea10daeb41c0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000ceb01255900000000000000000000000000000000000000000000000000000000d51dc3dc00000000000000000000000000000000000000000000000000000000bc6a7d7600000000000000000000000000000000000000000000000000000000b0b4888f00000000000000000000000000000000000000000000000000000000ecef557700000000000000000000000000000000000000000000000000000000b461dd4f00000000000000000000000000000000000000000000000000000000254bc6dc000000000000000000000000000000000000000000000000000000006fe55baa000000000000000000000000000000000000000000000000000000006be39bda00000000000000000000000000000000000000000000000000000000135b9f4d0000000000000000000000000000000000000000000000000000000011a3b1d600000000000000000000000000000000000000000000000000000000c0d94293000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "logIndex": 3,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
@@ -1672,14 +3342,14 @@
         ],
         "data": "0x",
         "logIndex": 4,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       }
     ],
     "events": [
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
@@ -1688,31 +3358,31 @@
         ],
         "data": "0x",
         "logIndex": 0,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
         ],
         "data": "0x0000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e0734f2f7f64e48abd708e0da563f19fbd16312000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000001e712b4e100000000000000000000000000000000000000000000000000000000000000000000000000000000ea581d116acd694f8706bf99d6e932919e0ed35900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005adfca15e000000000000000000000000000000000000000000000000000000007a0ed62700000000000000000000000000000000000000000000000000000000cdffacc60000000000000000000000000000000000000000000000000000000052ef6b2c0000000000000000000000000000000000000000000000000000000001ffc9a700000000000000000000000000000000000000000000000000000000000000000000000000000000583156f118292254e14829f25baafb67b48c418300000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000002f2fde38b000000000000000000000000000000000000000000000000000000008da5cb5b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "logIndex": 1,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x7528Bf29DAaD47441f5c00Ad9157Cc8AB7c24069",
         "topics": [
           "0x644ca5b0a8b0418e9faf3880659eeb84eaad45ad838b0173808e5ca72f5efc49"
         ],
         "data": "0x0000000000000000000000004a733a67e6d9aabfa3c570ae86858b0b42cd8752",
         "logIndex": 2,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0",
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5",
         "args": [
           "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752"
         ],
@@ -1721,20 +3391,20 @@
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x39725dd03d877043d78fdfe186295e46e6277eb0a3498f2adb51071f42a2bdcb"
         ],
-        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000740000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000003a000000000000000000000000000000000000000000000000000000000000005800000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "data": "0x000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000940000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000002c000000000000000000000000000000000000000000000000000000000000003c000000000000000000000000000000000000000000000000000000000000005a000000000000000000000000000000000000000000000000000000000000006e00000000000000000000000003afe270e25c5b2fc7679ba431eef2b5e2d26a52f000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000041717e867000000000000000000000000000000000000000000000000000000001b12681500000000000000000000000000000000000000000000000000000000e8f7ca3e0000000000000000000000000000000000000000000000000000000039262e8700000000000000000000000000000000000000000000000000000000000000000000000000000000d288b6ab166aa99ba28e801e59c028fcc836be6100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000006e7dc318800000000000000000000000000000000000000000000000000000000b3c45ebe00000000000000000000000000000000000000000000000000000000ee43eda10000000000000000000000000000000000000000000000000000000027258b220000000000000000000000000000000000000000000000000000000003a81a2a00000000000000000000000000000000000000000000000000000000512872f400000000000000000000000000000000000000000000000000000000000000000000000000000000b5883c472f130c9e6f5738be52bd69172eea7ee100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000005e50e0ef7000000000000000000000000000000000000000000000000000000003549d08d00000000000000000000000000000000000000000000000000000000bd1f0a6c000000000000000000000000000000000000000000000000000000006031a094000000000000000000000000000000000000000000000000000000000d62037a0000000000000000000000000000000000000000000000000000000000000000000000000000000053af5187298c0eaa21f9e68ffa36385f2ad7cbad0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000cb02ca0c00000000000000000000000000000000000000000000000000000000028e0f8a900000000000000000000000000000000000000000000000000000000b82820410000000000000000000000000000000000000000000000000000000075e86ae400000000000000000000000000000000000000000000000000000000f52f84e1000000000000000000000000000000000000000000000000000000003adc277a00000000000000000000000000000000000000000000000000000000a17b75b500000000000000000000000000000000000000000000000000000000ba4d2d2800000000000000000000000000000000000000000000000000000000de07a17300000000000000000000000000000000000000000000000000000000c3b6e7c2000000000000000000000000000000000000000000000000000000000c5b75a400000000000000000000000000000000000000000000000000000000d981e77300000000000000000000000000000000000000000000000000000000000000000000000000000000679ef0c5a8a806c5fae6a098f1d668c2af095d0100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000007cf5aed120000000000000000000000000000000000000000000000000000000037462dba000000000000000000000000000000000000000000000000000000006a899b9b0000000000000000000000000000000000000000000000000000000009648a9d00000000000000000000000000000000000000000000000000000000606aa07e00000000000000000000000000000000000000000000000000000000842962d5000000000000000000000000000000000000000000000000000000003a60d6fe00000000000000000000000000000000000000000000000000000000000000000000000000000000d2fefd3785fec49698496a2edb82aea10daeb41c0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000ceb01255900000000000000000000000000000000000000000000000000000000d51dc3dc00000000000000000000000000000000000000000000000000000000bc6a7d7600000000000000000000000000000000000000000000000000000000b0b4888f00000000000000000000000000000000000000000000000000000000ecef557700000000000000000000000000000000000000000000000000000000b461dd4f00000000000000000000000000000000000000000000000000000000254bc6dc000000000000000000000000000000000000000000000000000000006fe55baa000000000000000000000000000000000000000000000000000000006be39bda00000000000000000000000000000000000000000000000000000000135b9f4d0000000000000000000000000000000000000000000000000000000011a3b1d600000000000000000000000000000000000000000000000000000000c0d94293000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
         "logIndex": 3,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       },
       {
         "transactionIndex": 0,
-        "blockNumber": 9,
-        "transactionHash": "0x6d81e3bf9efbb8eea70381e77c578312c99a1b1bbc198ec0865663d24b0c8055",
+        "blockNumber": 10,
+        "transactionHash": "0x6c3085252c591a8f6cfcbf68cf40ac0acec58deb77616d79120dc3e5a4eab635",
         "address": "0x4A733a67E6d9AaBfA3C570aE86858B0B42Cd8752",
         "topics": [
           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
@@ -1743,11 +3413,11 @@
         ],
         "data": "0x",
         "logIndex": 4,
-        "blockHash": "0x7b9e34e11b0bc0df4e4a1408093dd0b0c7751624cb0076fff12d09af566a98c0"
+        "blockHash": "0xaa12e136ebd178150c06a15aed088211861781bb38c3c0ce58ce419a559fd9d5"
       }
     ],
-    "blockNumber": 9,
-    "cumulativeGasUsed": "3950205",
+    "blockNumber": 10,
+    "cumulativeGasUsed": "4384549",
     "status": 1,
     "byzantium": true
   },
@@ -1810,6 +3480,23 @@
         "0x842962d5",
         "0x3a60d6fe"
       ]
+    },
+    {
+      "facetAddress": "0xd2feFD3785FeC49698496A2EDb82AEA10daEB41C",
+      "functionSelectors": [
+        "0xeb012559",
+        "0xd51dc3dc",
+        "0xbc6a7d76",
+        "0xb0b4888f",
+        "0xecef5577",
+        "0xb461dd4f",
+        "0x254bc6dc",
+        "0x6fe55baa",
+        "0x6be39bda",
+        "0x135b9f4d",
+        "0x11a3b1d6",
+        "0xc0d94293"
+      ]
     }
   ],
   "diamondCut": [
@@ -1870,6 +3557,23 @@
         "0x606aa07e",
         "0x842962d5",
         "0x3a60d6fe"
+      ]
+    },
+    {
+      "facetAddress": "0xd2feFD3785FeC49698496A2EDb82AEA10daEB41C",
+      "functionSelectors": [
+        "0xeb012559",
+        "0xd51dc3dc",
+        "0xbc6a7d76",
+        "0xb0b4888f",
+        "0xecef5577",
+        "0xb461dd4f",
+        "0x254bc6dc",
+        "0x6fe55baa",
+        "0x6be39bda",
+        "0x135b9f4d",
+        "0x11a3b1d6",
+        "0xc0d94293"
       ]
     }
   ]
