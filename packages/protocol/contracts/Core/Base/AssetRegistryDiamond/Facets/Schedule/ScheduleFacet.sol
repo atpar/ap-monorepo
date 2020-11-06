@@ -7,7 +7,9 @@ import "../../../../../ACTUS/Core/Utils/PeriodUtils.sol";
 
 import "../../Lib.sol";
 import "../BaseFacet.sol";
-import "../IBaseContractFacet.sol";
+import "../ANN/IANNFacet.sol";
+import "../PAM/IPAMFacet.sol";
+import "../Terms/ITermsFacet.sol";
 import "../State/IStateFacet.sol";
 import "../Meta/IMetaFacet.sol";
 import "./IScheduleFacet.sol";
@@ -100,6 +102,18 @@ contract ScheduleFacet is
         return pendingEvent;
     }
 
+    function getNextComputedEvent(bytes32 assetId)
+        public
+        view
+        override
+        returns (bytes32, bool)
+    {
+        ContractType contractType = ContractType(ITermsFacet(address(this)).getEnumValueForTermsAttribute(assetId, "contractType"));
+        if (contractType == ContractType.ANN) return IANNFacet(address(this)).getNextComputedANNEvent(assetId);
+        if (contractType == ContractType.PAM) return IPAMFacet(address(this)).getNextComputedPAMEvent(assetId);
+        return (bytes32(0), false);
+    }
+
     /**
      * @notice Returns the index of the next event to be processed for a schedule of an asset.
      * @param assetId id of the asset
@@ -124,7 +138,7 @@ contract ScheduleFacet is
         override
         returns (bytes32)
     {
-        ContractReference memory contractReference_1 = IBaseContractFacet(address(this)).getContractReferenceValueForTermsAttribute(assetId, "contractReference_1");
+        ContractReference memory contractReference_1 = ITermsFacet(address(this)).getContractReferenceValueForTermsAttribute(assetId, "contractReference_1");
 
         // check for COVE
         if (contractReference_1.object != bytes32(0) && contractReference_1.role == ContractReferenceRole.COVE) {
@@ -137,7 +151,7 @@ contract ScheduleFacet is
             );
 
             uint256 exerciseDate = IStateFacet(address(this)).getUintValueForStateAttribute(assetId, "exerciseDate");
-            ContractPerformance creditEventTypeCovered = ContractPerformance(IBaseContractFacet(address(this)).getEnumValueForTermsAttribute(assetId, "creditEventTypeCovered"));
+            ContractPerformance creditEventTypeCovered = ContractPerformance(ITermsFacet(address(this)).getEnumValueForTermsAttribute(assetId, "creditEventTypeCovered"));
             ContractPerformance underlyingContractPerformance = ContractPerformance(IStateFacet(underlyingRegistry).getEnumValueForStateAttribute(underlyingAssetId, "contractPerformance"));
             uint256 underlyingNonPerformingDate = IStateFacet(underlyingRegistry).getUintValueForStateAttribute(underlyingAssetId, "nonPerformingDate");
 
@@ -163,13 +177,13 @@ contract ScheduleFacet is
                         underlyingNonPerformingDate
                     );
                 } else if (underlyingContractPerformance == ContractPerformance.DQ) {
-                    IP memory underlyingGracePeriod = IBaseContractFacet(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
+                    IP memory underlyingGracePeriod = ITermsFacet(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "gracePeriod");
                     return encodeEvent(
                         EventType.EXE,
                         getTimestampPlusPeriod(underlyingGracePeriod, underlyingNonPerformingDate)
                     );
                 } else if (underlyingContractPerformance == ContractPerformance.DF) {
-                    IP memory underlyingDelinquencyPeriod = IBaseContractFacet(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
+                    IP memory underlyingDelinquencyPeriod = ITermsFacet(underlyingRegistry).getPeriodValueForTermsAttribute(underlyingAssetId, "delinquencyPeriod");
                     return encodeEvent(
                         EventType.EXE,
                         getTimestampPlusPeriod(underlyingDelinquencyPeriod, underlyingNonPerformingDate)
@@ -200,7 +214,7 @@ contract ScheduleFacet is
         }
 
         // if no schedule is set, return next computed event
-        (bytes32 nextComputedEvent, ) = IBaseContractFacet(address(this)).getNextComputedEvent(assetId);
+        (bytes32 nextComputedEvent, ) = getNextComputedEvent(assetId);
         return nextComputedEvent;
     }
 
@@ -226,7 +240,7 @@ contract ScheduleFacet is
         }
 
         // if no schedule is set, pop next computed event
-        (bytes32 nextComputedEvent, bool isCyclicEvent) = IBaseContractFacet(address(this)).getNextComputedEvent(assetId);
+        (bytes32 nextComputedEvent, bool isCyclicEvent) = getNextComputedEvent(assetId);
         if (nextComputedEvent == bytes32(0)) return bytes32(0);
         
         (EventType eventType, uint256 scheduleTime) = decodeEvent(nextComputedEvent);

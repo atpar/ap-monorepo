@@ -19,6 +19,10 @@ interface IScheduleFacet {
         external
         returns (bytes32);
 
+    function getNextComputedEvent(bytes32 assetId)
+        external
+        returns (bytes32, bool);
+
     function getNextUnderlyingEvent (bytes32 assetId)
         external
         view

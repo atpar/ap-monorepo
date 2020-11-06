@@ -7,7 +7,6 @@ import "../../SharedTypes.sol";
 import "../Lib.sol";
 
 import "./BaseFacet.sol";
-import "./IBaseContractFacet.sol";
 import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleEncoder.sol";
 
@@ -16,7 +15,7 @@ import "./Schedule/ScheduleEncoder.sol";
  * @title BaseContractFacet
  * @notice Registry for ACTUS Protocol assets
  */
-abstract contract BaseContractFacet is BaseFacet, IBaseContractFacet {
+abstract contract BaseContractFacet is BaseFacet {
 
     using StateEncoder for Asset;
     using ScheduleEncoder for Asset;

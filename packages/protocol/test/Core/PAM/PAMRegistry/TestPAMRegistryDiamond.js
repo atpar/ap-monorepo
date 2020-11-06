@@ -11,7 +11,7 @@ const ASSET_ALREADY_EXISTS = 'ASSET_ALREADY_EXISTS';
 const UNAUTHORIZED_SENDER = 'UNAUTHORIZED_SENDER';
 
 
-describe('ANNRegistryDiamond', () => {
+describe('PAMRegistryDiamond', () => {
   let actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody;
 
   /** @param {any} self - `this` inside `before()` (and `it()`) */
@@ -19,14 +19,14 @@ describe('ANNRegistryDiamond', () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-      deployer, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody
+      /* deployer */, actor, creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary, nobody,
     ] = self.accounts;
 
-    self.assetId = 'ANN_01';
-    self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    self.terms = require('../../../helper/terms/ANNTerms-complex.json');
-    self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
-    self.state = await self.ANNEngineInstance.methods.computeInitialState(self.terms).call();
+    this.assetId = 'PAM_01';
+    this.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
+    this.terms = require('../../../helper/terms/PAMTerms-complex.json');
+    this.schedule = await generateSchedule(this.PAMEngineInstance, this.terms);
+    this.state = await this.PAMEngineInstance.methods.computeInitialState(this.terms).call();
   });
 
   before(async () => {
@@ -35,27 +35,25 @@ describe('ANNRegistryDiamond', () => {
   });
 
   it('should register an asset', async () => {
-    await this.AssetRegistryDiamondInstance.methods.registerANNAsset(
+    await this.AssetRegistryDiamondInstance.methods.registerPAMAsset(
       web3.utils.toHex(this.assetId),
       this.terms,
       this.state,
       this.schedule,
       this.ownership,
-      this.ANNEngineInstance.options.address,
+      this.PAMEngineInstance.options.address,
       actor,
       ZERO_ADDRESS
     ).send({ from: actor });
 
-    const storedTerms = await this.AssetRegistryDiamondInstance.methods.getANNTerms(web3.utils.toHex(this.assetId)).call();
+    const storedTerms = await this.AssetRegistryDiamondInstance.methods.getPAMTerms(web3.utils.toHex(this.assetId)).call();
     const storedState = await this.AssetRegistryDiamondInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
     const storedOwnership = await this.AssetRegistryDiamondInstance.methods.getOwnership(web3.utils.toHex(this.assetId)).call();
     const storedEngineAddress = await this.AssetRegistryDiamondInstance.methods.getEngine(web3.utils.toHex(this.assetId)).call();
 
-    console.log(storedTerms);
-  
     assert.deepStrictEqual(parseTerms(storedTerms), parseTerms(Object.values({ ...this.terms })));
     assert.deepStrictEqual(storedState, this.state);
-    assert.deepStrictEqual(storedEngineAddress, this.ANNEngineInstance.options.address);
+    assert.deepStrictEqual(storedEngineAddress, this.PAMEngineInstance.options.address);
     assert.strictEqual(storedOwnership.creatorObligor, creatorObligor);
     assert.strictEqual(storedOwnership.creatorBeneficiary, creatorBeneficiary);
     assert.strictEqual(storedOwnership.counterpartyObligor, counterpartyObligor);
@@ -64,13 +62,13 @@ describe('ANNRegistryDiamond', () => {
 
   it('should not overwrite an existing asset', async () => {
     await shouldFail.reverting.withMessage(
-      this.AssetRegistryDiamondInstance.methods.registerANNAsset(
+      this.AssetRegistryDiamondInstance.methods.registerPAMAsset(
         web3.utils.toHex(this.assetId),
         this.terms,
         this.state,
         this.schedule,
         this.ownership,
-        this.ANNEngineInstance.options.address,
+        this.PAMEngineInstance.options.address,
         actor,
         ZERO_ADDRESS
       ).send({ from: actor }),

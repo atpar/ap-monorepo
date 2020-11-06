@@ -2,24 +2,24 @@
 pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "../../../../../ACTUS/Engines/ANN/IANNEngine.sol";
+import "../../../../../ACTUS/Engines/PAM/IPAMEngine.sol";
 import "../../../../../ACTUS/Core/Utils/EventUtils.sol";
 
 import "../../Lib.sol";
 import "../BaseContractFacet.sol";
-import "./IANNFacet.sol";
-import "./ANNEncoder.sol";
+import "./IPAMFacet.sol";
+import "./PAMEncoder.sol";
 
 
-contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
+contract PAMFacet is BaseContractFacet, EventUtils, IPAMFacet {
 
-    using ANNEncoder for Asset;
+    using PAMEncoder for Asset;
 
 
     /**
      * @notice
      * @param assetId id of the asset
-     * @param terms asset specific terms (ANNTerms)
+     * @param terms asset specific terms (PAMTerms)
      * @param state initial state of the asset
      * @param schedule schedule of the asset
      * @param ownership ownership of the asset
@@ -27,9 +27,9 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
      * @param actor account which is allowed to update the asset state
      * @param admin account which as admin rights (optional)
      */
-    function registerANNAsset(
+    function registerPAMAsset(
         bytes32 assetId,
-        ANNTerms calldata terms,
+        PAMTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
@@ -41,7 +41,7 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
         override
     {
         setAsset(assetId, state, schedule, ownership, engine, actor, admin);
-        assetStorage().assets[assetId].encodeAndSetANNTerms(terms);
+        assetStorage().assets[assetId].encodeAndSetPAMTerms(terms);
     }
 
     /**
@@ -49,13 +49,13 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
      * @param assetId id of the asset
      * @return terms of the asset
      */
-    function getANNTerms(bytes32 assetId)
+    function getPAMTerms(bytes32 assetId)
         external
         view
         override
-        returns (ANNTerms memory)
+        returns (PAMTerms memory)
     {
-        return assetStorage().assets[assetId].decodeAndGetANNTerms();
+        return assetStorage().assets[assetId].decodeAndGetPAMTerms();
     }
 
     /**
@@ -64,23 +64,23 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
      * @param assetId id of the asset
      * @param terms new terms
      */
-    function setANNTerms(bytes32 assetId, ANNTerms calldata terms)
+    function setPAMTerms(bytes32 assetId, PAMTerms calldata terms)
         external
         override
         isAuthorized (assetId)
     {
-        assetStorage().assets[assetId].encodeAndSetANNTerms(terms);
+        assetStorage().assets[assetId].encodeAndSetPAMTerms(terms);
         emit UpdatedTerms(assetId);
     }
 
-    function getNextComputedANNEvent(bytes32 assetId)
+    function getNextComputedPAMEvent(bytes32 assetId)
         public
         view
         override
         returns (bytes32, bool)
     {
         Asset storage asset = assetStorage().assets[assetId];
-        ANNTerms memory terms = asset.decodeAndGetANNTerms();
+        PAMTerms memory terms = asset.decodeAndGetPAMTerms();
 
         EventType nextEventType;
         uint256 nextScheduleTime;
@@ -88,7 +88,7 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
 
         // IP
         {
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(IANNEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IP],
                 EventType.IP
@@ -101,12 +101,12 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
             ) {
                 nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         // IPCI
         {
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(IANNEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.IPCI],
                 EventType.IPCI
@@ -124,7 +124,7 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
 
         // FP
         {
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(IANNEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.FP],
                 EventType.FP
@@ -140,12 +140,12 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
             }        
         }
 
-        // PR
+        // SC
         {
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(IANNEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextCyclicEvent(
                 terms,
-                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.PR],
-                EventType.PR
+                asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.SC],
+                EventType.SC
             ));
 
             if (
@@ -160,7 +160,7 @@ contract ANNFacet is BaseContractFacet, EventUtils, IANNFacet {
 
         // Non-Cyclic
         {
-            (EventType eventType, uint256 scheduleTime) = decodeEvent(IANNEngine(asset.engine).computeNextNonCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(IPAMEngine(asset.engine).computeNextNonCyclicEvent(
                 terms,
                 asset.schedule.lastNonCyclicEvent
             ));

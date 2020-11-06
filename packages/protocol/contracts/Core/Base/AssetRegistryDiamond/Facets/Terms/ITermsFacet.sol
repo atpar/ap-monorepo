@@ -1,11 +1,11 @@
-// "SPDX-License-Identifier: Apache-2.0"
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "../../SharedTypes.sol";
+import "../../../SharedTypes.sol";
 
 
-interface IBaseContractFacet {
+interface ITermsFacet {
 
     function getEnumValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
         external
@@ -46,9 +46,4 @@ interface IBaseContractFacet {
         external
         view
         returns (ContractReference memory);
-
-    function getNextComputedEvent(bytes32 assetId)
-        external
-        view
-        returns (bytes32, bool);
 }

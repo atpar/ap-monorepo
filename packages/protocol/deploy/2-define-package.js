@@ -131,7 +131,9 @@ async function definePackage(buidlerRuntime) {
                 { name: "OwnershipFacet" },
                 { name: "ScheduleFacet" },
                 { name: "StateFacet" },
-                { name: "ANNFacet" }
+                { name: "TermsFacet" },
+                { name: "ANNFacet" },
+                { name: "PAMFacet" }
             ]
         }
     ];

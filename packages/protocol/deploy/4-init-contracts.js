@@ -19,6 +19,7 @@ async function initContracts(buidlerRuntime) {
     await registerActor(buidlerRuntime,"STKRegistry", "STKActor");
     
     await registerActor(buidlerRuntime,"AssetRegistryDiamond", "ANNActor");
+    await registerActor(buidlerRuntime,"AssetRegistryDiamond", "PAMActor");
 }
 
 /**

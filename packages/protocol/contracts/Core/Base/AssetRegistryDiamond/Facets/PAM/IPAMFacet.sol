@@ -5,11 +5,11 @@ pragma experimental ABIEncoderV2;
 import "../../../SharedTypes.sol";
 
 
-interface IANNFacet {
+interface IPAMFacet {
 
-    function registerANNAsset(
+    function registerPAMAsset(
         bytes32 assetId,
-        ANNTerms calldata terms,
+        PAMTerms calldata terms,
         State calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
@@ -19,15 +19,15 @@ interface IANNFacet {
     )
         external;
 
-    function getANNTerms(bytes32 assetId)
+    function getPAMTerms(bytes32 assetId)
         external
         view
-        returns (ANNTerms memory);
+        returns (PAMTerms memory);
 
-    function setANNTerms(bytes32 assetId, ANNTerms calldata terms)
+    function setPAMTerms(bytes32 assetId, PAMTerms calldata terms)
         external;
 
-    function getNextComputedANNEvent(bytes32 assetId)
+    function getNextComputedPAMEvent(bytes32 assetId)
         external
         view
         returns (bytes32, bool);
