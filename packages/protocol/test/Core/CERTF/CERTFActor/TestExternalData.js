@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/utils/blockchain');

@@ -1,0 +1,436 @@
+{
+  "address": "0x0Da214C188a8f67f0C67bd1B54B34E74C6DE0772",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "settlementId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "executor",
+          "type": "address"
+        }
+      ],
+      "name": "SettlementExecuted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "settlementId",
+          "type": "uint256"
+        }
+      ],
+      "name": "SettlementExpired",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "settlementId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "creatorToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "creatorAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "creatorBeneficiary",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterparty",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "counterpartyToken",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "counterpartyAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expirationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum DvPSettlement.SettlementStatus",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct DvPSettlement.Settlement",
+          "name": "settlement",
+          "type": "tuple"
+        }
+      ],
+      "name": "SettlementInitialized",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "creatorToken",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "creatorAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "creatorBeneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "counterparty",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "counterpartyToken",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "counterpartyAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expirationDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "createSettlement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "executeSettlement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        }
+      ],
+      "name": "expireSettlement",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "settlements",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "creatorToken",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "creatorAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "creatorBeneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "counterparty",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "counterpartyToken",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "counterpartyAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "expirationDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum DvPSettlement.SettlementStatus",
+          "name": "status",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xee8c218d9b15cfe53adb9eeff082ef2e160f4b3021c3caae4526266883dab166",
+  "receipt": {
+    "to": null,
+    "from": "0x6C51ECF949882c2183357B860FD82Dd4bb631840",
+    "contractAddress": "0x0Da214C188a8f67f0C67bd1B54B34E74C6DE0772",
+    "transactionIndex": 0,
+    "gasUsed": "800808",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xb71730883619b496becbff2bbcc9d1945b5d4d4ac0e74369ea8ce87fbc22d749",
+    "transactionHash": "0xee8c218d9b15cfe53adb9eeff082ef2e160f4b3021c3caae4526266883dab166",
+    "logs": [],
+    "blockNumber": 162,
+    "cumulativeGasUsed": "800808",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "881b45994c61c48eb152b2243f6d8f05",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"settlementId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"SettlementExecuted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"settlementId\",\"type\":\"uint256\"}],\"name\":\"SettlementExpired\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"settlementId\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creatorToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"creatorAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creatorBeneficiary\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterparty\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterpartyToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"counterpartyAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"expirationDate\",\"type\":\"uint256\"},{\"internalType\":\"enum DvPSettlement.SettlementStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"indexed\":false,\"internalType\":\"struct DvPSettlement.Settlement\",\"name\":\"settlement\",\"type\":\"tuple\"}],\"name\":\"SettlementInitialized\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creatorToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"creatorAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creatorBeneficiary\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterparty\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterpartyToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"counterpartyAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"expirationDate\",\"type\":\"uint256\"}],\"name\":\"createSettlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"executeSettlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"expireSettlement\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"settlements\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"creatorToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"creatorAmount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"creatorBeneficiary\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterparty\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"counterpartyToken\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"counterpartyAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"expirationDate\",\"type\":\"uint256\"},{\"internalType\":\"enum DvPSettlement.SettlementStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Contract to manage any number of Delivery-versus-Payment Settlements\",\"kind\":\"dev\",\"methods\":{\"createSettlement(address,uint256,address,address,address,uint256,uint256)\":{\"details\":\"The creator must approve for this contract at least `creatorAmount` of tokens\",\"params\":{\"counterparty\":\"address of counterparty OR 0x0 for open settlement\",\"counterpartyAmount\":\"amount of counterparty's ERC20 token to be exchanged\",\"counterpartyToken\":\"address of counterparty's ERC20 token\",\"creatorAmount\":\"amount of creator's ERC20 token to be exchanged\",\"creatorToken\":\"address of creator's ERC20 token\",\"expirationDate\":\"unix timestamp in seconds\"}},\"executeSettlement(uint256)\":{\"details\":\"This function can only be successfully called by the designated counterparty unless the counterparty address is empty (0x0) in which case anyone can fulfill and execute the settlementThe counterparty must approve for this contract at least `counterpartyAmount` of tokens\",\"params\":{\"id\":\"the unsigned integer ID value for the Settlement to execute\"}},\"expireSettlement(uint256)\":{\"details\":\"This function can be called by anyone since there is no other possible outcome for a created settlement that has passed the expiration date\",\"params\":{\"id\":\"the unsigned integer ID value for the Settlement to expire\"}}},\"title\":\"DvPSettlement\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"createSettlement(address,uint256,address,address,address,uint256,uint256)\":{\"notice\":\"Creates a new Settlement in the contract's storage and transfers creator's tokens into the contract\"},\"executeSettlement(uint256)\":{\"notice\":\"Executes an existing Settlement with the sender as the counterparty\"},\"expireSettlement(uint256)\":{\"notice\":\"When called after a given settlement expires, it refunds tokens to the creator\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Extensions/DvPSettlement.sol\":\"DvPSettlement\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/math/SafeMath.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\n/**\\n * @dev Wrappers over Solidity's arithmetic operations with added overflow\\n * checks.\\n *\\n * Arithmetic operations in Solidity wrap on overflow. This can easily result\\n * in bugs, because programmers usually assume that an overflow raises an\\n * error, which is the standard behavior in high level programming languages.\\n * `SafeMath` restores this intuition by reverting the transaction when an\\n * operation overflows.\\n *\\n * Using this library instead of the unchecked operations eliminates an entire\\n * class of bugs, so it's recommended to use it always.\\n */\\nlibrary SafeMath {\\n    /**\\n     * @dev Returns the addition of two unsigned integers, reverting on\\n     * overflow.\\n     *\\n     * Counterpart to Solidity's `+` operator.\\n     *\\n     * Requirements:\\n     *\\n     * - Addition cannot overflow.\\n     */\\n    function add(uint256 a, uint256 b) internal pure returns (uint256) {\\n        uint256 c = a + b;\\n        require(c >= a, \\\"SafeMath: addition overflow\\\");\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the subtraction of two unsigned integers, reverting on\\n     * overflow (when the result is negative).\\n     *\\n     * Counterpart to Solidity's `-` operator.\\n     *\\n     * Requirements:\\n     *\\n     * - Subtraction cannot overflow.\\n     */\\n    function sub(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return sub(a, b, \\\"SafeMath: subtraction overflow\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on\\n     * overflow (when the result is negative).\\n     *\\n     * Counterpart to Solidity's `-` operator.\\n     *\\n     * Requirements:\\n     *\\n     * - Subtraction cannot overflow.\\n     */\\n    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        require(b <= a, errorMessage);\\n        uint256 c = a - b;\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the multiplication of two unsigned integers, reverting on\\n     * overflow.\\n     *\\n     * Counterpart to Solidity's `*` operator.\\n     *\\n     * Requirements:\\n     *\\n     * - Multiplication cannot overflow.\\n     */\\n    function mul(uint256 a, uint256 b) internal pure returns (uint256) {\\n        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the\\n        // benefit is lost if 'b' is also tested.\\n        // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522\\n        if (a == 0) {\\n            return 0;\\n        }\\n\\n        uint256 c = a * b;\\n        require(c / a == b, \\\"SafeMath: multiplication overflow\\\");\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the integer division of two unsigned integers. Reverts on\\n     * division by zero. The result is rounded towards zero.\\n     *\\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\\n     * uses an invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     *\\n     * - The divisor cannot be zero.\\n     */\\n    function div(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return div(a, b, \\\"SafeMath: division by zero\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the integer division of two unsigned integers. Reverts with custom message on\\n     * division by zero. The result is rounded towards zero.\\n     *\\n     * Counterpart to Solidity's `/` operator. Note: this function uses a\\n     * `revert` opcode (which leaves remaining gas untouched) while Solidity\\n     * uses an invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     *\\n     * - The divisor cannot be zero.\\n     */\\n    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        require(b > 0, errorMessage);\\n        uint256 c = a / b;\\n        // assert(a == b * c + a % b); // There is no case in which this doesn't hold\\n\\n        return c;\\n    }\\n\\n    /**\\n     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),\\n     * Reverts when dividing by zero.\\n     *\\n     * Counterpart to Solidity's `%` operator. This function uses a `revert`\\n     * opcode (which leaves remaining gas untouched) while Solidity uses an\\n     * invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     *\\n     * - The divisor cannot be zero.\\n     */\\n    function mod(uint256 a, uint256 b) internal pure returns (uint256) {\\n        return mod(a, b, \\\"SafeMath: modulo by zero\\\");\\n    }\\n\\n    /**\\n     * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),\\n     * Reverts with custom message when dividing by zero.\\n     *\\n     * Counterpart to Solidity's `%` operator. This function uses a `revert`\\n     * opcode (which leaves remaining gas untouched) while Solidity uses an\\n     * invalid opcode to revert (consuming all remaining gas).\\n     *\\n     * Requirements:\\n     *\\n     * - The divisor cannot be zero.\\n     */\\n    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {\\n        require(b != 0, errorMessage);\\n        return a % b;\\n    }\\n}\\n\",\"keccak256\":\"0xba96bc371ba999f452985a98717cca1e4c4abb598dc038a9a9c3db08129b1ba4\",\"license\":\"MIT\"},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `recipient`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address recipient, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `sender` to `recipient` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n}\\n\",\"keccak256\":\"0xbd74f587ab9b9711801baf667db1426e4a03fd2d7f15af33e0e0d0394e7cef76\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Counters.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\nimport \\\"../math/SafeMath.sol\\\";\\n\\n/**\\n * @title Counters\\n * @author Matt Condon (@shrugs)\\n * @dev Provides counters that can only be incremented or decremented by one. This can be used e.g. to track the number\\n * of elements in a mapping, issuing ERC721 ids, or counting request ids.\\n *\\n * Include with `using Counters for Counters.Counter;`\\n * Since it is not possible to overflow a 256 bit integer with increments of one, `increment` can skip the {SafeMath}\\n * overflow check, thereby saving gas. This does assume however correct usage, in that the underlying `_value` is never\\n * directly accessed.\\n */\\nlibrary Counters {\\n    using SafeMath for uint256;\\n\\n    struct Counter {\\n        // This variable should never be directly accessed by users of the library: interactions must be restricted to\\n        // the library's function. As of Solidity v0.5.2, this cannot be enforced, though there is a proposal to add\\n        // this feature: see https://github.com/ethereum/solidity/issues/4637\\n        uint256 _value; // default: 0\\n    }\\n\\n    function current(Counter storage counter) internal view returns (uint256) {\\n        return counter._value;\\n    }\\n\\n    function increment(Counter storage counter) internal {\\n        // The {SafeMath} overflow check can be skipped here, see the comment at the top\\n        counter._value += 1;\\n    }\\n\\n    function decrement(Counter storage counter) internal {\\n        counter._value = counter._value.sub(1);\\n    }\\n}\\n\",\"keccak256\":\"0x2424442932373c51391b31409f9620d1e1396c37f41ab9d82c51d69bebdd1ab5\",\"license\":\"MIT\"},\"contracts/Extensions/DvPSettlement.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\nimport \\\"@openzeppelin/contracts/token/ERC20/IERC20.sol\\\";\\nimport \\\"@openzeppelin/contracts/utils/Counters.sol\\\";\\n\\n\\n/**\\n * @title DvPSettlement\\n * @dev Contract to manage any number of Delivery-versus-Payment Settlements\\n */\\ncontract DvPSettlement {\\n    using Counters for Counters.Counter;\\n    Counters.Counter _settlementIds;\\n\\n    event SettlementInitialized(uint256 indexed settlementId, Settlement settlement);\\n    event SettlementExecuted(uint256 indexed settlementId, address indexed executor);\\n    event SettlementExpired(uint256 indexed settlementId);\\n\\n    enum SettlementStatus { NOT_EXISTS, INITIALIZED, EXECUTED, EXPIRED }\\n\\n    struct Settlement {\\n        address creator;\\n        address creatorToken;\\n        uint256 creatorAmount;\\n        address creatorBeneficiary;\\n        address counterparty;\\n        address counterpartyToken;\\n        uint256 counterpartyAmount;\\n        uint256 expirationDate;\\n        SettlementStatus status;\\n    }\\n\\n    mapping (uint256 => Settlement) public settlements;\\n\\n    /**\\n     * @notice Creates a new Settlement in the contract's storage and transfers creator's tokens into the contract\\n     * @dev The creator must approve for this contract at least `creatorAmount` of tokens\\n     * @param creatorToken address of creator's ERC20 token\\n     * @param creatorAmount amount of creator's ERC20 token to be exchanged\\n     * @param counterparty address of counterparty OR 0x0 for open settlement\\n     * @param counterpartyToken address of counterparty's ERC20 token\\n     * @param counterpartyAmount amount of counterparty's ERC20 token to be exchanged\\n     * @param expirationDate unix timestamp in seconds\\n     */\\n    function createSettlement(\\n        address creatorToken,\\n        uint256 creatorAmount,\\n        address creatorBeneficiary,\\n        address counterparty,\\n        address counterpartyToken,\\n        uint256 counterpartyAmount,\\n        uint256 expirationDate\\n    ) public\\n    {\\n        require(\\n            expirationDate > block.timestamp,\\n            \\\"DvPSettlement.createSettlement - expiration date cannot be in the past\\\"\\n        );\\n\\n        _settlementIds.increment();\\n        uint256 id = _settlementIds.current();\\n\\n        settlements[id].creator = msg.sender;\\n        settlements[id].creatorToken = creatorToken;\\n        settlements[id].creatorAmount = creatorAmount;\\n        settlements[id].creatorBeneficiary = creatorBeneficiary;\\n        settlements[id].counterparty = counterparty;\\n        settlements[id].counterpartyToken = counterpartyToken;\\n        settlements[id].counterpartyAmount = counterpartyAmount;\\n        settlements[id].expirationDate = expirationDate;\\n        settlements[id].status = SettlementStatus.INITIALIZED;\\n\\n        require(\\n            IERC20(settlements[id].creatorToken)\\n            .transferFrom(\\n                settlements[id].creator,\\n                address(this),\\n                settlements[id].creatorAmount\\n            ),\\n            \\\"DvPSettlement.createSettlement - transferFrom failed\\\"\\n        );\\n\\n        emit SettlementInitialized(id, settlements[id]);\\n    }\\n\\n\\n    /**\\n     * @notice Executes an existing Settlement with the sender as the counterparty\\n     * @dev This function can only be successfully called by the designated counterparty unless\\n     * the counterparty address is empty (0x0) in which case anyone can fulfill and execute the settlement\\n     * @dev The counterparty must approve for this contract at least `counterpartyAmount` of tokens\\n     * @param id the unsigned integer ID value for the Settlement to execute\\n     */\\n    function executeSettlement(uint256 id) public {\\n        require(\\n            settlements[id].status == SettlementStatus.INITIALIZED,\\n            \\\"DvPSettlement.executeSettlement - settlement must be in initialized status\\\"\\n        );\\n        require(\\n            settlements[id].expirationDate > block.timestamp,\\n            \\\"DvPSettlement.executeSettlement - settlement expired\\\"\\n        );\\n\\n        // if empty (0x0) counterparty address, consider it an \\\"open\\\" settlement\\n        require(\\n            settlements[id].counterparty == address(0) || settlements[id].counterparty == msg.sender,\\n            \\\"DvPSettlement.executeSettlement - sender not allowed to execute settlement\\\"\\n        );\\n\\n        // if empty (0x0) creatorBeneficiary address, send funds to creator\\n        address creatorReveiver = (settlements[id].creatorBeneficiary == address(0)) ?\\n            settlements[id].creator : settlements[id].creatorBeneficiary;\\n\\n        // transfer both tokens\\n        require(\\n            (IERC20(settlements[id].counterpartyToken)\\n            .transferFrom(\\n                msg.sender,\\n                creatorReveiver,\\n                settlements[id].counterpartyAmount\\n            )),\\n            \\\"DvPSettlement.executeSettlement - transferFrom sender failed\\\"\\n        );\\n\\n        require(\\n            (IERC20(settlements[id].creatorToken)\\n            .transfer(\\n                msg.sender,\\n                settlements[id].creatorAmount\\n            )),\\n            \\\"DvPSettlement.executeSettlement - transfer to sender failed\\\"\\n        );\\n\\n        settlements[id].status = SettlementStatus.EXECUTED;\\n        emit SettlementExecuted(id, msg.sender);\\n    }\\n\\n    /**\\n     * @notice When called after a given settlement expires, it refunds tokens to the creator\\n     * @dev This function can be called by anyone since there is no other possible outcome for\\n     * a created settlement that has passed the expiration date\\n     * @param id the unsigned integer ID value for the Settlement to expire\\n     */\\n    function expireSettlement(uint256 id) public {\\n        require(\\n            settlements[id].expirationDate < block.timestamp,\\n            \\\"DvPSettlement.expireSettlement - settlement is not expired\\\"\\n        );\\n        require(\\n            settlements[id].status == SettlementStatus.INITIALIZED,\\n            \\\"DvPSettlement.expireSettlement - only INITIALIZED settlements can be expired\\\"\\n        );\\n\\n        // refund creator\\n        require(\\n            (IERC20(settlements[id].creatorToken)\\n            .transfer(\\n                settlements[id].creator,\\n                settlements[id].creatorAmount\\n            )),\\n            \\\"DvPSettlement.expireSettlement - refunding creator failed\\\"\\n        );\\n\\n        settlements[id].status = SettlementStatus.EXPIRED;\\n        emit SettlementExpired(id);\\n    }\\n}\",\"keccak256\":\"0x363580a2b55140a1f65f0a156e8254332cc7ffb1fe24276a04443ca4cf6cf85b\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610d86806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c806308df7dc81461005157806322761cca1461008257806353fd599d1461009757806383c0b8ac146100aa575b600080fd5b61006461005f366004610804565b6100bd565b60405161007999989796959493929190610874565b60405180910390f35b610095610090366004610804565b61011e565b005b6100956100a536600461076d565b610294565b6100956100b8366004610804565b610469565b60016020819052600091825260409091208054918101546002820154600383015460048401546005850154600686015460078701546008909701546001600160a01b0398891698968716979596948516959385169490921692909160ff1689565b60008181526001602052604090206007015442116101575760405162461bcd60e51b815260040161014e9061092a565b60405180910390fd5b600160008281526001602052604090206008015460ff16600381111561017957fe5b146101965760405162461bcd60e51b815260040161014e90610987565b600081815260016020819052604091829020908101548154600290920154925163a9059cbb60e01b81526001600160a01b039182169363a9059cbb936101e093169160040161085b565b602060405180830381600087803b1580156101fa57600080fd5b505af115801561020e573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061023291906107dd565b61024e5760405162461bcd60e51b815260040161014e90610bf9565b600081815260016020526040808220600801805460ff191660031790555182917fb225d3ed70d8e9aba9eff208c9b1d055ec421670b5037f3f1b3b3a7bd923efac91a250565b4281116102b35760405162461bcd60e51b815260040161014e906109f9565b6102bd6000610745565b60006102c9600061074e565b60008181526001602081905260409091208054336001600160a01b0319918216178255818301805482166001600160a01b038e811691909117909155600283018c905560038301805483168c831617905560048301805483168b831617905560058301805490921690891617905560068101869055600781018590556008018054929350909160ff19168280021790555060008181526001602081905260409182902090810154815460029092015492516323b872dd60e01b81526001600160a01b03918216936323b872dd936103a7931691309190600401610837565b602060405180830381600087803b1580156103c157600080fd5b505af11580156103d5573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103f991906107dd565b6104155760405162461bcd60e51b815260040161014e906108d6565b807fdfaefcb59efc7722ebdeb8d1ec6d1c3bb1c07a742e178a458fa00a45203cfbe2600160008481526020019081526020016000206040516104579190610c56565b60405180910390a25050505050505050565b600160008281526001602052604090206008015460ff16600381111561048b57fe5b146104a85760405162461bcd60e51b815260040161014e90610ab0565b60008181526001602052604090206007015442106104d85760405162461bcd60e51b815260040161014e90610b0e565b6000818152600160205260409020600401546001600160a01b0316158061051857506000818152600160205260409020600401546001600160a01b031633145b6105345760405162461bcd60e51b815260040161014e90610b9b565b6000818152600160205260408120600301546001600160a01b031615610574576000828152600160205260409020600301546001600160a01b031661058d565b6000828152600160205260409020546001600160a01b03165b60008381526001602052604090819020600581015460069091015491516323b872dd60e01b81529293506001600160a01b0316916323b872dd916105d79133918691600401610837565b602060405180830381600087803b1580156105f157600080fd5b505af1158015610605573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061062991906107dd565b6106455760405162461bcd60e51b815260040161014e90610a65565b60008281526001602081905260409182902090810154600290910154915163a9059cbb60e01b81526001600160a01b039091169163a9059cbb9161068d91339160040161085b565b602060405180830381600087803b1580156106a757600080fd5b505af11580156106bb573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106df91906107dd565b6106fb5760405162461bcd60e51b815260040161014e90610b50565b600082815260016020526040808220600801805460ff1916600217905551339184917ff059ff22963b773739a912cc5c0f2f358be1a072c66ba18e2c31e503fd0121959190a35050565b80546001019055565b80545b919050565b80356001600160a01b038116811461075157600080fd5b600080600080600080600060e0888a031215610787578283fd5b61079088610756565b9650602088013595506107a560408901610756565b94506107b360608901610756565b93506107c160808901610756565b925060a0880135915060c0880135905092959891949750929550565b6000602082840312156107ee578081fd5b815180151581146107fd578182fd5b9392505050565b600060208284031215610815578081fd5b5035919050565b6001600160a01b03169052565b6004811061083357fe5b9052565b6001600160a01b039384168152919092166020820152604081019190915260600190565b6001600160a01b03929092168252602082015260400190565b6001600160a01b038a8116825289811660208301526040820189905287811660608301528681166080830152851660a082015260c0810184905260e0810183905261012081016108c8610100830184610829565b9a9950505050505050505050565b60208082526034908201527f447650536574746c656d656e742e637265617465536574746c656d656e74202d604082015273081d1c985b9cd9995c919c9bdb4819985a5b195960621b606082015260800190565b6020808252603a908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f20736574746c656d656e74206973206e6f742065787069726564000000000000606082015260800190565b6020808252604c908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f206f6e6c7920494e495449414c495a454420736574746c656d656e747320636160608201526b1b88189948195e1c1a5c995960a21b608082015260a00190565b60208082526046908201527f447650536574746c656d656e742e637265617465536574746c656d656e74202d60408201527f2065787069726174696f6e20646174652063616e6e6f7420626520696e20746860608201526519481c185cdd60d21b608082015260a00190565b6020808252603c90820152600080516020610d3183398151915260408201527f2d207472616e7366657246726f6d2073656e646572206661696c656400000000606082015260800190565b6020808252604a90820152600080516020610d3183398151915260408201527f2d20736574746c656d656e74206d75737420626520696e20696e697469616c696060820152697a65642073746174757360b01b608082015260a00190565b6020808252603490820152600080516020610d318339815191526040820152730b481cd95d1d1b195b595b9d08195e1c1a5c995960621b606082015260800190565b6020808252603b90820152600080516020610d3183398151915260408201527f2d207472616e7366657220746f2073656e646572206661696c65640000000000606082015260800190565b6020808252604a90820152600080516020610d3183398151915260408201527f2d2073656e646572206e6f7420616c6c6f77656420746f2065786563757465206060820152691cd95d1d1b195b595b9d60b21b608082015260a00190565b60208082526039908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f20726566756e64696e672063726561746f72206661696c656400000000000000606082015260800190565b600061012082019050610c7282610c6d8554610d1e565b61081c565b610c7f6001840154610d1e565b610c8c602084018261081c565b5060028301546040830152610ca46003840154610d1e565b610cb1606084018261081c565b50610cbf6004840154610d1e565b610ccc608084018261081c565b50610cda6005840154610d1e565b610ce760a084018261081c565b50600683015460c0830152600783015460e0830152610d096008840154610d2a565b610d17610100840182610829565b5092915050565b6001600160a01b031690565b60ff169056fe447650536574746c656d656e742e65786563757465536574746c656d656e7420a2646970667358221220eac3c2818e7d01f49c750d02aa040403bbbfc1276449bab19dd714ae6eccc92b64736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c806308df7dc81461005157806322761cca1461008257806353fd599d1461009757806383c0b8ac146100aa575b600080fd5b61006461005f366004610804565b6100bd565b60405161007999989796959493929190610874565b60405180910390f35b610095610090366004610804565b61011e565b005b6100956100a536600461076d565b610294565b6100956100b8366004610804565b610469565b60016020819052600091825260409091208054918101546002820154600383015460048401546005850154600686015460078701546008909701546001600160a01b0398891698968716979596948516959385169490921692909160ff1689565b60008181526001602052604090206007015442116101575760405162461bcd60e51b815260040161014e9061092a565b60405180910390fd5b600160008281526001602052604090206008015460ff16600381111561017957fe5b146101965760405162461bcd60e51b815260040161014e90610987565b600081815260016020819052604091829020908101548154600290920154925163a9059cbb60e01b81526001600160a01b039182169363a9059cbb936101e093169160040161085b565b602060405180830381600087803b1580156101fa57600080fd5b505af115801561020e573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061023291906107dd565b61024e5760405162461bcd60e51b815260040161014e90610bf9565b600081815260016020526040808220600801805460ff191660031790555182917fb225d3ed70d8e9aba9eff208c9b1d055ec421670b5037f3f1b3b3a7bd923efac91a250565b4281116102b35760405162461bcd60e51b815260040161014e906109f9565b6102bd6000610745565b60006102c9600061074e565b60008181526001602081905260409091208054336001600160a01b0319918216178255818301805482166001600160a01b038e811691909117909155600283018c905560038301805483168c831617905560048301805483168b831617905560058301805490921690891617905560068101869055600781018590556008018054929350909160ff19168280021790555060008181526001602081905260409182902090810154815460029092015492516323b872dd60e01b81526001600160a01b03918216936323b872dd936103a7931691309190600401610837565b602060405180830381600087803b1580156103c157600080fd5b505af11580156103d5573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906103f991906107dd565b6104155760405162461bcd60e51b815260040161014e906108d6565b807fdfaefcb59efc7722ebdeb8d1ec6d1c3bb1c07a742e178a458fa00a45203cfbe2600160008481526020019081526020016000206040516104579190610c56565b60405180910390a25050505050505050565b600160008281526001602052604090206008015460ff16600381111561048b57fe5b146104a85760405162461bcd60e51b815260040161014e90610ab0565b60008181526001602052604090206007015442106104d85760405162461bcd60e51b815260040161014e90610b0e565b6000818152600160205260409020600401546001600160a01b0316158061051857506000818152600160205260409020600401546001600160a01b031633145b6105345760405162461bcd60e51b815260040161014e90610b9b565b6000818152600160205260408120600301546001600160a01b031615610574576000828152600160205260409020600301546001600160a01b031661058d565b6000828152600160205260409020546001600160a01b03165b60008381526001602052604090819020600581015460069091015491516323b872dd60e01b81529293506001600160a01b0316916323b872dd916105d79133918691600401610837565b602060405180830381600087803b1580156105f157600080fd5b505af1158015610605573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061062991906107dd565b6106455760405162461bcd60e51b815260040161014e90610a65565b60008281526001602081905260409182902090810154600290910154915163a9059cbb60e01b81526001600160a01b039091169163a9059cbb9161068d91339160040161085b565b602060405180830381600087803b1580156106a757600080fd5b505af11580156106bb573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906106df91906107dd565b6106fb5760405162461bcd60e51b815260040161014e90610b50565b600082815260016020526040808220600801805460ff1916600217905551339184917ff059ff22963b773739a912cc5c0f2f358be1a072c66ba18e2c31e503fd0121959190a35050565b80546001019055565b80545b919050565b80356001600160a01b038116811461075157600080fd5b600080600080600080600060e0888a031215610787578283fd5b61079088610756565b9650602088013595506107a560408901610756565b94506107b360608901610756565b93506107c160808901610756565b925060a0880135915060c0880135905092959891949750929550565b6000602082840312156107ee578081fd5b815180151581146107fd578182fd5b9392505050565b600060208284031215610815578081fd5b5035919050565b6001600160a01b03169052565b6004811061083357fe5b9052565b6001600160a01b039384168152919092166020820152604081019190915260600190565b6001600160a01b03929092168252602082015260400190565b6001600160a01b038a8116825289811660208301526040820189905287811660608301528681166080830152851660a082015260c0810184905260e0810183905261012081016108c8610100830184610829565b9a9950505050505050505050565b60208082526034908201527f447650536574746c656d656e742e637265617465536574746c656d656e74202d604082015273081d1c985b9cd9995c919c9bdb4819985a5b195960621b606082015260800190565b6020808252603a908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f20736574746c656d656e74206973206e6f742065787069726564000000000000606082015260800190565b6020808252604c908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f206f6e6c7920494e495449414c495a454420736574746c656d656e747320636160608201526b1b88189948195e1c1a5c995960a21b608082015260a00190565b60208082526046908201527f447650536574746c656d656e742e637265617465536574746c656d656e74202d60408201527f2065787069726174696f6e20646174652063616e6e6f7420626520696e20746860608201526519481c185cdd60d21b608082015260a00190565b6020808252603c90820152600080516020610d3183398151915260408201527f2d207472616e7366657246726f6d2073656e646572206661696c656400000000606082015260800190565b6020808252604a90820152600080516020610d3183398151915260408201527f2d20736574746c656d656e74206d75737420626520696e20696e697469616c696060820152697a65642073746174757360b01b608082015260a00190565b6020808252603490820152600080516020610d318339815191526040820152730b481cd95d1d1b195b595b9d08195e1c1a5c995960621b606082015260800190565b6020808252603b90820152600080516020610d3183398151915260408201527f2d207472616e7366657220746f2073656e646572206661696c65640000000000606082015260800190565b6020808252604a90820152600080516020610d3183398151915260408201527f2d2073656e646572206e6f7420616c6c6f77656420746f2065786563757465206060820152691cd95d1d1b195b595b9d60b21b608082015260a00190565b60208082526039908201527f447650536574746c656d656e742e657870697265536574746c656d656e74202d60408201527f20726566756e64696e672063726561746f72206661696c656400000000000000606082015260800190565b600061012082019050610c7282610c6d8554610d1e565b61081c565b610c7f6001840154610d1e565b610c8c602084018261081c565b5060028301546040830152610ca46003840154610d1e565b610cb1606084018261081c565b50610cbf6004840154610d1e565b610ccc608084018261081c565b50610cda6005840154610d1e565b610ce760a084018261081c565b50600683015460c0830152600783015460e0830152610d096008840154610d2a565b610d17610100840182610829565b5092915050565b6001600160a01b031690565b60ff169056fe447650536574746c656d656e742e65786563757465536574746c656d656e7420a2646970667358221220eac3c2818e7d01f49c750d02aa040403bbbfc1276449bab19dd714ae6eccc92b64736f6c63430007040033",
+  "devdoc": {
+    "details": "Contract to manage any number of Delivery-versus-Payment Settlements",
+    "kind": "dev",
+    "methods": {
+      "createSettlement(address,uint256,address,address,address,uint256,uint256)": {
+        "details": "The creator must approve for this contract at least `creatorAmount` of tokens",
+        "params": {
+          "counterparty": "address of counterparty OR 0x0 for open settlement",
+          "counterpartyAmount": "amount of counterparty's ERC20 token to be exchanged",
+          "counterpartyToken": "address of counterparty's ERC20 token",
+          "creatorAmount": "amount of creator's ERC20 token to be exchanged",
+          "creatorToken": "address of creator's ERC20 token",
+          "expirationDate": "unix timestamp in seconds"
+        }
+      },
+      "executeSettlement(uint256)": {
+        "details": "This function can only be successfully called by the designated counterparty unless the counterparty address is empty (0x0) in which case anyone can fulfill and execute the settlementThe counterparty must approve for this contract at least `counterpartyAmount` of tokens",
+        "params": {
+          "id": "the unsigned integer ID value for the Settlement to execute"
+        }
+      },
+      "expireSettlement(uint256)": {
+        "details": "This function can be called by anyone since there is no other possible outcome for a created settlement that has passed the expiration date",
+        "params": {
+          "id": "the unsigned integer ID value for the Settlement to expire"
+        }
+      }
+    },
+    "title": "DvPSettlement",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "createSettlement(address,uint256,address,address,address,uint256,uint256)": {
+        "notice": "Creates a new Settlement in the contract's storage and transfers creator's tokens into the contract"
+      },
+      "executeSettlement(uint256)": {
+        "notice": "Executes an existing Settlement with the sender as the counterparty"
+      },
+      "expireSettlement(uint256)": {
+        "notice": "When called after a given settlement expires, it refunds tokens to the creator"
+      }
+    },
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 39845,
+        "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+        "label": "_settlementIds",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_struct(Counter)1305_storage"
+      },
+      {
+        "astId": 39889,
+        "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+        "label": "settlements",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_uint256,t_struct(Settlement)39885_storage)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_enum(SettlementStatus)39866": {
+        "encoding": "inplace",
+        "label": "enum DvPSettlement.SettlementStatus",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_uint256,t_struct(Settlement)39885_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct DvPSettlement.Settlement)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Settlement)39885_storage"
+      },
+      "t_struct(Counter)1305_storage": {
+        "encoding": "inplace",
+        "label": "struct Counters.Counter",
+        "members": [
+          {
+            "astId": 1304,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "_value",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256"
+          }
+        ],
+        "numberOfBytes": "32"
+      },
+      "t_struct(Settlement)39885_storage": {
+        "encoding": "inplace",
+        "label": "struct DvPSettlement.Settlement",
+        "members": [
+          {
+            "astId": 39868,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "creator",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 39870,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "creatorToken",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address"
+          },
+          {
+            "astId": 39872,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "creatorAmount",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 39874,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "creatorBeneficiary",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_address"
+          },
+          {
+            "astId": 39876,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "counterparty",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_address"
+          },
+          {
+            "astId": 39878,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "counterpartyToken",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_address"
+          },
+          {
+            "astId": 39880,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "counterpartyAmount",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 39882,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "expirationDate",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 39884,
+            "contract": "contracts/Extensions/DvPSettlement.sol:DvPSettlement",
+            "label": "status",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_enum(SettlementStatus)39866"
+          }
+        ],
+        "numberOfBytes": "288"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

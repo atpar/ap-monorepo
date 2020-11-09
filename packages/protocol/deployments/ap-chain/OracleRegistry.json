@@ -1,0 +1,260 @@
+{
+  "address": "0xe8D0B11e213607CABcb75CA7C69bD36E8d19F7Ec",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "dataRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_oracleProxy",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_ref",
+          "type": "bytes"
+        }
+      ],
+      "name": "getDataPoint",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "oracleWhitelist",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_oracle",
+          "type": "address"
+        }
+      ],
+      "name": "registerOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_oracle",
+          "type": "address"
+        }
+      ],
+      "name": "removeOracle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_dataRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "setDataRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x9f695624262bdaa639b67955f5dd882ad0ffac0b88ac834298daa310bcb38cf9",
+  "receipt": {
+    "to": null,
+    "from": "0x6C51ECF949882c2183357B860FD82Dd4bb631840",
+    "contractAddress": "0xe8D0B11e213607CABcb75CA7C69bD36E8d19F7Ec",
+    "transactionIndex": 0,
+    "gasUsed": "558959",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000800000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000001000040008000000000000000000000800000020000000000000000000800000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x92454b538e8e6b10434e10cbe5e9fe4b2b8d011b957e5b7fb3f3c8b264da1ac3",
+    "transactionHash": "0x9f695624262bdaa639b67955f5dd882ad0ffac0b88ac834298daa310bcb38cf9",
+    "logs": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 154,
+        "transactionHash": "0x9f695624262bdaa639b67955f5dd882ad0ffac0b88ac834298daa310bcb38cf9",
+        "address": "0xe8D0B11e213607CABcb75CA7C69bD36E8d19F7Ec",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000006c51ecf949882c2183357b860fd82dd4bb631840"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x92454b538e8e6b10434e10cbe5e9fe4b2b8d011b957e5b7fb3f3c8b264da1ac3"
+      }
+    ],
+    "blockNumber": 154,
+    "cumulativeGasUsed": "558959",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "solcInputHash": "881b45994c61c48eb152b2243f6d8f05",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"dataRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracleProxy\",\"type\":\"address\"},{\"internalType\":\"bytes\",\"name\":\"_ref\",\"type\":\"bytes\"}],\"name\":\"getDataPoint\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"oracleWhitelist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"registerOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_oracle\",\"type\":\"address\"}],\"name\":\"removeOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dataRegistry\",\"type\":\"address\"}],\"name\":\"setDataRegistry\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/OracleProxy/OracleRegistry.sol\":\"OracleRegistry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/GSN/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\n/*\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with GSN meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address payable) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes memory) {\\n        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0x910a2e625b71168563edf9eeef55a50d6d699acfe27ceba3921f291829a8f938\",\"license\":\"MIT\"},\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\nimport \\\"../GSN/Context.sol\\\";\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * By default, the owner account will be the one that deploys the contract. This\\n * can later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the deployer as the initial owner.\\n     */\\n    constructor () {\\n        address msgSender = _msgSender();\\n        _owner = msgSender;\\n        emit OwnershipTransferred(address(0), msgSender);\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        require(_owner == _msgSender(), \\\"Ownable: caller is not the owner\\\");\\n        _;\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions anymore. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby removing any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        emit OwnershipTransferred(_owner, address(0));\\n        _owner = address(0);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        require(newOwner != address(0), \\\"Ownable: new owner is the zero address\\\");\\n        emit OwnershipTransferred(_owner, newOwner);\\n        _owner = newOwner;\\n    }\\n}\\n\",\"keccak256\":\"0x46d2453e9db55eae25c9abdae2c42229086c54f1a6a247e8ce32658bb785f6ae\",\"license\":\"MIT\"},\"contracts/OracleProxy/IOracleRegistry.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\ninterface IOracleRegistry {\\n\\n    function registerOracle(address _oracle) external;\\n    \\n    function removeOracle(address _oracle) external;\\n\\n    function setDataRegistry(address _dataRegistry) external;\\n\\n    function getDataPoint(address _oracleProxy, bytes memory _ref) external view returns (int256, bool);\\n}\",\"keccak256\":\"0xb8da91227dd2b542cbca73b2fbcbf70cd5daac363ffd087178d2ef3e0a5970c1\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/OracleProxyInterface.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\ninterface OracleProxyInterface {\\n\\n    function getDataPoint(bytes memory) external view returns (int256, bool);\\n\\n    function getDataPointAtTime(bytes memory, uint256 timestamp) external view returns (int256);\\n\\n}\",\"keccak256\":\"0x73706f9c6671c5105a87276f3b1ec1ae8178b2edf39fc1ecaad6c2cfc124dbbe\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/OracleRegistry.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\nimport \\\"./OracleProxyInterface.sol\\\";\\nimport \\\"./IOracleRegistry.sol\\\";\\n\\ncontract OracleRegistry is IOracleRegistry, Ownable {\\n\\n    mapping (address => bool) public oracleWhitelist;\\n\\n    address public dataRegistry;\\n\\n    function registerOracle(address _oracle) external override onlyOwner {\\n        oracleWhitelist[_oracle] = true;\\n    }\\n    \\n    function removeOracle(address _oracle) external override onlyOwner {\\n        oracleWhitelist[_oracle] = false;\\n    }\\n\\n    function setDataRegistry(address _dataRegistry) external override onlyOwner {\\n        oracleWhitelist[_dataRegistry] = true;\\n        dataRegistry = _dataRegistry;\\n    }\\n\\n    function getDataPoint(address _oracleProxy, bytes memory _ref) external override view returns (int256, bool) {\\n        if (_oracleProxy == address(0)) {\\n            require(oracleWhitelist[dataRegistry], \\\"OracleRegistry.getDataPoint: dataRegistry not whitelisted\\\");\\n            return OracleProxyInterface(dataRegistry).getDataPoint(_ref);\\n        } else {\\n            require(oracleWhitelist[_oracleProxy], \\\"OracleRegistry.getDataPoint: Oracle not whitelisted\\\");\\n            return OracleProxyInterface(_oracleProxy).getDataPoint(_ref);\\n        }\\n    }\\n    \\n}\",\"keccak256\":\"0x39b7ac422c9d5a369c322e2ef8d8c2615fa6a87ae0a60fd0975217fd6c06a997\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600061001b61006a565b600080546001600160a01b0319166001600160a01b0383169081178255604051929350917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a35061006e565b3390565b6108b78061007d6000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c8063a39c1d6b11610066578063a39c1d6b146101bb578063a465ff12146101c3578063e9babaec146101fd578063f2fde38b14610223578063fdc85fc41461024957610093565b8063353955c814610098578063453b0b4c14610167578063715018a61461018f5780638da5cb5b14610197575b600080fd5b61014e600480360360408110156100ae57600080fd5b6001600160a01b0382351691908101906040810160208201356401000000008111156100d957600080fd5b8201836020820111156100eb57600080fd5b8035906020019184600183028401116401000000008311171561010d57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061026f945050505050565b6040805192835290151560208301528051918290030190f35b61018d6004803603602081101561017d57600080fd5b50356001600160a01b0316610474565b005b61018d610506565b61019f6105a8565b604080516001600160a01b039092168252519081900360200190f35b61019f6105b7565b6101e9600480360360208110156101d957600080fd5b50356001600160a01b03166105c6565b604080519115158252519081900360200190f35b61018d6004803603602081101561021357600080fd5b50356001600160a01b03166105db565b61018d6004803603602081101561023957600080fd5b50356001600160a01b031661065a565b61018d6004803603602081101561025f57600080fd5b50356001600160a01b0316610752565b6000806001600160a01b0384166103bf576002546001600160a01b031660009081526001602052604090205460ff166102d95760405162461bcd60e51b81526004018080602001828103825260398152602001806108496039913960400191505060405180910390fd5b600254604051631845792560e01b81526020600482018181528651602484015286516001600160a01b0390941693631845792593889383926044909201919085019080838360005b83811015610339578181015183820152602001610321565b50505050905090810190601f1680156103665780820380516001836020036101000a031916815260200191505b5092505050604080518083038186803b15801561038257600080fd5b505afa158015610396573d6000803e3d6000fd5b505050506040513d60408110156103ac57600080fd5b508051602090910151909250905061046d565b6001600160a01b03841660009081526001602052604090205460ff166104165760405162461bcd60e51b81526004018080602001828103825260338152602001806107f66033913960400191505060405180910390fd5b604051631845792560e01b81526020600482018181528551602484015285516001600160a01b0388169363184579259388939283926044019185019080838360008315610339578181015183820152602001610321565b9250929050565b61047c6107cb565b6000546001600160a01b039081169116146104cc576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000818152600160208190526040909120805460ff19169091179055600280546001600160a01b0319169091179055565b61050e6107cb565b6000546001600160a01b0390811691161461055e576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000546001600160a01b031690565b6002546001600160a01b031681565b60016020526000908152604090205460ff1681565b6105e36107cb565b6000546001600160a01b03908116911614610633576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000908152600160208190526040909120805460ff19169091179055565b6106626107cb565b6000546001600160a01b039081169116146106b2576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b0381166106f75760405162461bcd60e51b81526004018080602001828103825260268152602001806107d06026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b61075a6107cb565b6000546001600160a01b039081169116146107aa576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000908152600160205260409020805460ff19169055565b339056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573734f7261636c6552656769737472792e67657444617461506f696e743a204f7261636c65206e6f742077686974656c69737465644f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65724f7261636c6552656769737472792e67657444617461506f696e743a20646174615265676973747279206e6f742077686974656c6973746564a2646970667358221220ff676e0fd778132f06f8ecd54f3053c996dc91ab27fe4732f067b969a8bb4a7f64736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c8063a39c1d6b11610066578063a39c1d6b146101bb578063a465ff12146101c3578063e9babaec146101fd578063f2fde38b14610223578063fdc85fc41461024957610093565b8063353955c814610098578063453b0b4c14610167578063715018a61461018f5780638da5cb5b14610197575b600080fd5b61014e600480360360408110156100ae57600080fd5b6001600160a01b0382351691908101906040810160208201356401000000008111156100d957600080fd5b8201836020820111156100eb57600080fd5b8035906020019184600183028401116401000000008311171561010d57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955061026f945050505050565b6040805192835290151560208301528051918290030190f35b61018d6004803603602081101561017d57600080fd5b50356001600160a01b0316610474565b005b61018d610506565b61019f6105a8565b604080516001600160a01b039092168252519081900360200190f35b61019f6105b7565b6101e9600480360360208110156101d957600080fd5b50356001600160a01b03166105c6565b604080519115158252519081900360200190f35b61018d6004803603602081101561021357600080fd5b50356001600160a01b03166105db565b61018d6004803603602081101561023957600080fd5b50356001600160a01b031661065a565b61018d6004803603602081101561025f57600080fd5b50356001600160a01b0316610752565b6000806001600160a01b0384166103bf576002546001600160a01b031660009081526001602052604090205460ff166102d95760405162461bcd60e51b81526004018080602001828103825260398152602001806108496039913960400191505060405180910390fd5b600254604051631845792560e01b81526020600482018181528651602484015286516001600160a01b0390941693631845792593889383926044909201919085019080838360005b83811015610339578181015183820152602001610321565b50505050905090810190601f1680156103665780820380516001836020036101000a031916815260200191505b5092505050604080518083038186803b15801561038257600080fd5b505afa158015610396573d6000803e3d6000fd5b505050506040513d60408110156103ac57600080fd5b508051602090910151909250905061046d565b6001600160a01b03841660009081526001602052604090205460ff166104165760405162461bcd60e51b81526004018080602001828103825260338152602001806107f66033913960400191505060405180910390fd5b604051631845792560e01b81526020600482018181528551602484015285516001600160a01b0388169363184579259388939283926044019185019080838360008315610339578181015183820152602001610321565b9250929050565b61047c6107cb565b6000546001600160a01b039081169116146104cc576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000818152600160208190526040909120805460ff19169091179055600280546001600160a01b0319169091179055565b61050e6107cb565b6000546001600160a01b0390811691161461055e576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000546001600160a01b031690565b6002546001600160a01b031681565b60016020526000908152604090205460ff1681565b6105e36107cb565b6000546001600160a01b03908116911614610633576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000908152600160208190526040909120805460ff19169091179055565b6106626107cb565b6000546001600160a01b039081169116146106b2576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b0381166106f75760405162461bcd60e51b81526004018080602001828103825260268152602001806107d06026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b61075a6107cb565b6000546001600160a01b039081169116146107aa576040805162461bcd60e51b81526020600482018190526024820152600080516020610829833981519152604482015290519081900360640190fd5b6001600160a01b03166000908152600160205260409020805460ff19169055565b339056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573734f7261636c6552656769737472792e67657444617461506f696e743a204f7261636c65206e6f742077686974656c69737465644f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65724f7261636c6552656769737472792e67657444617461506f696e743a20646174615265676973747279206e6f742077686974656c6973746564a2646970667358221220ff676e0fd778132f06f8ecd54f3053c996dc91ab27fe4732f067b969a8bb4a7f64736f6c63430007040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 30,
+        "contract": "contracts/OracleProxy/OracleRegistry.sol:OracleRegistry",
+        "label": "_owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 45734,
+        "contract": "contracts/OracleProxy/OracleRegistry.sol:OracleRegistry",
+        "label": "oracleWhitelist",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_bool)"
+      },
+      {
+        "astId": 45736,
+        "contract": "contracts/OracleProxy/OracleRegistry.sol:OracleRegistry",
+        "label": "dataRegistry",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      }
+    }
+  }
+}

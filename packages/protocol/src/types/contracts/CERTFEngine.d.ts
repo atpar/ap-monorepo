@@ -790,7 +790,7 @@ export class CERTFEngine extends Contract {
           role: number | string;
         };
       },
-      arg2: {
+      state: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;

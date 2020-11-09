@@ -2,7 +2,7 @@ module.exports = extendBuidlerEnv;
 module.exports.tags = ["_env"];
 
 /**
- * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/buidler-deploy#environment-extensions)
+ * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/hardhat-deploy#environment-extensions)
  *
  * @typedef  {{name: string: address: string}} Roles
  * @typedef UserNamespace

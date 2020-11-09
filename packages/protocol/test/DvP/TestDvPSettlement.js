@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { mineBlock } = require('../helper/utils/blockchain');
@@ -58,15 +58,15 @@ describe('DvPSettlement', () => {
       ).send({ from: creator });
 
       // check that the contract has received the `creatorAmount` of `creatorToken`
-      (await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call())
-        .should.be.equal(creatorAmount);
+      const creatorBalance = await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call()
+      assert.strictEqual(creatorBalance, creatorAmount);
 
       // get Settlement ID from the logs
       const id = events.SettlementInitialized.returnValues.settlementId;
 
       // Read settlement from blockchain and check that it is initialized correctly
       const settlement = await this.dvpSettlementContract.methods.settlements(id).call();
-      (settlement.expirationDate).should.be.equal(tomorrow);
+      assert.strictEqual(settlement.expirationDate, tomorrow);
       assert.strictEqual(settlement.status, '1');
 
 
@@ -88,8 +88,8 @@ describe('DvPSettlement', () => {
       // Check the balance of both creatorBeneficiary and counterparty after execution to ensure tokens were swapped
       const creatorBalanceOfCpToken = await this.counterpartyToken.methods.balanceOf(creatorBeneficiary).call();
       const cpBalanceOfCreatorToken = await this.creatorToken.methods.balanceOf(counterparty).call();
-      creatorBalanceOfCpToken.should.be.equal(counterpartyAmount);
-      cpBalanceOfCreatorToken.should.be.equal(creatorAmount);
+      assert.strictEqual(creatorBalanceOfCpToken, counterpartyAmount);
+      assert.strictEqual(cpBalanceOfCreatorToken, creatorAmount);
 
     });
 
@@ -108,13 +108,15 @@ describe('DvPSettlement', () => {
         tomorrow,
       ).send({ from: creator });
 
-      (await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call())
-        .should.be.equal(creatorAmount);
+      assert.strictEqual(
+        await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call(),
+        creatorAmount
+      );
 
       const id = events.SettlementInitialized.returnValues.settlementId;
       const settlement = await this.dvpSettlementContract.methods.settlements(id).call();
 
-      (settlement.expirationDate).should.be.equal(tomorrow);
+      assert.strictEqual(settlement.expirationDate, tomorrow);
       assert.strictEqual(settlement.status, '1');
 
 
@@ -131,8 +133,8 @@ describe('DvPSettlement', () => {
       const creatorBalanceOfCpToken = await this.counterpartyToken.methods.balanceOf(creatorBeneficiary).call();
       const cpBalanceOfCreatorToken = await this.creatorToken.methods.balanceOf(counterparty).call();
 
-      creatorBalanceOfCpToken.should.be.equal(counterpartyAmount);
-      cpBalanceOfCreatorToken.should.be.equal(creatorAmount);
+      assert.strictEqual(creatorBalanceOfCpToken, counterpartyAmount);
+      assert.strictEqual(cpBalanceOfCreatorToken, creatorAmount);
 
     });
 
@@ -157,15 +159,15 @@ describe('DvPSettlement', () => {
       ).send({ from: creator });
 
       // check that the contract has received the `creatorAmount` of `creatorToken`
-      (await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call())
-        .should.be.equal(creatorAmount);
+      const creatorBalance = await this.creatorToken.methods.balanceOf(this.dvpSettlementContract.options.address).call();
+      assert.strictEqual(creatorBalance, creatorAmount);
 
       // get Settlement ID from the logs
       const id = events.SettlementInitialized.returnValues.settlementId;
 
       // Read settlement from blockchain and check that it is initialized correctly
       const settlement = await this.dvpSettlementContract.methods.settlements(id).call();
-      (settlement.expirationDate).should.be.equal(tomorrow);
+      assert.strictEqual(settlement.expirationDate, tomorrow);
       assert.strictEqual(settlement.status, '1');
 
 
@@ -187,8 +189,8 @@ describe('DvPSettlement', () => {
       // Check the balance of both creator and counterparty after execution to ensure that tokens were swapped
       const creatorBalanceOfCpToken = await this.counterpartyToken.methods.balanceOf(creator).call();
       const cpBalanceOfCreatorToken = await this.creatorToken.methods.balanceOf(counterparty).call();
-      creatorBalanceOfCpToken.should.be.equal(counterpartyAmount);
-      cpBalanceOfCreatorToken.should.be.equal(creatorAmount);
+      assert.strictEqual(creatorBalanceOfCpToken, counterpartyAmount);
+      assert.strictEqual(cpBalanceOfCreatorToken, creatorAmount);
 
     });
   });
@@ -198,7 +200,7 @@ describe('DvPSettlement', () => {
       await this.creatorToken.methods.approve(this.dvpSettlementContract.options.address, creatorAmount)
         .send({ from: creator });
       const lastTimestamp = (await web3.eth.getBlock('latest')).timestamp;
-      await shouldFail.reverting(
+      await expectRevert(
         this.dvpSettlementContract.methods.createSettlement(
           this.creatorToken.options.address,
           creatorAmount,
@@ -207,7 +209,8 @@ describe('DvPSettlement', () => {
           this.counterpartyToken.options.address,
           counterpartyAmount,
           lastTimestamp - 1,
-        ).send({ from: creator })
+        ).send({ from: creator }),
+        'DvPSettlement.createSettlement - expiration date cannot be in the past'
       );
     });
 
@@ -230,8 +233,9 @@ describe('DvPSettlement', () => {
         .send({ from: counterparty });
       await mineBlock(parseInt(tomorrow) + 1)
 
-      await shouldFail.reverting(
-        this.dvpSettlementContract.methods.executeSettlement(id).send({ from: counterparty })
+      await expectRevert(
+        this.dvpSettlementContract.methods.executeSettlement(id).send({ from: counterparty }),
+        'DvPSettlement.executeSettlement - settlement expired'
       );
 
     });

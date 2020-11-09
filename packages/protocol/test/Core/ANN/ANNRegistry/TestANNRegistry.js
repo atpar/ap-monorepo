@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, parseTerms, ZERO_ADDRESS } = require('../../../helper/utils/utils');
@@ -60,7 +60,7 @@ describe('ANNRegistry', () => {
   });
 
   it('should not overwrite an existing asset', async () => {
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.ANNRegistryInstance.methods.registerAsset(
         web3.utils.toHex(this.assetId),
         this.terms,
@@ -83,7 +83,7 @@ describe('ANNRegistry', () => {
   });
 
   it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.ANNRegistryInstance.methods.setState(
         web3.utils.toHex(this.assetId),
         this.state,

@@ -3,7 +3,7 @@ module.exports.tags = ["_package"];
 module.exports.dependencies = ["_env"];
 
 /**
- * @typedef {Object} DeployOptions - https://github.com/wighawag/buidler-deploy#deploy-function
+ * @typedef {Object} DeployOptions - https://github.com/wighawag/hardhat-deploy#deploy-function
  * @typedef {import('./1-extend-buidler-env').ExtendedBRE}
  *
  * @typedef {Object} ContractsListItem

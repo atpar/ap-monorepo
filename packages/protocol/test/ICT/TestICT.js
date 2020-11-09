@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { deployICToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
@@ -60,25 +60,25 @@ describe('ICT', () => {
     });
 
     describe('When called with zero address of the asset registry', () => {
-      it('reverts', async () => await shouldFail.reverting(
+      it('reverts', async () => await expectRevert.unspecified(
         deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with zero address of the data registry', () => {
-      it('reverts', async () => await shouldFail.reverting(
+      it('reverts', async () => await expectRevert.unspecified(
         deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with the asset registry address bing EOA', () => {
-      it('reverts', async () => await shouldFail.reverting(
+      it('reverts', async () => await expectRevert.unspecified(
         deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: tokenHolder1 }))
       ));
     });
 
     describe('When called with the data registry address bing EOA', () => {
-      it('reverts', async () => await shouldFail.reverting(
+      it('reverts', async () => await expectRevert.unspecified(
         deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: tokenHolder1 }))
       ));
     });
@@ -87,14 +87,14 @@ describe('ICT', () => {
   describe('transfer', () => {
 
     describe('when the recipient is the zero address', () => {
-      it('reverts', async () => await shouldFail.reverting(
+      it('reverts', async () => await expectRevert.unspecified(
         this.icToken.methods.transfer(ZERO_ADDRESS, transferAmount).send({ from: tokenHolder1 })
       ));
     });
 
     describe('when the recipient is not the zero address', () => {
       describe('when the sender does not have enough balance', () => {
-        it('reverts', async () => await shouldFail.reverting(
+        it('reverts', async () => await expectRevert.unspecified(
           this.icToken.methods.transfer(tokenHolder1, transferAmount).send({ from: tokenHolder2 })
         ));
       });
@@ -177,7 +177,7 @@ describe('ICT', () => {
           });
 
           it('reverts', async () => {
-            await shouldFail.reverting(
+            await expectRevert.unspecified(
               this.icToken.methods.transferFrom(
                 tokenHolder1, tokenHolder2, mintAmountPlusOne
               ).send({ from: spender }));
@@ -191,7 +191,7 @@ describe('ICT', () => {
         });
 
         describe('when the initial holder has enough balance', () => {
-          it('reverts', async () => await shouldFail.reverting(
+          it('reverts', async () => await expectRevert.unspecified(
             this.icToken.methods.transferFrom(
               tokenHolder1, tokenHolder2, approveAmountPlusOne
             ).send({ from: spender })
@@ -199,7 +199,7 @@ describe('ICT', () => {
         });
 
         describe('when the initial holder does not have enough balance', () => {
-          it('reverts', async () => await shouldFail.reverting(
+          it('reverts', async () => await expectRevert.unspecified(
             this.icToken.methods.transferFrom(tokenHolder1, tokenHolder2, mintAmountPlusOne)
               .send({ from: spender })
           ));
@@ -213,7 +213,7 @@ describe('ICT', () => {
       });
 
       it('reverts', async () => {
-        await shouldFail.reverting(
+        await expectRevert.unspecified(
           this.icToken.methods.transferFrom(
             tokenHolder1, ZERO_ADDRESS, transferAmount
           ).send({ from: spender })

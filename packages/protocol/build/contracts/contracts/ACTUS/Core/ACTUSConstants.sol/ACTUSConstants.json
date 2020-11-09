@@ -1,0 +1,63 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ACTUSConstants",
+  "sourceName": "contracts/ACTUS/Core/ACTUSConstants.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "MAX_CYCLE_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_EVENT_SCHEDULE_SIZE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ONE_POINT_ZERO",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "PRECISION",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5060bb8061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060465760003560e01c80636f37e55b14604b578063aaf5eb68146063578063c40c5a98146069578063edc0465f146069575b600080fd5b6051606f565b60408051918252519081900360200190f35b6051607b565b60516080565b670de0b6b3a764000081565b601281565b60788156fea2646970667358221220f7297875cf551921a3fbf45e219069447044cde1539cc6eef62f24501d1c967164736f6c63430007040033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060465760003560e01c80636f37e55b14604b578063aaf5eb68146063578063c40c5a98146069578063edc0465f146069575b600080fd5b6051606f565b60408051918252519081900360200190f35b6051607b565b60516080565b670de0b6b3a764000081565b601281565b60788156fea2646970667358221220f7297875cf551921a3fbf45e219069447044cde1539cc6eef62f24501d1c967164736f6c63430007040033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

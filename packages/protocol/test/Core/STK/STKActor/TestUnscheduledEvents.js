@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { expectEvent, generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils/utils');
@@ -131,7 +131,7 @@ describe('STKActor', () => {
 
     await mineBlock(Number(eventTime));
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.STKActorInstance.methods.progressWith(
         web3.utils.toHex(this.assetId),
         event,

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getTestCases, compareTestResults } = require('../../../helper/ACTUS/tests');
 const { parseToTestEventCERTF, isoToUnix } = require('../../../helper/ACTUS/parser');

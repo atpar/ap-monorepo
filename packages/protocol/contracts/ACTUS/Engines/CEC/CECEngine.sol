@@ -256,6 +256,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         override
         returns (bool)
     {
+        // no contract performance for CEC
         return true;
     }
 
