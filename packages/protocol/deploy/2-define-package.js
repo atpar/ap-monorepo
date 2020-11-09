@@ -70,7 +70,10 @@ async function definePackage(buidlerRuntime) {
 
         // Data Registry
         { name: "DataRegistry" },
-        { name: "DataRegistryProxy" },
+        { 
+            name: "DataRegistryProxy",
+            options: { args: [ "{{DataRegistry.address}}" ]},
+        },
         // Data Registry
         { name: "OracleRegistry" },
         // Asset Actor
@@ -96,7 +99,7 @@ async function definePackage(buidlerRuntime) {
         },
         {
             name: "STKActor",
-            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{STKRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
 
         // Custodian
