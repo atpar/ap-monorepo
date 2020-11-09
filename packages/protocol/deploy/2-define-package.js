@@ -70,27 +70,29 @@ async function definePackage(buidlerRuntime) {
 
         // Data Registry
         { name: "DataRegistry" },
-
+        { name: "DataRegistryProxy" },
+        // Data Registry
+        { name: "OracleRegistry" },
         // Asset Actor
         {
             name: "ANNActor",
-            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{ANNRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
         {
             name: "CECActor",
-            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CECRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
         {
             name: "CEGActor",
-            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CEGRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
         {
             name: "CERTFActor",
-            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CERTFRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
         {
             name: "PAMActor",
-            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{PAMRegistry.address}}", "{{OracleRegistry.address}}" ]},
         },
         {
             name: "STKActor",

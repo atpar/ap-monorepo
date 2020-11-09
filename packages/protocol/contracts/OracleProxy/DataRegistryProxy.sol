@@ -17,10 +17,9 @@ contract DataRegistryProxy is OracleProxyInterface {
         dataRegistry = _a;
     }
 
-    function getDataPoint(bytes memory _refData) override public view returns (int256) {
+    function getDataPoint(bytes memory _refData) override public view returns (int256, bool) {
         (bytes32 id, uint256 timestamp) = abi.decode(_refData,(bytes32,uint256));
-        (int256 quantity, bool isSet) = IDataRegistry(dataRegistry).getDataPoint(id, timestamp);
-        if (isSet) return quantity;
+        return IDataRegistry(dataRegistry).getDataPoint(id, timestamp);
     }
 
     

@@ -12,7 +12,7 @@ contract UMAProxy is OracleProxyInterface {
         umaOracle = _umaOracle;
     }
 
-    function getDataPoint(bytes memory _ref) override public view returns (int256) {
+    function getDataPoint(bytes memory _ref) override public view returns (int256, bool) {
         revert();
     }
 

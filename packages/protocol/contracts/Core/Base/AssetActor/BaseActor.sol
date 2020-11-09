@@ -12,7 +12,7 @@ import "../../../ACTUS/Core/Utils/EventUtils.sol";
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../DataRegistry/IDataRegistry.sol";
+import "../../../OracleProxy/IOracleRegistry.sol";
 import "./IAssetActor.sol";
 
 
@@ -35,12 +35,12 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
     IAssetRegistry public assetRegistry;
-    IDataRegistry public dataRegistry;
+    IOracleRegistry public oracleRegistry;
 
 
-    constructor(IAssetRegistry _assetRegistry, IDataRegistry _dataRegistry) {
+    constructor(IAssetRegistry _assetRegistry, IOracleRegistry _dataRegistry) {
         assetRegistry = _assetRegistry;
-        dataRegistry = _dataRegistry;
+        oracleRegistry = _dataRegistry;
     }
 
     /**
@@ -278,9 +278,10 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     {
         if (eventType == EventType.RR) {
             // get rate from DataRegistry
-            (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
-                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
-                timestamp
+            (int256 resetRate, bool isSet) = oracleRegistry.getDataPoint(
+                address(0),
+                abi.encode(assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
+                timestamp)
             );
             if (isSet) return bytes32(resetRate);
         } else if (eventType == EventType.CE) {
@@ -312,9 +313,9 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 contractReference_2._type == ContractReferenceType.MOC
                 && contractReference_2.role == ContractReferenceRole.UDL
             ) {
-                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
-                    contractReference_2.object,
-                    timestamp
+                (int256 quantity, bool isSet) = oracleRegistry.getDataPoint(
+                    address(0),
+                    abi.encode(contractReference_2.object, timestamp)
                 );
                 if (isSet) return bytes32(quantity);
             }
@@ -327,13 +328,13 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 contractReference_1._type == ContractReferenceType.MOC
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
-                (int256 marketValueScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
-                    contractReference_1.object,
-                    timestamp
+                (int256 marketValueScheduleTime, bool isSetScheduleTime) = oracleRegistry.getDataPoint(
+                    address(0),
+                    abi.encode(contractReference_1.object, timestamp)
                 );
-                (int256 marketValueAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
-                    contractReference_1.object,
-                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
+                (int256 marketValueAnchorDate, bool isSetAnchorDate) = oracleRegistry.getDataPoint(
+                    address(0),
+                    abi.encode(contractReference_1.object, assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate"))
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
                     return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
@@ -363,9 +364,9 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
-                keccak256(abi.encode(currency, settlementCurrency)),
-                timestamp
+            (int256 fxRate, bool isSet) = oracleRegistry.getDataPoint(
+                address(0),
+                abi.encode(keccak256(abi.encode(currency, settlementCurrency)),timestamp)
             );
             if (isSet) return bytes32(fxRate);
         }

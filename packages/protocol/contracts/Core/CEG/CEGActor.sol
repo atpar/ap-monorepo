@@ -14,7 +14,7 @@ import "./ICEGRegistry.sol";
  */
 contract CEGActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
+    constructor(IAssetRegistry assetRegistry, IOracleRegistry oracleRegistry) BaseActor(assetRegistry, oracleRegistry) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with

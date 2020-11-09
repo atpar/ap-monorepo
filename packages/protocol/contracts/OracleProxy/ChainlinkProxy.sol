@@ -20,8 +20,8 @@ contract ChainlinkProxy is OracleProxyInterface {
     }
 
 
-    function getDataPoint(bytes memory _ref) override public view returns (int256) {
-        return getLatestPrice(bytesToAddress(_ref));
+    function getDataPoint(bytes memory _ref) override public view returns (int256, bool) {
+        return (getLatestPrice(bytesToAddress(_ref)), true);
     }
 
     function getDataPointAtTime(bytes memory _ref, uint256 timestamp) override public view returns (int256) {

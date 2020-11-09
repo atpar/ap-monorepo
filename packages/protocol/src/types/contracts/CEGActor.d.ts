@@ -23,8 +23,6 @@ export class CEGActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
-    dataRegistry(): TransactionObject<string>;
-
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -109,6 +107,8 @@ export class CEGActor extends Contract {
       engine: string,
       admin: string
     ): TransactionObject<void>;
+
+    oracleRegistry(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 

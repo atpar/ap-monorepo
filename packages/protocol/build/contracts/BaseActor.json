@@ -115,19 +115,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "dataRegistry",
-      "outputs": [
-        {
-          "internalType": "contract IDataRegistry",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "bytes32",
@@ -240,6 +227,19 @@
         }
       ],
       "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "oracleRegistry",
+      "outputs": [
+        {
+          "internalType": "contract IOracleRegistry",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

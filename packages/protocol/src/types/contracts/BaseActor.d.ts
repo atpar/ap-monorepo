@@ -23,8 +23,6 @@ export class BaseActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
-    dataRegistry(): TransactionObject<string>;
-
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -50,6 +48,8 @@ export class BaseActor extends Contract {
     ): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
+
+    oracleRegistry(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 
