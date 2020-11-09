@@ -93,4 +93,34 @@ contract PAMActor is BaseActor {
 
         return (state, payoff);
     }
+
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
+    function getExternalDataForSTF(
+        bytes32 assetId,
+        EventType eventType,
+        uint256 timestamp
+    )
+        internal
+        view
+        override
+        returns (bytes32)
+    {
+        if (eventType == EventType.RR) {
+            // get rate from DataRegistry
+            (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
+                timestamp
+            );
+            if (isSet) return bytes32(resetRate);
+        } else if (eventType == EventType.CE) {
+            // get current timestamp
+            // solium-disable-next-line
+            return bytes32(block.timestamp);
+        }
+
+        return bytes32(0);
+    }
 }

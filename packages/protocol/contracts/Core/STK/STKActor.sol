@@ -14,7 +14,10 @@ import "./ISTKRegistry.sol";
  */
 contract STKActor is BaseActor {
 
+    using SignedMath for int;
+
     enum STKExternalDataType {NA, DIP, SRA, REXA}
+
 
     constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
 
@@ -86,7 +89,7 @@ contract STKActor is BaseActor {
             terms,
             state,
             _event,
-            _getExternalDataForSTF(
+            getExternalDataForSTF(
                 assetId,
                 eventType,
                 shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, 0)
@@ -96,21 +99,53 @@ contract STKActor is BaseActor {
         return (state, payoff);
     }
 
-    function _getExternalDataForSTF(
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
+    function getExternalDataForSTF(
         bytes32 assetId,
         EventType eventType,
         uint256 timestamp
     )
-    private
-    view
-    returns (bytes32)
+        internal
+        view
+        override
+        returns (bytes32)
     {
-        if (eventType == EventType.DIF) {
+        if (eventType == EventType.CE) {
+            // get current timestamp
+            // solium-disable-next-line
+            return bytes32(block.timestamp);
+        } else if (eventType == EventType.EXE) {
+            // get quantity
+            ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_2"
+            );
+            if (
+                contractReference_2._type == ContractReferenceType.MOC
+                && contractReference_2.role == ContractReferenceRole.UDL
+            ) {
+                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
+                    contractReference_2.object,
+                    timestamp
+                );
+                if (isSet) return bytes32(quantity);
+            }
+        } else if (eventType == EventType.REF) {
+            //
+            (int256 rexa, bool isSet) = dataRegistry.getDataPoint(
+                bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
+                timestamp
+            );
+            if (isSet) return bytes32(rexa);
+        } else if (eventType == EventType.DIF) {
             (int256 dipa, bool isSet) = dataRegistry.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
                 timestamp
             );
-            return isSet ? bytes32(dipa) : bytes32(0);
+            if (isSet) return bytes32(dipa);
         } else if (eventType == EventType.SPF) {
             (int256 sra, bool isSet) = dataRegistry.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.SRA)),
@@ -123,9 +158,8 @@ contract STKActor is BaseActor {
                 timestamp
             );
             if (isSet) return bytes32(rexa);
-        } else {
-            return super.getExternalDataForSTF(assetId, eventType, timestamp);
         }
+
         return bytes32(0);
     }
 }
