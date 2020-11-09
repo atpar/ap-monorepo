@@ -302,7 +302,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      * contract and the current state of the underlying.
      * @param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
@@ -310,7 +310,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
     function isEventScheduled(
         bytes32 _event,
         CEGTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool hasUnderlying,
         State calldata underlyingState
     )
@@ -319,6 +319,12 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         override
         returns (bool)
     {
+        if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         (EventType eventType,) = decodeEvent(_event);
 
         if (hasUnderlying) {
