@@ -39,6 +39,8 @@ describe('Contracts', (): void => {
       CERTFRegistry: contracts.certfRegistry.options.address,
       Custodian: contracts.custodian.options.address,
       DataRegistry: contracts.dataRegistry.options.address,
+      DataRegistryProxy: contracts.dataRegistryProxy.options.address,
+      OracleRegistry: contracts.oracleRegistry.options.address,
       PAMActor: contracts.pamActor.options.address,
       PAMEngine: contracts.pamEngine.options.address,
       PAMRegistry: contracts.pamRegistry.options.address,

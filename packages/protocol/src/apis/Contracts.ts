@@ -26,6 +26,8 @@ import DvPSettlementArtifact from '../../build/contracts/DvPSettlement.json';
 import ERC20Artifact from '../../build/contracts/ERC20.json';
 import ERC1404Artifact from '../../build/contracts/ERC1404.json';
 import VanillaFDTArtifact from '../../build/contracts/VanillaFDT.json';
+import OracleRegistryArtifact from '../../build/contracts/OracleRegistry.json';
+import DataRegistryProxyArtifact from '../../build/contracts/DataRegistryProxy.json';
 
 import { BaseActor } from '../types/contracts/BaseActor';
 import { BaseRegistry } from '../types/contracts/BaseRegistry';
@@ -53,6 +55,8 @@ import { DvPSettlement } from '../types/contracts/DvPSettlement';
 import { ERC20 } from '../types/contracts/ERC20';
 import { ERC1404 } from '../types/contracts/ERC1404';
 import { VanillaFDT } from '../types/contracts/VanillaFDT';
+import { OracleRegistry } from '../types/contracts/OracleRegistry';
+import { DataRegistryProxy } from '../types/contracts/DataRegistryProxy';
 
 import { AddressBook, isAddressBook, UEngine } from '../types';
 
@@ -91,6 +95,8 @@ export class Contracts {
   public dataRegistry: DataRegistry;
   public dvpSettlement: DvPSettlement;
 
+  public oracleRegistry: OracleRegistry;
+  public dataRegistryProxy: DataRegistryProxy;
 
   /**
    * Initializes all AP contracts and returns a new instance of the ContractsAPI class.
@@ -152,6 +158,10 @@ export class Contracts {
     this._erc1404 = new web3.eth.Contract(ERC1404Artifact.abi, undefined, { data: ERC1404Artifact.bytecode }) as ERC1404;
     // @ts-ignore
     this._erc2222 = new web3.eth.Contract(VanillaFDTArtifact.abi, undefined, { data: VanillaFDTArtifact.bytecode }) as VanillaFDT;
+    // @ts-ignore
+    this.oracleRegistry = new web3.eth.Contract(OracleRegistryArtifact.abi, addressBook.OracleRegistry, { data: OracleRegistryArtifact.bytecode }) as DataRegistry,
+    // @ts-ignore
+    this.dataRegistryProxy = new web3.eth.Contract(DataRegistryProxyArtifact.abi, addressBook.DataRegistryProxy, { data: DataRegistryProxyArtifact.bytecode }) as DataRegistry
   }
 
   /**

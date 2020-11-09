@@ -4,6 +4,7 @@ import { CEGEngine } from './contracts/CEGEngine';
 import { PAMEngine } from './contracts/PAMEngine';
 import { CERTFEngine } from './contracts/CERTFEngine';
 import { STKEngine } from "./contracts/STKEngine";
+import dictionary from "./dictionary/dictionary.json";
 
 // Union Types
 export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine | STKEngine;
@@ -11,9 +12,22 @@ export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms | S
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
-// TODO: Replace hardcoded event values ids with names (#useEventName)
-//                             FP,  PR,  PY,   IP, IPCI,  RR,    SC,  COF,  COP, REF,  REP,  EXE
-export const CYCLIC_EVENTS = ['5', '6', '8', '10', '11', '13', '27', '17', '18', '19', '21', '25'];
+
+const eventIndex = (acronym: string): number => (dictionary as any).EventType.allowedValues[acronym];
+export const CYCLIC_EVENTS = [
+  eventIndex('FP'),
+  eventIndex('PR'),
+  eventIndex('PY'),
+  eventIndex('IP'),
+  eventIndex('IPCI'),
+  eventIndex('RR'),
+  eventIndex('SC'),
+  eventIndex('COF'),
+  eventIndex('COP'),
+  eventIndex('REF'),
+  eventIndex('REP'),
+  eventIndex('EXE'),
+];
 
 // IPS
 export interface IPS {
@@ -133,7 +147,7 @@ export interface Terms {
   dividendRecordPeriod: IP;
   dividendPaymentPeriod: IP;
   splitSettlementPeriod: IP;
-  
+
   cycleOfInterestPayment: IPS;
   cycleOfRateReset: IPS;
   cycleOfScalingIndex: IPS;
@@ -790,7 +804,7 @@ export function isSTKTerms (obj: any): obj is STKTerms {
   if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
   if (obj.redemptionPrice == undefined || typeof obj.redemptionPrice !== 'number' && typeof obj.redemptionPrice !== 'string') { return false; }
-  
+
   if (!isIP(obj.redemptionRecordPeriod)) { return false; }
   if (!isIP(obj.redemptionPaymentPeriod)) { return false; }
   if (!isIP(obj.dividendRecordPeriod)) { return false; }

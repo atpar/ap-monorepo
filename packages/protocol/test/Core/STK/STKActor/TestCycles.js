@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -7,9 +6,9 @@ const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/utils/blockchain');
 const { expectEvent, generateSchedule, ZERO_ADDRESS, web3ResponseToState } = require('../../../helper/utils/utils');
 const { encodeEvent } = require('../../../helper/utils/schedule');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKActor', () => {
   let admin, creatorObligor, creatorBeneficiary, actor, nobody;
   const toBN = web3.utils.toBN;
@@ -39,7 +38,7 @@ describe('STKActor', () => {
     };
 
     self.terms = Object.assign({}, require('../../../helper/terms/STKTerms-complex.json'));
-    const issueEvent = encodeEvent(16, (await web3.eth.getBlock('latest')).timestamp); // #useEventName (DIP)
+    const issueEvent = encodeEvent(eventIndex('DIP'), (await web3.eth.getBlock('latest')).timestamp);
     const nextBusinessDay = await getEventTime(issueEvent, self.terms);
     self.terms.issueDate = nextBusinessDay;
     self.terms.statusDate = self.terms.issueDate + 1;
@@ -47,8 +46,8 @@ describe('STKActor', () => {
     self.terms.cycleOfDividend = { "i": 1, "p": 0, "s": 1, "isSet": true }; // every day
 
     // generate (two) DIF events for two days
-    const tMax = 1*self.terms.issueDate + 48 * 3600;
-    self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [14]); // #useEventName (DIF)
+    const tMax = 1 * self.terms.issueDate + 48 * 3600;
+    self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [eventIndex('DIF')]);
     assert.strictEqual(this.schedule.length, 2);
 
     self.state = web3ResponseToState(
@@ -132,9 +131,9 @@ describe('STKActor', () => {
     };
 
     await this.dipaValues.reduce(
-        // one by one
-        (promiseChain, dipa) => promiseChain.then(() => doProgressAndCheck(dipa)),
-        Promise.resolve()
+      // one by one
+      (promiseChain, dipa) => promiseChain.then(() => doProgressAndCheck(dipa)),
+      Promise.resolve()
     );
   });
 });

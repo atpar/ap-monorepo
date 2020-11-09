@@ -1,4 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -34,7 +34,7 @@ describe('TestANNPOF', () => {
     state.accruedInterest = web3.utils.toWei('100');
     state.statusDate = '0'; // statusDate = 0
     state.nominalInterestRate = web3.utils.toWei('0.05'); // nominalInterestRate
-    
+
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
     this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
@@ -87,7 +87,7 @@ describe('TestANNPOF', () => {
     this.ANNTerms.dayCountConvention = 2; // A_365
     this.ANNTerms.maturityDate = 31536000; // 1 year
     this.ANNTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
-    
+
     state.feeAccrued = web3.utils.toWei('100');
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
@@ -135,7 +135,7 @@ describe('TestANNPOF', () => {
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365
     this.ANNTerms.maturityDate = 31536000; // 1 year
-    
+
     state.interestScalingMultiplier = web3.utils.toWei('2');
     state.accruedInterest = web3.utils.toWei('100');
     state.statusDate = '0';
@@ -232,7 +232,7 @@ describe('TestANNPOF', () => {
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365
     this.ANNTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
 
@@ -261,7 +261,7 @@ describe('TestANNPOF', () => {
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365
     this.ANNTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
 
@@ -271,7 +271,7 @@ describe('TestANNPOF', () => {
       scheduleTime,
       externalData
     ).call();
-  
+
     assert.strictEqual(payoff.toString(), '200000000000000000000000');
   });
 
@@ -291,7 +291,7 @@ describe('TestANNPOF', () => {
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365
     this.ANNTerms.maturityDate = 31536000; // 1 year
-    
+
     state.statusDate = '0';
     state.notionalPrincipal = web3.utils.toWei('1000000');
     state.accruedInterest = web3.utils.toWei('100');

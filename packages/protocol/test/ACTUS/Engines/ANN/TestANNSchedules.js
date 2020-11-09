@@ -1,14 +1,13 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
+/* eslint-disable @typescript-eslint/no-var-requires */
 const buidlerRuntime = require('@nomiclabs/buidler');
 
 const { getTestCases, compareTestResults } = require('../../../helper/ACTUS/tests');
 const { parseToTestEvent } = require('../../../helper/ACTUS/parser');
 const { decodeEvent, sortEvents } = require('../../../helper/utils/schedule');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('ANNEngine', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -37,33 +36,32 @@ describe('ANNEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      5 // FP #useEventName
+      eventIndex('FP')
     ).call());
     schedule.push(... await this.ANNEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      11 // IPCI #useEventName
+      eventIndex('IPCI')
     ).call());
     schedule.push(... await this.ANNEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      10 // IP #useEventName
+      eventIndex('IP')
     ).call());
     schedule.push(... await this.ANNEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      6 // PR #useEventName
+      eventIndex('PR')
     ).call());
     schedule.push(... await this.ANNEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      13 // RR #useEventName
+      eventIndex('RR')
     ).call());
-
 
     return sortEvents(schedule);
   }

@@ -1,4 +1,4 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 
@@ -6,17 +6,17 @@ const { getSnapshotTaker, deployTestCore } = require('../../helper/setupTestEnvi
 
 
 /** Covered test cases:
-  - cycle not set, different overlaps, with or without endtime
-  - Different overlaps of segment and cycle with or without addEndtime
-    - start before, end before
-    - start before, end within
-    - start before, end after
-    - start within, end within
-    - start within, end after
-    - start after, end after
+ - cycle not set, different overlaps, with or without endtime
+ - Different overlaps of segment and cycle with or without addEndtime
+ - start before, end before
+ - start before, end within
+ - start before, end after
+ - start within, end within
+ - start within, end after
+ - start after, end after
 
-    The tests are divided into multiple parts to avoid a stack which is too deep
-*/
+ The tests are divided into multiple parts to avoid a stack which is too deep
+ */
 describe('Core', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -33,10 +33,10 @@ describe('Core', () => {
     const compactDates = [];
 
     for (date of dates) {
-    if (date.toString() === '0') { continue; }
+      if (date.toString() === '0') { continue; }
       compactDates.push(date.toString());
     }
-  
+
     return compactDates;
   }
 

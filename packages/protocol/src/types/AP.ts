@@ -22,6 +22,8 @@ export interface AddressBook {
   STKActor: string;
   STKEngine: string;
   STKRegistry: string;
+  OracleRegistry: string;
+  DataRegistryProxy: string;
 }
 
 export interface AssetOwnership {

@@ -1,5 +1,4 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
 const buidlerRuntime = require('@nomiclabs/buidler');
 const BigNumber = require('bignumber.js');
@@ -31,11 +30,11 @@ describe('CEGActor', () => {
     ] = self.accounts;
     // deploy a test ERC20 token to use it as the terms currency
     self.PaymentTokenInstance = await deployPaymentToken(
-        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+      buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
     );
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
-    self.terms = { 
+    self.terms = {
       ...await getDefaultTerms('CEG'),
       gracePeriod: { i: 1, p: 2, isSet: true },
       delinquencyPeriod: { i: 1, p: 3, isSet: true }
@@ -47,7 +46,7 @@ describe('CEGActor', () => {
 
     self.schedule = await generateSchedule(self.CEGEngineInstance, self.terms);
     self.state = web3ResponseToState(
-        await self.CEGEngineInstance.methods.computeInitialState(self.terms).call()
+      await self.CEGEngineInstance.methods.computeInitialState(self.terms).call()
     );
 
     const { events } = await self.CEGActorInstance.methods.initialize(
@@ -72,8 +71,8 @@ describe('CEGActor', () => {
     const eventTime = await getEventTime(_event, this.terms)
 
     const payoff = new BigNumber(await this.CEGEngineInstance.methods.computePayoffForEvent(
-      this.terms, 
-      this.state, 
+      this.terms,
+      this.state,
       _event,
       web3.utils.toHex(eventTime)
     ).call());
@@ -103,7 +102,7 @@ describe('CEGActor', () => {
       web3.utils.toHex(eventTime)
     ).call());
     const storedNextEvent = await this.CEGRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
-    
+
     assert.strictEqual(emittedAssetId, this.assetId);
     assert.notStrictEqual(storedNextEvent, _event);
     assert.strictEqual(storedNextState.statusDate, String(eventTime));
