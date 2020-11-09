@@ -23,10 +23,6 @@
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "ap-chain:start": "./scripts/setup-ap-chain.sh --no-deploy",
     "ap-chain:setup": "./scripts/setup-ap-chain.sh",
