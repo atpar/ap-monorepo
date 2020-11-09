@@ -1,6 +1,6 @@
 /**
  * Utilities to link libraries to the bytecode (of a smart contract)
- * Source (adopted): buidler-deploy/src/helpers.ts:
+ * Source (adopted): hardhat-deploy/src/helpers.ts:
  */
 
 const soliditySha3 = (web3 || Web3).utils.soliditySha3;

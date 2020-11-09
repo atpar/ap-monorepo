@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 const { expectEvent } = require('../../helper/utils/utils');
@@ -53,7 +53,7 @@ describe('DataRegistry', () => {
   });
 
   it('should revert if an unregistered account tries to publish a data point', async () => {
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.DataRegistryInstance.methods.publishDataPoint(
         this.marketObjectId,
         1,

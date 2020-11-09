@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { deployPaymentToken, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 const { expectEvent, generateSchedule } = require('../../helper/utils/utils');
@@ -174,7 +174,7 @@ describe('Custodian', () => {
       this.ownership
     ).send(this.txOpts);
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId)).send(this.txOpts),
       'Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED'
     );

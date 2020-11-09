@@ -618,7 +618,7 @@ export class STKEngine extends Contract {
           isSet: boolean;
         };
       },
-      arg2: {
+      state: {
         contractPerformance: number | string;
         statusDate: number | string;
         nonPerformingDate: number | string;

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { BN, /*balance,*/ ether, shouldFail } = require('openzeppelin-test-helpers');
+const assert = require('assert');
+const buidlerRuntime = require('hardhat');
+const { BN, /*balance,*/ ether, expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
@@ -45,7 +46,7 @@ describe('SimpleRestrictedFDT', () => {
   describe('mint', () => {
     describe('when someone other than the owner tries to mint tokens', () => {
       it('reverts', async () => {
-        await shouldFail.reverting(
+        await expectRevert.unspecified(
           this.fundsDistributionToken.methods.mint(anyone, ether('1').toString())
             .send({from: anyone})
         );
@@ -55,7 +56,7 @@ describe('SimpleRestrictedFDT', () => {
     describe('when the contract owner tries to mint tokens', () => {
       describe('when the recipient is the zero address', () => {
         it('reverts', async () => {
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.fundsDistributionToken.methods.mint(ZERO_ADDRESS, ether('1').toString())
               .send({from: owner})
           );
@@ -67,14 +68,10 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
             .send({from: owner});
 
-          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-            .should.be.equal(ether('1').toString());
-          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('1').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
         });
       });
     });
@@ -87,7 +84,7 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsToken.methods
             .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
             .send({from: anyone});
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.fundsDistributionToken.methods.updateFundsReceived()
               .send({from: anyone})
           );
@@ -107,12 +104,9 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsDistributionToken.methods.updateFundsReceived()
             .send({from: anyone});
 
-          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
         });
       });
 
@@ -140,19 +134,13 @@ describe('SimpleRestrictedFDT', () => {
             fundsDistributed: ether('1').toString(),
           });
 
-          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
         });
       });
     });
@@ -163,7 +151,7 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsToken.methods
             .transfer(this.fundsDistributionToken.options.address, ether('1').toString())
             .send({from: anyone});
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.fundsDistributionToken.methods.updateFundsReceived()
               .send({from: anyone})
           );
@@ -183,12 +171,9 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsDistributionToken.methods.updateFundsReceived()
             .send({from: anyone});
 
-          (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
         });
       });
 
@@ -216,10 +201,8 @@ describe('SimpleRestrictedFDT', () => {
             fundsDistributed: ether('1').toString(),
           });
 
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
         });
       });
     });
@@ -233,7 +216,7 @@ describe('SimpleRestrictedFDT', () => {
 
     describe('when the recipient is the zero address', () => {
       it('reverts', async () => {
-        await shouldFail.reverting(
+        await expectRevert.unspecified(
           this.fundsDistributionToken.methods.transfer(ZERO_ADDRESS, ether('0.5').toString())
             .send({from: tokenHolder1})
         );
@@ -243,7 +226,7 @@ describe('SimpleRestrictedFDT', () => {
     describe('when the recipient is not the zero address', () => {
       describe('when the sender does not have enough balance', () => {
         it('reverts', async () => {
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('2').toString())
               .send({from: tokenHolder1})
           );
@@ -255,10 +238,8 @@ describe('SimpleRestrictedFDT', () => {
           await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('0.25').toString())
             .send({from: tokenHolder1});
 
-          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
-            .should.be.equal(ether('0.25').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('0.75').toString());
+          assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call(), ether('0.25').toString());
         });
 
         it('emits a transfer event', async () => {
@@ -303,15 +284,12 @@ describe('SimpleRestrictedFDT', () => {
           });
 
           it('transfers the requested amount', async () => {
-            (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-              .should.be.equal( mintAmount.sub(transferAmount).toString() );
-            (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
-              .should.be.equal( transferAmount.toString() );
+            assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(),  mintAmount.sub(transferAmount).toString() );
+            assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call(),  transferAmount.toString() );
           });
 
           it('decreases the spender allowance', async () => {
-            (await this.fundsDistributionToken.methods.allowance(tokenHolder1, spender).call())
-              .should.be.equal( approveAmount.sub(transferAmount).toString() );
+            assert.strictEqual(await this.fundsDistributionToken.methods.allowance(tokenHolder1, spender).call(),  approveAmount.sub(transferAmount).toString() );
           });
 
           it('emits a transfer event', async () => {
@@ -341,7 +319,7 @@ describe('SimpleRestrictedFDT', () => {
           });
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.fundsDistributionToken.methods
+            await expectRevert.unspecified(this.fundsDistributionToken.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -358,7 +336,7 @@ describe('SimpleRestrictedFDT', () => {
           const _transferAmount = approveAmount.addn(1);
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.fundsDistributionToken.methods
+            await expectRevert.unspecified(this.fundsDistributionToken.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -368,7 +346,7 @@ describe('SimpleRestrictedFDT', () => {
           const _transferAmount = mintAmount.addn(1);
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.fundsDistributionToken.methods
+            await expectRevert.unspecified(this.fundsDistributionToken.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -383,7 +361,7 @@ describe('SimpleRestrictedFDT', () => {
       });
 
       it('reverts', async () => {
-        await shouldFail.reverting(this.fundsDistributionToken.methods
+        await expectRevert.unspecified(this.fundsDistributionToken.methods
           .transferFrom(tokenHolder1, ZERO_ADDRESS, transferAmount.toString())
           .send({from: spender}));
       });
@@ -404,12 +382,9 @@ describe('SimpleRestrictedFDT', () => {
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
       // const balance1 = await balance.current(tokenHolder1).call();
       const balance1 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
@@ -423,15 +398,12 @@ describe('SimpleRestrictedFDT', () => {
       // const balance2 = await balance.current(tokenHolder1);
       const balance2 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balance2.should.be.equal( balance1.add(ether('0.25').toString()).sub(fee) );
-      balance2.should.be.equal((new BN(balance1)).add(ether('0.25')).toString());
+      // assert.strictEqual(balance2,  balance1.add(ether('0.25').toString()).sub(fee) );
+      assert.strictEqual(balance2, (new BN(balance1)).add(ether('0.25')).toString());
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0.25').toString());
 
       // withdraw again. should succeed and withdraw nothing
       // const receipt2 = await this.fundsDistributionToken.methods.withdrawFunds()
@@ -439,15 +411,12 @@ describe('SimpleRestrictedFDT', () => {
       // const balance3 = await balance.current(tokenHolder1);
       const balance3 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee2 = gasPrice.mul(new BN(receipt2.receipt.gasUsed));
-      // balance3.should.be.equal( balance2.sub(fee2).toString());
-      balance3.should.be.equal(balance2);
+      // assert.strictEqual(balance3,  balance2.sub(fee2).toString());
+      assert.strictEqual(balance3, balance2);
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0.25').toString());
     });
   });
 
@@ -469,12 +438,9 @@ describe('SimpleRestrictedFDT', () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
         .send({from: owner});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
     });
 
     it('should keep funds unchanged after transferring tokens', async () => {
@@ -493,19 +459,13 @@ describe('SimpleRestrictedFDT', () => {
       await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('1').toString())
         .send({from: tokenHolder1});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
 
     it('should keep funds unchanged after transferFrom', async () => {
@@ -528,19 +488,13 @@ describe('SimpleRestrictedFDT', () => {
         .transferFrom(tokenHolder1, tokenHolder2, ether('1').toString())
         .send({from: tokenHolder3});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
 
     it('should correctly distribute funds after transferring tokens', async () => {
@@ -566,19 +520,13 @@ describe('SimpleRestrictedFDT', () => {
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('12').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('12').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('12').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('12').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('43').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('43').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('43').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('43').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
   });
 
@@ -600,32 +548,21 @@ describe('SimpleRestrictedFDT', () => {
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call()).
-        should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
       // transfer
       await this.fundsDistributionToken.methods.transfer(tokenHolder2, ether('2').toString())
         .send({from: tokenHolder1});
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
-        .should.be.equal(ether('2').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call(), ether('2').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // tokenHolder1 withdraw
       // balanceBefore = await balance.current(tokenHolder1).call();
@@ -633,19 +570,16 @@ describe('SimpleRestrictedFDT', () => {
       //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder1).call();
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('10').sub(fee).toString());
+      // assert.strictEqual(balanceAfter, balanceBefore.add(ether('10').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       await this.fundsDistributionToken.methods.withdrawFunds()
         .send({from: tokenHolder1});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('10')).toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('10')).toString());
 
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
 
       // deposit
       // await this.fundsDistributionToken.methods.distributeFunds()
@@ -655,24 +589,17 @@ describe('SimpleRestrictedFDT', () => {
         .send({from: anyone});
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // mint
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('3').toString())
         .send({from: owner});
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('3').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('3').toString());
 
       // deposit
       // await this.fundsDistributionToken.methods.distributeFunds()
@@ -682,18 +609,12 @@ describe('SimpleRestrictedFDT', () => {
         .send({from: anyone});
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('16').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('6').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('14').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('14').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('16').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('6').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('14').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('14').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // now tokens: 3, 2
 
@@ -729,12 +650,9 @@ describe('SimpleRestrictedFDT', () => {
 
       // 3, 1, 6
 
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('3').toString());
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call())
-        .should.be.equal(ether('1').toString());
-      (await this.fundsDistributionToken.methods.balanceOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('3').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder2).call(), ether('1').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder3).call(), ether('6').toString());
 
       // deposit
       // await this.fundsDistributionToken.methods.distributeFunds()
@@ -744,24 +662,15 @@ describe('SimpleRestrictedFDT', () => {
         .send({from: anyone});
       await this.fundsDistributionToken.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('9').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('19').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('9').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call(), ether('0').toString());
 
 
       // tokenHolder1 withdraw
@@ -770,18 +679,15 @@ describe('SimpleRestrictedFDT', () => {
       //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder1);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('9').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('9').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       await this.fundsDistributionToken.methods.withdrawFunds()
         .send({from: tokenHolder1});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('9')).toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('9')).toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('19').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder1).call(), ether('19').toString());
 
       // tokenHolder2 withdraw
       // balanceBefore = await balance.current(tokenHolder2);
@@ -789,18 +695,15 @@ describe('SimpleRestrictedFDT', () => {
       //   .send({from: tokenHolder2, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder2);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('15').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('15').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
       await this.fundsDistributionToken.methods.withdrawFunds()
         .send({from: tokenHolder2});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('15')).toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('15')).toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder2).call(), ether('15').toString());
 
       // tokenHolder3 withdraw
       // balanceBefore = await balance.current(tokenHolder3);
@@ -808,18 +711,15 @@ describe('SimpleRestrictedFDT', () => {
       //   .send({from: tokenHolder3, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder3);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('6').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('6').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
       await this.fundsDistributionToken.methods.withdrawFunds()
         .send({from: tokenHolder3});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('6')).toString());
-      (await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('0').toString());
-      (await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('6')).toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder3).call(), ether('0').toString());
+      assert.strictEqual(await this.fundsDistributionToken.methods.withdrawnFundsOf(tokenHolder3).call(), ether('6').toString());
     });
   });
 });

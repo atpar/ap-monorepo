@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { BN, ether, shouldFail } = require('openzeppelin-test-helpers');
+const assert = require('assert');
+const buidlerRuntime = require('hardhat');
+const { BN, ether, expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
@@ -41,16 +42,16 @@ describe('CMTA20', () => {
 
   describe('Token structure', () => {
     it('has the defined name', async () => {
-      (await this.cmta20.methods.name().call()).should.equal('CMTA 20');
+      assert.strictEqual(await this.cmta20.methods.name().call(), 'CMTA 20');
     });
     it('has the defined symbol', async () => {
-      (await this.cmta20.methods.symbol().call()).should.equal('CMTA20');
+      assert.strictEqual(await this.cmta20.methods.symbol().call(), 'CMTA20');
     });
     it('has no rule engine set by default', async () => {
-      (await this.cmta20.methods.ruleEngine().call()).should.equal('0x0000000000000000000000000000000000000000');
+      assert.strictEqual(await this.cmta20.methods.ruleEngine().call(), '0x0000000000000000000000000000000000000000');
     });
     // it('cannot be fractionned', async () => {
-    //   (await this.cmta20.methods.decimals().call()).should.equal('0');
+    // assert.strictEqual(await this.cmta20.methods.decimals().call(), '0');
     // });
   });
 
@@ -64,7 +65,10 @@ describe('CMTA20', () => {
     });
 
     it('reverts when calling from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.setRuleEngine(fakeRuleEngine).send({ from: tokenHolder1 }));
+      await expectRevert(
+        this.cmta20.methods.setRuleEngine(fakeRuleEngine).send({ from: tokenHolder1 }),
+        'Ownable: caller is not the owner'
+      );
     });
   });
 
@@ -78,31 +82,34 @@ describe('CMTA20', () => {
     });
 
     it('reverts when calling from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.setContact('admin2@cmta.ch').send({ from: tokenHolder1 }));
+      await expectRevert(
+        this.cmta20.methods.setContact('admin2@cmta.ch').send({ from: tokenHolder1 }),
+        'Ownable: caller is not the owner'
+      );
     });
   });
 
   describe('Identities', () => {
     it('can be set by the shareholder and read from owner', async () => {
       await this.cmta20.methods.setMyIdentity('0x1234567890').send({from: tokenHolder1});
-      (await this.cmta20.methods.identity(tokenHolder1).call()).should.equal('0x1234567890');
+      assert.strictEqual(await this.cmta20.methods.identity(tokenHolder1).call(), '0x1234567890');
     });
   });
 
   describe('Issuing', () => {
     it('can be issued as the owner', async () => {
       /* Check first balance */
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '0');
 
       /* Issue 20 and check balances and total supply */
       this.receipt1 = await this.cmta20.methods.issue(20).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('20');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '20');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '20');
 
       /* Issue 50 and check intermediate balances and total supply */
       this.receipt2 = await this.cmta20.methods.issue(50).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('70');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('70');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '70');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '70');
     });
 
     it('emits a Transfer event', () => {
@@ -116,7 +123,10 @@ describe('CMTA20', () => {
     });
 
     it('reverts when issuing from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.issue(20).send({ from: tokenHolder1 }));
+      await expectRevert(
+        this.cmta20.methods.issue(20).send({ from: tokenHolder1 }),
+        'Ownable: caller is not the owner'
+      );
     });
   });
 
@@ -129,13 +139,13 @@ describe('CMTA20', () => {
     it('can be redeemed as the owner', async () => {
       /* Redeem 20 and check balances and total supply */
       this.receipt1 = await this.cmta20.methods.redeem(20).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('50');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('50');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '50');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '50');
 
       /* Redeem 50 and check balances and total supply */
       this.receipt2 = await this.cmta20.methods.redeem(50).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('0');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '0');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '0');
     });
 
     it('emits a Transfer event', () => {
@@ -149,11 +159,14 @@ describe('CMTA20', () => {
     });
 
     it('reverts when redeeming from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.redeem(20).send({ from: tokenHolder1 }));
+      await expectRevert(
+        this.cmta20.methods.redeem(20).send({ from: tokenHolder1 }),
+        'Ownable: caller is not the owner'
+      );
     });
 
     it('reverts when redeeming more than the owner balance', async () => {
-      await shouldFail.reverting(this.cmta20.methods.redeem(100).send({ from: owner }));
+      await expectRevert.unspecified(this.cmta20.methods.redeem(100).send({ from: owner }));
     });
   });
 
@@ -167,10 +180,10 @@ describe('CMTA20', () => {
     it('can be reassigned as the owner from tokenHolder1 to tokenHolder2', async () => {
 
       this.receipt = await this.cmta20.methods.reassign(tokenHolder1, tokenHolder2).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('20');
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('0');
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('50');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('70');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '20');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '0');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '50');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '70');
     });
 
     it('emits a LogReassigned event and a Transfer event', () => {
@@ -179,28 +192,28 @@ describe('CMTA20', () => {
     });
 
     it('reverts when reassigning from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.reassign(tokenHolder1, tokenHolder2).send({ from: tokenHolder3 }));
+      await expectRevert.unspecified(this.cmta20.methods.reassign(tokenHolder1, tokenHolder2).send({ from: tokenHolder3 }));
     });
 
     it('reverts when reassigning when contract is paused', async () => {
       await this.cmta20.methods.pause().send({from: owner});
-      await shouldFail.reverting.withMessage(this.cmta20.methods.reassign(tokenHolder1, tokenHolder2).send({ from: owner }), 'Pausable: paused');
+      await expectRevert(this.cmta20.methods.reassign(tokenHolder1, tokenHolder2).send({ from: owner }), 'Pausable: paused');
     });
 
     it('reverts when reassigning when original is 0x0', async () => {
-      await shouldFail.reverting.withMessage(this.cmta20.methods.reassign(ZERO_ADDRESS, tokenHolder2).send({ from: owner }), 'CM01');
+      await expectRevert(this.cmta20.methods.reassign(ZERO_ADDRESS, tokenHolder2).send({ from: owner }), 'CM01');
     });
 
     it('reverts when reassigning when original is 0x0', async () => {
-      await shouldFail.reverting.withMessage(this.cmta20.methods.reassign(tokenHolder1, ZERO_ADDRESS).send({ from: owner }), 'CM02');
+      await expectRevert(this.cmta20.methods.reassign(tokenHolder1, ZERO_ADDRESS).send({ from: owner }), 'CM02');
     });
 
     it('reverts when reassigning when original is the same as replacement', async () => {
-      await shouldFail.reverting.withMessage(this.cmta20.methods.reassign(tokenHolder1, tokenHolder1).send({ from: owner }), 'CM03');
+      await expectRevert(this.cmta20.methods.reassign(tokenHolder1, tokenHolder1).send({ from: owner }), 'CM03');
     });
 
     it('reverts when reassigning from an original address that holds not tokens', async () => {
-      await shouldFail.reverting.withMessage(this.cmta20.methods.reassign(tokenHolder3, tokenHolder1).send({ from: owner }), 'CM05');
+      await expectRevert(this.cmta20.methods.reassign(tokenHolder3, tokenHolder1).send({ from: owner }), 'CM05');
     });
   });
 
@@ -215,11 +228,11 @@ describe('CMTA20', () => {
 
     it('can be destroyed as the owner', async () => {
       this.receipt = await this.cmta20.methods.destroy([tokenHolder1, tokenHolder2]).send({from: owner});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('67');
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('0');
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('0');
-      (await this.cmta20.methods.balanceOf(tokenHolder3).call()).should.equal('33');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('100');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '67');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '0');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '0');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), '33');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '100');
     });
 
     it('emits a LogDestroyed event and multiple Transfer events', () => {
@@ -229,11 +242,11 @@ describe('CMTA20', () => {
     });
 
     it('reverts when destroying from non-owner', async () => {
-      await shouldFail.reverting(this.cmta20.methods.destroy([tokenHolder1, tokenHolder2]).send({ from: tokenHolder3 }));
+      await expectRevert.unspecified(this.cmta20.methods.destroy([tokenHolder1, tokenHolder2]).send({ from: tokenHolder3 }));
     });
 
     it('reverts when destroying with owner contained in shareholders array', async () => {
-      await shouldFail.reverting.withMessage(this.cmta20.methods.destroy([owner, tokenHolder1, tokenHolder2]).send({ from: owner }), 'CM06');
+      await expectRevert(this.cmta20.methods.destroy([owner, tokenHolder1, tokenHolder2]).send({ from: owner }), 'CM06');
     });
   });
 
@@ -243,9 +256,9 @@ describe('CMTA20', () => {
     });
 
     it('allows tokenHolder1 to define a spending allowance for tokenHolder3', async () => {
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
       this.receipt = await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '20');
     });
 
     it('emits an Approval event', () => {
@@ -253,11 +266,11 @@ describe('CMTA20', () => {
     });
 
     it('allows tokenHolder1 to increase the allowance for tokenHolder3', async () => {
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
       await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '20');
       this.receipt = await this.cmta20.methods.increaseAllowance(tokenHolder3, 10).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('30');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '30');
     });
 
     it('emits an Approval event', () => {
@@ -265,11 +278,11 @@ describe('CMTA20', () => {
     });
 
     it('allows tokenHolder1 to decrease the allowance for tokenHolder3', async () => {
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
       await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '20');
       this.receipt = await this.cmta20.methods.decreaseAllowance(tokenHolder3, 10).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('10');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '10');
     });
 
     it('emits an Approval event', () => {
@@ -277,11 +290,11 @@ describe('CMTA20', () => {
     });
 
     it('allows tokenHolder1 to redefine a spending allowance for tokenHolder3', async () => {
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
       await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '20');
       this.receipt = await this.cmta20.methods.approve(tokenHolder3, 50).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('50');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '50');
     });
 
     it('emits an Approval event', () => {
@@ -290,7 +303,7 @@ describe('CMTA20', () => {
 
     it('reverts when approving when contract is paused', async () => {
       await this.cmta20.methods.pause().send({from: owner});
-      await shouldFail.reverting.withMessage(this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1}), 'Pausable: paused');
+      await expectRevert(this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1}), 'Pausable: paused');
     });
   });
 
@@ -304,27 +317,27 @@ describe('CMTA20', () => {
     });
 
     it('can check if transfer is valid', async () => {
-      (await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 11).call()).should.equal(true);
-      (await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 11).call()).should.equal("0");
-      (await this.cmta20.methods.messageForTransferRestriction(0).call()).should.equal("No restriction");
+      assert.strictEqual(await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 11).call(), true);
+      assert.strictEqual(await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 11).call(), "0");
+      assert.strictEqual(await this.cmta20.methods.messageForTransferRestriction(0).call(), "No restriction");
     });
 
     it('allows tokenHolder1 to transfer tokens to tokenHolder2', async () => {
       await this.cmta20.methods.transfer(tokenHolder2, 11).send({from: tokenHolder1});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('4');
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('20');
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('43');
-      (await this.cmta20.methods.balanceOf(tokenHolder3).call()).should.equal('33');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('100');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '4');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '20');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '43');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), '33');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '100');
     });
 
     it('reverts if tokenHolder1 transfers more tokens than he owns to tokenHolder2', async () => {
-      await shouldFail.reverting(this.cmta20.methods.transfer(tokenHolder2, 50).send({from: tokenHolder1}));
+      await expectRevert.unspecified(this.cmta20.methods.transfer(tokenHolder2, 50).send({from: tokenHolder1}));
     });
 
     it('reverts if tokenHolder1 transfers tokens to tokenHolder2 when paused', async () => {
       await this.cmta20.methods.pause().send({from: owner});
-      await shouldFail.reverting.withMessage(this.cmta20.methods.transfer(tokenHolder2, 10).send({from: tokenHolder1}), 'Pausable: paused');
+      await expectRevert(this.cmta20.methods.transfer(tokenHolder2, 10).send({from: tokenHolder1}), 'Pausable: paused');
     });
 
     it('allows tokenHolder3 to transfer tokens from tokenHolder1 to tokenHolder2 with the right allowance', async () => {
@@ -333,26 +346,26 @@ describe('CMTA20', () => {
 
       /* Transfer */
       await this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 11).send({from: tokenHolder3});
-      (await this.cmta20.methods.balanceOf(owner).call()).should.equal('4');
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('20');
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('43');
-      (await this.cmta20.methods.balanceOf(tokenHolder3).call()).should.equal('33');
-      (await this.cmta20.methods.totalSupply().call()).should.equal('100');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '4');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '20');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '43');
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), '33');
+      assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '100');
     });
 
     it('reverts if tokenHolder3 transfers more tokens than the allowance from tokenHolder1 to tokenHolder2', async () => {
       /* Define allowance */
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
       await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
-      (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('20');
+      assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '20');
 
       /* Transfer */
-      await shouldFail.reverting(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 31).send({from: tokenHolder3}));
+      await expectRevert.unspecified(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 31).send({from: tokenHolder3}));
     });
 
     it('reverts if tokenHolder3 transfers more tokens than tokenHolder1 owns from tokenHolder1 to tokenHolder2', async () => {
       await this.cmta20.methods.approve(tokenHolder3, 1000).send({from: tokenHolder1});
-      await shouldFail.reverting(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 50).send({from: tokenHolder3}));
+      await expectRevert.unspecified(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 50).send({from: tokenHolder3}));
     });
 
     it('reverts if tokenHolder3 transfers tokens from tokenHolder1 to tokenHolder2 when paused', async () => {
@@ -360,10 +373,10 @@ describe('CMTA20', () => {
       await this.cmta20.methods.approve(tokenHolder3, 20).send({from: tokenHolder1});
 
       await this.cmta20.methods.pause().send({from: owner});
-      (await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 10).call()).should.equal(false);
-      (await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 10).call()).should.equal("1");
-      (await this.cmta20.methods.messageForTransferRestriction(1).call()).should.equal("All transfers paused");
-      await shouldFail.reverting.withMessage(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 10).send({from: tokenHolder3}), 'Pausable: paused');
+      assert.strictEqual(await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 10).call(), false);
+      assert.strictEqual(await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 10).call(), "1");
+      assert.strictEqual(await this.cmta20.methods.messageForTransferRestriction(1).call(), "All transfers paused");
+      await expectRevert(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 10).send({from: tokenHolder3}), 'Pausable: paused');
     });
 
     describe('Transferring with Rule Engine set', () => {
@@ -372,25 +385,25 @@ describe('CMTA20', () => {
       });
 
       it('can check if transfer is valid', async () => {
-        (await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 11).call()).should.equal(true);
-        (await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 11).call()).should.equal("0");
-        (await this.cmta20.methods.messageForTransferRestriction(0).call()).should.equal("No restriction");
-        (await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 21).call()).should.equal(false);
-        (await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 21).call()).should.equal("10");
-        (await this.cmta20.methods.messageForTransferRestriction(10).call()).should.equal("Amount too high");
+        assert.strictEqual(await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 11).call(), true);
+        assert.strictEqual(await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 11).call(), "0");
+        assert.strictEqual(await this.cmta20.methods.messageForTransferRestriction(0).call(), "No restriction");
+        assert.strictEqual(await this.cmta20.methods.canTransfer(tokenHolder1, tokenHolder2, 21).call(), false);
+        assert.strictEqual(await this.cmta20.methods.detectTransferRestriction(tokenHolder1, tokenHolder2, 21).call(), "10");
+        assert.strictEqual(await this.cmta20.methods.messageForTransferRestriction(10).call(), "Amount too high");
       });
 
       it('allows tokenHolder1 to transfer tokens to tokenHolder2', async () => {
         await this.cmta20.methods.transfer(tokenHolder2, 11).send({from: tokenHolder1});
-        (await this.cmta20.methods.balanceOf(owner).call()).should.equal('4');
-        (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('20');
-        (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('43');
-        (await this.cmta20.methods.balanceOf(tokenHolder3).call()).should.equal('33');
-        (await this.cmta20.methods.totalSupply().call()).should.equal('100');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '4');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '20');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '43');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), '33');
+        assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '100');
       });
 
       it('reverts if tokenHolder1 transfers more tokens than rule allows', async () => {
-        await shouldFail.reverting.withMessage(this.cmta20.methods.transfer(tokenHolder2, 21).send({from: tokenHolder1}), "CM04");
+        await expectRevert(this.cmta20.methods.transfer(tokenHolder2, 21).send({from: tokenHolder1}), "CM04");
       });
 
       it('allows tokenHolder3 to transfer tokens from tokenHolder1 to tokenHolder2 with the right allowance', async () => {
@@ -399,21 +412,21 @@ describe('CMTA20', () => {
 
         /* Transfer */
         await this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 11).send({from: tokenHolder3});
-        (await this.cmta20.methods.balanceOf(owner).call()).should.equal('4');
-        (await this.cmta20.methods.balanceOf(tokenHolder1).call()).should.equal('20');
-        (await this.cmta20.methods.balanceOf(tokenHolder2).call()).should.equal('43');
-        (await this.cmta20.methods.balanceOf(tokenHolder3).call()).should.equal('33');
-        (await this.cmta20.methods.totalSupply().call()).should.equal('100');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(owner).call(), '4');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), '20');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), '43');
+        assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), '33');
+        assert.strictEqual(await this.cmta20.methods.totalSupply().call(), '100');
       });
 
       it('reverts if tokenHolder3 transfers more tokens than the allowance from tokenHolder1 to tokenHolder2', async () => {
         /* Define allowance */
-        (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('0');
+        assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '0');
         await this.cmta20.methods.approve(tokenHolder3, 21).send({from: tokenHolder1});
-        (await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call()).should.equal('21');
+        assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, tokenHolder3).call(), '21');
 
         /* Transfer */
-        await shouldFail.reverting.withMessage(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 21).send({from: tokenHolder3}), "CM04");
+        await expectRevert(this.cmta20.methods.transferFrom(tokenHolder1, tokenHolder2, 21).send({from: tokenHolder3}), "CM04");
       });
     });
   });
@@ -450,7 +463,7 @@ describe('CMTA20', () => {
   describe('mint', () => {
     describe('when someone other than the owner tries to mint tokens', () => {
       it('reverts', async () => {
-        await shouldFail.reverting(
+        await expectRevert.unspecified(
           this.cmta20.methods.mint(anyone, ether('1').toString())
             .send({from: anyone})
         );
@@ -460,7 +473,7 @@ describe('CMTA20', () => {
     describe('when the contract owner tries to mint tokens', () => {
       describe('when the recipient is the zero address', () => {
         it('reverts', async () => {
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.cmta20.methods.mint(ZERO_ADDRESS, ether('1').toString())
               .send({from: owner})
           );
@@ -472,14 +485,22 @@ describe('CMTA20', () => {
           await this.cmta20.methods.mint(tokenHolder1, ether('1').toString())
             .send({from: owner});
 
-          (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-            .should.be.equal(ether('1').toString());
-          (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(
+            await this.cmta20.methods.balanceOf(tokenHolder1).call(),
+            ether('1').toString()
+          );
+          assert.strictEqual(
+            await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(),
+            ether('0').toString()
+          );
+          assert.strictEqual(
+            await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(),
+            ether('0').toString()
+          );
+          assert.strictEqual(
+            await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(),
+            ether('0').toString()
+          );
         });
       });
     });
@@ -492,7 +513,7 @@ describe('CMTA20', () => {
           await this.fundsToken.methods
             .transfer(this.cmta20.options.address, ether('1').toString())
             .send({from: anyone});
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.cmta20.methods.updateFundsReceived()
               .send({from: anyone})
           );
@@ -512,12 +533,9 @@ describe('CMTA20', () => {
           await this.cmta20.methods.updateFundsReceived()
             .send({from: anyone});
 
-          (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
         });
       });
 
@@ -545,19 +563,13 @@ describe('CMTA20', () => {
             fundsDistributed: ether('1').toString(),
           });
 
-          (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-          (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
         });
       });
     });
@@ -568,7 +580,7 @@ describe('CMTA20', () => {
           await this.fundsToken.methods
             .transfer(this.cmta20.options.address, ether('1').toString())
             .send({from: anyone});
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.cmta20.methods.updateFundsReceived()
               .send({from: anyone})
           );
@@ -588,12 +600,9 @@ describe('CMTA20', () => {
           await this.cmta20.methods.updateFundsReceived()
             .send({from: anyone});
 
-          (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
-          (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
         });
       });
 
@@ -621,10 +630,8 @@ describe('CMTA20', () => {
             fundsDistributed: ether('1').toString(),
           });
 
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-            .should.be.equal(ether('0.25').toString());
-          (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-            .should.be.equal(ether('0.75').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+          assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
         });
       });
     });
@@ -638,7 +645,7 @@ describe('CMTA20', () => {
 
     describe('when the recipient is the zero address', () => {
       it('reverts', async () => {
-        await shouldFail.reverting(
+        await expectRevert.unspecified(
           this.cmta20.methods.transfer(ZERO_ADDRESS, ether('0.5').toString())
             .send({from: tokenHolder1})
         );
@@ -648,7 +655,7 @@ describe('CMTA20', () => {
     describe('when the recipient is not the zero address', () => {
       describe('when the sender does not have enough balance', () => {
         it('reverts', async () => {
-          await shouldFail.reverting(
+          await expectRevert.unspecified(
             this.cmta20.methods.transfer(tokenHolder2, ether('2').toString())
               .send({from: tokenHolder1})
           );
@@ -660,10 +667,8 @@ describe('CMTA20', () => {
           await this.cmta20.methods.transfer(tokenHolder2, ether('0.25').toString())
             .send({from: tokenHolder1});
 
-          (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-            .should.be.equal(ether('0.75').toString());
-          (await this.cmta20.methods.balanceOf(tokenHolder2).call())
-            .should.be.equal(ether('0.25').toString());
+          assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), ether('0.75').toString());
+          assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), ether('0.25').toString());
         });
 
         it('emits a transfer event', async () => {
@@ -708,15 +713,12 @@ describe('CMTA20', () => {
           });
 
           it('transfers the requested amount', async () => {
-            (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-              .should.be.equal( mintAmount.sub(transferAmount).toString() );
-            (await this.cmta20.methods.balanceOf(tokenHolder2).call())
-              .should.be.equal( transferAmount.toString() );
+            assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(),  mintAmount.sub(transferAmount).toString() );
+            assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(),  transferAmount.toString() );
           });
 
           it('decreases the spender allowance', async () => {
-            (await this.cmta20.methods.allowance(tokenHolder1, spender).call())
-              .should.be.equal( approveAmount.sub(transferAmount).toString() );
+            assert.strictEqual(await this.cmta20.methods.allowance(tokenHolder1, spender).call(),  approveAmount.sub(transferAmount).toString() );
           });
 
           it('emits a transfer event', async () => {
@@ -746,7 +748,7 @@ describe('CMTA20', () => {
           });
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.cmta20.methods
+            await expectRevert.unspecified(this.cmta20.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -763,7 +765,7 @@ describe('CMTA20', () => {
           const _transferAmount = approveAmount.addn(1);
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.cmta20.methods
+            await expectRevert.unspecified(this.cmta20.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -773,7 +775,7 @@ describe('CMTA20', () => {
           const _transferAmount = mintAmount.addn(1);
 
           it('reverts', async () => {
-            await shouldFail.reverting(this.cmta20.methods
+            await expectRevert.unspecified(this.cmta20.methods
               .transferFrom(tokenHolder1, tokenHolder2, _transferAmount.toString())
               .send({from: spender}));
           });
@@ -788,7 +790,7 @@ describe('CMTA20', () => {
       });
 
       it('reverts', async () => {
-        await shouldFail.reverting(this.cmta20.methods
+        await expectRevert.unspecified(this.cmta20.methods
           .transferFrom(tokenHolder1, ZERO_ADDRESS, transferAmount.toString())
           .send({from: spender}));
       });
@@ -809,12 +811,9 @@ describe('CMTA20', () => {
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
       // const balance1 = await balance.current(tokenHolder1).call();
       const balance1 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
@@ -828,15 +827,12 @@ describe('CMTA20', () => {
       // const balance2 = await balance.current(tokenHolder1);
       const balance2 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balance2.should.be.equal( balance1.add(ether('0.25').toString()).sub(fee) );
-      balance2.should.be.equal((new BN(balance1)).add(ether('0.25')).toString());
+      // assert.strictEqual(balance2,  balance1.add(ether('0.25').toString()).sub(fee) );
+      assert.strictEqual(balance2, (new BN(balance1)).add(ether('0.25')).toString());
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0.25').toString());
 
       // withdraw again. should succeed and withdraw nothing
       // const receipt2 = await this.cmta20.methods.withdrawFunds()
@@ -844,15 +840,12 @@ describe('CMTA20', () => {
       // const balance3 = await balance.current(tokenHolder1);
       const balance3 = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       // const fee2 = gasPrice.mul(new BN(receipt2.receipt.gasUsed));
-      // balance3.should.be.equal( balance2.sub(fee2).toString());
-      balance3.should.be.equal(balance2);
+      // assert.strictEqual(balance3,  balance2.sub(fee2).toString());
+      assert.strictEqual(balance3, balance2);
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0.25').toString());
     });
   });
 
@@ -874,12 +867,9 @@ describe('CMTA20', () => {
       await this.cmta20.methods.mint(tokenHolder1, ether('1').toString())
         .send({from: owner});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
     });
 
     it('should keep funds unchanged after transferring tokens', async () => {
@@ -898,19 +888,13 @@ describe('CMTA20', () => {
       await this.cmta20.methods.transfer(tokenHolder2, ether('1').toString())
         .send({from: tokenHolder1});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
 
     it('should keep funds unchanged after transferFrom', async () => {
@@ -933,19 +917,13 @@ describe('CMTA20', () => {
         .transferFrom(tokenHolder1, tokenHolder2, ether('1').toString())
         .send({from: tokenHolder3});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0.25').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0.75').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0.75').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
 
     it('should correctly distribute funds after transferring tokens', async () => {
@@ -971,19 +949,13 @@ describe('CMTA20', () => {
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('12').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('12').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('12').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('12').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('43').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('43').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('43').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('43').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
     });
   });
 
@@ -1005,32 +977,21 @@ describe('CMTA20', () => {
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call()).
-        should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
 
       // transfer
       await this.cmta20.methods.transfer(tokenHolder2, ether('2').toString())
         .send({from: tokenHolder1});
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call())
-        .should.be.equal(ether('2').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), ether('2').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // tokenHolder1 withdraw
       // balanceBefore = await balance.current(tokenHolder1).call();
@@ -1038,19 +999,16 @@ describe('CMTA20', () => {
       //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder1).call();
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('10').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('10').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       await this.cmta20.methods.withdrawFunds()
         .send({from: tokenHolder1});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('10')).toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('10')).toString());
 
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
 
       // deposit
       // await this.cmta20.methods.distributeFunds()
@@ -1060,24 +1018,17 @@ describe('CMTA20', () => {
         .send({from: anyone});
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // mint
       await this.cmta20.methods.mint(tokenHolder1, ether('3').toString())
         .send({from: owner});
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('3').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), ether('3').toString());
 
       // deposit
       // await this.cmta20.methods.distributeFunds()
@@ -1087,18 +1038,12 @@ describe('CMTA20', () => {
         .send({from: anyone});
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('16').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('6').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('14').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('14').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('16').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('6').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('14').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('14').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
 
       // now tokens: 3, 2
 
@@ -1134,12 +1079,9 @@ describe('CMTA20', () => {
 
       // 3, 1, 6
 
-      (await this.cmta20.methods.balanceOf(tokenHolder1).call())
-        .should.be.equal(ether('3').toString());
-      (await this.cmta20.methods.balanceOf(tokenHolder2).call())
-        .should.be.equal(ether('1').toString());
-      (await this.cmta20.methods.balanceOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder1).call(), ether('3').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder2).call(), ether('1').toString());
+      assert.strictEqual(await this.cmta20.methods.balanceOf(tokenHolder3).call(), ether('6').toString());
 
       // deposit
       // await this.cmta20.methods.distributeFunds()
@@ -1149,24 +1091,15 @@ describe('CMTA20', () => {
         .send({from: anyone});
       await this.cmta20.methods.updateFundsReceived()
         .send({from: anyone});
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('9').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('10').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('19').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('9').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('10').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder3).call(), ether('0').toString());
 
 
       // tokenHolder1 withdraw
@@ -1175,18 +1108,15 @@ describe('CMTA20', () => {
       //   .send({from: tokenHolder1, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder1);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('9').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('9').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
       await this.cmta20.methods.withdrawFunds()
         .send({from: tokenHolder1});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder1).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('9')).toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call())
-        .should.be.equal(ether('19').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('9')).toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder1).call(), ether('19').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder1).call(), ether('19').toString());
 
       // tokenHolder2 withdraw
       // balanceBefore = await balance.current(tokenHolder2);
@@ -1194,18 +1124,15 @@ describe('CMTA20', () => {
       //   .send({from: tokenHolder2, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder2);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('15').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('15').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
       await this.cmta20.methods.withdrawFunds()
         .send({from: tokenHolder2});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder2).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('15')).toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call())
-        .should.be.equal(ether('15').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('15')).toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder2).call(), ether('15').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder2).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder2).call(), ether('15').toString());
 
       // tokenHolder3 withdraw
       // balanceBefore = await balance.current(tokenHolder3);
@@ -1213,18 +1140,15 @@ describe('CMTA20', () => {
       //   .send({from: tokenHolder3, gasPrice: gasPrice});
       // balanceAfter = await balance.current(tokenHolder3);
       // fee = gasPrice.mul(new BN(receipt.receipt.gasUsed));
-      // balanceAfter.should.be.equal( balanceBefore.add(ether('6').sub(fee).toString());
+      // assert.strictEqual(balanceAfter,  balanceBefore.add(ether('6').sub(fee).toString());
       balanceBefore = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
       await this.cmta20.methods.withdrawFunds()
         .send({from: tokenHolder3});
       balanceAfter = await this.fundsToken.methods.balanceOf(tokenHolder3).call();
-      balanceAfter.should.be.equal((new BN(balanceBefore)).add(ether('6')).toString());
-      (await this.cmta20.methods.accumulativeFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
-      (await this.cmta20.methods.withdrawableFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('0').toString());
-      (await this.cmta20.methods.withdrawnFundsOf(tokenHolder3).call())
-        .should.be.equal(ether('6').toString());
+      assert.strictEqual(balanceAfter, (new BN(balanceBefore)).add(ether('6')).toString());
+      assert.strictEqual(await this.cmta20.methods.accumulativeFundsOf(tokenHolder3).call(), ether('6').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawableFundsOf(tokenHolder3).call(), ether('0').toString());
+      assert.strictEqual(await this.cmta20.methods.withdrawnFundsOf(tokenHolder3).call(), ether('6').toString());
     });
   });
 });

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, ZERO_BYTES32 } = require('../../../helper/utils/utils');
@@ -110,7 +110,7 @@ describe('ANNActor', () => {
 
     await mineBlock(Number(eventTime));
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.ANNActorInstance.methods.progressWith(
         web3.utils.toHex(this.assetId),
         event,
