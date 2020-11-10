@@ -37,6 +37,8 @@ export class PAMActor extends Contract {
       1: string;
     }>;
 
+    defaultOracleProxy(): TransactionObject<string>;
+
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
@@ -130,8 +132,6 @@ export class PAMActor extends Contract {
       engine: string,
       admin: string
     ): TransactionObject<void>;
-
-    oracleRegistry(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 

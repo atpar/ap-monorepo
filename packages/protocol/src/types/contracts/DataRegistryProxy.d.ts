@@ -21,23 +21,60 @@ export class DataRegistryProxy extends Contract {
   );
   clone(): DataRegistryProxy;
   methods: {
-    dataRegistry(): TransactionObject<string>;
-
     getDataPoint(
-      _refData: string | number[]
+      setId: string | number[],
+      timestamp: number | string
     ): TransactionObject<{
       0: string;
       1: boolean;
     }>;
 
-    getDataPointAtTime(
-      _ref: string | number[],
-      timestamp: number | string
+    getDataProvider(setId: string | number[]): TransactionObject<string>;
+
+    getLastUpdatedTimestamp(
+      setId: string | number[]
     ): TransactionObject<string>;
 
-    setDataRegistryAddress(_a: string): TransactionObject<void>;
+    isRegistered(setId: string | number[]): TransactionObject<boolean>;
+
+    owner(): TransactionObject<string>;
+
+    publishDataPoint(
+      setId: string | number[],
+      timestamp: number | string,
+      dataPoint: number | string
+    ): TransactionObject<void>;
+
+    renounceOwnership(): TransactionObject<void>;
+
+    setDataProvider(
+      setId: string | number[],
+      provider: string
+    ): TransactionObject<void>;
+
+    transferOwnership(newOwner: string): TransactionObject<void>;
   };
   events: {
+    OwnershipTransferred: ContractEvent<{
+      previousOwner: string;
+      newOwner: string;
+      0: string;
+      1: string;
+    }>;
+    PublishedDataPoint: ContractEvent<{
+      setId: string;
+      dataPoint: string;
+      timestamp: string;
+      0: string;
+      1: string;
+      2: string;
+    }>;
+    UpdatedDataProvider: ContractEvent<{
+      setId: string;
+      provider: string;
+      0: string;
+      1: string;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>

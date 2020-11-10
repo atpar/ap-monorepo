@@ -22,16 +22,12 @@ export class UMAProxy extends Contract {
   clone(): UMAProxy;
   methods: {
     getDataPoint(
-      _ref: string | number[]
+      identifier: string | number[],
+      timestamp: number | string
     ): TransactionObject<{
       0: string;
       1: boolean;
     }>;
-
-    getDataPointAtTime(
-      _ref: string | number[],
-      timestamp: number | string
-    ): TransactionObject<string>;
 
     umaOracle(): TransactionObject<string>;
   };

@@ -13,7 +13,7 @@ import "../../ACTUS/Core/Utils/PeriodUtils.sol";
 import "../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
 import "../../ACTUS/Core/SignedMath.sol";
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
-import "../../Core/Base/DataRegistry/DataRegistry.sol";
+import "../../Core/Base/OracleProxy/DataRegistryProxy/IDataRegistryProxy.sol";
 import "./DepositAllocater.sol";
 
 
@@ -30,7 +30,7 @@ contract ICT is
     using SignedMath for int256;
 
     IAssetRegistry public assetRegistry;
-    DataRegistry public dataRegistry;
+    IDataRegistryProxy public dataRegistry;
 
     bytes32 public marketObjectCode;
     bytes32 public assetId;
@@ -38,7 +38,7 @@ contract ICT is
 
     constructor(
         IAssetRegistry _assetRegistry,
-        DataRegistry _dataRegistry,
+        IDataRegistryProxy _dataRegistry,
         bytes32 _marketObjectCode,
         address owner
     )

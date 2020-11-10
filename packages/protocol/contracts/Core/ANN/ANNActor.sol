@@ -14,7 +14,7 @@ import "./IANNRegistry.sol";
  */
 contract ANNActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IOracleRegistry oracleRegistry) BaseActor(assetRegistry, oracleRegistry) {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -113,9 +113,9 @@ contract ANNActor is BaseActor {
     {
         if (eventType == EventType.RR) {
             // get rate from DataRegistry
-            (int256 resetRate, bool isSet) = oracleRegistry.getDataPoint(
-                address(0),
-                abi.encode(assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),timestamp)
+            (int256 resetRate, bool isSet) = defaultOracleProxy.getDataPoint(
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
+                timestamp
             );
             if (isSet) return bytes32(resetRate);
         } else if (eventType == EventType.CE) {

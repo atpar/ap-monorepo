@@ -37,6 +37,8 @@ export class BaseActor extends Contract {
       1: string;
     }>;
 
+    defaultOracleProxy(): TransactionObject<string>;
+
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
@@ -48,8 +50,6 @@ export class BaseActor extends Contract {
     ): TransactionObject<string>;
 
     getEpochOffset(eventType: number | string): TransactionObject<string>;
-
-    oracleRegistry(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 

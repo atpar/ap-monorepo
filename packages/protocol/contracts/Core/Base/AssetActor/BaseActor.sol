@@ -9,10 +9,11 @@ import "../../../ACTUS/Core/SignedMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
 import "../../../ACTUS/Core/Utils/EventUtils.sol";
 
+
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../../../OracleProxy/IOracleRegistry.sol";
+import "../OracleProxy/IOracleProxy.sol";
 import "./IAssetActor.sol";
 
 
@@ -35,12 +36,12 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
     IAssetRegistry public assetRegistry;
-    IOracleRegistry public oracleRegistry;
+    IOracleProxy public defaultOracleProxy;
 
 
-    constructor(IAssetRegistry _assetRegistry, IOracleRegistry _dataRegistry) {
+    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
         assetRegistry = _assetRegistry;
-        oracleRegistry = _dataRegistry;
+        defaultOracleProxy = _defaultOracleProxy;
     }
 
     /**
@@ -295,9 +296,9 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = oracleRegistry.getDataPoint(
-                address(0),
-                abi.encode(keccak256(abi.encode(currency, settlementCurrency)),timestamp)
+            (int256 fxRate, bool isSet) = defaultOracleProxy.getDataPoint(
+                keccak256(abi.encode(currency, settlementCurrency)),
+                timestamp
             );
             if (isSet) return bytes32(fxRate);
         }

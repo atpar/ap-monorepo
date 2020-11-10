@@ -17,7 +17,7 @@ contract CERTFActor is BaseActor {
     using SignedMath for int;
 
 
-    constructor(IAssetRegistry assetRegistry, IOracleRegistry oracleRegistry) BaseActor(assetRegistry, oracleRegistry) {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -125,9 +125,9 @@ contract CERTFActor is BaseActor {
                 contractReference_2._type == ContractReferenceType.MOC
                 && contractReference_2.role == ContractReferenceRole.UDL
             ) {
-                (int256 quantity, bool isSet) = oracleRegistry.getDataPoint(
-                    address(0),
-                    abi.encode(contractReference_2.object,timestamp)
+                (int256 quantity, bool isSet) = defaultOracleProxy.getDataPoint(
+                    contractReference_2.object,
+                    timestamp
                 );
                 if (isSet) return bytes32(quantity);
             }
@@ -140,13 +140,13 @@ contract CERTFActor is BaseActor {
                 contractReference_1._type == ContractReferenceType.MOC
                 && contractReference_1.role == ContractReferenceRole.UDL
             ) {
-                (int256 marketValueScheduleTime, bool isSetScheduleTime) = oracleRegistry.getDataPoint(
-                    address(0),
-                    abi.encode(contractReference_1.object,timestamp)
+                (int256 marketValueScheduleTime, bool isSetScheduleTime) = defaultOracleProxy.getDataPoint(
+                    contractReference_1.object,
+                    timestamp
                 );
-                (int256 marketValueAnchorDate, bool isSetAnchorDate) = oracleRegistry.getDataPoint(
-                    address(0),
-                    abi.encode(contractReference_1.object,assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate"))
+                (int256 marketValueAnchorDate, bool isSetAnchorDate) = defaultOracleProxy.getDataPoint(
+                    contractReference_1.object,
+                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
                     return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));

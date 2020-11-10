@@ -37,6 +37,8 @@ export class CECActor extends Contract {
       1: string;
     }>;
 
+    defaultOracleProxy(): TransactionObject<string>;
+
     encodeCollateralAsObject(
       collateralToken: string,
       collateralAmount: number | string
@@ -83,8 +85,6 @@ export class CECActor extends Contract {
       custodian: string,
       underlyingRegistry: string
     ): TransactionObject<void>;
-
-    oracleRegistry(): TransactionObject<string>;
 
     owner(): TransactionObject<string>;
 
