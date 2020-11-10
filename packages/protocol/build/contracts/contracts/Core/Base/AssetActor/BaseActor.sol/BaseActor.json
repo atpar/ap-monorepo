@@ -117,19 +117,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "dataRegistry",
-      "outputs": [
-        {
-          "internalType": "contract IDataRegistry",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "bytes32",
@@ -175,6 +162,19 @@
         }
       ],
       "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "defaultOracleProxy",
+      "outputs": [
+        {
+          "internalType": "contract IOracleProxy",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

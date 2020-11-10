@@ -62,12 +62,12 @@ describe('CERTFActor', () => {
 
     await mineBlock(Number(scheduleTime));
 
-    await this.DataRegistryInstance.methods.setDataProvider(
+    await this.DataRegistryProxyInstance.methods.setDataProvider(
       this.terms.contractReference_1.object,
       actor
     ).send({ from: deployer });
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       this.terms.issueDate,
       web3.utils.padLeft(
@@ -78,7 +78,7 @@ describe('CERTFActor', () => {
       )
     ).send({ from: actor });
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       scheduleTime,
       web3.utils.padLeft(
@@ -124,12 +124,12 @@ describe('CERTFActor', () => {
 
     await mineBlock(Number(scheduleTime));
 
-    await this.DataRegistryInstance.methods.setDataProvider(
+    await this.DataRegistryProxyInstance.methods.setDataProvider(
       this.terms.contractReference_2.object,
       actor2
     ).send({ from: deployer });
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_2.object,
       scheduleTime,
       web3.utils.padLeft(

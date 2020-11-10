@@ -55,3 +55,4 @@ async function registerActor(buidlerRuntime, registry, actor) {
         log(`${address} has been registered with ${registry} as actor`);
     }
 }
+

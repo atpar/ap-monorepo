@@ -21,7 +21,7 @@ import CERTFRegistryArtifact from '../../build/contracts/contracts/Core/CERTF/CE
 import PAMRegistryArtifact from '../../build/contracts/contracts/Core/PAM/PAMRegistry.sol/PAMRegistry.json';
 import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKRegistry.sol/STKRegistry.json';
 import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
-import DataRegistryArtifact from '../../build/contracts/contracts/Core/Base/DataRegistry/DataRegistry.sol/DataRegistry.json';
+import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
 import DvPSettlementArtifact from '../../build/contracts/contracts/Extensions/DvPSettlement.sol/DvPSettlement.json';
 import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import ERC1404Artifact from '../../build/contracts/contracts/Extensions/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
@@ -48,7 +48,7 @@ import { CERTFRegistry } from '../types/contracts/CERTFRegistry';
 import { PAMRegistry } from '../types/contracts/PAMRegistry';
 import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
-import { DataRegistry } from '../types/contracts/DataRegistry';
+import { DataRegistryProxy } from '../types/contracts/DataRegistryProxy';
 import { DvPSettlement } from '../types/contracts/DvPSettlement';
 import { ERC20 } from '../types/contracts/ERC20';
 import { ERC1404 } from '../types/contracts/ERC1404';
@@ -88,7 +88,7 @@ export class Contracts {
   public stkRegistry: STKRegistry;
 
   public custodian: Custodian;
-  public dataRegistry: DataRegistry;
+  public dataRegistryProxy: DataRegistryProxy;
   public dvpSettlement: DvPSettlement;
 
 
@@ -143,7 +143,7 @@ export class Contracts {
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
-    this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
+    this.dataRegistryProxy = new web3.eth.Contract(DataRegistryProxyArtifact.abi, addressBook.DataRegistryProxy, { data: DataRegistryProxyArtifact.bytecode }) as DataRegistryProxy,
     // @ts-ignore
     this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
     // @ts-ignore

@@ -19,7 +19,7 @@ contract STKActor is BaseActor {
     enum STKExternalDataType {NA, DIP, SRA, REXA}
 
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -127,7 +127,7 @@ contract STKActor is BaseActor {
                 contractReference_2._type == ContractReferenceType.MOC
                 && contractReference_2.role == ContractReferenceRole.UDL
             ) {
-                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
+                (int256 quantity, bool isSet) = defaultOracleProxy.getDataPoint(
                     contractReference_2.object,
                     timestamp
                 );
@@ -135,25 +135,25 @@ contract STKActor is BaseActor {
             }
         } else if (eventType == EventType.REF) {
             //
-            (int256 rexa, bool isSet) = dataRegistry.getDataPoint(
+            (int256 rexa, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
                 timestamp
             );
             if (isSet) return bytes32(rexa);
         } else if (eventType == EventType.DIF) {
-            (int256 dipa, bool isSet) = dataRegistry.getDataPoint(
+            (int256 dipa, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
                 timestamp
             );
             if (isSet) return bytes32(dipa);
         } else if (eventType == EventType.SPF) {
-            (int256 sra, bool isSet) = dataRegistry.getDataPoint(
+            (int256 sra, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.SRA)),
                 timestamp
             );
             if (isSet) return bytes32(sra);
         } else if (eventType == EventType.REF) {
-            (int256 rexa, bool isSet) = dataRegistry.getDataPoint(
+            (int256 rexa, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
                 timestamp
             );

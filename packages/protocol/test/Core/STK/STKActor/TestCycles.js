@@ -82,7 +82,7 @@ describe('STKActor', () => {
       ]
     };
     self.dipaValues = dp.values;
-    const registry = self.DataRegistryInstance;
+    const registry = self.DataRegistryProxyInstance;
     await registry.methods.setDataProvider(dp.provider, actor).send({ from: admin });
     await registry.methods.publishDataPoint(dp.provider, dp.dates[0], dp.values[0]).send({ from: actor });
     await registry.methods.publishDataPoint(dp.provider, dp.dates[1], dp.values[1]).send({ from: actor });

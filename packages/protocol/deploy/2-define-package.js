@@ -68,33 +68,33 @@ async function definePackage(buidlerRuntime) {
             options: { libraries: { STKEncoder: "{{STKEncoder.address}}" }},
         },
 
-        // Data Registry
-        { name: "DataRegistry" },
+        // Data Registry Proxy
+        { name: "DataRegistryProxy" },
 
         // Asset Actor
         {
             name: "ANNActor",
-            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CECActor",
-            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CEGActor",
-            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CERTFActor",
-            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "PAMActor",
-            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "STKActor",
-            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
 
         // Custodian

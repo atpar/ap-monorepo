@@ -54,7 +54,7 @@ describe('ICT', function () {
 
     self.ict = await deployICToken(buidlerRuntime, {
       assetRegistry: self.CERTFRegistryInstance.options.address,
-      dataRegistry: self.DataRegistryInstance.options.address,
+      dataRegistryProxy: self.DataRegistryProxyInstance.options.address,
       marketObjectCode: self.terms.contractReference_2.object,
       owner: owner,
       deployer: owner,
@@ -87,16 +87,16 @@ describe('ICT', function () {
 
     await self.ict.methods.setAssetId(web3.utils.toHex(self.assetId)).send({ from: owner });
 
-    await self.DataRegistryInstance.methods.setDataProvider(
+    await self.DataRegistryProxyInstance.methods.setDataProvider(
       self.terms.contractReference_2.object,
       self.ict.options.address
     ).send({ from: deployer });
-    await self.DataRegistryInstance.methods.setDataProvider(
+    await self.DataRegistryProxyInstance.methods.setDataProvider(
       self.terms.contractReference_1.object,
       owner
     ).send({ from: deployer });
 
-    await self.DataRegistryInstance.methods.publishDataPoint(
+    await self.DataRegistryProxyInstance.methods.publishDataPoint(
       self.terms.contractReference_1.object,
       self.terms.issueDate,
       encodeNumberAsBytes32(self.terms.nominalPrice)
@@ -135,7 +135,7 @@ describe('ICT', function () {
 
     const { scheduleTime: scheduleTimeXD } = decodeEvent(this.schedule[2]);
 
-    const exerciseQuantity = (await this.DataRegistryInstance.methods.getDataPoint(
+    const exerciseQuantity = (await this.DataRegistryProxyInstance.methods.getDataPoint(
       this.terms.contractReference_2.object,
       await computeCalcTime(scheduleTimeXD)
     ).call())[0];
@@ -158,7 +158,7 @@ describe('ICT', function () {
     const { eventType, scheduleTime } = decodeEvent(rfdEvent);
     assert.strictEqual(eventType, `${eventIndex('REF')}`);
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       await computeCalcTime(scheduleTime),
       encodeNumberAsBytes32(this.terms.nominalPrice)

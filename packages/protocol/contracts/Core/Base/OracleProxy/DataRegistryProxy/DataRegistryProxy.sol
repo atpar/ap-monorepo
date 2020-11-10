@@ -1,21 +1,35 @@
 // "SPDX-License-Identifier: Apache-2.0"
 pragma solidity ^0.7.0;
-pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./IDataRegistry.sol";
-import "./DataRegistryStorage.sol";
+import "../IOracleProxy.sol";
+import "./IDataRegistryProxy.sol";
 
 
 /**
- * @title DataRegistry
+ * @title DataRegistryProxy
  * @notice Registry for data which is published by an registered MarketObjectProvider
  */
-contract DataRegistry is DataRegistryStorage, IDataRegistry, Ownable {
+contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
 
     event UpdatedDataProvider(bytes32 indexed setId, address provider);
     event PublishedDataPoint(bytes32 indexed setId, int256 dataPoint, uint256 timestamp);
+
+    struct DataPoint {
+        int256 dataPoint;
+        bool isSet;
+    }
+
+    struct Set {
+        // timestamp => DataPoint
+        mapping(uint256 => DataPoint) dataPoints;
+        uint256 lastUpdatedTimestamp;
+        address provider;
+        bool isSet;
+    }
+
+    mapping(bytes32 => Set) internal sets;
 
 
     /**
@@ -44,7 +58,7 @@ contract DataRegistry is DataRegistryStorage, IDataRegistry, Ownable {
     )
         external
         view
-        override
+        override(IDataRegistryProxy, IOracleProxy)
         returns (int256, bool)
     {
         return (

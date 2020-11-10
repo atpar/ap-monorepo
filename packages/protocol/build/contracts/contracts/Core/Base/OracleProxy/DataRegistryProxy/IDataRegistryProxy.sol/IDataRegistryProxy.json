@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "IDataRegistry",
-  "sourceName": "contracts/Core/Base/DataRegistry/IDataRegistry.sol",
+  "contractName": "IDataRegistryProxy",
+  "sourceName": "contracts/Core/Base/OracleProxy/DataRegistryProxy/IDataRegistryProxy.sol",
   "abi": [
     {
       "inputs": [

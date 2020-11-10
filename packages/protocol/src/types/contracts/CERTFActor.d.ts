@@ -23,8 +23,6 @@ export class CERTFActor extends Contract {
   methods: {
     assetRegistry(): TransactionObject<string>;
 
-    dataRegistry(): TransactionObject<string>;
-
     decodeCollateralObject(
       object: string | number[]
     ): TransactionObject<{
@@ -38,6 +36,8 @@ export class CERTFActor extends Contract {
       0: string;
       1: string;
     }>;
+
+    defaultOracleProxy(): TransactionObject<string>;
 
     encodeCollateralAsObject(
       collateralToken: string,

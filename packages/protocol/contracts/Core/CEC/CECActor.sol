@@ -18,7 +18,7 @@ contract CECActor is BaseActor {
     using SignedMath for int;
 
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry) BaseActor(assetRegistry, dataRegistry) {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with

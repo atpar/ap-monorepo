@@ -9,10 +9,11 @@ import "../../../ACTUS/Core/SignedMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
 import "../../../ACTUS/Core/Utils/EventUtils.sol";
 
+
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../DataRegistry/IDataRegistry.sol";
+import "../OracleProxy/IOracleProxy.sol";
 import "./IAssetActor.sol";
 
 
@@ -35,12 +36,12 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
     IAssetRegistry public assetRegistry;
-    IDataRegistry public dataRegistry;
+    IOracleProxy public defaultOracleProxy;
 
 
-    constructor(IAssetRegistry _assetRegistry, IDataRegistry _dataRegistry) {
+    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
         assetRegistry = _assetRegistry;
-        dataRegistry = _dataRegistry;
+        defaultOracleProxy = _defaultOracleProxy;
     }
 
     /**
@@ -295,7 +296,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
+            (int256 fxRate, bool isSet) = defaultOracleProxy.getDataPoint(
                 keccak256(abi.encode(currency, settlementCurrency)),
                 timestamp
             );

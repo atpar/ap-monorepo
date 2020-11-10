@@ -71,8 +71,8 @@ describe('STKActor', () => {
       value:  web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
     self.dipaValue = dp.value;
-    await this.DataRegistryInstance.methods.setDataProvider(dp.provider, admin).send({ from: admin });
-    await this.DataRegistryInstance.methods.publishDataPoint(dp.provider, dp.date, dp.value).send({ from: admin });
+    await this.DataRegistryProxyInstance.methods.setDataProvider(dp.provider, admin).send({ from: admin });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(dp.provider, dp.date, dp.value).send({ from: admin });
   });
 
   before(async () => {

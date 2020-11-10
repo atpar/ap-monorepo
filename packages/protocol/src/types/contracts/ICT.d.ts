@@ -79,7 +79,7 @@ export class ICT extends Contract {
 
     createDepositForEvent(_event: string | number[]): TransactionObject<void>;
 
-    dataRegistry(): TransactionObject<string>;
+    dataRegistryProxy(): TransactionObject<string>;
 
     decimals(): TransactionObject<string>;
 
