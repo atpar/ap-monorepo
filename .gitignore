@@ -9,7 +9,8 @@ coverage/
 
 # buidler
 cache/
-build/
+build-info/
+*/**/*.dbg.json
 
 # node
 node_modules/

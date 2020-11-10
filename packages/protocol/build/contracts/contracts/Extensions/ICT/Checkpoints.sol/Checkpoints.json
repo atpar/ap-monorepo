@@ -1,0 +1,24 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Checkpoints",
+  "sourceName": "contracts/Extensions/ICT/Checkpoints.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "checkpointId",
+          "type": "uint256"
+        }
+      ],
+      "name": "CheckpointCreated",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220c89b2ab0ce142697b0749f4cab7f13d45c4b3e09a95849a2e19bdb7ef119b8bf64736f6c63430007040033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220c89b2ab0ce142697b0749f4cab7f13d45c4b3e09a95849a2e19bdb7ef119b8bf64736f6c63430007040033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

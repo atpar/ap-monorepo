@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ScheduleUtils",
+  "sourceName": "contracts/Core/Base/ScheduleUtils.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220ad37f64a4fd7f15f8119e08e154e13701738e37e2686187313fbf100d7a6590164736f6c63430007040033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220ad37f64a4fd7f15f8119e08e154e13701738e37e2686187313fbf100d7a6590164736f6c63430007040033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
