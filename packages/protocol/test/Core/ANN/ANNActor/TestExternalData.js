@@ -71,12 +71,12 @@ describe('ANNActor', () => {
 
     await mineBlock(Number(eventTime));
 
-    await this.DataRegistryInstance.methods.setDataProvider(
+    await this.DataRegistryProxyInstance.methods.setDataProvider(
       this.terms.marketObjectCodeRateReset,
       actor
     ).send({ from: deployer });
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.marketObjectCodeRateReset,
       eventTime,
       web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)

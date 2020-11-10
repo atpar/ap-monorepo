@@ -68,38 +68,33 @@ async function definePackage(buidlerRuntime) {
             options: { libraries: { STKEncoder: "{{STKEncoder.address}}" }},
         },
 
-        // Data Registry
-        { name: "DataRegistry" },
-        { 
-            name: "DataRegistryProxy",
-            options: { args: [ "{{DataRegistry.address}}" ]},
-        },
-        // Data Registry
-        { name: "OracleRegistry" },
+        // Data Registry Proxy
+        { name: "DataRegistryProxy" },
+
         // Asset Actor
         {
             name: "ANNActor",
-            options: { args: [ "{{ANNRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CECActor",
-            options: { args: [ "{{CECRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CEGActor",
-            options: { args: [ "{{CEGRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CERTFActor",
-            options: { args: [ "{{CERTFRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "PAMActor",
-            options: { args: [ "{{PAMRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "STKActor",
-            options: { args: [ "{{STKRegistry.address}}", "{{OracleRegistry.address}}" ]},
+            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
 
         // Custodian

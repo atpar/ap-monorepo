@@ -77,9 +77,9 @@ describe('STKActor', () => {
       date: this.terms.cycleAnchorDateOfDividend,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor)
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
       .send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
       .send({ from: actor });
 
     const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
@@ -116,8 +116,8 @@ describe('STKActor', () => {
       date: this.terms.issueDate + 2 * minute,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.SRA.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
       .send({ from: actor });
 
     const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
@@ -154,9 +154,9 @@ describe('STKActor', () => {
       date: this.terms.issueDate + 3 * minute,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor)
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
       .send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
       .send({ from: actor });
 
     const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))

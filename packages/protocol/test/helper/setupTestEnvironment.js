@@ -152,7 +152,7 @@ async function deploySimpleRestrictedRuleEngine(buidlerRuntime, { owner }) {
 /** @param {ExtendedTestBRE} buidlerRuntime */
 async function deployICToken(buidlerRuntime, {
   assetRegistry,
-  dataRegistry,
+  dataRegistryProxy,
   marketObjectCode,
   owner,
   deployer = '',
@@ -162,7 +162,7 @@ async function deployICToken(buidlerRuntime, {
   const instance = new web3.eth.Contract(abi);
   return (await instance
     // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistry, marketObjectCode, owner ]})
+    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistryProxy, marketObjectCode, owner ]})
     .send({ from: deployer || defaultDeployer })
   );
 }

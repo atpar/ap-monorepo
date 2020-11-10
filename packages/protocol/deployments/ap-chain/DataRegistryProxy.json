@@ -1,36 +1,80 @@
 {
-  "address": "0x0B84EcC3cb862E82e6F6A687BBeEdC8866B8DebD",
+  "address": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
   "abi": [
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
           "internalType": "address",
-          "name": "_dataRegistry",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
           "type": "address"
         }
       ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
+      "name": "OwnershipTransferred",
+      "type": "event"
     },
     {
-      "inputs": [],
-      "name": "dataRegistry",
-      "outputs": [
+      "anonymous": false,
+      "inputs": [
         {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "dataPoint",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "PublishedDataPoint",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
           "internalType": "address",
-          "name": "",
+          "name": "provider",
           "type": "address"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
+      "name": "UpdatedDataProvider",
+      "type": "event"
     },
     {
       "inputs": [
         {
-          "internalType": "bytes",
-          "name": "_refData",
-          "type": "bytes"
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
         }
       ],
       "name": "getDataPoint",
@@ -52,22 +96,17 @@
     {
       "inputs": [
         {
-          "internalType": "bytes",
-          "name": "_ref",
-          "type": "bytes"
-        },
-        {
-          "internalType": "uint256",
-          "name": "timestamp",
-          "type": "uint256"
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
         }
       ],
-      "name": "getDataPointAtTime",
+      "name": "getDataProvider",
       "outputs": [
         {
-          "internalType": "int256",
+          "internalType": "address",
           "name": "",
-          "type": "int256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -76,59 +115,258 @@
     {
       "inputs": [
         {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getLastUpdatedTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isRegistered",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
           "internalType": "address",
-          "name": "_a",
+          "name": "",
           "type": "address"
         }
       ],
-      "name": "setDataRegistryAddress",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "int256",
+          "name": "dataPoint",
+          "type": "int256"
+        }
+      ],
+      "name": "publishDataPoint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "setId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "provider",
+          "type": "address"
+        }
+      ],
+      "name": "setDataProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
-  "transactionHash": "0x7e0215630d605082db85180aa7cf1ab8430f3a3b4ba558a1aa8854f7f05d3a8a",
+  "transactionHash": "0xc4f84b472da780f687ae5388f3a9fd86abce9bebefb9c11fe200c30aea68e63c",
   "receipt": {
     "to": null,
     "from": "0x6C51ECF949882c2183357B860FD82Dd4bb631840",
-    "contractAddress": "0x0B84EcC3cb862E82e6F6A687BBeEdC8866B8DebD",
+    "contractAddress": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
     "transactionIndex": 0,
-    "gasUsed": "266135",
-    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "blockHash": "0x1f3898c35ec9a60e38797037ca25d9b511eb3ff91d4955371c3e4416d0c5d2c0",
-    "transactionHash": "0x7e0215630d605082db85180aa7cf1ab8430f3a3b4ba558a1aa8854f7f05d3a8a",
-    "logs": [],
-    "blockNumber": 20,
-    "cumulativeGasUsed": "266135",
+    "gasUsed": "472064",
+    "logsBloom": "0x00000008000000000000000000000000000000000000000000800000000100004000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000001000040000000000000000000000000000000020000000000000000000800000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x38bd3cfe07d7cb6b58afb39bab3e2dba130b8f2e770db506df5228778971c719",
+    "transactionHash": "0xc4f84b472da780f687ae5388f3a9fd86abce9bebefb9c11fe200c30aea68e63c",
+    "logs": [
+      {
+        "transactionIndex": 0,
+        "blockNumber": 19,
+        "transactionHash": "0xc4f84b472da780f687ae5388f3a9fd86abce9bebefb9c11fe200c30aea68e63c",
+        "address": "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x0000000000000000000000006c51ecf949882c2183357b860fd82dd4bb631840"
+        ],
+        "data": "0x",
+        "logIndex": 0,
+        "blockHash": "0x38bd3cfe07d7cb6b58afb39bab3e2dba130b8f2e770db506df5228778971c719"
+      }
+    ],
+    "blockNumber": 19,
+    "cumulativeGasUsed": "472064",
     "status": 1,
     "byzantium": true
   },
-  "args": [
-    "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62"
-  ],
-  "solcInputHash": "881b45994c61c48eb152b2243f6d8f05",
-  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dataRegistry\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"dataRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_refData\",\"type\":\"bytes\"}],\"name\":\"getDataPoint\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_ref\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"getDataPointAtTime\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_a\",\"type\":\"address\"}],\"name\":\"setDataRegistryAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/OracleProxy/DataRegistryProxy.sol\":\"DataRegistryProxy\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/Core/Base/DataRegistry/DataRegistryStorage.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\n\\n/**\\n * @title DataRegistryStorage\\n * @notice Describes the storage of the DataRegistry\\n */\\ncontract DataRegistryStorage {\\n\\n    struct DataPoint {\\n        int256 dataPoint;\\n        bool isSet;\\n    }\\n\\n    struct Set {\\n        // timestamp => DataPoint\\n        mapping(uint256 => DataPoint) dataPoints;\\n        uint256 lastUpdatedTimestamp;\\n        address provider;\\n        bool isSet;\\n    }\\n\\n    mapping(bytes32 => Set) internal sets;\\n}\",\"keccak256\":\"0x5535bb4ce528fa63d80a2162a5a3c35ace4f232d867e5d4ad355fff0a7166d74\",\"license\":\"Apache-2.0\"},\"contracts/Core/Base/DataRegistry/IDataRegistry.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\nimport \\\"./DataRegistryStorage.sol\\\";\\n\\n\\ninterface IDataRegistry {\\n\\n    function isRegistered(bytes32 setId)\\n        external\\n        view\\n        returns (bool);\\n\\n    function getLastUpdatedTimestamp(bytes32 setId)\\n        external\\n        view\\n        returns (uint256);\\n\\n    function getDataProvider(bytes32 setId)\\n        external\\n        view\\n        returns (address);\\n\\n    function setDataProvider(\\n        bytes32 setId,\\n        address provider\\n    )\\n        external;\\n\\n    function publishDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp,\\n        int256 dataPoint\\n    )\\n        external;\\n\\n    function getDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp\\n    )\\n        external\\n        view\\n        returns (int256, bool);\\n}\\n\",\"keccak256\":\"0x0c4f892abfc38288383619f74c2d607f302b6bd76d05a74c2fad2f7e8b39c3fe\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/DataRegistryProxy.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\n\\nimport \\\"../Core/Base/DataRegistry/IDataRegistry.sol\\\";\\nimport \\\"./OracleProxyInterface.sol\\\";\\n\\ncontract DataRegistryProxy is OracleProxyInterface {\\n\\n    address public dataRegistry;\\n\\n    constructor(address _dataRegistry) public {\\n        dataRegistry = _dataRegistry;\\n    }\\n\\n    function setDataRegistryAddress(address _a) public {\\n        dataRegistry = _a;\\n    }\\n\\n    function getDataPoint(bytes memory _refData) override public view returns (int256, bool) {\\n        (bytes32 id, uint256 timestamp) = abi.decode(_refData,(bytes32,uint256));\\n        return IDataRegistry(dataRegistry).getDataPoint(id, timestamp);\\n    }\\n\\n    \\n    function getDataPointAtTime(bytes memory _ref, uint256 timestamp) override public view returns (int256) {\\n        revert(\\\"Not supported\\\");\\n    }\\n}\",\"keccak256\":\"0x2d87fa8726f852add8a0545cb505d5a2070c63c28be8c2982ec679e11a585b23\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/OracleProxyInterface.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\ninterface OracleProxyInterface {\\n\\n    function getDataPoint(bytes memory) external view returns (int256, bool);\\n\\n    function getDataPointAtTime(bytes memory, uint256 timestamp) external view returns (int256);\\n\\n}\",\"keccak256\":\"0x73706f9c6671c5105a87276f3b1ec1ae8178b2edf39fc1ecaad6c2cfc124dbbe\",\"license\":\"Apache-2.0\"}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b506040516103d83803806103d88339818101604052602081101561003357600080fd5b5051600080546001600160a01b039092166001600160a01b0319909216919091179055610373806100656000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80630378c1b41461005157806318457925146100795780634ca1556314610138578063a39c1d6b146101f2575b600080fd5b6100776004803603602081101561006757600080fd5b50356001600160a01b0316610216565b005b61011f6004803603602081101561008f57600080fd5b8101906020810181356401000000008111156100aa57600080fd5b8201836020820111156100bc57600080fd5b803590602001918460018302840111640100000000831117156100de57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610238945050505050565b6040805192835290151560208301528051918290030190f35b6101e06004803603604081101561014e57600080fd5b81019060208101813564010000000081111561016957600080fd5b82018360208201111561017b57600080fd5b8035906020019184600183028401116401000000008311171561019d57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955050913592506102ef915050565b60408051918252519081900360200190f35b6101fa61032e565b604080516001600160a01b039092168252519081900360200190f35b600080546001600160a01b0319166001600160a01b0392909216919091179055565b60008060008084806020019051604081101561025357600080fd5b50805160209091015160005460408051628a4ec160e41b8152600481018590526024810184905281519496509294506001600160a01b03909116926308a4ec10926044808201939291829003018186803b1580156102b057600080fd5b505afa1580156102c4573d6000803e3d6000fd5b505050506040513d60408110156102da57600080fd5b50805160209091015190945092505050915091565b6040805162461bcd60e51b815260206004820152600d60248201526c139bdd081cdd5c1c1bdc9d1959609a1b6044820152905160009181900360640190fd5b6000546001600160a01b03168156fea2646970667358221220acb82df1b809964a8cdb55c0a86195e15f9e8dc76fd90ca25936028518f154de64736f6c63430007040033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80630378c1b41461005157806318457925146100795780634ca1556314610138578063a39c1d6b146101f2575b600080fd5b6100776004803603602081101561006757600080fd5b50356001600160a01b0316610216565b005b61011f6004803603602081101561008f57600080fd5b8101906020810181356401000000008111156100aa57600080fd5b8201836020820111156100bc57600080fd5b803590602001918460018302840111640100000000831117156100de57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550610238945050505050565b6040805192835290151560208301528051918290030190f35b6101e06004803603604081101561014e57600080fd5b81019060208101813564010000000081111561016957600080fd5b82018360208201111561017b57600080fd5b8035906020019184600183028401116401000000008311171561019d57600080fd5b91908080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525092955050913592506102ef915050565b60408051918252519081900360200190f35b6101fa61032e565b604080516001600160a01b039092168252519081900360200190f35b600080546001600160a01b0319166001600160a01b0392909216919091179055565b60008060008084806020019051604081101561025357600080fd5b50805160209091015160005460408051628a4ec160e41b8152600481018590526024810184905281519496509294506001600160a01b03909116926308a4ec10926044808201939291829003018186803b1580156102b057600080fd5b505afa1580156102c4573d6000803e3d6000fd5b505050506040513d60408110156102da57600080fd5b50805160209091015190945092505050915091565b6040805162461bcd60e51b815260206004820152600d60248201526c139bdd081cdd5c1c1bdc9d1959609a1b6044820152905160009181900360640190fd5b6000546001600160a01b03168156fea2646970667358221220acb82df1b809964a8cdb55c0a86195e15f9e8dc76fd90ca25936028518f154de64736f6c63430007040033",
+  "args": [],
+  "solcInputHash": "b0c30309393d13c2e7eb4e7ab388b8d6",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"int256\",\"name\":\"dataPoint\",\"type\":\"int256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"PublishedDataPoint\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"}],\"name\":\"UpdatedDataProvider\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"getDataPoint\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"getDataProvider\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"getLastUpdatedTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"}],\"name\":\"isRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"int256\",\"name\":\"dataPoint\",\"type\":\"int256\"}],\"name\":\"publishDataPoint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"setId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"provider\",\"type\":\"address\"}],\"name\":\"setDataProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getDataPoint(bytes32,uint256)\":{\"params\":{\"setId\":\"id of the data set\",\"timestamp\":\"timestamp of the data point\"},\"returns\":{\"_0\":\"data point, bool indicating whether data point exists\"}},\"getDataProvider(bytes32)\":{\"params\":{\"setId\":\"id of the data set\"},\"returns\":{\"_0\":\"address of provider\"}},\"getLastUpdatedTimestamp(bytes32)\":{\"params\":{\"setId\":\"id of the data set\"},\"returns\":{\"_0\":\"last updated timestamp\"}},\"isRegistered(bytes32)\":{\"params\":{\"setId\":\"setId of the data set\"},\"returns\":{\"_0\":\"true if market object exists\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"publishDataPoint(bytes32,uint256,int256)\":{\"details\":\"Can only be called by a whitelisted data provider.\",\"params\":{\"dataPoint\":\"the data point of the data set\",\"setId\":\"id of the data set\",\"timestamp\":\"timestamp of the data point\"}},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.\"},\"setDataProvider(bytes32,address)\":{\"details\":\"Can only be called by the owner of the DataRegistry.\",\"params\":{\"provider\":\"address of the provider\",\"setId\":\"id of the data set\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"DataRegistryProxy\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"getDataPoint(bytes32,uint256)\":{\"notice\":\"Returns a data point of a market object for a given timestamp.\"},\"getDataProvider(bytes32)\":{\"notice\":\"Returns the provider for a market object\"},\"getLastUpdatedTimestamp(bytes32)\":{\"notice\":\"Returns the timestamp on which the last data point for a data set was submitted.\"},\"isRegistered(bytes32)\":{\"notice\":\"@notice Returns true if there is data registered for a given setId\"},\"publishDataPoint(bytes32,uint256,int256)\":{\"notice\":\"Stores a new data point of a data set for a given timestamp.\"},\"setDataProvider(bytes32,address)\":{\"notice\":\"Registers / updates a market object provider.\"}},\"notice\":\"Registry for data which is published by an registered MarketObjectProvider\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol\":\"DataRegistryProxy\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/GSN/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\n/*\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with GSN meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address payable) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes memory) {\\n        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691\\n        return msg.data;\\n    }\\n}\\n\",\"keccak256\":\"0x910a2e625b71168563edf9eeef55a50d6d699acfe27ceba3921f291829a8f938\",\"license\":\"MIT\"},\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.0;\\n\\nimport \\\"../GSN/Context.sol\\\";\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * By default, the owner account will be the one that deploys the contract. This\\n * can later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the deployer as the initial owner.\\n     */\\n    constructor () {\\n        address msgSender = _msgSender();\\n        _owner = msgSender;\\n        emit OwnershipTransferred(address(0), msgSender);\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        require(_owner == _msgSender(), \\\"Ownable: caller is not the owner\\\");\\n        _;\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions anymore. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby removing any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        emit OwnershipTransferred(_owner, address(0));\\n        _owner = address(0);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        require(newOwner != address(0), \\\"Ownable: new owner is the zero address\\\");\\n        emit OwnershipTransferred(_owner, newOwner);\\n        _owner = newOwner;\\n    }\\n}\\n\",\"keccak256\":\"0x46d2453e9db55eae25c9abdae2c42229086c54f1a6a247e8ce32658bb785f6ae\",\"license\":\"MIT\"},\"contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\nimport \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\n\\nimport \\\"../IOracleProxy.sol\\\";\\nimport \\\"./IDataRegistryProxy.sol\\\";\\n\\n\\n/**\\n * @title DataRegistryProxy\\n * @notice Registry for data which is published by an registered MarketObjectProvider\\n */\\ncontract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {\\n\\n    event UpdatedDataProvider(bytes32 indexed setId, address provider);\\n    event PublishedDataPoint(bytes32 indexed setId, int256 dataPoint, uint256 timestamp);\\n\\n    struct DataPoint {\\n        int256 dataPoint;\\n        bool isSet;\\n    }\\n\\n    struct Set {\\n        // timestamp => DataPoint\\n        mapping(uint256 => DataPoint) dataPoints;\\n        uint256 lastUpdatedTimestamp;\\n        address provider;\\n        bool isSet;\\n    }\\n\\n    mapping(bytes32 => Set) internal sets;\\n\\n\\n    /**\\n     * @notice @notice Returns true if there is data registered for a given setId\\n     * @param setId setId of the data set\\n     * @return true if market object exists\\n     */\\n    function isRegistered(bytes32 setId)\\n        external\\n        view\\n        override\\n        returns (bool)\\n    {\\n        return sets[setId].isSet;\\n    }\\n\\n    /**\\n     * @notice Returns a data point of a market object for a given timestamp.\\n     * @param setId id of the data set\\n     * @param timestamp timestamp of the data point\\n     * @return data point, bool indicating whether data point exists\\n     */\\n    function getDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp\\n    )\\n        external\\n        view\\n        override(IDataRegistryProxy, IOracleProxy)\\n        returns (int256, bool)\\n    {\\n        return (\\n            sets[setId].dataPoints[timestamp].dataPoint,\\n            sets[setId].dataPoints[timestamp].isSet\\n        );\\n    }\\n\\n    /**\\n     * @notice Returns the timestamp on which the last data point for a data set\\n     * was submitted.\\n     * @param setId id of the data set\\n     * @return last updated timestamp\\n     */\\n    function getLastUpdatedTimestamp(bytes32 setId)\\n        external\\n        view\\n        override\\n        returns (uint256)\\n    {\\n        return sets[setId].lastUpdatedTimestamp;\\n    }\\n\\n    /**\\n     * @notice Returns the provider for a market object\\n     * @param setId id of the data set\\n     * @return address of provider\\n     */\\n    function getDataProvider(bytes32 setId)\\n        external\\n        view\\n        override\\n        returns (address)\\n    {\\n        return sets[setId].provider;\\n    }\\n\\n    /**\\n     * @notice Registers / updates a market object provider.\\n     * @dev Can only be called by the owner of the DataRegistry.\\n     * @param setId id of the data set\\n     * @param provider address of the provider\\n     */\\n    function setDataProvider(\\n        bytes32 setId,\\n        address provider\\n    )\\n        external\\n        override\\n        onlyOwner\\n    {\\n        sets[setId].provider = provider;\\n\\n        if (sets[setId].isSet == false) {\\n            sets[setId].isSet = true;\\n        }\\n\\n        emit UpdatedDataProvider(setId, provider);\\n    }\\n\\n    /**\\n     * @notice Stores a new data point of a data set for a given timestamp.\\n     * @dev Can only be called by a whitelisted data provider.\\n     * @param setId id of the data set\\n     * @param timestamp timestamp of the data point\\n     * @param dataPoint the data point of the data set\\n     */\\n    function publishDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp,\\n        int256 dataPoint\\n    )\\n        external\\n        override\\n    {\\n        require(\\n            msg.sender == sets[setId].provider,\\n            \\\"DataRegistry.publishDataPoint: UNAUTHORIZED_SENDER\\\"\\n        );\\n\\n        sets[setId].dataPoints[timestamp] = DataPoint(dataPoint, true);\\n\\n        if (sets[setId].isSet == false) {\\n            sets[setId].isSet = true;\\n        }\\n\\n        if (sets[setId].lastUpdatedTimestamp < timestamp) {\\n            sets[setId].lastUpdatedTimestamp = timestamp;\\n        }\\n\\n        emit PublishedDataPoint(setId, dataPoint, timestamp);\\n    }\\n}\\n\",\"keccak256\":\"0x1537c36bfc13736c8ac376c8fded3460f8759c633e1cc746640de24400c5a980\",\"license\":\"Apache-2.0\"},\"contracts/Core/Base/OracleProxy/DataRegistryProxy/IDataRegistryProxy.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\n\\ninterface IDataRegistryProxy {\\n\\n    function isRegistered(bytes32 setId)\\n        external\\n        view\\n        returns (bool);\\n\\n    function getLastUpdatedTimestamp(bytes32 setId)\\n        external\\n        view\\n        returns (uint256);\\n\\n    function getDataProvider(bytes32 setId)\\n        external\\n        view\\n        returns (address);\\n\\n    function setDataProvider(\\n        bytes32 setId,\\n        address provider\\n    )\\n        external;\\n\\n    function publishDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp,\\n        int256 dataPoint\\n    )\\n        external;\\n\\n    function getDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp\\n    )\\n        external\\n        view\\n        returns (int256, bool);\\n}\\n\",\"keccak256\":\"0x30e7d1d542db6b967472f35751f64ca375d5d7dfcd5497205c588444bbd8e570\",\"license\":\"Apache-2.0\"},\"contracts/Core/Base/OracleProxy/IOracleProxy.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\n\\ninterface IOracleProxy {\\n\\n    /**\\n     * @notice Returns a data point for given id and timestamp.\\n     * @dev Has to be implement by each Oracle Proxy. It should never revert.\\n     * @param identifier identifier of the data\\n     * @param timestamp timestamp of\\n     * @return Int256 value, isSet\\n     */\\n    function getDataPoint(bytes32 identifier, uint256 timestamp) external view returns (int256, bool);\\n}\",\"keccak256\":\"0xc3ac47c05c14466e41f812ffd4d7b468b94119d65c971713c6898a16c2ae872a\",\"license\":\"Apache-2.0\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600061001b61006a565b600080546001600160a01b0319166001600160a01b0383169081178255604051929350917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a35061006e565b3390565b6107248061007d6000396000f3fe608060405234801561001057600080fd5b50600436106100935760003560e01c80638da5cb5b116100665780638da5cb5b1461013e578063af37897814610162578063d38db86d1461018e578063ecef34f2146101b7578063f2fde38b146101d457610093565b806308a4ec101461009857806327258b22146100d4578063715018a614610105578063816a7e011461010f575b600080fd5b6100bb600480360360408110156100ae57600080fd5b50803590602001356101fa565b6040805192835290151560208301528051918290030190f35b6100f1600480360360208110156100ea57600080fd5b5035610222565b604080519115158252519081900360200190f35b61010d610241565b005b61012c6004803603602081101561012557600080fd5b50356102f5565b60408051918252519081900360200190f35b61014661030b565b604080516001600160a01b039092168252519081900360200190f35b61010d6004803603604081101561017857600080fd5b50803590602001356001600160a01b031661031a565b61010d600480360360608110156101a457600080fd5b5080359060208101359060400135610424565b610146600480360360208110156101cd57600080fd5b503561056a565b61010d600480360360208110156101ea57600080fd5b50356001600160a01b0316610588565b600091825260016020818152604080852093855292905291208054910154909160ff90911690565b600090815260016020526040902060020154600160a01b900460ff1690565b610249610692565b6000546001600160a01b039081169116146102ab576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000908152600160208190526040909120015490565b6000546001600160a01b031690565b610322610692565b6000546001600160a01b03908116911614610384576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600082815260016020526040902060020180546001600160a01b0319166001600160a01b0383161790819055600160a01b900460ff166103e1576000828152600160205260409020600201805460ff60a01b1916600160a01b1790555b604080516001600160a01b0383168152905183917f6d3523ac54f3703c06e93ef7e0e67f963e698a668616fbc72dafb71eb6bd3096919081900360200190a25050565b6000838152600160205260409020600201546001600160a01b0316331461047c5760405162461bcd60e51b81526004018080602001828103825260328152602001806106bd6032913960400191505060405180910390fd5b604080518082018252828152600160208083018281526000888152838352858120888252808452958120945185559051938301805460ff1916941515949094179093559186905290526002015460ff600160a01b909104166104fb576000838152600160205260409020600201805460ff60a01b1916600160a01b1790555b6000838152600160208190526040909120015482111561052b576000838152600160208190526040909120018290555b6040805182815260208101849052815185927f183291f60aff981c3c2d6cb02edd75633d383a51f608e397789555ef0e775602928290030190a2505050565b6000908152600160205260409020600201546001600160a01b031690565b610590610692565b6000546001600160a01b039081169116146105f2576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b0381166106375760405162461bcd60e51b81526004018080602001828103825260268152602001806106976026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b339056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573734461746152656769737472792e7075626c69736844617461506f696e743a20554e415554484f52495a45445f53454e444552a26469706673582212206f236255b56cfc3a967830d3e4026acfa5a497eeae1a04a6882018ecde198c6d64736f6c63430007040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100935760003560e01c80638da5cb5b116100665780638da5cb5b1461013e578063af37897814610162578063d38db86d1461018e578063ecef34f2146101b7578063f2fde38b146101d457610093565b806308a4ec101461009857806327258b22146100d4578063715018a614610105578063816a7e011461010f575b600080fd5b6100bb600480360360408110156100ae57600080fd5b50803590602001356101fa565b6040805192835290151560208301528051918290030190f35b6100f1600480360360208110156100ea57600080fd5b5035610222565b604080519115158252519081900360200190f35b61010d610241565b005b61012c6004803603602081101561012557600080fd5b50356102f5565b60408051918252519081900360200190f35b61014661030b565b604080516001600160a01b039092168252519081900360200190f35b61010d6004803603604081101561017857600080fd5b50803590602001356001600160a01b031661031a565b61010d600480360360608110156101a457600080fd5b5080359060208101359060400135610424565b610146600480360360208110156101cd57600080fd5b503561056a565b61010d600480360360208110156101ea57600080fd5b50356001600160a01b0316610588565b600091825260016020818152604080852093855292905291208054910154909160ff90911690565b600090815260016020526040902060020154600160a01b900460ff1690565b610249610692565b6000546001600160a01b039081169116146102ab576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000908152600160208190526040909120015490565b6000546001600160a01b031690565b610322610692565b6000546001600160a01b03908116911614610384576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b600082815260016020526040902060020180546001600160a01b0319166001600160a01b0383161790819055600160a01b900460ff166103e1576000828152600160205260409020600201805460ff60a01b1916600160a01b1790555b604080516001600160a01b0383168152905183917f6d3523ac54f3703c06e93ef7e0e67f963e698a668616fbc72dafb71eb6bd3096919081900360200190a25050565b6000838152600160205260409020600201546001600160a01b0316331461047c5760405162461bcd60e51b81526004018080602001828103825260328152602001806106bd6032913960400191505060405180910390fd5b604080518082018252828152600160208083018281526000888152838352858120888252808452958120945185559051938301805460ff1916941515949094179093559186905290526002015460ff600160a01b909104166104fb576000838152600160205260409020600201805460ff60a01b1916600160a01b1790555b6000838152600160208190526040909120015482111561052b576000838152600160208190526040909120018290555b6040805182815260208101849052815185927f183291f60aff981c3c2d6cb02edd75633d383a51f608e397789555ef0e775602928290030190a2505050565b6000908152600160205260409020600201546001600160a01b031690565b610590610692565b6000546001600160a01b039081169116146105f2576040805162461bcd60e51b815260206004820181905260248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604482015290519081900360640190fd5b6001600160a01b0381166106375760405162461bcd60e51b81526004018080602001828103825260268152602001806106976026913960400191505060405180910390fd5b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b339056fe4f776e61626c653a206e6577206f776e657220697320746865207a65726f20616464726573734461746152656769737472792e7075626c69736844617461506f696e743a20554e415554484f52495a45445f53454e444552a26469706673582212206f236255b56cfc3a967830d3e4026acfa5a497eeae1a04a6882018ecde198c6d64736f6c63430007040033",
   "devdoc": {
     "kind": "dev",
-    "methods": {},
+    "methods": {
+      "getDataPoint(bytes32,uint256)": {
+        "params": {
+          "setId": "id of the data set",
+          "timestamp": "timestamp of the data point"
+        },
+        "returns": {
+          "_0": "data point, bool indicating whether data point exists"
+        }
+      },
+      "getDataProvider(bytes32)": {
+        "params": {
+          "setId": "id of the data set"
+        },
+        "returns": {
+          "_0": "address of provider"
+        }
+      },
+      "getLastUpdatedTimestamp(bytes32)": {
+        "params": {
+          "setId": "id of the data set"
+        },
+        "returns": {
+          "_0": "last updated timestamp"
+        }
+      },
+      "isRegistered(bytes32)": {
+        "params": {
+          "setId": "setId of the data set"
+        },
+        "returns": {
+          "_0": "true if market object exists"
+        }
+      },
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "publishDataPoint(bytes32,uint256,int256)": {
+        "details": "Can only be called by a whitelisted data provider.",
+        "params": {
+          "dataPoint": "the data point of the data set",
+          "setId": "id of the data set",
+          "timestamp": "timestamp of the data point"
+        }
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+      },
+      "setDataProvider(bytes32,address)": {
+        "details": "Can only be called by the owner of the DataRegistry.",
+        "params": {
+          "provider": "address of the provider",
+          "setId": "id of the data set"
+        }
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      }
+    },
+    "title": "DataRegistryProxy",
     "version": 1
   },
   "userdoc": {
     "kind": "user",
-    "methods": {},
+    "methods": {
+      "getDataPoint(bytes32,uint256)": {
+        "notice": "Returns a data point of a market object for a given timestamp."
+      },
+      "getDataProvider(bytes32)": {
+        "notice": "Returns the provider for a market object"
+      },
+      "getLastUpdatedTimestamp(bytes32)": {
+        "notice": "Returns the timestamp on which the last data point for a data set was submitted."
+      },
+      "isRegistered(bytes32)": {
+        "notice": "@notice Returns true if there is data registered for a given setId"
+      },
+      "publishDataPoint(bytes32,uint256,int256)": {
+        "notice": "Stores a new data point of a data set for a given timestamp."
+      },
+      "setDataProvider(bytes32,address)": {
+        "notice": "Registers / updates a market object provider."
+      }
+    },
+    "notice": "Registry for data which is published by an registered MarketObjectProvider",
     "version": 1
   },
   "storageLayout": {
     "storage": [
       {
-        "astId": 45602,
-        "contract": "contracts/OracleProxy/DataRegistryProxy.sol:DataRegistryProxy",
-        "label": "dataRegistry",
+        "astId": 30,
+        "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+        "label": "_owner",
         "offset": 0,
         "slot": "0",
         "type": "t_address"
+      },
+      {
+        "astId": 26583,
+        "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+        "label": "sets",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_bytes32,t_struct(Set)26579_storage)"
       }
     ],
     "types": {
@@ -136,6 +374,102 @@
         "encoding": "inplace",
         "label": "address",
         "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_int256": {
+        "encoding": "inplace",
+        "label": "int256",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_bytes32,t_struct(Set)26579_storage)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => struct DataRegistryProxy.Set)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Set)26579_storage"
+      },
+      "t_mapping(t_uint256,t_struct(DataPoint)26568_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct DataRegistryProxy.DataPoint)",
+        "numberOfBytes": "32",
+        "value": "t_struct(DataPoint)26568_storage"
+      },
+      "t_struct(DataPoint)26568_storage": {
+        "encoding": "inplace",
+        "label": "struct DataRegistryProxy.DataPoint",
+        "members": [
+          {
+            "astId": 26565,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "dataPoint",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_int256"
+          },
+          {
+            "astId": 26567,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "isSet",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "64"
+      },
+      "t_struct(Set)26579_storage": {
+        "encoding": "inplace",
+        "label": "struct DataRegistryProxy.Set",
+        "members": [
+          {
+            "astId": 26572,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "dataPoints",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_uint256,t_struct(DataPoint)26568_storage)"
+          },
+          {
+            "astId": 26574,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "lastUpdatedTimestamp",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 26576,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "provider",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address"
+          },
+          {
+            "astId": 26578,
+            "contract": "contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol:DataRegistryProxy",
+            "label": "isSet",
+            "offset": 20,
+            "slot": "2",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "96"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
       }
     }
   }

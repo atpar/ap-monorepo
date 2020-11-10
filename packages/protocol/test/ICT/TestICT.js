@@ -34,7 +34,7 @@ describe('ICT', () => {
     [ deployer, /*actor*/, owner, tokenHolder1, tokenHolder2, spender ] = self.accounts;
 
     ictParams.assetRegistry = self.CERTFRegistryInstance.options.address;
-    ictParams.dataRegistry = self.DataRegistryInstance.options.address;
+    ictParams.dataRegistry = self.DataRegistryProxyInstance.options.address;
     ictParams.owner = owner;
     ictParams.deployer = owner;
 

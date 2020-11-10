@@ -30,7 +30,7 @@ contract ICT is
     using SignedMath for int256;
 
     IAssetRegistry public assetRegistry;
-    IDataRegistryProxy public dataRegistry;
+    IDataRegistryProxy public dataRegistryProxy;
 
     bytes32 public marketObjectCode;
     bytes32 public assetId;
@@ -38,7 +38,7 @@ contract ICT is
 
     constructor(
         IAssetRegistry _assetRegistry,
-        IDataRegistryProxy _dataRegistry,
+        IDataRegistryProxy _dataRegistryProxy,
         bytes32 _marketObjectCode,
         address owner
     )
@@ -49,14 +49,14 @@ contract ICT is
             "ICT.initialize: INVALID_ASSET_REGISTRY"
         );
         require(
-            address(_dataRegistry).isContract(),
+            address(_dataRegistryProxy).isContract(),
             "ICT.initialize: INVALID_DATA_REGISTRY"
         );
 
         transferOwnership(owner);
 
         assetRegistry = _assetRegistry;
-        dataRegistry = _dataRegistry;
+        dataRegistryProxy = _dataRegistryProxy;
         marketObjectCode = _marketObjectCode;
     }
 
@@ -167,7 +167,7 @@ contract ICT is
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
         );
 
-        dataRegistry.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
+        dataRegistryProxy.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
     }
 
     /**
@@ -200,7 +200,7 @@ contract ICT is
             assetRegistry.getUIntValueForTermsAttribute(assetId, "maturityDate")
         );
 
-        dataRegistry.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
+        dataRegistryProxy.publishDataPoint(marketObjectCode, timestamp, exerciseQuantity);
     }
 
     function mint(address account, uint256 amount)
