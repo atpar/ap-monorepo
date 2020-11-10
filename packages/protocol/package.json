@@ -23,20 +23,15 @@
   "bugs": {
     "url": "https://github.com/atpar/ap-monorepo/issues"
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com/"
-  },
   "scripts": {
     "ap-chain:start": "./scripts/setup-ap-chain.sh --no-deploy",
     "ap-chain:setup": "./scripts/setup-ap-chain.sh",
     "build": "npm run build:contracts && npm run build:ts",
-    "build:contracts": "npm run compile && npm run generate-ts-bindings && npm run generate-ap-chain-snapshot",
+    "build:contracts": "npm run compile && npm run generate-ap-chain-snapshot",
     "build:ts": "rm -rf dist/ && tsc && copyfiles src/types/contracts/**/*.d.ts dist/typings && webpack",
     "compile": "node --max-old-space-size=4096 ./node_modules/.bin/hardhat compile",
     "coverage": "# node --max-old-space-size=4096 ./node_modules/.bin/hardhat coverage",
     "generate-ap-chain-snapshot": "./scripts/setup-ap-chain.sh --take-snapshot",
-    "generate-ts-bindings": "",
     "lint": "solhint contracts/**/*.sol && eslint src/**/*.ts",
     "lint:fix": "solhint contracts/**/*.sol --fix && eslint src/**/*.ts --fix",
     "migrate:goerli": "scripts/deploy-contracts.sh goerli",

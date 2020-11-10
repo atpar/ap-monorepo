@@ -1,5 +1,5 @@
 {
-  "address": "0xC1E3951E83A603178667529699A1dcE8494145fa",
+  "address": "0x0B84EcC3cb862E82e6F6A687BBeEdC8866B8DebD",
   "abi": [
     {
       "inputs": [
@@ -87,24 +87,24 @@
       "type": "function"
     }
   ],
-  "transactionHash": "0xce375091bc81f4283e14ce78a02099d180ef1c0665549b51d33087903dfb4340",
+  "transactionHash": "0x7e0215630d605082db85180aa7cf1ab8430f3a3b4ba558a1aa8854f7f05d3a8a",
   "receipt": {
     "to": null,
     "from": "0x6C51ECF949882c2183357B860FD82Dd4bb631840",
-    "contractAddress": "0xC1E3951E83A603178667529699A1dcE8494145fa",
+    "contractAddress": "0x0B84EcC3cb862E82e6F6A687BBeEdC8866B8DebD",
     "transactionIndex": 0,
     "gasUsed": "266135",
     "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-    "blockHash": "0xb32712dfe271f92635e1184c3879dd2979ac019c908d7125fa77657c9cff5f47",
-    "transactionHash": "0xce375091bc81f4283e14ce78a02099d180ef1c0665549b51d33087903dfb4340",
+    "blockHash": "0x1f3898c35ec9a60e38797037ca25d9b511eb3ff91d4955371c3e4416d0c5d2c0",
+    "transactionHash": "0x7e0215630d605082db85180aa7cf1ab8430f3a3b4ba558a1aa8854f7f05d3a8a",
     "logs": [],
-    "blockNumber": 153,
+    "blockNumber": 20,
     "cumulativeGasUsed": "266135",
     "status": 1,
     "byzantium": true
   },
   "args": [
-    "0xE46b326ec2089f2D011e22Ab31117f87cAbF93Fa"
+    "0xf8a1BfCC2d1d5FaD14B04BE317bf84C272560a62"
   ],
   "solcInputHash": "881b45994c61c48eb152b2243f6d8f05",
   "metadata": "{\"compiler\":{\"version\":\"0.7.4+commit.3f05b770\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_dataRegistry\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"dataRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_refData\",\"type\":\"bytes\"}],\"name\":\"getDataPoint\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_ref\",\"type\":\"bytes\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"getDataPointAtTime\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_a\",\"type\":\"address\"}],\"name\":\"setDataRegistryAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/OracleProxy/DataRegistryProxy.sol\":\"DataRegistryProxy\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/Core/Base/DataRegistry/DataRegistryStorage.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\n\\n/**\\n * @title DataRegistryStorage\\n * @notice Describes the storage of the DataRegistry\\n */\\ncontract DataRegistryStorage {\\n\\n    struct DataPoint {\\n        int256 dataPoint;\\n        bool isSet;\\n    }\\n\\n    struct Set {\\n        // timestamp => DataPoint\\n        mapping(uint256 => DataPoint) dataPoints;\\n        uint256 lastUpdatedTimestamp;\\n        address provider;\\n        bool isSet;\\n    }\\n\\n    mapping(bytes32 => Set) internal sets;\\n}\",\"keccak256\":\"0x5535bb4ce528fa63d80a2162a5a3c35ace4f232d867e5d4ad355fff0a7166d74\",\"license\":\"Apache-2.0\"},\"contracts/Core/Base/DataRegistry/IDataRegistry.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\npragma experimental ABIEncoderV2;\\n\\nimport \\\"./DataRegistryStorage.sol\\\";\\n\\n\\ninterface IDataRegistry {\\n\\n    function isRegistered(bytes32 setId)\\n        external\\n        view\\n        returns (bool);\\n\\n    function getLastUpdatedTimestamp(bytes32 setId)\\n        external\\n        view\\n        returns (uint256);\\n\\n    function getDataProvider(bytes32 setId)\\n        external\\n        view\\n        returns (address);\\n\\n    function setDataProvider(\\n        bytes32 setId,\\n        address provider\\n    )\\n        external;\\n\\n    function publishDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp,\\n        int256 dataPoint\\n    )\\n        external;\\n\\n    function getDataPoint(\\n        bytes32 setId,\\n        uint256 timestamp\\n    )\\n        external\\n        view\\n        returns (int256, bool);\\n}\\n\",\"keccak256\":\"0x0c4f892abfc38288383619f74c2d607f302b6bd76d05a74c2fad2f7e8b39c3fe\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/DataRegistryProxy.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\n\\nimport \\\"../Core/Base/DataRegistry/IDataRegistry.sol\\\";\\nimport \\\"./OracleProxyInterface.sol\\\";\\n\\ncontract DataRegistryProxy is OracleProxyInterface {\\n\\n    address public dataRegistry;\\n\\n    constructor(address _dataRegistry) public {\\n        dataRegistry = _dataRegistry;\\n    }\\n\\n    function setDataRegistryAddress(address _a) public {\\n        dataRegistry = _a;\\n    }\\n\\n    function getDataPoint(bytes memory _refData) override public view returns (int256, bool) {\\n        (bytes32 id, uint256 timestamp) = abi.decode(_refData,(bytes32,uint256));\\n        return IDataRegistry(dataRegistry).getDataPoint(id, timestamp);\\n    }\\n\\n    \\n    function getDataPointAtTime(bytes memory _ref, uint256 timestamp) override public view returns (int256) {\\n        revert(\\\"Not supported\\\");\\n    }\\n}\",\"keccak256\":\"0x2d87fa8726f852add8a0545cb505d5a2070c63c28be8c2982ec679e11a585b23\",\"license\":\"Apache-2.0\"},\"contracts/OracleProxy/OracleProxyInterface.sol\":{\"content\":\"// \\\"SPDX-License-Identifier: Apache-2.0\\\"\\npragma solidity ^0.7.0;\\n\\ninterface OracleProxyInterface {\\n\\n    function getDataPoint(bytes memory) external view returns (int256, bool);\\n\\n    function getDataPointAtTime(bytes memory, uint256 timestamp) external view returns (int256);\\n\\n}\",\"keccak256\":\"0x73706f9c6671c5105a87276f3b1ec1ae8178b2edf39fc1ecaad6c2cfc124dbbe\",\"license\":\"Apache-2.0\"}},\"version\":1}",
