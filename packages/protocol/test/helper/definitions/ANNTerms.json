@@ -15,6 +15,7 @@
   "statusDate",
   "initialExchangeDate",
   "maturityDate",
+  "issueDate",
   "purchaseDate",
   "capitalizationEndDate",
   "cycleAnchorDateOfInterestPayment",

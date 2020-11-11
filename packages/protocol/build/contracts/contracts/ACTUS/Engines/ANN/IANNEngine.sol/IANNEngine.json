@@ -89,6 +89,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "issueDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "purchaseDate",
               "type": "uint256"
             },
@@ -500,6 +505,11 @@
             {
               "internalType": "uint256",
               "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issueDate",
               "type": "uint256"
             },
             {
@@ -1021,6 +1031,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "issueDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "purchaseDate",
               "type": "uint256"
             },
@@ -1431,6 +1446,11 @@
             },
             {
               "internalType": "uint256",
+              "name": "issueDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
               "name": "purchaseDate",
               "type": "uint256"
             },
@@ -1832,6 +1852,11 @@
             {
               "internalType": "uint256",
               "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issueDate",
               "type": "uint256"
             },
             {
@@ -2242,6 +2267,11 @@
             {
               "internalType": "uint256",
               "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issueDate",
               "type": "uint256"
             },
             {
@@ -2774,6 +2804,11 @@
             {
               "internalType": "uint256",
               "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issueDate",
               "type": "uint256"
             },
             {
@@ -3441,6 +3476,11 @@
             {
               "internalType": "uint256",
               "name": "maturityDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "issueDate",
               "type": "uint256"
             },
             {

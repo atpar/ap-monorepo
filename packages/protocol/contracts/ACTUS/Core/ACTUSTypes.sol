@@ -120,6 +120,7 @@ struct ANNTerms {
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
+    uint256 issueDate;
     // uint256 terminationDate; // state only
     uint256 purchaseDate;
     uint256 capitalizationEndDate;
@@ -324,6 +325,7 @@ struct PAMTerms {
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
+    uint256 issueDate;
     // uint256 terminationDate; // state only
     uint256 purchaseDate;
     uint256 capitalizationEndDate;

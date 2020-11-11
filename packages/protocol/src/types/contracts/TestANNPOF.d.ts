@@ -47,6 +47,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -155,6 +156,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -263,6 +265,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -371,6 +374,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -479,6 +483,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -587,6 +592,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -695,6 +701,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -803,6 +810,7 @@ export class TestANNPOF extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;

@@ -43,6 +43,7 @@ library ANNEncoder {
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
+        storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
         storeInPackedTerms(asset, "purchaseDate", bytes32(terms.purchaseDate));
         storeInPackedTerms(asset, "capitalizationEndDate", bytes32(terms.capitalizationEndDate));
         storeInPackedTerms(asset, "cycleAnchorDateOfInterestPayment", bytes32(terms.cycleAnchorDateOfInterestPayment));
@@ -150,6 +151,7 @@ library ANNEncoder {
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
+            uint256(asset.packedTerms["issueDate"]),
             uint256(asset.packedTerms["purchaseDate"]),
             uint256(asset.packedTerms["capitalizationEndDate"]),
             uint256(asset.packedTerms["cycleAnchorDateOfInterestPayment"]),

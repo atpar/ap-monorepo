@@ -180,6 +180,7 @@ export class IPAMRegistry extends Contract {
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
+      issueDate: string;
       purchaseDate: string;
       capitalizationEndDate: string;
       cycleAnchorDateOfInterestPayment: string;
@@ -288,6 +289,7 @@ export class IPAMRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
@@ -491,6 +493,7 @@ export class IPAMRegistry extends Contract {
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
+        issueDate: number | string;
         purchaseDate: number | string;
         capitalizationEndDate: number | string;
         cycleAnchorDateOfInterestPayment: number | string;
