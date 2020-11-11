@@ -62,7 +62,7 @@
     "actus-dictionary": "https://github.com/atpar/actus-dictionary.git#dev",
     "bignumber.js": "^7.2.1",
     "hardhat-deploy": "0.7.0-beta.28",
-    "hardhat-gas-reporter": "1.0.0",
+    "hardhat-gas-reporter": "1.0.1",
     "hardhat-typechain": "0.3.3",
     "copyfiles": "^2.4.0",
     "coveralls": "^3.0.9",

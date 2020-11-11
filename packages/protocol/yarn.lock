@@ -4814,10 +4814,10 @@ hardhat-deploy@0.7.0-beta.28:
     murmur-128 "^0.2.1"
     qs "^6.9.4"
 
-hardhat-gas-reporter@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/hardhat-gas-reporter/-/hardhat-gas-reporter-1.0.0.tgz#e5e1b2a9f5da6b32f2c7b65a6828c5b69bf3957c"
-  integrity sha512-ckGLu62GSZDqTemO5EgSUdjn+Dyk4X20nryZ0gutgVnjfrTwpV7/AXoDIj93cxIGMLmui09EQR0QB0D0OIssdA==
+hardhat-gas-reporter@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/hardhat-gas-reporter/-/hardhat-gas-reporter-1.0.1.tgz#37f96da5f11e5ae34b28a68c5d972d3168165c95"
+  integrity sha512-YC+SCYIkBdRtISNbisU2BwDSelUdCrIKRsJXt3M9Jw1VF5CmtSZb8VuuOc2Zl4AMcEV2jEy6ZuAksYomPiApYQ==
   dependencies:
     eth-gas-reporter "^0.2.19"
 
