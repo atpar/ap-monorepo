@@ -35,6 +35,7 @@
   "delinquencyRate",
   "premiumDiscountAtIED",
   "priceAtPurchaseDate",
+  "priceAtTerminationDate",
   "nextPrincipalRedemptionPayment",
   "lifeCap",
   "lifeFloor",

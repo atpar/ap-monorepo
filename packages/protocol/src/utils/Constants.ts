@@ -92,6 +92,7 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   nextPrincipalRedemptionPayment: '0',
 
   lifeCap: '0',
@@ -154,6 +155,7 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   feeAccrued: '0',
   feeRate: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   coverageOfCreditEnhancement: '0',
 
   gracePeriod: EMPTY_IP,
@@ -246,6 +248,7 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
 
   lifeCap: '0',
   lifeFloor: '0',
@@ -284,6 +287,7 @@ export const EMPTY_STK_TERMS: STKTerms = {
   issuePrice: '0',
   quantity: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   redemptionPrice: '0',
 
   dividendRecordPeriod: EMPTY_IP,

@@ -51,6 +51,7 @@
   "denominationRatio": 0,
   "premiumDiscountAtIED": 0,
   "priceAtPurchaseDate": 0,
+  "priceAtTerminationDate": 0,
   "redemptionPrice": 0,
   "nextPrincipalRedemptionPayment": 0,
   "coverageOfCreditEnhancement": 1,

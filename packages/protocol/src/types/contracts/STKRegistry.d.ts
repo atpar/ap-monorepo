@@ -202,6 +202,7 @@ export class STKRegistry extends Contract {
       quantity: string;
       priceAtPurchaseDate: string;
       redemptionPrice: string;
+      priceAtTerminationDate: string;
       dividendRecordPeriod: { i: string; p: string; isSet: boolean };
       dividendPaymentPeriod: { i: string; p: string; isSet: boolean };
       splitSettlementPeriod: { i: string; p: string; isSet: boolean };
@@ -289,6 +290,7 @@ export class STKRegistry extends Contract {
         quantity: number | string;
         priceAtPurchaseDate: number | string;
         redemptionPrice: number | string;
+        priceAtTerminationDate: number | string;
         dividendRecordPeriod: {
           i: number | string;
           p: number | string;
@@ -477,6 +479,7 @@ export class STKRegistry extends Contract {
         quantity: number | string;
         priceAtPurchaseDate: number | string;
         redemptionPrice: number | string;
+        priceAtTerminationDate: number | string;
         dividendRecordPeriod: {
           i: number | string;
           p: number | string;

@@ -218,6 +218,7 @@ export class ANNRegistry extends Contract {
       delinquencyRate: string;
       premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
+      priceAtTerminationDate: string;
       nextPrincipalRedemptionPayment: string;
       lifeCap: string;
       lifeFloor: string;
@@ -337,6 +338,7 @@ export class ANNRegistry extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -551,6 +553,7 @@ export class ANNRegistry extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;

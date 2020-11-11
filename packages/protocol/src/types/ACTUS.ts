@@ -129,6 +129,7 @@ export interface Terms {
   denominationRatio: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
+  priceAtTerminationDate: string | number;
   redemptionPrice: string | number;
   nextPrincipalRedemptionPayment: string | number;
   coverageOfCreditEnhancement: string | number;
@@ -203,6 +204,7 @@ export interface ANNTerms {
   delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
+  priceAtTerminationDate: string | number;
   nextPrincipalRedemptionPayment: string | number;
 
   lifeCap: string | number;
@@ -265,6 +267,7 @@ export interface CEGTerms {
   feeAccrued: string | number;
   feeRate: string | number;
   priceAtPurchaseDate: string | number;
+  priceAtTerminationDate: string | number;
   coverageOfCreditEnhancement: string | number;
 
   gracePeriod: IP;
@@ -357,6 +360,7 @@ export interface PAMTerms {
   delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
+  priceAtTerminationDate: string | number;
 
   lifeCap: string | number;
   lifeFloor: string | number;
@@ -395,6 +399,7 @@ export interface STKTerms {
   issuePrice: string | number;
   quantity: string | number;
   priceAtPurchaseDate: string | number;
+  priceAtTerminationDate: string | number;
   redemptionPrice: string | number;
 
   dividendRecordPeriod: IP;
@@ -523,6 +528,7 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.denominationRatio == undefined || typeof obj.denominationRatio !== 'number' && typeof obj.denominationRatio !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.redemptionPrice == undefined || typeof obj.redemptionPrice !== 'number' && typeof obj.redemptionPrice !== 'string') { return false; }
   if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
   if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
@@ -600,6 +606,7 @@ export function isANNTerms (obj: any): obj is ANNTerms {
   if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
 
   if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
@@ -668,6 +675,7 @@ export function isCEGTerms (obj: any): obj is CEGTerms {
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
 
   if (!isIP(obj.gracePeriod)) { return false; }
@@ -766,6 +774,7 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
   if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
 
   if (obj.lifeCap == undefined || typeof obj.lifeCap !== 'number' && typeof obj.lifeCap !== 'string') { return false; }
   if (obj.lifeFloor == undefined || typeof obj.lifeFloor !== 'number' && typeof obj.lifeFloor !== 'string') { return false; }
@@ -807,6 +816,7 @@ export function isSTKTerms (obj: any): obj is STKTerms {
   if (obj.issuePrice == undefined || typeof obj.issuePrice !== 'number' && typeof obj.issuePrice !== 'string') { return false; }
   if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.redemptionPrice == undefined || typeof obj.redemptionPrice !== 'number' && typeof obj.redemptionPrice !== 'string') { return false; }
 
   if (!isIP(obj.redemptionRecordPeriod)) { return false; }

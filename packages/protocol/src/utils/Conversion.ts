@@ -130,6 +130,7 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  priceAtTerminationDate: terms.priceAtTerminationDate,
   nextPrincipalRedemptionPayment: terms.nextPrincipalRedemptionPayment,
 
   lifeCap: terms.lifeCap,
@@ -192,6 +193,7 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   feeAccrued: terms.feeAccrued,
   feeRate: terms.feeRate,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  priceAtTerminationDate: terms.priceAtTerminationDate,
   coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
 
   gracePeriod: terms.gracePeriod,
@@ -278,6 +280,7 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  priceAtTerminationDate: terms.priceAtTerminationDate,
 
   lifeCap: terms.lifeCap,
   lifeFloor: terms.lifeFloor,
@@ -316,6 +319,7 @@ export const extractSTKTerms = (terms: Terms): STKTerms => ({
   issuePrice: terms.issuePrice,
   quantity: terms.quantity,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
+  priceAtTerminationDate: terms.priceAtTerminationDate,
   redemptionPrice: terms.redemptionPrice,
 
   dividendRecordPeriod: terms.dividendRecordPeriod,

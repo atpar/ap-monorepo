@@ -963,6 +963,11 @@
             },
             {
               "internalType": "int256",
+              "name": "priceAtTerminationDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
               "name": "nextPrincipalRedemptionPayment",
               "type": "int256"
             },
@@ -1612,6 +1617,11 @@
             {
               "internalType": "int256",
               "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -2586,6 +2596,11 @@
             {
               "internalType": "int256",
               "name": "priceAtPurchaseDate",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {

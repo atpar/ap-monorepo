@@ -184,6 +184,7 @@ export class ICEGRegistry extends Contract {
       feeAccrued: string;
       feeRate: string;
       priceAtPurchaseDate: string;
+      priceAtTerminationDate: string;
       coverageOfCreditEnhancement: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
@@ -279,6 +280,7 @@ export class ICEGRegistry extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -459,6 +461,7 @@ export class ICEGRegistry extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {

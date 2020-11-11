@@ -73,6 +73,7 @@ export class STKActor extends Contract {
         quantity: number | string;
         priceAtPurchaseDate: number | string;
         redemptionPrice: number | string;
+        priceAtTerminationDate: number | string;
         dividendRecordPeriod: {
           i: number | string;
           p: number | string;

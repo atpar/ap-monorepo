@@ -199,6 +199,7 @@ export class IPAMRegistry extends Contract {
       delinquencyRate: string;
       premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
+      priceAtTerminationDate: string;
       lifeCap: string;
       lifeFloor: string;
       periodCap: string;
@@ -308,6 +309,7 @@ export class IPAMRegistry extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -512,6 +514,7 @@ export class IPAMRegistry extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;

@@ -34,6 +34,7 @@
   "delinquencyRate": 0,
   "premiumDiscountAtIED": 0,
   "priceAtPurchaseDate": 0,
+  "priceAtTerminationDate": 0,
   "lifeCap": "2000000000000000000",
   "lifeFloor": 0,
   "periodCap": "2000000000000000000",

@@ -58,6 +58,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -134,6 +135,7 @@ export class IPAMEngine extends Contract {
       delinquencyRate: number | string;
       premiumDiscountAtIED: number | string;
       priceAtPurchaseDate: number | string;
+      priceAtTerminationDate: number | string;
       lifeCap: number | string;
       lifeFloor: number | string;
       periodCap: number | string;
@@ -231,6 +233,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -307,6 +310,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -382,6 +386,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -458,6 +463,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -559,6 +565,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;
@@ -687,6 +694,7 @@ export class IPAMEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
         periodCap: number | string;

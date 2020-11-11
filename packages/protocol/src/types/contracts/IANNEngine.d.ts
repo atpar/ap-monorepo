@@ -59,6 +59,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -143,6 +144,7 @@ export class IANNEngine extends Contract {
       delinquencyRate: number | string;
       premiumDiscountAtIED: number | string;
       priceAtPurchaseDate: number | string;
+      priceAtTerminationDate: number | string;
       nextPrincipalRedemptionPayment: number | string;
       lifeCap: number | string;
       lifeFloor: number | string;
@@ -248,6 +250,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -332,6 +335,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -415,6 +419,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -499,6 +504,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -608,6 +614,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;
@@ -744,6 +751,7 @@ export class IANNEngine extends Contract {
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         nextPrincipalRedemptionPayment: number | string;
         lifeCap: number | string;
         lifeFloor: number | string;

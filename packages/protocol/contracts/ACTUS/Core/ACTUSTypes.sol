@@ -147,7 +147,7 @@ struct ANNTerms {
     int256 delinquencyRate;
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     // int256 creditLineAmount; // not implemented
     // int256 scalingIndexAtStatusDate; // not implemented
     // int256 marketValueObserved; // not implemented
@@ -229,7 +229,7 @@ struct CEGTerms {
     int256 feeAccrued;
     int256 feeRate;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     int256 coverageOfCreditEnhancement;
     // int256 exerciseAmount; // state only
 
@@ -349,7 +349,7 @@ struct PAMTerms {
     int256 delinquencyRate;
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     // int256 creditLineAmount; // not implemented
     // int256 scalingIndexAtStatusDate; // not implemented
     // int256 marketValueObserved; // not implemented
@@ -397,7 +397,7 @@ struct STKTerms {
     int256 quantity;
     int256 priceAtPurchaseDate;
     int256 redemptionPrice;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
 
     IP dividendRecordPeriod;
     IP dividendPaymentPeriod;

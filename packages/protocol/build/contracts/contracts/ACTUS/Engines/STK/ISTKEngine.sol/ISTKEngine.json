@@ -108,6 +108,11 @@
               "type": "int256"
             },
             {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
+              "type": "int256"
+            },
+            {
               "components": [
                 {
                   "internalType": "uint256",
@@ -378,6 +383,11 @@
             {
               "internalType": "int256",
               "name": "redemptionPrice",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -756,6 +766,11 @@
               "type": "int256"
             },
             {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
+              "type": "int256"
+            },
+            {
               "components": [
                 {
                   "internalType": "uint256",
@@ -1024,6 +1039,11 @@
               "type": "int256"
             },
             {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
+              "type": "int256"
+            },
+            {
               "components": [
                 {
                   "internalType": "uint256",
@@ -1284,6 +1304,11 @@
             {
               "internalType": "int256",
               "name": "redemptionPrice",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -1552,6 +1577,11 @@
             {
               "internalType": "int256",
               "name": "redemptionPrice",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -1942,6 +1972,11 @@
             {
               "internalType": "int256",
               "name": "redemptionPrice",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -2467,6 +2502,11 @@
             {
               "internalType": "int256",
               "name": "redemptionPrice",
+              "type": "int256"
+            },
+            {
+              "internalType": "int256",
+              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {

@@ -51,6 +51,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -152,6 +153,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -253,6 +255,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -354,6 +357,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -455,6 +459,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -556,6 +561,7 @@ export class TestCEGSTF extends Contract {
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
+        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
