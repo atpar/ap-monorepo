@@ -83,6 +83,8 @@ export class ANNRegistry extends Contract {
       index: number | string
     ): TransactionObject<string>;
 
+    getExtension(assetId: string | number[]): TransactionObject<string>;
+
     getFinalizedState(
       assetId: string | number[]
     ): TransactionObject<{
@@ -454,6 +456,11 @@ export class ANNRegistry extends Contract {
     setEngine(
       assetId: string | number[],
       engine: string
+    ): TransactionObject<void>;
+
+    setExtension(
+      assetId: string | number[],
+      extension: string
     ): TransactionObject<void>;
 
     setFinalizedState(

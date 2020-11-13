@@ -153,6 +153,20 @@ abstract contract BaseRegistry is
     }
 
     /**
+     * @notice Returns the address of the extension which is allowed to generate events for the asset.
+     * @param assetId id of the asset
+     * @return address of the asset actor
+     */
+    function getExtension(bytes32 assetId)
+        external
+        view
+        override
+        returns (address)
+    {
+        return assets[assetId].extension;
+    }
+
+    /**
      * @notice Set the engine address which should be used for the asset going forward.
      * @dev Can only be set by authorized account.
      * @param assetId id of the asset
@@ -183,5 +197,22 @@ abstract contract BaseRegistry is
         assets[assetId].actor = actor;
 
         emit UpdatedActor(assetId, prevActor, actor);
+    }
+
+    /**
+     * @notice Set the extension address which should be used for the asset going forward.
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param extension new extension address
+     */
+    function setExtension(bytes32 assetId, address extension)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        address prevExtension = assets[assetId].extension;
+        assets[assetId].extension = extension;
+
+        emit UpdatedEngine(assetId, prevExtension, extension);
     }
 }

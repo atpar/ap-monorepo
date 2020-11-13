@@ -25,6 +25,8 @@ export class IBaseRegistry extends Contract {
 
     getEngine(assetId: string | number[]): TransactionObject<string>;
 
+    getExtension(assetId: string | number[]): TransactionObject<string>;
+
     isRegistered(assetId: string | number[]): TransactionObject<boolean>;
 
     setActor(
@@ -35,6 +37,11 @@ export class IBaseRegistry extends Contract {
     setEngine(
       assetId: string | number[],
       engine: string
+    ): TransactionObject<void>;
+
+    setExtension(
+      assetId: string | number[],
+      extension: string
     ): TransactionObject<void>;
   };
   events: {

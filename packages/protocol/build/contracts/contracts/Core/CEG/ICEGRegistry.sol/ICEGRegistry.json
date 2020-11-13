@@ -261,6 +261,25 @@
           "type": "bytes32"
         }
       ],
+      "name": "getExtension",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        }
+      ],
       "name": "getFinalizedState",
       "outputs": [
         {
@@ -1827,6 +1846,24 @@
         }
       ],
       "name": "setEngine",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "assetId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "extension",
+          "type": "address"
+        }
+      ],
+      "name": "setExtension",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
