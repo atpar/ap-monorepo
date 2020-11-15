@@ -42,13 +42,25 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         assetRegistry = _assetRegistry;
     }
 
+    /**
+     * @notice Return CE event if current collateral value is below the collateral requirement 
+     * defined in the terms of the asset, if the asset has not reached final state.
+     * @dev Implements IExtension interface
+     * @param assetId Id of the asset
+     * @return Event
+     */
     function onProgress(bytes32 assetId) external override returns (bytes32) {
         require(
             assetRegistry.isRegistered(assetId) == true,
             "Collateral.addCollateral: ASSET_DOES_NOT_EXIST"
         );
 
-        if (isInFinalState(assetId) == false || collateral[assetId].amount >= computeMinCollateralAmount(assetId)) {
+        if (
+            // avoid emitting the CE event multiple by checking if asset has reached final state
+            isInFinalState(assetId) == false
+            // check min. amount of collateral tokens
+            || collateral[assetId].amount >= computeMinCollateralAmount(assetId)
+        ) {
             return bytes32(0);
         }
 
@@ -59,12 +71,11 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
     }
 
     /**
-     * @notice Locks the required collateral amount encoded in the second contract
-     * reference in the terms.
-     * @dev The collateralizer has to set allowance beforehand. The custodian increases
-     * allowance for the AssetActor by amount of collateral
+     * @notice For initial collateralization or for topping up collateral to avoid falling 
+     * below the collateralization ratio.
+     * @dev The collateralizer has to set allowance beforehand.
      * @param assetId id of the asset with collateral requirements
-     * @param addAmount top up amount
+     * @param addAmount amount of collateral tokens to add
      */
     function addCollateral(bytes32 assetId, uint256 addAmount) external {
         require(
@@ -96,6 +107,13 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         emit AddedCollateral(assetId, msg.sender, addAmount);
     }
 
+    /**
+     * @notice For withdrawing the entire collateral after the asset reached maturity
+     * or to withdraw up to the collateralization ratio.
+     * @dev Can only be called by the collateralizer.
+     * @param assetId Id of the collateralized asset
+     * @param withdrawAmount amount of collateral tokens to withdraw
+     */
     function withdrawCollateral(bytes32 assetId, uint256 withdrawAmount) external {
         require(
             assetRegistry.isRegistered(assetId) == true,
@@ -103,6 +121,11 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         );
 
         (address collateralizer, ) = deriveCollateralizerAndCreditor(assetId);
+
+        require(
+            msg.sender == collateralizer,
+            "Collateral.withdrawCollateral: UNAUTHORIZED_SENDER"
+        );
         
         require(
             collateral[assetId].amount.sub(withdrawAmount) >= computeMinCollateralAmount(assetId)
@@ -114,16 +137,22 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
 
         address collateralToken = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
         require(
-            IERC20(collateralToken).transfer(collateralizer, withdrawAmount),
+            IERC20(collateralToken).transfer(msg.sender, withdrawAmount),
             "Custodian.withdrawCollateral: TRANSFER_FAILED"
         );
 
         // register collateral for assetId
         collateral[assetId].amount = collateral[assetId].amount.sub(withdrawAmount);
 
-        emit WithdrewCollateral(assetId, collateralizer, withdrawAmount);
+        emit WithdrewCollateral(assetId, msg.sender, withdrawAmount);
     }
 
+    /**
+     * @notice For claiming executed collateral on behalf of the creditor. Requires that the asset
+     * is already progessed into final state (default).
+     * @dev Can be called by anyone.
+     * @param assetId Id of the collateralized asset
+     */
     function claimCollateral(bytes32 assetId) external {
         require(
             assetRegistry.isRegistered(assetId) == true,
@@ -150,6 +179,13 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         emit ClaimedCollateral(assetId, creditor, claimableAmount);
     }
 
+    /**
+     * @notice Derives the address of the collateralizer and the creditor from the ownership
+     * of an registered asset.
+     * @param assetId Id of the asset
+     * @return collateralizer Address of collateralizer
+     * @return creditor Address of the creditor if the collateral gets executed
+     */
     function deriveCollateralizerAndCreditor(bytes32 assetId)
         public
         view
@@ -174,6 +210,12 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
             : (ownership.creatorObligor, ownership.counterpartyBeneficiary);
     }
 
+    /**
+     * @notice Computes the currently min. amount of collateral tokens required from the
+     * collateralization ratio defined in the terms of the asset and the curent value of collateral tokens.
+     * @param assetId Id of an registered asset
+     * @return amount of collateral tokens
+     */
     function computeMinCollateralAmount(bytes32 assetId) public view returns (uint256) {
         require(
             assetRegistry.isRegistered(assetId) == true,
@@ -186,6 +228,11 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         return uint256(principal.floatMult(coverage));
     }
 
+    /**
+     * @notice Checks if the current collateral value is below the collateralization ratio for an asset.
+     * @param assetId Id of an asset
+     * @return Returns true if its undercollateralized
+     */
     function isUndercollateralized(bytes32 assetId) external view returns (bool) {
         return (collateral[assetId].amount < computeMinCollateralAmount(assetId));
     }
