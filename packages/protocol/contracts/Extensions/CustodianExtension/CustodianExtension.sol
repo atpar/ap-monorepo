@@ -10,13 +10,14 @@ import "../../ACTUS/Core/Utils/EventUtils.sol";
 import "../../ACTUS/Core/SignedMath.sol";
 
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
+import "../../Core/Base/OracleProxy/IOracleProxy.sol";
 import "../../Core/Base/Conversions.sol";
 import "../IExtension.sol";
 
 
 /**
- * @title Custodian
- * @notice Contract which holds the collateral of CEC (Credit Enhancement Collateral) assets.
+ * @title CustodianExtension
+ * @notice Contract which holds collateral for ACTUS Protocol assets. 
  */
 contract CustodianExtension is EventUtils, Conversions, IExtension {
 
@@ -28,6 +29,7 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
     event ClaimedCollateral(bytes32 indexed assetId, address creditor, uint256 claimedAmount);
 
     IAssetRegistry public assetRegistry;
+    IOracleProxy public defaultOracleProxy;
 
     struct Collateral {
         uint256 amount;
@@ -38,8 +40,9 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
     mapping(bytes32 => Collateral) internal collateral;
 
 
-    constructor(IAssetRegistry _assetRegistry) {
+    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
         assetRegistry = _assetRegistry;
+        defaultOracleProxy = _defaultOracleProxy;
     }
 
     /**
@@ -88,16 +91,16 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
             "CustodianExtension.addCollateral: NOT_COLLATERALIZABLE"
         );
 
-        address collateralToken = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
 
         require(
-            IERC20(collateralToken).allowance(msg.sender, address(this)) >= addAmount,
+            IERC20(collateralCurrency).allowance(msg.sender, address(this)) >= addAmount,
             "CustodianExtension.addCollateral: INSUFFICIENT_ALLOWANCE"
         );
 
         // try transferring collateral from msg.sender to the custodian
         require(
-            IERC20(collateralToken).transferFrom(msg.sender, address(this), addAmount),
+            IERC20(collateralCurrency).transferFrom(msg.sender, address(this), addAmount),
             "CustodianExtension.addCollateral: TRANSFER_FAILED"
         );
 
@@ -135,9 +138,9 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
             "CustodianExtension.withdrawCollateral: INSUFFICIENT_COLLATERAL_RATIO"
         );
 
-        address collateralToken = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
         require(
-            IERC20(collateralToken).transfer(msg.sender, withdrawAmount),
+            IERC20(collateralCurrency).transfer(msg.sender, withdrawAmount),
             "CustodianExtension.withdrawCollateral: TRANSFER_FAILED"
         );
 
@@ -163,14 +166,14 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
 
         require(
             claimableAmount >= 0,
-            "CustodianExtension.claimCollateral: NOTHING_CLAIM"
+            "CustodianExtension.claimCollateral: NOTHING_TO_CLAIM"
         );
 
         (, address creditor) = deriveCollateralizerAndCreditor(assetId);
 
-        address collateralToken = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
         require(
-            IERC20(collateralToken).transfer(creditor, claimableAmount),
+            IERC20(collateralCurrency).transfer(creditor, claimableAmount),
             "CustodianExtension.claimCollateral: TRANSFER_FAILED"
         );
 
@@ -197,7 +200,9 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
         );
 
         // derive address of creditor
-        ContractRole contractRole = ContractRole(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
+        ContractRole contractRole = ContractRole(
+            assetRegistry.getEnumValueForTermsAttribute(assetId, "contractRole")
+        );
         require (
             contractRole == ContractRole.BUY || contractRole == ContractRole.SEL,
             "CustodianExtension.claimCollateral: INVALID_CONTRACT_ROLE"
@@ -222,10 +227,27 @@ contract CustodianExtension is EventUtils, Conversions, IExtension {
             "CustodianExtension.claimCollateral: ASSET_DOES_NOT_EXIST"
         );
 
-        // todo: if collateral token != asset currency --> determine value
-        int256 coverage = assetRegistry.getIntValueForTermsAttribute(assetId, "coverageOfCreditEnhancement");
+        address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
+        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
+        int256 coverage = assetRegistry.getIntValueForTermsAttribute(assetId, "coverageOfCollateral");
         int256 principal = assetRegistry.getIntValueForTermsAttribute(assetId, "notionalPrincipal");
-        return uint256(principal.floatMult(coverage));
+       
+        int256 minCollateralAmount = principal.floatMult(coverage);
+        
+        // if collateral token != asset currency --> determine value
+        if (currency != collateralCurrency) {
+            (int256 rate, bool isSet) = defaultOracleProxy.getDataPoint(
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeOfCollateralRate"),
+                block.timestamp
+            );
+            require(
+                isSet == true,
+                "CustodianExtension.computeMinCollateralAmount: NO_RATE_FOUND"
+            );
+            minCollateralAmount = minCollateralAmount.floatMult(rate);
+        }
+        
+        return uint256(minCollateralAmount);
     }
 
     /**

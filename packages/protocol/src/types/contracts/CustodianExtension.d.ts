@@ -48,6 +48,8 @@ export class CustodianExtension extends Contract {
       1: string;
     }>;
 
+    defaultOracleProxy(): TransactionObject<string>;
+
     deriveCollateralizerAndCreditor(
       assetId: string | number[]
     ): TransactionObject<{
