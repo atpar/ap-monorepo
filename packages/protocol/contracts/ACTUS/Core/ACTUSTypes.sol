@@ -41,7 +41,7 @@ enum EventType {NE, CE, ISS, IED, PRD, FP, PR, PD, PY, PP, IP, IPCI, RRF, RR, DI
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
-enum PenaltyType {O, A, N, I}
+// enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
 enum RedeemableByIssuer {Y, N}
 enum ScalingEffect {_000, I00, _0N0, IN0}
@@ -102,7 +102,6 @@ struct ANNTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
-    PenaltyType penaltyType;
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -143,7 +142,6 @@ struct ANNTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 penaltyRate;
     int256 delinquencyRate;
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
@@ -306,7 +304,6 @@ struct PAMTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
-    PenaltyType penaltyType;
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -345,7 +342,6 @@ struct PAMTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 penaltyRate;
     int256 delinquencyRate;
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;

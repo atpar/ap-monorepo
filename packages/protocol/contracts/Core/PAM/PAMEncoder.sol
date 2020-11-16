@@ -30,8 +30,7 @@ library PAMEncoder {
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
             bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
-            bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(terms.feeBasis))) << 184
+            bytes32(uint256(uint8(terms.feeBasis))) << 192
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -59,7 +58,6 @@ library PAMEncoder {
         storeInPackedTerms(asset, "nextResetRate", bytes32(terms.nextResetRate));
         storeInPackedTerms(asset, "feeRate", bytes32(terms.feeRate));
         storeInPackedTerms(asset, "feeAccrued", bytes32(terms.feeAccrued));
-        storeInPackedTerms(asset, "penaltyRate", bytes32(terms.penaltyRate));
         storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
         storeInPackedTerms(asset, "premiumDiscountAtIED", bytes32(terms.premiumDiscountAtIED));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
@@ -130,8 +128,7 @@ library PAMEncoder {
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
             ScalingEffect(uint8(uint256(asset.packedTerms["enums"] >> 200))),
-            PenaltyType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
-            FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 184))),
+            FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 192))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
@@ -158,7 +155,6 @@ library PAMEncoder {
             int256(asset.packedTerms["nextResetRate"]),
             int256(asset.packedTerms["feeRate"]),
             int256(asset.packedTerms["feeAccrued"]),
-            int256(asset.packedTerms["penaltyRate"]),
             int256(asset.packedTerms["delinquencyRate"]),
             int256(asset.packedTerms["premiumDiscountAtIED"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
@@ -225,10 +221,8 @@ library PAMEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
         } else if (attributeKey == bytes32("scalingEffect")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 200));
-        } else if (attributeKey == bytes32("penaltyType")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 192));
         } else if (attributeKey == bytes32("feeBasis")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 184));
+            return uint8(uint256(asset.packedTerms["enums"] >> 192));
         } else {
             return uint8(0);
         }

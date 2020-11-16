@@ -160,51 +160,6 @@ contract ANNPOF is Core {
     }
 
     /**
-     * Calculate the payoff in case of a penalty event
-     * @return the penalty amount for PAM contracts
-     */
-    function POF_ANN_PY (
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns(int256)
-    {
-        int256 timeFromLastEvent;
-        {
-            timeFromLastEvent = yearFraction(
-                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                terms.dayCountConvention,
-                terms.maturityDate
-            );
-        }
-
-        if (terms.penaltyType == PenaltyType.A) {
-            return (
-                roleSign(terms.contractRole)
-                * terms.penaltyRate
-            );
-        } else if (terms.penaltyType == PenaltyType.N) {
-            return (
-                roleSign(terms.contractRole)
-                * timeFromLastEvent
-                .floatMult(terms.penaltyRate)
-                .floatMult(state.notionalPrincipal)
-            );
-        } else {
-            return (
-                roleSign(terms.contractRole)
-                * timeFromLastEvent
-                .floatMult(state.notionalPrincipal)
-            );
-        }
-    }
-
-    /**
      * Calculate the payoff in case of termination of a contract
      * @return the termination payoff amount for PAM contracts
      */

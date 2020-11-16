@@ -59,7 +59,6 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   businessDayConvention: '0',
   endOfMonthConvention: '0',
   scalingEffect: '0',
-  penaltyType: '0',
   feeBasis: '0',
 
   currency: ZERO_ADDRESS,
@@ -88,7 +87,6 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  penaltyRate: '0',
   delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
@@ -216,7 +214,6 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   businessDayConvention: '0',
   endOfMonthConvention: '0',
   scalingEffect: '0',
-  penaltyType: '0',
   feeBasis: '0',
 
   currency: ZERO_ADDRESS,
@@ -244,7 +241,6 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  penaltyRate: '0',
   delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',

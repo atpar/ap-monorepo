@@ -97,7 +97,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   businessDayConvention: terms.businessDayConvention,
   endOfMonthConvention: terms.endOfMonthConvention,
   scalingEffect: terms.scalingEffect,
-  penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
 
   currency: terms.currency,
@@ -126,7 +125,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  penaltyRate: terms.penaltyRate,
   delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
@@ -248,7 +246,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   businessDayConvention: terms.businessDayConvention,
   endOfMonthConvention: terms.endOfMonthConvention,
   scalingEffect: terms.scalingEffect,
-  penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
 
   currency: terms.currency,
@@ -276,7 +273,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  penaltyRate: terms.penaltyRate,
   delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,

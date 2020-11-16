@@ -606,7 +606,6 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         if (eventType == EventType.PP) return STF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_ANN_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
@@ -661,7 +660,6 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         if (eventType == EventType.PP) return POF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_ANN_TD(terms, state, scheduleTime, externalData);
 
         revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

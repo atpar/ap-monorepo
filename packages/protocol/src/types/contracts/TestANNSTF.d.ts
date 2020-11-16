@@ -38,7 +38,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -63,7 +62,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -172,7 +170,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -197,7 +194,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -306,7 +302,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -331,7 +326,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -440,7 +434,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -465,7 +458,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -574,7 +566,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -599,7 +590,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -708,7 +698,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -733,7 +722,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -842,7 +830,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -867,7 +854,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -976,7 +962,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1001,7 +986,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1110,7 +1094,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1135,7 +1118,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1244,7 +1226,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1269,141 +1250,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
-        delinquencyRate: number | string;
-        premiumDiscountAtIED: number | string;
-        priceAtPurchaseDate: number | string;
-        priceAtTerminationDate: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        lifeCap: number | string;
-        lifeFloor: number | string;
-        periodCap: number | string;
-        periodFloor: number | string;
-        gracePeriod: { i: number | string; p: number | string; isSet: boolean };
-        delinquencyPeriod: {
-          i: number | string;
-          p: number | string;
-          isSet: boolean;
-        };
-        cycleOfInterestPayment: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfRateReset: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfScalingIndex: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfFee: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-        cycleOfPrincipalRedemption: {
-          i: number | string;
-          p: number | string;
-          s: number | string;
-          isSet: boolean;
-        };
-      },
-      state: {
-        contractPerformance: number | string;
-        statusDate: number | string;
-        nonPerformingDate: number | string;
-        maturityDate: number | string;
-        exerciseDate: number | string;
-        terminationDate: number | string;
-        lastCouponFixingDate: number | string;
-        lastDividendFixingDate: number | string;
-        notionalPrincipal: number | string;
-        accruedInterest: number | string;
-        feeAccrued: number | string;
-        nominalInterestRate: number | string;
-        interestScalingMultiplier: number | string;
-        notionalScalingMultiplier: number | string;
-        nextPrincipalRedemptionPayment: number | string;
-        exerciseAmount: number | string;
-        exerciseQuantity: number | string;
-        quantity: number | string;
-        couponAmountFixed: number | string;
-        marginFactor: number | string;
-        adjustmentFactor: number | string;
-        dividendPaymentAmount: number | string;
-        splitRatio: number | string;
-      },
-      scheduleTime: number | string,
-      externalData: string | number[]
-    ): TransactionObject<{
-      contractPerformance: string;
-      statusDate: string;
-      nonPerformingDate: string;
-      maturityDate: string;
-      exerciseDate: string;
-      terminationDate: string;
-      lastCouponFixingDate: string;
-      lastDividendFixingDate: string;
-      notionalPrincipal: string;
-      accruedInterest: string;
-      feeAccrued: string;
-      nominalInterestRate: string;
-      interestScalingMultiplier: string;
-      notionalScalingMultiplier: string;
-      nextPrincipalRedemptionPayment: string;
-      exerciseAmount: string;
-      exerciseQuantity: string;
-      quantity: string;
-      couponAmountFixed: string;
-      marginFactor: string;
-      adjustmentFactor: string;
-      dividendPaymentAmount: string;
-      splitRatio: string;
-    }>;
-
-    _STF_ANN_PY(
-      terms: {
-        contractType: number | string;
-        calendar: number | string;
-        contractRole: number | string;
-        dayCountConvention: number | string;
-        businessDayConvention: number | string;
-        endOfMonthConvention: number | string;
-        scalingEffect: number | string;
-        penaltyType: number | string;
-        feeBasis: number | string;
-        currency: string;
-        settlementCurrency: string;
-        marketObjectCodeRateReset: string | number[];
-        contractDealDate: number | string;
-        statusDate: number | string;
-        initialExchangeDate: number | string;
-        maturityDate: number | string;
-        issueDate: number | string;
-        purchaseDate: number | string;
-        capitalizationEndDate: number | string;
-        cycleAnchorDateOfInterestPayment: number | string;
-        cycleAnchorDateOfRateReset: number | string;
-        cycleAnchorDateOfScalingIndex: number | string;
-        cycleAnchorDateOfFee: number | string;
-        cycleAnchorDateOfPrincipalRedemption: number | string;
-        notionalPrincipal: number | string;
-        nominalInterestRate: number | string;
-        accruedInterest: number | string;
-        rateMultiplier: number | string;
-        rateSpread: number | string;
-        nextResetRate: number | string;
-        feeRate: number | string;
-        feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1512,7 +1358,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1537,7 +1382,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1646,7 +1490,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1671,7 +1514,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1780,7 +1622,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1805,7 +1646,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
@@ -1914,7 +1754,6 @@ export class TestANNSTF extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -1939,7 +1778,6 @@ export class TestANNSTF extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;

@@ -60,7 +60,6 @@ export class ANNActor extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
@@ -85,7 +84,6 @@ export class ANNActor extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
         delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;

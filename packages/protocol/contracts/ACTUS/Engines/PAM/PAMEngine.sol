@@ -557,7 +557,6 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
@@ -606,7 +605,6 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData);
 
         revert("PAMEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

@@ -84,7 +84,6 @@ export interface Terms {
   businessDayConvention: string | number;
   endOfMonthConvention: string | number;
   scalingEffect: string | number;
-  penaltyType: string | number;
   feeBasis: string | number;
   creditEventTypeCovered: string | number;
   couponType: string | number;
@@ -123,7 +122,6 @@ export interface Terms {
   rateSpread: string | number;
   feeRate: string | number;
   nextResetRate: string | number;
-  penaltyRate: string | number;
   delinquencyRate: string | number;
   couponRate: string | number;
   denominationRatio: string | number;
@@ -171,7 +169,6 @@ export interface ANNTerms {
   businessDayConvention: string | number;
   endOfMonthConvention: string | number;
   scalingEffect: string | number;
-  penaltyType: string | number;
   feeBasis: string | number;
 
   currency: string;
@@ -200,7 +197,6 @@ export interface ANNTerms {
   nextResetRate: string | number;
   feeRate: string | number;
   feeAccrued: string | number;
-  penaltyRate: string | number;
   delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
@@ -328,7 +324,6 @@ export interface PAMTerms {
   businessDayConvention: string | number;
   endOfMonthConvention: string | number;
   scalingEffect: string | number;
-  penaltyType: string | number;
   feeBasis: string | number;
 
   currency: string;
@@ -356,7 +351,6 @@ export interface PAMTerms {
   nextResetRate: string | number;
   feeRate: string | number;
   feeAccrued: string | number;
-  penaltyRate: string | number;
   delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
@@ -483,7 +477,6 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
   if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
   if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
-  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
   if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
   if (obj.creditEventTypeCovered == undefined || typeof obj.creditEventTypeCovered !== 'string' && typeof obj.creditEventTypeCovered !== 'number') { return false; }
   if (obj.couponType == undefined || typeof obj.couponType !== 'string' && typeof obj.couponType !== 'number') { return false; }
@@ -522,7 +515,6 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
-  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
   if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.couponRate == undefined || typeof obj.couponRate !== 'number' && typeof obj.couponRate !== 'string') { return false; }
   if (obj.denominationRatio == undefined || typeof obj.denominationRatio !== 'number' && typeof obj.denominationRatio !== 'string') { return false; }
@@ -573,7 +565,6 @@ export function isANNTerms (obj: any): obj is ANNTerms {
   if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
   if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
   if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
-  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
   if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
 
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
@@ -602,7 +593,6 @@ export function isANNTerms (obj: any): obj is ANNTerms {
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
   if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
@@ -742,7 +732,6 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
   if (obj.businessDayConvention == undefined || typeof obj.businessDayConvention !== 'string' && typeof obj.businessDayConvention !== 'number') { return false; }
   if (obj.endOfMonthConvention == undefined || typeof obj.endOfMonthConvention !== 'string' && typeof obj.endOfMonthConvention !== 'number') { return false; }
   if (obj.scalingEffect == undefined || typeof obj.scalingEffect !== 'string' && typeof obj.scalingEffect !== 'number') { return false; }
-  if (obj.penaltyType == undefined || typeof obj.penaltyType !== 'string' && typeof obj.penaltyType !== 'number') { return false; }
   if (obj.feeBasis == undefined || typeof obj.feeBasis !== 'string' && typeof obj.feeBasis !== 'number') { return false; }
 
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
@@ -770,7 +759,6 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.penaltyRate == undefined || typeof obj.penaltyRate !== 'number' && typeof obj.penaltyRate !== 'string') { return false; }
   if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
