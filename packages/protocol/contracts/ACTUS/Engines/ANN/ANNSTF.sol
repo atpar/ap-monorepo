@@ -78,6 +78,25 @@ contract ANNSTF is Core {
     }
 
     /**
+     * State transition for ANN issue events
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_ANN_ISS (
+        ANNTerms memory /* terms */,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 /* externalData */
+    )
+        internal
+        pure
+        returns (State memory)
+    {
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
      * State transition for PAM fee payment events
      * @param state the old state
      * @return the new state

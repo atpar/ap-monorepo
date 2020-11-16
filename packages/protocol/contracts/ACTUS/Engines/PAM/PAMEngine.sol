@@ -551,10 +551,11 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_PAM_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
@@ -595,6 +596,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;

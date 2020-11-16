@@ -78,6 +78,25 @@ contract PAMSTF is Core {
     }
 
     /**
+     * State transition for PAM issue events
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_PAM_ISS (
+        PAMTerms memory /* terms */,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 /* externalData */
+    )
+        internal
+        pure
+        returns (State memory)
+    {
+        state.statusDate = scheduleTime;
+        return state;
+    }
+
+    /**
      * State transition for PAM fee payment events
      * @param state the old state
      * @return the new state

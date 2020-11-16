@@ -599,10 +599,11 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return STF_ANN_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_ANN_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
@@ -649,6 +650,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;
