@@ -4,7 +4,7 @@ dist/
 snapshot.tar.gz
 
 # typechain
-src/types/contracts/
+**/*/src/types/contracts/
 
 # sol-coverage
 coverage.json
@@ -14,8 +14,8 @@ coverage/
 cache/
 build-info/
 */**/*.dbg.json
-build/**/*
-deployments/**/*
+build/
+deployments/
 
 # node
 node_modules/
