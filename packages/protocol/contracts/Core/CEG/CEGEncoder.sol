@@ -43,7 +43,6 @@ library CEGEncoder {
         storeInPackedTerms(asset, "cycleAnchorDateOfFee", bytes32(terms.cycleAnchorDateOfFee));
 
         storeInPackedTerms(asset, "notionalPrincipal", bytes32(terms.notionalPrincipal));
-        storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
         
         storeInPackedTerms(asset, "feeRate", bytes32(terms.feeRate));
         storeInPackedTerms(asset, "feeAccrued", bytes32(terms.feeAccrued));
@@ -137,7 +136,6 @@ library CEGEncoder {
             uint256(asset.packedTerms["cycleAnchorDateOfFee"]),
 
             int256(asset.packedTerms["notionalPrincipal"]),
-            int256(asset.packedTerms["delinquencyRate"]),
 
             int256(asset.packedTerms["feeRate"]),
             int256(asset.packedTerms["feeAccrued"]),

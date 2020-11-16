@@ -44,7 +44,6 @@
   "rateSpread": 0,
   "nextResetRate": 0,
   "feeRate": 0,
-  "delinquencyRate": 0,
   "couponRate": 0,
   "denominationRatio": 0,
   "premiumDiscountAtIED": 0,

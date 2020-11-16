@@ -102,6 +102,7 @@ struct ANNTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
+    // PenaltyType penaltyType; not implemented
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -142,7 +143,8 @@ struct ANNTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 delinquencyRate;
+    // int256 penaltyRate; not implemented
+    // int256 delinquencyRate; not implemented
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
     int256 priceAtTerminationDate;
@@ -223,7 +225,7 @@ struct CEGTerms {
     // uint256 nonPerformingDate; // state only
 
     int256 notionalPrincipal;
-    int256 delinquencyRate;
+    // int256 delinquencyRate; not implemented
     int256 feeAccrued;
     int256 feeRate;
     int256 priceAtPurchaseDate;
@@ -304,6 +306,7 @@ struct PAMTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
+    // PenaltyType penaltyType; not implemented
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -342,7 +345,8 @@ struct PAMTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 delinquencyRate;
+    // int256 penaltyRate; not implemented
+    // int256 delinquencyRate; // not implemented
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
     int256 priceAtTerminationDate;

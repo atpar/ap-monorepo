@@ -122,7 +122,6 @@ export interface Terms {
   rateSpread: string | number;
   feeRate: string | number;
   nextResetRate: string | number;
-  delinquencyRate: string | number;
   couponRate: string | number;
   denominationRatio: string | number;
   premiumDiscountAtIED: string | number;
@@ -197,7 +196,6 @@ export interface ANNTerms {
   nextResetRate: string | number;
   feeRate: string | number;
   feeAccrued: string | number;
-  delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
   priceAtTerminationDate: string | number;
@@ -259,7 +257,6 @@ export interface CEGTerms {
   cycleAnchorDateOfFee: string | number;
 
   notionalPrincipal: string | number;
-  delinquencyRate: string | number;
   feeAccrued: string | number;
   feeRate: string | number;
   priceAtPurchaseDate: string | number;
@@ -351,7 +348,6 @@ export interface PAMTerms {
   nextResetRate: string | number;
   feeRate: string | number;
   feeAccrued: string | number;
-  delinquencyRate: string | number;
   premiumDiscountAtIED: string | number;
   priceAtPurchaseDate: string | number;
   priceAtTerminationDate: string | number;
@@ -515,7 +511,6 @@ export function isTerms (obj: any): obj is Terms {
   if (obj.rateSpread == undefined || typeof obj.rateSpread !== 'number' && typeof obj.rateSpread !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
-  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.couponRate == undefined || typeof obj.couponRate !== 'number' && typeof obj.couponRate !== 'string') { return false; }
   if (obj.denominationRatio == undefined || typeof obj.denominationRatio !== 'number' && typeof obj.denominationRatio !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
@@ -593,7 +588,6 @@ export function isANNTerms (obj: any): obj is ANNTerms {
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
   if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
@@ -661,7 +655,6 @@ export function isCEGTerms (obj: any): obj is CEGTerms {
   if (obj.cycleAnchorDateOfFee == undefined || typeof obj.cycleAnchorDateOfFee !== 'number' && typeof obj.cycleAnchorDateOfFee !== 'string') { return false; }
 
   if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
-  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
@@ -759,7 +752,6 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
   if (obj.nextResetRate == undefined || typeof obj.nextResetRate !== 'number' && typeof obj.nextResetRate !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
-  if (obj.delinquencyRate == undefined || typeof obj.delinquencyRate !== 'number' && typeof obj.delinquencyRate !== 'string') { return false; }
   if (obj.premiumDiscountAtIED == undefined || typeof obj.premiumDiscountAtIED !== 'number' && typeof obj.premiumDiscountAtIED !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
   if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }

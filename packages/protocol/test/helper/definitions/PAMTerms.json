@@ -29,7 +29,6 @@
   "nextResetRate",
   "feeRate",
   "feeAccrued",
-  "delinquencyRate",
   "premiumDiscountAtIED",
   "priceAtPurchaseDate",
   "priceAtTerminationDate",

@@ -59,7 +59,6 @@ library ANNEncoder {
         storeInPackedTerms(asset, "nextResetRate", bytes32(terms.nextResetRate));
         storeInPackedTerms(asset, "feeRate", bytes32(terms.feeRate));
         storeInPackedTerms(asset, "feeAccrued", bytes32(terms.feeAccrued));
-        storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
         storeInPackedTerms(asset, "premiumDiscountAtIED", bytes32(terms.premiumDiscountAtIED));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
         storeInPackedTerms(asset, "priceAtTerminationDate", bytes32(terms.priceAtTerminationDate));
@@ -166,7 +165,6 @@ library ANNEncoder {
             int256(asset.packedTerms["nextResetRate"]),
             int256(asset.packedTerms["feeRate"]),
             int256(asset.packedTerms["feeAccrued"]),
-            int256(asset.packedTerms["delinquencyRate"]),
             int256(asset.packedTerms["premiumDiscountAtIED"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
             int256(asset.packedTerms["priceAtTerminationDate"]),

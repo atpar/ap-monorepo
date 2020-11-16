@@ -125,7 +125,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
   priceAtTerminationDate: terms.priceAtTerminationDate,
@@ -187,7 +186,6 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   cycleAnchorDateOfFee: terms.cycleAnchorDateOfFee,
 
   notionalPrincipal: terms.notionalPrincipal,
-  delinquencyRate: terms.delinquencyRate,
   feeAccrued: terms.feeAccrued,
   feeRate: terms.feeRate,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
@@ -273,7 +271,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
   priceAtTerminationDate: terms.priceAtTerminationDate,

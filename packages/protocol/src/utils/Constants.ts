@@ -87,7 +87,6 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
   priceAtTerminationDate: '0',
@@ -149,7 +148,6 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   cycleAnchorDateOfFee: '0',
 
   notionalPrincipal: '0',
-  delinquencyRate: '0',
   feeAccrued: '0',
   feeRate: '0',
   priceAtPurchaseDate: '0',
@@ -241,7 +239,6 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
   priceAtTerminationDate: '0',
