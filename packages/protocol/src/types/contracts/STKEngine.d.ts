@@ -246,7 +246,7 @@ export class STKEngine extends Contract {
     ): TransactionObject<string>;
 
     computeNextNonCyclicEvent(
-      arg0: {
+      terms: {
         contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
@@ -300,11 +300,11 @@ export class STKEngine extends Contract {
           isSet: boolean;
         };
       },
-      arg1: string | number[]
+      lastNonCyclicEvent: string | number[]
     ): TransactionObject<string>;
 
     computeNonCyclicScheduleSegment(
-      arg0: {
+      terms: {
         contractType: number | string;
         calendar: number | string;
         contractRole: number | string;
@@ -358,8 +358,8 @@ export class STKEngine extends Contract {
           isSet: boolean;
         };
       },
-      arg1: number | string,
-      arg2: number | string
+      segmentStart: number | string,
+      segmentEnd: number | string
     ): TransactionObject<string[]>;
 
     computePayoffForEvent(
