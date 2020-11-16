@@ -20,6 +20,7 @@
   "nominalPrice",
   "notionalPrincipal",
   "priceAtPurchaseDate",
+  "priceAtTerminationDate",
   "purchaseDate",
   "quantity",
   "redeemableByIssuer",

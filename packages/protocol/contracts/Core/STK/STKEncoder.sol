@@ -46,6 +46,7 @@ library STKEncoder {
         storeInPackedTerms(asset, "issuePrice", bytes32(terms.issuePrice));
         storeInPackedTerms(asset, "quantity", bytes32(terms.quantity));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
+        storeInPackedTerms(asset, "priceAtTerminationDate", bytes32(terms.priceAtTerminationDate));
         storeInPackedTerms(asset, "redemptionPrice", bytes32(terms.redemptionPrice));
 
         storeInPackedTerms(
@@ -120,6 +121,7 @@ library STKEncoder {
             int256(asset.packedTerms["issuePrice"]),
             int256(asset.packedTerms["quantity"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
+            int256(asset.packedTerms["priceAtTerminationDate"]),
             int256(asset.packedTerms["redemptionPrice"]),
 
             IP(

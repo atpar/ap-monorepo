@@ -3,6 +3,9 @@ mnemonic.js
 dist/
 snapshot.tar.gz
 
+# typechain
+**/*/src/types/contracts/
+
 # sol-coverage
 coverage.json
 coverage/
@@ -11,6 +14,8 @@ coverage/
 cache/
 build-info/
 */**/*.dbg.json
+build/
+deployments/
 
 # node
 node_modules/

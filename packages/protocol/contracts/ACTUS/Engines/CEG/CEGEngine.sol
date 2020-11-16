@@ -325,9 +325,8 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
             || state.contractPerformance == ContractPerformance.TD
         ) { return false; }
 
-        (EventType eventType,) = decodeEvent(_event);
-
         if (hasUnderlying) {
+            (EventType eventType,) = decodeEvent(_event);
             // FP, MD events only scheduled up to execution of the Guarantee
             if (
                 (eventType == EventType.FP || eventType == EventType.MD)

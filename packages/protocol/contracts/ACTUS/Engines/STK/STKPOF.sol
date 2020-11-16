@@ -66,8 +66,8 @@ contract STKPOF is Core {
      * @return the termination payoff
      */
     function POF_STK_TD (
-        STKTerms memory /* terms */,
-        State memory /* state */,
+        STKTerms memory terms,
+        State memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
@@ -76,9 +76,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            // TODO: review as soon as terms.priceAtTerminationDate gets supported
-            // roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
-            0
+            roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
         );
     }
 }

@@ -20,6 +20,7 @@
   "issuePrice": 47,
   "quantity": 2000000,
   "priceAtPurchaseDate": 40,
+  "priceAtTerminationDate": 40,
   "redemptionPrice": 45,
 
   "dividendRecordPeriod": { "i": 1, "p": 2, "isSet": true },

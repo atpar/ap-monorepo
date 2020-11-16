@@ -41,7 +41,7 @@ enum EventType {NE, CE, ISS, IED, PRD, FP, PR, PD, PY, PP, IP, IPCI, RRF, RR, DI
 enum FeeBasis {A, N}
 // enum GuaranteedExposure {NO, NI, MV} // not implemented
 // enum InterestCalculationBase {NT, NTIED, NTL} // not implemented
-enum PenaltyType {O, A, N, I}
+// enum PenaltyType {O, A, N, I}
 // enum PrepaymentEffect {N, A, M} // not implemented
 enum RedeemableByIssuer {Y, N}
 enum ScalingEffect {_000, I00, _0N0, IN0}
@@ -102,7 +102,7 @@ struct ANNTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
-    PenaltyType penaltyType;
+    // PenaltyType penaltyType; not implemented
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -120,6 +120,7 @@ struct ANNTerms {
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
+    uint256 issueDate;
     // uint256 terminationDate; // state only
     uint256 purchaseDate;
     uint256 capitalizationEndDate;
@@ -142,11 +143,11 @@ struct ANNTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 penaltyRate;
-    int256 delinquencyRate;
+    // int256 penaltyRate; not implemented
+    // int256 delinquencyRate; not implemented
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     // int256 creditLineAmount; // not implemented
     // int256 scalingIndexAtStatusDate; // not implemented
     // int256 marketValueObserved; // not implemented
@@ -224,11 +225,11 @@ struct CEGTerms {
     // uint256 nonPerformingDate; // state only
 
     int256 notionalPrincipal;
-    int256 delinquencyRate;
+    // int256 delinquencyRate; not implemented
     int256 feeAccrued;
     int256 feeRate;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     int256 coverageOfCreditEnhancement;
     // int256 exerciseAmount; // state only
 
@@ -305,7 +306,7 @@ struct PAMTerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     ScalingEffect scalingEffect;
-    PenaltyType penaltyType;
+    // PenaltyType penaltyType; not implemented
     FeeBasis feeBasis;
     // ContractPerformance contractPerformance; // state only
     // Seniority seniority; // not implemented
@@ -324,6 +325,7 @@ struct PAMTerms {
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
+    uint256 issueDate;
     // uint256 terminationDate; // state only
     uint256 purchaseDate;
     uint256 capitalizationEndDate;
@@ -343,11 +345,11 @@ struct PAMTerms {
     int256 nextResetRate;
     int256 feeRate;
     int256 feeAccrued;
-    int256 penaltyRate;
-    int256 delinquencyRate;
+    // int256 penaltyRate; not implemented
+    // int256 delinquencyRate; // not implemented
     int256 premiumDiscountAtIED;
     int256 priceAtPurchaseDate;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
     // int256 creditLineAmount; // not implemented
     // int256 scalingIndexAtStatusDate; // not implemented
     // int256 marketValueObserved; // not implemented
@@ -395,7 +397,7 @@ struct STKTerms {
     int256 quantity;
     int256 priceAtPurchaseDate;
     int256 redemptionPrice;
-    // int256 priceAtTerminationDate; // not implemented
+    int256 priceAtTerminationDate;
 
     IP dividendRecordPeriod;
     IP dividendPaymentPeriod;

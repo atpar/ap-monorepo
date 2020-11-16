@@ -6,7 +6,7 @@ const { getDefaultTestTerms, getDefaultState, assertEqualStates } = require('../
 const { getSnapshotTaker, deployTestSTKSTF } = require('../../../helper/setupTestEnvironment');
 
 
-describe('TestANNPOF', () => {
+describe('TestSTKPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken

@@ -56,7 +56,7 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     const nextState = await this.STKEngineInstance.methods.computeStateForEvent(
       this.terms,
@@ -122,7 +122,7 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     let state = initialState;
 

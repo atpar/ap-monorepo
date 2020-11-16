@@ -302,47 +302,6 @@ contract PAMSTF is Core {
     }
 
     /**
-     * State transition for PAM penalty payments
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_PAM_PY (
-        PAMTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        int256 timeFromLastEvent;
-        {
-            timeFromLastEvent = yearFraction(
-                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                terms.dayCountConvention,
-                terms.maturityDate
-            );
-        }
-        state.accruedInterest = state.accruedInterest
-        .add(
-            state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.feeAccrued = state.feeAccrued
-        .add(
-            terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    /**
      * State transition for PAM fixed rate resets
      * @param state the old state
      * @return the new state

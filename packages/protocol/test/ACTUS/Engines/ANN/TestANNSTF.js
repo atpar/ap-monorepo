@@ -111,32 +111,32 @@ describe('TestANNSTF', () => {
   /*
   * TEST STF_ANN_PY
   */
-  it('ANN Princiapl Redemption STF', async () => {
-    const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
+  // it('ANN Penalty STF', async () => {
+  //   const oldState = getDefaultState();
+  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  //   const scheduleTime = 6307200; // .2 years
 
-    this.ANNTerms.feeRate = toWei('0.01');
-    this.ANNTerms.nominalInterestRate = toWei('0.05');
-    this.ANNTerms.dayCountConvention = 2; // A_365
-    this.ANNTerms.businessDayConvention = 0; // NULL
+  //   this.ANNTerms.feeRate = toWei('0.01');
+  //   this.ANNTerms.nominalInterestRate = toWei('0.05');
+  //   this.ANNTerms.dayCountConvention = 2; // A_365
+  //   this.ANNTerms.businessDayConvention = 0; // NULL
 
-    // Construct expected state from default state
-    const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.statusDate = 6307200;
+  //   // Construct expected state from default state
+  //   const expectedState = getDefaultState();
+  //   expectedState.accruedInterest = toWei('10100');
+  //   expectedState.feeAccrued = toWei('2010');
+  //   expectedState.statusDate = 6307200;
 
 
-    const newState = await this.TestSTF.methods._STF_ANN_PY(
-      this.ANNTerms,
-      oldState,
-      scheduleTime,
-      externalData
-    ).call();
+  //   const newState = await this.TestSTF.methods._STF_ANN_PY(
+  //     this.ANNTerms,
+  //     oldState,
+  //     scheduleTime,
+  //     externalData
+  //   ).call();
 
-    assertEqualStates(newState, expectedState);
-  });
+  //   assertEqualStates(newState, expectedState);
+  // });
 
   /*
   * TEST STF_ANN_RRF

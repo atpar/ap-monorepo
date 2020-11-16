@@ -34,7 +34,7 @@ describe('ICT', () => {
     [ deployer, /*actor*/, owner, tokenHolder1, tokenHolder2, spender ] = self.accounts;
 
     ictParams.assetRegistry = self.CERTFRegistryInstance.options.address;
-    ictParams.dataRegistry = self.DataRegistryProxyInstance.options.address;
+    ictParams.dataRegistryProxy = self.DataRegistryProxyInstance.options.address;
     ictParams.owner = owner;
     ictParams.deployer = owner;
 
@@ -67,7 +67,7 @@ describe('ICT', () => {
 
     describe('When called with zero address of the data registry', () => {
       it('reverts', async () => await expectRevert.unspecified(
-        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: ZERO_ADDRESS }))
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistryProxy: ZERO_ADDRESS }))
       ));
     });
 
@@ -79,7 +79,7 @@ describe('ICT', () => {
 
     describe('When called with the data registry address bing EOA', () => {
       it('reverts', async () => await expectRevert.unspecified(
-        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: tokenHolder1 }))
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistryProxy: tokenHolder1 }))
       ));
     });
   });
