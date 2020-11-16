@@ -14,5 +14,8 @@
     "link-packages": "lerna link",
     "publish-packages": "./scripts/publish.sh",
     "test": "./scripts/test.sh"
+  },
+  "dependencies": {
+    "@eth-optimism/smock": "^0.1.1-alpha.0"
   }
 }
