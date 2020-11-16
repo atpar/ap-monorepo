@@ -137,10 +137,20 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index;
 
+        // issuance
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+
         // initial exchange
-        if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
-            index++;
+        if (terms.initialExchangeDate != 0) {
+            if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+                index++;
+            }
         }
 
         // purchase
@@ -152,9 +162,11 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         }
 
         // principal redemption
-        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
-            index++;
+        if (terms.maturityDate != 0) {
+            if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.MD, terms.maturityDate);
+                index++;
+            }
         }
 
         // remove null entries from returned array
@@ -332,13 +344,24 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
 
         // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
+        // issuance
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+        
         // initial exchange
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
-            // date for event has to come before previous candidate for the next event
             && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
-            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
         ) {
             eventTypeNextEvent = EventType.IED;

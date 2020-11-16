@@ -48,7 +48,8 @@ describe('STKActor', () => {
     // generate (two) DIF events for two days
     const tMax = 1 * self.terms.issueDate + 48 * 3600;
     self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [eventIndex('DIF')]);
-    assert.strictEqual(this.schedule.length, 2);
+    assert.strictEqual(this.schedule.length, 3);
+    self.schedule.shift(); // skip IssueDate event
 
     self.state = web3ResponseToState(
       await self.STKEngineInstance.methods.computeInitialState(self.terms).call()
@@ -94,7 +95,6 @@ describe('STKActor', () => {
   });
 
   it('should process the next cyclic event', async () => {
-
     const doProgressAndCheck = async (dipa) => {
       const _event = await this.STKRegistryInstance.methods.getNextScheduledEvent(
         web3.utils.toHex(this.assetId)
