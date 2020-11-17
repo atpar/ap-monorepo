@@ -40,7 +40,6 @@
     "migrate:ropsten": "scripts/deploy-contracts.sh ropsten",
     "test:contracts": "node --max-old-space-size=4096 ./node_modules/.bin/hardhat test",
     "test:ts": "./scripts/setup-ap-chain.sh --from-snapshot --no-deploy --eval-and-exit 'jest --runInBand --detectOpenHandles --forceExit --verbose --colors && jest --runInBand --detectOpenHandles --forceExit -i ./integration/integration.test.js -c ./integration/jest.integration.config.js'",
-    "test:integration": "./scripts/setup-ap-chain.sh --from-snapshot --no-deploy --eval-and-exit 'jest --runInBand --detectOpenHandles --forceExit -i ./integration/integration.test.js -c ./integration/jest.integration.config.js'",
     "test": "npm run test:contracts && npm run test:ts"
   },
   "resolutions": {
