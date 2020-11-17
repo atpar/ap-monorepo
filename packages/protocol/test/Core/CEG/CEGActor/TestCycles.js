@@ -42,7 +42,6 @@ describe('CEGActor', () => {
     // set address of payment token as currency in terms
     self.terms.currency = self.PaymentTokenInstance.options.address;
     self.terms.settlementCurrency = self.PaymentTokenInstance.options.address;
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.CEGEngineInstance, self.terms);
     self.state = web3ResponseToState(

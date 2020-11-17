@@ -42,7 +42,6 @@ describe('CERTFActor', () => {
       currency: self.PaymentTokenInstance.options.address,
       settlementCurrency: self.PaymentTokenInstance.options.address,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = [];
     self.state = web3ResponseToState(

@@ -71,7 +71,7 @@ describe('PAMEngine', () => {
     const initialState = await this.PAMEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.PAMEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ).call();
     const nextState = await this.PAMEngineInstance.methods.computeStateForEvent(
@@ -87,7 +87,7 @@ describe('PAMEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -129,7 +129,7 @@ describe('PAMEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 

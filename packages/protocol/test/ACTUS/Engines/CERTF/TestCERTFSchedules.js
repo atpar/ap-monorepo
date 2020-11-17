@@ -66,7 +66,7 @@ describe('CERTFEngine', () => {
     const initialState = await this.CERTFEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       (terms.maturityDate > 0) ? terms.maturityDate : tMax
     );
 

@@ -104,7 +104,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -179,7 +178,6 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   maturityDate: terms.maturityDate,
   purchaseDate: terms.purchaseDate,
@@ -211,7 +209,6 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   couponType: terms.couponType,
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -251,7 +248,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -301,7 +297,6 @@ export const extractSTKTerms = (terms: Terms): STKTerms => ({
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   issueDate: terms.issueDate,
   purchaseDate: terms.purchaseDate,

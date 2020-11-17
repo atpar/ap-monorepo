@@ -10,7 +10,6 @@
   "currency",
   "settlementCurrency",
   "marketObjectCodeRateReset",
-  "contractDealDate",
   "statusDate",
   "initialExchangeDate",
   "maturityDate",

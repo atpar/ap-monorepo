@@ -8,7 +8,6 @@
   "couponType": 1,
   "currency": "0x0000000000000000000000000000000000000001",
   "settlementCurrency": "0x0000000000000000000000000000000000000001",
-  "contractDealDate": 1,
   "statusDate": 1,
   "initialExchangeDate": 1,
   "maturityDate": 1,

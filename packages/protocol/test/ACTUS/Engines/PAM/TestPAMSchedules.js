@@ -65,7 +65,7 @@ describe('PAMEngine', () => {
     const initialState = await this.PAMEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       terms.maturityDate
     );
 

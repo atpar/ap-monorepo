@@ -42,7 +42,6 @@ describe('PAMActor', () => {
       currency: self.PaymentTokenInstance.options.address,
       settlementCurrency: self.PaymentTokenInstance.options.address,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.PAMEngineInstance, self.terms);
     self.state = web3ResponseToState(

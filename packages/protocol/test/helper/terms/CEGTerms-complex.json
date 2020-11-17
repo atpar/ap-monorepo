@@ -9,7 +9,6 @@
   "feeBasis": 1,
   "currency": "0x0000000000000000000000000000000000000001",
   "settlementCurrency": "0x0000000000000000000000000000000000000001",
-  "contractDealDate": 1,
   "statusDate": 1,
   "maturityDate": 1,
   "purchaseDate": 1,

@@ -116,7 +116,6 @@ struct ANNTerms {
     bytes32 marketObjectCodeRateReset;
     // bytes32 marketObjectCodeOfScalingIndex; // not implemented
 
-    uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
@@ -216,7 +215,6 @@ struct CEGTerms {
     address currency;
     address settlementCurrency;
 
-    uint256 contractDealDate;
     uint256 statusDate;
     uint256 maturityDate;
     uint256 purchaseDate;
@@ -260,7 +258,6 @@ struct CERTFTerms {
 
     // bytes32 marketObjectCode; // not implemented
 
-    uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
@@ -321,7 +318,6 @@ struct PAMTerms {
     bytes32 marketObjectCodeRateReset;
     // bytes32 marketObjectCodeOfScalingIndex; // not implemented
 
-    uint256 contractDealDate;
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
@@ -385,7 +381,6 @@ struct STKTerms {
 
     // bytes32 marketObjectCode; // not implemented
 
-    uint256 contractDealDate;
     uint256 statusDate;
     uint256 issueDate;
     uint256 purchaseDate;

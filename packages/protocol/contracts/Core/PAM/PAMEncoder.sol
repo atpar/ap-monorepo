@@ -38,7 +38,6 @@ library PAMEncoder {
 
         storeInPackedTerms(asset, "marketObjectCodeRateReset", bytes32(terms.marketObjectCodeRateReset));
 
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
@@ -134,7 +133,6 @@ library PAMEncoder {
 
             asset.packedTerms["marketObjectCodeRateReset"],
 
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),

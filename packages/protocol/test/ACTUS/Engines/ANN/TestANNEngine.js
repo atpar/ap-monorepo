@@ -75,7 +75,7 @@ describe('ANNEngine', () => {
     const initialState = await this.ANNEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.ANNEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ).call();
     const nextState = await this.ANNEngineInstance.methods.computeStateForEvent(
@@ -91,7 +91,7 @@ describe('ANNEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -133,7 +133,7 @@ describe('ANNEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 

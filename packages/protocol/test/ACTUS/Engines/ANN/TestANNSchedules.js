@@ -70,7 +70,7 @@ describe('ANNEngine', () => {
     const initialState = await this.ANNEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       terms.maturityDate
     );
 

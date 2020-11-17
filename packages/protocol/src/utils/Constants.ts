@@ -66,7 +66,6 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
 
   marketObjectCodeRateReset: ZERO_BYTES32,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
@@ -141,7 +140,6 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   maturityDate: '0',
   purchaseDate: '0',
@@ -175,7 +173,6 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
@@ -219,7 +216,6 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
 
   marketObjectCodeRateReset: ZERO_BYTES32,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
@@ -269,7 +265,6 @@ export const EMPTY_STK_TERMS: STKTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   issueDate: '0',
   purchaseDate: '0',

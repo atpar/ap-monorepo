@@ -72,7 +72,7 @@ describe('STKEngine', () => {
     const endDate = this.terms.cycleAnchorDateOfDividend + 365 * 24 * 3600;
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       endDate
     ));
 

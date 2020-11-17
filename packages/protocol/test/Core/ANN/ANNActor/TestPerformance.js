@@ -47,7 +47,6 @@ describe('ANNActor', () => {
       currency: paymentTokenAddress,
       settlementCurrency: paymentTokenAddress,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
     self.state = web3ResponseToState(

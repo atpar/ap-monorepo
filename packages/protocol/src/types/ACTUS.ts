@@ -94,7 +94,6 @@ export interface Terms {
 
   marketObjectCodeRateReset: string | number[];
 
-  contractDealDate: string | number;
   statusDate: string | number;
   initialExchangeDate: string | number;
   issueDate: string | number;
@@ -175,7 +174,6 @@ export interface ANNTerms {
 
   marketObjectCodeRateReset: string | number[];
 
-  contractDealDate: string | number;
   statusDate: string | number;
   initialExchangeDate: string | number;
   maturityDate: string | number;
@@ -250,7 +248,6 @@ export interface CEGTerms {
   currency: string;
   settlementCurrency: string;
 
-  contractDealDate: string | number;
   statusDate: string | number;
   maturityDate: string | number;
   purchaseDate: string | number;
@@ -284,7 +281,6 @@ export interface CERTFTerms {
   currency: string;
   settlementCurrency: string;
 
-  contractDealDate: string | number;
   statusDate: string | number;
   initialExchangeDate: string | number;
   maturityDate: string | number;
@@ -328,7 +324,6 @@ export interface PAMTerms {
 
   marketObjectCodeRateReset: string | number[];
 
-  contractDealDate: string | number;
   statusDate: string | number;
   initialExchangeDate: string | number;
   maturityDate: string | number;
@@ -378,7 +373,6 @@ export interface STKTerms {
   currency: string;
   settlementCurrency: string;
 
-  contractDealDate: string | number;
   statusDate: string | number;
   issueDate: string | number;
   purchaseDate: string | number;
@@ -483,7 +477,6 @@ export function isTerms (obj: any): obj is Terms {
 
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
   if (obj.issueDate == undefined || typeof obj.issueDate !== 'number' && typeof obj.issueDate !== 'string') { return false; }
@@ -567,7 +560,6 @@ export function isANNTerms (obj: any): obj is ANNTerms {
 
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
   if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
@@ -648,7 +640,6 @@ export function isCEGTerms (obj: any): obj is CEGTerms {
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
   if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
@@ -685,7 +676,6 @@ export function isCERTFTerms (obj: any): obj is CERTFTerms {
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
   if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
@@ -732,7 +722,6 @@ export function isPAMTerms (obj: any): obj is PAMTerms {
 
   if (obj.marketObjectCodeRateReset == undefined || typeof obj.marketObjectCodeRateReset !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
   if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
@@ -785,7 +774,6 @@ export function isSTKTerms (obj: any): obj is STKTerms {
   if (obj.currency == undefined || typeof obj.currency !== 'string') { return false; }
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
 
-  if (obj.contractDealDate == undefined || typeof obj.contractDealDate !== 'number' && typeof obj.contractDealDate !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
   if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
   if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
