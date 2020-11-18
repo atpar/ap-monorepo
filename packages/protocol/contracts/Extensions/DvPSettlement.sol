@@ -11,10 +11,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 contract DvPSettlement {
 
-    event SettlementInitialized(uint256 indexed settlementId, Settlement settlement);
-    event SettlementExecuted(uint256 indexed settlementId, address indexed executor);
-    event SettlementExpired(uint256 indexed settlementId);
-
     enum SettlementStatus { NOT_EXISTS, INITIALIZED, EXECUTED, EXPIRED }
 
     struct Settlement {
@@ -33,6 +29,10 @@ contract DvPSettlement {
     uint256 public lastSettlementId;
     // SettlementId => Settlement
     mapping (uint256 => Settlement) public settlements;
+
+    event SettlementInitialized(uint256 indexed settlementId, Settlement settlement);
+    event SettlementExecuted(uint256 indexed settlementId, address indexed executor);
+    event SettlementExpired(uint256 indexed settlementId);
 
 
     /**
@@ -54,7 +54,7 @@ contract DvPSettlement {
         uint256 counterpartyAmount,
         uint256 expirationDate
     )
-        public
+        external
     {
         require(
             expirationDate > block.timestamp,
@@ -91,7 +91,7 @@ contract DvPSettlement {
      * @dev The counterparty must approve for this contract at least `counterpartyAmount` of tokens
      * @param settlementId Id of the Settlement to execute
      */
-    function executeSettlement(uint256 settlementId) public {
+    function executeSettlement(uint256 settlementId) external {
         Settlement storage settlement = settlements[settlementId];
 
         require(
@@ -131,7 +131,7 @@ contract DvPSettlement {
      * a created settlement that has passed the expiration date
      * @param settlementId Id of the Settlement to expire
      */
-    function expireSettlement(uint256 settlementId) public {
+    function expireSettlement(uint256 settlementId) external {
         Settlement storage settlement = settlements[settlementId];
 
         require(

@@ -210,7 +210,7 @@ describe('DvPSettlement', () => {
           counterpartyAmount,
           lastTimestamp - 1,
         ).send({ from: creator }),
-        'DvPSettlement.createSettlement - expiration date cannot be in the past'
+        'DvPSettlement.createSettlement: INVALID_EXPIRATION_DATE'
       );
     });
 
@@ -235,7 +235,7 @@ describe('DvPSettlement', () => {
 
       await expectRevert(
         this.dvpSettlementContract.methods.executeSettlement(id).send({ from: counterparty }),
-        'DvPSettlement.executeSettlement - settlement expired'
+        'DvPSettlement.executeSettlement: SETTLEMENT_EXPIRED'
       );
 
     });
