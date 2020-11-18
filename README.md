@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/actus-protocol-logo.jpg" width="150px"> 
+<img src="https://user-images.githubusercontent.com/45110941/99552473-55349800-29bd-11eb-9a74-53c9815c39b1.jpg" width="150px"> 
 
 ![Build Status](https://github.com/atpar/ap-monorepo/workflows/Run%20Tests/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -48,4 +48,4 @@ yarn test
 ---
 
 ACTUS Protocol is maintained by  
-[<img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/logo.png" width="200px" >](https://www.atpar.io)
+[<img src="https://user-images.githubusercontent.com/45110941/99552627-82814600-29bd-11eb-869a-e224eedfcfa2.jpg" width="200px" >](https://www.atpar.io)
