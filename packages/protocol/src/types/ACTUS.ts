@@ -138,7 +138,6 @@ export interface Terms {
   delinquencyPeriod: IP;
   settlementPeriod: IP;
   fixingPeriod: IP;
-  redemptionExercisePeriod: IP;
   redemptionRecordPeriod: IP;
   redemptionPaymentPeriod: IP;
   dividendRecordPeriod: IP;
@@ -299,7 +298,7 @@ export interface CERTFTerms {
   delinquencyPeriod: IP;
   settlementPeriod: IP;
   fixingPeriod: IP;
-  redemptionExercisePeriod: IP;
+  redemptionRecordPeriod: IP;
 
   cycleOfRedemption: IPS;
   cycleOfTermination: IPS;
@@ -521,7 +520,6 @@ export function isTerms (obj: any): obj is Terms {
   if (!isIP(obj.delinquencyPeriod)) { return false; }
   if (!isIP(obj.settlementPeriod)) { return false; }
   if (!isIP(obj.fixingPeriod)) { return false; }
-  if (!isIP(obj.redemptionExercisePeriod)) { return false; }
   if (!isIP(obj.redemptionRecordPeriod)) { return false; }
   if (!isIP(obj.redemptionPaymentPeriod)) { return false; }
   if (!isIP(obj.dividendRecordPeriod)) { return false; }
@@ -694,7 +692,7 @@ export function isCERTFTerms (obj: any): obj is CERTFTerms {
   if (!isIP(obj.delinquencyPeriod)) { return false; }
   if (!isIP(obj.settlementPeriod)) { return false; }
   if (!isIP(obj.fixingPeriod)) { return false; }
-  if (!isIP(obj.redemptionExercisePeriod)) { return false; }
+  if (!isIP(obj.redemptionRecordPeriod)) { return false; }
 
   if (!isIPS(obj.cycleOfRedemption)) { return false; }
   if (!isIPS(obj.cycleOfTermination)) { return false; }

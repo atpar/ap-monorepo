@@ -1187,9 +1187,9 @@ acorn@^6.0.7:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
   integrity sha512-ZVA9k326Nwrj3Cj9jlh3wGFutC2ZornPNARZwsNYqQYgN0EsV2d53w5RN/co65Ohn4sUAUtb1rSUAOD6XN9idA==
 
-"actus-dictionary@https://github.com/atpar/actus-dictionary.git#b85b9b378967de6bfc4d8b6687b520c48bce9890":
+"actus-dictionary@https://github.com/atpar/actus-dictionary.git#fe832c32b9e8a0d05c8c9742b8480ff794262acf":
   version "0.0.0"
-  resolved "https://github.com/atpar/actus-dictionary.git#b85b9b378967de6bfc4d8b6687b520c48bce9890"
+  resolved "https://github.com/atpar/actus-dictionary.git#fe832c32b9e8a0d05c8c9742b8480ff794262acf"
 
 address@^1.0.1:
   version "1.1.2"

@@ -225,7 +225,7 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   delinquencyPeriod: terms.delinquencyPeriod,
   settlementPeriod: terms.settlementPeriod,
   fixingPeriod: terms.fixingPeriod,
-  redemptionExercisePeriod: terms.redemptionExercisePeriod,
+  redemptionRecordPeriod: terms.redemptionRecordPeriod,
   cycleOfRedemption: terms.cycleOfRedemption,
   cycleOfTermination: terms.cycleOfTermination,
   cycleOfCoupon: terms.cycleOfCoupon,

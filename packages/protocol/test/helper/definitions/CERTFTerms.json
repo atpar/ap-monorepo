@@ -24,7 +24,7 @@
   "settlementPeriod",
   "delinquencyPeriod",
   "fixingPeriod",
-  "redemptionExercisePeriod",
+  "redemptionRecordPeriod",
   "cycleOfRedemption",
   "cycleOfTermination",
   "cycleOfCoupon",

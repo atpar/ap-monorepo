@@ -60,7 +60,7 @@
   "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
   "settlementPeriod": { "i": "10", "p": 0, "isSet": true },
   "fixingPeriod": { "i": "0", "p": 0, "isSet": true },
-  "redemptionExercisePeriod": { "i": "5", "p": 0, "isSet": true },
+  "redemptionRecordPeriod": { "i": "5", "p": 0, "isSet": true },
   "redemptionRecordPeriod": { "i": 0, "p": 0, "isSet": false },
   "redemptionPaymentPeriod": { "i": 0, "p": 0, "isSet": false },
   "dividendRecordPeriod": { "i": 0, "p": 0, "isSet": false },

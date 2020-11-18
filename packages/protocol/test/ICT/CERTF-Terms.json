@@ -27,7 +27,7 @@
       "s": "1",
       "isSet": false
   },
-  "redemptionExercisePeriod": {
+  "redemptionRecordPeriod": {
       "i": "1",
       "p": "0",
       "isSet": true

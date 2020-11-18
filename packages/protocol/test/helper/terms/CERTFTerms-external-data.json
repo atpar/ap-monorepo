@@ -24,7 +24,7 @@
   "settlementPeriod": { "i": "10", "p": 0, "isSet": true },
   "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
   "fixingPeriod": { "i": "0", "p": 0, "isSet": true },
-  "redemptionExercisePeriod": { "i": "5", "p": 0, "isSet": true },
+  "redemptionRecordPeriod": { "i": "5", "p": 0, "isSet": true },
   "cycleOfRedemption": { "i": "3", "p": 2, "s": 1, "isSet": true },
   "cycleOfTermination": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfCoupon": { "i": 0, "p": 0, "s": 0, "isSet": false },
