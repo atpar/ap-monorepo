@@ -60,8 +60,11 @@ contract DvPSettlement {
             expirationDate > block.timestamp,
             "DvPSettlement.createSettlement: INVALID_EXPIRATION_DATE"
         );
+        require(
+            lastSettlementId < type(uint256).max,
+            "DvPSettlement.createSettlement: INVALID_SETTLEMENT_ID"
+        );
 
-        // practially no risk of overflowing or underflowing
         lastSettlementId++;
 
         Settlement storage settlement = settlements[lastSettlementId];
