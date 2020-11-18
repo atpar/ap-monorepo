@@ -1,6 +1,6 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getSnapshotTaker, deployTestCore } = require('../../helper/setupTestEnvironment');
 
@@ -24,10 +24,10 @@ describe('Core', () => {
     const compactDates = [];
 
     for (date of dates) {
-    if (date.toString() === '0') { continue; }
+      if (date.toString() === '0') { continue; }
       compactDates.push(date.toString());
     }
-  
+
     return compactDates;
   }
 

@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../Engines/ANN/ANNSTF.sol";
@@ -80,25 +80,6 @@ contract TestANNSTF is ANNSTF {
             externalData
         );
     }
-
-    function _STF_ANN_PY(
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_ANN_PY(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
 
     function _STF_ANN_RRF(
         ANNTerms memory terms,

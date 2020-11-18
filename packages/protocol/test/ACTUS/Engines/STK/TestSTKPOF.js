@@ -1,6 +1,6 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms, web3ResponseToState } = require('../../../helper/ACTUS/tests');
 const { getSnapshotTaker, deployTestSTKPOF } = require('../../../helper/setupTestEnvironment');

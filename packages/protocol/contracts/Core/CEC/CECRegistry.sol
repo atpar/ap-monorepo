@@ -1,6 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
+
+import "../../ACTUS/Engines/CEC/ICECEngine.sol";
 
 import "../Base/SharedTypes.sol";
 import "../Base/AssetRegistry/BaseRegistry.sol";
@@ -17,10 +19,7 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
     using CECEncoder for Asset;
 
     
-    constructor()
-        public
-        BaseRegistry()
-    {}
+    constructor() BaseRegistry() {}
 
     /**
      * @notice
@@ -152,12 +151,37 @@ contract CECRegistry is BaseRegistry, ICECRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForCECAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 /* assetId */)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         override(TermsRegistry)
-        returns (bytes32)
+        returns (bytes32, bool)
     {
-        return bytes32(0);
+        Asset storage asset = assets[assetId];
+        CECTerms memory terms = asset.decodeAndGetCECTerms();
+
+        EventType nextEventType;
+        uint256 nextScheduleTime;
+        bool isCyclicEvent = true;
+
+        // Non-Cyclic
+        {
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICECEngine(asset.engine).computeNextNonCyclicEvent(
+                terms,
+                asset.schedule.lastNonCyclicEvent
+            ));
+
+            if (
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTime = scheduleTime;
+                nextEventType = eventType;
+                isCyclicEvent = false;
+            }        
+        }
+
+        return (encodeEvent(nextEventType, nextScheduleTime), isCyclicEvent);
     }
 }

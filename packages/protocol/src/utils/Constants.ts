@@ -59,7 +59,6 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   businessDayConvention: '0',
   endOfMonthConvention: '0',
   scalingEffect: '0',
-  penaltyType: '0',
   feeBasis: '0',
 
   currency: ZERO_ADDRESS,
@@ -67,10 +66,10 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
 
   marketObjectCodeRateReset: ZERO_BYTES32,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
+  issueDate: '0',
   purchaseDate: '0',
   capitalizationEndDate: '0',
   cycleAnchorDateOfInterestPayment: '0',
@@ -87,10 +86,9 @@ export const EMPTY_ANN_TERMS: ANNTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  penaltyRate: '0',
-  delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   nextPrincipalRedemptionPayment: '0',
 
   lifeCap: '0',
@@ -142,17 +140,16 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   maturityDate: '0',
   purchaseDate: '0',
   cycleAnchorDateOfFee: '0',
 
   notionalPrincipal: '0',
-  delinquencyRate: '0',
   feeAccrued: '0',
   feeRate: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   coverageOfCreditEnhancement: '0',
 
   gracePeriod: EMPTY_IP,
@@ -176,7 +173,6 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
@@ -195,7 +191,7 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
   delinquencyPeriod: EMPTY_IP,
   settlementPeriod: EMPTY_IP,
   fixingPeriod: EMPTY_IP,
-  redemptionExercisePeriod: EMPTY_IP,
+  redemptionRecordPeriod: EMPTY_IP,
 
   cycleOfRedemption: EMPTY_IPS,
   cycleOfTermination: EMPTY_IPS,
@@ -213,7 +209,6 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   businessDayConvention: '0',
   endOfMonthConvention: '0',
   scalingEffect: '0',
-  penaltyType: '0',
   feeBasis: '0',
 
   currency: ZERO_ADDRESS,
@@ -221,10 +216,10 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
 
   marketObjectCodeRateReset: ZERO_BYTES32,
 
-  contractDealDate: '0',
   statusDate: '0',
   initialExchangeDate: '0',
   maturityDate: '0',
+  issueDate: '0',
   purchaseDate: '0',
   capitalizationEndDate: '0',
   cycleAnchorDateOfInterestPayment: '0',
@@ -240,10 +235,9 @@ export const EMPTY_PAM_TERMS: PAMTerms = {
   nextResetRate: '0',
   feeRate: '0',
   feeAccrued: '0',
-  penaltyRate: '0',
-  delinquencyRate: '0',
   premiumDiscountAtIED: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
 
   lifeCap: '0',
   lifeFloor: '0',
@@ -271,7 +265,6 @@ export const EMPTY_STK_TERMS: STKTerms = {
   currency: ZERO_ADDRESS,
   settlementCurrency: ZERO_ADDRESS,
 
-  contractDealDate: '0',
   statusDate: '0',
   issueDate: '0',
   purchaseDate: '0',
@@ -282,6 +275,7 @@ export const EMPTY_STK_TERMS: STKTerms = {
   issuePrice: '0',
   quantity: '0',
   priceAtPurchaseDate: '0',
+  priceAtTerminationDate: '0',
   redemptionPrice: '0',
 
   dividendRecordPeriod: EMPTY_IP,

@@ -1,14 +1,14 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms } = require('../../../helper/ACTUS/tests');
 const { parseEventSchedule, encodeEvent, decodeEvent, sortEvents } = require('../../../helper/utils/schedule');
 const { web3ResponseToState } = require('../../../helper/utils/utils');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKEngine', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -33,7 +33,7 @@ describe('STKEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      14 // DIF (#useEventName)
+      eventIndex('DIF')
     ).call());
 
     return sortEvents(schedule);
@@ -56,7 +56,7 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     const nextState = await this.STKEngineInstance.methods.computeStateForEvent(
       this.terms,
@@ -72,7 +72,7 @@ describe('STKEngine', () => {
     const endDate = this.terms.cycleAnchorDateOfDividend + 365 * 24 * 3600;
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       endDate
     ));
 
@@ -122,7 +122,7 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     let state = initialState;
 
@@ -141,7 +141,7 @@ describe('STKEngine', () => {
   describe('computePayoffForEvent function for REP event', () => {
     before(async () => {
       const scheduleTime = 100;
-      const event = encodeEvent(21, scheduleTime); // #useEventName (REP)
+      const event = encodeEvent(eventIndex('REP'), scheduleTime);
 
       const externalData = '0x000000000000000000000000000000000000000000000015af1d78b58c400000'; // 400e+18
 
@@ -185,7 +185,7 @@ describe('STKEngine', () => {
   describe('computeStateForEvent function for REF event', () => {
     before(async () => {
       const scheduleTime = 100;
-      const event = encodeEvent(19, scheduleTime); // #useEventName (REF)
+      const event = encodeEvent(eventIndex('REF'), scheduleTime);
 
       const externalData = '0x00000000000000000000000000000000000000000052b7d2dcc80cd2e4000000'; // 100*10e6 * 10e18
 

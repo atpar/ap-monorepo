@@ -1,8 +1,8 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker, deployTestSignedMath } = require('../../helper/setupTestEnvironment');
 
@@ -58,7 +58,7 @@ describe('SignedMath', () => {
   it('should test floatMult - overflow', async () => {
     // FloatMult NT256_MAX times 10 should overflow and fail
     // INT256_MAX is mulitplied with 10 before getting divided (normalized) with MULTIPLIER
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatMult(
         INT_MAX,
         '10'
@@ -66,7 +66,7 @@ describe('SignedMath', () => {
       'SignedMath.floatMult: OVERFLOW_DETECTED'
     );
     // FloatMult 10 ** 59 times Identity should overflow and fail
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatMult(
         new  BigNumber(10).pow(59).toFixed(),
         new BigNumber(1).shiftedBy(18).toFixed()
@@ -75,7 +75,7 @@ describe('SignedMath', () => {
     );
     // FloatMult INT256_MIN times 10 should underflow and fail
     // ~ 0.0...01
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatMult(
         INT_MIN,
         '10'
@@ -83,7 +83,7 @@ describe('SignedMath', () => {
       'SignedMath.floatMult: OVERFLOW_DETECTED'
     );
     // FloatMult -10 ** 59 times Identity should underflow and fail
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatMult(
         new  BigNumber(-10).pow(59).toFixed(),
         new BigNumber(1).shiftedBy(18).toFixed()
@@ -99,7 +99,7 @@ describe('SignedMath', () => {
       '1'
     );
     // FloatMult (Identity - 1) times 1 should fail
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatMult(
         new  BigNumber(1).shiftedBy(18).minus(1).toFixed(),
         '1'
@@ -134,7 +134,7 @@ describe('SignedMath', () => {
   it('should test floatDiv - overflow', async () => {
     // FloatDiv INT256_MAX by 1 should overflow and fail
     // ~ 0.0...01
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatDiv(
         INT_MAX,
         '1'
@@ -142,7 +142,7 @@ describe('SignedMath', () => {
       'SignedMath.floatDiv: OVERFLOW_DETECTED'
     );
     // FloatDiv 10 ** 59 by Identity should overflow and fail
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatDiv(
         new  BigNumber(10).pow(59).toFixed(),
         new BigNumber(1).shiftedBy(18).toFixed()
@@ -151,7 +151,7 @@ describe('SignedMath', () => {
     );
     // FloatDiv INT256_MIN by 1 should underflow and fail
     // ~ 0.0...01
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatDiv(
         INT_MIN,
         '1'
@@ -159,7 +159,7 @@ describe('SignedMath', () => {
       'SignedMath.floatDiv: OVERFLOW_DETECTED'
     );
     // FloatDiv -10 ** 59 by Identify should underflow and fail
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatDiv(
         new  BigNumber(-10).pow(59).toFixed(),
         new BigNumber(1).shiftedBy(18).toFixed()
@@ -176,7 +176,7 @@ describe('SignedMath', () => {
     );
     // FloatDiv 1 by (Identity + 1) should fail
     // ~ 0.0...01
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.TestSignedMath.methods._floatDiv(
         '1',
         new  BigNumber(1).shiftedBy(18).plus(1).toFixed()
@@ -193,7 +193,7 @@ describe('SignedMath', () => {
     // min of 1 and -1 should be -1
     assert.strictEqual(await this.TestSignedMath.methods._min(1, -1).call(), '-1')
   });
-  
+
   it('should test max', async () => {
     // max of 1 and 2 should be 2
     assert.strictEqual(await this.TestSignedMath.methods._max(1, 2).call(), '2')

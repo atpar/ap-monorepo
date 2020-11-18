@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/atpar/atpar.github.io/master/assets/images/actus-protocol-logo.jpg" width="150px"> 
 
-[![Build Status](https://travis-ci.org/atpar/ap-monorepo.svg?branch=master)](https://travis-ci.org/atpar/ap-monorepo)
+![Build Status](https://github.com/atpar/ap-monorepo/workflows/Run%20Tests/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Coverage Status](https://coveralls.io/repos/github/atpar/ap-monorepo/badge.svg?branch=master)](https://coveralls.io/github/atpar/ap-monorepo?branch=master)
 

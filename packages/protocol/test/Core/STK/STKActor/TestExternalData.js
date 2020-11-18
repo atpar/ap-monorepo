@@ -1,17 +1,16 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { mineBlock } = require('../../../helper/utils/blockchain');
 const { expectEvent, ZERO_ADDRESS } = require('../../../helper/utils/utils');
 const { encodeEvent, decodeEvent } = require('../../../helper/utils/schedule');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKActor', () => {
-  let deployer, actor, actor2, creatorObligor, creatorBeneficiary, nobody;
+  let deployer, actor, creatorObligor, creatorBeneficiary, nobody;
 
   const minute = 60;
   const toBN = web3.utils.toBN;
@@ -20,7 +19,7 @@ describe('STKActor', () => {
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    [ deployer, actor, actor2, creatorObligor, creatorBeneficiary, nobody ] = self.accounts;
+    [ deployer, actor, creatorObligor, creatorBeneficiary, nobody ] = self.accounts;
 
     self.ownership = {
       creatorObligor,
@@ -34,14 +33,14 @@ describe('STKActor', () => {
     self.terms.businessDayConvention = 0; // no business day shifting
     self.terms.issueDate = 1 * (await web3.eth.getBlock('latest')).timestamp;
     self.terms.statusDate = self.terms.issueDate + 1;
-    self.terms.cycleAnchorDateOfDividend = self.terms.issueDate + 1 * minute;
+    self.terms.cycleAnchorDateOfDividend = self.terms.issueDate + minute;
     self.terms.cycleOfDividend = { "i": 1, "p": 5, "s": 1, "isSet": true }; // once a year
 
     // put DIF, SPF and REF events on the schedule
     self.schedule = [];
-    self.schedule.push(encodeEvent(14, self.terms.cycleAnchorDateOfDividend)); // #useEventName (DIF)
-    self.schedule.push(encodeEvent(22, self.terms.issueDate + 2 * minute)); // #useEventName (SPF)
-    self.schedule.push(encodeEvent(19, self.terms.issueDate + 3 * minute)); // #useEventName (REF)
+    self.schedule.push(encodeEvent(eventIndex('DIF'), self.terms.cycleAnchorDateOfDividend));
+    self.schedule.push(encodeEvent(eventIndex('SPF'), self.terms.issueDate + 2 * minute));
+    self.schedule.push(encodeEvent(eventIndex('REF'), self.terms.issueDate + 3 * minute));
     // external data for these events
     self.extData = {
       DIP: { index: 1, values: [10000000] }, // dividendPaymentAmount
@@ -60,9 +59,9 @@ describe('STKActor', () => {
     self.assetId = events.InitializedAsset.returnValues.assetId;
 
     self.state = await self.STKRegistryInstance.methods.getState(web3.utils.toHex(self.assetId)).call();
-    });
+  });
 
-    before(async () => {
+  before(async () => {
     this.setupTestEnvironment = snapshotTaker(this);
     await this.setupTestEnvironment();
   });
@@ -78,11 +77,14 @@ describe('STKActor', () => {
       date: this.terms.cycleAnchorDateOfDividend,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
+      .send({ from: deployer });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+      .send({ from: actor });
 
-    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
-    expectEvent(events, 'ProgressedAsset', { eventType: "14" }); // #useEventName (DIF)
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+      .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset', { eventType: `${eventIndex('DIF')}` });
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
@@ -114,11 +116,13 @@ describe('STKActor', () => {
       date: this.terms.issueDate + 2 * minute,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.SRA.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+      .send({ from: actor });
 
-    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
-    expectEvent(events, 'ProgressedAsset', { eventType: "22" }); // #useEventName (SPF)
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+      .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset', { eventType: `${eventIndex('SPF')}` });
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
@@ -150,11 +154,14 @@ describe('STKActor', () => {
       date: this.terms.issueDate + 3 * minute,
       value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))), 64)
     };
-    await this.DataRegistryInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
-    await this.DataRegistryInstance.methods.publishDataPoint(point.provider, point.date, point.value).send({ from: actor });
+    await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
+      .send({ from: deployer });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
+      .send({ from: actor });
 
-    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId)).send({ from: nobody });
-    expectEvent(events, 'ProgressedAsset', { eventType: "19" }); // #useEventName (REF)
+    const { events } = await this.STKActorInstance.methods.progress(web3.utils.toHex(this.assetId))
+      .send({ from: nobody });
+    expectEvent(events, 'ProgressedAsset', { eventType: `${eventIndex('REF')}` });
     const emittedAssetId = events.ProgressedAsset.returnValues.assetId;
 
     const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();

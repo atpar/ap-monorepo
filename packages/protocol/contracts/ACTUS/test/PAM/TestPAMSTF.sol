@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../Engines/PAM/PAMSTF.sol";
@@ -147,24 +147,6 @@ contract TestPAMSTF is PAMSTF {
         returns (State memory)
     {
         return STF_PAM_PR(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
-    function _STF_PAM_PY(
-        PAMTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_PAM_PY(
             terms,
             state,
             scheduleTime,

@@ -1,6 +1,6 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
 
 const { getSnapshotTaker, deployTestCore } = require('../../helper/setupTestEnvironment');
@@ -31,9 +31,9 @@ describe('Core', () => {
     assert.strictEqual(await this.TestCore.methods._yearFraction('1139875200', '1141084800', '1', '0').call(), new BigNumber('0.038888888888888888').shiftedBy(18).toFixed()); // A360-4
     assert.strictEqual(await this.TestCore.methods._yearFraction('1159574400', '1162252800', '1', '0').call(), new BigNumber('0.086111111111111111').shiftedBy(18).toFixed()); // A360-5
     assert.strictEqual(await this.TestCore.methods._yearFraction('1162252800', '1164672000', '1', '0').call(), new BigNumber('0.077777777777777777').shiftedBy(18).toFixed()); // A360-6
-    assert.strictEqual(await this.TestCore.methods._yearFraction('1188518400', '1204156800', '1', '0').call(), new BigNumber('0.502777777777777777').shiftedBy(18).toFixed()); // A360-7 
-    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1219881600', '1', '0').call(), new BigNumber('0.505555555555555555').shiftedBy(18).toFixed()); // A360-8 
-    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1220054400', '1', '0').call(), new BigNumber('0.511111111111111111').shiftedBy(18).toFixed()); // A360-9 
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1188518400', '1204156800', '1', '0').call(), new BigNumber('0.502777777777777777').shiftedBy(18).toFixed()); // A360-7
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1219881600', '1', '0').call(), new BigNumber('0.505555555555555555').shiftedBy(18).toFixed()); // A360-8
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1220054400', '1', '0').call(), new BigNumber('0.511111111111111111').shiftedBy(18).toFixed()); // A360-9
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1220140800', '1', '0').call(), new BigNumber('0.513888888888888888').shiftedBy(18).toFixed()); // A360-10
     assert.strictEqual(await this.TestCore.methods._yearFraction('1172448000', '1204156800', '1', '0').call(), new BigNumber('1.019444444444444444').shiftedBy(18).toFixed()); // A360-11
     assert.strictEqual(await this.TestCore.methods._yearFraction('1172448000', '1204243200', '1', '0').call(), new BigNumber('1.022222222222222222').shiftedBy(18).toFixed()); // A360-12

@@ -1,8 +1,7 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, parseTerms, ZERO_ADDRESS } = require('../../../helper/utils/utils');
@@ -60,7 +59,7 @@ describe('CEGRegistry', () => {
   });
 
   it('should not overwrite an existing asset', async () => {
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.CEGRegistryInstance.methods.registerAsset(
         web3.utils.toHex(this.assetId),
         this.terms,
@@ -83,7 +82,7 @@ describe('CEGRegistry', () => {
   });
 
   it('should not let an unauthorized account overwrite and update the terms, state of an asset', async () => {
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.CEGRegistryInstance.methods.setState(
         web3.utils.toHex(this.assetId),
         this.state,

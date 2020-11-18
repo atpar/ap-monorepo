@@ -44,7 +44,7 @@ describe('Utils', (): void => {
   
     it('should return schedule for terms - perpetual', async (): Promise<void> => {
       const terms = DEFAULT_TERMS;
-      const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms, true, terms.maturityDate, terms.maturityDate);
+      const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms, terms.maturityDate, terms.maturityDate);
   
       expect(schedule.length).toBeGreaterThan(0);
     });

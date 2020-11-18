@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../Base/SharedTypes.sol";
@@ -35,7 +35,6 @@ library STKEncoder {
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
         storeInPackedTerms(asset, "settlementCurrency", bytes32(uint256(terms.settlementCurrency) << 96));
 
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
         storeInPackedTerms(asset, "purchaseDate", bytes32(terms.purchaseDate));
@@ -46,6 +45,7 @@ library STKEncoder {
         storeInPackedTerms(asset, "issuePrice", bytes32(terms.issuePrice));
         storeInPackedTerms(asset, "quantity", bytes32(terms.quantity));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
+        storeInPackedTerms(asset, "priceAtTerminationDate", bytes32(terms.priceAtTerminationDate));
         storeInPackedTerms(asset, "redemptionPrice", bytes32(terms.redemptionPrice));
 
         storeInPackedTerms(
@@ -109,7 +109,6 @@ library STKEncoder {
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["issueDate"]),
             uint256(asset.packedTerms["purchaseDate"]),
@@ -120,6 +119,7 @@ library STKEncoder {
             int256(asset.packedTerms["issuePrice"]),
             int256(asset.packedTerms["quantity"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
+            int256(asset.packedTerms["priceAtTerminationDate"]),
             int256(asset.packedTerms["redemptionPrice"]),
 
             IP(

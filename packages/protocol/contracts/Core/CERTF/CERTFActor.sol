@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/CERTF/ICERTFEngine.sol";
@@ -14,10 +14,10 @@ import "./ICERTFRegistry.sol";
  */
 contract CERTFActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
-        public
-        BaseActor(assetRegistry, dataRegistry)
-    {}
+    using SignedMath for int;
+
+
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -95,5 +95,66 @@ contract CERTFActor is BaseActor {
         );
 
         return (state, payoff);
+    }
+
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
+    function getExternalDataForSTF(
+        bytes32 assetId,
+        EventType eventType,
+        uint256 timestamp
+    )
+        internal
+        view
+        override
+        returns (bytes32)
+    {
+        if (eventType == EventType.CE) {
+            // get current timestamp
+            // solium-disable-next-line
+            return bytes32(block.timestamp);
+        } else if (eventType == EventType.EXE) {
+            // get quantity
+            ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_2"
+            );
+            if (
+                contractReference_2._type == ContractReferenceType.MOC
+                && contractReference_2.role == ContractReferenceRole.UDL
+            ) {
+                (int256 quantity, bool isSet) = defaultOracleProxy.getDataPoint(
+                    contractReference_2.object,
+                    timestamp
+                );
+                if (isSet) return bytes32(quantity);
+            }
+        } else if (eventType == EventType.REF) {
+            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_1"
+            );
+            if (
+                contractReference_1._type == ContractReferenceType.MOC
+                && contractReference_1.role == ContractReferenceRole.UDL
+            ) {
+                (int256 marketValueScheduleTime, bool isSetScheduleTime) = defaultOracleProxy.getDataPoint(
+                    contractReference_1.object,
+                    timestamp
+                );
+                (int256 marketValueAnchorDate, bool isSetAnchorDate) = defaultOracleProxy.getDataPoint(
+                    contractReference_1.object,
+                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
+                );
+                if (isSetScheduleTime && isSetAnchorDate) {
+                    return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
+                }
+            }
+            return bytes32(0);
+        }
+
+        return bytes32(0);
     }
 }

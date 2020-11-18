@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./ISTKEngine.sol";
 import "./STKSTF.sol";
 import "./STKPOF.sol";
@@ -14,6 +17,10 @@ import "./STKPOF.sol";
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
 contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.STK;
@@ -111,17 +118,35 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        STKTerms calldata /* terms */,
-        uint256 /* segmentStart */,
-        uint256 /* segmentEnd */
+        STKTerms calldata terms,
+        uint256 segmentStart,
+        uint256 segmentEnd
     )
         external
         pure
         override
         returns (bytes32[] memory)
     {
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
+        uint16 index;
+
+        // issue date
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+
         // TODO: implement when 'Ex/Settlement'- dates get supported in State/Terms
-        return new bytes32[](0);
+
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
@@ -177,6 +202,46 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     }
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * param terms terms of the contract
+     * param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        STKTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // issue date
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
+    }
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * @param terms terms of the contract
@@ -217,7 +282,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
@@ -225,7 +290,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         STKTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -234,6 +299,12 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         override
         returns (bool)
     {
+        if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 

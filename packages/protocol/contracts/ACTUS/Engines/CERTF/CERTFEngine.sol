@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.4;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./ICERTFEngine.sol";
 import "./CERTFSTF.sol";
 import "./CERTFPOF.sol";
@@ -14,6 +17,10 @@ import "./CERTFPOF.sol";
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
 contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.CERTF;
@@ -282,7 +289,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
                     if (redemptionSchedule[i] == 0) break;
                     if (redemptionSchedule[i] == terms.maturityDate) continue;
-                    uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionExercisePeriod, redemptionSchedule[i]);
+                    uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionRecordPeriod, redemptionSchedule[i]);
                     if (isInSegment(executionDateScheduleTime, segmentStart, segmentEnd) == false) continue;
                     events[index] = encodeEvent(EventType.EXE, executionDateScheduleTime);
                     index++;
@@ -297,6 +304,66 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         }
 
         return schedule;
+    }
+
+    /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CERTFTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // issue date
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+
+        // initial exchange
+        if (
+            (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
+            && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
+        ) {
+            eventTypeNextEvent = EventType.IED;
+            scheduleTimeNextEvent = terms.initialExchangeDate;
+        }
+
+        // maturity event
+        if (
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**
@@ -391,7 +458,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 );
                 if (nextRedemptionDate == uint256(0)) return bytes32(0);
                 if (nextRedemptionDate == terms.maturityDate) return bytes32(0);
-                uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionExercisePeriod, nextRedemptionDate);
+                uint256 executionDateScheduleTime = getTimestampPlusPeriod(terms.redemptionRecordPeriod, nextRedemptionDate);
                 return encodeEvent(EventType.EXE, executionDateScheduleTime);
             }
         }
@@ -404,7 +471,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
@@ -412,7 +479,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         CERTFTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -421,6 +488,12 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         override
         returns (bool)
     {
+        if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 

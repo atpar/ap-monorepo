@@ -6,96 +6,96 @@
  * Note examples following the code.
  */
 module.exports = (web3) => {
-    const { BN, sha3, isAddress, toChecksumAddress } = web3.utils;
-    const EIP1167BytecodeRegexp = /0x363d3d373d3d3d363d73([0-9a-f]{32,40})5af43d82803e903d91602b57fd5bf3/i;
+  const { BN, sha3, isAddress, toChecksumAddress } = web3.utils;
+  const EIP1167BytecodeRegexp = /0x363d3d373d3d3d363d73([0-9a-f]{32,40})5af43d82803e903d91602b57fd5bf3/i;
 
-    return {
-        /**
-         * Return the address of a EIP-1167 proxy being deployed with CREATE2
-         * @param deployingAddr {string}
-         * @param salt {string|number}
-         * @param logicAddress {string}
-         * @return {string}
-         */
-        buildCreate2Eip1167ProxyAddress,
+  return {
+    /**
+     * Return the address of a EIP-1167 proxy being deployed with CREATE2
+     * @param deployingAddr {string}
+     * @param salt {string|number}
+     * @param logicAddress {string}
+     * @return {string}
+     */
+    buildCreate2Eip1167ProxyAddress,
 
-        /**
-         * @param logicAddress {string}
-         * @return {string}
-         */
-        buildEip1167ProxyBytecode,
+    /**
+     * @param logicAddress {string}
+     * @return {string}
+     */
+    buildEip1167ProxyBytecode,
 
-        /**
-         * Return deployed bytecode of the EIP-1167 proxy
-         * @param logicAddress {string}
-         * @return {string}
-         */
-        buildEip1167ProxyDeployedBytecode,
+    /**
+     * Return deployed bytecode of the EIP-1167 proxy
+     * @param logicAddress {string}
+     * @return {string}
+     */
+    buildEip1167ProxyDeployedBytecode,
 
-        /**
-         * Return the address of a contract being deployed with CREATE2
-         * @param deployingAddr {string}
-         * @param salt {string|number}
-         * @param bytecode {string} init bytecode of the contract
-         * @return {string}
-         */
-        buildCreate2Address,
-
-        /**
-         * Extract logic address from EIP-1167 proxy bytecode
-         * @param bytecode {string} deployed code
-         * @return {string}
-         */
-        getEip1167ProxyLogicAddress,
-
-        /**
-         * Return salt as a 32-bytes hex string
-         * @param salt {number|string}
-         * @returns {string}
-         */
-        getPaddedSalt,
-    };
-
-    function buildCreate2Eip1167ProxyAddress(deployingAddr, salt, logicAddress) {
-        return buildCreate2Address(deployingAddr, salt, buildEip1167ProxyBytecode(logicAddress));
-    }
-
-    function buildEip1167ProxyBytecode(logicAddress) {
-        const target = logicAddress.toLowerCase().replace(/^0x/, '').padStart(40, '0');
-        return `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${target}5af43d82803e903d91602b57fd5bf3`;
-    }
-
-    function buildEip1167ProxyDeployedBytecode(logicAddress) {
-        const target = logicAddress.toLowerCase().replace(/^0x/, '').padStart(40, '0');
-        return `0x363d3d373d3d3d363d73${target}5af43d82803e903d91602b57fd5bf3`;
-    }
+    /**
+     * Return the address of a contract being deployed with CREATE2
+     * @param deployingAddr {string}
+     * @param salt {string|number}
+     * @param bytecode {string} init bytecode of the contract
+     * @return {string}
+     */
+    buildCreate2Address,
 
     /**
      * Extract logic address from EIP-1167 proxy bytecode
      * @param bytecode {string} deployed code
      * @return {string}
      */
-    function getEip1167ProxyLogicAddress(bytecode) {
-        if (typeof bytecode === 'string') {
-            const logic = '0x' + bytecode.replace(EIP1167BytecodeRegexp, '$1').padStart(40, '0');
-            if (isAddress(logic)) return toChecksumAddress(logic);
-        }
-        return '';
-    }
+    getEip1167ProxyLogicAddress,
 
-    function buildCreate2Address(deployingAddr, salt, bytecode) {
-        // keccak256(0xff ++ deployingAddr ++ salt ++ keccak256(bytecode))
-        const prefix = '0xff' + deployingAddr.replace(/^0x/, '').padStart(40, '0');
-        const paddedSalt = getPaddedSalt(salt);
-        const bytecodeHash = sha3(`${bytecode.startsWith('0x') ? '' : '0x'}${bytecode}`).replace(/^0x/, '');
-        return toChecksumAddress(
-            '0x' + sha3(`${prefix}${paddedSalt}${bytecodeHash}`.toLowerCase()).slice(-40),
-        );
-    }
+    /**
+     * Return salt as a 32-bytes hex string
+     * @param salt {number|string}
+     * @returns {string}
+     */
+    getPaddedSalt,
+  };
 
-    function  getPaddedSalt(salt) {
-        return (new BN(salt)).toString(16).replace(/^0x/, '').padStart(64, '0');
+  function buildCreate2Eip1167ProxyAddress(deployingAddr, salt, logicAddress) {
+    return buildCreate2Address(deployingAddr, salt, buildEip1167ProxyBytecode(logicAddress));
+  }
+
+  function buildEip1167ProxyBytecode(logicAddress) {
+    const target = logicAddress.toLowerCase().replace(/^0x/, '').padStart(40, '0');
+    return `0x3d602d80600a3d3981f3363d3d373d3d3d363d73${target}5af43d82803e903d91602b57fd5bf3`;
+  }
+
+  function buildEip1167ProxyDeployedBytecode(logicAddress) {
+    const target = logicAddress.toLowerCase().replace(/^0x/, '').padStart(40, '0');
+    return `0x363d3d373d3d3d363d73${target}5af43d82803e903d91602b57fd5bf3`;
+  }
+
+  /**
+   * Extract logic address from EIP-1167 proxy bytecode
+   * @param bytecode {string} deployed code
+   * @return {string}
+   */
+  function getEip1167ProxyLogicAddress(bytecode) {
+    if (typeof bytecode === 'string') {
+      const logic = '0x' + bytecode.replace(EIP1167BytecodeRegexp, '$1').padStart(40, '0');
+      if (isAddress(logic)) return toChecksumAddress(logic);
     }
+    return '';
+  }
+
+  function buildCreate2Address(deployingAddr, salt, bytecode) {
+    // keccak256(0xff ++ deployingAddr ++ salt ++ keccak256(bytecode))
+    const prefix = '0xff' + deployingAddr.replace(/^0x/, '').padStart(40, '0');
+    const paddedSalt = getPaddedSalt(salt);
+    const bytecodeHash = sha3(`${bytecode.startsWith('0x') ? '' : '0x'}${bytecode}`).replace(/^0x/, '');
+    return toChecksumAddress(
+      '0x' + sha3(`${prefix}${paddedSalt}${bytecodeHash}`.toLowerCase()).slice(-40),
+    );
+  }
+
+  function  getPaddedSalt(salt) {
+    return (new BN(salt)).toString(16).replace(/^0x/, '').padStart(64, '0');
+  }
 };
 
 /* TODO: create unit-tests for CREATE2/EIP-1167 utilities from notes bellow

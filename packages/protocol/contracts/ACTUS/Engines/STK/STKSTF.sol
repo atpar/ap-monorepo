@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 
 
 /**
@@ -10,6 +13,10 @@ import "../../Core/Core.sol";
  * @notice Contains all state transition functions (STFs) for STK contracts
  */
 contract STKSTF is Core {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     /**
      * State transition for STK monitoring events
@@ -83,7 +90,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure
@@ -246,10 +253,10 @@ contract STKSTF is Core {
      * @return the new state
      */
     function STF_STK_CE (
-        STKTerms memory terms,
+        STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes32 /* externalData */
     )
         internal
         pure

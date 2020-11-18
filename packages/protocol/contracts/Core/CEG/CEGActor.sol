@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/CEG/ICEGEngine.sol";
@@ -14,10 +14,7 @@ import "./ICEGRegistry.sol";
  */
 contract CEGActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
-        public
-        BaseActor(assetRegistry, dataRegistry)
-    {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -105,5 +102,45 @@ contract CEGActor is BaseActor {
         );
 
         return (state, payoff);
+    }
+
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
+    function getExternalDataForSTF(
+        bytes32 assetId,
+        EventType eventType,
+        uint256 /* timestamp */
+    )
+        internal
+        view
+        override
+        returns (bytes32)
+    {
+        if (eventType == EventType.CE) {
+            // get current timestamp
+            // solium-disable-next-line
+            return bytes32(block.timestamp);
+        } else if (eventType == EventType.EXE) {
+            // get the remaining notionalPrincipal from the underlying
+            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
+                assetId,
+                "contractReference_1"
+            );
+            if (contractReference_1.role == ContractReferenceRole.COVE) {
+                bytes32 underlyingAssetId = contractReference_1.object;
+                address underlyingRegistry = address(uint160(uint256(contractReference_1.object2)));
+                require(
+                    IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
+                    "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
+                );
+                return bytes32(
+                    IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
+                );
+            }
+        }
+
+        return bytes32(0);
     }
 }

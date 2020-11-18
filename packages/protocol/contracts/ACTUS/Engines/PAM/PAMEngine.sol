@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./IPAMEngine.sol";
 import "./PAMSTF.sol";
 import "./PAMPOF.sol";
@@ -14,6 +17,10 @@ import "./PAMPOF.sol";
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
 contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.PAM;
@@ -130,10 +137,20 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index;
 
+        // issuance
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+
         // initial exchange
-        if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
-            index++;
+        if (terms.initialExchangeDate != 0) {
+            if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+                index++;
+            }
         }
 
         // purchase
@@ -145,9 +162,11 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         }
 
         // principal redemption
-        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
-            index++;
+        if (terms.maturityDate != 0) {
+            if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.MD, terms.maturityDate);
+                index++;
+            }
         }
 
         // remove null entries from returned array
@@ -299,6 +318,77 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         }
 
         return schedule;
+    }
+
+    /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        PAMTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // issuance
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+        
+        // initial exchange
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
+            && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
+        ) {
+            eventTypeNextEvent = EventType.IED;
+            scheduleTimeNextEvent = terms.initialExchangeDate;
+        }
+
+        // purchase
+        if (
+            (terms.purchaseDate != 0 && (lastScheduleTime <= terms.purchaseDate))
+            && (scheduleTimeNextEvent == 0 || terms.purchaseDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.purchaseDate || lastEventType != EventType.PRD)
+        ) {
+            eventTypeNextEvent = EventType.PRD;
+            scheduleTimeNextEvent = terms.purchaseDate;
+        }
+
+        // principal redemption at maturity
+        if (
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**
@@ -461,13 +551,13 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_PAM_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
@@ -506,6 +596,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;
@@ -516,7 +607,6 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData);
 
         revert("PAMEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

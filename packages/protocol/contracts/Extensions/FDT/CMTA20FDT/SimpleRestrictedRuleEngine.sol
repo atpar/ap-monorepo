@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.10;
+pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 /**
@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
  * on functions with administrative permissions.  Only the owner of the contract should be allowed
  * to modify the administrator list.
  */
-contract Administratable is OwnableUpgradeSafe {
+contract Administratable is Ownable {
     // The mapping to track administrator accounts - true is reserved for admin addresses.
     mapping(address => bool) public administrators;
 
@@ -213,7 +213,7 @@ contract Whitelistable is Administratable {
  * @notice Restrictions start off as enabled. Once they are disabled, they cannot be re-enabled.
  * Only the owner may disable restrictions.
  */
-contract Restrictable is OwnableUpgradeSafe {
+contract Restrictable is Ownable {
     // State variable to track whether restrictions are enabled.  Defaults to true.
     bool private _restrictionsEnabled = true;
 
@@ -258,7 +258,7 @@ interface IRule {
  * @dev IRuleEngine 
  */
 interface IRuleEngine {
-  function setRules(IRule[] calldata rules) external;
+  function setRules(IRule[] calldata _rules) external;
   function ruleLength() external view returns (uint256);
   function rule(uint256 ruleId) external view returns (IRule);
   function rules() external view returns(IRule[] memory);
@@ -277,26 +277,24 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
     string public constant UNKNOWN_ERROR = "Unknown Error Code";
 
 
-    constructor(address owner) public {
-        super.__Ownable_init();
+    constructor(address owner) {
         transferOwnership(owner);
     }
 
-    function setRules(IRule[] calldata rules) external override onlyOwner {
+    function setRules(IRule[] calldata /* rules */) external view override onlyOwner {
         revert("Can not set any additional rules");
     }
     
-    function ruleLength() external view override returns (uint256) {
+    function ruleLength() external pure override returns (uint256) {
         return 0;
     }
     
-    function rule(uint256 ruleId) external view override returns (IRule) {
+    function rule(uint256 /* ruleId */) external pure override returns (IRule) {
         return IRule(address(0));
     }
     
-    function rules() external view override returns(IRule[] memory) {
-        IRule[] memory rules;
-        return rules;
+    function rules() external pure override returns(IRule[] memory _rules) {
+        return _rules;
     }
 
     /**
@@ -337,7 +335,7 @@ contract SimpleRestrictedRuleEngine is IRuleEngine, Whitelistable, Restrictable 
   	 */
     function messageForTransferRestriction(uint8 restrictionCode)
         public
-        view
+        pure
         override
         returns (string memory)
     {

@@ -1,10 +1,10 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 import "../Conversions.sol";
 import "../../CEC/ICECRegistry.sol";
@@ -27,7 +27,7 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
     mapping(bytes32 => bool) internal collateral;
 
 
-    constructor(address _cecActor, ICECRegistry _cecRegistry) public {
+    constructor(address _cecActor, ICECRegistry _cecRegistry) {
         cecActor = _cecActor;
         cecRegistry = _cecRegistry;
     }

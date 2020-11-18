@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 
 
 /**
@@ -10,6 +13,10 @@ import "../../Core/Core.sol";
  * @notice Contains all state transition functions (STFs) currently used by all Engines
  */
 contract PAMSTF is Core {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     /**
      * State transition for PAM analysis events
@@ -67,6 +74,25 @@ contract PAMSTF is Core {
         );
         state.statusDate = scheduleTime;
 
+        return state;
+    }
+
+    /**
+     * State transition for PAM issue events
+     * @param state the old state
+     * @return the new state
+     */
+    function STF_PAM_ISS (
+        PAMTerms memory /* terms */,
+        State memory state,
+        uint256 scheduleTime,
+        bytes32 /* externalData */
+    )
+        internal
+        pure
+        returns (State memory)
+    {
+        state.statusDate = scheduleTime;
         return state;
     }
 
@@ -295,47 +321,6 @@ contract PAMSTF is Core {
     }
 
     /**
-     * State transition for PAM penalty payments
-     * @param state the old state
-     * @return the new state
-     */
-    function STF_PAM_PY (
-        PAMTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 /* externalData */
-    )
-        internal
-        pure
-        returns (State memory)
-    {
-        int256 timeFromLastEvent;
-        {
-            timeFromLastEvent = yearFraction(
-                shiftCalcTime(state.statusDate, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
-                terms.dayCountConvention,
-                terms.maturityDate
-            );
-        }
-        state.accruedInterest = state.accruedInterest
-        .add(
-            state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.feeAccrued = state.feeAccrued
-        .add(
-            terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
-        );
-        state.statusDate = scheduleTime;
-
-        return state;
-    }
-
-    /**
      * State transition for PAM fixed rate resets
      * @param state the old state
      * @return the new state
@@ -541,7 +526,6 @@ contract PAMSTF is Core {
         returns (State memory)
     {
         state.notionalPrincipal = 0;
-        state.nominalInterestRate = 0;
         state.accruedInterest = 0;
         state.feeAccrued = 0;
         state.contractPerformance = ContractPerformance.TD;

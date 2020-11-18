@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../Core/ACTUSTypes.sol";
@@ -93,6 +93,22 @@ interface ICEGEngine is IEngine {
         external
         pure
         returns (bytes32[] memory);
+
+    /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CEGTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        returns (bytes32);
 
     /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms

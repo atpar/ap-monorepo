@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/CEG/ICEGEngine.sol";
@@ -19,10 +19,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
     using CEGEncoder for Asset;
 
     
-    constructor()
-        public
-        BaseRegistry()
-    {}
+    constructor() BaseRegistry() {}
 
     /**
      * @notice
@@ -154,36 +151,55 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         return assets[assetId].decodeAndGetContractReferenceValueForCEGAttribute(attribute);
     }
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         override(TermsRegistry)
-        returns (bytes32)
+        returns (bytes32, bool)
     {
         Asset storage asset = assets[assetId];
         CEGTerms memory terms = asset.decodeAndGetCEGTerms();
 
         EventType nextEventType;
-        uint256 nextScheduleTimeOffset;
+        uint256 nextScheduleTime;
+        bool isCyclicEvent = true;
 
         // FP
         {
-            (EventType eventType, uint256 scheduleTimeOffset) = decodeEvent(ICEGEngine(asset.engine).computeNextCyclicEvent(
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICEGEngine(asset.engine).computeNextCyclicEvent(
                 terms,
                 asset.schedule.lastScheduleTimeOfCyclicEvent[EventType.FP],
                 EventType.FP
             ));
 
             if (
-                (nextScheduleTimeOffset == 0)
-                || (scheduleTimeOffset < nextScheduleTimeOffset)
-                || (nextScheduleTimeOffset == scheduleTimeOffset && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+                (nextScheduleTime == 0)
+                || (scheduleTime < nextScheduleTime)
+                || (nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
             ) {
-                nextScheduleTimeOffset = scheduleTimeOffset;
+                nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
             }        
         }
 
-        return encodeEvent(nextEventType, nextScheduleTimeOffset);
+        // Non-Cyclic
+        {
+            (EventType eventType, uint256 scheduleTime) = decodeEvent(ICEGEngine(asset.engine).computeNextNonCyclicEvent(
+                terms,
+                asset.schedule.lastNonCyclicEvent
+            ));
+
+            if (
+                (nextScheduleTime == 0)
+                || (scheduleTime != 0 && scheduleTime < nextScheduleTime)
+                || (scheduleTime != 0 && nextScheduleTime == scheduleTime && getEpochOffset(eventType) < getEpochOffset(nextEventType))
+            ) {
+                nextScheduleTime = scheduleTime;
+                nextEventType = eventType;
+                isCyclicEvent = false;
+            }        
+        }
+
+        return (encodeEvent(nextEventType, nextScheduleTime), isCyclicEvent);
     }
 }

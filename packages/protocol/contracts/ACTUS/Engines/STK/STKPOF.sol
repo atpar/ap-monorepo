@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 
 
 /**
@@ -10,6 +13,10 @@ import "../../Core/Core.sol";
  * @notice Contains all Payoff Functions (POFs) for STK contracts
  */
 contract STKPOF is Core {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     /**
      * Payoff Function for STK dividend payment events
@@ -59,8 +66,8 @@ contract STKPOF is Core {
      * @return the termination payoff
      */
     function POF_STK_TD (
-        STKTerms memory /* terms */,
-        State memory /* state */,
+        STKTerms memory terms,
+        State memory state,
         uint256 /* scheduleTime */,
         bytes32 /* externalData */
     )
@@ -69,9 +76,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            // TODO: review as soon as terms.priceAtTerminationDate gets supported
-            // roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
-            0
+            roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
         );
     }
 }

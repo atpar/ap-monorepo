@@ -1,9 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.4;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-solidity/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 /**
@@ -11,12 +10,6 @@ import "openzeppelin-solidity/contracts/utils/Counters.sol";
  * @dev Contract to manage any number of Delivery-versus-Payment Settlements
  */
 contract DvPSettlement {
-    using Counters for Counters.Counter;
-    Counters.Counter _settlementIds;
-
-    event SettlementInitialized(uint256 indexed settlementId, Settlement settlement);
-    event SettlementExecuted(uint256 indexed settlementId, address indexed executor);
-    event SettlementExpired(uint256 indexed settlementId);
 
     enum SettlementStatus { NOT_EXISTS, INITIALIZED, EXECUTED, EXPIRED }
 
@@ -32,7 +25,15 @@ contract DvPSettlement {
         SettlementStatus status;
     }
 
+    // stores the settlementId of the last created Settlement
+    uint256 public lastSettlementId;
+    // SettlementId => Settlement
     mapping (uint256 => Settlement) public settlements;
+
+    event SettlementInitialized(uint256 indexed settlementId, Settlement settlement);
+    event SettlementExecuted(uint256 indexed settlementId, address indexed executor);
+    event SettlementExpired(uint256 indexed settlementId);
+
 
     /**
      * @notice Creates a new Settlement in the contract's storage and transfers creator's tokens into the contract
@@ -52,37 +53,37 @@ contract DvPSettlement {
         address counterpartyToken,
         uint256 counterpartyAmount,
         uint256 expirationDate
-    ) public
+    )
+        external
     {
         require(
             expirationDate > block.timestamp,
-            "DvPSettlement.createSettlement - expiration date cannot be in the past"
+            "DvPSettlement.createSettlement: INVALID_EXPIRATION_DATE"
+        );
+        require(
+            lastSettlementId < type(uint256).max,
+            "DvPSettlement.createSettlement: INVALID_SETTLEMENT_ID"
         );
 
-        _settlementIds.increment();
-        uint256 id = _settlementIds.current();
+        lastSettlementId++;
 
-        settlements[id].creator = msg.sender;
-        settlements[id].creatorToken = creatorToken;
-        settlements[id].creatorAmount = creatorAmount;
-        settlements[id].creatorBeneficiary = creatorBeneficiary;
-        settlements[id].counterparty = counterparty;
-        settlements[id].counterpartyToken = counterpartyToken;
-        settlements[id].counterpartyAmount = counterpartyAmount;
-        settlements[id].expirationDate = expirationDate;
-        settlements[id].status = SettlementStatus.INITIALIZED;
+        Settlement storage settlement = settlements[lastSettlementId];
+        settlement.creator = msg.sender;
+        settlement.creatorToken = creatorToken;
+        settlement.creatorAmount = creatorAmount;
+        settlement.creatorBeneficiary = creatorBeneficiary;
+        settlement.counterparty = counterparty;
+        settlement.counterpartyToken = counterpartyToken;
+        settlement.counterpartyAmount = counterpartyAmount;
+        settlement.expirationDate = expirationDate;
+        settlement.status = SettlementStatus.INITIALIZED;
 
         require(
-            IERC20(settlements[id].creatorToken)
-            .transferFrom(
-                settlements[id].creator,
-                address(this),
-                settlements[id].creatorAmount
-            ),
-            "DvPSettlement.createSettlement - transferFrom failed"
+            IERC20(settlement.creatorToken).transferFrom(settlement.creator, address(this), settlement.creatorAmount),
+            "DvPSettlement.createSettlement: TRANFER_FAILED"
         );
 
-        emit SettlementInitialized(id, settlements[id]);
+        emit SettlementInitialized(lastSettlementId, settlement);
     }
 
 
@@ -91,79 +92,68 @@ contract DvPSettlement {
      * @dev This function can only be successfully called by the designated counterparty unless
      * the counterparty address is empty (0x0) in which case anyone can fulfill and execute the settlement
      * @dev The counterparty must approve for this contract at least `counterpartyAmount` of tokens
-     * @param id the unsigned integer ID value for the Settlement to execute
+     * @param settlementId Id of the Settlement to execute
      */
-    function executeSettlement(uint256 id) public {
-        require(
-            settlements[id].status == SettlementStatus.INITIALIZED,
-            "DvPSettlement.executeSettlement - settlement must be in initialized status"
-        );
-        require(
-            settlements[id].expirationDate > block.timestamp,
-            "DvPSettlement.executeSettlement - settlement expired"
-        );
+    function executeSettlement(uint256 settlementId) external {
+        Settlement storage settlement = settlements[settlementId];
 
-        // if empty (0x0) counterparty address, consider it an "open" settlement
         require(
-            settlements[id].counterparty == address(0) || settlements[id].counterparty == msg.sender,
-            "DvPSettlement.executeSettlement - sender not allowed to execute settlement"
+            settlement.status == SettlementStatus.INITIALIZED,
+            "DvPSettlement.executeSettlement: SETTLEMENT_NOT_INITIALIZED"
+        );
+        require(
+            settlement.expirationDate > block.timestamp,
+            "DvPSettlement.executeSettlement: SETTLEMENT_EXPIRED"
+        );
+        require(
+            // if empty (0x0) counterparty address, consider it an "open" settlement
+            settlement.counterparty == address(0) || settlement.counterparty == msg.sender,
+            "DvPSettlement.executeSettlement: UNAUTHORIZED_SENDER"
         );
 
         // if empty (0x0) creatorBeneficiary address, send funds to creator
-        address creatorReveiver = (settlements[id].creatorBeneficiary == address(0)) ?
-            settlements[id].creator : settlements[id].creatorBeneficiary;
+        address creatorReveiver = (settlement.creatorBeneficiary == address(0))
+            ? settlement.creator
+            : settlement.creatorBeneficiary;
+
+        settlement.status = SettlementStatus.EXECUTED;
 
         // transfer both tokens
         require(
-            (IERC20(settlements[id].counterpartyToken)
-            .transferFrom(
-                msg.sender,
-                creatorReveiver,
-                settlements[id].counterpartyAmount
-            )),
-            "DvPSettlement.executeSettlement - transferFrom sender failed"
+            IERC20(settlement.counterpartyToken).transferFrom(msg.sender, creatorReveiver, settlement.counterpartyAmount)
+            && IERC20(settlement.creatorToken).transfer(msg.sender, settlement.creatorAmount),
+            "DvPSettlement.executeSettlement: TRANSFER_FAILED"
         );
 
-        require(
-            (IERC20(settlements[id].creatorToken)
-            .transfer(
-                msg.sender,
-                settlements[id].creatorAmount
-            )),
-            "DvPSettlement.executeSettlement - transfer to sender failed"
-        );
-
-        settlements[id].status = SettlementStatus.EXECUTED;
-        emit SettlementExecuted(id, msg.sender);
+        emit SettlementExecuted(settlementId, msg.sender);
     }
 
     /**
      * @notice When called after a given settlement expires, it refunds tokens to the creator
      * @dev This function can be called by anyone since there is no other possible outcome for
      * a created settlement that has passed the expiration date
-     * @param id the unsigned integer ID value for the Settlement to expire
+     * @param settlementId Id of the Settlement to expire
      */
-    function expireSettlement(uint256 id) public {
+    function expireSettlement(uint256 settlementId) external {
+        Settlement storage settlement = settlements[settlementId];
+
         require(
-            settlements[id].expirationDate < block.timestamp,
-            "DvPSettlement.expireSettlement - settlement is not expired"
+            settlement.status == SettlementStatus.INITIALIZED,
+            "DvPSettlement.expireSettlement: SETTLEMENT_NOT_INITIALIZED"
         );
         require(
-            settlements[id].status == SettlementStatus.INITIALIZED,
-            "DvPSettlement.expireSettlement - only INITIALIZED settlements can be expired"
+            settlement.expirationDate < block.timestamp,
+            "DvPSettlement.expireSettlement: SETTLEMENT_NOT_YET_EXPIRED"
         );
 
-        // refund creator
-        require(
-            (IERC20(settlements[id].creatorToken)
-            .transfer(
-                settlements[id].creator,
-                settlements[id].creatorAmount
-            )),
-            "DvPSettlement.expireSettlement - refunding creator failed"
-        );
+        settlement.status = SettlementStatus.EXPIRED;
 
-        settlements[id].status = SettlementStatus.EXPIRED;
-        emit SettlementExpired(id);
+        // refund creator of settlement
+        require(
+            IERC20(settlement.creatorToken).transfer(settlement.creator, settlement.creatorAmount),
+            "DvPSettlement.expireSettlement: TRANSFER_FAILED"
+        );
+        
+        emit SettlementExpired(settlementId);
     }
 }

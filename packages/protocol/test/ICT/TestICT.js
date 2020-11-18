@@ -1,9 +1,8 @@
-/* jslint node */
-/* global before, beforeEach, contract, describe, it, web3 */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { deployICToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
@@ -35,7 +34,8 @@ describe('ICT', () => {
     [ deployer, /*actor*/, owner, tokenHolder1, tokenHolder2, spender ] = self.accounts;
 
     ictParams.assetRegistry = self.CERTFRegistryInstance.options.address;
-    ictParams.dataRegistry = self.DataRegistryInstance.options.address;
+    ictParams.dataRegistryProxy = self.DataRegistryProxyInstance.options.address;
+    ictParams.owner = owner;
     ictParams.deployer = owner;
 
     self.icToken = await deployICToken(buidlerRuntime, ictParams);
@@ -55,31 +55,31 @@ describe('ICT', () => {
 
     describe('When called with valid asset and data registry addresses', () => {
       it('does NOT revert', async () =>
-          deployICToken(buidlerRuntime, Object.assign({}, ictParams))
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams))
       );
     });
 
     describe('When called with zero address of the asset registry', () => {
-      it('reverts', async () => await shouldFail.reverting(
-          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: ZERO_ADDRESS }))
+      it('reverts', async () => await expectRevert.unspecified(
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with zero address of the data registry', () => {
-      it('reverts', async () => await shouldFail.reverting(
-          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: ZERO_ADDRESS }))
+      it('reverts', async () => await expectRevert.unspecified(
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistryProxy: ZERO_ADDRESS }))
       ));
     });
 
     describe('When called with the asset registry address bing EOA', () => {
-      it('reverts', async () => await shouldFail.reverting(
-          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: tokenHolder1 }))
+      it('reverts', async () => await expectRevert.unspecified(
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { assetRegistry: tokenHolder1 }))
       ));
     });
 
     describe('When called with the data registry address bing EOA', () => {
-      it('reverts', async () => await shouldFail.reverting(
-          deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistry: tokenHolder1 }))
+      it('reverts', async () => await expectRevert.unspecified(
+        deployICToken(buidlerRuntime, Object.assign({}, ictParams, { dataRegistryProxy: tokenHolder1 }))
       ));
     });
   });
@@ -87,15 +87,15 @@ describe('ICT', () => {
   describe('transfer', () => {
 
     describe('when the recipient is the zero address', () => {
-      it('reverts', async () => await shouldFail.reverting(
-            this.icToken.methods.transfer(ZERO_ADDRESS, transferAmount).send({ from: tokenHolder1 })
+      it('reverts', async () => await expectRevert.unspecified(
+        this.icToken.methods.transfer(ZERO_ADDRESS, transferAmount).send({ from: tokenHolder1 })
       ));
     });
 
     describe('when the recipient is not the zero address', () => {
       describe('when the sender does not have enough balance', () => {
-        it('reverts', async () => await shouldFail.reverting(
-              this.icToken.methods.transfer(tokenHolder1, transferAmount).send({ from: tokenHolder2 })
+        it('reverts', async () => await expectRevert.unspecified(
+          this.icToken.methods.transfer(tokenHolder1, transferAmount).send({ from: tokenHolder2 })
         ));
       });
 
@@ -104,14 +104,14 @@ describe('ICT', () => {
           await this.icToken.methods.transfer(tokenHolder2, transferAmount).send({ from: tokenHolder1 });
 
           assert.strictEqual(
-              await this.icToken.methods.balanceOf(tokenHolder1).call(), mintAmountMinusTransferAmount
+            await this.icToken.methods.balanceOf(tokenHolder1).call(), mintAmountMinusTransferAmount
           );
           assert.strictEqual(await this.icToken.methods.balanceOf(tokenHolder2).call(), transferAmount);
         });
 
         it('emits a transfer event', async () => {
           const { events } = await this.icToken.methods.transfer(
-              tokenHolder2, transferAmount
+            tokenHolder2, transferAmount
           ).send({ from: tokenHolder1 });
 
           expectEvent(events, 'Transfer', {
@@ -133,28 +133,28 @@ describe('ICT', () => {
 
           beforeEach(async () => {
             events_approve = (await this.icToken.methods.approve(
-                spender, approveAmount
+              spender, approveAmount
             ).send({ from: tokenHolder1 })).events;
             events_transfer = (await this.icToken.methods.transferFrom(
-                tokenHolder1, tokenHolder2, approvedTransferAmount
+              tokenHolder1, tokenHolder2, approvedTransferAmount
             ).send({ from: spender })).events;
           });
 
           it('transfers the requested amount', async () => {
             assert.strictEqual(
-                await this.icToken.methods.balanceOf(tokenHolder1).call(),
-                mintAmountMinusApprovedTransferAmount
+              await this.icToken.methods.balanceOf(tokenHolder1).call(),
+              mintAmountMinusApprovedTransferAmount
             );
             assert.strictEqual(
-                await this.icToken.methods.balanceOf(tokenHolder2).call(),
-                approvedTransferAmount
+              await this.icToken.methods.balanceOf(tokenHolder2).call(),
+              approvedTransferAmount
             );
           });
 
           it('decreases the spender allowance', async () => {
             assert.strictEqual(
-                await this.icToken.methods.allowance(tokenHolder1, spender).call(),
-                approveAmountMinusApprovedTransferAmount
+              await this.icToken.methods.allowance(tokenHolder1, spender).call(),
+              approveAmountMinusApprovedTransferAmount
             );
           });
 
@@ -177,10 +177,10 @@ describe('ICT', () => {
           });
 
           it('reverts', async () => {
-            await shouldFail.reverting(
-                this.icToken.methods.transferFrom(
-                    tokenHolder1, tokenHolder2, mintAmountPlusOne
-                ).send({ from: spender }));
+            await expectRevert.unspecified(
+              this.icToken.methods.transferFrom(
+                tokenHolder1, tokenHolder2, mintAmountPlusOne
+              ).send({ from: spender }));
           });
         });
       });
@@ -191,17 +191,17 @@ describe('ICT', () => {
         });
 
         describe('when the initial holder has enough balance', () => {
-          it('reverts', async () => await shouldFail.reverting(
-                this.icToken.methods.transferFrom(
-                    tokenHolder1, tokenHolder2, approveAmountPlusOne
-                ).send({ from: spender })
+          it('reverts', async () => await expectRevert.unspecified(
+            this.icToken.methods.transferFrom(
+              tokenHolder1, tokenHolder2, approveAmountPlusOne
+            ).send({ from: spender })
           ));
         });
 
         describe('when the initial holder does not have enough balance', () => {
-          it('reverts', async () => await shouldFail.reverting(
-                this.icToken.methods.transferFrom(tokenHolder1, tokenHolder2, mintAmountPlusOne)
-                    .send({ from: spender })
+          it('reverts', async () => await expectRevert.unspecified(
+            this.icToken.methods.transferFrom(tokenHolder1, tokenHolder2, mintAmountPlusOne)
+              .send({ from: spender })
           ));
         });
       });
@@ -213,10 +213,10 @@ describe('ICT', () => {
       });
 
       it('reverts', async () => {
-        await shouldFail.reverting(
-            this.icToken.methods.transferFrom(
-                tokenHolder1, ZERO_ADDRESS, transferAmount
-            ).send({ from: spender })
+        await expectRevert.unspecified(
+          this.icToken.methods.transferFrom(
+            tokenHolder1, ZERO_ADDRESS, transferAmount
+          ).send({ from: spender })
         );
       });
     });

@@ -1,13 +1,13 @@
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms } = require('../../../helper/ACTUS/tests');
 const { parseEventSchedule, decodeEvent, sortEvents } = require('../../../helper/utils/schedule');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('PAMEngine', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -32,33 +32,32 @@ describe('PAMEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      5 // FP #useEventName
+      eventIndex('FP')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      11 // IPCI #useEventName
+      eventIndex('IPCI')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      10 // IP #useEventName
+      eventIndex('IP')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      6 // PR #useEventName
+      eventIndex('PR')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      13 // RR #useEventName
+      eventIndex('RR')
     ).call());
-
 
     return sortEvents(schedule);
   }
@@ -72,7 +71,7 @@ describe('PAMEngine', () => {
     const initialState = await this.PAMEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.PAMEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ).call();
     const nextState = await this.PAMEngineInstance.methods.computeStateForEvent(
@@ -88,7 +87,7 @@ describe('PAMEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -130,7 +129,7 @@ describe('PAMEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 

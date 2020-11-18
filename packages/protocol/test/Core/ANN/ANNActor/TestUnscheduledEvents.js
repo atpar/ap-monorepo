@@ -1,15 +1,14 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
 const { generateSchedule, ZERO_BYTES32 } = require('../../../helper/utils/utils');
 const { encodeEvent } = require('../../../helper/utils/schedule');
 const { mineBlock } = require('../../../helper/utils/blockchain');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('ANNActor', () => {
   let admin;
 
@@ -33,7 +32,7 @@ describe('ANNActor', () => {
 
     // deploy a test ERC20 token to use it as the terms currency
     const { options: { address: paymentTokenAddress }} = await deployPaymentToken(
-        buidlerRuntime, creatorObligor, [ counterpartyBeneficiary ]
+      buidlerRuntime, creatorObligor, [ counterpartyBeneficiary ]
     );
     self.terms = {
       ...await getDefaultTerms("ANN"),
@@ -42,7 +41,6 @@ describe('ANNActor', () => {
       currency: paymentTokenAddress,
       settlementCurrency: paymentTokenAddress,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
   });
@@ -68,7 +66,7 @@ describe('ANNActor', () => {
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
     const initialState = await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
-    const event = encodeEvent(10, Number(this.terms.contractDealDate) + 100); // #useEventName
+    const event = encodeEvent(eventIndex('IP'), Number(this.terms.statusDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
@@ -106,12 +104,12 @@ describe('ANNActor', () => {
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
     const event = await this.ANNRegistryInstance
-        .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
+      .methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.ANNActorInstance.methods.progressWith(
         web3.utils.toHex(this.assetId),
         event,

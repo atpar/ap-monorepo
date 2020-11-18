@@ -1,6 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
+
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
 
@@ -10,6 +12,9 @@ import "../../Core/Core.sol";
  * @notice Contains all payoff functions (POFs) currently used by all Engines
  */
 contract CECPOF is Core {
+
+    using SignedSafeMath for int;
+
 
     /**
      * Calculate the payoff in case of settlement
@@ -25,6 +30,6 @@ contract CECPOF is Core {
         pure
         returns(int256)
     {
-        return state.exerciseAmount + state.feeAccrued;
+        return state.exerciseAmount.add(state.feeAccrued);
     }
 }

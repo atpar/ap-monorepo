@@ -1,13 +1,12 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const buidlerRuntime = require('hardhat');
 const { toWei } = require('web3-utils');
 
 const { getDefaultTestTerms, getDefaultState, assertEqualStates } = require('../../../helper/ACTUS/tests');
 const { getSnapshotTaker, deployTestSTKSTF } = require('../../../helper/setupTestEnvironment');
 
 
-describe('TestANNPOF', () => {
+describe('TestSTKPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken

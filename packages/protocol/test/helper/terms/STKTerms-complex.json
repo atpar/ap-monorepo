@@ -9,7 +9,6 @@
   "currency": "0x0000000000000000000000000000000000000001",
   "settlementCurrency": "0x0000000000000000000000000000000000000001",
 
-  "contractDealDate": 160010812,
   "statusDate": 1601836535,
   "issueDate": 1600972511,
   "purchaseDate": 1600972512,
@@ -20,6 +19,7 @@
   "issuePrice": 47,
   "quantity": 2000000,
   "priceAtPurchaseDate": 40,
+  "priceAtTerminationDate": 40,
   "redemptionPrice": 45,
 
   "dividendRecordPeriod": { "i": 1, "p": 2, "isSet": true },

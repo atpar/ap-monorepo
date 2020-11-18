@@ -3,7 +3,7 @@ module.exports.tags = ["_package"];
 module.exports.dependencies = ["_env"];
 
 /**
- * @typedef {Object} DeployOptions - https://github.com/wighawag/buidler-deploy#deploy-function
+ * @typedef {Object} DeployOptions - https://github.com/wighawag/hardhat-deploy#deploy-function
  * @typedef {import('./1-extend-buidler-env').ExtendedBRE}
  *
  * @typedef {Object} ContractsListItem
@@ -68,33 +68,33 @@ async function definePackage(buidlerRuntime) {
             options: { libraries: { STKEncoder: "{{STKEncoder.address}}" }},
         },
 
-        // Data Registry
-        { name: "DataRegistry" },
+        // Data Registry Proxy
+        { name: "DataRegistryProxy" },
 
         // Asset Actor
         {
             name: "ANNActor",
-            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{ANNRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CECActor",
-            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CECRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CEGActor",
-            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CEGRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "CERTFActor",
-            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "PAMActor",
-            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{PAMRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
         {
             name: "STKActor",
-            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistry.address}}" ]},
+            options: { args: [ "{{STKRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
         },
 
         // Custodian
@@ -103,30 +103,8 @@ async function definePackage(buidlerRuntime) {
             options: { args: [ "{{CECActor.address}}", "{{CECRegistry.address}}" ]},
         },
 
-        // FDT
-        { name: "ProxySafeVanillaFDT", exportable: false },
-        { name: "ProxySafeSimpleRestrictedFDT", exportable: false },
-        {
-            name: "FDTFactory",
-            options: { libraries: {
-                    VanillaFDTLogic: "{{ProxySafeVanillaFDT.address}}",
-                    SimpleRestrictedFDTLogic: "{{ProxySafeSimpleRestrictedFDT.address}}",
-                }},
-        },
-
-        // ICT
-        { name: "ProxySafeICT", exportable: false },
-        {
-            name: "ICTFactory",
-            exportable: false,
-            options: { libraries: { ICTLogic: "{{ProxySafeICT.address}}" }},
-        },
-
         // DvPSettlement
         { name: "DvPSettlement" },
-
-        // settlement token (for templates on testnets)
-        { name: "SettlementToken", exportable: false },
 
         // export artifacts only (do not deploy)
         { name: "BaseActor", deployable: false },
@@ -135,6 +113,7 @@ async function definePackage(buidlerRuntime) {
         { name: "ERC1404", deployable: false },
         { name: "VanillaFDT", deployable: false },
         { name: "SimpleRestrictedFDT", deployable: false },
+        { name: "SettlementToken", deployable: false },
         { name: "NoSettlementToken", deployable: false },
         { name: "ERC20Token", deployable: false }
     ];

@@ -1,32 +1,31 @@
 import Web3 from 'web3';
 
-import BaseActorArtifact from '../../build/contracts/BaseActor.json';
-import BaseRegistryArtifact from '../../build/contracts/BaseRegistry.json';
-import ANNEngineArtifact from '../../build/contracts/ANNEngine.json';
-import CECEngineArtifact from '../../build/contracts/CECEngine.json';
-import CEGEngineArtifact from '../../build/contracts/CEGEngine.json';
-import CERTFEngineArtifact from '../../build/contracts/CERTFEngine.json';
-import PAMEngineArtifact from '../../build/contracts/PAMEngine.json';
-import STKEngineArtifact from '../../build/contracts/STKEngine.json';
-import ANNActorArtifact from '../../build/contracts/ANNActor.json';
-import CECActorArtifact from '../../build/contracts/CECActor.json';
-import CEGActorArtifact from '../../build/contracts/CEGActor.json';
-import CERTFActorArtifact from '../../build/contracts/CERTFActor.json';
-import PAMActorArtifact from '../../build/contracts/PAMActor.json';
-import STKActorArtifact from '../../build/contracts/STKActor.json';
-import ANNRegistryArtifact from '../../build/contracts/ANNRegistry.json';
-import CECRegistryArtifact from '../../build/contracts/CECRegistry.json';
-import CEGRegistryArtifact from '../../build/contracts/CEGRegistry.json';
-import CERTFRegistryArtifact from '../../build/contracts/CERTFRegistry.json';
-import PAMRegistryArtifact from '../../build/contracts/PAMRegistry.json';
-import STKRegistryArtifact from '../../build/contracts/STKRegistry.json';
-import CustodianArtifact from '../../build/contracts/Custodian.json';
-import DataRegistryArtifact from '../../build/contracts/DataRegistry.json';
-import DvPSettlementArtifact from '../../build/contracts/DvPSettlement.json';
-import FDTFactoryArtifact from '../../build/contracts/FDTFactory.json';
-import ERC20Artifact from '../../build/contracts/ERC20.json';
-import ERC1404Artifact from '../../build/contracts/ERC1404.json';
-import VanillaFDTArtifact from '../../build/contracts/VanillaFDT.json';
+import BaseActorArtifact from '../../build/contracts/contracts/Core/Base/AssetActor/BaseActor.sol/BaseActor.json';
+import BaseRegistryArtifact from '../../build/contracts/contracts/Core/Base/AssetRegistry/BaseRegistry.sol/BaseRegistry.json';
+import ANNEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/ANN/ANNEngine.sol/ANNEngine.json';
+import CECEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CEC/CECEngine.sol/CECEngine.json';
+import CEGEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CEG/CEGEngine.sol/CEGEngine.json';
+import CERTFEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CERTF/CERTFEngine.sol/CERTFEngine.json';
+import PAMEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/PAM/PAMEngine.sol/PAMEngine.json';
+import STKEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/STK/STKEngine.sol/STKEngine.json';
+import ANNActorArtifact from '../../build/contracts/contracts/Core/ANN/ANNActor.sol/ANNActor.json';
+import CECActorArtifact from '../../build/contracts/contracts/Core/CEC/CECActor.sol/CECActor.json';
+import CEGActorArtifact from '../../build/contracts/contracts/Core/CEG/CEGActor.sol/CEGActor.json';
+import CERTFActorArtifact from '../../build/contracts/contracts/Core/CERTF/CERTFActor.sol/CERTFActor.json';
+import PAMActorArtifact from '../../build/contracts/contracts/Core/PAM/PAMActor.sol/PAMActor.json';
+import STKActorArtifact from '../../build/contracts/contracts/Core/STK/STKActor.sol/STKActor.json';
+import ANNRegistryArtifact from '../../build/contracts/contracts/Core/ANN/ANNRegistry.sol/ANNRegistry.json';
+import CECRegistryArtifact from '../../build/contracts/contracts/Core/CEC/CECRegistry.sol/CECRegistry.json';
+import CEGRegistryArtifact from '../../build/contracts/contracts/Core/CEG/CEGRegistry.sol/CEGRegistry.json';
+import CERTFRegistryArtifact from '../../build/contracts/contracts/Core/CERTF/CERTFRegistry.sol/CERTFRegistry.json';
+import PAMRegistryArtifact from '../../build/contracts/contracts/Core/PAM/PAMRegistry.sol/PAMRegistry.json';
+import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKRegistry.sol/STKRegistry.json';
+import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
+import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
+import DvPSettlementArtifact from '../../build/contracts/contracts/Extensions/DvPSettlement.sol/DvPSettlement.json';
+import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
+import ERC1404Artifact from '../../build/contracts/contracts/Extensions/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
+import VanillaFDTArtifact from '../../build/contracts/contracts/Extensions/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
 
 import { BaseActor } from '../types/contracts/BaseActor';
 import { BaseRegistry } from '../types/contracts/BaseRegistry';
@@ -49,9 +48,8 @@ import { CERTFRegistry } from '../types/contracts/CERTFRegistry';
 import { PAMRegistry } from '../types/contracts/PAMRegistry';
 import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
-import { DataRegistry } from '../types/contracts/DataRegistry';
+import { DataRegistryProxy } from '../types/contracts/DataRegistryProxy';
 import { DvPSettlement } from '../types/contracts/DvPSettlement';
-import { FDTFactory } from '../types/contracts/FDTFactory';
 import { ERC20 } from '../types/contracts/ERC20';
 import { ERC1404 } from '../types/contracts/ERC1404';
 import { VanillaFDT } from '../types/contracts/VanillaFDT';
@@ -90,9 +88,8 @@ export class Contracts {
   public stkRegistry: STKRegistry;
 
   public custodian: Custodian;
-  public dataRegistry: DataRegistry;
+  public dataRegistryProxy: DataRegistryProxy;
   public dvpSettlement: DvPSettlement;
-  public fdtFactory: FDTFactory;
 
 
   /**
@@ -146,11 +143,9 @@ export class Contracts {
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
     // @ts-ignore
-    this.dataRegistry = new web3.eth.Contract(DataRegistryArtifact.abi, addressBook.DataRegistry, { data: DataRegistryArtifact.bytecode }) as DataRegistry,
+    this.dataRegistryProxy = new web3.eth.Contract(DataRegistryProxyArtifact.abi, addressBook.DataRegistryProxy, { data: DataRegistryProxyArtifact.bytecode }) as DataRegistryProxy,
     // @ts-ignore
     this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
-    // @ts-ignore
-    this.fdtFactory = new web3.eth.Contract(FDTFactoryArtifact.abi, addressBook.FDTFactory, { data: FDTFactoryArtifact.bytecode }) as FDTFactory;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore

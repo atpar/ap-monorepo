@@ -1,8 +1,7 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 const { expectEvent } = require('../../helper/utils/utils');
@@ -25,7 +24,7 @@ describe('DataRegistry', () => {
   });
 
   it('should register a data provider', async () => {
-    const { events } = await this.DataRegistryInstance.methods.setDataProvider(
+    const { events } = await this.DataRegistryProxyInstance.methods.setDataProvider(
       this.marketObjectId,
       marketObjectProvider,
     ).send({ from: admin });
@@ -34,7 +33,7 @@ describe('DataRegistry', () => {
   });
 
   it('should register a data point for a registered data provider', async () => {
-    const { events } = await this.DataRegistryInstance.methods.publishDataPoint(
+    const { events } = await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.marketObjectId,
       1,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -44,18 +43,18 @@ describe('DataRegistry', () => {
   });
 
   it('should register a data point with an earlier timestamp for a registered data provider', async () => {
-    const { events } = await this.DataRegistryInstance.methods.publishDataPoint(
+    const { events } = await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.marketObjectId,
       0,
       '0x0000000000000000000000000000000000000000000000000000000000000001',
-  ).send({ from: marketObjectProvider });
+    ).send({ from: marketObjectProvider });
 
     expectEvent(events, 'PublishedDataPoint');
   });
 
   it('should revert if an unregistered account tries to publish a data point', async () => {
-    await shouldFail.reverting.withMessage(
-      this.DataRegistryInstance.methods.publishDataPoint(
+    await expectRevert(
+      this.DataRegistryProxyInstance.methods.publishDataPoint(
         this.marketObjectId,
         1,
         '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -65,14 +64,14 @@ describe('DataRegistry', () => {
   });
 
   it('should retrieve the correct data point', async () => {
-    const result = await this.DataRegistryInstance.methods.getDataPoint(this.marketObjectId, 1).call();
+    const result = await this.DataRegistryProxyInstance.methods.getDataPoint(this.marketObjectId, 1).call();
 
     assert.equal(result[0].toString(), '1');
     assert.equal(result[1], true);
   });
 
   it('should retrieve the correct last updated timestamp', async () => {
-    const lastUpdated = await this.DataRegistryInstance.methods.getLastUpdatedTimestamp(this.marketObjectId).call();
+    const lastUpdated = await this.DataRegistryProxyInstance.methods.getLastUpdatedTimestamp(this.marketObjectId).call();
 
     assert.equal(lastUpdated.toString(), '1');
   });

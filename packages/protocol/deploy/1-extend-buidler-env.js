@@ -2,7 +2,7 @@ module.exports = extendBuidlerEnv;
 module.exports.tags = ["_env"];
 
 /**
- * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/buidler-deploy#environment-extensions)
+ * @typedef {Object} BuidlerRuntimeEnvironment (https://github.com/wighawag/hardhat-deploy#environment-extensions)
  *
  * @typedef  {{name: string: address: string}} Roles
  * @typedef UserNamespace
@@ -18,7 +18,10 @@ module.exports.tags = ["_env"];
 
 /** @param buidlerRuntime {ExtendedBRE} */
 async function extendBuidlerEnv(buidlerRuntime) {
-    if (typeof buidlerRuntime.usrNs !== 'undefined') throw new Error("unexpected Buidler Runtime Environment");
+    if (typeof buidlerRuntime.usrNs !== 'undefined') {
+        console.log(buidlerRuntime)
+        throw new Error("unexpected Buidler Runtime Environment");
+    }
 
     const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = buidlerRuntime;
 

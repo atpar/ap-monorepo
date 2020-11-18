@@ -1,18 +1,19 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "openzeppelin-solidity/contracts/access/Ownable.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import "../../../ACTUS/Core/SignedMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
 import "../../../ACTUS/Core/Utils/EventUtils.sol";
 
+
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../DataRegistry/IDataRegistry.sol";
+import "../OracleProxy/IOracleProxy.sol";
 import "./IAssetActor.sol";
 
 
@@ -35,17 +36,12 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
     IAssetRegistry public assetRegistry;
-    IDataRegistry public dataRegistry;
+    IOracleProxy public defaultOracleProxy;
 
 
-    constructor (
-        IAssetRegistry _assetRegistry,
-        IDataRegistry _dataRegistry
-    )
-        public
-    {
+    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
         assetRegistry = _assetRegistry;
-        dataRegistry = _dataRegistry;
+        defaultOracleProxy = _defaultOracleProxy;
     }
 
     /**
@@ -279,76 +275,8 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     )
         internal
         view
-        returns (bytes32)
-    {
-        if (eventType == EventType.RR) {
-            // get rate from DataRegistry
-            (int256 resetRate, bool isSet) = dataRegistry.getDataPoint(
-                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
-                timestamp
-            );
-            if (isSet) return bytes32(resetRate);
-        } else if (eventType == EventType.CE) {
-            // get current timestamp
-            // solium-disable-next-line
-            return bytes32(block.timestamp);
-        } else if (eventType == EventType.EXE) {
-            // get the remaining notionalPrincipal from the underlying
-            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
-                assetId,
-                "contractReference_1"
-            );
-            if (contractReference_1.role == ContractReferenceRole.COVE) {
-                bytes32 underlyingAssetId = contractReference_1.object;
-                address underlyingRegistry = address(uint160(uint256(contractReference_1.object2)));
-                require(
-                    IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
-                    "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
-                );
-                return bytes32(
-                    IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
-                );
-            }
-            ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
-                assetId,
-                "contractReference_2"
-            );
-            if (
-                contractReference_2._type == ContractReferenceType.MOC
-                && contractReference_2.role == ContractReferenceRole.UDL
-            ) {
-                (int256 quantity, bool isSet) = dataRegistry.getDataPoint(
-                    contractReference_2.object,
-                    timestamp
-                );
-                if (isSet) return bytes32(quantity);
-            }
-        } else if (eventType == EventType.REF) {
-            ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
-                assetId,
-                "contractReference_1"
-            );
-            if (
-                contractReference_1._type == ContractReferenceType.MOC
-                && contractReference_1.role == ContractReferenceRole.UDL
-            ) {
-                (int256 marketValueScheduleTime, bool isSetScheduleTime) = dataRegistry.getDataPoint(
-                    contractReference_1.object,
-                    timestamp
-                );
-                (int256 marketValueAnchorDate, bool isSetAnchorDate) = dataRegistry.getDataPoint(
-                    contractReference_1.object,
-                    assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
-                );
-                if (isSetScheduleTime && isSetAnchorDate) {
-                    return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
-                }
-            }
-            return bytes32(0);
-        }
-
-        return bytes32(0);
-    }
+        virtual
+        returns (bytes32);
 
     /**
      * @notice Retrieves external data (such as market object data)
@@ -368,11 +296,13 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
 
         if (currency != settlementCurrency) {
             // get FX rate
-            (int256 fxRate, bool isSet) = dataRegistry.getDataPoint(
+            (int256 fxRate, bool isSet) = defaultOracleProxy.getDataPoint(
                 keccak256(abi.encode(currency, settlementCurrency)),
                 timestamp
             );
             if (isSet) return bytes32(fxRate);
         }
+
+        return bytes32(0);
     }
 }

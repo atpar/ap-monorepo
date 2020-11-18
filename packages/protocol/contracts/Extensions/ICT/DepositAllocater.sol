@@ -1,22 +1,49 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity 0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-import "./CheckpointedToken/CheckpointedToken.sol";
-import "./DepositAllocaterStorage.sol";
+import "./CheckpointedToken.sol";
 
+
+struct Deposit {
+    // Time at which the deposit is scheduled for
+    uint256 scheduledFor;
+    // Time until which holders can signal for a deposit
+    uint256 signalingCutoff;
+    // Deposit amount in WEI
+    uint256 amount;
+    // Amount of funds claimed so far
+    uint256 claimedAmount;
+    // Sum of the signaled tokens of whitelisted token holders (only used if isWhitelisted == true)
+    uint256 totalAmountSignaled;
+    // Address of the token in which the deposit is made
+    address token;
+    // Indicates whether holders have to signal in advance to claim their share of the deposit
+    bool onlySignaled;
+    // List of addresses which have withdrawn their share of funds of the deposit
+    mapping (address => bool) claimed;
+    // Subset of holders which can claim their share of funds of the deposit
+    mapping (address => uint256) signaledAmounts;
+}
 
 /**
  * @title Logic for distributing funds based on checkpointing
  * @dev abstract contract
  */
-contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, ReentrancyGuardUpgradeSafe {
+contract DepositAllocater is CheckpointedToken, ReentrancyGuard {
 
     using SafeMath for uint256;
 
+    // depositId => Deposit
+    mapping(bytes32 => Deposit) public deposits;
+    // holder => amount signaled
+    mapping(address => uint256) public totalAmountSignaledByHolder;
+
+
+    constructor(string memory name, string memory symbol) CheckpointedToken(name, symbol) {}
 
     function createDeposit(bytes32 depositId, uint256 scheduledFor, uint256 signalingCutoff, bool onlySignaled, address token) public {
         Deposit storage deposit = deposits[depositId];
@@ -62,7 +89,7 @@ contract DepositAllocater is CheckpointedToken, DepositAllocaterStorage, Reentra
         );
 
         require(
-            deposit.signalingCutoff > now,
+            deposit.signalingCutoff > block.timestamp,
             "Deposit.signalAmountForDeposit: SIGNALING_ENDED"
         );
 

@@ -1,18 +1,17 @@
-/* jslint node */
-/* global before, beforeEach, contract, describe, it, web3 */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
 
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { decodeEvent } = require('../helper/utils/schedule');
 const { mineBlock } = require('../helper/utils/blockchain');
 const { deployICToken, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('ICT', function () {
-  let deployer, owner, issuer, counterparty, investor1, nobody;
+  let deployer, owner, issuer, investor1;
 
   const computeEventTime = async (scheduleTime) => {
     return (await this.CERTFEngineInstance.methods.shiftEventTime(
@@ -45,7 +44,7 @@ describe('ICT', function () {
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    [ deployer, /*actor*/, owner, issuer, counterparty, investor1, nobody ] = self.accounts;
+    [ deployer, /*actor*/, owner, issuer, investor1 ] = self.accounts;
 
     // deploy test ERC20 token
     self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, issuer, [issuer]);
@@ -55,8 +54,9 @@ describe('ICT', function () {
 
     self.ict = await deployICToken(buidlerRuntime, {
       assetRegistry: self.CERTFRegistryInstance.options.address,
-      dataRegistry: self.DataRegistryInstance.options.address,
+      dataRegistryProxy: self.DataRegistryProxyInstance.options.address,
       marketObjectCode: self.terms.contractReference_2.object,
+      owner: owner,
       deployer: owner,
     });
 
@@ -87,16 +87,16 @@ describe('ICT', function () {
 
     await self.ict.methods.setAssetId(web3.utils.toHex(self.assetId)).send({ from: owner });
 
-    await self.DataRegistryInstance.methods.setDataProvider(
+    await self.DataRegistryProxyInstance.methods.setDataProvider(
       self.terms.contractReference_2.object,
       self.ict.options.address
     ).send({ from: deployer });
-    await self.DataRegistryInstance.methods.setDataProvider(
+    await self.DataRegistryProxyInstance.methods.setDataProvider(
       self.terms.contractReference_1.object,
       owner
     ).send({ from: deployer });
 
-    await self.DataRegistryInstance.methods.publishDataPoint(
+    await self.DataRegistryProxyInstance.methods.publishDataPoint(
       self.terms.contractReference_1.object,
       self.terms.issueDate,
       encodeNumberAsBytes32(self.terms.nominalPrice)
@@ -113,20 +113,20 @@ describe('ICT', function () {
       web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(idEvent);
-    assert.strictEqual(eventType, '2'); // #useEventName
+    assert.strictEqual(eventType, `${eventIndex('ISS')}`);
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
     const { events } = await this.CERTFActorInstance.methods.progress(
       web3.utils.toHex(this.assetId)
     ).send({ from: owner });
-    expectEvent(events, 'ProgressedAsset', { 'eventType': '2' });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('ISS')}` });
   });
 
   it('should register investor1 for redemption for the first REF event [ @skip-on-coverage ]', async () => {
     const rfdEvent = this.schedule[1];
     const { eventType } = decodeEvent(rfdEvent);
-    assert.strictEqual(eventType, '19'); // #useEventName
+    assert.strictEqual(eventType, `${eventIndex('REF')}`);
 
     const tokensToRedeem = web3.utils.toWei('1000');
 
@@ -135,7 +135,7 @@ describe('ICT', function () {
 
     const { scheduleTime: scheduleTimeXD } = decodeEvent(this.schedule[2]);
 
-    const exerciseQuantity = (await this.DataRegistryInstance.methods.getDataPoint(
+    const exerciseQuantity = (await this.DataRegistryProxyInstance.methods.getDataPoint(
       this.terms.contractReference_2.object,
       await computeCalcTime(scheduleTimeXD)
     ).call())[0];
@@ -156,9 +156,9 @@ describe('ICT', function () {
       web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(rfdEvent);
-    assert.strictEqual(eventType, '19'); // #useEventName
+    assert.strictEqual(eventType, `${eventIndex('REF')}`);
 
-    await this.DataRegistryInstance.methods.publishDataPoint(
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       await computeCalcTime(scheduleTime),
       encodeNumberAsBytes32(this.terms.nominalPrice)
@@ -168,7 +168,7 @@ describe('ICT', function () {
     await mineBlock(await computeEventTime(scheduleTime));
     const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(this.assetId))
       .send({ from: owner });
-    expectEvent(events, 'ProgressedAsset', { 'eventType': '19' });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('REF')}` });
     await this.CERTFRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
   });
 
@@ -176,14 +176,14 @@ describe('ICT', function () {
     const xdEvent = await this.CERTFRegistryInstance.methods
       .getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
     const { eventType, scheduleTime } = decodeEvent(xdEvent);
-    assert.strictEqual(eventType, '25'); // #useEventName
+    assert.strictEqual(eventType, `${eventIndex('EXE')}`);
 
     // settle and progress asset state
     await mineBlock(await computeEventTime(scheduleTime));
     const { events } = await this.CERTFActorInstance.methods.progress(
       web3.utils.toHex(this.assetId)
     ).send({ from: owner });
-    expectEvent(events, 'ProgressedAsset', { 'eventType': '25' });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('EXE')}` });
   });
 
   it('should process the first REP event [ @skip-on-coverage ]', async () => {
@@ -191,7 +191,7 @@ describe('ICT', function () {
       web3.utils.toHex(this.assetId)
     ).call();
     const { eventType, scheduleTime } = decodeEvent(rpdEvent);
-    assert.strictEqual(eventType, '21'); // #useEventName
+    assert.strictEqual(eventType, `${eventIndex('REP')}`);
 
     // set allowance for CERTFActor
     await this.PaymentTokenInstance.methods.approve(
@@ -204,7 +204,7 @@ describe('ICT', function () {
     const { events } = await this.CERTFActorInstance.methods.progress(web3.utils.toHex(
       this.assetId)
     ).send({ from: owner });
-    expectEvent(events, 'ProgressedAsset', { 'eventType': '21' });
+    expectEvent(events, 'ProgressedAsset', { 'eventType': `${eventIndex('REP')}` });
     await this.ict.methods.fetchDepositAmountForEvent(this.schedule[1]).send({ from: owner });
 
     const deposit = await this.ict.methods.getDeposit(this.schedule[1]).call();

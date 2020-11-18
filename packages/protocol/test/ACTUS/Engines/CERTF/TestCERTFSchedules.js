@@ -1,14 +1,12 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const buidlerRuntime = require('hardhat');
 
 const { getTestCases, compareTestResults } = require('../../../helper/ACTUS/tests');
 const { parseToTestEventCERTF, isoToUnix } = require('../../../helper/ACTUS/parser');
 const { decodeEvent, sortEvents } = require('../../../helper/utils/schedule');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
-
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('CERTFEngine', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -33,31 +31,31 @@ describe('CERTFEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      17 // COF #useEventName
+      eventIndex('COF')
     ).call());
     schedule.push(... await this.CERTFEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      18 // COP #useEventName
+      eventIndex('COP')
     ).call());
     schedule.push(... await this.CERTFEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      19 // REF #useEventName
+      eventIndex('REF')
     ).call());
     schedule.push(... await this.CERTFEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      21 // REP #useEventName
+      eventIndex('REP')
     ).call());
     schedule.push(... await this.CERTFEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      25 // EXE #useEventName
+      eventIndex('EXE')
     ).call());
 
     return sortEvents(schedule);
@@ -68,7 +66,7 @@ describe('CERTFEngine', () => {
     const initialState = await this.CERTFEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       (terms.maturityDate > 0) ? terms.maturityDate : tMax
     );
 

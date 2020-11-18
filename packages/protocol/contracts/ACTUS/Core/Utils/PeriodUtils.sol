@@ -1,8 +1,8 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import {SafeMath as SafeMul} from "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import {SafeMath as SafeMul} from "@openzeppelin/contracts/math/SafeMath.sol";
 import "../../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";

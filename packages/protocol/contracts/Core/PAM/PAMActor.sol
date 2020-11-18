@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../ACTUS/Engines/PAM/IPAMEngine.sol";
@@ -14,10 +14,7 @@ import "./IPAMRegistry.sol";
  */
 contract PAMActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IDataRegistry dataRegistry)
-        public
-        BaseActor(assetRegistry, dataRegistry)
-    {}
+    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -95,5 +92,35 @@ contract PAMActor is BaseActor {
         );
 
         return (state, payoff);
+    }
+
+    /**
+     * @notice Retrieves external data (such as market object data, block time, underlying asset state)
+     * used for evaluating the STF for a given event.
+     */
+    function getExternalDataForSTF(
+        bytes32 assetId,
+        EventType eventType,
+        uint256 timestamp
+    )
+        internal
+        view
+        override
+        returns (bytes32)
+    {
+        if (eventType == EventType.RR) {
+            // get rate from DataRegistry
+            (int256 resetRate, bool isSet) = defaultOracleProxy.getDataPoint(
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
+                timestamp
+            );
+            if (isSet) return bytes32(resetRate);
+        } else if (eventType == EventType.CE) {
+            // get current timestamp
+            // solium-disable-next-line
+            return bytes32(block.timestamp);
+        }
+
+        return bytes32(0);
     }
 }

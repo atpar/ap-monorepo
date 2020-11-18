@@ -3,12 +3,19 @@ mnemonic.js
 dist/
 snapshot.tar.gz
 
+# typechain
+**/*/src/types/contracts/
+
 # sol-coverage
 coverage.json
 coverage/
 
 # buidler
 cache/
+build-info/
+*/**/*.dbg.json
+build/
+deployments/
 
 # node
 node_modules/

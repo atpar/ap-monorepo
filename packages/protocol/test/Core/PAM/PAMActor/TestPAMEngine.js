@@ -1,7 +1,6 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
 
 const { mineBlock } = require('../../../helper/utils/blockchain');
@@ -17,12 +16,12 @@ describe('PAMActor', () => {
 
   const getEventTime = async (_event, terms) => {
     return Number(
-        await this.PAMEngineInstance.methods.computeEventTimeForEvent(
-            _event,
-            terms.businessDayConvention,
-            terms.calendar,
-            terms.maturityDate
-        ).call());
+      await this.PAMEngineInstance.methods.computeEventTimeForEvent(
+        _event,
+        terms.businessDayConvention,
+        terms.calendar,
+        terms.maturityDate
+      ).call());
   }
 
   /** @param {any} self - `this` inside `before()`/`it()` */
@@ -33,7 +32,7 @@ describe('PAMActor', () => {
     ] = self.accounts;
     // deploy a test ERC20 token to use it as the terms currency
     self.PaymentTokenInstance = await deployPaymentToken(
-        buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
+      buidlerRuntime, creatorObligor, [counterpartyObligor, counterpartyBeneficiary],
     );
 
     self.ownership = { creatorObligor, creatorBeneficiary, counterpartyObligor, counterpartyBeneficiary };
@@ -44,11 +43,10 @@ describe('PAMActor', () => {
       currency: self.PaymentTokenInstance.options.address,
       settlementCurrency: self.PaymentTokenInstance.options.address,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.PAMEngineInstance, self.terms);
     self.state = web3ResponseToState(
-        await self.PAMEngineInstance.methods.computeInitialState(self.terms).call()
+      await self.PAMEngineInstance.methods.computeInitialState(self.terms).call()
     );
   });
 
@@ -59,17 +57,17 @@ describe('PAMActor', () => {
 
   it('should initialize Asset with ContractType PAM', async () => {
     const { events } = await this.PAMActorInstance.methods.initialize(
-        this.terms,
-        this.schedule,
-        this.ownership,
-        this.PAMEngineInstance.options.address,
-        ZERO_ADDRESS
+      this.terms,
+      [],
+      this.ownership,
+      this.PAMEngineInstance.options.address,
+      ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events, 'InitializedAsset');
 
     this.assetId = events.InitializedAsset.returnValues.assetId;
     const storedState = web3ResponseToState(
-        await this.PAMRegistryInstance.methods.getState(this.assetId).call()
+      await this.PAMRegistryInstance.methods.getState(this.assetId).call()
     );
 
     assert.deepStrictEqual(storedState, this.state);
@@ -78,21 +76,21 @@ describe('PAMActor', () => {
   it('should correctly settle all events according to the schedule', async () => {
     for (const nextExpectedEvent of this.schedule) {
       const nextEvent = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
-          web3.utils.toHex(this.assetId)
+        web3.utils.toHex(this.assetId)
       ).call();
       const eventTime = await getEventTime(nextEvent, this.terms);
       const payoff = new BigNumber(await this.PAMEngineInstance.methods.computePayoffForEvent(
-          this.terms,
-          this.state,
-          nextEvent,
-          ZERO_BYTES32
+        this.terms,
+        this.state,
+        nextEvent,
+        ZERO_BYTES32
       ).call());
       const value = web3.utils.toHex((payoff.isGreaterThan(0)) ? payoff : payoff.negated());
 
       // set allowance for Payment Router
       await this.PaymentTokenInstance.methods.approve(
-          this.PAMActorInstance.options.address,
-          value
+        this.PAMActorInstance.options.address,
+        value
       ).send({ from: (payoff.isLessThan(0)) ? creatorObligor : counterpartyObligor });
 
       // settle and progress asset state
@@ -104,12 +102,12 @@ describe('PAMActor', () => {
       const storedNextState = web3ResponseToState(await this.PAMRegistryInstance.methods.getState(this.assetId).call());
       const isEventSettled = await this.PAMRegistryInstance.methods.isEventSettled(this.assetId, nextEvent).call();
       const projectedNextState = web3ResponseToState(
-          await this.PAMEngineInstance.methods.computeStateForEvent(
-              this.terms,
-              this.state,
-              nextEvent,
-              ZERO_BYTES32
-          ).call()
+        await this.PAMEngineInstance.methods.computeStateForEvent(
+          this.terms,
+          this.state,
+          nextEvent,
+          ZERO_BYTES32
+        ).call()
       );
 
       assert.strictEqual(nextExpectedEvent, nextEvent);
@@ -121,5 +119,11 @@ describe('PAMActor', () => {
 
       this.state = storedNextState;
     }
+
+    const noEvent = await this.PAMRegistryInstance.methods.getNextScheduledEvent(
+      web3.utils.toHex(this.assetId)
+    ).call();
+
+    assert.strictEqual(noEvent, ZERO_BYTES32);
   });
 });

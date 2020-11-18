@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./ICEGEngine.sol";
 import "./CEGSTF.sol";
 import "./CEGPOF.sol";
@@ -15,6 +18,10 @@ import "./CEGPOF.sol";
  * inputs have to be multiplied by 10 ** 18, outputs have to multplied by 10 ** -18
  */
 contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.CEG;
@@ -204,6 +211,56 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
     }
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CEGTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // purchase
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.purchaseDate != 0 && (lastScheduleTime <= terms.purchaseDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.purchaseDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.purchaseDate || lastEventType != EventType.PRD)
+        ) {
+            eventTypeNextEvent = EventType.PRD;
+            scheduleTimeNextEvent = terms.purchaseDate;
+        }
+
+        // maturity event
+        if (
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
+    }
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * @param terms terms of the contract
@@ -245,7 +302,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      * contract and the current state of the underlying.
      * @param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
@@ -253,7 +310,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
     function isEventScheduled(
         bytes32 _event,
         CEGTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool hasUnderlying,
         State calldata underlyingState
     )
@@ -262,9 +319,14 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         override
         returns (bool)
     {
-        (EventType eventType,) = decodeEvent(_event);
+        if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
 
         if (hasUnderlying) {
+            (EventType eventType,) = decodeEvent(_event);
             // FP, MD events only scheduled up to execution of the Guarantee
             if (
                 (eventType == EventType.FP || eventType == EventType.MD)

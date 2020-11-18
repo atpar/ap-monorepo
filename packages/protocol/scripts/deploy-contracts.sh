@@ -25,7 +25,7 @@ fi
 echo "Deploying to ${network} ..."
 while test -f "${flag}"; do
 
-  node --max-old-space-size=4096 node_modules/.bin/buidler deploy \
+  node --max-old-space-size=4096 node_modules/.bin/hardhat deploy \
     --network "${network}" \
     --tags "${tags}" \
     --write true \

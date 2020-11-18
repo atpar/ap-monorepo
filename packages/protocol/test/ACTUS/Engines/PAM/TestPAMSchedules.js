@@ -1,14 +1,12 @@
-/*global before, beforeEach, describe, it, web3*/
-const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const buidlerRuntime = require('hardhat');
 
 const { getTestCases, compareTestResults } = require('../../../helper/ACTUS/tests');
 const { parseToTestEvent } = require('../../../helper/ACTUS/parser');
 const { decodeEvent, sortEvents } = require('../../../helper/utils/schedule');
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
-
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('PAMEngine', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
@@ -33,31 +31,31 @@ describe('PAMEngine', () => {
       terms,
       segmentStart,
       segmentEnd,
-      5 // FP #useEventName
+      eventIndex('FP')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      11 // IPCI #useEventName
+      eventIndex('IPCI')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      10 // IP #useEventName
+      eventIndex('IP')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      6 // PR #useEventName
+      eventIndex('PR')
     ).call());
     schedule.push(... await this.PAMEngineInstance.methods.computeCyclicScheduleSegment(
       terms,
       segmentStart,
       segmentEnd,
-      13 // RR #useEventName
+      eventIndex('RR')
     ).call());
 
     return sortEvents(schedule);
@@ -67,7 +65,7 @@ describe('PAMEngine', () => {
     const initialState = await this.PAMEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       terms.maturityDate
     );
 

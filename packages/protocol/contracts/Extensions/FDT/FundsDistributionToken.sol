@@ -1,11 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
-import "./math/SafeMathUint.sol";
-import "./math/SafeMathInt.sol";
+import "../../external/math/SafeConversion.sol";
 import "./IFundsDistributionToken.sol";
 
 
@@ -21,11 +21,13 @@ import "./IFundsDistributionToken.sol";
  * FundsDistributionToken (FDT) implements the accounting logic. FDT-Extension contracts implement methods for depositing and
  * withdrawing funds in Ether or according to a token standard such as ERC20, ERC223, ERC777.
  */
-abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20UpgradeSafe {
+abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20 {
 
     using SafeMath for uint256;
-    using SafeMathUint for uint256;
-    using SafeMathInt for int256;
+    using SignedSafeMath for int256;
+
+    using SafeConversion for uint256;
+    using SafeConversion for int256;
 
     // optimize, see https://github.com/ethereum/EIPs/issues/1726#issuecomment-472352728
     uint256 constant internal pointsMultiplier = 2**128;
@@ -33,6 +35,9 @@ abstract contract FundsDistributionToken is IFundsDistributionToken, ERC20Upgrad
 
     mapping(address => int256) internal pointsCorrection;
     mapping(address => uint256) internal withdrawnFunds;
+
+
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
 
     /**
      * prev. distributeDividends

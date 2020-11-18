@@ -1,5 +1,5 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "../../SharedTypes.sol";
@@ -58,9 +58,9 @@ abstract contract TermsRegistry {
         virtual
         returns (ContractReference memory);
 
-    function getNextCyclicEvent(bytes32 assetId)
+    function getNextComputedEvent(bytes32 assetId)
         internal
         view
         virtual
-        returns (bytes32);
+        returns (bytes32, bool);
 }

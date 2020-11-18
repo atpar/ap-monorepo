@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./IANNEngine.sol";
 import "./ANNSTF.sol";
 import "./ANNPOF.sol";
@@ -14,6 +17,10 @@ import "./ANNPOF.sol";
  * @dev All numbers except unix timestamp are represented as multiple of 10 ** 18
  */
 contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.ANN;
@@ -134,6 +141,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index;
 
+        // issuance
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+        
         // initial exchange
         if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
             events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
@@ -237,6 +252,28 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             }
         }
 
+        // rate reset
+        if (eventType == EventType.RR) {
+            if (terms.cycleAnchorDateOfRateReset != 0) {
+                uint256[MAX_CYCLE_SIZE] memory rateResetSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfRateReset,
+                    terms.maturityDate,
+                    terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
+                    false,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (rateResetSchedule[i] == 0) break;
+                    if (isInSegment(rateResetSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.RR, rateResetSchedule[i]);
+                    index++;
+                }
+            }
+            // ... nextRateReset
+        }
+
         // fees
         if (eventType == EventType.FP) {
             if (terms.cycleAnchorDateOfFee != 0) {
@@ -253,6 +290,27 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                     if (feeSchedule[i] == 0) break;
                     if (isInSegment(feeSchedule[i], segmentStart, segmentEnd) == false) continue;
                     events[index] = encodeEvent(EventType.FP, feeSchedule[i]);
+                    index++;
+                }
+            }
+        }
+
+        // scaling
+        if (eventType == EventType.SC) {
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
+                uint256[MAX_CYCLE_SIZE] memory scalingSchedule = computeDatesFromCycleSegment(
+                    terms.cycleAnchorDateOfScalingIndex,
+                    terms.maturityDate,
+                    terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
+                    true,
+                    segmentStart,
+                    segmentEnd
+                );
+                for (uint8 i = 0; i < MAX_CYCLE_SIZE; i++) {
+                    if (scalingSchedule[i] == 0) break;
+                    if (isInSegment(scalingSchedule[i], segmentStart, segmentEnd) == false) continue;
+                    events[index] = encodeEvent(EventType.SC, scalingSchedule[i]);
                     index++;
                 }
             }
@@ -286,6 +344,77 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         }
 
         return schedule;
+    }
+
+    /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        ANNTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // issuance
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+        
+        // initial exchange
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
+            && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
+        ) {
+            eventTypeNextEvent = EventType.IED;
+            scheduleTimeNextEvent = terms.initialExchangeDate;
+        }
+
+        // purchase
+        if (
+            (terms.purchaseDate != 0 && (lastScheduleTime <= terms.purchaseDate))
+            && (scheduleTimeNextEvent == 0 || terms.purchaseDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.purchaseDate || lastEventType != EventType.PRD)
+        ) {
+            eventTypeNextEvent = EventType.PRD;
+            scheduleTimeNextEvent = terms.purchaseDate;
+        }
+
+        // principal redemption at maturity
+        if (
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**
@@ -342,6 +471,23 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
             }
         }
 
+        // rate reset
+        if (eventType == EventType.RR) {
+            if (terms.cycleAnchorDateOfRateReset != 0) {
+                uint256 nextRateResetDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfRateReset,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfRateReset,
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
+                );
+                if (nextRateResetDate == 0) return bytes32(0);
+                return encodeEvent(EventType.RR, nextRateResetDate);
+            }
+            // ... nextRateReset
+        }
+
         // fees
         if (eventType == EventType.FP) {
             if (terms.cycleAnchorDateOfFee != 0) {
@@ -355,6 +501,22 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 );
                 if (nextFeeDate == 0) return bytes32(0);
                 return encodeEvent(EventType.FP, nextFeeDate);
+            }
+        }
+
+        // scaling
+        if (eventType == EventType.SC) {
+            if ((terms.scalingEffect != ScalingEffect._000) && terms.cycleAnchorDateOfScalingIndex != 0) {
+                uint256 nextScalingDate = computeNextCycleDateFromPrecedingDate(
+                    terms.cycleOfScalingIndex,
+                    terms.endOfMonthConvention,
+                    terms.cycleAnchorDateOfScalingIndex,
+                    lastScheduleTime,
+                    true,
+                    terms.maturityDate
+                );
+                if (nextScalingDate == 0) return bytes32(0);
+                return encodeEvent(EventType.SC, nextScalingDate);
             }
         }
 
@@ -382,7 +544,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
@@ -390,7 +552,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         ANNTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -399,6 +561,12 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         override
         returns (bool)
     {
+        if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 
@@ -431,14 +599,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return STF_ANN_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_ANN_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_ANN_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
@@ -482,6 +650,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;
@@ -493,7 +662,6 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         if (eventType == EventType.PP) return POF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_ANN_TD(terms, state, scheduleTime, externalData);
 
         revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

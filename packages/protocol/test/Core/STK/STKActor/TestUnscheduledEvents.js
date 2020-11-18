@@ -1,16 +1,15 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
+/* eslint-disable @typescript-eslint/no-var-requires */
 const assert = require('assert');
-const buidlerRuntime = require('@nomiclabs/buidler');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const buidlerRuntime = require('hardhat');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 const { expectEvent, generateSchedule, ZERO_ADDRESS, ZERO_BYTES32 } = require('../../../helper/utils/utils');
 const { encodeEvent } = require('../../../helper/utils/schedule');
 const { mineBlock } = require('../../../helper/utils/blockchain');
+const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
 
 
-// TODO: Replace hardcoded event values ids with names (#useEventName)
 describe('STKActor', () => {
   let admin;
   const minute = 60;
@@ -48,8 +47,10 @@ describe('STKActor', () => {
     self.terms.cycleAnchorDateOfDividend = self.terms.issueDate + 3 * minute;
 
     // generate DIF events
-    const tMax = 1*self.terms.issueDate + 3 * 365 * 24 * 3600;
-    self.schedule = await generateSchedule(self.STKEngineInstance, self.terms, tMax, [14]); // #useEventName (DIF)
+    const tMax = 1 * self.terms.issueDate + 3 * 365 * 24 * 3600;
+    self.schedule = await generateSchedule(
+      self.STKEngineInstance, self.terms, tMax, [eventIndex('DIF')]
+    );
 
     const tx = await self.STKActorInstance.methods.initialize(
       self.terms,
@@ -70,8 +71,8 @@ describe('STKActor', () => {
       value:  web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
     };
     self.dipaValue = dp.value;
-    await this.DataRegistryInstance.methods.setDataProvider(dp.provider, admin).send({ from: admin });
-    await this.DataRegistryInstance.methods.publishDataPoint(dp.provider, dp.date, dp.value).send({ from: admin });
+    await this.DataRegistryProxyInstance.methods.setDataProvider(dp.provider, admin).send({ from: admin });
+    await this.DataRegistryProxyInstance.methods.publishDataPoint(dp.provider, dp.date, dp.value).send({ from: admin });
   });
 
   before(async () => {
@@ -95,7 +96,7 @@ describe('STKActor', () => {
     const initialState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
     const firstScheduledTime = await getEventTime(this.schedule[0], this.terms);
-    const event = encodeEvent(2, 1 * firstScheduledTime - minute); // #useEventName (ISS)
+    const event = encodeEvent(eventIndex('ISS'), 1 * firstScheduledTime - minute);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
@@ -105,7 +106,7 @@ describe('STKActor', () => {
       event,
     ).send({ from: admin });
 
-    expectEvent(tx2.events, 'ProgressedAsset', { eventType: "2" }); // #useEventName (ISS)
+    expectEvent(tx2.events, 'ProgressedAsset', { eventType: `${eventIndex('ISS')}` });
     const emittedAssetId = tx2.events.ProgressedAsset.returnValues.assetId;
     const storedNextState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
 
@@ -125,12 +126,12 @@ describe('STKActor', () => {
 
   it('should not process next state for an unscheduled event with a later schedule time', async () => {
     const firstScheduledTime = await getEventTime(this.schedule[0], this.terms);
-    const event = encodeEvent(16, 1 * firstScheduledTime + minute); // #useEventName (DIP)
+    const event = encodeEvent(eventIndex('DIP'), 1 * firstScheduledTime + minute);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.STKActorInstance.methods.progressWith(
         web3.utils.toHex(this.assetId),
         event,

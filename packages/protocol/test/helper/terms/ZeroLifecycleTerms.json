@@ -5,7 +5,6 @@
 	"businessDayConvention": 0,
 	"endOfMonthConvention": 0,
 	"scalingEffect": 0,
-	"penaltyType": 0,
 	"feeBasis": 0,
 	"creditEventTypeCovered": 0,
 
@@ -25,9 +24,9 @@
 	"rateSpread": "0",
 	"feeRate": "0",
 	"nextResetRate": "0",
-	"penaltyRate": "0",
 	"premiumDiscountAtIED": "0",
 	"priceAtPurchaseDate": "0",
+	"priceAtTerminationDate": "0",
 	"nextPrincipalRedemptionPayment": "0",
 	"coverageOfCreditEnhancement": "0",
 	"lifeCap": "0",

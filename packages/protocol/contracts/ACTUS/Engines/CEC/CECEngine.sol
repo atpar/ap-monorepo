@@ -1,8 +1,11 @@
 // "SPDX-License-Identifier: Apache-2.0"
-pragma solidity ^0.6.11;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
+
 import "../../Core/Core.sol";
+import "../../Core/SignedMath.sol";
 import "./ICECEngine.sol";
 import "./CECSTF.sol";
 import "./CECPOF.sol";
@@ -15,6 +18,10 @@ import "./CECPOF.sol";
  * inputs have to be multiplied by 10 ** 18, outputs have to multplied by 10 ** -18
  */
 contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
+
+    using SignedSafeMath for int;
+    using SignedMath for int;
+
 
     function contractType() external pure override returns (ContractType) {
         return ContractType.CEC;
@@ -167,6 +174,46 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
     }
 
     /**
+     * @notice Computes the next non-cyclic contract events based on the contract terms
+     * and the timestamp on which the prev. event occured.
+     * @dev Assumes that non-cyclic events of the same event type have a unique schedule time
+     * @param terms terms of the contract
+     * @param lastNonCyclicEvent last non-cyclic event
+     * @return next non-cyclic event
+     */
+    function computeNextNonCyclicEvent(
+        CECTerms calldata terms,
+        bytes32 lastNonCyclicEvent
+    )
+        external
+        pure
+        override
+        returns (bytes32)
+    {
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // maturity event
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.maturityDate != 0 && (lastScheduleTime <= terms.maturityDate))
+            // date for event has to come before previous candidate for the next event
+            // && (scheduleTimeNextEvent == 0 || terms.maturityDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.maturityDate || lastEventType != EventType.MD)
+        ) {
+            eventTypeNextEvent = EventType.MD;
+            scheduleTimeNextEvent = terms.maturityDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
+    }
+
+    /**
      * @notice Computes a schedule segment of cyclic contract events based on the contract terms
      * and the specified timestamps.
      * param terms terms of the contract
@@ -209,6 +256,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         override
         returns (bool)
     {
+        // no contract performance for CEC
         return true;
     }
 

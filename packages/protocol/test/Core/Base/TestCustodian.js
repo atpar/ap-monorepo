@@ -1,8 +1,7 @@
-/*jslint node*/
-/*global before, beforeEach, describe, it, web3*/
-const buidlerRuntime = require('@nomiclabs/buidler');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
-const { shouldFail } = require('openzeppelin-test-helpers');
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { deployPaymentToken, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 const { expectEvent, generateSchedule } = require('../../helper/utils/utils');
@@ -16,13 +15,13 @@ describe('Custodian', () => {
     // code bellow runs right before the EVM snapshot gets taken
 
     [
-        deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody,
+      deployer, defaultActor, creatorObligor, creatorBeneficiary, counterpartyBeneficiary, nobody,
     ] = self.accounts;
     self.txOpts.from = nobody;
 
     // deploy test ERC20 token
     self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, deployer, [
-        creatorObligor, creatorBeneficiary, counterpartyBeneficiary,
+      creatorObligor, creatorBeneficiary, counterpartyBeneficiary,
     ]);
 
     self.assetId = 'CEC_01';
@@ -116,10 +115,10 @@ describe('Custodian', () => {
     state[13] = state.exerciseAmount;
 
     await this.CECRegistryInstance.methods.setState(web3.utils.toHex(this.assetId), state)
-        .send({from: deployer});
+      .send({from: deployer});
 
     const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
-        .send(this.txOpts);
+      .send(this.txOpts);
 
     expectEvent(
       events,
@@ -148,10 +147,10 @@ describe('Custodian', () => {
     state[0] = state.contractPerformance;
 
     await this.CECRegistryInstance.methods.setState(web3.utils.toHex(this.assetId), state)
-        .send({from: deployer});
+      .send({from: deployer});
 
     const { events } = await this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId))
-        .send(this.txOpts);
+      .send(this.txOpts);
 
     expectEvent(
       events,
@@ -175,7 +174,7 @@ describe('Custodian', () => {
       this.ownership
     ).send(this.txOpts);
 
-    await shouldFail.reverting.withMessage(
+    await expectRevert(
       this.CustodianInstance.methods.returnCollateral(web3.utils.toHex(this.assetId)).send(this.txOpts),
       'Custodian.returnCollateral: COLLATERAL_CAN_NOT_BE_RETURNED'
     );
