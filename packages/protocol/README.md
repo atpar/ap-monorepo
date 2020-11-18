@@ -41,6 +41,12 @@ yarn test
 yarn ap-chain:setup
 ```
 
+### Listing addresses of a deployment
+```sh
+cd deployments/<deployment>
+find ./*.json | while read f ; do echo -n "$f: " ; cat "$f" | jq -r '.receipt.contractAddress' ; done
+```
+
 ## Smart Contracts
 
 ### ACTUS Core
