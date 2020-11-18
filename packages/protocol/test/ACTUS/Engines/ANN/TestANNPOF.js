@@ -284,9 +284,8 @@ describe('TestANNPOF', () => {
     const scheduleTime = 6307200; // .2 years
 
     // used data
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
+    this.ANNTerms.priceAtTerminationDate = web3.utils.toWei('100000');
     this.ANNTerms.businessDayConvention = 0; // NULL
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365

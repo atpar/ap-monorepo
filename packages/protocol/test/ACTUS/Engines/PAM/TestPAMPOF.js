@@ -290,9 +290,8 @@ describe('TestPAMPOF', () => {
     const scheduleTime = 6307200; // .2 years
 
     // used data
-    this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.PAMTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.PAMTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
+    this.PAMTerms.priceAtTerminationDate = web3.utils.toWei('100000');
     this.PAMTerms.businessDayConvention = 0; // NULL
     this.PAMTerms.calendar = 0; // NoCalendar
     this.PAMTerms.dayCountConvention = 2; // A_365

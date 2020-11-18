@@ -185,7 +185,7 @@ contract PAMPOF is Core {
 
         return (
             roleSign(terms.contractRole)
-            * terms.priceAtPurchaseDate
+            * terms.priceAtTerminationDate
             .add(state.accruedInterest)
             .add(
                 timeFromLastEvent
