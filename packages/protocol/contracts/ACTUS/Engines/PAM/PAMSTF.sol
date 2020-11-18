@@ -526,7 +526,6 @@ contract PAMSTF is Core {
         returns (State memory)
     {
         state.notionalPrincipal = 0;
-        state.nominalInterestRate = 0;
         state.accruedInterest = 0;
         state.feeAccrued = 0;
         state.contractPerformance = ContractPerformance.TD;
