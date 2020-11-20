@@ -60,7 +60,7 @@
     "@types/jest": "^23.3.12",
     "@typescript-eslint/eslint-plugin": "^1.6.0",
     "@typescript-eslint/parser": "^1.6.0",
-    "actus-dictionary": "https://github.com/atpar/actus-dictionary.git#fe832c32b9e8a0d05c8c9742b8480ff794262acf",
+    "actus-dictionary": "https://github.com/atpar/actus-dictionary.git#5669dd10586cbc66f3038d80a573429ba506f61d",
     "bignumber.js": "^7.2.1",
     "hardhat-deploy": "0.7.0-beta.28",
     "hardhat-gas-reporter": "1.0.1",

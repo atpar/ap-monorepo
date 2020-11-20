@@ -187,7 +187,6 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   feeAccrued: terms.feeAccrued,
   feeRate: terms.feeRate,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
-  priceAtTerminationDate: terms.priceAtTerminationDate,
   coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
 
   gracePeriod: terms.gracePeriod,

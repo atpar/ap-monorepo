@@ -227,7 +227,6 @@ struct CEGTerms {
     int256 feeAccrued;
     int256 feeRate;
     int256 priceAtPurchaseDate;
-    int256 priceAtTerminationDate;
     int256 coverageOfCreditEnhancement;
     // int256 exerciseAmount; // state only
 

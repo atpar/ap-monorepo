@@ -256,7 +256,6 @@ export interface CEGTerms {
   feeAccrued: string | number;
   feeRate: string | number;
   priceAtPurchaseDate: string | number;
-  priceAtTerminationDate: string | number;
   coverageOfCreditEnhancement: string | number;
 
   gracePeriod: IP;
@@ -647,7 +646,6 @@ export function isCEGTerms (obj: any): obj is CEGTerms {
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.feeRate == undefined || typeof obj.feeRate !== 'number' && typeof obj.feeRate !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
-  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.coverageOfCreditEnhancement == undefined || typeof obj.coverageOfCreditEnhancement !== 'number' && typeof obj.coverageOfCreditEnhancement !== 'string') { return false; }
 
   if (!isIP(obj.gracePeriod)) { return false; }

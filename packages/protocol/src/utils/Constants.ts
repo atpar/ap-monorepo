@@ -149,7 +149,6 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   feeAccrued: '0',
   feeRate: '0',
   priceAtPurchaseDate: '0',
-  priceAtTerminationDate: '0',
   coverageOfCreditEnhancement: '0',
 
   gracePeriod: EMPTY_IP,
