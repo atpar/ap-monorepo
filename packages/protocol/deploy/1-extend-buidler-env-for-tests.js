@@ -12,21 +12,21 @@ module.exports.dependencies = ["_env"];
 /** @param {ExtendedBRE} buidlerRuntime */
 async function extendBuidlerEnvForTests(buidlerRuntime) {
 
-    const { deployments: { log }, usrNs, web3 } = buidlerRuntime;
-    const { accounts, roles } = usrNs;
+  const { deployments: { log }, usrNs, web3 } = buidlerRuntime;
+  const { accounts, roles } = usrNs;
 
-    if (!usrNs.instances) usrNs.instances = {};
+  if (!usrNs.instances) usrNs.instances = {};
 
-    roles.defaultActor = checkAddress(accounts[2]);
-    log(`roles: ${JSON.stringify(roles, null, 2)}`);
+  roles.defaultActor = checkAddress(accounts[2]);
+  log(`roles: ${JSON.stringify(roles, null, 2)}`);
 
-    // shall be async
-    return Promise.resolve();
+  // shall be async
+  return Promise.resolve();
 
-    function checkAddress(address) {
-        if (!web3.utils.isAddress(address)) {
-            throw new Error(`invalid address ${address}`);
-        }
-        return address;
+  function checkAddress(address) {
+    if (!web3.utils.isAddress(address)) {
+      throw new Error(`invalid address ${address}`);
     }
+    return address;
+  }
 }
