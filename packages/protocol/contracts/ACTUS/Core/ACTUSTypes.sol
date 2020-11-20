@@ -401,3 +401,37 @@ struct STKTerms {
 
     IPS cycleOfDividend;
 }
+
+struct PAMCOLTerms {
+    ContractType contractType;
+    Calendar calendar;
+    ContractRole contractRole;
+    DayCountConvention dayCountConvention;
+    BusinessDayConvention businessDayConvention;
+    EndOfMonthConvention endOfMonthConvention;
+    // ContractPerformance contractPerformance; // state only
+    
+    bytes32 marketObjectCodeOfCollateral;
+    
+    address currency;
+    address settlementCurrency;
+    address collateralCurrency;
+    
+    uint256 statusDate;
+    uint256 initialExchangeDate;
+    uint256 maturityDate;
+    uint256 capitalizationEndDate;
+    // uint256 nonPerformingDate; // state only
+    uint256 cycleAnchorDateOfInterestPayment;
+    
+    int256 notionalPrincipal;
+    int256 nominalInterestRate;
+    int256 accruedInterest;
+    int256 premiumDiscountAtIED;
+    int256 coverageOfCollateral;
+
+    IP gracePeriod;
+    IP delinquencyPeriod;
+
+    IPS cycleOfInterestPayment;
+}
