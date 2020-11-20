@@ -5,7 +5,7 @@ const { BN, ether, expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
-  getSnapshotTaker, deployPaymentToken, deployCMTA20FDT, deployRuleEngineMock
+  deployContract, deployCMTA20FDT, deployPaymentToken, getSnapshotTaker
 } = require('../helper/setupTestEnvironment');
 
 
@@ -23,16 +23,12 @@ describe('CMTA20', () => {
     );
 
     self.cmta20 = await deployCMTA20FDT(
-      buidlerRuntime,
-      {
-        owner,
-        name: 'CMTA 20',
-        symbol: 'CMTA20',
-        fundsToken: self.fundsToken.options.address
-      },
+      buidlerRuntime, { owner, fundsToken: self.fundsToken.options.address },
     );
 
-    self.ruleEngineMock = await deployRuleEngineMock(buidlerRuntime, { owner });
+    self.ruleEngineMock = await deployContract(
+      buidlerRuntime, 'RuleEngineMock', [], { from: owner }
+    );
   });
 
   before(async () => {

@@ -41,69 +41,59 @@ function getSnapshotTaker(buidlerRuntime, self = undefined, customCode = undefin
 }
 
 /**
+ * Deploy a new contract instance using artifacts' abi and bytecode
+ * Note: it doesn't link libraries (use 'reuseOrDeployContract' if linking needed)
+ * @param {ExtendedTestBRE} buidlerRuntime
+ * @param {string} contractName
+ * @param {any} arguments Constructor arguments
+ * @param {any} opts Any options to pass to web3.eth.Contract' `deploy` function
+ * @return {any} web3.eth.Contract instance
+ */
+async function deployContract(buidlerRuntime, contractName, arguments = [], opts = {}) {
+  const { deployments: { getArtifact }, usrNs: { roles: { deployer }}, web3 } = buidlerRuntime;
+  const { abi, bytecode: data } = await getArtifact(contractName);
+  const options = Object.assign({ from: deployer }, opts);
+  const instance = new web3.eth.Contract(abi);
+  return (await instance.deploy({ data, arguments }).send(options));
+}
+
+/**
+ * Re-use a deployed contract instance, otherwise deploy a new instance using buidler' `deploy` function
+ * @param {ExtendedTestBRE} buidlerRuntime
+ * @param {string} contractName
+ * @param {any} arguments Constructor arguments
+ * @param {any} opts Any options to pass to buidlerRuntime' `deploy` function
+ * @return {any} web3.eth.Contract instance
+ */
+async function reuseOrDeployContract(buidlerRuntime, contractName, arguments = [], opts = {}) {
+  const { deployments: { deploy }, usrNs: { roles: { deployer }}, web3 } = buidlerRuntime;
+  const defaultOptions = { from: deployer, fieldsToCompare: [ 'data', 'from' ], arguments };
+  const options = Object.assign(defaultOptions, opts);
+  const { abi, address } = await deploy(contractName, options);
+  return new web3.eth.Contract(abi, address);
+}
+
+/**
  * @param {ExtendedTestBRE} buidlerRuntime
  * @param {string} owner - token owner address
  * @param {string[]} [holders] - token holders
  */
 async function deployPaymentToken(buidlerRuntime, owner, holders= []) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('SettlementToken', {
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  const instance = new web3.eth.Contract(abi, address);
-
-  for (let holder of holders) {
-    await instance.methods.transfer(holder, web3.utils.toWei('10000')).send({ from: owner });
-  }
-
+  const instance = await deployContract(
+    buidlerRuntime,
+    'SettlementToken',
+    [],
+    { from: owner },
+  );
+  await holders.reduce( // one by one
+    (promiseChain, holder) => promiseChain.then(
+      () => instance.methods.transfer(holder, web3.utils.toWei('10000')).send({ from: owner })
+    ),
+    Promise.resolve(),
+  );
   return instance;
 }
 
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- */
-async function deployVanillaFDT(buidlerRuntime, {
-  name = 'FundsDistributionToken',
-  symbol = 'FDT',
-  fundsToken,
-  owner,
-  initialAmount = 0,
-}) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('VanillaFDT', {
-    args: [name, symbol, fundsToken, owner, initialAmount],
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  return new web3.eth.Contract(abi, address);
-}
-
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- */
-async function deploySimpleRestrictedFDT(buidlerRuntime, {
-  name = 'FundsDistributionToken',
-  symbol = 'FDT',
-  fundsToken,
-  owner,
-  initialAmount = 0,
-}) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('SimpleRestrictedFDT', {
-    args: [name, symbol, fundsToken, owner, initialAmount],
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  return new web3.eth.Contract(abi, address);
-}
-
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- */
 async function deployCMTA20FDT(buidlerRuntime, {
   name = 'CMTA 20',
   symbol = 'CMTA20',
@@ -111,45 +101,14 @@ async function deployCMTA20FDT(buidlerRuntime, {
   owner,
   initialAmount = 0,
 }) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('CMTA20FDT', {
-    args: [name, symbol, fundsToken, owner, initialAmount],
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  return new web3.eth.Contract(abi, address);
+  return deployContract(
+    buidlerRuntime,
+    'CMTA20FDT',
+    [name, symbol, fundsToken, owner, initialAmount],
+    { from: owner },
+  );
 }
 
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- */
-async function deployRuleEngineMock(buidlerRuntime, { owner }) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('RuleEngineMock', {
-    args: [],
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  return new web3.eth.Contract(abi, address);
-}
-
-/**
- * @param {ExtendedTestBRE} buidlerRuntime
- */
-async function deploySimpleRestrictedRuleEngine(buidlerRuntime, { owner }) {
-  const { deployments: { deploy }, web3 } = buidlerRuntime;
-  const { abi, address } = await deploy('SimpleRestrictedRuleEngine', {
-    args: [owner],
-    from: owner,
-    // deploy a new instance rather than re-use the one already deployed with another 'from' address
-    fieldsToCompare: [ 'data', 'from' ],
-  });
-  return new web3.eth.Contract(abi, address);
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
 async function deployICToken(buidlerRuntime, {
   assetRegistry,
   dataRegistryProxy,
@@ -157,193 +116,11 @@ async function deployICToken(buidlerRuntime, {
   owner,
   deployer = '',
 }) {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('ICT');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode, arguments: [ assetRegistry, dataRegistryProxy, marketObjectCode, owner ]})
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployDvPSettlement(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('DvPSettlement');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCore(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCore');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestSignedMath(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestSignedMath');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestANNPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestANNPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestANNSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestANNSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCECPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCECPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCECSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCECSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCEGPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCEGPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCEGSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCEGSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCERTFPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestANNPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestCERTFSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestCERTFSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestPAMPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestPAMPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestPAMSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestPAMSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestSTKPOF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestSTKPOF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
-  );
-}
-
-/** @param {ExtendedTestBRE} buidlerRuntime */
-async function deployTestSTKSTF(buidlerRuntime, deployer = '') {
-  const { deployments: { getArtifact }, usrNs: { roles: { deployer: defaultDeployer }}, web3 } = buidlerRuntime;
-  const { abi, bytecode } = await getArtifact('TestSTKSTF');
-  const instance = new web3.eth.Contract(abi);
-  return (await instance
-    // bytecode linking is unneeded for this contract
-    .deploy({ data: bytecode })
-    .send({ from: deployer || defaultDeployer })
+  return deployContract(
+    buidlerRuntime,
+    'ICT',
+    [ assetRegistry, dataRegistryProxy, marketObjectCode, owner ],
+    deployer ? { from: deployer } : undefined
   );
 }
 
@@ -370,26 +147,9 @@ module.exports = {
   getDefaultTerms,
   getZeroTerms,
   getComplexTerms,
-  deployDvPSettlement,
+  deployContract,
   deployICToken,
   deployPaymentToken,
-  deploySimpleRestrictedFDT,
-  deployVanillaFDT,
   deployCMTA20FDT,
-  deployRuleEngineMock,
-  deploySimpleRestrictedRuleEngine,
-  deployTestCore,
-  deployTestSignedMath,
-  deployTestANNPOF,
-  deployTestANNSTF,
-  deployTestCECPOF,
-  deployTestCECSTF,
-  deployTestCEGPOF,
-  deployTestCEGSTF,
-  deployTestCERTFPOF,
-  deployTestCERTFSTF,
-  deployTestPAMPOF,
-  deployTestPAMSTF,
-  deployTestSTKPOF,
-  deployTestSTKSTF,
+  reuseOrDeployContract,
 };

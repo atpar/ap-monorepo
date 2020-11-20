@@ -4,7 +4,7 @@ const buidlerRuntime = require('hardhat');
 const { BN, /*balance,*/ ether, expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
-const { getSnapshotTaker, deployPaymentToken, deployVanillaFDT } = require('../helper/setupTestEnvironment');
+const { deployContract, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
 
 
 describe('VanillaFDT', () => {
@@ -21,9 +21,12 @@ describe('VanillaFDT', () => {
     self.fundsToken = await deployPaymentToken( // test ERC20
       buidlerRuntime, owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone],
     );
-    self.fundsDistributionToken = await deployVanillaFDT(
-      buidlerRuntime, { owner, fundsToken: self.fundsToken.options.address },
-    );
+    self.fundsDistributionToken = await deployContract(
+      buidlerRuntime,
+      'VanillaFDT',
+      [ 'FundsDistributionToken', 'FDT', self.fundsToken.options.address, owner, 0 ],
+      { from: owner },
+    )
   });
 
   before(async () => {
