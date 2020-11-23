@@ -5,7 +5,7 @@ const { BN, /*balance,*/ ether, expectRevert } = require('@openzeppelin/test-hel
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
-  getSnapshotTaker, deployPaymentToken, deployCMTA20FDT, deploySimpleRestrictedRuleEngine
+  deployCMTA20FDT, deployContract, deployPaymentToken, getSnapshotTaker
 } = require('../helper/setupTestEnvironment');
 
 
@@ -34,7 +34,9 @@ describe('SimpleRestrictedCMTA20FDT', () => {
       },
     );
 
-    self.simpleRestrictedRuleEngine = await deploySimpleRestrictedRuleEngine(buidlerRuntime, { owner });
+    self.simpleRestrictedRuleEngine = await deployContract(
+      buidlerRuntime, 'SimpleRestrictedRuleEngine', [ owner ], { from: owner },
+    );
     await self.cmta20.methods.setRuleEngine(self.simpleRestrictedRuleEngine.options.address).send({from: owner});
 
     await self.simpleRestrictedRuleEngine.methods.addAdmin(owner).send({from: owner});

@@ -18,43 +18,43 @@ module.exports.tags = ["_env"];
 
 /** @param buidlerRuntime {ExtendedBRE} */
 async function extendBuidlerEnv(buidlerRuntime) {
-    if (typeof buidlerRuntime.usrNs !== 'undefined') {
-        console.log(buidlerRuntime)
-        throw new Error("unexpected Buidler Runtime Environment");
+  if (typeof buidlerRuntime.usrNs !== 'undefined') {
+    console.log(buidlerRuntime)
+    throw new Error("unexpected Buidler Runtime Environment");
+  }
+
+  const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = buidlerRuntime;
+
+  const { admin, deployer } = await getNamedAccounts();
+  const id = `${await getChainId()}`;
+
+  // ganache hardcoded to return 1337 on 'eth_chainId' RPC request that buidler uses
+  const chainId = ( id === '1337' ) ? `${await web3.eth.net.getId()}` : id;
+
+  const accounts = await web3.eth.getAccounts();
+  const roles = {
+    deployer: deployer || accounts[0],
+    admin: admin || accounts[1] || accounts[0],
+  };
+  Object.keys(roles).forEach(
+    (key) => {
+      if (!web3.utils.isAddress(roles[key])) {
+        throw new Error(`invalid address for role: ${key}`);
+      }
     }
+  );
 
-    const {  deployments: { log }, getNamedAccounts, getChainId, web3 } = buidlerRuntime;
+  if (!web3.eth.Contract.defaultAccount) {
+    web3.eth.Contract.defaultAccount = deployer;
+  }
 
-    const { admin, deployer } = await getNamedAccounts();
-    const id = `${await getChainId()}`;
+  buidlerRuntime.usrNs = {
+    chainId,
+    accounts,
+    roles,
+    package: {},
+    helpers: {},
+  };
 
-    // ganache hardcoded to return 1337 on 'eth_chainId' RPC request that buidler uses
-    const chainId = ( id === '1337' ) ? `${await web3.eth.net.getId()}` : id;
-
-    const accounts = await web3.eth.getAccounts();
-    const roles = {
-        deployer: deployer || accounts[0],
-        admin: admin || accounts[1] || accounts[0],
-    };
-    Object.keys(roles).forEach(
-        (key) => {
-            if (!web3.utils.isAddress(roles[key])) {
-                throw new Error(`invalid address for role: ${key}`);
-            }
-        }
-    );
-
-    if (!web3.eth.Contract.defaultAccount) {
-        web3.eth.Contract.defaultAccount = deployer;
-    }
-
-    buidlerRuntime.usrNs = {
-        chainId,
-        accounts,
-        roles,
-        package: {},
-        helpers: {},
-    };
-
-    log(`Buidler Runtime Environment extended, chainId: ${chainId}`);
+  log(`Buidler Runtime Environment extended, chainId: ${chainId}`);
 }

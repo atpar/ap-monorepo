@@ -2,7 +2,7 @@
 const assert = require('assert');
 const buidlerRuntime = require('hardhat');
 
-const { getSnapshotTaker, deployTestCore } = require('../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
 
 
 /*
@@ -12,7 +12,7 @@ describe('Core', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestCore = await deployTestCore(buidlerRuntime);
+    self.TestCore = await deployContract(buidlerRuntime, 'TestCore');
   });
 
   before(async () => {

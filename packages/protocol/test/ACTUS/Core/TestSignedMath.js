@@ -4,14 +4,14 @@ const buidlerRuntime = require('hardhat');
 const BigNumber = require('bignumber.js');
 const { expectRevert } = require('@openzeppelin/test-helpers');
 
-const { getSnapshotTaker, deployTestSignedMath } = require('../../helper/setupTestEnvironment');
+const { getSnapshotTaker, deployContract } = require('../../helper/setupTestEnvironment');
 
 
 describe('SignedMath', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestSignedMath = await deployTestSignedMath(buidlerRuntime);
+    self.TestSignedMath = await deployContract(buidlerRuntime, 'TestSignedMath');
   });
 
   before(async () => {
