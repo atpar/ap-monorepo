@@ -510,7 +510,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         PAMTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -519,6 +519,12 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         override
         returns (bool)
     {
+         if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 
