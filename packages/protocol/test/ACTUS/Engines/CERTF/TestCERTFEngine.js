@@ -83,7 +83,7 @@ describe('CERTFEngine', () => {
       this.terms,
       initialState,
       schedule[0],
-      web3.utils.toHex(decodeEvent(schedule[0]).scheduleTime)
+      web3.eth.abi.encodeParameter('uint256', decodeEvent(schedule[0]).scheduleTime)
     ).call();
 
     assert.strictEqual(String(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
@@ -145,7 +145,7 @@ describe('CERTFEngine', () => {
         this.terms,
         state,
         _event,
-        web3.utils.toHex(decodeEvent(_event).scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', decodeEvent(_event).scheduleTime)
       ).call();
 
       state = nextState;

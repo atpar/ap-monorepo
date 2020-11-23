@@ -38,7 +38,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -543,7 +543,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -588,7 +588,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

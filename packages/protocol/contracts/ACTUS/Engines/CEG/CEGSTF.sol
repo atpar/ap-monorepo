@@ -27,7 +27,7 @@ contract CEGSTF is Core {
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -42,7 +42,7 @@ contract CEGSTF is Core {
                 terms.maturityDate
             ) : state.nonPerformingDate;
 
-        uint256 currentTimestamp = uint256(externalData);
+        uint256 currentTimestamp = abi.decode(externalData, (uint256));
 
         bool isInGracePeriod = false;
         if (terms.gracePeriod.isSet) {
@@ -79,7 +79,7 @@ contract CEGSTF is Core {
         CEGTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -96,7 +96,7 @@ contract CEGSTF is Core {
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -113,7 +113,7 @@ contract CEGSTF is Core {
         }
         state.statusDate = scheduleTime;
         // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
+        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.exerciseDate = scheduleTime;
 
         if (terms.feeBasis == FeeBasis.A) {
@@ -134,7 +134,7 @@ contract CEGSTF is Core {
         CEGTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -152,7 +152,7 @@ contract CEGSTF is Core {
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -169,7 +169,7 @@ contract CEGSTF is Core {
         CEGTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

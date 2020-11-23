@@ -13,7 +13,7 @@ contract TestCECPOF is CECPOF {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
