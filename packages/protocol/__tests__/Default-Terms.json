@@ -14,7 +14,10 @@
 
   "currency": "0x0000000000000000000000000000000000000000",
   "settlementCurrency": "0x0000000000000000000000000000000000000000",
+  "collateralCurrency": "0x0000000000000000000000000000000000000000",
+
   "marketObjectCodeRateReset": "0x00",
+  "marketObjectCodeOfCollateral": "0x00",
 
   "statusDate": 1356825600,
   "initialExchangeDate": 1356998400,
@@ -51,6 +54,7 @@
   "redemptionPrice": 0,
   "nextPrincipalRedemptionPayment": 0,
   "coverageOfCreditEnhancement": 1,
+  "coverageOfCollateral": 1,
   "lifeCap": 0,
   "lifeFloor": 0,
   "periodCap": 0,
@@ -60,7 +64,6 @@
   "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
   "settlementPeriod": { "i": "10", "p": 0, "isSet": true },
   "fixingPeriod": { "i": "0", "p": 0, "isSet": true },
-  "redemptionRecordPeriod": { "i": "5", "p": 0, "isSet": true },
   "redemptionRecordPeriod": { "i": 0, "p": 0, "isSet": false },
   "redemptionPaymentPeriod": { "i": 0, "p": 0, "isSet": false },
   "dividendRecordPeriod": { "i": 0, "p": 0, "isSet": false },

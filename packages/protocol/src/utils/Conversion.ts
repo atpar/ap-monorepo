@@ -7,6 +7,7 @@ import {
   CECTerms,
   CEGTerms,
   CERTFTerms,
+  COLLATerms,
   PAMTerms,
   STKTerms,
   State
@@ -79,6 +80,10 @@ export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
 
 export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
   associativeArrayToObject(web3Response) as CERTFTerms
+);
+
+export const web3ResponseToCOLLATerms = (web3Response: any): COLLATerms => (
+  associativeArrayToObject(web3Response) as COLLATerms
 );
 
 export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
@@ -230,6 +235,38 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   cycleOfCoupon: terms.cycleOfCoupon,
   contractReference_1: terms.contractReference_1,
   contractReference_2: terms.contractReference_2
+});
+
+export const extractCOLLATerms = (terms: Terms): COLLATerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  
+  marketObjectCodeOfCollateral: terms.marketObjectCodeOfCollateral,
+
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+  collateralCurrency: terms.collateralCurrency,
+
+  statusDate: terms.statusDate,
+  initialExchangeDate: terms.initialExchangeDate,
+  maturityDate: terms.maturityDate,
+  capitalizationEndDate: terms.capitalizationEndDate,
+  cycleAnchorDateOfInterestPayment: terms.cycleAnchorDateOfInterestPayment,
+
+  notionalPrincipal: terms.notionalPrincipal,
+  nominalInterestRate: terms.nominalInterestRate,
+  accruedInterest: terms.accruedInterest,
+  premiumDiscountAtIED: terms.premiumDiscountAtIED,
+  coverageOfCollateral: terms.coverageOfCollateral,
+
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+
+  cycleOfInterestPayment: terms.cycleOfInterestPayment,
 });
 
 export const extractPAMTerms = (terms: Terms): PAMTerms => ({

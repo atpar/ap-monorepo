@@ -33,6 +33,7 @@ async function definePackage(buidlerRuntime) {
     { name: "CECEngine" },
     { name: "CEGEngine" },
     { name: "CERTFEngine" },
+    { name: "COLLAEngine" },
     { name: "PAMEngine" },
     { name: "STKEngine" },
 
@@ -41,6 +42,7 @@ async function definePackage(buidlerRuntime) {
     { name: "CECEncoder", exportable: false },
     { name: "CEGEncoder", exportable: false },
     { name: "CERTFEncoder", exportable: false },
+    { name: "COLLAEncoder", exportable: false },
     { name: "PAMEncoder", exportable: false },
     { name: "STKEncoder", exportable: false },
     {
@@ -58,6 +60,10 @@ async function definePackage(buidlerRuntime) {
     {
       name: "CERTFRegistry",
       options: { libraries: { CERTFEncoder: "{{CERTFEncoder.address}}" }},
+    },
+    {
+      name: "COLLARegistry",
+      options: { libraries: { COLLAEncoder: "{{COLLAEncoder.address}}" }},
     },
     {
       name: "PAMRegistry",
@@ -87,6 +93,10 @@ async function definePackage(buidlerRuntime) {
     {
       name: "CERTFActor",
       options: { args: [ "{{CERTFRegistry.address}}", "{{DataRegistryProxy.address}}" ]},
+    },
+    {
+      name: "COLLAActor",
+      options: { args: [ "{{COLLARegistry.address}}", "{{DataRegistryProxy.address}}" ]},
     },
     {
       name: "PAMActor",
