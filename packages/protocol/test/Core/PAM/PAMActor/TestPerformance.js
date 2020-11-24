@@ -59,6 +59,7 @@ describe('PAMActor', () => {
       self.ownership,
       self.PAMEngineInstance.options.address,
       ZERO_ADDRESS,
+      ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
 

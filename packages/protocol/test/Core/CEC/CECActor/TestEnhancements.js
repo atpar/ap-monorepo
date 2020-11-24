@@ -56,6 +56,7 @@ describe('CECActor', () => {
       self.schedule,
       self.ownership,
       self.PAMEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
 
@@ -98,6 +99,7 @@ describe('CECActor', () => {
       termsCEC,
       scheduleCEC,
       this.CECEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS,
       this.CustodianInstance.options.address,
       this.PAMRegistryInstance.options.address

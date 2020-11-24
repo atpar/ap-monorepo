@@ -24,13 +24,15 @@ contract PAMActor is BaseActor {
      * @param ownership ownership of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
+     * @param extension address of the extension (optional)
      */
     function initialize(
         PAMTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
-        address admin
+        address admin,
+        address extension
     )
         external
     {
@@ -54,7 +56,8 @@ contract PAMActor is BaseActor {
             ownership,
             engine,
             address(this),
-            admin
+            admin,
+            extension
         );
 
         emit InitializedAsset(assetId, ContractType.PAM, ownership.creatorObligor, ownership.counterpartyObligor);

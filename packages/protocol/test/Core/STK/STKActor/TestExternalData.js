@@ -53,6 +53,7 @@ describe('STKActor', () => {
       self.schedule,
       self.ownership,
       self.STKEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events,'InitializedAsset');

@@ -1,0 +1,43 @@
+{
+	"contractType": 19,
+	"calendar": 0,
+	"contractRole": 6,
+	"dayCountConvention": 2,
+	"businessDayConvention": 0,
+	"endOfMonthConvention": 0,
+
+	"marketObjectCodeOfCollateral": "0x00000000000000000000000000000000000000000000000000000000000000ab",
+
+	"currency": "0x0000000000000000000000000000000000000000",
+	"settlementCurrency": "0x0000000000000000000000000000000000000000",
+	"collateralCurrency": "0x0000000000000000000000000000000000000000",
+
+	"statusDate": 1356825600,
+	"initialExchangeDate": 1356998400,
+	"maturityDate": 1388534400,
+	"capitalizationEndDate": 0,
+	"cycleAnchorDateOfInterestPayment": 1356998400,
+	"notionalPrincipal": "1000000000000000000000",
+	"nominalInterestRate": "2500000000000000000",
+	"accruedInterest": "0",
+	"premiumDiscountAtIED": "0",
+	"coverageOfCollateral": "1500000000000000000",
+
+	"gracePeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+	},
+	"delinquencyPeriod": {
+		"i": 0,
+		"p": 0,
+		"isSet": false
+    },
+
+    "cycleOfInterestPayment": {
+        "i": 1,
+        "p": 2,
+        "s": 0,
+        "isSet": true
+    }
+}

@@ -84,6 +84,7 @@ abstract contract BaseRegistry is
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
      * @param admin account which as admin rights (optional)
+     * @param extension address of the extension (optional)
      */
     function setAsset(
         bytes32 assetId,
@@ -92,7 +93,8 @@ abstract contract BaseRegistry is
         AssetOwnership memory ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         internal
     {
@@ -113,6 +115,7 @@ abstract contract BaseRegistry is
         asset.ownership = ownership;
         asset.engine = engine;
         asset.actor = actor;
+        asset.extension = extension;
 
         asset.encodeAndSetState(state);
         asset.encodeAndSetFinalizedState(state);
@@ -153,6 +156,20 @@ abstract contract BaseRegistry is
     }
 
     /**
+     * @notice Returns the address of the extension which is allowed to generate events for the asset.
+     * @param assetId id of the asset
+     * @return address of the asset actor
+     */
+    function getExtension(bytes32 assetId)
+        external
+        view
+        override
+        returns (address)
+    {
+        return assets[assetId].extension;
+    }
+
+    /**
      * @notice Set the engine address which should be used for the asset going forward.
      * @dev Can only be set by authorized account.
      * @param assetId id of the asset
@@ -183,5 +200,22 @@ abstract contract BaseRegistry is
         assets[assetId].actor = actor;
 
         emit UpdatedActor(assetId, prevActor, actor);
+    }
+
+    /**
+     * @notice Set the extension address which should be used for the asset going forward.
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param extension new extension address
+     */
+    function setExtension(bytes32 assetId, address extension)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        address prevExtension = assets[assetId].extension;
+        assets[assetId].extension = extension;
+
+        emit UpdatedEngine(assetId, prevExtension, extension);
     }
 }

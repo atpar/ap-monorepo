@@ -30,7 +30,8 @@ contract COLLAActor is BaseActor {
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
-        address admin
+        address admin,
+        address extension
     )
         external
     {
@@ -54,7 +55,8 @@ contract COLLAActor is BaseActor {
             ownership,
             engine,
             address(this),
-            admin
+            admin,
+            extension
         );
 
         emit InitializedAsset(assetId, ContractType.COLLA, ownership.creatorObligor, ownership.counterpartyObligor);

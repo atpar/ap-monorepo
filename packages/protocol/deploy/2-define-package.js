@@ -112,6 +112,12 @@ async function definePackage(buidlerRuntime) {
       name: "Custodian",
       options: { args: [ "{{CECActor.address}}", "{{CECRegistry.address}}" ]},
     },
+    
+    // Collateral Extension
+    {
+      name: "Collateral",
+      options: { args: [ "{{COLLARegistry.address}}", "{{DataRegistryProxy.address}}" ]},
+    },
 
     // DvPSettlement
     { name: "DvPSettlement" },

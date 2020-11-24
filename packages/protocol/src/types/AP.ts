@@ -14,6 +14,7 @@ export interface AddressBook {
   CERTFEngine: string;
   CERTFRegistry: string;
   Custodian: string;
+  Collateral: string;
   DataRegistryProxy: string;
   DvPSettlement: string;
   PAMActor: string;
@@ -46,6 +47,7 @@ export function isAddressBook (obj: any): obj is AddressBook {
   if (obj.CERTFEngine == undefined || typeof obj.CERTFEngine !== 'string' || obj.CERTFEngine === ZERO_ADDRESS) { return false; }
   if (obj.CERTFRegistry == undefined || typeof obj.CERTFRegistry !== 'string' || obj.CERTFRegistry === ZERO_ADDRESS) { return false; }
   if (obj.Custodian == undefined || typeof obj.Custodian !== 'string' || obj.Custodian === ZERO_ADDRESS) { return false; }
+  if (obj.Collateral == undefined || typeof obj.Collateral !== 'string' || obj.Collateral === ZERO_ADDRESS) { return false; }
   if (obj.DataRegistryProxy == undefined || typeof obj.DataRegistryProxy !== 'string' || obj.DataRegistryProxy === ZERO_ADDRESS) { return false; }
   if (obj.DvPSettlement == undefined || typeof obj.DvPSettlement !== 'string' || obj.DvPSettlement === ZERO_ADDRESS) { return false; }
   if (obj.PAMActor == undefined || typeof obj.PAMActor !== 'string' || obj.PAMActor === ZERO_ADDRESS) { return false; }

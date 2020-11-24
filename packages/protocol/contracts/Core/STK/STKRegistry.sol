@@ -31,6 +31,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
      * @param admin account which as admin rights (optional)
+     * @param extension address of the extension (optional)
      */
     function registerAsset(
         bytes32 assetId,
@@ -40,13 +41,14 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         AssetOwnership calldata ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         external
         override
         onlyApprovedActors
     {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin);
+        setAsset(assetId, state, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetSTKTerms(terms);
     }
 

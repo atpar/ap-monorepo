@@ -40,6 +40,7 @@ describe('CERTFActor', () => {
       self.schedule,
       self.ownership,
       self.CERTFEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events,'InitializedAsset');
