@@ -276,7 +276,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
         internal
         view
         virtual
-        returns (bytes32);
+        returns (bytes memory);
 
     /**
      * @notice Retrieves external data (such as market object data)
@@ -289,7 +289,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     )
         internal
         view
-        returns (bytes32)
+        returns (bytes memory)
     {
         address currency = assetRegistry.getAddressValueForTermsAttribute(assetId, "currency");
         address settlementCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "settlementCurrency");
@@ -300,9 +300,9 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
                 keccak256(abi.encode(currency, settlementCurrency)),
                 timestamp
             );
-            if (isSet) return bytes32(fxRate);
+            if (isSet) return abi.encode(fxRate);
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

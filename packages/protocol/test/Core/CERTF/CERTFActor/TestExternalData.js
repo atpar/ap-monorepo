@@ -70,22 +70,18 @@ describe('CERTFActor', () => {
     await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       this.terms.issueDate,
-      web3.utils.padLeft(
-        web3.utils.numberToHex(
-          web3.utils.toWei(String(this.redemptionAmounts[0]))
-        ),
-        64
+      web3.eth.abi.encodeParameter(
+        'int256',
+        web3.utils.toWei(String(this.redemptionAmounts[0]))
       )
     ).send({ from: actor });
 
     await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_1.object,
       scheduleTime,
-      web3.utils.padLeft(
-        web3.utils.numberToHex(
-          web3.utils.toWei(String(this.redemptionAmounts[1]))
-        ),
-        64
+      web3.eth.abi.encodeParameter(
+        'int256',
+        web3.utils.toWei(String(this.redemptionAmounts[1]))
       )
     ).send({ from: actor });
 
@@ -101,11 +97,9 @@ describe('CERTFActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.padLeft(
-        web3.utils.numberToHex(
-          web3.utils.toWei(String(this.redemptionAmounts[1] / this.redemptionAmounts[0]))
-        ),
-        64
+      web3.eth.abi.encodeParameter(
+        'int256',
+        web3.utils.toWei(String(this.redemptionAmounts[1] / this.redemptionAmounts[0]))
       )
     ).call();
 
@@ -132,11 +126,9 @@ describe('CERTFActor', () => {
     await this.DataRegistryProxyInstance.methods.publishDataPoint(
       this.terms.contractReference_2.object,
       scheduleTime,
-      web3.utils.padLeft(
-        web3.utils.numberToHex(
-          web3.utils.toWei(String(this.quantity[0]))
-        ),
-        64
+      web3.eth.abi.encodeParameter(
+        'int256',
+        web3.utils.toWei(String(this.quantity[0]))
       )
     ).send({ from: actor2 });
 
@@ -152,11 +144,9 @@ describe('CERTFActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.padLeft(
-        web3.utils.numberToHex(
-          web3.utils.toWei(String(this.quantity[0]))
-        ),
-        64
+      web3.eth.abi.encodeParameter(
+        'int256',
+        web3.utils.toWei(String(this.quantity[0]))
       )
     ).call();
 

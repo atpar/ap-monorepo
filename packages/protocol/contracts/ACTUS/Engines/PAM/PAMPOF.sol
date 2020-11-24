@@ -27,7 +27,7 @@ contract PAMPOF is Core {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -68,7 +68,7 @@ contract PAMPOF is Core {
         PAMTerms memory terms,
         State memory /* state */,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -90,7 +90,7 @@ contract PAMPOF is Core {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -127,7 +127,7 @@ contract PAMPOF is Core {
         PAMTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -147,7 +147,7 @@ contract PAMPOF is Core {
         PAMTerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -167,7 +167,7 @@ contract PAMPOF is Core {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

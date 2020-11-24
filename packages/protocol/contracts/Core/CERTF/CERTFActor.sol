@@ -109,12 +109,12 @@ contract CERTFActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
+            return abi.encode(block.timestamp);
         } else if (eventType == EventType.EXE) {
             // get quantity
             ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
@@ -129,7 +129,7 @@ contract CERTFActor is BaseActor {
                     contractReference_2.object,
                     timestamp
                 );
-                if (isSet) return bytes32(quantity);
+                if (isSet) return abi.encode(quantity);
             }
         } else if (eventType == EventType.REF) {
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
@@ -149,12 +149,11 @@ contract CERTFActor is BaseActor {
                     assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
-                    return bytes32(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
+                    return abi.encode(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
                 }
             }
-            return bytes32(0);
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

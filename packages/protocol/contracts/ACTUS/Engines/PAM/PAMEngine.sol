@@ -38,7 +38,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -510,7 +510,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         PAMTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -519,6 +519,12 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         override
         returns (bool)
     {
+         if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 
@@ -537,7 +543,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -582,7 +588,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

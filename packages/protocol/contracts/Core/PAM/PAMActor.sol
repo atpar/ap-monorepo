@@ -106,7 +106,7 @@ contract PAMActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.RR) {
             // get rate from DataRegistry
@@ -114,13 +114,13 @@ contract PAMActor is BaseActor {
                 assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeRateReset"),
                 timestamp
             );
-            if (isSet) return bytes32(resetRate);
+            if (isSet) return abi.encode(resetRate);
         } else if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
+            return abi.encode(block.timestamp);
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

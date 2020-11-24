@@ -27,7 +27,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -48,7 +48,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -67,7 +67,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -98,7 +98,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -119,13 +119,13 @@ contract CERTFSTF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
         returns (State memory)
     {
-        state.exerciseAmount = int256(externalData)
+        state.exerciseAmount = abi.decode(externalData, (int256))
         .floatMult(terms.nominalPrice)
         .floatMult(state.marginFactor)
         .floatMult(state.adjustmentFactor);
@@ -144,13 +144,13 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
         returns (State memory)
     {
-        state.exerciseQuantity = int256(externalData);
+        state.exerciseQuantity = abi.decode(externalData, (int256));
         state.statusDate = scheduleTime;
 
         return state;
@@ -165,7 +165,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -194,7 +194,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -216,7 +216,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -237,7 +237,7 @@ contract CERTFSTF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -252,7 +252,7 @@ contract CERTFSTF is Core {
                 terms.maturityDate
             ) : state.nonPerformingDate;
 
-        uint256 currentTimestamp = uint256(externalData);
+        uint256 currentTimestamp = abi.decode(externalData, (uint256));
 
         bool isInGracePeriod = false;
         if (terms.gracePeriod.isSet) {

@@ -163,7 +163,7 @@ contract CECActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.EXE) {
             // get the remaining notionalPrincipal from the underlying
@@ -178,12 +178,12 @@ contract CECActor is BaseActor {
                     IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
                     "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
                 );
-                return bytes32(
+                return abi.encode(
                     IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

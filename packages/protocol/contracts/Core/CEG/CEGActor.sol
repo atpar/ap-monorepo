@@ -116,12 +116,12 @@ contract CEGActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
+            return abi.encode(block.timestamp);
         } else if (eventType == EventType.EXE) {
             // get the remaining notionalPrincipal from the underlying
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
@@ -135,12 +135,12 @@ contract CEGActor is BaseActor {
                     IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
                     "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
                 );
-                return bytes32(
+                return abi.encode(
                     IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

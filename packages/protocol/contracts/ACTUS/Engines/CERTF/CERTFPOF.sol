@@ -26,7 +26,7 @@ contract CERTFPOF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -45,7 +45,7 @@ contract CERTFPOF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -64,7 +64,7 @@ contract CERTFPOF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -83,7 +83,7 @@ contract CERTFPOF is Core {
         CERTFTerms memory terms,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
