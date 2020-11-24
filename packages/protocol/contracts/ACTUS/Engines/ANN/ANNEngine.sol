@@ -38,7 +38,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -585,7 +585,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -631,7 +631,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

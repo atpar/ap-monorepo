@@ -39,7 +39,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         CECTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -66,7 +66,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         CECTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -274,7 +274,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         CECTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -304,7 +304,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         CECTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

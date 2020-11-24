@@ -75,7 +75,7 @@ describe('STKActor', () => {
     const point = {
       provider: '0x' + toBN(this.assetId).add(toBN(this.extData.DIP.index)).toString(16),
       date: this.terms.cycleAnchorDateOfDividend,
-      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.DIP.values[0]))), 64)
+      value: web3.eth.abi.encodeParameter('int256', web3.utils.toWei(String(this.extData.DIP.values[0])))
     };
     await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
       .send({ from: deployer });
@@ -114,7 +114,7 @@ describe('STKActor', () => {
     const point = {
       provider: '0x' + toBN(this.assetId).add(toBN(this.extData.SRA.index)).toString(16),
       date: this.terms.issueDate + 2 * minute,
-      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.SRA.values[0]))), 64)
+      value: web3.eth.abi.encodeParameter('int256', web3.utils.toWei(String(this.extData.SRA.values[0])))
     };
     await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor).send({ from: deployer });
     await this.DataRegistryProxyInstance.methods.publishDataPoint(point.provider, point.date, point.value)
@@ -152,7 +152,7 @@ describe('STKActor', () => {
     const point = {
       provider: '0x' + toBN(this.assetId).add(toBN(this.extData.REXA.index)).toString(16),
       date: this.terms.issueDate + 3 * minute,
-      value: web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(this.extData.REXA.values[0]))), 64)
+      value: web3.eth.abi.encodeParameter('int256', web3.utils.toWei(String(this.extData.REXA.values[0])))
     };
     await this.DataRegistryProxyInstance.methods.setDataProvider(point.provider, actor)
       .send({ from: deployer });

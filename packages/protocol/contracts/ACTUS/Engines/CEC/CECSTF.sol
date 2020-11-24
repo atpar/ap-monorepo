@@ -27,7 +27,7 @@ contract CECSTF is Core {
         CECTerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -40,7 +40,7 @@ contract CECSTF is Core {
         CECTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -57,7 +57,7 @@ contract CECSTF is Core {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -74,7 +74,7 @@ contract CECSTF is Core {
         }
         state.statusDate = scheduleTime;
         // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
+        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.exerciseDate = scheduleTime;
 
         if (terms.feeBasis == FeeBasis.A) {
@@ -95,7 +95,7 @@ contract CECSTF is Core {
         CECTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

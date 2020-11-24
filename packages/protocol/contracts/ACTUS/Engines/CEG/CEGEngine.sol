@@ -39,7 +39,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         CEGTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -66,7 +66,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         CEGTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -80,7 +80,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -353,7 +353,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         CEGTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -389,7 +389,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         CEGTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

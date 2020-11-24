@@ -13,7 +13,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -31,7 +31,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -49,7 +49,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -67,7 +67,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -85,7 +85,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -103,7 +103,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -121,7 +121,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

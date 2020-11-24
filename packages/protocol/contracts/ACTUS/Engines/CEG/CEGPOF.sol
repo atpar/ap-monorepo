@@ -26,7 +26,7 @@ contract CEGPOF is Core {
         CEGTerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -43,7 +43,7 @@ contract CEGPOF is Core {
         CEGTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

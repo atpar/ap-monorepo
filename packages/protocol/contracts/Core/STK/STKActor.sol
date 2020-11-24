@@ -111,12 +111,12 @@ contract STKActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
+            return abi.encode(block.timestamp);
         } else if (eventType == EventType.EXE) {
             // get quantity
             ContractReference memory contractReference_2 = assetRegistry.getContractReferenceValueForTermsAttribute(
@@ -131,7 +131,7 @@ contract STKActor is BaseActor {
                     contractReference_2.object,
                     timestamp
                 );
-                if (isSet) return bytes32(quantity);
+                if (isSet) return abi.encode(quantity);
             }
         } else if (eventType == EventType.REF) {
             //
@@ -139,27 +139,27 @@ contract STKActor is BaseActor {
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
                 timestamp
             );
-            if (isSet) return bytes32(rexa);
+            if (isSet) return abi.encode(rexa);
         } else if (eventType == EventType.DIF) {
             (int256 dipa, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.DIP)),
                 timestamp
             );
-            if (isSet) return bytes32(dipa);
+            if (isSet) return abi.encode(dipa);
         } else if (eventType == EventType.SPF) {
             (int256 sra, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.SRA)),
                 timestamp
             );
-            if (isSet) return bytes32(sra);
+            if (isSet) return abi.encode(sra);
         } else if (eventType == EventType.REF) {
             (int256 rexa, bool isSet) = defaultOracleProxy.getDataPoint(
                 bytes32(uint256(assetId) + uint256(STKExternalDataType.REXA)),
                 timestamp
             );
-            if (isSet) return bytes32(rexa);
+            if (isSet) return abi.encode(rexa);
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

@@ -14,7 +14,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -32,7 +32,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -50,7 +50,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -68,7 +68,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -86,7 +86,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -104,7 +104,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -122,7 +122,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -140,7 +140,7 @@ contract TestSTKSTF is STKSTF {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
