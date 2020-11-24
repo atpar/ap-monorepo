@@ -42,7 +42,6 @@ describe('CEGActor', () => {
     // set address of payment token as currency in terms
     self.terms.currency = self.PaymentTokenInstance.options.address;
     self.terms.settlementCurrency = self.PaymentTokenInstance.options.address;
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.CEGEngineInstance, self.terms);
     self.state = web3ResponseToState(
@@ -99,7 +98,7 @@ describe('CEGActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.toHex(eventTime)
+      web3.eth.abi.encodeParameter('uint256', eventTime)
     ).call());
     const storedNextEvent = await this.CEGRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
 

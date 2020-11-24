@@ -30,8 +30,7 @@ library ANNEncoder {
             bytes32(uint256(uint8(terms.businessDayConvention))) << 216 |
             bytes32(uint256(uint8(terms.endOfMonthConvention))) << 208 |
             bytes32(uint256(uint8(terms.scalingEffect))) << 200 |
-            bytes32(uint256(uint8(terms.penaltyType))) << 192 |
-            bytes32(uint256(uint8(terms.feeBasis))) << 184
+            bytes32(uint256(uint8(terms.feeBasis))) << 192
         );
 
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
@@ -39,7 +38,6 @@ library ANNEncoder {
 
         storeInPackedTerms(asset, "marketObjectCodeRateReset", bytes32(terms.marketObjectCodeRateReset));
 
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
@@ -60,8 +58,6 @@ library ANNEncoder {
         storeInPackedTerms(asset, "nextResetRate", bytes32(terms.nextResetRate));
         storeInPackedTerms(asset, "feeRate", bytes32(terms.feeRate));
         storeInPackedTerms(asset, "feeAccrued", bytes32(terms.feeAccrued));
-        storeInPackedTerms(asset, "penaltyRate", bytes32(terms.penaltyRate));
-        storeInPackedTerms(asset, "delinquencyRate", bytes32(terms.delinquencyRate));
         storeInPackedTerms(asset, "premiumDiscountAtIED", bytes32(terms.premiumDiscountAtIED));
         storeInPackedTerms(asset, "priceAtPurchaseDate", bytes32(terms.priceAtPurchaseDate));
         storeInPackedTerms(asset, "priceAtTerminationDate", bytes32(terms.priceAtTerminationDate));
@@ -140,15 +136,13 @@ library ANNEncoder {
             BusinessDayConvention(uint8(uint256(asset.packedTerms["enums"] >> 216))),
             EndOfMonthConvention(uint8(uint256(asset.packedTerms["enums"] >> 208))),
             ScalingEffect(uint8(uint256(asset.packedTerms["enums"] >> 200))),
-            PenaltyType(uint8(uint256(asset.packedTerms["enums"] >> 192))),
-            FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 184))),
+            FeeBasis(uint8(uint256(asset.packedTerms["enums"] >> 192))),
 
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
             asset.packedTerms["marketObjectCodeRateReset"],
 
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
@@ -169,8 +163,6 @@ library ANNEncoder {
             int256(asset.packedTerms["nextResetRate"]),
             int256(asset.packedTerms["feeRate"]),
             int256(asset.packedTerms["feeAccrued"]),
-            int256(asset.packedTerms["penaltyRate"]),
-            int256(asset.packedTerms["delinquencyRate"]),
             int256(asset.packedTerms["premiumDiscountAtIED"]),
             int256(asset.packedTerms["priceAtPurchaseDate"]),
             int256(asset.packedTerms["priceAtTerminationDate"]),
@@ -243,10 +235,8 @@ library ANNEncoder {
             return uint8(uint256(asset.packedTerms["enums"] >> 208));
         } else if (attributeKey == bytes32("scalingEffect")) {
             return uint8(uint256(asset.packedTerms["enums"] >> 200));
-        } else if (attributeKey == bytes32("penaltyType")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 192));
         } else if (attributeKey == bytes32("feeBasis")) {
-            return uint8(uint256(asset.packedTerms["enums"] >> 184));
+            return uint8(uint256(asset.packedTerms["enums"] >> 192));
         } else {
             return uint8(0);
         }

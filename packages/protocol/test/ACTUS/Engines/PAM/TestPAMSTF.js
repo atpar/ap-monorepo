@@ -3,14 +3,14 @@ const buidlerRuntime = require('hardhat');
 const { toWei } = require('web3-utils');
 
 const { getDefaultTestTerms, getDefaultState, assertEqualStates } = require('../../../helper/ACTUS/tests');
-const { getSnapshotTaker, deployTestPAMSTF } = require('../../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
 describe('TestPAMPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestSTF = await deployTestPAMSTF(buidlerRuntime);
+    self.TestSTF = await deployContract(buidlerRuntime, 'TestPAMSTF');
   });
 
   before(async () => {
@@ -234,32 +234,32 @@ describe('TestPAMPOF', () => {
   /*
   * TEST STF_PAM_PY
   */
-  it('PAM Princiapl Redemption STF', async () => {
-    const oldState = getDefaultState();
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
+  // it('PAM Penalty STF', async () => {
+  //   const oldState = getDefaultState();
+  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  //   const scheduleTime = 6307200; // .2 years
 
-    this.PAMTerms.feeRate = toWei('0.01');
-    this.PAMTerms.nominalInterestRate = toWei('0.05');
-    this.PAMTerms.dayCountConvention = 2; // A_365
-    this.PAMTerms.businessDayConvention = 0; // NULL
+  //   this.PAMTerms.feeRate = toWei('0.01');
+  //   this.PAMTerms.nominalInterestRate = toWei('0.05');
+  //   this.PAMTerms.dayCountConvention = 2; // A_365
+  //   this.PAMTerms.businessDayConvention = 0; // NULL
 
-    // Construct expected state from default state
-    const expectedState = getDefaultState();
-    expectedState.accruedInterest = toWei('10100');
-    expectedState.feeAccrued = toWei('2010');
-    expectedState.statusDate = 6307200;
+  //   // Construct expected state from default state
+  //   const expectedState = getDefaultState();
+  //   expectedState.accruedInterest = toWei('10100');
+  //   expectedState.feeAccrued = toWei('2010');
+  //   expectedState.statusDate = 6307200;
 
 
-    const newState = await this.TestSTF.methods._STF_PAM_PY(
-      this.PAMTerms,
-      oldState,
-      scheduleTime,
-      externalData
-    ).call();
+  //   const newState = await this.TestSTF.methods._STF_PAM_PY(
+  //     this.PAMTerms,
+  //     oldState,
+  //     scheduleTime,
+  //     externalData
+  //   ).call();
 
-    assertEqualStates(newState, expectedState);
-  });
+  //   assertEqualStates(newState, expectedState);
+  // });
 
   /*
   * TEST STF_PAM_RRF

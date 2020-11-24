@@ -35,7 +35,6 @@ library STKEncoder {
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
         storeInPackedTerms(asset, "settlementCurrency", bytes32(uint256(terms.settlementCurrency) << 96));
 
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "issueDate", bytes32(terms.issueDate));
         storeInPackedTerms(asset, "purchaseDate", bytes32(terms.purchaseDate));
@@ -110,7 +109,6 @@ library STKEncoder {
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["issueDate"]),
             uint256(asset.packedTerms["purchaseDate"]),

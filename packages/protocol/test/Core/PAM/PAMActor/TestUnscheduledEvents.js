@@ -48,7 +48,6 @@ describe('PAMActor', () => {
     // set address of payment token as currency in terms
     self.terms.currency = self.PaymentTokenInstance.options.address;
     self.terms.settlementCurrency = self.PaymentTokenInstance.options.address;
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.PAMEngineInstance, self.terms);
   });
@@ -75,7 +74,7 @@ describe('PAMActor', () => {
     const initialState = await this.PAMRegistryInstance.methods.getState(
       web3.utils.toHex(this.assetId)
     ).call();
-    const event = encodeEvent(eventIndex('IP'), Number(this.terms.contractDealDate) + 100);
+    const event = encodeEvent(eventIndex('IP'), Number(this.terms.statusDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));

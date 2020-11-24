@@ -176,17 +176,14 @@ export class ICEGRegistry extends Contract {
       creditEventTypeCovered: string;
       currency: string;
       settlementCurrency: string;
-      contractDealDate: string;
       statusDate: string;
       maturityDate: string;
       purchaseDate: string;
       cycleAnchorDateOfFee: string;
       notionalPrincipal: string;
-      delinquencyRate: string;
       feeAccrued: string;
       feeRate: string;
       priceAtPurchaseDate: string;
-      priceAtTerminationDate: string;
       coverageOfCreditEnhancement: string;
       gracePeriod: { i: string; p: string; isSet: boolean };
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
@@ -272,17 +269,14 @@ export class ICEGRegistry extends Contract {
         creditEventTypeCovered: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         maturityDate: number | string;
         purchaseDate: number | string;
         cycleAnchorDateOfFee: number | string;
         notionalPrincipal: number | string;
-        delinquencyRate: number | string;
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
-        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {
@@ -458,17 +452,14 @@ export class ICEGRegistry extends Contract {
         creditEventTypeCovered: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         maturityDate: number | string;
         purchaseDate: number | string;
         cycleAnchorDateOfFee: number | string;
         notionalPrincipal: number | string;
-        delinquencyRate: number | string;
         feeAccrued: number | string;
         feeRate: number | string;
         priceAtPurchaseDate: number | string;
-        priceAtTerminationDate: number | string;
         coverageOfCreditEnhancement: number | string;
         gracePeriod: { i: number | string; p: number | string; isSet: boolean };
         delinquencyPeriod: {

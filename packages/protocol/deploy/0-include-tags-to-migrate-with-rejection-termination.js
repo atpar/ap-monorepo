@@ -2,6 +2,6 @@
 module.exports = async () => await Promise.resolve();
 module.exports.tags = ["migrate-terminate"];
 module.exports.dependencies = [
-    "_terminate-on-rejections",
-    "migrate"
+  "_terminate-on-rejections",
+  "migrate"
 ];

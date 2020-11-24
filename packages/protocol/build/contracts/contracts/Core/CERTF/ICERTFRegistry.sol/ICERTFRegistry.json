@@ -847,11 +847,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -1017,7 +1012,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "redemptionExercisePeriod",
+              "name": "redemptionRecordPeriod",
               "type": "tuple"
             },
             {
@@ -1471,11 +1466,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -1641,7 +1631,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "redemptionExercisePeriod",
+              "name": "redemptionRecordPeriod",
               "type": "tuple"
             },
             {
@@ -2434,11 +2424,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -2604,7 +2589,7 @@
                 }
               ],
               "internalType": "struct IP",
-              "name": "redemptionExercisePeriod",
+              "name": "redemptionRecordPeriod",
               "type": "tuple"
             },
             {

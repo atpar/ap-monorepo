@@ -6,7 +6,6 @@
 	"businessDayConvention": 0,
 	"endOfMonthConvention": 0,
 	"scalingEffect": 0,
-	"penaltyType": 0,
 	"feeBasis": 0,
 	"creditEventTypeCovered": 3,
 
@@ -17,7 +16,6 @@
 	"counterpartyID": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"marketObjectCodeRateReset": "0x0000000000000000000000000000000000000000000000000000000000000000",
 
-	"contractDealDate": 1356652800,
 	"statusDate": 1356825600,
 	"initialExchangeDate": 1356998400,
 	"maturityDate": 1388534400,
@@ -37,7 +35,6 @@
 	"rateSpread": "0",
 	"feeRate": "0",
 	"nextResetRate": "0",
-	"penaltyRate": "0",
 	"premiumDiscountAtIED": "0",
 	"priceAtPurchaseDate": "0",
 	"priceAtTerminationDate": "0",

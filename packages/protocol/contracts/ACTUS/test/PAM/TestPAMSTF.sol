@@ -14,7 +14,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -32,7 +32,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -50,7 +50,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -68,7 +68,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -86,7 +86,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -104,7 +104,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -122,7 +122,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -140,7 +140,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -154,29 +154,11 @@ contract TestPAMSTF is PAMSTF {
         );
     }
 
-    function _STF_PAM_PY(
-        PAMTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_PAM_PY(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
     function _STF_PAM_RRF(
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -194,7 +176,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -212,7 +194,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -230,7 +212,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -248,7 +230,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -266,7 +248,7 @@ contract TestPAMSTF is PAMSTF {
         PAMTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

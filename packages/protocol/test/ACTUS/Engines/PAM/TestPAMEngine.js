@@ -71,14 +71,14 @@ describe('PAMEngine', () => {
     const initialState = await this.PAMEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.PAMEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ).call();
     const nextState = await this.PAMEngineInstance.methods.computeStateForEvent(
       this.terms,
       initialState,
       schedule[0],
-      web3.utils.toHex(decodeEvent(schedule[0]).scheduleTime)
+      web3.eth.abi.encodeParameter('uint256', decodeEvent(schedule[0]).scheduleTime)
     ).call();
 
     assert.strictEqual(String(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
@@ -87,7 +87,7 @@ describe('PAMEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -129,7 +129,7 @@ describe('PAMEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 
@@ -140,7 +140,7 @@ describe('PAMEngine', () => {
         this.terms,
         state,
         _event,
-        web3.utils.toHex(decodeEvent(_event).scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', decodeEvent(_event).scheduleTime)
       ).call();
 
       state = nextState;

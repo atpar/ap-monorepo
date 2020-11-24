@@ -5,7 +5,7 @@ const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { mineBlock } = require('../helper/utils/blockchain');
-const { getSnapshotTaker, deployDvPSettlement, deployPaymentToken } = require('../helper/setupTestEnvironment');
+const { deployContract, deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
 
 
 describe('DvPSettlement', () => {
@@ -25,7 +25,9 @@ describe('DvPSettlement', () => {
     self.counterpartyToken = await deployPaymentToken(buidlerRuntime, counterparty);
 
     // deploy DvPSettlement Contract
-    self.dvpSettlementContract = await deployDvPSettlement(buidlerRuntime, someone);
+    self.dvpSettlementContract = await deployContract(
+      buidlerRuntime, 'DvPSettlement', [], { from: someone }
+    );
   });
 
   before(async () => {
@@ -210,7 +212,7 @@ describe('DvPSettlement', () => {
           counterpartyAmount,
           lastTimestamp - 1,
         ).send({ from: creator }),
-        'DvPSettlement.createSettlement - expiration date cannot be in the past'
+        'DvPSettlement.createSettlement: INVALID_EXPIRATION_DATE'
       );
     });
 
@@ -235,7 +237,7 @@ describe('DvPSettlement', () => {
 
       await expectRevert(
         this.dvpSettlementContract.methods.executeSettlement(id).send({ from: counterparty }),
-        'DvPSettlement.executeSettlement - settlement expired'
+        'DvPSettlement.executeSettlement: SETTLEMENT_EXPIRED'
       );
 
     });

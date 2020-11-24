@@ -13,7 +13,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -31,7 +31,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -49,7 +49,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -67,7 +67,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -85,7 +85,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -99,29 +99,11 @@ contract TestANNPOF is ANNPOF {
         );
     }
 
-    function _POF_ANN_PY (
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns(int256)
-    {
-         return POF_ANN_PY(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
     function _POF_ANN_TD (
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -139,7 +121,7 @@ contract TestANNPOF is ANNPOF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

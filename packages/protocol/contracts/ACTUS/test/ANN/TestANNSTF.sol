@@ -13,7 +13,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -31,7 +31,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -49,7 +49,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -67,7 +67,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -81,30 +81,11 @@ contract TestANNSTF is ANNSTF {
         );
     }
 
-    function _STF_ANN_PY(
-        ANNTerms memory terms,
-        State memory state,
-        uint256 scheduleTime,
-        bytes32 externalData
-    )
-        public
-        pure
-        returns (State memory)
-    {
-        return STF_ANN_PY(
-            terms,
-            state,
-            scheduleTime,
-            externalData
-        );
-    }
-
-
     function _STF_ANN_RRF(
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -122,7 +103,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -140,7 +121,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -158,7 +139,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -176,7 +157,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -194,7 +175,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -212,7 +193,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -230,7 +211,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -248,7 +229,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -266,7 +247,7 @@ contract TestANNSTF is ANNSTF {
         ANNTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

@@ -42,7 +42,6 @@ describe('CERTFActor', () => {
       currency: self.PaymentTokenInstance.options.address,
       settlementCurrency: self.PaymentTokenInstance.options.address,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = [];
     self.state = web3ResponseToState(
@@ -77,7 +76,7 @@ describe('CERTFActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 

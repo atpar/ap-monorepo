@@ -836,11 +836,6 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum PenaltyType",
-              "name": "penaltyType",
-              "type": "uint8"
-            },
-            {
               "internalType": "enum FeeBasis",
               "name": "feeBasis",
               "type": "uint8"
@@ -859,11 +854,6 @@
               "internalType": "bytes32",
               "name": "marketObjectCodeRateReset",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -953,16 +943,6 @@
             {
               "internalType": "int256",
               "name": "feeAccrued",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "penaltyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "delinquencyRate",
               "type": "int256"
             },
             {
@@ -1457,11 +1437,6 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum PenaltyType",
-              "name": "penaltyType",
-              "type": "uint8"
-            },
-            {
               "internalType": "enum FeeBasis",
               "name": "feeBasis",
               "type": "uint8"
@@ -1480,11 +1455,6 @@
               "internalType": "bytes32",
               "name": "marketObjectCodeRateReset",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -1574,16 +1544,6 @@
             {
               "internalType": "int256",
               "name": "feeAccrued",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "penaltyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "delinquencyRate",
               "type": "int256"
             },
             {
@@ -2417,11 +2377,6 @@
               "type": "uint8"
             },
             {
-              "internalType": "enum PenaltyType",
-              "name": "penaltyType",
-              "type": "uint8"
-            },
-            {
               "internalType": "enum FeeBasis",
               "name": "feeBasis",
               "type": "uint8"
@@ -2440,11 +2395,6 @@
               "internalType": "bytes32",
               "name": "marketObjectCodeRateReset",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
             },
             {
               "internalType": "uint256",
@@ -2534,16 +2484,6 @@
             {
               "internalType": "int256",
               "name": "feeAccrued",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "penaltyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "delinquencyRate",
               "type": "int256"
             },
             {

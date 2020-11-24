@@ -38,7 +38,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -137,10 +137,20 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index;
 
+        // issuance
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+
         // initial exchange
-        if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
-            index++;
+        if (terms.initialExchangeDate != 0) {
+            if (terms.purchaseDate == 0 && isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
+                index++;
+            }
         }
 
         // purchase
@@ -152,9 +162,11 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         }
 
         // principal redemption
-        if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
-            events[index] = encodeEvent(EventType.MD, terms.maturityDate);
-            index++;
+        if (terms.maturityDate != 0) {
+            if (isInSegment(terms.maturityDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.MD, terms.maturityDate);
+                index++;
+            }
         }
 
         // remove null entries from returned array
@@ -332,13 +344,24 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
 
         // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
+        // issuance
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+        
         // initial exchange
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
-            // date for event has to come before previous candidate for the next event
             && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
-            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
         ) {
             eventTypeNextEvent = EventType.IED;
@@ -487,7 +510,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         PAMTerms calldata /* terms */,
-        State calldata /* state */,
+        State calldata state,
         bool /* hasUnderlying */,
         State calldata /* underlyingState */
     )
@@ -496,6 +519,12 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         override
         returns (bool)
     {
+         if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 
@@ -514,7 +543,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -528,13 +557,13 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return STF_PAM_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_PAM_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_PAM_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_PAM_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_PAM_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_PAM_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_PAM_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_PAM_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_PAM_SC(terms, state, scheduleTime, externalData);
@@ -559,7 +588,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         PAMTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -573,6 +602,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;
@@ -583,7 +613,6 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         if (eventType == EventType.IP) return POF_PAM_IP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return POF_PAM_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_PAM_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_PAM_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_PAM_TD(terms, state, scheduleTime, externalData);
 
         revert("PAMEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

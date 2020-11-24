@@ -4,7 +4,16 @@ import Web3 from 'web3';
 import ADDRESS_BOOK from '../../ap-chain/addresses.json';
 
 import { Utils, Contracts } from '../../src/apis';
-import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms, isSTKTerms } from '../../src/types';
+import {
+  Terms,
+  isANNTerms,
+  isCECTerms,
+  isCEGTerms,
+  isCERTFTerms,
+  isCOLLATerms,
+  isPAMTerms,
+  isSTKTerms
+} from '../../src/types';
 import { removeNullEvents } from '../../src/utils/Schedule';
 
 import DEFAULT_TERMS from '../Default-Terms.json';
@@ -98,6 +107,12 @@ describe('Utils', (): void => {
       const terms: Terms = DEFAULT_TERMS;
       const certfTerms = Utils.conversion.extractCERTFTerms(terms);
       expect(isCERTFTerms(certfTerms))
+    });
+
+    it('should convert full terms to COLLATerms', async (): Promise<void> => {
+      const terms: Terms = DEFAULT_TERMS;
+      const collaTerms = Utils.conversion.extractCOLLATerms(terms);
+      expect(isCOLLATerms(collaTerms))
     });
 
     it('should convert full terms to PAMTerms', async (): Promise<void> => {

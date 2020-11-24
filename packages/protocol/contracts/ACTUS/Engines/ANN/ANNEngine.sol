@@ -38,7 +38,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -141,6 +141,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
         uint16 index;
 
+        // issuance
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+        
         // initial exchange
         if (isInSegment(terms.initialExchangeDate, segmentStart, segmentEnd)) {
             events[index] = encodeEvent(EventType.IED, terms.initialExchangeDate);
@@ -362,13 +370,24 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
 
         // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
 
+        // issuance
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+        
         // initial exchange
         if (
             // date for event has to be set in terms and date of event can be in the past
             (terms.initialExchangeDate != 0 && (lastScheduleTime <= terms.initialExchangeDate))
-            // date for event has to come before previous candidate for the next event
             && (scheduleTimeNextEvent == 0 || terms.initialExchangeDate < scheduleTimeNextEvent)
-            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
             && (lastScheduleTime != terms.initialExchangeDate || lastEventType != EventType.IED)
         ) {
             eventTypeNextEvent = EventType.IED;
@@ -566,7 +585,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -580,14 +599,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return STF_ANN_AD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.ISS) return STF_ANN_ISS(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IED) return STF_ANN_IED(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IPCI) return STF_ANN_IPCI(terms, state, scheduleTime, externalData);
         if (eventType == EventType.IP) return STF_ANN_IP(terms, state, scheduleTime, externalData);
+        if (eventType == EventType.FP) return STF_ANN_FP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PP) return STF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return STF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return STF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return STF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RRF) return STF_ANN_RRF(terms, state, scheduleTime, externalData);
         if (eventType == EventType.RR) return STF_ANN_RR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.SC) return STF_ANN_SC(terms, state, scheduleTime, externalData);
@@ -612,7 +631,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         ANNTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -631,6 +650,7 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
          */
 
         if (eventType == EventType.AD) return 0;
+        if (eventType == EventType.ISS) return 0;
         if (eventType == EventType.IPCI) return 0;
         if (eventType == EventType.RRF) return 0;
         if (eventType == EventType.RR) return 0;
@@ -642,7 +662,6 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         if (eventType == EventType.PP) return POF_ANN_PP(terms, state, scheduleTime, externalData);
         if (eventType == EventType.PR) return POF_ANN_PR(terms, state, scheduleTime, externalData);
         if (eventType == EventType.MD) return POF_ANN_MD(terms, state, scheduleTime, externalData);
-        if (eventType == EventType.PY) return POF_ANN_PY(terms, state, scheduleTime, externalData);
         if (eventType == EventType.TD) return POF_ANN_TD(terms, state, scheduleTime, externalData);
 
         revert("ANNEngine.payoffFunction: ATTRIBUTE_NOT_FOUND");

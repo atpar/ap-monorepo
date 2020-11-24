@@ -76,14 +76,14 @@ describe('CERTFEngine', () => {
     const initialState = await this.CERTFEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.CERTFEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate || 1623448800 // tMax
     ).call();
     const nextState = await this.CERTFEngineInstance.methods.computeStateForEvent(
       this.terms,
       initialState,
       schedule[0],
-      web3.utils.toHex(decodeEvent(schedule[0]).scheduleTime)
+      web3.eth.abi.encodeParameter('uint256', decodeEvent(schedule[0]).scheduleTime)
     ).call();
 
     assert.strictEqual(String(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
@@ -92,7 +92,7 @@ describe('CERTFEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -134,7 +134,7 @@ describe('CERTFEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 
@@ -145,7 +145,7 @@ describe('CERTFEngine', () => {
         this.terms,
         state,
         _event,
-        web3.utils.toHex(decodeEvent(_event).scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', decodeEvent(_event).scheduleTime)
       ).call();
 
       state = nextState;

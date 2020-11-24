@@ -56,7 +56,7 @@ describe('ANNActor', () => {
 
     self.state = await self.ANNRegistryInstance.methods.getState(web3.utils.toHex(self.assetId)).call();
 
-    self.resetRate = web3.utils.toWei('100'); // TODO: investigate overflow if set to non zero
+    self.resetRate = web3.utils.toWei('100');
   });
 
   before(async () => {
@@ -95,7 +95,7 @@ describe('ANNActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+      web3.eth.abi.encodeParameter('int256', this.resetRate)
     ).call();
 
     // compare results

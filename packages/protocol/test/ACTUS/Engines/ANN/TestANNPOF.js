@@ -3,14 +3,14 @@ const assert = require('assert');
 const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms, web3ResponseToState } = require('../../../helper/ACTUS/tests');
-const { getSnapshotTaker, deployTestANNPOF } = require('../../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
 describe('TestANNPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestPOF = await deployTestANNPOF(buidlerRuntime);
+    self.TestPOF = await deployContract(buidlerRuntime, 'TestANNPOF');
   });
 
   before(async () => {
@@ -196,84 +196,84 @@ describe('TestANNPOF', () => {
    * TEST POF_ANN_PY
    */
   // PenaltyType.A
-  it('Should yield a penalty payment of 1000', async () => {
-    const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
+  // it('Should yield a penalty payment of 1000', async () => {
+  //   const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
+  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  //   const scheduleTime = 6307200; // .2 years
 
-    // used data
-    state.statusDate = '0';
-    this.ANNTerms.penaltyType = 1 // 1 = PenaltyType.A
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.penaltyRate = web3.utils.toWei('1000');
+  //   // used data
+  //   state.statusDate = '0';
+  //   this.ANNTerms.penaltyType = 1 // 1 = PenaltyType.A
+  //   this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+  //   this.ANNTerms.penaltyRate = web3.utils.toWei('1000');
 
-    const payoff = await this.TestPOF.methods._POF_ANN_PY(
-      this.ANNTerms,
-      state,
-      scheduleTime,
-      externalData
-    ).call();
-    assert.strictEqual(payoff.toString(), '1000000000000000000000');
-  });
+  //   const payoff = await this.TestPOF.methods._POF_ANN_PY(
+  //     this.ANNTerms,
+  //     state,
+  //     scheduleTime,
+  //     externalData
+  //   ).call();
+  //   assert.strictEqual(payoff.toString(), '1000000000000000000000');
+  // });
 
   // PenaltyType.N
-  it('Should yield a penalty payment of 20000', async () => {
-    const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
+  // it('Should yield a penalty payment of 20000', async () => {
+  //   const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
+  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  //   const scheduleTime = 6307200; // .2 years
 
-    // used data
-    this.ANNTerms.penaltyType = 2 // 2 = PenaltyType.N
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.penaltyRate = web3.utils.toWei('0.1');
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
-    this.ANNTerms.businessDayConvention = 0; // NULL
-    this.ANNTerms.calendar = 0; // NoCalendar
-    this.ANNTerms.dayCountConvention = 2; // A_365
-    this.ANNTerms.maturityDate = 31536000; // 1 year
+  //   // used data
+  //   this.ANNTerms.penaltyType = 2 // 2 = PenaltyType.N
+  //   this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+  //   this.ANNTerms.penaltyRate = web3.utils.toWei('0.1');
+  //   this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+  //   this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
+  //   this.ANNTerms.businessDayConvention = 0; // NULL
+  //   this.ANNTerms.calendar = 0; // NoCalendar
+  //   this.ANNTerms.dayCountConvention = 2; // A_365
+  //   this.ANNTerms.maturityDate = 31536000; // 1 year
 
-    state.statusDate = '0';
-    state.notionalPrincipal = web3.utils.toWei('1000000');
+  //   state.statusDate = '0';
+  //   state.notionalPrincipal = web3.utils.toWei('1000000');
 
-    const payoff = await this.TestPOF.methods._POF_ANN_PY(
-      this.ANNTerms,
-      state,
-      scheduleTime,
-      externalData
-    ).call();
+  //   const payoff = await this.TestPOF.methods._POF_ANN_PY(
+  //     this.ANNTerms,
+  //     state,
+  //     scheduleTime,
+  //     externalData
+  //   ).call();
 
-    assert.strictEqual(payoff.toString(), '20000000000000000000000');
-  });
+  //   assert.strictEqual(payoff.toString(), '20000000000000000000000');
+  // });
 
   // Other PenaltyTypes
-  it('Should yield a penalty payment of 200000', async () => {
-    const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
-    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    const scheduleTime = 6307200; // .2 years
+  // it('Should yield a penalty payment of 200000', async () => {
+  //   const state = web3ResponseToState(await this.ANNEngineInstance.methods.computeInitialState(this.ANNTerms).call());
+  //   const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+  //   const scheduleTime = 6307200; // .2 years
 
-    // used data
-    this.ANNTerms.penaltyType = 0 // 0 = PenaltyType.O
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
-    this.ANNTerms.businessDayConvention = 0; // NULL
-    this.ANNTerms.calendar = 0; // NoCalendar
-    this.ANNTerms.dayCountConvention = 2; // A_365
-    this.ANNTerms.maturityDate = 31536000; // 1 year
+  //   // used data
+  //   this.ANNTerms.penaltyType = 0 // 0 = PenaltyType.O
+  //   this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+  //   this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
+  //   this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
+  //   this.ANNTerms.businessDayConvention = 0; // NULL
+  //   this.ANNTerms.calendar = 0; // NoCalendar
+  //   this.ANNTerms.dayCountConvention = 2; // A_365
+  //   this.ANNTerms.maturityDate = 31536000; // 1 year
 
-    state.statusDate = '0';
-    state.notionalPrincipal = web3.utils.toWei('1000000');
+  //   state.statusDate = '0';
+  //   state.notionalPrincipal = web3.utils.toWei('1000000');
 
-    const payoff = await this.TestPOF.methods._POF_ANN_PY(
-      this.ANNTerms,
-      state,
-      scheduleTime,
-      externalData
-    ).call();
+  //   const payoff = await this.TestPOF.methods._POF_ANN_PY(
+  //     this.ANNTerms,
+  //     state,
+  //     scheduleTime,
+  //     externalData
+  //   ).call();
 
-    assert.strictEqual(payoff.toString(), '200000000000000000000000');
-  });
+  //   assert.strictEqual(payoff.toString(), '200000000000000000000000');
+  // });
 
   /*
    * TEST POF_ANN_TD
@@ -284,9 +284,8 @@ describe('TestANNPOF', () => {
     const scheduleTime = 6307200; // .2 years
 
     // used data
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
     this.ANNTerms.contractRole = 0; //RPA -> roleSign = 1
-    this.ANNTerms.priceAtPurchaseDate = web3.utils.toWei('100000');
+    this.ANNTerms.priceAtTerminationDate = web3.utils.toWei('100000');
     this.ANNTerms.businessDayConvention = 0; // NULL
     this.ANNTerms.calendar = 0; // NoCalendar
     this.ANNTerms.dayCountConvention = 2; // A_365

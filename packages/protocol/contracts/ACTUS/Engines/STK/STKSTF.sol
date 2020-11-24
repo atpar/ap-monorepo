@@ -27,7 +27,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
     internal
     pure
@@ -46,7 +46,7 @@ contract STKSTF is Core {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -68,13 +68,13 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
         returns (State memory)
     {
-        state.dividendPaymentAmount = int256(externalData);
+        state.dividendPaymentAmount = abi.decode(externalData, (int256));
         state.lastDividendFixingDate = scheduleTime;
         state.statusDate = scheduleTime;
         return state;
@@ -90,7 +90,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -109,7 +109,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
     internal
     pure
@@ -129,13 +129,13 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
     internal
     pure
     returns (State memory)
     {
-        state.splitRatio = int256(externalData);
+        state.splitRatio = abi.decode(externalData, (int256));
         state.statusDate = scheduleTime;
         return state;
     }
@@ -149,7 +149,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
     internal
     pure
@@ -170,14 +170,14 @@ contract STKSTF is Core {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
     internal
     pure
     returns (State memory)
     {
         if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
-            state.exerciseQuantity = int256(externalData);
+            state.exerciseQuantity = abi.decode(externalData, (int256));
         }
 
         state.statusDate = scheduleTime;
@@ -194,7 +194,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -213,7 +213,7 @@ contract STKSTF is Core {
         STKTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -237,7 +237,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -256,7 +256,7 @@ contract STKSTF is Core {
         STKTerms memory /* terms */,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

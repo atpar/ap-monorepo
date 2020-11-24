@@ -3,14 +3,14 @@ const assert = require('assert');
 const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms, web3ResponseToState } = require('../../../helper/ACTUS/tests');
-const { getSnapshotTaker, deployTestCEGPOF } = require('../../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
 describe('TestCEGPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestPOF = await deployTestCEGPOF(buidlerRuntime);
+    self.TestPOF = await deployContract(buidlerRuntime, 'TestCEGPOF');
   });
 
   before(async () => {

@@ -193,7 +193,6 @@ export class STKRegistry extends Contract {
       redeemableByIssuer: string;
       currency: string;
       settlementCurrency: string;
-      contractDealDate: string;
       statusDate: string;
       issueDate: string;
       purchaseDate: string;
@@ -281,7 +280,6 @@ export class STKRegistry extends Contract {
         redeemableByIssuer: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         issueDate: number | string;
         purchaseDate: number | string;
@@ -475,7 +473,6 @@ export class STKRegistry extends Contract {
         redeemableByIssuer: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         issueDate: number | string;
         purchaseDate: number | string;

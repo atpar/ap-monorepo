@@ -173,12 +173,10 @@ export class IANNRegistry extends Contract {
       businessDayConvention: string;
       endOfMonthConvention: string;
       scalingEffect: string;
-      penaltyType: string;
       feeBasis: string;
       currency: string;
       settlementCurrency: string;
       marketObjectCodeRateReset: string;
-      contractDealDate: string;
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
@@ -198,8 +196,6 @@ export class IANNRegistry extends Contract {
       nextResetRate: string;
       feeRate: string;
       feeAccrued: string;
-      penaltyRate: string;
-      delinquencyRate: string;
       premiumDiscountAtIED: string;
       priceAtPurchaseDate: string;
       priceAtTerminationDate: string;
@@ -291,12 +287,10 @@ export class IANNRegistry extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
-        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -316,8 +310,6 @@ export class IANNRegistry extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
-        delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         priceAtTerminationDate: number | string;
@@ -509,12 +501,10 @@ export class IANNRegistry extends Contract {
         businessDayConvention: number | string;
         endOfMonthConvention: number | string;
         scalingEffect: number | string;
-        penaltyType: number | string;
         feeBasis: number | string;
         currency: string;
         settlementCurrency: string;
         marketObjectCodeRateReset: string | number[];
-        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -534,8 +524,6 @@ export class IANNRegistry extends Contract {
         nextResetRate: number | string;
         feeRate: number | string;
         feeAccrued: number | string;
-        penaltyRate: number | string;
-        delinquencyRate: number | string;
         premiumDiscountAtIED: number | string;
         priceAtPurchaseDate: number | string;
         priceAtTerminationDate: number | string;

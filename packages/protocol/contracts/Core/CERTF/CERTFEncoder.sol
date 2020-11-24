@@ -35,7 +35,6 @@ library CERTFEncoder {
         storeInPackedTerms(asset, "currency", bytes32(uint256(terms.currency) << 96));
         storeInPackedTerms(asset, "settlementCurrency", bytes32(uint256(terms.settlementCurrency) << 96));
 
-        storeInPackedTerms(asset, "contractDealDate", bytes32(terms.contractDealDate));
         storeInPackedTerms(asset, "statusDate", bytes32(terms.statusDate));
         storeInPackedTerms(asset, "initialExchangeDate", bytes32(terms.initialExchangeDate));
         storeInPackedTerms(asset, "maturityDate", bytes32(terms.maturityDate));
@@ -80,10 +79,10 @@ library CERTFEncoder {
         );
         storeInPackedTerms(
             asset,
-            "redemptionExercisePeriod",
-            bytes32(uint256(terms.redemptionExercisePeriod.i)) << 24 |
-            bytes32(uint256(terms.redemptionExercisePeriod.p)) << 16 |
-            bytes32(uint256((terms.redemptionExercisePeriod.isSet) ? 1 : 0)) << 8
+            "redemptionRecordPeriod",
+            bytes32(uint256(terms.redemptionRecordPeriod.i)) << 24 |
+            bytes32(uint256(terms.redemptionRecordPeriod.p)) << 16 |
+            bytes32(uint256((terms.redemptionRecordPeriod.isSet) ? 1 : 0)) << 8
         );
 
         storeInPackedTerms(
@@ -162,7 +161,6 @@ library CERTFEncoder {
             address(uint160(uint256(asset.packedTerms["currency"]) >> 96)),
             address(uint160(uint256(asset.packedTerms["settlementCurrency"]) >> 96)),
 
-            uint256(asset.packedTerms["contractDealDate"]),
             uint256(asset.packedTerms["statusDate"]),
             uint256(asset.packedTerms["initialExchangeDate"]),
             uint256(asset.packedTerms["maturityDate"]),
@@ -198,9 +196,9 @@ library CERTFEncoder {
                 (asset.packedTerms["fixingPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IP(
-                uint256(asset.packedTerms["redemptionExercisePeriod"] >> 24),
-                P(uint8(uint256(asset.packedTerms["redemptionExercisePeriod"] >> 16))),
-                (asset.packedTerms["redemptionExercisePeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
+                uint256(asset.packedTerms["redemptionRecordPeriod"] >> 24),
+                P(uint8(uint256(asset.packedTerms["redemptionRecordPeriod"] >> 16))),
+                (asset.packedTerms["redemptionRecordPeriod"] >> 8 & bytes32(uint256(1)) == bytes32(uint256(1))) ? true : false
             ),
             IPS(
                 uint256(asset.packedTerms["cycleOfRedemption"] >> 24),
@@ -307,7 +305,7 @@ library CERTFEncoder {
             || attributeKey == bytes32("delinquencyPeriod")
             || attributeKey == bytes32("settlementPeriod")
             || attributeKey == bytes32("fixingPeriod")
-            || attributeKey == bytes32("redemptionExercisePeriod")
+            || attributeKey == bytes32("redemptionRecordPeriod")
         ) {
             return IP(
                 uint256(asset.packedTerms[attributeKey] >> 24),

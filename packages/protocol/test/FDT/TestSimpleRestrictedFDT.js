@@ -5,7 +5,7 @@ const { BN, /*balance,*/ ether, expectRevert } = require('@openzeppelin/test-hel
 
 const { expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const {
-  getSnapshotTaker, deployPaymentToken, deploySimpleRestrictedFDT,
+  deployContract, deployPaymentToken, getSnapshotTaker
 } = require('../helper/setupTestEnvironment');
 
 
@@ -23,15 +23,18 @@ describe('SimpleRestrictedFDT', () => {
     self.fundsToken = await deployPaymentToken( // test ERC20
       buidlerRuntime, owner,[tokenHolder1, tokenHolder2, tokenHolder3, anyone],
     );
-    self.fundsDistributionToken = await deploySimpleRestrictedFDT(
-      buidlerRuntime, { owner, fundsToken: self.fundsToken.options.address },
-    );
-    await self.fundsDistributionToken.methods.addAdmin(owner).send({from: owner});
-    await self.fundsDistributionToken.methods.updateOutboundWhitelistEnabled('1', '1', true).send({from: owner});
-    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder1, '1').send({from: owner});
-    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder2, '1').send({from: owner});
-    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder3, '1').send({from: owner});
-    await self.fundsDistributionToken.methods.addToWhitelist(anyone, '1').send({from: owner});
+    self.fundsDistributionToken = await deployContract(
+      buidlerRuntime,
+      'SimpleRestrictedFDT',
+      [ 'FundsDistributionToken', 'FDT', self.fundsToken.options.address, owner, 0 ],
+      { from: owner },
+    )
+    await self.fundsDistributionToken.methods.addAdmin(owner).send({ from: owner });
+    await self.fundsDistributionToken.methods.updateOutboundWhitelistEnabled('1', '1', true).send({ from: owner });
+    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder1, '1').send({ from: owner });
+    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder2, '1').send({ from: owner });
+    await self.fundsDistributionToken.methods.addToWhitelist(tokenHolder3, '1').send({ from: owner });
+    await self.fundsDistributionToken.methods.addToWhitelist(anyone, '1').send({ from: owner });
   });
 
   before(async () => {
@@ -58,7 +61,7 @@ describe('SimpleRestrictedFDT', () => {
         it('reverts', async () => {
           await expectRevert.unspecified(
             this.fundsDistributionToken.methods.mint(ZERO_ADDRESS, ether('1').toString())
-              .send({from: owner})
+              .send({ from: owner })
           );
         });
       });
@@ -66,7 +69,7 @@ describe('SimpleRestrictedFDT', () => {
       describe('when the recipient is not the zero address', () => {
         it('mint tokens to the recipient', async () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-            .send({from: owner});
+            .send({ from: owner });
 
           assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('1').toString());
           assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0').toString());
@@ -94,7 +97,7 @@ describe('SimpleRestrictedFDT', () => {
       describe('when paying 0 ether', () => {
         it('should succeed but nothing happens', async () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-            .send({from: owner});
+            .send({ from: owner });
 
           // await this.fundsDistributionToken.methods.distributeFunds()
           //   .send({from: anyone, value: ether('0').toString()});
@@ -113,9 +116,9 @@ describe('SimpleRestrictedFDT', () => {
       describe('when the total supply is not 0', () => {
         it('should pay and distribute funds to token holders', async () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-            .send({from: owner});
+            .send({ from: owner });
           await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-            .send({from: owner});
+            .send({ from: owner });
 
           // const { events } = await this.fundsDistributionToken.sendTransaction()
           //   .send({from: anyone, value: ether('1').toString()});
@@ -161,7 +164,7 @@ describe('SimpleRestrictedFDT', () => {
       describe('when paying 0 ether', () => {
         it('should succeed but nothing happens', async () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-            .send({from: owner});
+            .send({ from: owner });
 
           // await this.fundsDistributionToken.sendTransaction()
           //   .send({from: anyone, value: ether('0').toString()});
@@ -180,9 +183,9 @@ describe('SimpleRestrictedFDT', () => {
       describe('when the total supply is not 0', () => {
         it('should pay and distribute funds to token holders', async () => {
           await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-            .send({from: owner});
+            .send({ from: owner });
           await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-            .send({from: owner});
+            .send({ from: owner });
 
           // const { events } = await this.fundsDistributionToken.sendTransaction()
           //   .send({from: anyone, value: ether('1').toString()});
@@ -211,7 +214,7 @@ describe('SimpleRestrictedFDT', () => {
   describe('transfer', () => {
     beforeEach(async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
     });
 
     describe('when the recipient is the zero address', () => {
@@ -263,7 +266,7 @@ describe('SimpleRestrictedFDT', () => {
 
     beforeEach(async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, mintAmount.toString())
-        .send({from: owner});
+        .send({ from: owner });
     });
 
     describe('when the recipient is not the zero address', () => {
@@ -371,9 +374,9 @@ describe('SimpleRestrictedFDT', () => {
   describe('withdrawFunds', () => {
     it('should be able to withdraw funds', async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods.distributeFunds()
       //   .send({from: anyone, value: ether('1').toString()});
       await this.fundsToken.methods
@@ -423,9 +426,9 @@ describe('SimpleRestrictedFDT', () => {
   describe('keep funds unchanged in several cases', () => {
     it('should keep funds unchanged after minting tokens', async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString(),)
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods
       //   .distributeFunds({from: anyone, value: ether('1').toString()})
       //   .send({from: anyone});
@@ -436,7 +439,7 @@ describe('SimpleRestrictedFDT', () => {
         .send({from: anyone});
 
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
 
       assert.strictEqual(await this.fundsDistributionToken.methods.accumulativeFundsOf(tokenHolder1).call(), ether('0.25').toString());
       assert.strictEqual(await this.fundsDistributionToken.methods.withdrawableFundsOf(tokenHolder1).call(), ether('0.25').toString());
@@ -445,9 +448,9 @@ describe('SimpleRestrictedFDT', () => {
 
     it('should keep funds unchanged after transferring tokens', async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods.distributeFunds()
       //   .send({from: anyone, value: ether('1').toString()});
       await this.fundsToken.methods
@@ -470,9 +473,9 @@ describe('SimpleRestrictedFDT', () => {
 
     it('should keep funds unchanged after transferFrom', async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods
       //   .distributeFunds({from: anyone, value: ether('1').toString()})
       //   .send({from: anyone});
@@ -499,9 +502,9 @@ describe('SimpleRestrictedFDT', () => {
 
     it('should correctly distribute funds after transferring tokens', async () => {
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('2').toString())
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods.distributeFunds()
       //   .send({from: anyone, value: ether('5').toString()});
       await this.fundsToken.methods
@@ -539,7 +542,7 @@ describe('SimpleRestrictedFDT', () => {
 
       // mint and distributeFunds
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('2').toString())
-        .send({from: owner});
+        .send({ from: owner });
       // await this.fundsDistributionToken.methods.distributeFunds()
       //   .send({from: anyone, value: ether('10').toString()});
       await this.fundsToken.methods
@@ -598,7 +601,7 @@ describe('SimpleRestrictedFDT', () => {
 
       // mint
       await this.fundsDistributionToken.methods.mint(tokenHolder1, ether('3').toString())
-        .send({from: owner});
+        .send({ from: owner });
       assert.strictEqual(await this.fundsDistributionToken.methods.balanceOf(tokenHolder1).call(), ether('3').toString());
 
       // deposit
@@ -624,9 +627,9 @@ describe('SimpleRestrictedFDT', () => {
       // 3, 0, 2
 
       await this.fundsDistributionToken.methods.mint(tokenHolder2, ether('4').toString())
-        .send({from: owner});
+        .send({ from: owner });
       await this.fundsDistributionToken.methods.mint(tokenHolder3, ether('1').toString())
-        .send({from: owner});
+        .send({ from: owner });
 
       // 3 4 3
 

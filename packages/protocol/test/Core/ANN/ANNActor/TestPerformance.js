@@ -47,7 +47,6 @@ describe('ANNActor', () => {
       currency: paymentTokenAddress,
       settlementCurrency: paymentTokenAddress,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
     self.state = web3ResponseToState(
@@ -106,7 +105,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -136,8 +135,8 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        web3.eth.abi.encodeParameter('uint256', eventTime)
+        ).call()
     );
 
     assert.strictEqual(emittedAssetId, this.assetId);
@@ -175,7 +174,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -219,7 +218,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -263,7 +262,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -309,7 +308,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -364,7 +363,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 

@@ -56,13 +56,13 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     const nextState = await this.STKEngineInstance.methods.computeStateForEvent(
       this.terms,
       initialState,
       schedule[0],
-      web3.utils.toHex(decodeEvent(schedule[0]).scheduleTime)
+      web3.eth.abi.encodeParameter('uint256', decodeEvent(schedule[0]).scheduleTime)
     ).call();
 
     assert.strictEqual(String(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
@@ -72,7 +72,7 @@ describe('STKEngine', () => {
     const endDate = this.terms.cycleAnchorDateOfDividend + 365 * 24 * 3600;
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       endDate
     ));
 
@@ -122,7 +122,7 @@ describe('STKEngine', () => {
       this.terms.cycleAnchorDateOfDividend,
       endDate
     );
-    assert.strictEqual(schedule.length, 3);
+    assert.strictEqual(schedule.length, 4);
 
     let state = initialState;
 
@@ -131,7 +131,7 @@ describe('STKEngine', () => {
         this.terms,
         state,
         _event,
-        web3.utils.toHex(decodeEvent(_event).scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', decodeEvent(_event).scheduleTime)
       ).call();
 
       state = nextState;

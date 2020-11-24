@@ -41,7 +41,6 @@ describe('ANNActor', () => {
       currency: paymentTokenAddress,
       settlementCurrency: paymentTokenAddress,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.ANNEngineInstance, self.terms);
   });
@@ -67,7 +66,7 @@ describe('ANNActor', () => {
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
     const initialState = await this.ANNRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();
-    const event = encodeEvent(eventIndex('IP'), Number(this.terms.contractDealDate) + 100);
+    const event = encodeEvent(eventIndex('IP'), Number(this.terms.statusDate) + 100);
     const eventTime = await getEventTime(event, this.terms);
 
     await mineBlock(Number(eventTime));

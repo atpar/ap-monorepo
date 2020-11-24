@@ -14,7 +14,7 @@ contract TestCECSTF is CECSTF {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -32,7 +32,7 @@ contract TestCECSTF is CECSTF {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -50,7 +50,7 @@ contract TestCECSTF is CECSTF {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -68,7 +68,7 @@ contract TestCECSTF is CECSTF {
         CECTerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

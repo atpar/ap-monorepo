@@ -7,6 +7,7 @@ import {
   CECTerms,
   CEGTerms,
   CERTFTerms,
+  COLLATerms,
   PAMTerms,
   STKTerms,
   State
@@ -81,6 +82,10 @@ export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
   associativeArrayToObject(web3Response) as CERTFTerms
 );
 
+export const web3ResponseToCOLLATerms = (web3Response: any): COLLATerms => (
+  associativeArrayToObject(web3Response) as COLLATerms
+);
+
 export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
   associativeArrayToObject(web3Response) as STKTerms
 );
@@ -97,7 +102,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   businessDayConvention: terms.businessDayConvention,
   endOfMonthConvention: terms.endOfMonthConvention,
   scalingEffect: terms.scalingEffect,
-  penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
 
   currency: terms.currency,
@@ -105,7 +109,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -126,8 +129,6 @@ export const extractANNTerms = (terms: Terms): ANNTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  penaltyRate: terms.penaltyRate,
-  delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
   priceAtTerminationDate: terms.priceAtTerminationDate,
@@ -182,18 +183,15 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   maturityDate: terms.maturityDate,
   purchaseDate: terms.purchaseDate,
   cycleAnchorDateOfFee: terms.cycleAnchorDateOfFee,
 
   notionalPrincipal: terms.notionalPrincipal,
-  delinquencyRate: terms.delinquencyRate,
   feeAccrued: terms.feeAccrued,
   feeRate: terms.feeRate,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
-  priceAtTerminationDate: terms.priceAtTerminationDate,
   coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
 
   gracePeriod: terms.gracePeriod,
@@ -215,7 +213,6 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   couponType: terms.couponType,
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -232,12 +229,44 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   delinquencyPeriod: terms.delinquencyPeriod,
   settlementPeriod: terms.settlementPeriod,
   fixingPeriod: terms.fixingPeriod,
-  redemptionExercisePeriod: terms.redemptionExercisePeriod,
+  redemptionRecordPeriod: terms.redemptionRecordPeriod,
   cycleOfRedemption: terms.cycleOfRedemption,
   cycleOfTermination: terms.cycleOfTermination,
   cycleOfCoupon: terms.cycleOfCoupon,
   contractReference_1: terms.contractReference_1,
   contractReference_2: terms.contractReference_2
+});
+
+export const extractCOLLATerms = (terms: Terms): COLLATerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  
+  marketObjectCodeOfCollateral: terms.marketObjectCodeOfCollateral,
+
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+  collateralCurrency: terms.collateralCurrency,
+
+  statusDate: terms.statusDate,
+  initialExchangeDate: terms.initialExchangeDate,
+  maturityDate: terms.maturityDate,
+  capitalizationEndDate: terms.capitalizationEndDate,
+  cycleAnchorDateOfInterestPayment: terms.cycleAnchorDateOfInterestPayment,
+
+  notionalPrincipal: terms.notionalPrincipal,
+  nominalInterestRate: terms.nominalInterestRate,
+  accruedInterest: terms.accruedInterest,
+  premiumDiscountAtIED: terms.premiumDiscountAtIED,
+  coverageOfCollateral: terms.coverageOfCollateral,
+
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+
+  cycleOfInterestPayment: terms.cycleOfInterestPayment,
 });
 
 export const extractPAMTerms = (terms: Terms): PAMTerms => ({
@@ -248,7 +277,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   businessDayConvention: terms.businessDayConvention,
   endOfMonthConvention: terms.endOfMonthConvention,
   scalingEffect: terms.scalingEffect,
-  penaltyType: terms.penaltyType,
   feeBasis: terms.feeBasis,
 
   currency: terms.currency,
@@ -256,7 +284,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
 
   marketObjectCodeRateReset: terms.marketObjectCodeRateReset,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   initialExchangeDate: terms.initialExchangeDate,
   maturityDate: terms.maturityDate,
@@ -276,8 +303,6 @@ export const extractPAMTerms = (terms: Terms): PAMTerms => ({
   nextResetRate: terms.nextResetRate,
   feeRate: terms.feeRate,
   feeAccrued: terms.feeAccrued,
-  penaltyRate: terms.penaltyRate,
-  delinquencyRate: terms.delinquencyRate,
   premiumDiscountAtIED: terms.premiumDiscountAtIED,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
   priceAtTerminationDate: terms.priceAtTerminationDate,
@@ -308,7 +333,6 @@ export const extractSTKTerms = (terms: Terms): STKTerms => ({
   currency: terms.currency,
   settlementCurrency: terms.settlementCurrency,
 
-  contractDealDate: terms.contractDealDate,
   statusDate: terms.statusDate,
   issueDate: terms.issueDate,
   purchaseDate: terms.purchaseDate,

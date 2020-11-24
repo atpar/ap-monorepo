@@ -98,7 +98,7 @@ contract ICT is
             // latest registration date on EXE
             (eventType == EventType.REF)
                 ? getTimestampPlusPeriod(
-                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "redemptionExercisePeriod"),
+                    assetRegistry.getPeriodValueForTermsAttribute(assetId, "redemptionRecordPeriod"),
                     scheduleTime)
                 : 0,
             (eventType == EventType.REF),

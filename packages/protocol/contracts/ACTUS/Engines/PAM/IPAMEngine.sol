@@ -34,7 +34,7 @@ interface IPAMEngine is IEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -52,7 +52,7 @@ interface IPAMEngine is IEngine {
         PAMTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure

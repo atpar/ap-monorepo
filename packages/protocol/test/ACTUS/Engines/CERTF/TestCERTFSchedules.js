@@ -66,7 +66,7 @@ describe('CERTFEngine', () => {
     const initialState = await this.CERTFEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       (terms.maturityDate > 0) ? terms.maturityDate : tMax
     );
 
@@ -118,13 +118,13 @@ describe('CERTFEngine', () => {
         terms,
         state,
         _event,
-        web3.utils.padLeft(web3.utils.toHex(externalData), 64)
+        web3.eth.abi.encodeParameter('int256', externalData)
       ).call();
       const nextState = await this.CERTFEngineInstance.methods.computeStateForEvent(
         terms,
         state,
         _event,
-        web3.utils.padLeft(web3.utils.toHex(externalData), 64)
+        web3.eth.abi.encodeParameter('int256', externalData)
       ).call();
 
       state = nextState;

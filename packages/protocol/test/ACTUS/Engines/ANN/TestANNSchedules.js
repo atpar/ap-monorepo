@@ -70,7 +70,7 @@ describe('ANNEngine', () => {
     const initialState = await this.ANNEngineInstance.methods.computeInitialState(terms).call();
     const schedule = await computeEventScheduleSegment(
       terms,
-      terms.contractDealDate,
+      0,
       terms.maturityDate
     );
 
@@ -86,13 +86,13 @@ describe('ANNEngine', () => {
         terms,
         state,
         _event,
-        web3.utils.toHex(scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', scheduleTime)
       ).call();
       const nextState = await this.ANNEngineInstance.methods.computeStateForEvent(
         terms,
         state,
         _event,
-        web3.utils.toHex(scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', scheduleTime)
       ).call();
 
       state = nextState;

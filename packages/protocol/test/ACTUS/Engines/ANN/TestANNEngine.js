@@ -75,14 +75,14 @@ describe('ANNEngine', () => {
     const initialState = await this.ANNEngineInstance.methods.computeInitialState(this.terms).call();
     const schedule = await this.ANNEngineInstance.methods.computeNonCyclicScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ).call();
     const nextState = await this.ANNEngineInstance.methods.computeStateForEvent(
       this.terms,
       initialState,
       schedule[0],
-      web3.utils.toHex(decodeEvent(schedule[0]).scheduleTime)
+      web3.eth.abi.encodeParameter('uint256', decodeEvent(schedule[0]).scheduleTime)
     ).call();
 
     assert.strictEqual(String(nextState.statusDate), decodeEvent(schedule[0]).scheduleTime);
@@ -91,7 +91,7 @@ describe('ANNEngine', () => {
   it('should yield correct segment of events', async () => {
     const completeEventSchedule = parseEventSchedule(await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     ));
 
@@ -133,7 +133,7 @@ describe('ANNEngine', () => {
 
     const schedule = await computeEventScheduleSegment(
       this.terms,
-      this.terms.contractDealDate,
+      0,
       this.terms.maturityDate
     );
 
@@ -144,7 +144,7 @@ describe('ANNEngine', () => {
         this.terms,
         state,
         _event,
-        web3.utils.toHex(decodeEvent(_event).scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', decodeEvent(_event).scheduleTime)
       ).call();
 
       state = nextState;

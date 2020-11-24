@@ -852,11 +852,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -882,11 +877,6 @@
             },
             {
               "internalType": "int256",
-              "name": "delinquencyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
               "name": "feeAccrued",
               "type": "int256"
             },
@@ -898,11 +888,6 @@
             {
               "internalType": "int256",
               "name": "priceAtPurchaseDate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -1356,11 +1341,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -1386,11 +1366,6 @@
             },
             {
               "internalType": "int256",
-              "name": "delinquencyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
               "name": "feeAccrued",
               "type": "int256"
             },
@@ -1402,11 +1377,6 @@
             {
               "internalType": "int256",
               "name": "priceAtPurchaseDate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {
@@ -2199,11 +2169,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "contractDealDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "statusDate",
               "type": "uint256"
             },
@@ -2229,11 +2194,6 @@
             },
             {
               "internalType": "int256",
-              "name": "delinquencyRate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
               "name": "feeAccrued",
               "type": "int256"
             },
@@ -2245,11 +2205,6 @@
             {
               "internalType": "int256",
               "name": "priceAtPurchaseDate",
-              "type": "int256"
-            },
-            {
-              "internalType": "int256",
-              "name": "priceAtTerminationDate",
               "type": "int256"
             },
             {

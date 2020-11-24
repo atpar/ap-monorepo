@@ -47,7 +47,6 @@ describe('PAMActor', () => {
       currency: paymentTokenAddress,
       settlementCurrency: paymentTokenAddress,
     };
-    self.terms.statusDate = self.terms.contractDealDate;
 
     self.schedule = await generateSchedule(self.PAMEngineInstance, self.terms);
     self.state = web3ResponseToState(
@@ -106,7 +105,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -135,7 +134,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -174,7 +173,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -218,7 +217,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -263,7 +262,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -309,7 +308,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -330,7 +329,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -364,7 +363,7 @@ describe('PAMActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 

@@ -175,7 +175,6 @@ export class ICERTFRegistry extends Contract {
       couponType: string;
       currency: string;
       settlementCurrency: string;
-      contractDealDate: string;
       statusDate: string;
       initialExchangeDate: string;
       maturityDate: string;
@@ -192,7 +191,7 @@ export class ICERTFRegistry extends Contract {
       delinquencyPeriod: { i: string; p: string; isSet: boolean };
       settlementPeriod: { i: string; p: string; isSet: boolean };
       fixingPeriod: { i: string; p: string; isSet: boolean };
-      redemptionExercisePeriod: { i: string; p: string; isSet: boolean };
+      redemptionRecordPeriod: { i: string; p: string; isSet: boolean };
       cycleOfRedemption: { i: string; p: string; s: string; isSet: boolean };
       cycleOfTermination: { i: string; p: string; s: string; isSet: boolean };
       cycleOfCoupon: { i: string; p: string; s: string; isSet: boolean };
@@ -276,7 +275,6 @@ export class ICERTFRegistry extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -305,7 +303,7 @@ export class ICERTFRegistry extends Contract {
           p: number | string;
           isSet: boolean;
         };
-        redemptionExercisePeriod: {
+        redemptionRecordPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;
@@ -489,7 +487,6 @@ export class ICERTFRegistry extends Contract {
         couponType: number | string;
         currency: string;
         settlementCurrency: string;
-        contractDealDate: number | string;
         statusDate: number | string;
         initialExchangeDate: number | string;
         maturityDate: number | string;
@@ -518,7 +515,7 @@ export class ICERTFRegistry extends Contract {
           p: number | string;
           isSet: boolean;
         };
-        redemptionExercisePeriod: {
+        redemptionRecordPeriod: {
           i: number | string;
           p: number | string;
           isSet: boolean;

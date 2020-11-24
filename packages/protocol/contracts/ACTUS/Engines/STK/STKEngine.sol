@@ -38,7 +38,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         STKTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         STKTerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -118,17 +118,35 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * @return segment of the non-cyclic schedule
      */
     function computeNonCyclicScheduleSegment(
-        STKTerms calldata /* terms */,
-        uint256 /* segmentStart */,
-        uint256 /* segmentEnd */
+        STKTerms calldata terms,
+        uint256 segmentStart,
+        uint256 segmentEnd
     )
         external
         pure
         override
         returns (bytes32[] memory)
     {
+        bytes32[MAX_EVENT_SCHEDULE_SIZE] memory events;
+        uint16 index;
+
+        // issue date
+        if (terms.issueDate != 0) {
+            if (isInSegment(terms.issueDate, segmentStart, segmentEnd)) {
+                events[index] = encodeEvent(EventType.ISS, terms.issueDate);
+                index++;
+            }
+        }
+
         // TODO: implement when 'Ex/Settlement'- dates get supported in State/Terms
-        return new bytes32[](0);
+
+        // remove null entries from returned array
+        bytes32[] memory schedule = new bytes32[](index);
+        for (uint256 i = 0; i < index; i++) {
+            schedule[i] = events[i];
+        }
+
+        return schedule;
     }
 
     /**
@@ -192,15 +210,35 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      * @return next non-cyclic event
      */
     function computeNextNonCyclicEvent(
-        STKTerms calldata /* terms */,
-        bytes32 /* lastNonCyclicEvent */
+        STKTerms calldata terms,
+        bytes32 lastNonCyclicEvent
     )
         external
         pure
         override
         returns (bytes32)
     {
-        return bytes32(0);
+        (EventType lastEventType, uint256 lastScheduleTime) = decodeEvent(lastNonCyclicEvent);
+
+        EventType eventTypeNextEvent;
+        uint256 scheduleTimeNextEvent;
+
+        // EventTypes ordered after epoch offset - so we don't have make an additional epochOffset check
+
+        // issue date
+        if (
+            // date for event has to be set in terms and date of event can be in the past
+            (terms.issueDate != 0 && (lastScheduleTime <= terms.issueDate))
+            // date for event has to come before previous candidate for the next event
+            && (scheduleTimeNextEvent == 0 || terms.issueDate < scheduleTimeNextEvent)
+            // avoid endless loop by requiring that the event is not the lastNonCyclicEvent
+            && (lastScheduleTime != terms.issueDate || lastEventType != EventType.ISS)
+        ) {
+            eventTypeNextEvent = EventType.ISS;
+            scheduleTimeNextEvent = terms.issueDate;
+        }
+
+        return encodeEvent(eventTypeNextEvent, scheduleTimeNextEvent);
     }
 
     /**
@@ -284,7 +322,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         STKTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -322,7 +360,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         STKTerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
