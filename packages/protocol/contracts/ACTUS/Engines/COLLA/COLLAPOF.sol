@@ -26,7 +26,7 @@ contract COLLAPOF is Core {
         COLLATerms memory terms,
         State memory /* state */,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -48,7 +48,7 @@ contract COLLAPOF is Core {
         COLLATerms memory terms,
         State memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -85,7 +85,7 @@ contract COLLAPOF is Core {
         COLLATerms memory /* terms */,
         State memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

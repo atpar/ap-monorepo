@@ -13,7 +13,7 @@ const TEST_TERMS_DIR = './resources/tests/';
 
 
 async function getTestCases (contract) {
-  const fileSuffix = (contract === 'CEC' || contract === 'CEG') ? 'ANN' : contract;
+  const fileSuffix = contract;
   const testCases = require('./' + TEST_TERMS_DIR + 'actus-tests-' + fileSuffix + '.json');
   const testCaseNames = Object.keys(testCases);
 

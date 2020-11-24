@@ -38,7 +38,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
         COLLATerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -65,7 +65,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
         COLLATerms calldata terms,
         State calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -392,7 +392,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
         COLLATerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -431,7 +431,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
         COLLATerms memory terms,
         State memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

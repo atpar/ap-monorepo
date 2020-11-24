@@ -106,14 +106,14 @@ contract COLLAActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
+            return abi.encode(block.timestamp);
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }
