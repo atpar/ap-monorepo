@@ -76,6 +76,7 @@ describe('ICT', function () {
       self.schedule,
       self.ownership,
       self.CERTFEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: owner });
     expectEvent(events, 'InitializedAsset');

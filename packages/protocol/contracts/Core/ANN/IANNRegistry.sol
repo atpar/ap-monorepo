@@ -16,7 +16,8 @@ interface IANNRegistry is IAssetRegistry {
         AssetOwnership calldata ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         external;
 

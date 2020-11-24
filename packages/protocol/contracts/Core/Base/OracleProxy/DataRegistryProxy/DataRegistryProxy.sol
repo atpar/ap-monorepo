@@ -29,13 +29,14 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
         bool isSet;
     }
 
+    // SetId => Set
     mapping(bytes32 => Set) internal sets;
 
 
     /**
      * @notice @notice Returns true if there is data registered for a given setId
      * @param setId setId of the data set
-     * @return true if market object exists
+     * @return true if data set exists
      */
     function isRegistered(bytes32 setId)
         external
@@ -47,7 +48,7 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     }
 
     /**
-     * @notice Returns a data point of a market object for a given timestamp.
+     * @notice Returns a data point of a data set for a given timestamp.
      * @param setId id of the data set
      * @param timestamp timestamp of the data point
      * @return data point, bool indicating whether data point exists
@@ -68,6 +69,25 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     }
 
     /**
+     * @notice Returns most recent data point of a data set.
+     * @param setId id of the data set
+     * @return data point, bool indicating whether data point exists
+     */
+    function getMostRecentDataPoint(bytes32 setId)
+        external
+        view
+        override(IDataRegistryProxy, IOracleProxy)
+        returns (int256, bool)
+    {
+        uint256 lastUpdatedTimestamp = sets[setId].lastUpdatedTimestamp;
+
+        return (
+            sets[setId].dataPoints[lastUpdatedTimestamp].dataPoint,
+            sets[setId].dataPoints[lastUpdatedTimestamp].isSet
+        );
+    }
+
+    /**
      * @notice Returns the timestamp on which the last data point for a data set
      * was submitted.
      * @param setId id of the data set
@@ -83,7 +103,7 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     }
 
     /**
-     * @notice Returns the provider for a market object
+     * @notice Returns the provider for a data set
      * @param setId id of the data set
      * @return address of provider
      */
@@ -97,8 +117,8 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     }
 
     /**
-     * @notice Registers / updates a market object provider.
-     * @dev Can only be called by the owner of the DataRegistry.
+     * @notice Registers / updates a data set provider.
+     * @dev Can only be called by the owner of the DataRegistryProxy.
      * @param setId id of the data set
      * @param provider address of the provider
      */

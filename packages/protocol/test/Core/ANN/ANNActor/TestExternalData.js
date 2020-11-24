@@ -49,6 +49,7 @@ describe('ANNActor', () => {
       self.schedule,
       self.ownership,
       self.ANNEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events,'InitializedAsset');

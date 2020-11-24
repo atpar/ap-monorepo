@@ -393,7 +393,8 @@ export class CERTFRegistry extends Contract {
       },
       engine: string,
       actor: string,
-      admin: string
+      admin: string,
+      extension: string
     ): TransactionObject<void>;
 
     renounceOwnership(): TransactionObject<void>;

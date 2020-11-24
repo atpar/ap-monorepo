@@ -24,13 +24,15 @@ contract CEGActor is BaseActor {
      * @param ownership ownership of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
+     * @param extension address of the extension (optional)
      */
     function initialize(
         CEGTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
-        address admin
+        address admin,
+        address extension
     )
         external
     {
@@ -64,7 +66,8 @@ contract CEGActor is BaseActor {
             ownership,
             engine,
             address(this),
-            admin
+            admin,
+            extension
         );
 
         emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);

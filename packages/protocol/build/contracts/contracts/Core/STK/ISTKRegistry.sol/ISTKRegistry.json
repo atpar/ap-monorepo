@@ -1716,6 +1716,11 @@
           "internalType": "address",
           "name": "admin",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "extension",
+          "type": "address"
         }
       ],
       "name": "registerAsset",

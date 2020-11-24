@@ -42,6 +42,7 @@ describe('ANNRegistry', () => {
       this.ownership,
       this.ANNEngineInstance.options.address,
       actor,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
 
@@ -69,6 +70,7 @@ describe('ANNRegistry', () => {
         this.ownership,
         this.ANNEngineInstance.options.address,
         actor,
+        ZERO_ADDRESS,
         ZERO_ADDRESS
       ).send({ from: actor }),
       'BaseRegistry.setAsset: ' + ASSET_ALREADY_EXISTS

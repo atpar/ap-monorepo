@@ -27,6 +27,7 @@ contract CECActor is BaseActor {
      * @param schedule schedule of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
+     * @param extension address of the extension (optional)
      * @param custodian address of the custodian of the collateral
      * @param underlyingRegistry address of the asset registry where the underlying asset is stored
      */
@@ -35,6 +36,7 @@ contract CECActor is BaseActor {
         bytes32[] calldata schedule,
         address engine,
         address admin,
+        address extension,
         address custodian,
         address underlyingRegistry
     )
@@ -49,6 +51,7 @@ contract CECActor is BaseActor {
         bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
         AssetOwnership memory ownership;
 
+    
         // check if first contract reference in terms references an underlying asset
         if (terms.contractReference_1.role == ContractReferenceRole.COVE) {
             require(
@@ -98,20 +101,20 @@ contract CECActor is BaseActor {
             // try transferring collateral to the custodian
             ICustodian(custodian).lockCollateral(assetId, terms, ownership);
         }
-
-        // compute the initial state of the asset
-        State memory initialState = ICECEngine(engine).computeInitialState(terms);
+    
 
         // register the asset in the AssetRegistry
         ICECRegistry(address(assetRegistry)).registerAsset(
             assetId,
             terms,
-            initialState,
+            // compute the initial state of the asset
+            ICECEngine(engine).computeInitialState(terms),
             schedule,
             ownership,
             engine,
             address(this),
-            admin
+            admin,
+            extension
         );
 
         emit InitializedAsset(assetId, ContractType.CEC, ownership.creatorObligor, ownership.counterpartyObligor);

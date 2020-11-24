@@ -373,7 +373,8 @@ export class IPAMRegistry extends Contract {
       },
       engine: string,
       actor: string,
-      admin: string
+      admin: string,
+      extension: string
     ): TransactionObject<void>;
 
     revokeAccess(

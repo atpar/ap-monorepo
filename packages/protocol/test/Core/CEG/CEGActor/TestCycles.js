@@ -53,6 +53,7 @@ describe('CEGActor', () => {
       self.schedule,
       self.ownership,
       self.CEGEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: creatorObligor });
     await expectEvent(events, 'InitializedAsset');

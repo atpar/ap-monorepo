@@ -60,6 +60,7 @@ describe('COLLAActor', () => {
       self.ownership,
       self.COLLAEngineInstance.options.address,
       ZERO_ADDRESS,
+      ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
 

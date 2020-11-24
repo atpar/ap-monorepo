@@ -68,7 +68,7 @@ contract Collateral is EventUtils, Conversions, IExtension {
         }
 
         // set claimable amount at time of default (assuming := time of progress)
-        collateral[assetId].claimableAmount = computeMinCollateralAmount(assetId);
+        collateral[assetId].claimableAmount = collateral[assetId].amount;
 
         return encodeEvent(EventType.EXE, block.timestamp);
     }
@@ -236,9 +236,8 @@ contract Collateral is EventUtils, Conversions, IExtension {
         
         // if collateral token != asset currency --> determine value
         if (currency != collateralCurrency) {
-            (int256 rate, bool isSet) = defaultOracleProxy.getDataPoint(
-                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeOfCollateral"),
-                block.timestamp
+            (int256 rate, bool isSet) = defaultOracleProxy.getMostRecentDataPoint(
+                assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeOfCollateral")
             );
             require(
                 isSet == true,

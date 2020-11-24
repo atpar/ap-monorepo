@@ -84,6 +84,7 @@ abstract contract BaseRegistry is
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
      * @param admin account which as admin rights (optional)
+     * @param extension address of the extension (optional)
      */
     function setAsset(
         bytes32 assetId,
@@ -92,7 +93,8 @@ abstract contract BaseRegistry is
         AssetOwnership memory ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         internal
     {
@@ -113,6 +115,7 @@ abstract contract BaseRegistry is
         asset.ownership = ownership;
         asset.engine = engine;
         asset.actor = actor;
+        asset.extension = extension;
 
         asset.encodeAndSetState(state);
         asset.encodeAndSetFinalizedState(state);
