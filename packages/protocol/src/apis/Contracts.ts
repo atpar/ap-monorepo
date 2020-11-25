@@ -24,7 +24,6 @@ import COLLARegistryArtifact from '../../build/contracts/contracts/Core/COLLA/CO
 import PAMRegistryArtifact from '../../build/contracts/contracts/Core/PAM/PAMRegistry.sol/PAMRegistry.json';
 import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKRegistry.sol/STKRegistry.json';
 import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
-import CollateralArtifact from '../../build/contracts/contracts/Extensions/Collateral/Collateral.sol/Collateral.json';
 import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
 import DvPSettlementArtifact from '../../build/contracts/contracts/Extensions/DVP/DvPSettlement.sol/DvPSettlement.json';
 import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
@@ -55,7 +54,6 @@ import { COLLARegistry } from '../types/contracts/COLLARegistry';
 import { PAMRegistry } from '../types/contracts/PAMRegistry';
 import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
-import { Collateral } from '../types/contracts/Collateral';
 import { DataRegistryProxy } from '../types/contracts/DataRegistryProxy';
 import { DvPSettlement } from '../types/contracts/DvPSettlement';
 import { ERC20 } from '../types/contracts/ERC20';
@@ -99,7 +97,6 @@ export class Contracts {
   public stkRegistry: STKRegistry;
 
   public custodian: Custodian;
-  public collateral: Collateral;
   public dataRegistryProxy: DataRegistryProxy;
   public dvpSettlement: DvPSettlement;
 
@@ -160,8 +157,6 @@ export class Contracts {
     this.stkRegistry = new web3.eth.Contract(STKRegistryArtifact.abi, addressBook.STKRegistry, { data: STKRegistryArtifact.bytecode }) as STKRegistry;
     // @ts-ignore
     this.custodian = new web3.eth.Contract(CustodianArtifact.abi, addressBook.Custodian, { data: CustodianArtifact.bytecode }) as Custodian;
-    // @ts-ignore
-    this.collateral = new web3.eth.Contract(CollateralArtifact.abi, addressBook.Collateral, { data: CollateralArtifact.bytecode }) as Collateral;
     // @ts-ignore
     this.dataRegistryProxy = new web3.eth.Contract(DataRegistryProxyArtifact.abi, addressBook.DataRegistryProxy, { data: DataRegistryProxyArtifact.bytecode }) as DataRegistryProxy,
     // @ts-ignore

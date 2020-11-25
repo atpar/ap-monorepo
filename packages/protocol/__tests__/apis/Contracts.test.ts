@@ -41,7 +41,6 @@ describe('Contracts', (): void => {
       COLLAEngine: contracts.collaEngine.options.address,
       COLLARegistry: contracts.collaRegistry.options.address,
       Custodian: contracts.custodian.options.address,
-      Collateral: contracts.collateral.options.address,
       DataRegistryProxy: contracts.dataRegistryProxy.options.address,
       PAMActor: contracts.pamActor.options.address,
       PAMEngine: contracts.pamEngine.options.address,
