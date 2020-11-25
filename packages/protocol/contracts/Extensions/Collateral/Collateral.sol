@@ -10,7 +10,7 @@ import "../../ACTUS/Core/Utils/EventUtils.sol";
 import "../../ACTUS/Core/SignedMath.sol";
 
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
-import "../../Core/Base/OracleProxy/IOracleProxy.sol";
+import "../../Core/Base/OracleProxy/IOracleFeedProxy.sol";
 import "../../Core/Base/Conversions.sol";
 import "../IExtension.sol";
 
@@ -29,7 +29,7 @@ contract Collateral is EventUtils, Conversions, IExtension {
     event ClaimedCollateral(bytes32 indexed assetId, address creditor, uint256 claimedAmount);
 
     IAssetRegistry public assetRegistry;
-    IOracleProxy public defaultOracleProxy;
+    IOracleFeedProxy public priceFeed;
 
     struct Collateral {
         uint256 amount;
@@ -40,9 +40,9 @@ contract Collateral is EventUtils, Conversions, IExtension {
     mapping(bytes32 => Collateral) internal collateral;
 
 
-    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
+    constructor(IAssetRegistry _assetRegistry, IOracleFeedProxy _priceFeed) {
         assetRegistry = _assetRegistry;
-        defaultOracleProxy = _defaultOracleProxy;
+        priceFeed = _priceFeed;
     }
 
     /**
@@ -236,7 +236,7 @@ contract Collateral is EventUtils, Conversions, IExtension {
         
         // if collateral token != asset currency --> determine value
         if (currency != collateralCurrency) {
-            (int256 rate, bool isSet) = defaultOracleProxy.getMostRecentDataPoint(
+            (int256 rate, bool isSet) = priceFeed.getData(
                 assetRegistry.getBytes32ValueForTermsAttribute(assetId, "marketObjectCodeOfCollateral")
             );
             require(

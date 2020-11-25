@@ -6,7 +6,7 @@ const BigNumber = require('bignumber.js');
 const { generateSchedule, expectEvent, ZERO_ADDRESS } = require('../helper/utils/utils');
 const { decodeEvent } = require('../helper/utils/schedule');
 const { mineBlock } = require('../helper/utils/blockchain');
-const { deployPaymentToken, getSnapshotTaker } = require('../helper/setupTestEnvironment');
+const { deployPaymentToken, getSnapshotTaker, deployContract } = require('../helper/setupTestEnvironment');
 const { getEnumIndexForEventType: eventIndex } = require('../helper/utils/dictionary');
 
 
@@ -35,14 +35,28 @@ describe('Collateral', function () {
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
 
-    [ deployer, /*actor*/, owner, lender, debtor ] = self.accounts;
+    [ deployer, /*actor*/, owner, lender, debtor, dataProvider ] = self.accounts;
+
+    self.marketObjectCodeOfCollateral = web3.utils.toHex('ETHUSD');
 
     // deploy test ERC20 token
     self.PaymentTokenInstance = await deployPaymentToken(buidlerRuntime, lender, [lender, debtor]);
     self.CollateralTokenInstance = await deployPaymentToken(buidlerRuntime, lender, [lender, debtor]);
 
+    self.OpenOracleInstance = await deployContract(buidlerRuntime, 'OpenOracleMock');
+    self.OpenOracleProxyInstance = await deployContract(
+      buidlerRuntime,
+      'OpenOracleProxy',
+      [self.OpenOracleInstance.options.address, dataProvider]
+    );
+    self.CollateralInstance = await deployContract(buidlerRuntime, 'Collateral', [
+      self.COLLARegistryInstance.options.address,
+      self.OpenOracleProxyInstance.options.address
+    ]);
+
     self.terms = {
       ...require('./COLLA-Terms.json'),
+      marketObjectCodeOfCollateral: self.marketObjectCodeOfCollateral,
       currency: self.PaymentTokenInstance.options.address,
       // collateralCurrency: self.PaymentTokenInstance.options.address
       collateralCurrency: self.CollateralTokenInstance.options.address
@@ -72,18 +86,13 @@ describe('Collateral', function () {
 
     // assuming initially 1 CollateralToken equals 1 PaymentToken
     self.collateralAmount = new BigNumber(this.terms.notionalPrincipal).multipliedBy(1.6).toFixed();
-    console.log(self.collateralAmount);
-
-    await self.DataRegistryProxyInstance.methods.setDataProvider(
-      self.terms.marketObjectCodeOfCollateral,
-      owner
-    ).send({ from: deployer });
-
-    await self.DataRegistryProxyInstance.methods.publishDataPoint(
-      self.terms.marketObjectCodeOfCollateral,
-      (await web3.eth.getBlock('latest')).timestamp,
-      new BigNumber(1).shiftedBy(18).toFixed()
-    ).send({ from: owner });
+    
+    await self.OpenOracleInstance.methods.set(
+      dataProvider,
+      web3.utils.toAscii(self.terms.marketObjectCodeOfCollateral),
+      new BigNumber(1).shiftedBy(18).toFixed(),
+      (await web3.eth.getBlock('latest')).timestamp
+    ).send({ from: dataProvider });
   });
 
   before(async () => {
@@ -136,10 +145,11 @@ describe('Collateral', function () {
   });
 
   it('should set lower exchange rate and fall below the collateralization ratio', async () => {
-    await this.DataRegistryProxyInstance.methods.publishDataPoint(
-      this.terms.marketObjectCodeOfCollateral,
-      (await web3.eth.getBlock('latest')).timestamp,
-      new BigNumber(1.1).shiftedBy(18).toFixed()
+    await this.OpenOracleInstance.methods.set(
+      dataProvider,
+      web3.utils.toAscii(this.terms.marketObjectCodeOfCollateral),
+      new BigNumber(1.1).shiftedBy(18).toFixed(),
+      (await web3.eth.getBlock('latest')).timestamp
     ).send({ from: owner });
 
     const minCollateralAmount = await this.CollateralInstance.methods.computeMinCollateralAmount(this.assetId).call();
