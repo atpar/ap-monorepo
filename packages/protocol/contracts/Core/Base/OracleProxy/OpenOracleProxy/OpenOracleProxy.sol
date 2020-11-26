@@ -5,7 +5,7 @@ pragma solidity ^0.7.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "../IOracleFeedProxy.sol";
+import "../IPriceOracleProxy.sol";
 
 
 interface IOpenOraclePriceData {
@@ -19,7 +19,7 @@ interface IOpenOraclePriceData {
     function get(address source, string calldata key) external view returns (uint64, uint64);
 }
 
-contract OpenOracleProxy is IOracleFeedProxy, Ownable {
+contract OpenOracleProxy is IPriceOracleProxy, Ownable {
 
     IOpenOraclePriceData public openOracle;
     address public source;

@@ -3,7 +3,7 @@ pragma solidity ^0.7.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "../IOracleProxy.sol";
+import "../IObserverOracleProxy.sol";
 import "./IDataRegistryProxy.sol";
 
 
@@ -11,7 +11,7 @@ import "./IDataRegistryProxy.sol";
  * @title DataRegistryProxy
  * @notice Registry for data which is published by an registered MarketObjectProvider
  */
-contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
+contract DataRegistryProxy is IDataRegistryProxy, IObserverOracleProxy, Ownable {
 
     event UpdatedDataProvider(bytes32 indexed setId, address provider);
     event PublishedDataPoint(bytes32 indexed setId, int256 dataPoint, uint256 timestamp);
@@ -59,7 +59,7 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     )
         external
         view
-        override(IDataRegistryProxy, IOracleProxy)
+        override(IDataRegistryProxy, IObserverOracleProxy)
         returns (int256, bool)
     {
         return (
@@ -76,7 +76,7 @@ contract DataRegistryProxy is IDataRegistryProxy, IOracleProxy, Ownable {
     function getMostRecentDataPoint(bytes32 setId)
         external
         view
-        override(IDataRegistryProxy, IOracleProxy)
+        override(IDataRegistryProxy, IObserverOracleProxy)
         returns (int256, bool)
     {
         uint256 lastUpdatedTimestamp = sets[setId].lastUpdatedTimestamp;

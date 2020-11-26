@@ -10,7 +10,7 @@ import "../../ACTUS/Core/Utils/EventUtils.sol";
 import "../../ACTUS/Core/SignedMath.sol";
 
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
-import "../../Core/Base/OracleProxy/IOracleFeedProxy.sol";
+import "../../Core/Base/OracleProxy/IPriceOracleProxy.sol";
 import "../../Core/Base/Conversions.sol";
 import "../IExtension.sol";
 
@@ -29,7 +29,7 @@ contract Collateral is EventUtils, Conversions, IExtension {
     event ClaimedCollateral(bytes32 indexed assetId, address creditor, uint256 claimedAmount);
 
     IAssetRegistry public assetRegistry;
-    IOracleFeedProxy public priceFeed;
+    IPriceOracleProxy public priceFeed;
 
     struct Collateral {
         uint256 amount;
@@ -40,7 +40,7 @@ contract Collateral is EventUtils, Conversions, IExtension {
     mapping(bytes32 => Collateral) internal collateral;
 
 
-    constructor(IAssetRegistry _assetRegistry, IOracleFeedProxy _priceFeed) {
+    constructor(IAssetRegistry _assetRegistry, IPriceOracleProxy _priceFeed) {
         assetRegistry = _assetRegistry;
         priceFeed = _priceFeed;
     }

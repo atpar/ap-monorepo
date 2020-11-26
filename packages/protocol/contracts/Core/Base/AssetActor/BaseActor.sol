@@ -14,7 +14,7 @@ import "../../../Extensions/IExtension.sol";
 import "../SharedTypes.sol";
 import "../Conversions.sol";
 import "../AssetRegistry/IAssetRegistry.sol";
-import "../OracleProxy/IOracleProxy.sol";
+import "../OracleProxy/IObserverOracleProxy.sol";
 import "./IAssetActor.sol";
 
 
@@ -37,10 +37,10 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
     event Status(bytes32 indexed assetId, bytes32 statusMessage);
 
     IAssetRegistry public assetRegistry;
-    IOracleProxy public defaultOracleProxy;
+    IObserverOracleProxy public defaultOracleProxy;
 
 
-    constructor(IAssetRegistry _assetRegistry, IOracleProxy _defaultOracleProxy) {
+    constructor(IAssetRegistry _assetRegistry, IObserverOracleProxy _defaultOracleProxy) {
         assetRegistry = _assetRegistry;
         defaultOracleProxy = _defaultOracleProxy;
     }
