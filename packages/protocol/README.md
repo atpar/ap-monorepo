@@ -69,6 +69,7 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] CEC (Contract Enhancement Collateral)
 - [x] CEG (Contract Enhancement Guarantee)
 - [x] CERTF (Certificate)
+- [x] COLLA (Principal At Maturity with Collateral)
 - [x] PAM (Principal At Maturity)
 - [x] STK (Stock)
 
