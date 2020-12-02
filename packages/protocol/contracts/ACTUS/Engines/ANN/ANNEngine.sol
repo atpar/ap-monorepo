@@ -544,14 +544,14 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
+     * @param state current state of the contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 /* _event */,
         ANNTerms calldata /* terms */,
-        ANNState calldata /* state */,
+        ANNState calldata state,
         UnderlyingState calldata /* underlyingState */
     )
         external

@@ -102,6 +102,7 @@ struct CEGState {
     uint256 terminationDate;
 
     int256 notionalPrincipal;
+    int256 nominalInterestRate;
     int256 feeAccrued;
     int256 exerciseAmount;
 }
@@ -161,6 +162,7 @@ struct STKState {
     // uint256 redemptionExDate; // not implemented
     // uint256 redemptionPaymentDate; // not implemented
 
+    int256 notionalPrincipal;
     int256 exerciseAmount;
     int256 exerciseQuantity;
     int256 quantity;

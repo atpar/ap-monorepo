@@ -2,15 +2,11 @@
 pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "./StateEncoder.sol";
-
 
 /**
  * @title StateRegistry
  */
 abstract contract StateRegistry {
-
-    using StateEncoder for Asset;
 
     event UpdatedState(bytes32 indexed assetId, uint256 statusDate);
     event UpdatedFinalizedState(bytes32 indexed assetId, uint256 statusDate);

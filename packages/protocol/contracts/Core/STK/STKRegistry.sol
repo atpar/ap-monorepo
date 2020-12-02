@@ -36,7 +36,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
     function registerAsset(
         bytes32 assetId,
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -48,7 +48,7 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         override
         onlyApprovedActors
     {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin, extension);
+        setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetSTKTerms(terms);
     }
 
@@ -151,6 +151,91 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
         returns (ContractReference memory)
     {
         return ContractReference(0, 0, ContractReferenceType(0), ContractReferenceRole(0));
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getState(bytes32 assetId)
+        external
+        view
+        override
+        returns (STKState memory)
+    {
+        return assets[assetId].decodeAndGetSTKState();
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        override
+        returns (STKState memory)
+    {
+        return assets[assetId].decodeAndGetFinalizedSTKState();
+    }
+
+    /**
+     * @notice Sets next state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setState(bytes32 assetId, STKState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetSTKState(state);
+        emit UpdatedState(assetId, state.statusDate);
+    }
+
+    /**
+     * @notice Sets next finalized state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setFinalizedState(bytes32 assetId, STKState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetFinalizedSTKState(state);
+        emit UpdatedFinalizedState(assetId, state.statusDate);
+    }
+
+    function getEnumValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint8)
+    {
+        return assets[assetId].decodeAndGetEnumValueForSTKStateAttribute(attribute);
+    }
+
+    function getIntValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (int256)
+    {
+        return assets[assetId].decodeAndGetIntValueForSTKStateAttribute(attribute);
+    }
+
+    function getUintValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint256)
+    {
+        return assets[assetId].decodeAndGetUIntValueForSTKStateAttribute(attribute);
     }
 
     function getNextComputedEvent(bytes32 assetId)

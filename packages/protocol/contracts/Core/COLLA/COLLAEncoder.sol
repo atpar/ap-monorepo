@@ -13,6 +13,12 @@ library COLLAEncoder {
         if (asset.packedTerms[attributeKey] == value) return;
         asset.packedTerms[attributeKey] = value;
     }
+
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
+        // skip if value did not change
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
+    }
     
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
@@ -233,5 +239,113 @@ library COLLAEncoder {
             ContractReferenceType(0),
             ContractReferenceRole(0)
         );
+    }
+
+    /**
+     * @dev Tightly pack and store COLLAState
+     */
+    function encodeAndSetCOLLAState(Asset storage asset, COLLAState memory state) external {
+        storeInPackedState(asset, "contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "accruedInterest", bytes32(state.accruedInterest));
+        storeInPackedState(asset, "nominalInterestRate", bytes32(state.nominalInterestRate));
+        storeInPackedState(asset, "interestScalingMultiplier", bytes32(state.interestScalingMultiplier));
+        storeInPackedState(asset, "notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
+    }
+
+    /**
+     * @dev Tightly pack and store finalized COLLAState
+     */
+    function encodeAndSetFinalizedCOLLAState(Asset storage asset, COLLAState memory state) external {
+        storeInPackedState(asset, "F_contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "F_statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "F_nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "F_accruedInterest", bytes32(state.accruedInterest));
+        storeInPackedState(asset, "F_nominalInterestRate", bytes32(state.nominalInterestRate));
+        storeInPackedState(asset, "F_interestScalingMultiplier", bytes32(state.interestScalingMultiplier));
+        storeInPackedState(asset, "F_notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
+    }
+
+    /**
+     * @dev Decode and load the COLLAState of the asset
+     */
+    function decodeAndGetCOLLAState(Asset storage asset)
+        external
+        view
+        returns (COLLAState memory)
+    {
+        return COLLAState(
+            ContractPerformance(uint8(uint256(asset.packedState["contractPerformance"] >> 248))),
+            uint256(asset.packedState["statusDate"]),
+            uint256(asset.packedState["nonPerformingDate"]),
+            uint256(asset.packedState["maturityDate"]),
+            uint256(asset.packedState["terminationDate"]),
+
+            int256(asset.packedState["notionalPrincipal"]),
+            int256(asset.packedState["accruedInterest"]),
+            int256(asset.packedState["nominalInterestRate"]),
+            int256(asset.packedState["interestScalingMultiplier"]),
+            int256(asset.packedState["notionalScalingMultiplier"])
+        );
+    }
+
+    /**
+     * @dev Decode and load the finalized COLLAState of the asset
+     */
+    function decodeAndGetFinalizedCOLLAState(Asset storage asset)
+        external
+        view
+        returns (COLLAState memory)
+    {
+        return COLLAState(
+            ContractPerformance(uint8(uint256(asset.packedState["F_contractPerformance"] >> 248))),
+            uint256(asset.packedState["F_statusDate"]),
+            uint256(asset.packedState["F_nonPerformingDate"]),
+            uint256(asset.packedState["F_maturityDate"]),
+            uint256(asset.packedState["F_terminationDate"]),
+
+            int256(asset.packedState["F_notionalPrincipal"]),
+            int256(asset.packedState["F_accruedInterest"]),
+            int256(asset.packedState["F_nominalInterestRate"]),
+            int256(asset.packedState["F_interestScalingMultiplier"]),
+            int256(asset.packedState["F_notionalScalingMultiplier"])
+        );
+    }
+
+    function decodeAndGetEnumValueForCOLLAStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
+    }
+
+    function decodeAndGetUIntValueForCOLLAStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint256)
+    {
+        return uint256(asset.packedState[attributeKey]);
+    }
+
+    function decodeAndGetIntValueForCOLLAStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (int256)
+    {
+        return int256(asset.packedState[attributeKey]);
     }
 }

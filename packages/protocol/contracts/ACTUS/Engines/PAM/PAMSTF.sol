@@ -84,13 +84,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_ISS (
         PAMTerms memory /* terms */,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         state.statusDate = scheduleTime;
         return state;

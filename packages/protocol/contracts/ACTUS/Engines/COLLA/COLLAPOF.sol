@@ -24,7 +24,7 @@ contract COLLAPOF is Core {
      */
     function POF_COLLA_IED (
         COLLATerms memory terms,
-        State memory /* state */,
+        COLLAState memory /* state */,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -46,7 +46,7 @@ contract COLLAPOF is Core {
      */
     function POF_COLLA_IP (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
@@ -83,7 +83,7 @@ contract COLLAPOF is Core {
      */
     function POF_COLLA_MD (
         COLLATerms memory /* terms */,
-        State memory state,
+        COLLAState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )

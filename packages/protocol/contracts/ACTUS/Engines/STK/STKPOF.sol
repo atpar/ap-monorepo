@@ -24,7 +24,7 @@ contract STKPOF is Core {
      */
     function POF_STK_DIP (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -43,7 +43,7 @@ contract STKPOF is Core {
      */
     function POF_STK_REP (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
         bytes calldata externalData
     )
@@ -67,7 +67,7 @@ contract STKPOF is Core {
      */
     function POF_STK_TD (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )

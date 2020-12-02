@@ -36,14 +36,14 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
      */
     function computeStateForEvent(
         COLLATerms calldata terms,
-        State calldata state,
+        COLLAState calldata state,
         bytes32 _event,
         bytes calldata externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (COLLAState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -63,7 +63,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
      */
     function computePayoffForEvent(
         COLLATerms calldata terms,
-        State calldata state,
+        COLLAState calldata state,
         bytes32 _event,
         bytes calldata externalData
     )
@@ -99,9 +99,9 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (COLLAState memory)
     {
-        State memory state;
+        COLLAState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.notionalScalingMultiplier = ONE_POINT_ZERO;
@@ -359,9 +359,8 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         COLLATerms calldata /* terms */,
-        State calldata state,
-        bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        COLLAState calldata state,
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
@@ -390,13 +389,13 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
      */
     function stateTransitionFunction(
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         bytes32 _event,
         bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -429,7 +428,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
      */
     function payoffFunction(
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         bytes32 _event,
         bytes calldata externalData
     )

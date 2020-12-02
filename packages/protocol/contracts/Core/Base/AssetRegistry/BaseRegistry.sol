@@ -11,7 +11,6 @@ import "./IBaseRegistry.sol";
 import "./Ownership/OwnershipRegistry.sol";
 import "./Terms/TermsRegistry.sol";
 import "./State/StateRegistry.sol";
-import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleRegistry.sol";
 import "./Schedule/ScheduleEncoder.sol";
 
@@ -29,7 +28,6 @@ abstract contract BaseRegistry is
     OwnershipRegistry,
     IBaseRegistry
 {
-    using StateEncoder for Asset;
     using ScheduleEncoder for Asset;
 
     event RegisteredAsset(bytes32 assetId);

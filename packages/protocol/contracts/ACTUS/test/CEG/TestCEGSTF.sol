@@ -89,7 +89,7 @@ contract TestCEGSTF is CEGSTF {
     )
         public
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         return STF_CEG_PRD(
             terms,

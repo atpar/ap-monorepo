@@ -69,7 +69,7 @@ contract ANNActor is BaseActor {
     function computePayoffForEvent(bytes32 assetId, address engine, ANNTerms memory terms, ANNState memory state, bytes32 _event) internal view returns (int256) {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        bytes32 externalData;
+        bytes memory externalData;
         {
             externalData = getExternalDataForPOF(
                 assetId,

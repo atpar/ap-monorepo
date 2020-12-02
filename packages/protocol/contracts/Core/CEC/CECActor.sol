@@ -122,7 +122,7 @@ contract CECActor is BaseActor {
         emit InitializedAsset(assetId, ContractType.CEC, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
-/**
+    /**
      * @notice Contract-type specific logic for processing an event required by the use of
      * contract-type specific Terms and State.
      */
