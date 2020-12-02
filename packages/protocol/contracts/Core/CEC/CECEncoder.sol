@@ -265,7 +265,6 @@ library CECEncoder {
             uint256(asset.packedState["maturityDate"]),
             uint256(asset.packedState["exerciseDate"]),
             uint256(asset.packedState["terminationDate"]),
-
             int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["feeAccrued"]),
             int256(asset.packedState["exerciseAmomunt"])
@@ -286,7 +285,6 @@ library CECEncoder {
             uint256(asset.packedState["F_maturityDate"]),
             uint256(asset.packedState["F_exerciseDate"]),
             uint256(asset.packedState["F_terminationDate"]),
-
             int256(asset.packedState["F_notionalPrincipal"]),
             int256(asset.packedState["F_feeAccrued"]),
             int256(asset.packedState["F_exerciseAmomunt"])

@@ -187,7 +187,7 @@ contract CERTFActor is BaseActor {
             bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
 
             // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
-            nextState = computeStateForEvent(assetId, engine, terms, state, ceEvent);
+            nextState = computeStateForEvent(assetId, engine, terms, nextState, ceEvent);
         }
 
         // store the resulting state

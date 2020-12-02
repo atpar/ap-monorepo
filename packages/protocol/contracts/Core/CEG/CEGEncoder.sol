@@ -321,7 +321,7 @@ library CEGEncoder {
         storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
         storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
         storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
-        storeInPackedState(asset, "nominalInterestRate", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "nominalInterestRate", bytes32(state.nominalInterestRate));
         storeInPackedState(asset, "feeAccrued", bytes32(state.feeAccrued));
         storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
     }
