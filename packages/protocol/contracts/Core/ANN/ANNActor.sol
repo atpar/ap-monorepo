@@ -66,37 +66,76 @@ contract ANNActor is BaseActor {
         emit InitializedAsset(assetId, ContractType.ANN, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
-    function computePayoffForEvent(bytes32 assetId, address engine, ANNTerms memory terms, ANNState memory state, bytes32 _event) internal view returns (int256) {
+    function computePayoffForEvent(
+        bytes32 assetId,
+        address engine,
+        ANNTerms memory terms,
+        ANNState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (int256)
+    {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        bytes memory externalData;
+        uint256 timestamp;
         {
-            externalData = getExternalDataForPOF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
             );
         }
+        
+        bytes memory externalDataPOF;
+        { externalDataPOF = getExternalDataForPOF(assetId, eventType, timestamp); }
 
-        return IANNEngine(engine).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            externalData
+        return (
+            IANNEngine(engine).computePayoffForEvent(
+                terms,
+                state,
+                _event,
+                externalDataPOF
+            )
         );
     }
 
-    function computeStateForEvent(bytes32 assetId, address engine, ANNTerms memory terms, ANNState memory state, bytes32 _event) internal view returns (ANNState memory) {
+    function computeStateForEvent(
+        bytes32 assetId,
+        address engine,
+        ANNTerms memory terms,
+        ANNState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (ANNState memory)
+    {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        return IANNEngine(engine).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataSTF;
+        { externalDataSTF = getExternalDataForSTF(assetId, eventType, timestamp); }
+
+        return (
+            IANNEngine(engine).computeStateForEvent(
+                terms,
+                state,
+                _event,
+                externalDataSTF
             )
         );
     }
@@ -119,32 +158,12 @@ contract ANNActor is BaseActor {
             state = IANNRegistry(address(assetRegistry)).getFinalizedState(assetId);
         }
 
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+        (, uint256 scheduleTime) = decodeEvent(_event);
 
         // get external data for the next event
         // compute payoff and the next state by applying the event to the current state
         int256 payoff = computePayoffForEvent(assetId, engine, terms, state, _event);
-        // IANNEngine(engine).computePayoffForEvent(
-        //     terms,
-        //     state,
-        //     _event,
-        //     getExternalDataForPOF(
-        //         assetId,
-        //         eventType,
-        //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-        //     )
-        // );
         ANNState memory nextState = computeStateForEvent(assetId, engine, terms, state, _event);
-        // IANNEngine(engine).computeStateForEvent(
-        //     terms,
-        //     state,
-        //     _event,
-        //     getExternalDataForSTF(
-        //         assetId,
-        //         eventType,
-        //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-        //     )
-        // );
 
         // try to settle payoff of event
         bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
@@ -166,16 +185,6 @@ contract ANNActor is BaseActor {
 
             // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
             nextState = computeStateForEvent(assetId, engine, terms, state, ceEvent);
-            // IANNEngine(engine).computeStateForEvent(
-            //     terms,
-            //     state,
-            //     ceEvent,
-            //     getExternalDataForSTF(
-            //         assetId,
-            //         EventType.CE,
-            //         shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            //     )
-            // );
         }
 
         // store the resulting state

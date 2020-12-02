@@ -50,6 +50,8 @@ contract STKRegistry is BaseRegistry, ISTKRegistry {
     {
         setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetSTKTerms(terms);
+        assets[assetId].encodeAndSetSTKState(state);
+        assets[assetId].encodeAndSetFinalizedSTKState(state);
     }
 
     /**

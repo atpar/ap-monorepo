@@ -122,6 +122,80 @@ contract CECActor is BaseActor {
         emit InitializedAsset(assetId, ContractType.CEC, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
+    function computePayoffForEvent(
+        bytes32 assetId,
+        address engine,
+        CECTerms memory terms,
+        CECState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (int256)
+    {
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataPOF;
+        { externalDataPOF = getExternalDataForPOF(assetId, eventType, timestamp); }
+
+        return (
+            ICECEngine(engine).computePayoffForEvent(
+                terms,
+                state,
+                _event,
+                externalDataPOF
+            )
+        );
+    }
+
+    function computeStateForEvent(
+        bytes32 assetId,
+        address engine,
+        CECTerms memory terms,
+        CECState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (CECState memory)
+    {
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataSTF;
+        { externalDataSTF = getExternalDataForSTF(assetId, eventType, timestamp); }
+
+        return (
+            ICECEngine(engine).computeStateForEvent(
+                terms,
+                state,
+                _event,
+                externalDataSTF
+            )
+        );
+    }
+
     /**
      * @notice Contract-type specific logic for processing an event required by the use of
      * contract-type specific Terms and State.
@@ -140,30 +214,12 @@ contract CECActor is BaseActor {
             state = ICECRegistry(address(assetRegistry)).getFinalizedState(assetId);
         }
 
-        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+        (, uint256 scheduleTime) = decodeEvent(_event);
 
         // get external data for the next event
         // compute payoff and the next state by applying the event to the current state
-        int256 payoff = ICECEngine(engine).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForPOF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
-        CECState memory nextState = ICECEngine(engine).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
+        int256 payoff = computePayoffForEvent(assetId, engine, terms, state, _event);
+        CECState memory nextState = computeStateForEvent(assetId, engine, terms, state, _event);
 
         // try to settle payoff of event
         bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
@@ -184,16 +240,7 @@ contract CECActor is BaseActor {
             bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
 
             // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
-            nextState = ICECEngine(engine).computeStateForEvent(
-                terms,
-                state,
-                ceEvent,
-                getExternalDataForSTF(
-                    assetId,
-                    EventType.CE,
-                    shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-                )
-            );
+            nextState = computeStateForEvent(assetId, engine, terms, state, ceEvent);
         }
 
         // store the resulting state

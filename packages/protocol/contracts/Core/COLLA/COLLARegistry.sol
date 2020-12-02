@@ -50,6 +50,8 @@ contract COLLARegistry is BaseRegistry, ICOLLARegistry {
     {
         setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetCOLLATerms(terms);
+        assets[assetId].encodeAndSetCOLLAState(state);
+        assets[assetId].encodeAndSetFinalizedCOLLAState(state);
     }
 
     /**
