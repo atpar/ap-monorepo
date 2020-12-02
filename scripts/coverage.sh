@@ -1,11 +1,5 @@
 (
-  cd ./packages/ap-contracts
-  yarn coverage
-  # cat coverage/lcov.info | coveralls
-)
-
-(
-  cd ./packages/actus-solidity
+  cd ./packages/protocol
   yarn coverage
   # cat coverage/lcov.info | coveralls
 )

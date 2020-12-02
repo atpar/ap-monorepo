@@ -1,0 +1,153 @@
+{
+    "colla01": {
+        "identifier": "colla01",
+        "terms": {
+            "contractType": "COLLA",
+            "contractID": "colla01",
+            "statusDate": "2012-12-30T00:00:00",
+            "contractDealDate": "2012-12-28T00:00:00",
+            "currency": "USD",
+            "notionalPrincipal": "3000",
+            "initialExchangeDate": "2013-01-01T00:00:00",
+            "maturityDate": "2014-01-01T00:00:00",
+            "nominalInterestRate": "0.1",
+            "cycleAnchorDateOfInterestPayment": "2013-01-01T00:00:00",
+            "cycleOfInterestPayment": "P1ML0",
+            "dayCountConvention": "A365",
+            "endOfMonthConvention": "SD",
+            "premiumDiscountAtIED": "   0",
+            "rateMultiplier": "1.0",
+            "contractRole": "RPA"
+        },
+        "tMax": "",
+        "dataObserved": {
+
+        },
+        "eventsObserved": [
+
+        ],
+        "results": [
+            {
+                "eventDate": "2013-01-01T00:00",
+                "eventType": "IED",
+                "payoff": -3000,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-01-01T00:00",
+                "eventType": "IP",
+                "payoff": 0,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-02-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-03-01T00:00",
+                "eventType": "IP",
+                "payoff": 23.013698630137,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-04-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-05-01T00:00",
+                "eventType": "IP",
+                "payoff": 24.6575342465753,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-06-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-07-01T00:00",
+                "eventType": "IP",
+                "payoff": 24.6575342465753,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-08-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-09-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-10-01T00:00",
+                "eventType": "IP",
+                "payoff": 24.6575342465753,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-11-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2013-12-01T00:00",
+                "eventType": "IP",
+                "payoff": 24.6575342465753,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2014-01-01T00:00",
+                "eventType": "IP",
+                "payoff": 25.4794520547945,
+                "notionalPrincipal": 3000,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            },
+            {
+                "eventDate": "2014-01-01T00:00",
+                "eventType": "MD",
+                "payoff": 3000,
+                "notionalPrincipal": 0,
+                "nominalInterestRate": 0.1,
+                "accruedInterest": 0
+            }
+        ]
+    }
+}
+

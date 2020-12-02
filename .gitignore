@@ -1,13 +1,10 @@
-# ap.js
-dist/
-CNAME
-
-# actus-solditiy, ap-contracts
-build/
-artifacts/
-ts-bindings
+# protocol
 mnemonic.js
-ts-bindings/
+dist/
+snapshot.tar.gz
+
+# typechain
+**/*/src/types/contracts/
 
 # sol-coverage
 coverage.json
@@ -15,9 +12,10 @@ coverage/
 
 # buidler
 cache/
-test/artifacts/
-
-docs/
+build-info/
+*/**/*.dbg.json
+build/
+deployments/
 
 # node
 node_modules/

@@ -1,0 +1,43 @@
+{
+  "contractType": 18,
+  "calendar": 0,
+  "contractRole": 6,
+  "dayCountConvention": 0,
+  "businessDayConvention": 0,
+  "endOfMonthConvention": 0,
+  "couponType": 0,
+  "currency": "0x0000000000000000000000000000000000000000",
+  "settlementCurrency": "0x0000000000000000000000000000000000000000",
+  "statusDate": 1590969600,
+  "initialExchangeDate": 0,
+  "maturityDate": 0,
+  "issueDate": 1591056000,
+  "cycleAnchorDateOfRedemption": 1598918400,
+  "cycleAnchorDateOfTermination": 0,
+  "cycleAnchorDateOfCoupon": 0,
+  "nominalPrice": "1000000000000000000000",
+  "issuePrice": "1000000000000000000000",
+  "quantity": "100000000000000000000000",
+  "denominationRatio": "1000000000000000000",
+  "couponRate": 0,
+  "gracePeriod": { "i": 0, "p": 0, "isSet": false },
+  "settlementPeriod": { "i": "10", "p": 0, "isSet": true },
+  "delinquencyPeriod": { "i": 0, "p": 0, "isSet": false },
+  "fixingPeriod": { "i": "0", "p": 0, "isSet": true },
+  "redemptionRecordPeriod": { "i": "5", "p": 0, "isSet": true },
+  "cycleOfRedemption": { "i": "3", "p": 2, "s": 1, "isSet": true },
+  "cycleOfTermination": { "i": 0, "p": 0, "s": 0, "isSet": false },
+  "cycleOfCoupon": { "i": 0, "p": 0, "s": 0, "isSet": false },
+  "contractReference_1": {
+    "object": "0x4348303233313546315744",
+    "object2": "0x00",
+    "_type": 2,
+    "role": 0
+  },
+  "contractReference_2": {
+    "object": "0x414243",
+    "object2": "0x00",
+    "_type": 2,
+    "role": 0
+  }
+}

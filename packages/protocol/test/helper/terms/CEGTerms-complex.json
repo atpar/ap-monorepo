@@ -1,0 +1,36 @@
+{ 
+  "contractType": 1,
+  "calendar": 1,
+  "contractRole": 1,
+  "dayCountConvention": 1,
+  "businessDayConvention": 1,
+  "endOfMonthConvention": 1,
+  "creditEventTypeCovered": 1,
+  "feeBasis": 1,
+  "currency": "0x0000000000000000000000000000000000000001",
+  "settlementCurrency": "0x0000000000000000000000000000000000000001",
+  "statusDate": 1,
+  "maturityDate": 1,
+  "purchaseDate": 1,
+  "cycleAnchorDateOfFee": 1,
+  "notionalPrincipal": 1,
+  "feeAccrued": 1,
+  "feeRate": 1,
+  "priceAtPurchaseDate": 1,
+  "coverageOfCreditEnhancement": 1,
+  "gracePeriod": { "i": 1, "p": 1, "isSet": true },
+  "delinquencyPeriod": { "i": 1, "p": 1, "isSet": true },
+  "cycleOfFee": { "i": 1, "p": 1, "s": 1, "isSet": true },
+  "contractReference_1": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "object2": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "_type": 1, 
+    "role": 1
+  },
+  "contractReference_2": { 
+    "object": "0x0000000000000000000000000000000000000000000000000000000000000002",
+    "object2": "0x0000000000000000000000000000000000000000000000000000000000000002",
+    "_type": 1, 
+    "role": 1
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "contractType": 8,
+  "calendar": 1,
+  "contractRole": 1,
+  "dayCountConvention": 2,
+  "businessDayConvention": 3,
+  "endOfMonthConvention": 1,
+  "redeemableByIssuer": 0,
+  "currency": "0x0000000000000000000000000000000000000001",
+  "settlementCurrency": "0x0000000000000000000000000000000000000001",
+
+  "statusDate": 1601836535,
+  "issueDate": 1600972511,
+  "purchaseDate": 1600972512,
+  "cycleAnchorDateOfDividend": 1601510400,
+
+  "nominalPrice": 50,
+  "notionalPrincipal": 100000000,
+  "issuePrice": 47,
+  "quantity": 2000000,
+  "priceAtPurchaseDate": 40,
+  "priceAtTerminationDate": 40,
+  "redemptionPrice": 45,
+
+  "dividendRecordPeriod": { "i": 1, "p": 2, "isSet": true },
+  "dividendPaymentPeriod": { "i": 5, "p": 1, "isSet": true },
+  "splitSettlementPeriod": { "i": 25, "p": 0, "isSet": false },
+  "redemptionRecordPeriod": { "i": 25, "p": 0, "isSet": true },
+  "redemptionPaymentPeriod": { "i": 50, "p": 0, "isSet": true },
+  "cycleOfDividend": { "i": 1, "p": 5, "s": 1, "isSet": true }
+}

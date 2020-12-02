@@ -10,13 +10,9 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
-    "coverage": "./scripts/coverage.sh",
+    "coverage": "# ./scripts/coverage.sh",
     "link-packages": "lerna link",
-    "publish": "lerna run build && lerna publish --exact --dist-tag latest",
+    "publish-packages": "./scripts/publish.sh",
     "test": "./scripts/test.sh"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com/"
   }
 }

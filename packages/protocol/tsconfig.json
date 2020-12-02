@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2015",
+    "moduleResolution": "node",
+    "outDir": "./dist/esm/",
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./dist/typings/",
+    "sourceMap": true,
+    "baseUrl": "./",
+    "rootDirs": ["./src"],
+    "typeRoots": ["./node_modules/@types"],
+    "composite": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "exclude": ["node_modules", "__tests__", "test"]
+}
