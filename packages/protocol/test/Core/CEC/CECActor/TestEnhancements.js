@@ -164,7 +164,7 @@ describe('CECActor', () => {
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
       .send(this.txOpts);
     assert.strictEqual(Number(decodeEvent(stdEvent).eventType), eventIndex('ST'));
-
+    
     // creator should have received seized collateral from custodian
     assert.strictEqual(
       (await this.PaymentTokenInstance.methods.balanceOf(creatorBeneficiary).call()),
