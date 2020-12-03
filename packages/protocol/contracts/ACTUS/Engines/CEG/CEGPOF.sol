@@ -24,7 +24,7 @@ contract CEGPOF is Core {
      */
     function POF_CEG_ST (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -41,9 +41,9 @@ contract CEGPOF is Core {
      */
     function POF_CEG_FP (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes calldata /* externalData */
+        bytes calldata externalData
     )
         internal
         pure
@@ -66,12 +66,17 @@ contract CEGPOF is Core {
             );
         }
 
+        int256 notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+
         return (
             state.feeAccrued
             .add(
                 timeFromLastEvent
                 .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
+                .floatMult(notionalPrincipal)
             )
         );
     }

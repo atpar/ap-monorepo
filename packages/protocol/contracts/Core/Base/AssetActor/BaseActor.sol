@@ -122,20 +122,17 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
      * @notice Return true if event was settled
      */
     function processEvent(bytes32 assetId, bytes32 _event) internal nonReentrant {
-        State memory state = assetRegistry.getState(assetId);
+        ContractPerformance contractPerformance = ContractPerformance(
+            assetRegistry.getEnumValueForStateAttribute(assetId, "contractPerformance")
+        );
 
         // block progression if asset has defaulted, terminated or reached maturity
         require(
-            state.contractPerformance == ContractPerformance.PF
-            || state.contractPerformance == ContractPerformance.DL
-            || state.contractPerformance == ContractPerformance.DQ,
+            contractPerformance == ContractPerformance.PF
+            || contractPerformance == ContractPerformance.DL
+            || contractPerformance == ContractPerformance.DQ,
             "BaseActor.processEvent: ASSET_REACHED_FINAL_STATE"
         );
-
-        // get finalized state if asset is not performant
-        if (state.contractPerformance != ContractPerformance.PF) {
-            state = assetRegistry.getFinalizedState(assetId);
-        }
 
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -152,34 +149,7 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
             "BaseActor.processEvent: NEXT_EVENT_NOT_YET_SCHEDULED"
         );
 
-        // get external data for the next event
-        // compute payoff and the next state by applying the event to the current state
-        (State memory nextState, int256 payoff) = computeStateAndPayoffForEvent(assetId, state, _event);
-
-        // try to settle payoff of event
-        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
-
-        if (settledPayoff == false) {
-            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
-            // store the last performant state of the asset
-            // (if the obligation is later fulfilled before the asset reaches default,
-            // the last performant state is used to derive subsequent states of the asset)
-            if (state.contractPerformance == ContractPerformance.PF) {
-                assetRegistry.setFinalizedState(assetId, state);
-            }
-
-            // store event as pending event for future settlement
-            assetRegistry.pushPendingEvent(assetId, _event);
-
-            // create CreditEvent
-            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
-
-            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
-            (nextState, ) = computeStateAndPayoffForEvent(assetId, nextState, ceEvent);
-        }
-
-        // store the resulting state
-        assetRegistry.setState(assetId, nextState);
+        (bool settledPayoff, int256 payoff) = settleEventAndUpdateState(assetId, _event);
 
         // mark event as settled
         if (settledPayoff == true) {
@@ -263,11 +233,14 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
         return IERC20(token).transferFrom(payer, payee, amount);
     }
 
-    function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
+    /**
+     * @notice Contract-type specific logic for processing an event required by the use of
+     * contract-type specific Terms and State. Has to be implemented by each contract-type specific Actor.
+     */
+    function settleEventAndUpdateState(bytes32 assetId, bytes32 _event)
         internal
-        view
         virtual
-        returns (State memory, int256);
+        returns (bool, int256);
 
     /**
      * @notice Retrieves external data (such as market object data, block time, underlying asset state)

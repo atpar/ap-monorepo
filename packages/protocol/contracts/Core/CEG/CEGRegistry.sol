@@ -36,7 +36,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
     function registerAsset(
         bytes32 assetId,
         CEGTerms calldata terms,
-        State calldata state,
+        CEGState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -48,8 +48,10 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override
         onlyApprovedActors
     {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin, extension);
+        setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetCEGTerms(terms);
+        assets[assetId].encodeAndSetCEGState(state);
+        assets[assetId].encodeAndSetFinalizedCEGState(state);
     }
 
     /**
@@ -87,7 +89,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint8)
     {
-        return assets[assetId].decodeAndGetEnumValueForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetEnumValueForCEGTermsAttribute(attribute);
     }
 
     function getAddressValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -96,7 +98,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (address)
     {
-        return assets[assetId].decodeAndGetAddressValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetAddressValueForCEGTermsAttribute(attribute);
     }
 
     function getBytes32ValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -105,7 +107,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (bytes32)
     {
-        return assets[assetId].decodeAndGetBytes32ValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetBytes32ValueForCEGTermsAttribute(attribute);
     }
 
     function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -114,7 +116,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint256)
     {
-        return assets[assetId].decodeAndGetUIntValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetUIntValueForCEGTermsAttribute(attribute);
     }
 
     function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -123,7 +125,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (int256)
     {
-        return assets[assetId].decodeAndGetIntValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetIntValueForCEGTermsAttribute(attribute);
     }
 
     function getPeriodValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -132,7 +134,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IP memory)
     {
-        return assets[assetId].decodeAndGetPeriodValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetPeriodValueForCEGTermsAttribute(attribute);
     }
 
     function getCycleValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -141,7 +143,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IPS memory)
     {
-        return assets[assetId].decodeAndGetCycleValueForForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetCycleValueForCEGTermsAttribute(attribute);
     }
 
     function getContractReferenceValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -150,7 +152,92 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (ContractReference memory)
     {
-        return assets[assetId].decodeAndGetContractReferenceValueForCEGAttribute(attribute);
+        return assets[assetId].decodeAndGetContractReferenceValueForCEGTermsAttribute(attribute);
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getState(bytes32 assetId)
+        external
+        view
+        override
+        returns (CEGState memory)
+    {
+        return assets[assetId].decodeAndGetCEGState();
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        override
+        returns (CEGState memory)
+    {
+        return assets[assetId].decodeAndGetFinalizedCEGState();
+    }
+
+    /**
+     * @notice Sets next state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setState(bytes32 assetId, CEGState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetCEGState(state);
+        emit UpdatedState(assetId, state.statusDate);
+    }
+
+    /**
+     * @notice Sets next finalized state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setFinalizedState(bytes32 assetId, CEGState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetFinalizedCEGState(state);
+        emit UpdatedFinalizedState(assetId, state.statusDate);
+    }
+
+    function getEnumValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint8)
+    {
+        return assets[assetId].decodeAndGetEnumValueForCEGStateAttribute(attribute);
+    }
+
+    function getIntValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (int256)
+    {
+        return assets[assetId].decodeAndGetIntValueForCEGStateAttribute(attribute);
+    }
+
+    function getUintValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint256)
+    {
+        return assets[assetId].decodeAndGetUIntValueForCEGStateAttribute(attribute);
     }
 
     function getNextComputedEvent(bytes32 assetId)
@@ -181,7 +268,7 @@ contract CEGRegistry is BaseRegistry, ICEGRegistry {
             ) {
                 nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         // Non-Cyclic

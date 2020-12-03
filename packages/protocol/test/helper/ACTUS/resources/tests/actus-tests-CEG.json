@@ -8,7 +8,7 @@
             "contractDealDate": "2012-12-28T00:00:00",
             "initialExchangeDate": "2013-01-01T00:00:00",
             "statusDate": "2012-12-30T00:00:00",
-            "notionalPrincipal": "  5000",
+            "notionalPrincipal": "5000",
             "cycleAnchorDateOfPrincipalRedemption": "2013-02-01T00:00:00",
             "nextPrincipalRedemptionPayment": "434.866594118346",
             "dayCountConvention": "A365",

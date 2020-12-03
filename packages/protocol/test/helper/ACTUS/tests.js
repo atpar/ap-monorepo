@@ -177,7 +177,6 @@ module.exports = {
   assertEqualStates,
   getTestCases,
   getDefaultTestTerms,
-  getDefaultState,
   compareTestResults,
   web3ResponseToState
 }

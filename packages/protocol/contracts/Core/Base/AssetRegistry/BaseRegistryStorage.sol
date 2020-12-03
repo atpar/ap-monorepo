@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import "../Conversions.sol";
 import "../SharedTypes.sol";
-import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleEncoder.sol";
 
 
@@ -49,7 +48,6 @@ struct Asset {
  */
 abstract contract BaseRegistryStorage {
 
-    using StateEncoder for Asset;
     using ScheduleEncoder for Asset;
 
     // AssetId => Asset

@@ -25,7 +25,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_FP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
@@ -66,7 +66,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_IED (
         PAMTerms memory terms,
-        State memory /* state */,
+        PAMState memory /* state */,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -88,7 +88,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_IP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
@@ -125,7 +125,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_PP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -145,7 +145,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_MD (
         PAMTerms memory /* terms */,
-        State memory state,
+        PAMState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
@@ -165,7 +165,7 @@ contract PAMPOF is Core {
      */
     function POF_PAM_TD (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )

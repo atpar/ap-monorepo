@@ -36,7 +36,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
     function registerAsset(
         bytes32 assetId,
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -48,8 +48,10 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override
         onlyApprovedActors
     {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin, extension);
+        setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetCERTFTerms(terms);
+        assets[assetId].encodeAndSetCERTFState(state);
+        assets[assetId].encodeAndSetFinalizedCERTFState(state);
     }
 
     /**
@@ -87,7 +89,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint8)
     {
-        return assets[assetId].decodeAndGetEnumValueForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetEnumValueForCERTFTermsAttribute(attribute);
     }
 
     function getAddressValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -96,7 +98,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (address)
     {
-        return assets[assetId].decodeAndGetAddressValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetAddressValueForCERTFTermsAttribute(attribute);
     }
 
     function getBytes32ValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -105,7 +107,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (bytes32)
     {
-        return assets[assetId].decodeAndGetBytes32ValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetBytes32ValueForCERTFTermsAttribute(attribute);
     }
 
     function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -114,7 +116,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint256)
     {
-        return assets[assetId].decodeAndGetUIntValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetUIntValueForCERTFTermsAttribute(attribute);
     }
 
     function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -123,7 +125,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (int256)
     {
-        return assets[assetId].decodeAndGetIntValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetIntValueForCERTFTermsAttribute(attribute);
     }
 
     function getPeriodValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -132,7 +134,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IP memory)
     {
-        return assets[assetId].decodeAndGetPeriodValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetPeriodValueForCERTFTermsAttribute(attribute);
     }
 
     function getCycleValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -141,7 +143,7 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IPS memory)
     {
-        return assets[assetId].decodeAndGetCycleValueForForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetCycleValueForCERTFTermsAttribute(attribute);
     }
 
     function getContractReferenceValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -150,7 +152,92 @@ contract CERTFRegistry is BaseRegistry, ICERTFRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (ContractReference memory)
     {
-        return assets[assetId].decodeAndGetContractReferenceValueForCERTFAttribute(attribute);
+        return assets[assetId].decodeAndGetContractReferenceValueForCERTFTermsAttribute(attribute);
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getState(bytes32 assetId)
+        external
+        view
+        override
+        returns (CERTFState memory)
+    {
+        return assets[assetId].decodeAndGetCERTFState();
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        override
+        returns (CERTFState memory)
+    {
+        return assets[assetId].decodeAndGetFinalizedCERTFState();
+    }
+
+    /**
+     * @notice Sets next state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setState(bytes32 assetId, CERTFState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetCERTFState(state);
+        emit UpdatedState(assetId, state.statusDate);
+    }
+
+    /**
+     * @notice Sets next finalized state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setFinalizedState(bytes32 assetId, CERTFState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetFinalizedCERTFState(state);
+        emit UpdatedFinalizedState(assetId, state.statusDate);
+    }
+
+    function getEnumValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint8)
+    {
+        return assets[assetId].decodeAndGetEnumValueForCERTFStateAttribute(attribute);
+    }
+
+    function getIntValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (int256)
+    {
+        return assets[assetId].decodeAndGetIntValueForCERTFStateAttribute(attribute);
+    }
+
+    function getUintValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint256)
+    {
+        return assets[assetId].decodeAndGetUIntValueForCERTFStateAttribute(attribute);
     }
 
     function getNextComputedEvent(bytes32 assetId)

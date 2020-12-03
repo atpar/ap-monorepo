@@ -48,7 +48,7 @@ contract ANNActor is BaseActor {
         bytes32 assetId = keccak256(abi.encode(terms, block.timestamp));
 
         // compute the initial state of the asset
-        State memory initialState = IANNEngine(engine).computeInitialState(terms);
+        ANNState memory initialState = IANNEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
         IANNRegistry(address(assetRegistry)).registerAsset(
@@ -66,41 +66,131 @@ contract ANNActor is BaseActor {
         emit InitializedAsset(assetId, ContractType.ANN, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
-    function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
+    function computePayoffForEvent(
+        bytes32 assetId,
+        address engine,
+        ANNTerms memory terms,
+        ANNState memory state,
+        bytes32 _event
+    )
         internal
         view
-        override
-        returns (State memory, int256)
+        returns (int256)
     {
-        // ContractType contractType = ContractType(assetRegistry.getEnumValueForTermsAttribute(assetId, "contractType"));        
-        // revert("ANNActor.computePayoffAndStateForEvent: UNSUPPORTED_CONTRACT_TYPE");
-
-        address engine = assetRegistry.getEngine(assetId);
-        ANNTerms memory terms = IANNRegistry(address(assetRegistry)).getTerms(assetId);
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        int256 payoff = IANNEngine(engine).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForPOF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
-        state = IANNEngine(engine).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataPOF;
+        { externalDataPOF = getExternalDataForPOF(assetId, eventType, timestamp); }
 
-        return (state, payoff);
+        return (
+            IANNEngine(engine).computePayoffForEvent(
+                terms,
+                state,
+                _event,
+                externalDataPOF
+            )
+        );
+    }
+
+    function computeStateForEvent(
+        bytes32 assetId,
+        address engine,
+        ANNTerms memory terms,
+        ANNState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (ANNState memory)
+    {
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataSTF;
+        { externalDataSTF = getExternalDataForSTF(assetId, eventType, timestamp); }
+
+        return (
+            IANNEngine(engine).computeStateForEvent(
+                terms,
+                state,
+                _event,
+                externalDataSTF
+            )
+        );
+    }
+
+    /**
+     * @notice Contract-type specific logic for processing an event required by the use of
+     * contract-type specific Terms and State.
+     */
+    function settleEventAndUpdateState(bytes32 assetId, bytes32 _event)
+        internal
+        override
+        returns (bool, int256)
+    {
+        ANNTerms memory terms = IANNRegistry(address(assetRegistry)).getTerms(assetId);
+        ANNState memory state = IANNRegistry(address(assetRegistry)).getState(assetId);
+        address engine = assetRegistry.getEngine(assetId);
+
+        // get finalized state if asset is not performant
+        if (state.contractPerformance != ContractPerformance.PF) {
+            state = IANNRegistry(address(assetRegistry)).getFinalizedState(assetId);
+        }
+
+        (, uint256 scheduleTime) = decodeEvent(_event);
+
+        // get external data for the next event
+        // compute payoff and the next state by applying the event to the current state
+        int256 payoff = computePayoffForEvent(assetId, engine, terms, state, _event);
+        ANNState memory nextState = computeStateForEvent(assetId, engine, terms, state, _event);
+
+        // try to settle payoff of event
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
+
+        if (settledPayoff == false) {
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
+            // store the last performant state of the asset
+            // (if the obligation is later fulfilled before the asset reaches default,
+            // the last performant state is used to derive subsequent states of the asset)
+            if (state.contractPerformance == ContractPerformance.PF) {
+                IANNRegistry(address(assetRegistry)).setFinalizedState(assetId, state);
+            }
+
+            // store event as pending event for future settlement
+            assetRegistry.pushPendingEvent(assetId, _event);
+
+            // create CreditEvent
+            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
+            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
+            nextState = computeStateForEvent(assetId, engine, terms, nextState, ceEvent);
+        }
+
+        // store the resulting state
+        IANNRegistry(address(assetRegistry)).setState(assetId, nextState);
+
+        return (settledPayoff, payoff);
     }
 
     /**

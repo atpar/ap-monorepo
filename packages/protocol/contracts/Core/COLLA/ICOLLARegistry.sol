@@ -11,7 +11,7 @@ interface ICOLLARegistry is IAssetRegistry {
     function registerAsset(
         bytes32 assetId,
         COLLATerms calldata terms,
-        State calldata state,
+        COLLAState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -27,5 +27,21 @@ interface ICOLLARegistry is IAssetRegistry {
         returns (COLLATerms memory);
 
     function setTerms(bytes32 assetId, COLLATerms calldata terms)
+        external;
+
+    function getState(bytes32 assetId)
+        external
+        view
+        returns (COLLAState memory);
+
+    function setState(bytes32 assetId, COLLAState calldata terms)
+        external;
+
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        returns (COLLAState memory);
+
+    function setFinalizedState(bytes32 assetId, COLLAState calldata terms)
         external;
 }

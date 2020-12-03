@@ -25,13 +25,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_NE (
         COLLATerms memory /* terms */,
-        State memory state,
+        COLLAState memory state,
         uint256 /* scheduleTime */,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         return state;
     }
@@ -43,13 +43,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_AD (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -78,13 +78,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_IED (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
@@ -101,13 +101,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_IPCI (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -140,13 +140,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_IP (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -170,13 +170,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_PR (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -206,13 +206,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_MD (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -243,13 +243,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_CE (
         COLLATerms memory terms,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         internal
         pure
-        returns(State memory)
+        returns (COLLAState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
@@ -300,13 +300,13 @@ contract COLLASTF is Core {
      */
     function STF_COLLA_EXE (
         COLLATerms memory /* terms */,
-        State memory state,
+        COLLAState memory state,
         uint256 scheduleTime,
         bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (COLLAState memory)
     {
         state.contractPerformance = ContractPerformance.DF;
         state.statusDate = scheduleTime;

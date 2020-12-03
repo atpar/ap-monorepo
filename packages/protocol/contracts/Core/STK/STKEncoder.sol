@@ -14,6 +14,12 @@ library STKEncoder {
         asset.packedTerms[attributeKey] = value;
     }
 
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
+        // skip if value did not change
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
+    }
+
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
      * @notice All non zero values of the overwrittenTerms object are stored.
@@ -255,5 +261,135 @@ library STKEncoder {
         } else {
             return IPS(0, P(0), S(0), false);
         }
+    }
+
+    /**
+     * @dev Tightly pack and store STKState
+     */
+    function encodeAndSetSTKState(Asset storage asset, STKState memory state) external {
+        storeInPackedState(asset, "contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "lastDividendFixingDate", bytes32(state.lastDividendFixingDate));
+        storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
+        storeInPackedState(asset, "exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "adjustmentFactor", bytes32(state.adjustmentFactor));
+        storeInPackedState(asset, "dividendPaymentAmount", bytes32(state.dividendPaymentAmount));
+        storeInPackedState(asset, "splitRatio", bytes32(state.splitRatio));
+    }
+
+    /**
+     * @dev Tightly pack and store finalized STKState
+     */
+    function encodeAndSetFinalizedSTKState(Asset storage asset, STKState memory state) external {
+        storeInPackedState(asset, "F_contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "F_statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "F_nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "F_exerciseDate", bytes32(state.exerciseDate));
+        storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "F_lastDividendFixingDate", bytes32(state.lastDividendFixingDate));
+        storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
+        storeInPackedState(asset, "F_exerciseQuantity", bytes32(state.exerciseQuantity));
+        storeInPackedState(asset, "F_quantity", bytes32(state.quantity));
+        storeInPackedState(asset, "F_couponAmountFixed", bytes32(state.couponAmountFixed));
+        storeInPackedState(asset, "F_marginFactor", bytes32(state.marginFactor));
+        storeInPackedState(asset, "F_adjustmentFactor", bytes32(state.adjustmentFactor));
+        storeInPackedState(asset, "F_dividendPaymentAmount", bytes32(state.dividendPaymentAmount));
+        storeInPackedState(asset, "F_splitRatio", bytes32(state.splitRatio));
+    }
+
+    /**
+     * @dev Decode and load the STKState of the asset
+     */
+    function decodeAndGetSTKState(Asset storage asset)
+        external
+        view
+        returns (STKState memory)
+    {
+        return STKState(
+            ContractPerformance(uint8(uint256(asset.packedState["contractPerformance"] >> 248))),
+            uint256(asset.packedState["statusDate"]),
+            uint256(asset.packedState["nonPerformingDate"]),
+            uint256(asset.packedState["maturityDate"]),
+            uint256(asset.packedState["exerciseDate"]),
+            uint256(asset.packedState["terminationDate"]),
+            uint256(asset.packedState["lastDividendFixingDate"]),
+            int256(asset.packedState["notionalPrincipal"]),
+            int256(asset.packedState["exerciseAmomunt"]),
+            int256(asset.packedState["exerciseQuantity"]),
+            int256(asset.packedState["quantity"]),
+            int256(asset.packedState["couponAmountFixed"]),
+            int256(asset.packedState["marginFactor"]),
+            int256(asset.packedState["adjustmentFactor"]),
+            int256(asset.packedState["dividendPaymentAmount"]),
+            int256(asset.packedState["splitRatio"])
+        );
+    }
+
+    /**
+     * @dev Decode and load the finalized STKState of the asset
+     */
+    function decodeAndGetFinalizedSTKState(Asset storage asset)
+        external
+        view
+        returns (STKState memory)
+    {
+        return STKState(
+            ContractPerformance(uint8(uint256(asset.packedState["F_contractPerformance"] >> 248))),
+            uint256(asset.packedState["F_statusDate"]),
+            uint256(asset.packedState["F_nonPerformingDate"]),
+            uint256(asset.packedState["F_maturityDate"]),
+            uint256(asset.packedState["F_exerciseDate"]),
+            uint256(asset.packedState["F_terminationDate"]),
+            uint256(asset.packedState["F_lastDividendFixingDate"]),
+            int256(asset.packedState["F_notionalPrincipal"]),
+            int256(asset.packedState["F_exerciseAmomunt"]),
+            int256(asset.packedState["F_exerciseQuantity"]),
+            int256(asset.packedState["F_quantity"]),
+            int256(asset.packedState["F_couponAmountFixed"]),
+            int256(asset.packedState["F_marginFactor"]),
+            int256(asset.packedState["F_adjustmentFactor"]),
+            int256(asset.packedState["F_dividendPaymentAmount"]),
+            int256(asset.packedState["F_splitRatio"])
+        );
+    }
+
+    function decodeAndGetEnumValueForSTKStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
+    }
+
+    function decodeAndGetUIntValueForSTKStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint256)
+    {
+        return uint256(asset.packedState[attributeKey]);
+    }
+
+    function decodeAndGetIntValueForSTKStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (int256)
+    {
+        return int256(asset.packedState[attributeKey]);
     }
 }

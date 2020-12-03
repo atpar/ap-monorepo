@@ -8,8 +8,9 @@ import { STKEngine } from "./contracts/STKEngine";
 import dictionary from "./dictionary/dictionary.json";
 
 // Union Types
-export type UEngine = ANNEngine | CECEngine | CEGEngine | PAMEngine | CERTFEngine | COLLAEngine | STKEngine;
-export type UTerms = ANNTerms | CECTerms | CEGTerms |  PAMTerms | CERTFTerms | COLLATerms | STKTerms;
+export type UEngine = ANNEngine | CECEngine | CEGEngine | CERTFEngine | COLLAEngine | PAMEngine | STKEngine;
+export type UTerms = ANNTerms | CECTerms | CEGTerms | CERTFTerms | COLLATerms | PAMTerms | STKTerms;
+export type UState = ANNState | CECState | CEGState | CERTFState | COLLAState| PAMState | STKState;
 
 // schedule ids
 export const NON_CYLIC_SCHEDULE_ID = '255';
@@ -51,15 +52,17 @@ export interface ContractReference {
   role: string | number;
 }
 
-export interface State {
+export interface UnderlyingState {
+  exerciseAmount: string | number;
+  isSet: boolean;
+}
+
+export interface ANNState {
   contractPerformance: string | number;
   statusDate: string | number;
   nonPerformingDate: string | number;
   maturityDate: string | number;
-  exerciseDate: string | number;
   terminationDate: string | number;
-  lastCouponFixingDate: string | number;
-  lastDividendFixingDate: string | number;
   notionalPrincipal: string | number;
   accruedInterest: string | number;
   feeAccrued: string | number;
@@ -67,6 +70,82 @@ export interface State {
   interestScalingMultiplier: string | number;
   notionalScalingMultiplier: string | number;
   nextPrincipalRedemptionPayment: string | number;
+}
+
+export interface CECState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  maturityDate: string | number;
+  exerciseDate: string | number;
+  terminationDate: string | number;
+  feeAccrued: string | number;
+  exerciseAmount: string | number;
+}
+
+export interface CEGState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  exerciseDate: string | number;
+  terminationDate: string | number;
+  notionalPrincipal: string | number;
+  feeAccrued: string | number;
+  exerciseAmount: string | number;
+}
+
+export interface CERTFState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  exerciseDate: string | number;
+  terminationDate: string | number;
+  lastCouponFixingDate: string | number;
+  exerciseAmount: string | number;
+  exerciseQuantity: string | number;
+  quantity: string | number;
+  couponAmountFixed: string | number;
+  marginFactor: string | number;
+  adjustmentFactor: string | number;
+}
+
+export interface COLLAState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  terminationDate: string | number;
+  notionalPrincipal: string | number;
+  accruedInterest: string | number;
+  nominalInterestRate: string | number;
+  interestScalingMultiplier: string | number;
+  notionalScalingMultiplier: string | number;
+}
+
+export interface PAMState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  terminationDate: string | number;
+  notionalPrincipal: string | number;
+  accruedInterest: string | number;
+  feeAccrued: string | number;
+  nominalInterestRate: string | number;
+  interestScalingMultiplier: string | number;
+  notionalScalingMultiplier: string | number;
+}
+
+export interface STKState {
+  contractPerformance: string | number;
+  statusDate: string | number;
+  nonPerformingDate: string | number;
+  maturityDate: string | number;
+  exerciseDate: string | number;
+  terminationDate: string | number;
+  lastDividendFixingDate: string | number;
+  notionalPrincipal: string | number;
   exerciseAmount: string | number;
   exerciseQuantity: string | number;
   quantity: string | number;
@@ -463,7 +542,52 @@ export function isContractReference(obj: any): obj is ContractReference {
   return true;
 }
 
-export function isState(obj: any): obj is State {
+export function isANNState(obj: any): obj is ANNState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
+  if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
+  if (obj.interestScalingMultiplier == undefined || typeof obj.interestScalingMultiplier !== 'number' && typeof obj.interestScalingMultiplier !== 'string') { return false; }
+  if (obj.notionalScalingMultiplier == undefined || typeof obj.notionalScalingMultiplier !== 'number' && typeof obj.notionalScalingMultiplier !== 'string') { return false; }
+  if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
+
+  return true;
+}
+
+export function isCECState(obj: any): obj is CECState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
+  if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
+
+  return true;
+}
+
+export function isCEGState(obj: any): obj is CEGState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
+  if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
+
+  return true;
+}
+
+export function isCERTFState(obj: any): obj is CERTFState {
   if (!obj) { return false; }
   if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
@@ -472,14 +596,60 @@ export function isState(obj: any): obj is State {
   if (obj.exerciseDate == undefined || typeof obj.exerciseDate !== 'number' && typeof obj.exerciseDate !== 'string') { return false; }
   if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
   if (obj.lastCouponFixingDate == undefined || typeof obj.lastCouponFixingDate !== 'number' && typeof obj.lastCouponFixingDate !== 'string') { return false; }
-  if (obj.lastDividendFixingDate == undefined || typeof obj.lastDividendFixingDate !== 'number' && typeof obj.lastDividendFixingDate !== 'string') { return false; }
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
+  if (obj.exerciseQuantity == undefined || typeof obj.exerciseQuantity !== 'number' && typeof obj.exerciseQuantity !== 'string') { return false; }
+  if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
+  if (obj.couponAmountFixed == undefined || typeof obj.couponAmountFixed !== 'number' && typeof obj.couponAmountFixed !== 'string') { return false; }
+  if (obj.marginFactor == undefined || typeof obj.marginFactor !== 'number' && typeof obj.marginFactor !== 'string') { return false; }
+  if (obj.adjustmentFactor == undefined || typeof obj.adjustmentFactor !== 'number' && typeof obj.adjustmentFactor !== 'string') { return false; }
+
+  return true;
+}
+
+export function isCOLLAState(obj: any): obj is COLLAState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
+  if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
+  if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
+  if (obj.interestScalingMultiplier == undefined || typeof obj.interestScalingMultiplier !== 'number' && typeof obj.interestScalingMultiplier !== 'string') { return false; }
+  if (obj.notionalScalingMultiplier == undefined || typeof obj.notionalScalingMultiplier !== 'number' && typeof obj.notionalScalingMultiplier !== 'string') { return false; }
+
+  return true;
+}
+
+export function isPAMState(obj: any): obj is PAMState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
   if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.accruedInterest == undefined || typeof obj.accruedInterest !== 'number' && typeof obj.accruedInterest !== 'string') { return false; }
   if (obj.feeAccrued == undefined || typeof obj.feeAccrued !== 'number' && typeof obj.feeAccrued !== 'string') { return false; }
   if (obj.nominalInterestRate == undefined || typeof obj.nominalInterestRate !== 'number' && typeof obj.nominalInterestRate !== 'string') { return false; }
   if (obj.interestScalingMultiplier == undefined || typeof obj.interestScalingMultiplier !== 'number' && typeof obj.interestScalingMultiplier !== 'string') { return false; }
   if (obj.notionalScalingMultiplier == undefined || typeof obj.notionalScalingMultiplier !== 'number' && typeof obj.notionalScalingMultiplier !== 'string') { return false; }
-  if (obj.nextPrincipalRedemptionPayment == undefined || typeof obj.nextPrincipalRedemptionPayment !== 'number' && typeof obj.nextPrincipalRedemptionPayment !== 'string') { return false; }
+
+  return true;
+}
+
+export function isSTKState(obj: any): obj is STKState {
+  if (!obj) { return false; }
+  if (obj.contractPerformance == undefined || typeof obj.contractPerformance !== 'number' && typeof obj.contractPerformance !== 'string') { return false; }
+  if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
+  if (obj.nonPerformingDate == undefined || typeof obj.nonPerformingDate !== 'number' && typeof obj.nonPerformingDate !== 'string') { return false; }
+  if (obj.maturityDate == undefined || typeof obj.maturityDate !== 'number' && typeof obj.maturityDate !== 'string') { return false; }
+  if (obj.exerciseDate == undefined || typeof obj.exerciseDate !== 'number' && typeof obj.exerciseDate !== 'string') { return false; }
+  if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
+  if (obj.lastDividendFixingDate == undefined || typeof obj.lastDividendFixingDate !== 'number' && typeof obj.lastDividendFixingDate !== 'string') { return false; }
+  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
   if (obj.exerciseQuantity == undefined || typeof obj.exerciseQuantity !== 'number' && typeof obj.exerciseQuantity !== 'string') { return false; }
   if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }

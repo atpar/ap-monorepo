@@ -20,7 +20,7 @@ interface ICERTFEngine is IEngine {
     function computeInitialState(CERTFTerms calldata terms)
         external
         pure
-        returns (State memory);
+        returns (CERTFState memory);
 
     /**
      * Applys an event to the current state of a contract and returns the resulting contract state.
@@ -32,13 +32,13 @@ interface ICERTFEngine is IEngine {
      */
     function computeStateForEvent(
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32 _event,
         bytes calldata externalData
     )
         external
         pure
-        returns (State memory);
+        returns (CERTFState memory);
 
     /**
      * Evaluates the payoff for an event under the current state of the contract.
@@ -50,7 +50,7 @@ interface ICERTFEngine is IEngine {
      */
     function computePayoffForEvent(
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32 _event,
         bytes calldata externalData
     )
@@ -133,16 +133,14 @@ interface ICERTFEngine is IEngine {
      * @param _event event for which to check if its still scheduled
      * @param terms terms of the contract
      * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 _event,
         CERTFTerms calldata terms,
-        State calldata state,
-        bool hasUnderlying,
-        State calldata underlyingState
+        CERTFState calldata state,
+        UnderlyingState calldata underlyingState
     )
         external
         pure

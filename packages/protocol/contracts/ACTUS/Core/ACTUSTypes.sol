@@ -6,7 +6,6 @@ pragma solidity ^0.7.0;
  * Date: 2020-10-06
  */
 
-
 // IPS
 enum P {D, W, M, Q, H, Y} // P=[D=Days, W=Weeks, M=Months, Q=Quarters, H=Halfyear, Y=Year]
 enum S {LONG, SHORT} // S=[+=long stub,- short stub, {} if S empty then - for short stub]
@@ -54,22 +53,18 @@ struct ContractReference {
     ContractReferenceRole role;
 }
 
-struct State {
+struct UnderlyingState {
+    int256 exerciseAmount;
+    bool isSet;
+}
+
+struct ANNState {
     ContractPerformance contractPerformance;
 
     uint256 statusDate;
     uint256 nonPerformingDate;
     uint256 maturityDate;
-    uint256 exerciseDate;
     uint256 terminationDate;
-    uint256 lastCouponFixingDate;
-    uint256 lastDividendFixingDate;
-    // uint256 dividendFixingDate; // not implemented
-    // uint256 dividendExDate; // not implemented
-    // uint256 dividendPaymentDate; // not implemented
-    // uint256 splitSettlementDate; // not implemented
-    // uint256 redemptionExDate; // not implemented
-    // uint256 redemptionPaymentDate; // not implemented
 
     int256 notionalPrincipal;
     // int256 notionalPrincipal2;
@@ -82,9 +77,92 @@ struct State {
     int256 interestScalingMultiplier;
     int256 notionalScalingMultiplier;
     int256 nextPrincipalRedemptionPayment;
+}
+
+struct CECState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+
+    int256 feeAccrued;
+    int256 exerciseAmount;
+}
+
+struct CEGState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    int256 feeAccrued;
+    int256 exerciseAmount;
+}
+
+struct CERTFState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+    uint256 lastCouponFixingDate;
+
     int256 exerciseAmount;
     int256 exerciseQuantity;
+    int256 quantity;
+    int256 couponAmountFixed;
+    // int256 exerciseQuantityOrdered;
+    int256 marginFactor;
+    int256 adjustmentFactor;
+}
 
+struct PAMState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    // int256 notionalPrincipal2;
+    int256 accruedInterest;
+    // int256 accruedInterest2;
+    int256 feeAccrued;
+    int256 nominalInterestRate;
+    // int256 nominalInterestRate2;
+    // int256 interestCalculationBaseAmount;
+    int256 interestScalingMultiplier;
+    int256 notionalScalingMultiplier;
+}
+
+struct STKState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 exerciseDate;
+    uint256 terminationDate;
+    uint256 lastDividendFixingDate;
+    // uint256 dividendFixingDate; // not implemented
+    // uint256 dividendExDate; // not implemented
+    // uint256 dividendPaymentDate; // not implemented
+    // uint256 splitSettlementDate; // not implemented
+    // uint256 redemptionExDate; // not implemented
+    // uint256 redemptionPaymentDate; // not implemented
+
+    int256 notionalPrincipal;
+    int256 exerciseAmount;
+    int256 exerciseQuantity;
     int256 quantity;
     int256 couponAmountFixed;
     // int256 exerciseQuantityOrdered;
@@ -92,6 +170,21 @@ struct State {
     int256 adjustmentFactor;
     int256 dividendPaymentAmount;
     int256 splitRatio;
+}
+
+struct COLLAState {
+    ContractPerformance contractPerformance;
+
+    uint256 statusDate;
+    uint256 nonPerformingDate;
+    uint256 maturityDate;
+    uint256 terminationDate;
+
+    int256 notionalPrincipal;
+    int256 accruedInterest;
+    int256 nominalInterestRate;
+    int256 interestScalingMultiplier;
+    int256 notionalScalingMultiplier;
 }
 
 struct ANNTerms {
@@ -410,20 +503,20 @@ struct COLLATerms {
     BusinessDayConvention businessDayConvention;
     EndOfMonthConvention endOfMonthConvention;
     // ContractPerformance contractPerformance; // state only
-    
+
     bytes32 marketObjectCodeOfCollateral;
-    
+
     address currency;
     address settlementCurrency;
     address collateralCurrency;
-    
+
     uint256 statusDate;
     uint256 initialExchangeDate;
     uint256 maturityDate;
     uint256 capitalizationEndDate;
     // uint256 nonPerformingDate; // state only
     uint256 cycleAnchorDateOfInterestPayment;
-    
+
     int256 notionalPrincipal;
     int256 nominalInterestRate;
     int256 accruedInterest;

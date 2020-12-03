@@ -11,7 +11,7 @@ contract TestCECPOF is CECPOF {
 
     function _POF_CEC_ST (
         CECTerms memory terms,
-        State memory state,
+        CECState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )

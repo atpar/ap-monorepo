@@ -36,7 +36,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
     function registerAsset(
         bytes32 assetId,
         PAMTerms calldata terms,
-        State calldata state,
+        PAMState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
@@ -48,8 +48,10 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override
         onlyApprovedActors
     {
-        setAsset(assetId, state, schedule, ownership, engine, actor, admin, extension);
+        setAsset(assetId, schedule, ownership, engine, actor, admin, extension);
         assets[assetId].encodeAndSetPAMTerms(terms);
+        assets[assetId].encodeAndSetPAMState(state);
+        assets[assetId].encodeAndSetFinalizedPAMState(state);
     }
 
     /**
@@ -87,7 +89,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint8)
     {
-        return assets[assetId].decodeAndGetEnumValueForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetEnumValueForPAMTermsAttribute(attribute);
     }
 
     function getAddressValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -96,7 +98,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (address)
     {
-        return assets[assetId].decodeAndGetAddressValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetAddressValueForPAMTermsAttribute(attribute);
     }
 
     function getBytes32ValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -105,7 +107,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (bytes32)
     {
-        return assets[assetId].decodeAndGetBytes32ValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetBytes32ValueForPAMTermsAttribute(attribute);
     }
 
     function getUIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -114,7 +116,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (uint256)
     {
-        return assets[assetId].decodeAndGetUIntValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetUIntValueForPAMTermsAttribute(attribute);
     }
 
     function getIntValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -123,7 +125,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (int256)
     {
-        return assets[assetId].decodeAndGetIntValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetIntValueForPAMTermsAttribute(attribute);
     }
 
     function getPeriodValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -132,7 +134,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IP memory)
     {
-        return assets[assetId].decodeAndGetPeriodValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetPeriodValueForPAMTermsAttribute(attribute);
     }
 
     function getCycleValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -141,7 +143,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (IPS memory)
     {
-        return assets[assetId].decodeAndGetCycleValueForForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetCycleValueForPAMTermsAttribute(attribute);
     }
 
     function getContractReferenceValueForTermsAttribute(bytes32 assetId, bytes32 attribute)
@@ -150,7 +152,92 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
         override(ITermsRegistry, TermsRegistry)
         returns (ContractReference memory)
     {
-        return assets[assetId].decodeAndGetContractReferenceValueForPAMAttribute(attribute);
+        return assets[assetId].decodeAndGetContractReferenceValueForPAMTermsAttribute(attribute);
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getState(bytes32 assetId)
+        external
+        view
+        override
+        returns (PAMState memory)
+    {
+        return assets[assetId].decodeAndGetPAMState();
+    }
+
+    /**
+     * @notice Returns the state of an asset.
+     * @param assetId id of the asset
+     * @return state of the asset
+     */
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        override
+        returns (PAMState memory)
+    {
+        return assets[assetId].decodeAndGetFinalizedPAMState();
+    }
+
+    /**
+     * @notice Sets next state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setState(bytes32 assetId, PAMState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetPAMState(state);
+        emit UpdatedState(assetId, state.statusDate);
+    }
+
+    /**
+     * @notice Sets next finalized state of an asset.
+     * @dev Can only be updated by the assets actor or by an authorized account.
+     * @param assetId id of the asset
+     * @param state next state of the asset
+     */
+    function setFinalizedState(bytes32 assetId, PAMState calldata state)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        assets[assetId].encodeAndSetFinalizedPAMState(state);
+        emit UpdatedFinalizedState(assetId, state.statusDate);
+    }
+
+    function getEnumValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint8)
+    {
+        return assets[assetId].decodeAndGetEnumValueForPAMStateAttribute(attribute);
+    }
+
+    function getIntValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (int256)
+    {
+        return assets[assetId].decodeAndGetIntValueForPAMStateAttribute(attribute);
+    }
+
+    function getUintValueForStateAttribute(bytes32 assetId, bytes32 attribute)
+        public
+        view
+        override(IStateRegistry, StateRegistry)
+        returns (uint256)
+    {
+        return assets[assetId].decodeAndGetUIntValueForPAMStateAttribute(attribute);
     }
 
     function getNextComputedEvent(bytes32 assetId)
@@ -235,7 +322,7 @@ contract PAMRegistry is BaseRegistry, IPAMRegistry {
             ) {
                 nextScheduleTime = scheduleTime;
                 nextEventType = eventType;
-            }        
+            }
         }
 
         // Non-Cyclic

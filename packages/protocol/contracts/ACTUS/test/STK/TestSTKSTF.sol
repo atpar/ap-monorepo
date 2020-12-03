@@ -12,13 +12,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_AD(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_AD(
             terms,
@@ -30,13 +30,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_ISS(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_ISS(
             terms,
@@ -48,13 +48,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_DIF(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_DIF(
             terms,
@@ -66,13 +66,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_DIP(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_DIP(
             terms,
@@ -84,13 +84,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_SPF(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_SPF(
             terms,
@@ -102,13 +102,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_SPS(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_SPS(
             terms,
@@ -120,13 +120,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_REF(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_REF(
             terms,
@@ -138,13 +138,13 @@ contract TestSTKSTF is STKSTF {
 
     function _STF_STK_REP(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
         bytes calldata externalData
     )
         public
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         return STF_STK_REP(
             terms,
