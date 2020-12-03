@@ -221,7 +221,7 @@ contract CEGActor is BaseActor {
             // get current timestamp
             // solium-disable-next-line
             return abi.encode(block.timestamp);
-        } else if (eventType == EventType.EXE) {
+        } else if (eventType == EventType.EXE || eventType == EventType.FP) {
             // get the remaining notionalPrincipal from the underlying
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
                 assetId,

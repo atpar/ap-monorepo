@@ -321,7 +321,6 @@ library CEGEncoder {
         storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
         storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
         storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
-        storeInPackedState(asset, "nominalInterestRate", bytes32(state.nominalInterestRate));
         storeInPackedState(asset, "feeAccrued", bytes32(state.feeAccrued));
         storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
     }
@@ -337,7 +336,6 @@ library CEGEncoder {
         storeInPackedState(asset, "F_exerciseDate", bytes32(state.exerciseDate));
         storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
         storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
-        storeInPackedState(asset, "F_nominalInterestRate", bytes32(state.nominalInterestRate));
         storeInPackedState(asset, "F_feeAccrued", bytes32(state.feeAccrued));
         storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
     }
@@ -359,7 +357,6 @@ library CEGEncoder {
             uint256(asset.packedState["terminationDate"]),
 
             int256(asset.packedState["notionalPrincipal"]),
-            int256(asset.packedState["nominalInterestRate"]),
             int256(asset.packedState["feeAccrued"]),
             int256(asset.packedState["exerciseAmomunt"])
         );
@@ -382,7 +379,6 @@ library CEGEncoder {
             uint256(asset.packedState["F_terminationDate"]),
 
             int256(asset.packedState["F_notionalPrincipal"]),
-            int256(asset.packedState["F_nominalInterestRate"]),
             int256(asset.packedState["F_feeAccrued"]),
             int256(asset.packedState["F_exerciseAmomunt"])
         );

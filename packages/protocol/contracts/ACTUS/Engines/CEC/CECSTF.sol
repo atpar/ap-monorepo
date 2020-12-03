@@ -46,7 +46,6 @@ contract CECSTF is Core {
         pure
         returns (CECState memory)
     {
-        state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;
 
@@ -72,9 +71,14 @@ contract CECSTF is Core {
                 terms.maturityDate
             );
         }
-        state.statusDate = scheduleTime;
+        
         // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+        int256 underlyingNotionalPrincipal = terms.coverageOfCreditEnhancement.floatMult(
+            abi.decode(externalData, (int256))
+        );
+
+        state.statusDate = scheduleTime;
+        state.exerciseAmount = underlyingNotionalPrincipal;
         state.exerciseDate = scheduleTime;
 
         if (terms.feeBasis == FeeBasis.A) {
@@ -84,7 +88,7 @@ contract CECSTF is Core {
             .add(
                 timeFromLastEvent
                 .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
+                .floatMult(underlyingNotionalPrincipal)
             );
         }
 
@@ -101,7 +105,6 @@ contract CECSTF is Core {
         pure
         returns (CECState memory)
     {
-        state.notionalPrincipal = 0;
         state.feeAccrued = 0;
         state.contractPerformance = ContractPerformance.MD;
         state.statusDate = scheduleTime;

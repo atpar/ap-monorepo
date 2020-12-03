@@ -87,7 +87,6 @@ struct CECState {
     uint256 exerciseDate;
     uint256 terminationDate;
 
-    int256 notionalPrincipal;
     int256 feeAccrued;
     int256 exerciseAmount;
 }
@@ -102,7 +101,6 @@ struct CEGState {
     uint256 terminationDate;
 
     int256 notionalPrincipal;
-    int256 nominalInterestRate;
     int256 feeAccrued;
     int256 exerciseAmount;
 }

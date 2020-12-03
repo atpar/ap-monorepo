@@ -112,8 +112,12 @@ contract CEGSTF is Core {
             );
         }
         state.statusDate = scheduleTime;
-        // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+        state.exerciseAmount = state.notionalPrincipal;
         state.exerciseDate = scheduleTime;
 
         if (terms.feeBasis == FeeBasis.A) {
@@ -152,29 +156,35 @@ contract CEGSTF is Core {
         CEGTerms memory terms,
         CEGState memory state,
         uint256 scheduleTime,
-        bytes calldata /* externalData */
+        bytes calldata externalData
     )
         internal
         pure
         returns (CEGState memory)
     {
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.nominalInterestRate = terms.feeRate;
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.statusDate = scheduleTime;
 
         return state;
     }
 
     function STF_CEG_FP (
-        CEGTerms memory /* terms */,
+        CEGTerms memory terms,
         CEGState memory state,
         uint256 scheduleTime,
-        bytes calldata /* externalData */
+        bytes calldata externalData
     )
         internal
         pure
         returns (CEGState memory)
     {
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;
 

@@ -9,8 +9,7 @@ import {
   CERTFTerms,
   COLLATerms,
   PAMTerms,
-  STKTerms,
-  State
+  STKTerms
 } from '../types';
 
 
@@ -62,37 +61,37 @@ export const web3ResponseToAssetOwnership = (web3Response: any): AssetOwnership 
   associativeArrayToObject(web3Response) as AssetOwnership
 );
 
-export const web3ResponseToState = (web3Response: any): State => (
-  associativeArrayToObject(web3Response) as State
+export const parseWeb3Response = <T extends object>(web3Response: any): T => (
+  associativeArrayToObject(web3Response) as T
 );
 
-export const web3ResponseToANNTerms = (web3Response: any): ANNTerms => (
-  associativeArrayToObject(web3Response) as ANNTerms
-);
+// export const web3ResponseToANNTerms = (web3Response: any): ANNTerms => (
+//   associativeArrayToObject(web3Response) as ANNTerms
+// );
 
-export const web3ResponseToCECTerms = (web3Response: any): CECTerms => (
-  associativeArrayToObject(web3Response) as CECTerms
-);
+// export const web3ResponseToCECTerms = (web3Response: any): CECTerms => (
+//   associativeArrayToObject(web3Response) as CECTerms
+// );
 
-export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
-  associativeArrayToObject(web3Response) as CEGTerms
-);
+// export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
+//   associativeArrayToObject(web3Response) as CEGTerms
+// );
 
-export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
-  associativeArrayToObject(web3Response) as CERTFTerms
-);
+// export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
+//   associativeArrayToObject(web3Response) as CERTFTerms
+// );
 
-export const web3ResponseToCOLLATerms = (web3Response: any): COLLATerms => (
-  associativeArrayToObject(web3Response) as COLLATerms
-);
+// export const web3ResponseToCOLLATerms = (web3Response: any): COLLATerms => (
+//   associativeArrayToObject(web3Response) as COLLATerms
+// );
 
-export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
-  associativeArrayToObject(web3Response) as STKTerms
-);
+// export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
+//   associativeArrayToObject(web3Response) as STKTerms
+// );
 
-export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (
-  associativeArrayToObject(web3Response) as PAMTerms
-);
+// export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (
+//   associativeArrayToObject(web3Response) as PAMTerms
+// );
 
 export const extractANNTerms = (terms: Terms): ANNTerms => ({
   contractType: terms.contractType,

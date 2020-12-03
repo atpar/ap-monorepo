@@ -97,6 +97,7 @@ describe('TestCEGPOF', () => {
     this.CEGTerms.calendar = 0; // NoCalendar
     this.CEGTerms.dayCountConvention = 2; // A_365
     this.CEGTerms.maturityDate = 31536000; // 1 year
+    this.CEGTerms.notionalPrincipal = web3.utils.toWei('1000000'); // 
     this.CEGTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
 
     state.feeAccrued = web3.utils.toWei('100');

@@ -232,7 +232,6 @@ library CECEncoder {
         storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
         storeInPackedState(asset, "exerciseDate", bytes32(state.exerciseDate));
         storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
-        storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
         storeInPackedState(asset, "feeAccrued", bytes32(state.feeAccrued));
         storeInPackedState(asset, "exerciseAmount", bytes32(state.exerciseAmount));
     }
@@ -246,7 +245,6 @@ library CECEncoder {
         storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
         storeInPackedState(asset, "F_exerciseDate", bytes32(state.exerciseDate));
         storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
-        storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
         storeInPackedState(asset, "F_feeAccrued", bytes32(state.feeAccrued));
         storeInPackedState(asset, "F_exerciseAmount", bytes32(state.exerciseAmount));
     }
@@ -265,7 +263,6 @@ library CECEncoder {
             uint256(asset.packedState["maturityDate"]),
             uint256(asset.packedState["exerciseDate"]),
             uint256(asset.packedState["terminationDate"]),
-            int256(asset.packedState["notionalPrincipal"]),
             int256(asset.packedState["feeAccrued"]),
             int256(asset.packedState["exerciseAmount"])
         );
@@ -285,7 +282,6 @@ library CECEncoder {
             uint256(asset.packedState["F_maturityDate"]),
             uint256(asset.packedState["F_exerciseDate"]),
             uint256(asset.packedState["F_terminationDate"]),
-            int256(asset.packedState["F_notionalPrincipal"]),
             int256(asset.packedState["F_feeAccrued"]),
             int256(asset.packedState["F_exerciseAmount"])
         );

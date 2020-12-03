@@ -107,7 +107,6 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         state.contractPerformance = ContractPerformance.PF;
         state.statusDate = terms.statusDate;
         state.maturityDate = terms.maturityDate;
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
 
         return state;
     }
