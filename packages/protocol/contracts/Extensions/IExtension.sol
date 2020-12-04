@@ -12,11 +12,4 @@ interface IExtension {
      * @return event
      */
     function onProgress(bytes32 assetId) external returns (bytes32);
-
-    // /**
-    //  * @notice Notifies the Extension the Asset has progressed.
-    //  * @dev Should only be callable by the Asset Actor.
-    //  * @param assetId Id of the asset
-    //  */
-    // function onProgressed(bytes32 assetId) external;
 }

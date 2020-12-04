@@ -25,10 +25,10 @@ import PAMRegistryArtifact from '../../build/contracts/contracts/Core/PAM/PAMReg
 import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKRegistry.sol/STKRegistry.json';
 import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
 import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
-import DvPSettlementArtifact from '../../build/contracts/contracts/Extensions/DVP/DvPSettlement.sol/DvPSettlement.json';
+import DvPSettlementArtifact from '../../build/contracts/contracts/misc/DVP/DvPSettlement.sol/DvPSettlement.json';
 import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
-import ERC1404Artifact from '../../build/contracts/contracts/Extensions/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
-import VanillaFDTArtifact from '../../build/contracts/contracts/Extensions/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
+import ERC1404Artifact from '../../build/contracts/contracts/tokens/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
+import VanillaFDTArtifact from '../../build/contracts/contracts/tokens/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
 
 import { BaseActor } from '../types/contracts/BaseActor';
 import { BaseRegistry } from '../types/contracts/BaseRegistry';
