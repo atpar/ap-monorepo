@@ -77,6 +77,11 @@ async function definePackage(buidlerRuntime) {
     // Data Registry Proxy
     { name: "DataRegistryProxy" },
 
+    { name: "OpenOraclePriceData" },
+    { 
+      name: "OpenOracleProxy",
+      options: { args: [ "{{OpenOraclePriceData.address}}", "0xfCEAdAFab14d46e20144F48824d0C09B1a03F2BC" ]},
+    },
     // Asset Actor
     {
       name: "ANNActor",

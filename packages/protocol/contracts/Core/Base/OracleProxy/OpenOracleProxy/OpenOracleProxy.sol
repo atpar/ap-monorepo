@@ -53,7 +53,7 @@ contract OpenOracleProxy is IPriceOracleProxy, Ownable {
      * @return Int256 value, isSet
      */
     function getData(bytes32 identifier) external view override returns (int256, bool) {
-        (uint64 value, uint64 timestamp) = openOracle.get(source, bytes32ToString(identifier));
+        (uint64 timestamp, uint64 value) = openOracle.get(source, bytes32ToString(identifier));
         if (timestamp == 0) return (0, false);
         return (int256(value), true);
     }
