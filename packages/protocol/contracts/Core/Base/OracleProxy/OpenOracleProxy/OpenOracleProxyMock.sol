@@ -19,7 +19,7 @@ interface IOpenOraclePriceData {
     function get(address source, string calldata key) external view returns (uint64, uint64);
 }
 
-contract OpenOracleProxy is IPriceOracleProxy, Ownable {
+contract OpenOracleProxyMock is IPriceOracleProxy, Ownable {
 
     IOpenOraclePriceData public openOracle;
     address public source;
@@ -55,8 +55,7 @@ contract OpenOracleProxy is IPriceOracleProxy, Ownable {
     function getData(bytes32 identifier) external view override returns (int256, bool) {
         (uint64 timestamp, uint64 value) = openOracle.get(source, bytes32ToString(identifier));
         if (timestamp == 0) return (0, false);
-        // Shift value returned by 10^12
-        return ((int256(value) * 10 ** 12), true);
+        return (int256(value), true);
     }
 }
 
