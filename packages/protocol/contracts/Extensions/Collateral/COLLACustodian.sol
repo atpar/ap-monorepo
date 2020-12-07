@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 import "../../ACTUS/Core/Utils/EventUtils.sol";
 import "../../ACTUS/Core/SignedMath.sol";
@@ -16,11 +17,11 @@ import "../IExtension.sol";
 
 
 /**
- * @title Collateral
+ * @title COLLACustodian
  * @notice Contract which holds collateral for ACTUS Protocol assets. 
  */
-contract Collateral is EventUtils, Conversions, IExtension {
-
+contract COLLACustodian is EventUtils, Conversions, IExtension {
+    using SafeERC20 for IERC20;
     using SafeMath for uint256;
     using SignedMath for int256;
 
@@ -85,27 +86,17 @@ contract Collateral is EventUtils, Conversions, IExtension {
             assetRegistry.isRegistered(assetId) == true,
             "Collateral.addCollateral: ASSET_DOES_NOT_EXIST"
         );
-
         require(
             isInFinalState(assetId),
             "Collateral.addCollateral: NOT_COLLATERALIZABLE"
         );
 
-        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
-
-        require(
-            IERC20(collateralCurrency).allowance(msg.sender, address(this)) >= addAmount,
-            "Collateral.addCollateral: INSUFFICIENT_ALLOWANCE"
-        );
-
-        // try transferring collateral from msg.sender to the custodian
-        require(
-            IERC20(collateralCurrency).transferFrom(msg.sender, address(this), addAmount),
-            "Collateral.addCollateral: TRANSFER_FAILED"
-        );
-
-        // register collateral for assetId
+        // increase collateral amount for assetId
         collateral[assetId].amount = collateral[assetId].amount.add(addAmount);
+        // try transferring collateral from msg.sender to the custodian
+        IERC20(
+            assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency")
+        ).safeTransferFrom(msg.sender, address(this), addAmount);
 
         emit AddedCollateral(assetId, msg.sender, addAmount);
     }
@@ -129,7 +120,6 @@ contract Collateral is EventUtils, Conversions, IExtension {
             msg.sender == collateralizer,
             "Collateral.withdrawCollateral: UNAUTHORIZED_SENDER"
         );
-        
         require(
             collateral[assetId].amount.sub(withdrawAmount) >= computeMinCollateralAmount(assetId)
             || ContractPerformance(
@@ -139,13 +129,10 @@ contract Collateral is EventUtils, Conversions, IExtension {
         );
 
         address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
-        require(
-            IERC20(collateralCurrency).transfer(msg.sender, withdrawAmount),
-            "Collateral.withdrawCollateral: TRANSFER_FAILED"
-        );
-
-        // register collateral for assetId
+        // decrease collateral amount for assetId
         collateral[assetId].amount = collateral[assetId].amount.sub(withdrawAmount);
+        // try transferring the collateral back to the collateralizer
+        IERC20(collateralCurrency).safeTransfer(msg.sender, withdrawAmount);
 
         emit WithdrewCollateral(assetId, msg.sender, withdrawAmount);
     }
@@ -170,14 +157,12 @@ contract Collateral is EventUtils, Conversions, IExtension {
         );
 
         (, address creditor) = deriveCollateralizerAndCreditor(assetId);
-
-        address collateralCurrency = assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency");
-        require(
-            IERC20(collateralCurrency).transfer(creditor, claimableAmount),
-            "Collateral.claimCollateral: TRANSFER_FAILED"
-        );
-
+        // mark collateral as claimed
         collateral[assetId].claimableAmount = 0;
+        // try transferring the collateral to the creditor
+        IERC20(
+            assetRegistry.getAddressValueForTermsAttribute(assetId, "collateralCurrency")
+        ).safeTransfer(creditor, claimableAmount);
 
         emit ClaimedCollateral(assetId, creditor, claimableAmount);
     }

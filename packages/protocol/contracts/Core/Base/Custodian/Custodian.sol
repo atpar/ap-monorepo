@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 import "../Conversions.sol";
 import "../../CEC/ICECRegistry.sol";
@@ -16,7 +17,7 @@ import "./ICustodian.sol";
  * @notice Contract which holds the collateral of CEC (Credit Enhancement Collateral) assets.
  */
 contract Custodian is ICustodian, ReentrancyGuard, Conversions {
-
+    using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     event LockedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
@@ -55,7 +56,6 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
             terms.contractRole == ContractRole.BUY || terms.contractRole == ContractRole.SEL,
             "Custodian.lockCollateral: INVALID_CONTRACT_ROLE"
         );
-
         require(
             (terms.contractRole == ContractRole.BUY)
                 ? ownership.counterpartyObligor == address(this)
@@ -70,27 +70,13 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
 
         // decode token address and amount of collateral
         (address collateralToken, uint256 collateralAmount) = decodeCollateralObject(terms.contractReference_2.object);
-
-        require(
-            IERC20(collateralToken).allowance(collateralizer, address(this)) >= collateralAmount,
-            "Custodian.lockCollateral: INSUFFICIENT_ALLOWANCE"
-        );
-
-        // try transferring collateral from collateralizer to the custodian
-        require(
-            IERC20(collateralToken).transferFrom(collateralizer, address(this), collateralAmount),
-            "Custodian.lockCollateral: TRANSFER_FAILED"
-        );
-
-        // set allowance for AssetActor to later transfer collateral when EXE is triggered
-        uint256 allowance = IERC20(collateralToken).allowance(address(this), cecActor);
-        require(
-            IERC20(collateralToken).approve(cecActor, allowance.add(collateralAmount)),
-            "Custodian.lockCollateral: INCREASING_ALLOWANCE_FAILED"
-        );
-
         // register collateral for assetId
         collateral[assetId] = true;
+
+        // try transferring collateral from collateralizer to the custodian
+        IERC20(collateralToken).safeTransferFrom(collateralizer, address(this), collateralAmount);
+        // set allowance for AssetActor to later transfer collateral when EXE is triggered
+        IERC20(collateralToken).safeIncreaseAllowance(cecActor, collateralAmount);
 
         emit LockedCollateral(assetId, collateralizer, collateralAmount);
 
@@ -119,7 +105,9 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         );
 
         ContractRole contractRole = ContractRole(cecRegistry.getEnumValueForTermsAttribute(assetId, "contractRole"));
-        ContractReference memory contractReference_2 = cecRegistry.getContractReferenceValueForTermsAttribute(assetId, "contractReference_2");
+        ContractReference memory contractReference_2 = cecRegistry.getContractReferenceValueForTermsAttribute(
+            assetId, "contractReference_2"
+        );
         CECState memory state = cecRegistry.getState(assetId);
         AssetOwnership memory ownership = cecRegistry.getOwnership(assetId);
 
@@ -141,7 +129,10 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         // if EXE was not triggered and (reached maturity or was terminated)
         } else if (
             state.exerciseDate == uint256(0)
-            && (state.contractPerformance == ContractPerformance.MD || state.contractPerformance == ContractPerformance.TD)
+            && (
+                state.contractPerformance == ContractPerformance.MD
+                || state.contractPerformance == ContractPerformance.TD
+            )
         ) {
             notExecutedAmount = collateralAmount;
         // throw if EXE was not triggered and maturity is not reached
@@ -150,17 +141,9 @@ contract Custodian is ICustodian, ReentrancyGuard, Conversions {
         }
 
         // reset allowance for AssetActor
-        uint256 allowance = IERC20(collateralToken).allowance(address(this), cecActor);
-        require(
-            IERC20(collateralToken).approve(cecActor, allowance.sub(notExecutedAmount)),
-            "Custodian.returnCollateral: DECREASING_ALLOWANCE_FAILD"
-        );
-
+        IERC20(collateralToken).safeDecreaseAllowance(cecActor, notExecutedAmount);
         // try transferring amount back to the collateralizer
-        require(
-            IERC20(collateralToken).transfer(collateralizer, notExecutedAmount),
-            "Custodian.returnCollateral: TRANSFER_FAILED"
-        );
+        IERC20(collateralToken).safeTransfer(collateralizer, notExecutedAmount);
 
         emit ReturnedCollateral(assetId, collateralizer, notExecutedAmount);
 

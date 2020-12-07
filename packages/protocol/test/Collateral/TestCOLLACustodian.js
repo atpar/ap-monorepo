@@ -10,7 +10,7 @@ const { deployPaymentToken, getSnapshotTaker, deployContract } = require('../hel
 const { getEnumIndexForEventType: eventIndex } = require('../helper/utils/dictionary');
 
 
-describe('Collateral', function () {
+describe('COLLACustodian', function () {
   let deployer, owner, lender, debtor;
 
   const computeEventTime = async (scheduleTime) => {
@@ -49,7 +49,7 @@ describe('Collateral', function () {
       'OpenOracleProxy',
       [self.OpenOracleInstance.options.address, dataProvider]
     );
-    self.CollateralInstance = await deployContract(buidlerRuntime, 'Collateral', [
+    self.COLLACustodian = await deployContract(buidlerRuntime, 'COLLACustodian', [
       self.COLLARegistryInstance.options.address,
       self.OpenOracleProxyInstance.options.address
     ]);
@@ -75,7 +75,7 @@ describe('Collateral', function () {
       self.ownership,
       self.COLLAEngineInstance.options.address,
       ZERO_ADDRESS,
-      self.CollateralInstance.options.address
+      self.COLLACustodian.options.address
     ).send({ from: owner });
     expectEvent(events, 'InitializedAsset');
 
@@ -101,10 +101,10 @@ describe('Collateral', function () {
   });
 
   it('should lock the debtors collateral', async () => {
-    await this.CollateralTokenInstance.methods.approve(this.CollateralInstance.options.address, this.collateralAmount).send({ from: debtor });
-    await this.CollateralInstance.methods.addCollateral(this.assetId, new BigNumber(this.collateralAmount).dividedBy(2).toFixed()).send({ from: debtor });
-    await this.CollateralInstance.methods.addCollateral(this.assetId, new BigNumber(this.collateralAmount).dividedBy(2).toFixed()).send({ from: debtor });
-    const minCollateralAmount = await this.CollateralInstance.methods.computeMinCollateralAmount(this.assetId).call();
+    await this.CollateralTokenInstance.methods.approve(this.COLLACustodian.options.address, this.collateralAmount).send({ from: debtor });
+    await this.COLLACustodian.methods.addCollateral(this.assetId, new BigNumber(this.collateralAmount).dividedBy(2).toFixed()).send({ from: debtor });
+    await this.COLLACustodian.methods.addCollateral(this.assetId, new BigNumber(this.collateralAmount).dividedBy(2).toFixed()).send({ from: debtor });
+    const minCollateralAmount = await this.COLLACustodian.methods.computeMinCollateralAmount(this.assetId).call();
     assert.strictEqual(new BigNumber(this.collateralAmount).isGreaterThan(minCollateralAmount), true);
   });
 
@@ -152,9 +152,9 @@ describe('Collateral', function () {
       (await web3.eth.getBlock('latest')).timestamp
     ).send({ from: owner });
 
-    const minCollateralAmount = await this.CollateralInstance.methods.computeMinCollateralAmount(this.assetId).call();
+    const minCollateralAmount = await this.COLLACustodian.methods.computeMinCollateralAmount(this.assetId).call();
     assert.strictEqual(new BigNumber(this.collateralAmount).isLessThan(minCollateralAmount), true);
-    const isUndercollateralized = await this.CollateralInstance.methods.isUndercollateralized(this.assetId).call();
+    const isUndercollateralized = await this.COLLACustodian.methods.isUndercollateralized(this.assetId).call();
     assert.strictEqual(isUndercollateralized, true);
   });
 
@@ -167,6 +167,6 @@ describe('Collateral', function () {
   });
 
   it('should claim the collateral for the lender', async () => {
-    await this.CollateralInstance.methods.claimCollateral(this.assetId).send({ from: lender });
+    await this.COLLACustodian.methods.claimCollateral(this.assetId).send({ from: lender });
   });
 });

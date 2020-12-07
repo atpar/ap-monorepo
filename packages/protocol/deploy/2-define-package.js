@@ -119,13 +119,14 @@ async function definePackage(buidlerRuntime) {
     // export artifacts only (do not deploy)
     { name: "BaseActor", deployable: false },
     { name: "BaseRegistry", deployable: false },
+    { name: "COLLACustodian", deployable: false },
     { name: "ERC20", deployable: false },
     { name: "ERC1404", deployable: false },
     { name: "VanillaFDT", deployable: false },
     { name: "SimpleRestrictedFDT", deployable: false },
+    { name: "ERC20Token", deployable: false },
     { name: "SettlementToken", deployable: false },
-    { name: "NoSettlementToken", deployable: false },
-    { name: "ERC20Token", deployable: false }
+    { name: "NoSettlementToken", deployable: false }
   ];
 
   usrNs.package.defaultDeployOptions = {

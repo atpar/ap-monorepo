@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 import "../../../ACTUS/Core/SignedMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
@@ -29,7 +30,7 @@ import "./IAssetActor.sol";
  * to settle the current outstanding payoff on behalf of the obligor.
  */
 abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, IAssetActor, Ownable, ReentrancyGuard {
-
+    using SafeERC20 for IERC20;
     using SignedMath for int;
 
     event InitializedAsset(bytes32 indexed assetId, ContractType contractType, address creator, address counterparty);
@@ -230,7 +231,8 @@ abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, 
         }
 
         // try to transfer amount due from obligor to payee
-        return IERC20(token).transferFrom(payer, payee, amount);
+        IERC20(token).safeTransferFrom(payer, payee, amount);
+        return true;
     }
 
     /**
