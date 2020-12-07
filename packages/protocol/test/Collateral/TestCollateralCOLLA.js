@@ -46,7 +46,7 @@ describe('Collateral', function () {
     self.OpenOracleInstance = await deployContract(buidlerRuntime, 'OpenOracleMock');
     self.OpenOracleProxyInstance = await deployContract(
       buidlerRuntime,
-      'OpenOracleProxy',
+      'OpenOracleProxyMock',
       [self.OpenOracleInstance.options.address, dataProvider]
     );
     self.CollateralInstance = await deployContract(buidlerRuntime, 'Collateral', [

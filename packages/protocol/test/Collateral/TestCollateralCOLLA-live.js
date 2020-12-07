@@ -71,12 +71,15 @@ describe('Collateral', function () {
       web3.utils.toHex(self.assetId)
     ).call();
 
-    // assuming initially 1 CollateralToken equals 1 PaymentToken
-    self.collateralAmount = new BigNumber(this.terms.notionalPrincipal).multipliedBy(1.6).toFixed();
-
     const { message, signature, decoded } = await getCoinbaseData(web3, 'ETH');
+    const ethPrice = parseFloat(decoded[3]) / Math.pow(10, 6);
 
+    // assuming initially 1 CollateralToken equals 1 PaymentToken
+    self.collateralAmount = new BigNumber(this.terms.notionalPrincipal).multipliedBy(ethPrice).multipliedBy(1.6).toFixed();
+
+    await self.CollateralTokenInstance.methods.drip(debtor, self.collateralAmount).send({from: lender});
     await self.OpenOracleInstance.methods.put(message, signature).send({from: dataProvider});
+
   });
 
   before(async () => {
@@ -128,6 +131,11 @@ describe('Collateral', function () {
 
     const price = await this.OpenOracleInstance.methods.getPrice(coinbaseSigner, 'ETH').call();
     assert.strictEqual(price.toString(), decoded[3]);
+
+    const ethbytes32 = web3.eth.abi.encodeParameter('bytes32', web3.utils.toHex('ETH'))
+
+    const proxyPrice = await this.OpenOracleProxyInstance.methods.getData(ethbytes32).call();
+    console.log(proxyPrice)
   });
 
 });
