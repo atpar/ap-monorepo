@@ -46,7 +46,7 @@ describe('COLLACustodian', function () {
     self.OpenOracleInstance = await deployContract(buidlerRuntime, 'OpenOracleMock');
     self.OpenOracleProxyInstance = await deployContract(
       buidlerRuntime,
-      'OpenOracleProxy',
+      'OpenOracleProxyMock',
       [self.OpenOracleInstance.options.address, dataProvider]
     );
     self.COLLACustodian = await deployContract(buidlerRuntime, 'COLLACustodian', [

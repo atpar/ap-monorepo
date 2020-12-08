@@ -18,7 +18,7 @@ contract OpenOracleMock {
     }
     
     function get(address source, string memory key) external view returns (uint64, uint64) {
-        return (data[source][key].value, data[source][key].timestamp);  
+        return (data[source][key].timestamp, data[source][key].value);  
     }
 }
 
