@@ -48,9 +48,11 @@ contract AnnuityPaymentConventions is Core {
             .floatDiv(
                 ONE_POINT_ZERO
                 .sub(
-                    ONE_POINT_ZERO
-                    .add(nominalInterestRateFraction)
-                    .floatPow(-1 * int256(numberOfPRCycles))
+                    (
+                        ONE_POINT_ZERO
+                        .add(nominalInterestRateFraction)
+                    )
+                    .floatPow(-1 * int256(numberOfPRCycles + 1))
                 )
             )
         );

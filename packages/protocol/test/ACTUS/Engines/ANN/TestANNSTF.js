@@ -183,4 +183,36 @@ describe('TestANNSTF', () => {
 
     assertEqualStates(newState, expectedState);
   });
+
+  /*
+   * TEST STF_ANN_RR
+   */
+  it('ANN Rate Reset STF', async () => {
+    const oldState = this.DefaultState;
+    const externalData = '0x0000000000000000000000000000000000000000000000000000000000000000';
+    const scheduleTime = 6307200; // .2 years
+
+    this.ANNTerms.feeRate = toWei('0.01');
+    this.ANNTerms.nominalInterestRate = toWei('0.05');
+    this.ANNTerms.dayCountConvention = 2; // A_365
+    this.ANNTerms.businessDayConvention = 0; // NULL
+    this.ANNTerms.nextResetRate = toWei('0.06');
+
+    // Construct expected state from default state
+    const expectedState = this.DefaultState;
+    expectedState.accruedInterest = toWei('10100');
+    expectedState.feeAccrued = toWei('2010');
+    expectedState.nominalInterestRate = toWei('0.06')
+    expectedState.statusDate = 6307200;
+
+
+    const newState = await this.TestSTF.methods._STF_ANN_RR(
+      this.ANNTerms,
+      oldState,
+      scheduleTime,
+      externalData
+    ).call();
+
+    assertEqualStates(newState, expectedState);
+  });
 });
