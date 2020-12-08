@@ -43,5 +43,5 @@
   "cycleOfRateReset": { "i": 1, "p": 2, "s": 0, "isSet": true },
   "cycleOfScalingIndex": { "i": 0, "p": 0, "s": 0, "isSet": false },
   "cycleOfFee": { "i": 0, "p": 0, "s": 0, "isSet": false },
-  "cycleOfPrincipalRedemption": { "i": 0, "p": 0, "s": 0, "isSet": false }
+  "cycleOfPrincipalRedemption": { "i": 1, "p": 4, "s": 0, "isSet": true }
 }

@@ -56,6 +56,18 @@ library SignedMath {
         return d;
     }
 
+    function floatPow(int num, int exp) internal pure returns (int res) {
+        res = exp % 2 != 0 ? num : int256(MULTIPLICATOR);
+
+        for (exp /= 2; exp != 0; exp /= 2) {
+            num = floatMult(num, num);
+
+            if (exp % 2 != 0) {
+                res = floatMult(res, num);
+            }
+        }
+    }
+
     /**
         * @dev Returns the smallest of two signed numbers.
         */

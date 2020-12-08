@@ -113,8 +113,17 @@ contract ANNEngine is Core, ANNSTF, ANNPOF, IANNEngine {
         state.nominalInterestRate = terms.nominalInterestRate;
         state.accruedInterest = roleSign(terms.contractRole) * terms.accruedInterest;
         state.feeAccrued = terms.feeAccrued;
-        // annuity calculator to be implemented
-        state.nextPrincipalRedemptionPayment = roleSign(terms.contractRole) * terms.nextPrincipalRedemptionPayment;
+        // annuity payment
+        state.nextPrincipalRedemptionPayment = (terms.nextPrincipalRedemptionPayment != 0)
+            ? roleSign(terms.contractRole) * terms.nextPrincipalRedemptionPayment
+            : annuityPayment(
+                terms.cycleOfPrincipalRedemption, 
+                terms.cycleAnchorDateOfPrincipalRedemption,
+                terms.maturityDate,
+                state.notionalPrincipal,
+                state.nominalInterestRate,
+                state.accruedInterest
+            );
 
         return state;
     }

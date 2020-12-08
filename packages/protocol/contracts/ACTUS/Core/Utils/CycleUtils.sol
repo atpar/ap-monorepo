@@ -2,13 +2,15 @@
 pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
-import {SafeMath as SafeMul} from "@openzeppelin/contracts/math/SafeMath.sol";
+import {SafeMath as _SafeMath} from "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 import "../../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
 import "../ACTUSConstants.sol";
 import "../Conventions/EndOfMonthConventions.sol";
 import "./PeriodUtils.sol";
+import "../SignedMath.sol";
 
 
 /**
@@ -16,9 +18,55 @@ import "./PeriodUtils.sol";
  * @notice Methods related to generating event schedules.
  */
 contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
+    using BokkyPooBahsDateTimeLibrary for uint256;
+    using SignedSafeMath for int256;
+    using _SafeMath for uint256;
+    using SignedMath for int256;
 
-    using BokkyPooBahsDateTimeLibrary for uint;
-    using SafeMul for uint;
+
+    function getAverageCycleLength(IPS memory cycle)
+        internal
+        pure
+        returns (int256)
+    {
+        if (cycle.p == P.D) {
+            return int256(cycle.i).mul(ONE_POINT_ZERO.floatDiv(365 * ONE_POINT_ZERO));
+        } else if (cycle.p == P.W) {
+            return int256(cycle.i).mul(7 * ONE_POINT_ZERO.floatDiv(365 * ONE_POINT_ZERO));
+        } else if (cycle.p == P.M) {
+            return int256(cycle.i).mul(1 * ONE_POINT_ZERO.floatDiv(12 * ONE_POINT_ZERO));
+        } else if (cycle.p == P.Q) {
+            return int256(cycle.i).mul(1 * ONE_POINT_ZERO.floatDiv(4 * ONE_POINT_ZERO));
+        } else if (cycle.p == P.H) {
+            return int256(cycle.i).mul(1 * ONE_POINT_ZERO.floatDiv(2 * ONE_POINT_ZERO));
+        } else if (cycle.p == P.Y) {
+            return int256(cycle.i) * ONE_POINT_ZERO;
+        } else {
+            revert("CycleUtils.getAverageCycleLength: ATTRIBUTE_NOT_FOUND");
+        }
+    }
+
+    function getNumberOfCyclesInSegment(IPS memory cycle, uint256 segmentStart, uint256 segmentEnd)
+        internal
+        pure
+        returns (uint256)
+    {
+        if (cycle.p == P.D) {
+            return segmentStart.diffDays(segmentEnd).div(cycle.i);
+        } else if (cycle.p == P.W) {
+            return segmentStart.diffDays(segmentEnd).div(7 * cycle.i);
+        } else if (cycle.p == P.M) {
+            return segmentStart.diffMonths(segmentEnd).div(cycle.i);
+        } else if (cycle.p == P.Q) {
+            return segmentStart.diffMonths(segmentEnd).div(3 * cycle.i);
+        } else if (cycle.p == P.H) {
+            return segmentStart.diffMonths(segmentEnd).div(6 * cycle.i);
+        } else if (cycle.p == P.Y) {
+            return segmentStart.diffYears(segmentEnd).div(cycle.i);
+        } else {
+            revert("CycleUtils.getNumberOfCyclesInSegment: ATTRIBUTE_NOT_FOUND");
+        }
+    }
 
     /**
      * @notice Applies the cycle n - times (n := cycleIndex) to a given date
@@ -43,7 +91,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         } else if (cycle.p == P.Y) {
             newTimestamp = cycleStart.addYears(cycle.i.mul(cycleIndex));
         } else {
-            revert("Schedule.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
+            revert("CycleUtils.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
         }
 
         return newTimestamp;
@@ -101,7 +149,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         while (date < cycleEnd) {
             // if date is in segment and MAX_CYCLE_SIZE is not reached add it to the output array
             if (isInSegment(date, segmentStart, segmentEnd)) {
-                require(index < (MAX_CYCLE_SIZE - 2), "Schedule.computeDatesFromCycle: MAX_CYCLE_SIZE");
+                require(index < (MAX_CYCLE_SIZE - 2), "CycleUtils.computeDatesFromCycle: MAX_CYCLE_SIZE");
                 dates[index] = date;
                 index++;
             }

@@ -6,14 +6,14 @@ import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
 import "../../Core/SignedMath.sol";
+import "../../Core/Conventions/AnnuityPaymentConventions.sol";
 
 
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) currently used by all Engines
  */
-contract ANNSTF is Core {
-
+contract ANNSTF is Core, AnnuityPaymentConventions {
     using SignedSafeMath for int;
     using SignedMath for int;
 
@@ -486,24 +486,24 @@ contract ANNSTF is Core {
         pure
         returns (ANNState memory)
     {
-        // riskFactor not supported
-        // int256 rate = int256(uint256(externalData)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
-        int256 rate = abi.decode(externalData, (int256)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
-        int256 deltaRate = rate.sub(state.nominalInterestRate);
-
-        // apply period cap/floor
-        if ((terms.lifeCap < deltaRate) && (terms.lifeCap < ((-1) * terms.periodFloor))) {
-            deltaRate = terms.lifeCap;
-        } else if (deltaRate < ((-1) * terms.periodFloor)) {
-            deltaRate = ((-1) * terms.periodFloor);
-        }
-        rate = state.nominalInterestRate.add(deltaRate);
-
-        // apply life cap/floor
-        if (terms.lifeCap < rate && terms.lifeCap < terms.lifeFloor) {
-            rate = terms.lifeCap;
-        } else if (rate < terms.lifeFloor) {
-            rate = terms.lifeFloor;
+        // calculate next nominal interest rate (riskFactor is not supported)
+        {
+            int256 rate = abi.decode(externalData, (int256)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
+            int256 deltaRate = rate.sub(state.nominalInterestRate);
+            // apply period cap/floor
+            if ((terms.lifeCap < deltaRate) && (terms.lifeCap < ((-1) * terms.periodFloor))) {
+                deltaRate = terms.lifeCap;
+            } else if (deltaRate < ((-1) * terms.periodFloor)) {
+                deltaRate = ((-1) * terms.periodFloor);
+            }
+            rate = state.nominalInterestRate.add(deltaRate);
+            // apply life cap/floor
+            if (terms.lifeCap < rate && terms.lifeCap < terms.lifeFloor) {
+                rate = terms.lifeCap;
+            } else if (rate < terms.lifeFloor) {
+                rate = terms.lifeFloor;
+            }
+            state.nominalInterestRate = rate;
         }
 
         int256 timeFromLastEvent;
@@ -521,8 +521,14 @@ contract ANNSTF is Core {
             .floatMult(state.notionalPrincipal)
             .floatMult(timeFromLastEvent)
         );
-        state.nominalInterestRate = rate;
-        state.nextPrincipalRedemptionPayment = 0; // annuity calculator not supported
+        state.nextPrincipalRedemptionPayment = annuityPayment(
+            terms.cycleOfPrincipalRedemption, 
+            terms.cycleAnchorDateOfPrincipalRedemption,
+            terms.maturityDate,
+            state.notionalPrincipal,
+            state.nominalInterestRate,
+            state.accruedInterest
+        );
         state.statusDate = scheduleTime;
 
         return state;
