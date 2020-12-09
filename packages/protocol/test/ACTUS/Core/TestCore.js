@@ -91,6 +91,18 @@ describe('Core', () => {
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204243200', '1235779200', '4', '0').call(), new BigNumber('0.997222222222222222').shiftedBy(18).toFixed()); // "_30E360-13
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206835200', '4', '0').call(), new BigNumber('0.088888888888888888').shiftedBy(18).toFixed()); // "_30E360-14
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '4', '0').call(), new BigNumber('0.088888888888888888').shiftedBy(18).toFixed()); // "_30E360-15
+
+    // One convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '6', '0').call(), new BigNumber('1.0').shiftedBy(18).toFixed());
+    
+    // One By Twelve convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '7', '0').call(), new BigNumber('0.083333333333333333').shiftedBy(18).toFixed());
+
+    // Hours Actual Actual convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '8', '0').call(), new BigNumber('0.087431693989071038').shiftedBy(18).toFixed());
+    // assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1235779200', '8', '0').call(), new BigNumber('').shiftedBy(18).toFixed());
+
+    
   });
 
   it('should test isInSegment', async () => {
