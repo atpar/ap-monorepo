@@ -218,14 +218,16 @@ contract DayCountConventions is ACTUSConstants {
         uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
 
         // no risk of overflow
-        int256 firstBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365) * 24;
+        // 366 * 24, 365 * 24
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 8784 : 8760;
 
         if (d1Year == d2Year) {
             return int256(BokkyPooBahsDateTimeLibrary.diffHours(startTime, endTime)).floatDiv(firstBasis);
         }
 
         // no risk of overflow
-        int256 secondBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365) * 24;
+        // 366 * 24, 365 * 24
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 8784 : 8760;
 
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
             startTime,
@@ -251,14 +253,16 @@ contract DayCountConventions is ACTUSConstants {
         uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
 
         // no risk of overflow
-        int256 firstBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365) * 1440;
+        // 366 * 1440, 365 * 1440
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 527040 : 525600;
 
         if (d1Year == d2Year) {
             return int256(BokkyPooBahsDateTimeLibrary.diffMinutes(startTime, endTime)).floatDiv(firstBasis);
         }
 
         // no risk of overflow
-        int256 secondBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365) * 1440;
+        // 366 * 1440, 365 * 1440
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 527040 : 525600;
 
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
             startTime,
@@ -284,14 +288,16 @@ contract DayCountConventions is ACTUSConstants {
         uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
 
         // no risk of overflow
-        int256 firstBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365) * 86400;
+        // 366 * 86400, 365 * 86400
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 31622400 : 31536000;
 
         if (d1Year == d2Year) {
             return int256(BokkyPooBahsDateTimeLibrary.diffSeconds(startTime, endTime)).floatDiv(firstBasis);
         }
 
         // no risk of overflow
-        int256 secondBasis = ((BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365) * 86400;
+        // 366 * 86400, 365 * 86400
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 31622400 : 31536000;
 
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
             startTime,
