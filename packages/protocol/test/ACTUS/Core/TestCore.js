@@ -112,7 +112,7 @@ describe('Core', () => {
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '9', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed());
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '9', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed());
 
-    // Seonds Actual Actual convention
+    // Seconds Actual Actual convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '10', '0').call(), new BigNumber('0.087431693989071038').shiftedBy(18).toFixed());
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '10', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed());
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '10', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed());
