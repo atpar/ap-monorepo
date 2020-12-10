@@ -69,12 +69,15 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] CEC (Contract Enhancement Collateral)
 - [x] CEG (Contract Enhancement Guarantee)
 - [x] CERTF (Certificate)
-- [x] COLLA (Principal At Maturity with Collateral)
+- [x] COLLA (Simplified Principal At Maturity with Collateral)
 - [x] PAM (Principal At Maturity)
 - [x] STK (Stock)
 
 ## Implemented Conventions
 - [x] Contract-Role-Sign-Convention (for PAM)
+
+### Annuity-Payment-Conventions
+- [x] Simplified Analytical Annuity Calculation
 
 ### Business-Day-Count-Conventions
 - [x] SCF (Shift/Calculate following)
@@ -86,16 +89,19 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] CSP (Calculate/Shift preceding)
 - [x] CSMP (Calculate/Shift modified preceding)
 
+### End-Of-Month-Conventions
+- [x] Same Day Shift
+- [x] End-Of-Month Shift
+
 ### Year-Fraction-Conventions (Day-Count-Methods)
 - [x] A/AISDA (Actual Actual ISDA)
 - [x] A/360 (Actual Three Sixty)
 - [x] A/365 (Actual Three Sixty Five)
 - [x] 30E/360ISDA (Thirty E Three Sixty ISDA)
 - [x] 30E/360 (Thirty E Three Sixty)
-- [ ] 28E336 (Twhenty-Eight E Three Thirty-Six)
-- [ ] BUS/252 (Business Two Fifty Two)
-- [ ] 1/1
-
-### End-Of-Month-Conventions
-- [x] Same Day Shift
-- [x] End-Of-Month Shift
+- [ ] 28E336 (Twenty-Eight E Three Thirty-Six)
+- [x] ONE (One Intraday)
+- [x] OBYT (OneBy Twelve Intraday)
+- [x] HRSAA (Hours Actual Actual Intraday)
+- [x] MINAA (Minutes Actual Actual Intraday)
+- [x] SECAA (Seconds Actual Actual Intraday)
