@@ -99,7 +99,7 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] A/365 (Actual Three Sixty Five)
 - [x] 30E/360ISDA (Thirty E Three Sixty ISDA)
 - [x] 30E/360 (Thirty E Three Sixty)
-- [ ] 28E336 (Twenty-Eight E Three Thirty-Six)
+- [x] 28E336 (Twenty Eight E Three Thirty Six)
 - [x] ONE (One Intraday)
 - [x] OBYT (OneBy Twelve Intraday)
 - [x] HRSAA (Hours Actual Actual Intraday)
