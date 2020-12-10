@@ -24,7 +24,7 @@ describe('Core', () => {
   });
 
   it('should test DayCountConvention', async () => {
-    // A/A ISDA convention
+    // A/A convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '0', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed()); // AA-1
     assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '0', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed()); // AA-1
 
@@ -79,7 +79,7 @@ describe('Core', () => {
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204243200', '1206835200', '3', '1204243200').call(), new BigNumber('0.083333333333333333').shiftedBy(18).toFixed()); // _30E360ISDA-14
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204243200', '1206921600', '3', '1204243200').call(), new BigNumber('0.083333333333333333').shiftedBy(18).toFixed()); // _30E360ISDA-15
 
-    // 30E/360 convention
+    // 30E/360 ISDA convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1138665600', '1141084800', '4', '0').call(), new BigNumber('0.077777777777777777').shiftedBy(18).toFixed()); // "_30E360-1
     assert.strictEqual(await this.TestCore.methods._yearFraction('1138579200', '1141084800', '4', '0').call(), new BigNumber('0.077777777777777777').shiftedBy(18).toFixed()); // "_30E360-2
     assert.strictEqual(await this.TestCore.methods._yearFraction('1141084800', '1141344000', '4', '0').call(), new BigNumber('0.013888888888888888').shiftedBy(18).toFixed()); // "_30E360-3
@@ -95,6 +95,11 @@ describe('Core', () => {
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204243200', '1235779200', '4', '0').call(), new BigNumber('0.997222222222222222').shiftedBy(18).toFixed()); // "_30E360-13
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206835200', '4', '0').call(), new BigNumber('0.088888888888888888').shiftedBy(18).toFixed()); // "_30E360-14
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '4', '0').call(), new BigNumber('0.088888888888888888').shiftedBy(18).toFixed()); // "_30E360-15
+
+    // 28E/336 ISDA convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1551398400', '1553990400', '5', '0').call(), new BigNumber('0.080357142857142857').shiftedBy(18).toFixed()); // "_28E336-1
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1551398400', '1556582400', '5', '0').call(), new BigNumber('0.163690476190476190').shiftedBy(18).toFixed()); // "_28E336-2
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1551398400', '1559257200', '5', '0').call(), new BigNumber('0.247023809523809523').shiftedBy(18).toFixed()); // "_28E336-3
 
     // One convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '6', '0').call(), new BigNumber('1.0').shiftedBy(18).toFixed());

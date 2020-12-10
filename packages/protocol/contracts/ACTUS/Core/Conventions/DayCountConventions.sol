@@ -46,8 +46,7 @@ contract DayCountConventions is ACTUSConstants {
         } else if (ipdc == DayCountConvention._30E360ISDA) {
             return thirtyEThreeSixtyISDA(startTimestamp, endTimestamp, maturityDate);
         } else if (ipdc == DayCountConvention._28E336) {
-            // not implemented yet
-            revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_SUPPORTED.");
+            return twentyEightEThreeThirtySix(startTimestamp, endTimestamp, maturityDate);
         } else if (ipdc == DayCountConvention.ONE) {
             return one(startTimestamp, endTimestamp);
         } else if (ipdc == DayCountConvention.OBYT) {
@@ -182,6 +181,33 @@ contract DayCountConventions is ACTUSConstants {
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
         return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+    }
+
+    /**
+     * ISDA 28E/336 day count convention
+     */
+    function twentyEightEThreeThirtySix(uint256 startTime, uint256 endTime, uint256 maturityDate)
+        internal
+        pure
+        returns (int256)
+    {
+        (uint256 d1Year, uint256 d1Month, uint256 d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(startTime);
+        (uint256 d2Year, uint256 d2Month, uint256 d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(endTime);
+
+        if (d1Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime)) {
+            d1Day = 28;
+        }
+
+        // if (!(endTime == maturityDate && d2Month == 2) && d2Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(endTime)) {
+        if (!(endTime == maturityDate && d2Month == 2) && (d2Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime) || d2Day > 28)) {
+            d2Day = 28;
+        }
+
+        int256 delD = int256(d2Day).sub(int256(d1Day));
+        int256 delM = int256(d2Month).sub(int256(d1Month));
+        int256 delY = int256(d2Year).sub(int256(d1Year));
+
+        return ((delY.mul(336).add(delM.mul(28)).add(delD)).floatDiv(336));
     }
 
     /**
