@@ -24,6 +24,10 @@ describe('Core', () => {
   });
 
   it('should test DayCountConvention', async () => {
+    // A/A ISDA convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '0', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed()); // AA-1
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '0', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed()); // AA-1
+
     // A/360 convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1138665600', '1141084800', '1', '0').call(), new BigNumber('0.077777777777777777').shiftedBy(18).toFixed()); // A360-1
     assert.strictEqual(await this.TestCore.methods._yearFraction('1138579200', '1141084800', '1', '0').call(), new BigNumber('0.080555555555555555').shiftedBy(18).toFixed()); // A360-2
@@ -100,9 +104,18 @@ describe('Core', () => {
 
     // Hours Actual Actual convention
     assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '8', '0').call(), new BigNumber('0.087431693989071038').shiftedBy(18).toFixed());
-    // assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1235779200', '8', '0').call(), new BigNumber('').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '8', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '8', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed());
 
-    
+    // Minutes Actual Actual convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '9', '0').call(), new BigNumber('0.087431693989071038').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '9', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '9', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed());
+
+    // Seonds Actual Actual convention
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1204156800', '1206921600', '10', '0').call(), new BigNumber('0.087431693989071038').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1553904000', '10', '0').call(), new BigNumber('0.156164383561643835').shiftedBy(18).toFixed());
+    assert.strictEqual(await this.TestCore.methods._yearFraction('1548979200', '1564444800', '10', '0').call(), new BigNumber('0.490410958904109589').shiftedBy(18).toFixed());
   });
 
   it('should test isInSegment', async () => {
