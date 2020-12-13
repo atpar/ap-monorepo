@@ -6,14 +6,13 @@ import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
 import "../../Core/SignedMath.sol";
-import "../../Core/Conventions/AnnuityPaymentConventions.sol";
 
 
 /**
  * @title STF
  * @notice Contains all state transition functions (STFs) currently used by all Engines
  */
-contract ANNSTF is Core, AnnuityPaymentConventions {
+contract ANNSTF is Core {
     using SignedSafeMath for int;
     using SignedMath for int;
 

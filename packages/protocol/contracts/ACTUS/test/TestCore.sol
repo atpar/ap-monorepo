@@ -31,6 +31,28 @@ contract TestCore is Core {
         return yearFraction(startTimestamp, endTimestamp, ipdc, maturityDate);
     }
 
+    function _annuityPayment(
+        IPS memory cycleOfPrincipalRedemption,
+        uint256 cycleAnchorDateOfPrincipalRedemption,
+        uint256 maturityDate,
+        int256 notionalPrincipal,
+        int256 nominalInterestRate,
+        int256 accruedInterest
+    )
+        public
+        pure
+        returns (int256)
+    {
+        return annuityPayment(
+            cycleOfPrincipalRedemption,
+            cycleAnchorDateOfPrincipalRedemption,
+            maturityDate,
+            notionalPrincipal,
+            nominalInterestRate,
+            accruedInterest
+        );
+    }
+
     function _isInSegment(
         uint256 timestamp,
         uint256 startTimestamp,

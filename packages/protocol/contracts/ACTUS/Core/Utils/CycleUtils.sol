@@ -52,17 +52,17 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         returns (uint256)
     {
         if (cycle.p == P.D) {
-            return segmentStart.diffDays(segmentEnd).div(cycle.i);
+            return segmentStart.diffDays(segmentEnd).div(cycle.i) + 1;
         } else if (cycle.p == P.W) {
-            return segmentStart.diffDays(segmentEnd).div(7 * cycle.i);
+            return segmentStart.diffDays(segmentEnd).div(7 * cycle.i) + 1;
         } else if (cycle.p == P.M) {
-            return segmentStart.diffMonths(segmentEnd).div(cycle.i);
+            return segmentStart.diffMonths(segmentEnd).div(cycle.i) + 1;
         } else if (cycle.p == P.Q) {
-            return segmentStart.diffMonths(segmentEnd).div(3 * cycle.i);
+            return segmentStart.diffMonths(segmentEnd).div(3 * cycle.i) + 1;
         } else if (cycle.p == P.H) {
-            return segmentStart.diffMonths(segmentEnd).div(6 * cycle.i);
+            return segmentStart.diffMonths(segmentEnd).div(6 * cycle.i) + 1;
         } else if (cycle.p == P.Y) {
-            return segmentStart.diffYears(segmentEnd).div(cycle.i);
+            return segmentStart.diffYears(segmentEnd).div(cycle.i) + 1;
         } else {
             revert("CycleUtils.getNumberOfCyclesInSegment: ATTRIBUTE_NOT_FOUND");
         }

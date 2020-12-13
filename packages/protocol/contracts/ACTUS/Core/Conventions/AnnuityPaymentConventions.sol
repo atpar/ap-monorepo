@@ -4,11 +4,13 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
-import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../ACTUSTypes.sol";
+import "../ACTUSConstants.sol";
+import "../SignedMath.sol";
+import "../Utils/CycleUtils.sol";
 
 
-contract AnnuityPaymentConventions is Core {
+contract AnnuityPaymentConventions is ACTUSConstants, CycleUtils {
     using SignedSafeMath for int256;
     using SignedMath for int256;
 
@@ -48,11 +50,9 @@ contract AnnuityPaymentConventions is Core {
             .floatDiv(
                 ONE_POINT_ZERO
                 .sub(
-                    (
-                        ONE_POINT_ZERO
-                        .add(nominalInterestRateFraction)
-                    )
-                    .floatPow(-1 * int256(numberOfPRCycles + 1))
+                    ONE_POINT_ZERO
+                    .add(nominalInterestRateFraction)
+                    .floatPow(-1 * int256(numberOfPRCycles))
                 )
             )
         );

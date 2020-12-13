@@ -9,6 +9,7 @@ import "./Conventions/BusinessDayConventions.sol";
 import "./Conventions/ContractRoleConventions.sol";
 import "./Conventions/DayCountConventions.sol";
 import "./Conventions/EndOfMonthConventions.sol";
+import "./Conventions/AnnuityPaymentConventions.sol";
 
 
 /**
@@ -21,5 +22,6 @@ contract Core is
     ContractRoleConventions,
     DayCountConventions,
     EndOfMonthConventions,
+    AnnuityPaymentConventions,
     Utils
 {}

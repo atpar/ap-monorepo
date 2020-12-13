@@ -56,16 +56,30 @@ library SignedMath {
         return d;
     }
 
-    function floatPow(int num, int exp) internal pure returns (int res) {
-        res = exp % 2 != 0 ? num : int256(MULTIPLICATOR);
+    // function floatPow(int256 base, int256 exp) internal pure returns (int256) {
+    //     int256 res = exp % 2 != 0 ? base : int256(MULTIPLICATOR);
 
-        for (exp /= 2; exp != 0; exp /= 2) {
-            num = floatMult(num, num);
+    //     for (exp /= 2; exp != 0; exp /= 2) {
+    //         base = floatMult(base, base);
 
-            if (exp % 2 != 0) {
-                res = floatMult(res, num);
-            }
+    //         if (exp % 2 != 0) {
+    //             res = floatMult(res, base);
+    //         }
+    //     }
+
+    //     return res;
+    // }
+
+    function floatPow(int256 base, int256 exp) internal pure returns (int256) {
+        int256 result = base;
+        uint256 absExp = (exp > 0) ? uint256(exp) : uint256(exp * -1);
+        for (uint256 i = 1; i < absExp; i++) {
+            result = floatMult(result, base);
         }
+        if (exp < 0) {
+            result = floatDiv(int256(MULTIPLICATOR), result);
+        }
+        return result;
     }
 
     /**
