@@ -77,7 +77,7 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] Contract-Role-Sign-Convention (for PAM)
 
 ### Annuity-Payment-Conventions
-- [x] Simplified Analytical Annuity Calculation
+- [ ] Simplified Analytical Annuity Calculation
 
 ### Business-Day-Count-Conventions
 - [x] SCF (Shift/Calculate following)
