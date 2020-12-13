@@ -2,6 +2,7 @@
   "name": "root",
   "private": false,
   "devDependencies": {
+    "conventional-changelog-cli": "^2.1.1",
     "coveralls": "^3.0.9",
     "ganache-cli": "^6.8.1",
     "lcov-result-merger": "^3.1.0",
@@ -10,6 +11,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
+    "changelog": "conventional-changelog",
     "coverage": "# ./scripts/coverage.sh",
     "link-packages": "lerna link",
     "publish-packages": "./scripts/publish.sh",
