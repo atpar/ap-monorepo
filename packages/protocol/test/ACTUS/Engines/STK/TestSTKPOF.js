@@ -3,7 +3,7 @@ const assert = require('assert');
 const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms, web3ResponseToState } = require('../../../helper/ACTUS/tests');
-const { getSnapshotTaker, deployTestSTKPOF } = require('../../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 const e18 = '000000000000000000'
 
@@ -12,7 +12,7 @@ describe('TestSTKPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestPOF = await deployTestSTKPOF(buidlerRuntime);
+    self.TestPOF = await deployContract(buidlerRuntime, 'TestSTKPOF');
   });
 
   before(async () => {

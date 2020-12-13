@@ -14,7 +14,10 @@ import "./ICEGRegistry.sol";
  */
 contract CEGActor is BaseActor {
 
-    constructor(IAssetRegistry assetRegistry, IOracleProxy defaultOracleProxy) BaseActor(assetRegistry, defaultOracleProxy) {}
+    constructor(
+        IAssetRegistry assetRegistry,
+        IObserverOracleProxy defaultOracleProxy
+    ) BaseActor(assetRegistry, defaultOracleProxy) {}
 
     /**
      * @notice Derives initial state of the asset terms and stores together with
@@ -24,13 +27,15 @@ contract CEGActor is BaseActor {
      * @param ownership ownership of the asset
      * @param engine address of the ACTUS engine used for the spec. ContractType
      * @param admin address of the admin of the asset (optional)
+     * @param extension address of the extension (optional)
      */
     function initialize(
         CEGTerms calldata terms,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
-        address admin
+        address admin,
+        address extension
     )
         external
     {
@@ -53,7 +58,7 @@ contract CEGActor is BaseActor {
         // todo add guarantee validation logic for contract reference 2
 
         // compute the initial state of the asset
-        State memory initialState = ICEGEngine(engine).computeInitialState(terms);
+        CEGState memory initialState = ICEGEngine(engine).computeInitialState(terms);
 
         // register the asset in the AssetRegistry
         ICEGRegistry(address(assetRegistry)).registerAsset(
@@ -64,44 +69,138 @@ contract CEGActor is BaseActor {
             ownership,
             engine,
             address(this),
-            admin
+            admin,
+            extension
         );
 
         emit InitializedAsset(assetId, ContractType.CEG, ownership.creatorObligor, ownership.counterpartyObligor);
     }
 
-    function computeStateAndPayoffForEvent(bytes32 assetId, State memory state, bytes32 _event)
+    function computePayoffForEvent(
+        bytes32 assetId,
+        address engine,
+        CEGTerms memory terms,
+        CEGState memory state,
+        bytes32 _event
+    )
         internal
         view
-        override
-        returns (State memory, int256)
+        returns (int256)
     {
-        address engine = assetRegistry.getEngine(assetId);
-        CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
-        int256 payoff = ICEGEngine(engine).computePayoffForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForPOF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
-        state = ICEGEngine(engine).computeStateForEvent(
-            terms,
-            state,
-            _event,
-            getExternalDataForSTF(
-                assetId,
-                eventType,
-                shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate)
-            )
-        );
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataPOF;
+        { externalDataPOF = getExternalDataForPOF(assetId, eventType, timestamp); }
 
-        return (state, payoff);
+        return (
+            ICEGEngine(engine).computePayoffForEvent(
+                terms,
+                state,
+                _event,
+                externalDataPOF
+            )
+        );
+    }
+
+    function computeStateForEvent(
+        bytes32 assetId,
+        address engine,
+        CEGTerms memory terms,
+        CEGState memory state,
+        bytes32 _event
+    )
+        internal
+        view
+        returns (CEGState memory)
+    {
+        (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
+
+        uint256 timestamp;
+        {
+            // apply shift calc to schedule time
+            timestamp = shiftCalcTime(
+                scheduleTime,
+                terms.businessDayConvention,
+                terms.calendar,
+                terms.maturityDate
+            );
+        }
+        
+        bytes memory externalDataSTF;
+        { externalDataSTF = getExternalDataForSTF(assetId, eventType, timestamp); }
+
+        return (
+            ICEGEngine(engine).computeStateForEvent(
+                terms,
+                state,
+                _event,
+                externalDataSTF
+            )
+        );
+    }
+
+    /**
+     * @notice Contract-type specific logic for processing an event required by the use of
+     * contract-type specific Terms and State.
+     */
+    function settleEventAndUpdateState(bytes32 assetId, bytes32 _event)
+        internal
+        override
+        returns (bool, int256)
+    {
+        CEGTerms memory terms = ICEGRegistry(address(assetRegistry)).getTerms(assetId);
+        CEGState memory state = ICEGRegistry(address(assetRegistry)).getState(assetId);
+        address engine = assetRegistry.getEngine(assetId);
+
+        // get finalized state if asset is not performant
+        if (state.contractPerformance != ContractPerformance.PF) {
+            state = ICEGRegistry(address(assetRegistry)).getFinalizedState(assetId);
+        }
+
+        (, uint256 scheduleTime) = decodeEvent(_event);
+
+        // get external data for the next event
+        // compute payoff and the next state by applying the event to the current state
+        int256 payoff = computePayoffForEvent(assetId, engine, terms, state, _event);
+        CEGState memory nextState = computeStateForEvent(assetId, engine, terms, state, _event);
+
+        // try to settle payoff of event
+        bool settledPayoff = settlePayoffForEvent(assetId, _event, payoff);
+
+        if (settledPayoff == false) {
+            // if the obligation can't be fulfilled and the performance changed from performant to DL, DQ or DF,
+            // store the last performant state of the asset
+            // (if the obligation is later fulfilled before the asset reaches default,
+            // the last performant state is used to derive subsequent states of the asset)
+            if (state.contractPerformance == ContractPerformance.PF) {
+                ICEGRegistry(address(assetRegistry)).setFinalizedState(assetId, state);
+            }
+
+            // store event as pending event for future settlement
+            assetRegistry.pushPendingEvent(assetId, _event);
+
+            // create CreditEvent
+            bytes32 ceEvent = encodeEvent(EventType.CE, scheduleTime);
+
+            // derive the actual state of the asset by applying the CreditEvent (updates performance of asset)
+            nextState = computeStateForEvent(assetId, engine, terms, nextState, ceEvent);
+        }
+
+        // store the resulting state
+        ICEGRegistry(address(assetRegistry)).setState(assetId, nextState);
+
+        return (settledPayoff, payoff);
     }
 
     /**
@@ -116,13 +215,13 @@ contract CEGActor is BaseActor {
         internal
         view
         override
-        returns (bytes32)
+        returns (bytes memory)
     {
         if (eventType == EventType.CE) {
             // get current timestamp
             // solium-disable-next-line
-            return bytes32(block.timestamp);
-        } else if (eventType == EventType.EXE) {
+            return abi.encode(block.timestamp);
+        } else if (eventType == EventType.EXE || eventType == EventType.FP) {
             // get the remaining notionalPrincipal from the underlying
             ContractReference memory contractReference_1 = assetRegistry.getContractReferenceValueForTermsAttribute(
                 assetId,
@@ -135,12 +234,12 @@ contract CEGActor is BaseActor {
                     IAssetRegistry(underlyingRegistry).isRegistered(underlyingAssetId) == true,
                     "BaseActor.getExternalDataForSTF: ASSET_DOES_NOT_EXIST"
                 );
-                return bytes32(
+                return abi.encode(
                     IAssetRegistry(underlyingRegistry).getIntValueForStateAttribute(underlyingAssetId, "notionalPrincipal")
                 );
             }
         }
 
-        return bytes32(0);
+        return new bytes(0);
     }
 }

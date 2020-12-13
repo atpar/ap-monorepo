@@ -20,7 +20,7 @@ interface ISTKEngine is IEngine {
     function computeInitialState(STKTerms calldata terms)
         external
         pure
-        returns (State memory);
+        returns (STKState memory);
 
     /**
      * Apply an event to the current state of a contract and returns the resulting contract state.
@@ -32,13 +32,13 @@ interface ISTKEngine is IEngine {
      */
     function computeStateForEvent(
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
-        returns (State memory);
+        returns (STKState memory);
 
     /**
      * Evaluates the payoff for an event under the current state of the contract.
@@ -50,9 +50,9 @@ interface ISTKEngine is IEngine {
      */
     function computePayoffForEvent(
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -140,9 +140,9 @@ interface ISTKEngine is IEngine {
     function isEventScheduled(
         bytes32 _event,
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bool hasUnderlying,
-        State calldata underlyingState
+        UnderlyingState calldata underlyingState
     )
         external
         pure

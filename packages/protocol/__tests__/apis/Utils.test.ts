@@ -4,7 +4,18 @@ import Web3 from 'web3';
 import ADDRESS_BOOK from '../../ap-chain/addresses.json';
 
 import { Utils, Contracts } from '../../src/apis';
-import { Terms, isPAMTerms, isANNTerms, isCERTFTerms, isCECTerms, isCEGTerms, isSTKTerms } from '../../src/types';
+import {
+  Terms,
+  PAMState,
+  isPAMState,
+  isANNTerms,
+  isCECTerms,
+  isCEGTerms,
+  isCERTFTerms,
+  isCOLLATerms,
+  isPAMTerms,
+  isSTKTerms
+} from '../../src/types';
 import { removeNullEvents } from '../../src/utils/Schedule';
 
 import DEFAULT_TERMS from '../Default-Terms.json';
@@ -17,7 +28,6 @@ describe('Utils', (): void => {
 
   beforeAll(async (): Promise<void> => {
     web3 = new Web3(new Web3.providers.WebsocketProvider('ws://localhost:8545'));
-
     // @ts-ignore
     const addressBook = ADDRESS_BOOK;
     contracts = new Contracts(web3, addressBook);
@@ -38,17 +48,26 @@ describe('Utils', (): void => {
     it('should return schedule for terms', async (): Promise<void> => {
       const terms = DEFAULT_TERMS;
       const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms);
-  
       expect(schedule.length).toBeGreaterThan(0);
     });
   
     it('should return schedule for terms - perpetual', async (): Promise<void> => {
       const terms = DEFAULT_TERMS;
-      const schedule = await Utils.schedule.computeScheduleFromTerms(contracts.engine(terms.contractType), terms, terms.maturityDate, terms.maturityDate);
-  
+      const schedule = await Utils.schedule.computeScheduleFromTerms(
+        contracts.engine(terms.contractType), terms, terms.maturityDate, terms.maturityDate
+      );
       expect(schedule.length).toBeGreaterThan(0);
     });
+  });
 
+  describe('Parse Web3 responses', (): void => {
+    it('should parse PAMState response', async (): Promise<void> => {
+      const terms = DEFAULT_TERMS;
+      const state = Utils.conversion.parseWeb3Response<PAMState>(
+        await contracts.engine(terms.contractType).methods.computeInitialState(terms).call()
+      );
+      expect(isPAMState(state)).toBe(true);
+    });
   });
   
   describe('Conversion', (): void => {
@@ -100,6 +119,12 @@ describe('Utils', (): void => {
       expect(isCERTFTerms(certfTerms))
     });
 
+    it('should convert full terms to COLLATerms', async (): Promise<void> => {
+      const terms: Terms = DEFAULT_TERMS;
+      const collaTerms = Utils.conversion.extractCOLLATerms(terms);
+      expect(isCOLLATerms(collaTerms))
+    });
+
     it('should convert full terms to PAMTerms', async (): Promise<void> => {
       const terms: Terms = DEFAULT_TERMS;
       const pamTerms = Utils.conversion.extractPAMTerms(terms);
@@ -112,5 +137,4 @@ describe('Utils', (): void => {
       expect(isSTKTerms(stkTerms))
     });
   });
-
 });

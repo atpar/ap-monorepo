@@ -17,7 +17,6 @@
   "feeAccrued",
   "feeRate",
   "priceAtPurchaseDate",
-  "priceAtTerminationDate",
   "coverageOfCreditEnhancement",
   "gracePeriod",
   "delinquencyPeriod",

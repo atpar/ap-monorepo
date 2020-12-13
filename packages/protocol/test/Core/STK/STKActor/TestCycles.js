@@ -60,6 +60,7 @@ describe('STKActor', () => {
       self.schedule,
       self.ownership,
       self.STKEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
@@ -78,8 +79,8 @@ describe('STKActor', () => {
           await getEventTime(self.schedule[1], self.terms),
         ],
       values: [
-        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[0]))), 64),
-        web3.utils.padLeft(web3.utils.numberToHex(web3.utils.toWei(String(extData.DIP.values[1]))), 64),
+        web3.eth.abi.encodeParameter('int256', web3.utils.toWei(String(extData.DIP.values[0]))),
+        web3.eth.abi.encodeParameter('int256', web3.utils.toWei(String(extData.DIP.values[1])))
       ]
     };
     self.dipaValues = dp.values;

@@ -11,9 +11,9 @@ contract TestCEGPOF is CEGPOF {
 
     function _POF_CEG_ST(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -29,9 +29,9 @@ contract TestCEGPOF is CEGPOF {
 
     function _POF_CEG_FP(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

@@ -11,9 +11,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_FP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -29,9 +29,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_IED (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -47,9 +47,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_IP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -65,9 +65,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_PP (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -83,9 +83,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_MD (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -101,9 +101,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_TD (
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -119,9 +119,9 @@ contract TestANNPOF is ANNPOF {
 
     function _POF_ANN_PR(
         ANNTerms memory terms,
-        State memory state,
+        ANNState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

@@ -19,19 +19,19 @@ contract CEGSTF is Core {
 
 
     /**
-     * State transition for PAM credit events
+     * CEGState transition for PAM credit events
      * @param state the old state
      * @return the new state
      */
     function STF_CEG_CE (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns(State memory)
+        returns(CEGState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
@@ -42,7 +42,7 @@ contract CEGSTF is Core {
                 terms.maturityDate
             ) : state.nonPerformingDate;
 
-        uint256 currentTimestamp = uint256(externalData);
+        uint256 currentTimestamp = abi.decode(externalData, (uint256));
 
         bool isInGracePeriod = false;
         if (terms.gracePeriod.isSet) {
@@ -77,13 +77,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_MD (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;
@@ -94,13 +94,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_EXE (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -112,8 +112,12 @@ contract CEGSTF is Core {
             );
         }
         state.statusDate = scheduleTime;
-        // decode state.notionalPrincipal of underlying from externalData
-        state.exerciseAmount = terms.coverageOfCreditEnhancement.floatMult(int256(externalData));
+
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+        state.exerciseAmount = state.notionalPrincipal;
         state.exerciseDate = scheduleTime;
 
         if (terms.feeBasis == FeeBasis.A) {
@@ -132,13 +136,13 @@ contract CEGSTF is Core {
 
     function STF_CEG_ST (
         CEGTerms memory /* terms */,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         state.notionalPrincipal = 0;
         state.feeAccrued = 0;
@@ -150,31 +154,37 @@ contract CEGSTF is Core {
 
     function STF_CEG_PRD (
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
-        state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
-        state.nominalInterestRate = terms.feeRate;
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.statusDate = scheduleTime;
 
         return state;
     }
 
     function STF_CEG_FP (
-        CEGTerms memory /* terms */,
-        State memory state,
+        CEGTerms memory terms,
+        CEGState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
+        state.notionalPrincipal = (terms.notionalPrincipal > 0)
+            ? terms.notionalPrincipal
+            // decode state.notionalPrincipal of underlying from externalData
+            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;
 

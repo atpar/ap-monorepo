@@ -36,14 +36,14 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      */
     function computeStateForEvent(
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (STKState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -63,9 +63,9 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      */
     function computePayoffForEvent(
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -99,9 +99,9 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (STKState memory)
     {
-        State memory state;
+        STKState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.statusDate = terms.statusDate;
@@ -290,9 +290,9 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
     function isEventScheduled(
         bytes32 /* _event */,
         STKTerms calldata /* terms */,
-        State calldata state,
+        STKState calldata state,
         bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
@@ -320,13 +320,13 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      */
     function stateTransitionFunction(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -358,9 +358,9 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
      */
     function payoffFunction(
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

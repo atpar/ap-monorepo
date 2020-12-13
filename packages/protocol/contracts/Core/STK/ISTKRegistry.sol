@@ -11,12 +11,13 @@ interface ISTKRegistry is IAssetRegistry {
     function registerAsset(
         bytes32 assetId,
         STKTerms calldata terms,
-        State calldata state,
+        STKState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         external;
     
@@ -26,5 +27,21 @@ interface ISTKRegistry is IAssetRegistry {
         returns (STKTerms memory);
 
     function setTerms(bytes32 assetId, STKTerms calldata terms)
+        external;
+
+    function getState(bytes32 assetId)
+        external
+        view
+        returns (STKState memory);
+
+    function setState(bytes32 assetId, STKState calldata terms)
+        external;
+
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        returns (STKState memory);
+
+    function setFinalizedState(bytes32 assetId, STKState calldata terms)
         external;
 }

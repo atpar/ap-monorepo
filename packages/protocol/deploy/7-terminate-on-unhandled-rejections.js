@@ -6,17 +6,17 @@
  * @param {BuidlerRuntimeEnvironment} buidlerRuntime
  */
 module.exports = async (buidlerRuntime) => {
-    const { deployments: { log }} = buidlerRuntime;
+  const { deployments: { log }} = buidlerRuntime;
 
-    process.on('unhandledRejection', (err) => {
-        console.error(`${err}`);
-        console.error('An unhandledRejection occurred. Terminating...');
-        process.exit(128);
-    });
+  process.on('unhandledRejection', (err) => {
+    console.error(`${err}`);
+    console.error('An unhandledRejection occurred. Terminating...');
+    process.exit(128);
+  });
 
-    log('--unhandled-rejections=strict emulated');
+  log('--unhandled-rejections=strict emulated');
 
-    await Promise.resolve();
+  await Promise.resolve();
 }
 
 module.exports.tags = ["_terminate-on-rejections"];

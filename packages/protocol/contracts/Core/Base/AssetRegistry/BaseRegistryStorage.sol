@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import "../Conversions.sol";
 import "../SharedTypes.sol";
-import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleEncoder.sol";
 
 
@@ -20,14 +19,12 @@ struct Asset {
     address engine;
     // address of the Asset Actor which is allowed to update the State of the asset
     address actor;
+    // address of the Extension which is able to generate unscheduled events for the asset
+    address extension;
     // schedule of the asset
     Schedule schedule;
     // ownership of the asset
     AssetOwnership ownership;
-    // granular ownership of the event type specific cashflows
-    // per default owners are beneficiaries defined in ownership object
-    // cashflow id (:= (EventType index + 1) * direction) => owner
-    mapping (int8 => address) cashflowBeneficiaries;
     // method level access control - stores which address can a specific method
     // method signature => address => has access
     mapping (bytes4 => mapping (address => bool)) access;
@@ -51,7 +48,6 @@ struct Asset {
  */
 abstract contract BaseRegistryStorage {
 
-    using StateEncoder for Asset;
     using ScheduleEncoder for Asset;
 
     // AssetId => Asset

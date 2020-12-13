@@ -59,7 +59,7 @@
     "@types/jest": "^23.3.12",
     "@typescript-eslint/eslint-plugin": "^1.6.0",
     "@typescript-eslint/parser": "^1.6.0",
-    "actus-dictionary": "https://github.com/atpar/actus-dictionary.git#fe832c32b9e8a0d05c8c9742b8480ff794262acf",
+    "actus-dictionary": "https://github.com/atpar/actus-dictionary.git#dc1bb5283406ada415527e4a324569fc431968ab",
     "bignumber.js": "^7.2.1",
     "copyfiles": "^2.4.0",
     "coveralls": "^3.0.9",

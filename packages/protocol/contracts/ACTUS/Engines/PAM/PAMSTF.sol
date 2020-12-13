@@ -25,13 +25,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_NE (
         PAMTerms memory /* terms */,
-        State memory state,
+        PAMState memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         return state;
     }
@@ -43,13 +43,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_AD (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -84,13 +84,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_ISS (
         PAMTerms memory /* terms */,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -103,13 +103,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_FP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -139,13 +139,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_IED (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         state.notionalPrincipal = roleSign(terms.contractRole) * terms.notionalPrincipal;
         state.nominalInterestRate = terms.nominalInterestRate;
@@ -162,13 +162,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_IPCI (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -207,13 +207,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_IP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -243,13 +243,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_PP (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -285,13 +285,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_PR (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -327,13 +327,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_RRF (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -369,17 +369,17 @@ contract PAMSTF is Core {
      */
     function STF_PAM_RR (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         // apply external rate, multiply with rateMultiplier and add the spread
         // riskFactor not supported
-        int256 rate = int256(uint256(externalData)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
+        int256 rate = abi.decode(externalData, (int256)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
 
         // deltaRate is the difference between the rate that includes external data, spread and multiplier and the currently active rate from the state
         int256 deltaRate = rate.sub(state.nominalInterestRate);
@@ -425,13 +425,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_SC (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -474,13 +474,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_MD (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         int256 timeFromLastEvent;
         {
@@ -517,13 +517,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_TD (
         PAMTerms memory /* terms */,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         state.notionalPrincipal = 0;
         state.accruedInterest = 0;
@@ -541,13 +541,13 @@ contract PAMSTF is Core {
      */
     function STF_PAM_CE (
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns(State memory)
+        returns(PAMState memory)
     {
         // handle maturity date
         uint256 nonPerformingDate = (state.nonPerformingDate == 0)
@@ -558,7 +558,7 @@ contract PAMSTF is Core {
                 terms.maturityDate
             ) : state.nonPerformingDate;
 
-        uint256 currentTimestamp = uint256(externalData);
+        uint256 currentTimestamp = abi.decode(externalData, (uint256));
 
         bool isInGracePeriod = false;
         if (terms.gracePeriod.isSet) {

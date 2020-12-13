@@ -13,9 +13,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_FP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -31,9 +31,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_IED(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -49,9 +49,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_IP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -67,9 +67,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_PP(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -85,9 +85,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_MD(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure
@@ -103,9 +103,9 @@ contract TestPAMPOF is PAMPOF {
 
     function _POF_PAM_TD(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         public
         pure

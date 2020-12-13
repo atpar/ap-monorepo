@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 import "../../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 
 import "../ACTUSTypes.sol";
+import "../ACTUSConstants.sol";
+
 import "../SignedMath.sol";
 
 
@@ -13,7 +15,7 @@ import "../SignedMath.sol";
  * @title DayCountConventions
  * @notice Implements various ISDA day count conventions as specified by ACTUS
  */
-contract DayCountConventions {
+contract DayCountConventions is ACTUSConstants {
 
     using SafeMath for uint;
     using SignedSafeMath for int;
@@ -44,8 +46,17 @@ contract DayCountConventions {
         } else if (ipdc == DayCountConvention._30E360ISDA) {
             return thirtyEThreeSixtyISDA(startTimestamp, endTimestamp, maturityDate);
         } else if (ipdc == DayCountConvention._28E336) {
-            // not implemented yet
-            revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_SUPPORTED.");
+            return twentyEightEThreeThirtySix(startTimestamp, endTimestamp, maturityDate);
+        } else if (ipdc == DayCountConvention.ONE) {
+            return one(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.OBYT) {
+            return oneByTwelve(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.HRSAA) {
+            return hoursActualActual(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.MINAA) {
+            return minutesActualActual(startTimestamp, endTimestamp);
+        } else if (ipdc == DayCountConvention.SECAA) {
+            return secondsActualActual(startTimestamp, endTimestamp);
         } else {
             revert("DayCountConvention.yearFraction: ATTRIBUTE_NOT_FOUND.");
         }
@@ -170,5 +181,159 @@ contract DayCountConventions {
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
         return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+    }
+
+    /**
+     * ISDA 28E/336 day count convention
+     */
+    function twentyEightEThreeThirtySix(uint256 startTime, uint256 endTime, uint256 maturityDate)
+        internal
+        pure
+        returns (int256)
+    {
+        (uint256 d1Year, uint256 d1Month, uint256 d1Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(startTime);
+        (uint256 d2Year, uint256 d2Month, uint256 d2Day) = BokkyPooBahsDateTimeLibrary.timestampToDate(endTime);
+
+        if (d1Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime)) {
+            d1Day = 28;
+        }
+
+        // if (!(endTime == maturityDate && d2Month == 2) && d2Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(endTime)) {
+        if (!(endTime == maturityDate && d2Month == 2) && (d2Day == BokkyPooBahsDateTimeLibrary.getDaysInMonth(startTime) || d2Day > 28)) {
+            d2Day = 28;
+        }
+
+        int256 delD = int256(d2Day).sub(int256(d1Day));
+        int256 delM = int256(d2Month).sub(int256(d1Month));
+        int256 delY = int256(d2Year).sub(int256(d1Year));
+
+        return ((delY.mul(336).add(delM.mul(28)).add(delD)).floatDiv(336));
+    }
+
+    /**
+     * One
+     */
+    function one(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        return ONE_POINT_ZERO;
+    }
+
+    /**
+     * One By Twelve
+     */
+    function oneByTwelve(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        return int256(ONE_POINT_ZERO).floatDiv(12 * ONE_POINT_ZERO);
+    }
+
+    /**
+     * Hours/Actual/Actual
+     */
+    function hoursActualActual(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Year = BokkyPooBahsDateTimeLibrary.getYear(startTime);
+        uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
+
+        // no risk of overflow
+        // 366 * 24, 365 * 24
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 8784 : 8760;
+
+        if (d1Year == d2Year) {
+            return int256(BokkyPooBahsDateTimeLibrary.diffHours(startTime, endTime)).floatDiv(firstBasis);
+        }
+
+        // no risk of overflow
+        // 366 * 24, 365 * 24
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 8784 : 8760;
+
+        int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
+            startTime,
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
+        )).floatDiv(firstBasis);
+        int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
+            endTime
+        )).floatDiv(secondBasis);
+
+        return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
+    }
+
+    /**
+     * Minutes/Actual/Actual
+     */
+    function minutesActualActual(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Year = BokkyPooBahsDateTimeLibrary.getYear(startTime);
+        uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
+
+        // no risk of overflow
+        // 366 * 1440, 365 * 1440
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 527040 : 525600;
+
+        if (d1Year == d2Year) {
+            return int256(BokkyPooBahsDateTimeLibrary.diffMinutes(startTime, endTime)).floatDiv(firstBasis);
+        }
+
+        // no risk of overflow
+        // 366 * 1440, 365 * 1440
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 527040 : 525600;
+
+        int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
+            startTime,
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
+        )).floatDiv(firstBasis);
+        int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
+            endTime
+        )).floatDiv(secondBasis);
+
+        return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
+    }
+
+    /**
+     * Seconds/Actual/Actual
+     */
+    function secondsActualActual(uint256 startTime, uint256 endTime)
+        internal
+        pure
+        returns (int256)
+    {
+        uint256 d1Year = BokkyPooBahsDateTimeLibrary.getYear(startTime);
+        uint256 d2Year = BokkyPooBahsDateTimeLibrary.getYear(endTime);
+
+        // no risk of overflow
+        // 366 * 86400, 365 * 86400
+        int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 31622400 : 31536000;
+
+        if (d1Year == d2Year) {
+            return int256(BokkyPooBahsDateTimeLibrary.diffSeconds(startTime, endTime)).floatDiv(firstBasis);
+        }
+
+        // no risk of overflow
+        // 366 * 86400, 365 * 86400
+        int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 31622400 : 31536000;
+
+        int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
+            startTime,
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
+        )).floatDiv(firstBasis);
+        int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
+            BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
+            endTime
+        )).floatDiv(secondBasis);
+
+        return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
     }
 }

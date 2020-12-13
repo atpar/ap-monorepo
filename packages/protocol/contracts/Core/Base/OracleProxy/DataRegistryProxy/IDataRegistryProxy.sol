@@ -40,4 +40,9 @@ interface IDataRegistryProxy {
         external
         view
         returns (int256, bool);
+
+    function getMostRecentDataPoint(bytes32 setId)
+        external
+        view
+        returns (int256, bool);
 }

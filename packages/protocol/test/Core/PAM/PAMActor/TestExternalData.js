@@ -49,6 +49,7 @@ describe('PAMActor', () => {
       self.schedule,
       self.ownership,
       self.PAMEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
     expectEvent(events,'InitializedAsset');
@@ -94,7 +95,7 @@ describe('PAMActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.padLeft(web3.utils.numberToHex(this.resetRate), 64)
+      web3.eth.abi.encodeParameter('int256', this.resetRate)
     ).call();
 
     // compare results

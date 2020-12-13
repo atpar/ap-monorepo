@@ -25,13 +25,13 @@ contract STKSTF is Core {
      */
     function STF_STK_AD (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
-    internal
-    pure
-    returns (State memory)
+        internal
+        pure
+        returns (STKState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -44,13 +44,13 @@ contract STKSTF is Core {
      */
     function STF_STK_ISS (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         state.quantity = terms.quantity;
         state.notionalPrincipal = terms.notionalPrincipal;
@@ -66,15 +66,15 @@ contract STKSTF is Core {
      */
     function STF_STK_DIF (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
-        state.dividendPaymentAmount = int256(externalData);
+        state.dividendPaymentAmount = abi.decode(externalData, (int256));
         state.lastDividendFixingDate = scheduleTime;
         state.statusDate = scheduleTime;
         return state;
@@ -88,13 +88,13 @@ contract STKSTF is Core {
      */
     function STF_STK_DIX (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -107,13 +107,13 @@ contract STKSTF is Core {
      */
     function STF_STK_DIP (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
     internal
     pure
-    returns (State memory)
+    returns (STKState memory)
     {
         state.dividendPaymentAmount = 0;
         state.statusDate = scheduleTime;
@@ -127,15 +127,15 @@ contract STKSTF is Core {
      */
     function STF_STK_SPF (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
     internal
     pure
-    returns (State memory)
+    returns (STKState memory)
     {
-        state.splitRatio = int256(externalData);
+        state.splitRatio = abi.decode(externalData, (int256));
         state.statusDate = scheduleTime;
         return state;
     }
@@ -147,13 +147,13 @@ contract STKSTF is Core {
      */
     function STF_STK_SPS (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
     internal
     pure
-    returns (State memory)
+    returns (STKState memory)
     {
         state.quantity = state.splitRatio.floatMult(state.quantity);
         state.splitRatio = 0;
@@ -168,16 +168,16 @@ contract STKSTF is Core {
      */
     function STF_STK_REF (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 externalData
+        bytes calldata externalData
     )
     internal
     pure
-    returns (State memory)
+    returns (STKState memory)
     {
         if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
-            state.exerciseQuantity = int256(externalData);
+            state.exerciseQuantity = abi.decode(externalData, (int256));
         }
 
         state.statusDate = scheduleTime;
@@ -192,13 +192,13 @@ contract STKSTF is Core {
      */
     function STF_STK_REX (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -211,13 +211,13 @@ contract STKSTF is Core {
      */
     function STF_STK_REP (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
             state.quantity = state.quantity.sub(state.exerciseQuantity);
@@ -235,13 +235,13 @@ contract STKSTF is Core {
      */
     function STF_STK_TD (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         state.statusDate = scheduleTime;
         return state;
@@ -254,13 +254,13 @@ contract STKSTF is Core {
      */
     function STF_STK_CE (
         STKTerms memory /* terms */,
-        State memory state,
+        STKState memory state,
         uint256 scheduleTime,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
-        returns (State memory)
+        returns (STKState memory)
     {
         state.statusDate = scheduleTime;
         return state;

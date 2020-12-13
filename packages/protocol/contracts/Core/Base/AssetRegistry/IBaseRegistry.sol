@@ -20,9 +20,17 @@ interface IBaseRegistry {
         view
         returns (address);
 
+    function getExtension(bytes32 assetId)
+        external
+        view
+        returns (address);
+
     function setEngine(bytes32 assetId, address engine)
         external;
 
     function setActor(bytes32 assetId, address actor)
+        external;
+
+    function setExtension(bytes32 assetId, address extension)
         external;
 }

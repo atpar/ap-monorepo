@@ -11,12 +11,13 @@ interface IPAMRegistry is IAssetRegistry {
     function registerAsset(
         bytes32 assetId,
         PAMTerms calldata terms,
-        State calldata state,
+        PAMState calldata state,
         bytes32[] calldata schedule,
         AssetOwnership calldata ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         external;
     
@@ -26,5 +27,21 @@ interface IPAMRegistry is IAssetRegistry {
         returns (PAMTerms memory);
 
     function setTerms(bytes32 assetId, PAMTerms calldata terms)
+        external;
+    
+    function getState(bytes32 assetId)
+        external
+        view
+        returns (PAMState memory);
+
+    function setState(bytes32 assetId, PAMState calldata terms)
+        external;
+
+    function getFinalizedState(bytes32 assetId)
+        external
+        view
+        returns (PAMState memory);
+
+    function setFinalizedState(bytes32 assetId, PAMState calldata terms)
         external;
 }

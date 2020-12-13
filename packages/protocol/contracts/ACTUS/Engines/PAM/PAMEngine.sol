@@ -36,14 +36,14 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
      */
     function computeStateForEvent(
         PAMTerms calldata terms,
-        State calldata state,
+        PAMState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (PAMState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -63,9 +63,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
      */
     function computePayoffForEvent(
         PAMTerms calldata terms,
-        State calldata state,
+        PAMState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -99,9 +99,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (PAMState memory)
     {
-        State memory state;
+        PAMState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.notionalScalingMultiplier = ONE_POINT_ZERO;
@@ -356,7 +356,7 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
             eventTypeNextEvent = EventType.ISS;
             scheduleTimeNextEvent = terms.issueDate;
         }
-        
+
         // initial exchange
         if (
             // date for event has to be set in terms and date of event can be in the past
@@ -502,23 +502,27 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
      * contract and the current state of the underlying.
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
-     * param state current state of the contract
-     * param hasUnderlying boolean indicating whether the contract has an underlying contract
+     * @param state current state of the contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 /* _event */,
         PAMTerms calldata /* terms */,
-        State calldata /* state */,
-        bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        PAMState calldata state,
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
         override
         returns (bool)
     {
+         if (
+            state.contractPerformance == ContractPerformance.DF
+            || state.contractPerformance == ContractPerformance.MD
+            || state.contractPerformance == ContractPerformance.TD
+        ) { return false; }
+
         return true;
     }
 
@@ -535,13 +539,13 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
      */
     function stateTransitionFunction(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (PAMState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -580,9 +584,9 @@ contract PAMEngine is Core, PAMSTF, PAMPOF, IPAMEngine {
      */
     function payoffFunction(
         PAMTerms memory terms,
-        State memory state,
+        PAMState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

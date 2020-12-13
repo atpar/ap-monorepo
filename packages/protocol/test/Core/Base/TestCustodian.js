@@ -4,7 +4,7 @@ const BigNumber = require('bignumber.js');
 const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { deployPaymentToken, getSnapshotTaker } = require('../../helper/setupTestEnvironment');
-const { expectEvent, generateSchedule } = require('../../helper/utils/utils');
+const { expectEvent, generateSchedule, ZERO_ADDRESS } = require('../../helper/utils/utils');
 
 
 describe('Custodian', () => {
@@ -61,6 +61,7 @@ describe('Custodian', () => {
       self.CECEngineInstance.options.address,
       self.CECActorInstance.options.address,
       deployer,
+      ZERO_ADDRESS
     ).send({from: defaultActor});
   });
 

@@ -11,7 +11,6 @@ import "./IBaseRegistry.sol";
 import "./Ownership/OwnershipRegistry.sol";
 import "./Terms/TermsRegistry.sol";
 import "./State/StateRegistry.sol";
-import "./State/StateEncoder.sol";
 import "./Schedule/ScheduleRegistry.sol";
 import "./Schedule/ScheduleEncoder.sol";
 
@@ -29,7 +28,6 @@ abstract contract BaseRegistry is
     OwnershipRegistry,
     IBaseRegistry
 {
-    using StateEncoder for Asset;
     using ScheduleEncoder for Asset;
 
     event RegisteredAsset(bytes32 assetId);
@@ -74,25 +72,26 @@ abstract contract BaseRegistry is
 
     /**
      * @notice Stores the addresses of the owners (owner of creator-side payment obligations,
-     * owner of creator-side payment claims), the initial state of an asset, the schedule of the asset
+     * owner of creator-side payment claims), the schedule of the asset
      * and sets the address of the actor (address of account which is allowed to update the state).
+     * Terms and State are contract-type specific and have to be handled by the deriving contracts.
      * @dev The state of the asset can only be updates by a whitelisted actor.
      * @param assetId id of the asset
-     * @param state initial state of the asset
      * @param schedule schedule of the asset
      * @param ownership ownership of the asset
      * @param engine ACTUS Engine of the asset
      * @param actor account which is allowed to update the asset state
      * @param admin account which as admin rights (optional)
+     * @param extension address of the extension (optional)
      */
     function setAsset(
         bytes32 assetId,
-        State memory state,
         bytes32[] memory schedule,
         AssetOwnership memory ownership,
         address engine,
         address actor,
-        address admin
+        address admin,
+        address extension
     )
         internal
     {
@@ -113,9 +112,8 @@ abstract contract BaseRegistry is
         asset.ownership = ownership;
         asset.engine = engine;
         asset.actor = actor;
+        asset.extension = extension;
 
-        asset.encodeAndSetState(state);
-        asset.encodeAndSetFinalizedState(state);
         asset.encodeAndSetSchedule(schedule);
 
         // set external admin if specified
@@ -153,6 +151,20 @@ abstract contract BaseRegistry is
     }
 
     /**
+     * @notice Returns the address of the extension which is allowed to generate events for the asset.
+     * @param assetId id of the asset
+     * @return address of the asset actor
+     */
+    function getExtension(bytes32 assetId)
+        external
+        view
+        override
+        returns (address)
+    {
+        return assets[assetId].extension;
+    }
+
+    /**
      * @notice Set the engine address which should be used for the asset going forward.
      * @dev Can only be set by authorized account.
      * @param assetId id of the asset
@@ -183,5 +195,22 @@ abstract contract BaseRegistry is
         assets[assetId].actor = actor;
 
         emit UpdatedActor(assetId, prevActor, actor);
+    }
+
+    /**
+     * @notice Set the extension address which should be used for the asset going forward.
+     * @dev Can only be set by authorized account.
+     * @param assetId id of the asset
+     * @param extension new extension address
+     */
+    function setExtension(bytes32 assetId, address extension)
+        external
+        override
+        isAuthorized (assetId)
+    {
+        address prevExtension = assets[assetId].extension;
+        assets[assetId].extension = extension;
+
+        emit UpdatedEngine(assetId, prevExtension, extension);
     }
 }

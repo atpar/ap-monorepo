@@ -6,26 +6,29 @@ import ANNEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/ANN
 import CECEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CEC/CECEngine.sol/CECEngine.json';
 import CEGEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CEG/CEGEngine.sol/CEGEngine.json';
 import CERTFEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/CERTF/CERTFEngine.sol/CERTFEngine.json';
+import COLLAEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/COLLA/COLLAEngine.sol/COLLAEngine.json';
 import PAMEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/PAM/PAMEngine.sol/PAMEngine.json';
 import STKEngineArtifact from '../../build/contracts/contracts/ACTUS/Engines/STK/STKEngine.sol/STKEngine.json';
 import ANNActorArtifact from '../../build/contracts/contracts/Core/ANN/ANNActor.sol/ANNActor.json';
 import CECActorArtifact from '../../build/contracts/contracts/Core/CEC/CECActor.sol/CECActor.json';
 import CEGActorArtifact from '../../build/contracts/contracts/Core/CEG/CEGActor.sol/CEGActor.json';
 import CERTFActorArtifact from '../../build/contracts/contracts/Core/CERTF/CERTFActor.sol/CERTFActor.json';
+import COLLAActorArtifact from '../../build/contracts/contracts/Core/COLLA/COLLAActor.sol/COLLAActor.json';
 import PAMActorArtifact from '../../build/contracts/contracts/Core/PAM/PAMActor.sol/PAMActor.json';
 import STKActorArtifact from '../../build/contracts/contracts/Core/STK/STKActor.sol/STKActor.json';
 import ANNRegistryArtifact from '../../build/contracts/contracts/Core/ANN/ANNRegistry.sol/ANNRegistry.json';
 import CECRegistryArtifact from '../../build/contracts/contracts/Core/CEC/CECRegistry.sol/CECRegistry.json';
 import CEGRegistryArtifact from '../../build/contracts/contracts/Core/CEG/CEGRegistry.sol/CEGRegistry.json';
 import CERTFRegistryArtifact from '../../build/contracts/contracts/Core/CERTF/CERTFRegistry.sol/CERTFRegistry.json';
+import COLLARegistryArtifact from '../../build/contracts/contracts/Core/COLLA/COLLARegistry.sol/COLLARegistry.json';
 import PAMRegistryArtifact from '../../build/contracts/contracts/Core/PAM/PAMRegistry.sol/PAMRegistry.json';
 import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKRegistry.sol/STKRegistry.json';
 import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
 import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
-import DvPSettlementArtifact from '../../build/contracts/contracts/Extensions/DvPSettlement.sol/DvPSettlement.json';
+import DvPSettlementArtifact from '../../build/contracts/contracts/misc/DVP/DvPSettlement.sol/DvPSettlement.json';
 import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
-import ERC1404Artifact from '../../build/contracts/contracts/Extensions/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
-import VanillaFDTArtifact from '../../build/contracts/contracts/Extensions/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
+import ERC1404Artifact from '../../build/contracts/contracts/tokens/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
+import VanillaFDTArtifact from '../../build/contracts/contracts/tokens/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
 
 import { BaseActor } from '../types/contracts/BaseActor';
 import { BaseRegistry } from '../types/contracts/BaseRegistry';
@@ -33,18 +36,21 @@ import { ANNEngine } from '../types/contracts/ANNEngine';
 import { CECEngine } from '../types/contracts/CECEngine';
 import { CEGEngine } from '../types/contracts/CEGEngine';
 import { CERTFEngine } from '../types/contracts/CERTFEngine';
+import { COLLAEngine } from '../types/contracts/COLLAEngine';
 import { PAMEngine } from '../types/contracts/PAMEngine';
 import { STKEngine } from '../types/contracts/STKEngine';
 import { ANNActor } from '../types/contracts/ANNActor';
 import { CEGActor } from '../types/contracts/CEGActor';
 import { CECActor } from '../types/contracts/CECActor';
 import { CERTFActor } from '../types/contracts/CERTFActor';
+import { COLLAActor } from '../types/contracts/COLLAActor';
 import { PAMActor } from '../types/contracts/PAMActor';
 import { STKActor } from '../types/contracts/STKActor';
 import { ANNRegistry } from '../types/contracts/ANNRegistry';
 import { CECRegistry } from '../types/contracts/CECRegistry';
 import { CEGRegistry } from '../types/contracts/CEGRegistry';
 import { CERTFRegistry } from '../types/contracts/CERTFRegistry';
+import { COLLARegistry } from '../types/contracts/COLLARegistry';
 import { PAMRegistry } from '../types/contracts/PAMRegistry';
 import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
@@ -70,6 +76,7 @@ export class Contracts {
   public cecEngine: CECEngine;
   public cegEngine: CEGEngine;
   public certfEngine: CERTFEngine;
+  public collaEngine: COLLAEngine;
   public pamEngine: PAMEngine;
   public stkEngine: STKEngine;
 
@@ -77,6 +84,7 @@ export class Contracts {
   public cecActor: CECActor;
   public cegActor: CEGActor;
   public certfActor: CERTFActor;
+  public collaActor: COLLAActor;
   public pamActor: PAMActor;
   public stkActor: STKActor;
 
@@ -84,6 +92,7 @@ export class Contracts {
   public cecRegistry: CECRegistry;
   public cegRegistry: CEGRegistry;
   public certfRegistry: CERTFRegistry;
+  public collaRegistry: COLLARegistry;
   public pamRegistry: PAMRegistry;
   public stkRegistry: STKRegistry;
 
@@ -113,6 +122,8 @@ export class Contracts {
     // @ts-ignore
     this.certfEngine = new web3.eth.Contract(CERTFEngineArtifact.abi, addressBook.CERTFEngine, { data: CERTFEngineArtifact.bytecode }) as CERTFEngine;
     // @ts-ignore
+    this.collaEngine = new web3.eth.Contract(COLLAEngineArtifact.abi, addressBook.COLLAEngine, { data: COLLAEngineArtifact.bytecode }) as COLLAEngine;
+    // @ts-ignore
     this.pamEngine = new web3.eth.Contract(PAMEngineArtifact.abi, addressBook.PAMEngine, { data: PAMEngineArtifact.bytecode }) as PAMEngine;
     // @ts-ignore
     this.stkEngine = new web3.eth.Contract(STKEngineArtifact.abi, addressBook.STKEngine, { data: STKEngineArtifact.bytecode }) as STKEngine;
@@ -125,6 +136,8 @@ export class Contracts {
     // @ts-ignore
     this.certfActor = new web3.eth.Contract(CERTFActorArtifact.abi, addressBook.CERTFActor, { data: CERTFActorArtifact.bytecode }) as CERTFActor;
     // @ts-ignore
+    this.collaActor = new web3.eth.Contract(COLLAActorArtifact.abi, addressBook.COLLAActor, { data: COLLAActorArtifact.bytecode }) as COLLAActor;
+    // @ts-ignore
     this.pamActor = new web3.eth.Contract(PAMActorArtifact.abi, addressBook.PAMActor, { data: PAMActorArtifact.bytecode }) as PAMActor;
     // @ts-ignore
     this.stkActor = new web3.eth.Contract(STKActorArtifact.abi, addressBook.STKActor, { data: STKActorArtifact.bytecode }) as STKActor;
@@ -136,6 +149,8 @@ export class Contracts {
     this.cegRegistry = new web3.eth.Contract(CEGRegistryArtifact.abi, addressBook.CEGRegistry, { data: CEGRegistryArtifact.bytecode }) as CEGRegistry;
     // @ts-ignore
     this.certfRegistry = new web3.eth.Contract(CERTFRegistryArtifact.abi, addressBook.CERTFRegistry, { data: CERTFRegistryArtifact.bytecode }) as CERTFRegistry;
+    // @ts-ignore
+    this.collaRegistry = new web3.eth.Contract(COLLARegistryArtifact.abi, addressBook.COLLARegistry, { data: COLLARegistryArtifact.bytecode }) as COLLARegistry;
     // @ts-ignore
     this.pamRegistry = new web3.eth.Contract(PAMRegistryArtifact.abi, addressBook.PAMRegistry, { data: PAMRegistryArtifact.bytecode }) as PAMRegistry;
     // @ts-ignore
@@ -185,6 +200,10 @@ export class Contracts {
       const certfEngine = this.certfEngine.clone();
       if (address) { certfEngine.options.address = address; }
       return certfEngine;
+    } else if (String(contractType) === '19') {
+      const collaEngine = this.collaEngine.clone();
+      if (address) { collaEngine.options.address = address; }
+      return collaEngine;
     } else {
       throw new Error('Could not return instance of Engine. Unsupported contract type provided.');
     }
@@ -234,6 +253,10 @@ export class Contracts {
       const certfRegistry = this.certfRegistry.clone();
       if (address) { certfRegistry.options.address = address; }
       return certfRegistry;
+    } else if (String(contractType) === '19') {
+      const collaRegistry = this.collaRegistry.clone();
+      if (address) { collaRegistry.options.address = address; }
+      return collaRegistry;
     } else {
       throw new Error('Could not return instance of AssetRegistry. Unsupported contract type provided.');
     }
@@ -283,6 +306,10 @@ export class Contracts {
       const certfActor = this.certfActor.clone();
       if (address) { certfActor.options.address = address; }
       return certfActor;
+    } else if (String(contractType) === '19') {
+      const collaActor = this.collaActor.clone();
+      if (address) { collaActor.options.address = address; }
+      return collaActor;
     } else {
       throw new Error('Could not instance of AssetActor. Unsupported contract type provided.');
     }

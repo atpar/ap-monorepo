@@ -13,6 +13,12 @@ library PAMEncoder {
         if (asset.packedTerms[attributeKey] == value) return;
         asset.packedTerms[attributeKey] = value;
     }
+
+    function storeInPackedState(Asset storage asset, bytes32 attributeKey, bytes32 value) private {
+        // skip if value did not change
+        if (asset.packedState[attributeKey] == value) return;
+        asset.packedState[attributeKey] = value;
+    }
     
     /**
      * @dev Tightly pack and store only non-zero overwritten terms (LifecycleTerms)
@@ -198,7 +204,7 @@ library PAMEncoder {
         );
     }
 
-    function decodeAndGetEnumValueForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetEnumValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint8)
@@ -224,7 +230,7 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetAddressValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetAddressValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (address)
@@ -238,7 +244,7 @@ library PAMEncoder {
         }   
     }
 
-    function decodeAndGetBytes32ValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetBytes32ValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (bytes32)
@@ -246,7 +252,7 @@ library PAMEncoder {
         return asset.packedTerms[attributeKey];
     }
 
-    function decodeAndGetUIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetUIntValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (uint256)
@@ -254,7 +260,7 @@ library PAMEncoder {
         return uint256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetIntValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetIntValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (int256)
@@ -262,7 +268,7 @@ library PAMEncoder {
         return int256(asset.packedTerms[attributeKey]);
     }
 
-    function decodeAndGetPeriodValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetPeriodValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (IP memory)
@@ -281,7 +287,7 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetCycleValueForForPAMAttribute(Asset storage asset, bytes32 attributeKey)
+    function decodeAndGetCycleValueForPAMTermsAttribute(Asset storage asset, bytes32 attributeKey)
         external
         view
         returns (IPS memory)
@@ -303,7 +309,7 @@ library PAMEncoder {
         }
     }
 
-    function decodeAndGetContractReferenceValueForPAMAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
+    function decodeAndGetContractReferenceValueForPAMTermsAttribute(Asset storage /* asset */, bytes32 /* attributeKey */)
         external
         pure
         returns (ContractReference memory)
@@ -314,5 +320,117 @@ library PAMEncoder {
             ContractReferenceType(0),
             ContractReferenceRole(0)
         );
+    }
+
+    /**
+     * @dev Tightly pack and store PAMState
+     */
+    function encodeAndSetPAMState(Asset storage asset, PAMState memory state) external {
+        storeInPackedState(asset, "contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "accruedInterest", bytes32(state.accruedInterest));
+        storeInPackedState(asset, "feeAccrued", bytes32(state.feeAccrued));
+        storeInPackedState(asset, "nominalInterestRate", bytes32(state.nominalInterestRate));
+        storeInPackedState(asset, "interestScalingMultiplier", bytes32(state.interestScalingMultiplier));
+        storeInPackedState(asset, "notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
+    }
+
+    /**
+     * @dev Tightly pack and store finalized PAMState
+     */
+    function encodeAndSetFinalizedPAMState(Asset storage asset, PAMState memory state) external {
+        storeInPackedState(asset, "F_contractPerformance", bytes32(uint256(uint8(state.contractPerformance))) << 248);
+        storeInPackedState(asset, "F_statusDate", bytes32(state.statusDate));
+        storeInPackedState(asset, "F_nonPerformingDate", bytes32(state.nonPerformingDate));
+        storeInPackedState(asset, "F_maturityDate", bytes32(state.maturityDate));
+        storeInPackedState(asset, "F_terminationDate", bytes32(state.terminationDate));
+        storeInPackedState(asset, "F_notionalPrincipal", bytes32(state.notionalPrincipal));
+        storeInPackedState(asset, "F_accruedInterest", bytes32(state.accruedInterest));
+        storeInPackedState(asset, "F_feeAccrued", bytes32(state.feeAccrued));
+        storeInPackedState(asset, "F_nominalInterestRate", bytes32(state.nominalInterestRate));
+        storeInPackedState(asset, "F_interestScalingMultiplier", bytes32(state.interestScalingMultiplier));
+        storeInPackedState(asset, "F_notionalScalingMultiplier", bytes32(state.notionalScalingMultiplier));
+    }
+
+    /**
+     * @dev Decode and load the PAMState of the asset
+     */
+    function decodeAndGetPAMState(Asset storage asset)
+        external
+        view
+        returns (PAMState memory)
+    {
+        return PAMState(
+            ContractPerformance(uint8(uint256(asset.packedState["contractPerformance"] >> 248))),
+            uint256(asset.packedState["statusDate"]),
+            uint256(asset.packedState["nonPerformingDate"]),
+            uint256(asset.packedState["maturityDate"]),
+            uint256(asset.packedState["terminationDate"]),
+
+            int256(asset.packedState["notionalPrincipal"]),
+            int256(asset.packedState["accruedInterest"]),
+            int256(asset.packedState["feeAccrued"]),
+            int256(asset.packedState["nominalInterestRate"]),
+            int256(asset.packedState["interestScalingMultiplier"]),
+            int256(asset.packedState["notionalScalingMultiplier"])
+        );
+    }
+
+    /**
+     * @dev Decode and load the finalized PAMState of the asset
+     */
+    function decodeAndGetFinalizedPAMState(Asset storage asset)
+        external
+        view
+        returns (PAMState memory)
+    {
+        return PAMState(
+            ContractPerformance(uint8(uint256(asset.packedState["F_contractPerformance"] >> 248))),
+            uint256(asset.packedState["F_statusDate"]),
+            uint256(asset.packedState["F_nonPerformingDate"]),
+            uint256(asset.packedState["F_maturityDate"]),
+            uint256(asset.packedState["F_terminationDate"]),
+
+            int256(asset.packedState["F_notionalPrincipal"]),
+            int256(asset.packedState["F_accruedInterest"]),
+            int256(asset.packedState["F_feeAccrued"]),
+            int256(asset.packedState["F_nominalInterestRate"]),
+            int256(asset.packedState["F_interestScalingMultiplier"]),
+            int256(asset.packedState["F_notionalScalingMultiplier"])
+        );
+    }
+
+    function decodeAndGetEnumValueForPAMStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint8)
+    {
+        if (attributeKey == bytes32("contractPerformance")) {
+            return uint8(uint256(asset.packedState["contractPerformance"] >> 248));
+        } else if (attributeKey == bytes32("F_contractPerformance")) {
+            return uint8(uint256(asset.packedState["F_contractPerformance"] >> 248));
+        } else {
+            return uint8(0);
+        }
+    }
+
+    function decodeAndGetUIntValueForPAMStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (uint256)
+    {
+        return uint256(asset.packedState[attributeKey]);
+    }
+
+    function decodeAndGetIntValueForPAMStateAttribute(Asset storage asset, bytes32 attributeKey)
+        external
+        view
+        returns (int256)
+    {
+        return int256(asset.packedState[attributeKey]);
     }
 }

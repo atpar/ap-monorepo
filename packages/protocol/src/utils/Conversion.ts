@@ -1,15 +1,14 @@
 import * as web3Utils from 'web3-utils';
 
 import {
-  AssetOwnership,
   Terms,
   ANNTerms,
   CECTerms,
   CEGTerms,
   CERTFTerms,
+  COLLATerms,
   PAMTerms,
-  STKTerms,
-  State
+  STKTerms
 } from '../types';
 
 
@@ -57,36 +56,8 @@ export const decodeBytes32AsAddress = (bytes32: string): string => {
   return '0x' + bytes32.substring(26)
 }
 
-export const web3ResponseToAssetOwnership = (web3Response: any): AssetOwnership => (
-  associativeArrayToObject(web3Response) as AssetOwnership
-);
-
-export const web3ResponseToState = (web3Response: any): State => (
-  associativeArrayToObject(web3Response) as State
-);
-
-export const web3ResponseToANNTerms = (web3Response: any): ANNTerms => (
-  associativeArrayToObject(web3Response) as ANNTerms
-);
-
-export const web3ResponseToCECTerms = (web3Response: any): CECTerms => (
-  associativeArrayToObject(web3Response) as CECTerms
-);
-
-export const web3ResponseToCEGTerms = (web3Response: any): CEGTerms => (
-  associativeArrayToObject(web3Response) as CEGTerms
-);
-
-export const web3ResponseToCERTFTerms = (web3Response: any): CERTFTerms => (
-  associativeArrayToObject(web3Response) as CERTFTerms
-);
-
-export const web3ResponseToSTKTerms = (web3Response: any): STKTerms => (
-  associativeArrayToObject(web3Response) as STKTerms
-);
-
-export const web3ResponseToPAMTerms = (web3Response: any): PAMTerms => (
-  associativeArrayToObject(web3Response) as PAMTerms
+export const parseWeb3Response = <T extends object>(web3Response: any): T => (
+  associativeArrayToObject(web3Response) as T
 );
 
 export const extractANNTerms = (terms: Terms): ANNTerms => ({
@@ -187,7 +158,6 @@ export const extractCEGTerms = (terms: Terms): CEGTerms => ({
   feeAccrued: terms.feeAccrued,
   feeRate: terms.feeRate,
   priceAtPurchaseDate: terms.priceAtPurchaseDate,
-  priceAtTerminationDate: terms.priceAtTerminationDate,
   coverageOfCreditEnhancement: terms.coverageOfCreditEnhancement,
 
   gracePeriod: terms.gracePeriod,
@@ -231,6 +201,38 @@ export const extractCERTFTerms = (terms: Terms): CERTFTerms => ({
   cycleOfCoupon: terms.cycleOfCoupon,
   contractReference_1: terms.contractReference_1,
   contractReference_2: terms.contractReference_2
+});
+
+export const extractCOLLATerms = (terms: Terms): COLLATerms => ({
+  contractType: terms.contractType,
+  calendar: terms.calendar,
+  contractRole: terms.contractRole,
+  dayCountConvention: terms.dayCountConvention,
+  businessDayConvention: terms.businessDayConvention,
+  endOfMonthConvention: terms.endOfMonthConvention,
+  
+  marketObjectCodeOfCollateral: terms.marketObjectCodeOfCollateral,
+
+  currency: terms.currency,
+  settlementCurrency: terms.settlementCurrency,
+  collateralCurrency: terms.collateralCurrency,
+
+  statusDate: terms.statusDate,
+  initialExchangeDate: terms.initialExchangeDate,
+  maturityDate: terms.maturityDate,
+  capitalizationEndDate: terms.capitalizationEndDate,
+  cycleAnchorDateOfInterestPayment: terms.cycleAnchorDateOfInterestPayment,
+
+  notionalPrincipal: terms.notionalPrincipal,
+  nominalInterestRate: terms.nominalInterestRate,
+  accruedInterest: terms.accruedInterest,
+  premiumDiscountAtIED: terms.premiumDiscountAtIED,
+  coverageOfCollateral: terms.coverageOfCollateral,
+
+  gracePeriod: terms.gracePeriod,
+  delinquencyPeriod: terms.delinquencyPeriod,
+
+  cycleOfInterestPayment: terms.cycleOfInterestPayment,
 });
 
 export const extractPAMTerms = (terms: Terms): PAMTerms => ({

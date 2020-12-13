@@ -58,6 +58,7 @@ describe('ANNActor', () => {
       self.schedule,
       self.ownership,
       self.ANNEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
@@ -105,7 +106,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -135,8 +136,8 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
-      ).call()
+        web3.eth.abi.encodeParameter('uint256', eventTime)
+        ).call()
     );
 
     assert.strictEqual(emittedAssetId, this.assetId);
@@ -174,7 +175,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -218,7 +219,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -262,7 +263,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -308,7 +309,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 
@@ -363,7 +364,7 @@ describe('ANNActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 

@@ -36,14 +36,14 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      */
     function computeStateForEvent(
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (CERTFState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -63,9 +63,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      */
     function computePayoffForEvent(
         CERTFTerms calldata terms,
-        State calldata state,
+        CERTFState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -79,7 +79,7 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -99,9 +99,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (CERTFState memory)
     {
-        State memory state;
+        CERTFState memory state;
 
         state.quantity = 0;
         state.exerciseQuantity = 0;
@@ -472,16 +472,14 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      * param _event event for which to check if its still scheduled
      * param terms terms of the contract
      * @param state current state of the contract
-     * param hasUnderlying boolean indicating whether the contract has an underlying contract
      * param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 /* _event */,
         CERTFTerms calldata /* terms */,
-        State calldata state,
-        bool /* hasUnderlying */,
-        State calldata /* underlyingState */
+        CERTFState calldata state,
+        UnderlyingState calldata /* underlyingState */
     )
         external
         pure
@@ -510,13 +508,13 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      */
     function stateTransitionFunction(
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CERTFState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -546,9 +544,9 @@ contract CERTFEngine is Core, CERTFSTF, CERTFPOF, ICERTFEngine {
      */
     function payoffFunction(
         CERTFTerms memory terms,
-        State memory state,
+        CERTFState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

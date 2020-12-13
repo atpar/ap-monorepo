@@ -2,11 +2,19 @@ import {
   IP,
   IPS,
   ContractReference,
-  State,
+  UnderlyingState,
+  ANNState,
+  CECState,
+  CEGState,
+  CERTFState,
+  COLLAState,
+  PAMState,
+  STKState,
   ANNTerms,
   CECTerms,
   CEGTerms,
   CERTFTerms,
+  COLLATerms,
   PAMTerms,
   STKTerms
 } from '../types';
@@ -25,7 +33,49 @@ export const EMPTY_CONTRACT_REFERENCE: ContractReference = {
   role: '0'
 };
 
-export const EMPTY_STATE: State = {
+export const EMPTY_UNDERLYING_STATE: UnderlyingState = {
+  exerciseAmount: '0',
+  isSet: false
+};
+
+export const EMPTY_ANN_STATE: ANNState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  nonPerformingDate: '0',
+  maturityDate: '0',
+  terminationDate: '0',
+  notionalPrincipal: '0',
+  accruedInterest: '0',
+  feeAccrued: '0',
+  nominalInterestRate: '0',
+  interestScalingMultiplier: '0',
+  notionalScalingMultiplier: '0',
+  nextPrincipalRedemptionPayment: '0'
+};
+
+export const EMPTY_CEC_STATE: CECState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  maturityDate: '0',
+  exerciseDate: '0',
+  terminationDate: '0',
+  feeAccrued: '0',
+  exerciseAmount: '0'
+};
+
+export const EMPTY_CEG_STATE: CEGState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  nonPerformingDate: '0',
+  maturityDate: '0',
+  exerciseDate: '0',
+  terminationDate: '0',
+  notionalPrincipal: '0',
+  feeAccrued: '0',
+  exerciseAmount: '0'
+};
+
+export const EMPTY_CERTF_STATE: CERTFState = {
   contractPerformance: '0',
   statusDate: '0',
   nonPerformingDate: '0',
@@ -33,14 +83,50 @@ export const EMPTY_STATE: State = {
   exerciseDate: '0',
   terminationDate: '0',
   lastCouponFixingDate: '0',
-  lastDividendFixingDate: '0',
+  exerciseAmount: '0',
+  exerciseQuantity: '0',
+  quantity: '0',
+  couponAmountFixed: '0',
+  marginFactor: '0',
+  adjustmentFactor: '0'
+};
+
+export const EMPTY_COLLA_STATE: COLLAState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  nonPerformingDate: '0',
+  maturityDate: '0',
+  terminationDate: '0',
+  notionalPrincipal: '0',
+  accruedInterest: '0',
+  nominalInterestRate: '0',
+  interestScalingMultiplier: '0',
+  notionalScalingMultiplier: '0',
+};
+
+export const EMPTY_PAM_STATE: PAMState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  nonPerformingDate: '0',
+  maturityDate: '0',
+  terminationDate: '0',
   notionalPrincipal: '0',
   accruedInterest: '0',
   feeAccrued: '0',
   nominalInterestRate: '0',
   interestScalingMultiplier: '0',
   notionalScalingMultiplier: '0',
-  nextPrincipalRedemptionPayment: '0',
+};
+
+export const EMPTY_STK_STATE: STKState = {
+  contractPerformance: '0',
+  statusDate: '0',
+  nonPerformingDate: '0',
+  maturityDate: '0',
+  exerciseDate: '0',
+  terminationDate: '0',
+  lastDividendFixingDate: '0',
+  notionalPrincipal: '0',
   exerciseAmount: '0',
   exerciseQuantity: '0',
   quantity: '0',
@@ -149,7 +235,6 @@ export const EMPTY_CEG_TERMS: CEGTerms = {
   feeAccrued: '0',
   feeRate: '0',
   priceAtPurchaseDate: '0',
-  priceAtTerminationDate: '0',
   coverageOfCreditEnhancement: '0',
 
   gracePeriod: EMPTY_IP,
@@ -199,7 +284,39 @@ export const EMPTY_CERTF_TERMS: CERTFTerms = {
 
   contractReference_1: EMPTY_CONTRACT_REFERENCE,
   contractReference_2: EMPTY_CONTRACT_REFERENCE
-}
+};
+
+export const EMPTY_COLLA_TERMS: COLLATerms = {
+  contractType: '0',
+  calendar: '0',
+  contractRole: '0',
+  dayCountConvention: '0',
+  businessDayConvention: '0',
+  endOfMonthConvention: '0',
+  
+  marketObjectCodeOfCollateral: ZERO_BYTES32,
+
+  currency: ZERO_ADDRESS,
+  settlementCurrency: ZERO_ADDRESS,
+  collateralCurrency: ZERO_ADDRESS,
+
+  statusDate: '0',
+  initialExchangeDate: '0',
+  maturityDate: '0',
+  capitalizationEndDate: '0',
+  cycleAnchorDateOfInterestPayment: '0',
+
+  notionalPrincipal: '0',
+  nominalInterestRate: '0',
+  accruedInterest: '0',
+  premiumDiscountAtIED: '0',
+  coverageOfCollateral: '0',
+
+  gracePeriod: EMPTY_IP,
+  delinquencyPeriod: EMPTY_IP,
+
+  cycleOfInterestPayment: EMPTY_IPS,
+};
 
 export const EMPTY_PAM_TERMS: PAMTerms = {
   contractType: '0',

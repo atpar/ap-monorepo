@@ -3,11 +3,11 @@
 module.exports = async () => await Promise.resolve();
 module.exports.tags = ["deploy-ap-chain"];
 module.exports.dependencies = [
-    "_env",
-    "_package",
-    "_deployment",
-    "_init",
-    "_export"
+  "_env",
+  "_package",
+  "_deployment",
+  "_init",
+  "_export"
 ];
 
 // run on the ap-chain only

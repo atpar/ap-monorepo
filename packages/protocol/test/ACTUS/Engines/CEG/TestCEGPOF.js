@@ -3,14 +3,14 @@ const assert = require('assert');
 const buidlerRuntime = require('hardhat');
 
 const { getDefaultTestTerms, web3ResponseToState } = require('../../../helper/ACTUS/tests');
-const { getSnapshotTaker, deployTestCEGPOF } = require('../../../helper/setupTestEnvironment');
+const { deployContract, getSnapshotTaker } = require('../../../helper/setupTestEnvironment');
 
 
 describe('TestCEGPOF', () => {
   /** @param {any} self - `this` inside `before()`/`it()` */
   const snapshotTaker = (self) => getSnapshotTaker(buidlerRuntime, self, async () => {
     // code bellow runs right before the EVM snapshot gets taken
-    self.TestPOF = await deployTestCEGPOF(buidlerRuntime);
+    self.TestPOF = await deployContract(buidlerRuntime, 'TestCEGPOF');
   });
 
   before(async () => {
@@ -97,6 +97,7 @@ describe('TestCEGPOF', () => {
     this.CEGTerms.calendar = 0; // NoCalendar
     this.CEGTerms.dayCountConvention = 2; // A_365
     this.CEGTerms.maturityDate = 31536000; // 1 year
+    this.CEGTerms.notionalPrincipal = web3.utils.toWei('1000000'); // 
     this.CEGTerms.feeRate = web3.utils.toWei('.05'); // set fee rate
 
     state.feeAccrued = web3.utils.toWei('100');

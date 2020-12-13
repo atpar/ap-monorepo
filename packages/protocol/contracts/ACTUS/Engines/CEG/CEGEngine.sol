@@ -37,14 +37,14 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      */
     function computeStateForEvent(
         CEGTerms calldata terms,
-        State calldata state,
+        CEGState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
         override
-        returns (State memory)
+        returns (CEGState memory)
     {
         return stateTransitionFunction(
             terms,
@@ -64,9 +64,9 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      */
     function computePayoffForEvent(
         CEGTerms calldata terms,
-        State calldata state,
+        CEGState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -80,7 +80,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(int256(externalData));
+            ).floatMult(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(
@@ -100,9 +100,9 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
         external
         pure
         override
-        returns (State memory)
+        returns (CEGState memory)
     {
-        State memory state;
+        CEGState memory state;
 
         state.contractPerformance = ContractPerformance.PF;
         state.statusDate = terms.statusDate;
@@ -303,16 +303,14 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      * @param _event event for which to check if its still scheduled
      * param terms terms of the contract
      * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 _event,
         CEGTerms calldata /* terms */,
-        State calldata state,
-        bool hasUnderlying,
-        State calldata underlyingState
+        CEGState calldata state,
+        UnderlyingState calldata underlyingState
     )
         external
         pure
@@ -325,7 +323,7 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
             || state.contractPerformance == ContractPerformance.TD
         ) { return false; }
 
-        if (hasUnderlying) {
+        if (underlyingState.isSet) {
             (EventType eventType,) = decodeEvent(_event);
             // FP, MD events only scheduled up to execution of the Guarantee
             if (
@@ -351,13 +349,13 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      */
     function stateTransitionFunction(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
-        returns (State memory)
+        returns (CEGState memory)
     {
         (EventType eventType, uint256 scheduleTime) = decodeEvent(_event);
 
@@ -387,9 +385,9 @@ contract CEGEngine is Core, CEGSTF, CEGPOF, ICEGEngine {
      */
     function payoffFunction(
         CEGTerms memory terms,
-        State memory state,
+        CEGState memory state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure

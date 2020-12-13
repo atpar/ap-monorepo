@@ -56,6 +56,7 @@ describe('CECActor', () => {
       self.schedule,
       self.ownership,
       self.PAMEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
 
@@ -98,6 +99,7 @@ describe('CECActor', () => {
       termsCEC,
       scheduleCEC,
       this.CECEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS,
       this.CustodianInstance.options.address,
       this.PAMRegistryInstance.options.address
@@ -162,7 +164,7 @@ describe('CECActor', () => {
     await this.CECActorInstance.methods.progress(web3.utils.toHex(cecAssetId))
       .send(this.txOpts);
     assert.strictEqual(Number(decodeEvent(stdEvent).eventType), eventIndex('ST'));
-
+    
     // creator should have received seized collateral from custodian
     assert.strictEqual(
       (await this.PaymentTokenInstance.methods.balanceOf(creatorBeneficiary).call()),

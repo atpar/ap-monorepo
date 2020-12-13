@@ -45,6 +45,7 @@ describe('STKRegistry', () => {
       this.ownership,
       this.STKEngineInstance.options.address,
       actor,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: actor });
 
@@ -72,6 +73,7 @@ describe('STKRegistry', () => {
         this.ownership,
         this.STKEngineInstance.options.address,
         actor,
+        ZERO_ADDRESS,
         ZERO_ADDRESS
       ).send({ from: actor }),
       'BaseRegistry.setAsset: ' + ASSET_ALREADY_EXISTS

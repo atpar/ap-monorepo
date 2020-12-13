@@ -41,6 +41,7 @@ describe('CEGRegistry', () => {
       this.ownership,
       this.CEGEngineInstance.options.address,
       actor,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({from: actor});
 
@@ -68,6 +69,7 @@ describe('CEGRegistry', () => {
         this.ownership,
         this.CEGEngineInstance.options.address,
         actor,
+        ZERO_ADDRESS,
         ZERO_ADDRESS
       ).send({ from: actor }),
       'BaseRegistry.setAsset: ' + ASSET_ALREADY_EXISTS

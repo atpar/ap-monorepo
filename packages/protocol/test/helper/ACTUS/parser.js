@@ -9,6 +9,7 @@ const ANN_TERMS = require('../definitions/ANNTerms.json');
 const CEC_TERMS = require('../definitions/CECTerms.json');
 const CEG_TERMS = require('../definitions/CEGTerms.json');
 const CERTF_TERMS = require('../definitions/CERTFTerms.json');
+const COLLA_TERMS = require('../definitions/COLLATerms.json');
 const PAM_TERMS = require('../definitions/PAMTerms.json');
 const STF_TERMS = require('../definitions/STKTerms.json');
 
@@ -130,7 +131,7 @@ const parseAttributeValue = (attribute, value) => {
       };
     }
     return { object: toHex(''), object2: toHex(''), _type: 0, role: 0 };
-  } else if (attribute === 'currency' || attribute === 'settlementCurrency') {
+  } else if (attribute === 'currency' || attribute === 'settlementCurrency' || attribute === 'collateralCurrency') {
     return '0x0000000000000000000000000000000000000000';
   } else if (ACTUS_DICTIONARY.terms[attribute].type === 'Enum' || ACTUS_DICTIONARY.terms[attribute].type === 'Enum[]') {
     return (value) ? getIndexOfAttribute(attribute, value) : 0;
@@ -245,6 +246,16 @@ const parseCERTFTermsFromObject = (terms) => {
   return parsedTerms;
 }
 
+const parseCOLLATermsFromObject = (terms) => {
+  const parsedTerms = {};
+
+  for (const attribute of COLLA_TERMS) {
+    parsedTerms[attribute] = parseAttributeValue(attribute, terms[attribute]);
+  }
+
+  return parsedTerms;
+}
+
 const parsePAMTermsFromObject = (terms) => {
   const parsedTerms = {};
 
@@ -274,6 +285,8 @@ const parseTermsFromObject = (contract, terms) => {
     return parseCEGTermsFromObject(terms);
   } else if (contract === 'CERTF') {
     return parseCERTFTermsFromObject(terms);
+  } else if (contract === 'COLLA') {
+    return parseCOLLATermsFromObject(terms);
   } else if (contract === 'PAM') {
     return parsePAMTermsFromObject(terms);
   } else if (contract === 'STK') {
@@ -287,6 +300,7 @@ module.exports = {
   parseANNTermsFromObject,
   parseCECTermsFromObject,
   parseCEGTermsFromObject,
+  parseCOLLATermsFromObject,
   parsePAMTermsFromObject,
   parseSTKTermsFromObject,
   parseTermsFromObject,

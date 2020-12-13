@@ -20,7 +20,7 @@ interface IANNEngine is IEngine {
     function computeInitialState(ANNTerms calldata terms)
         external
         pure
-        returns (State memory);
+        returns (ANNState memory);
 
     /**
      * Applys an event to the current state of a contract and returns the resulting contract state.
@@ -32,13 +32,13 @@ interface IANNEngine is IEngine {
      */
     function computeStateForEvent(
         ANNTerms calldata terms,
-        State calldata state,
+        ANNState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
-        returns (State memory);
+        returns (ANNState memory);
 
     /**
      * Evaluates the payoff for an event under the current state of the contract.
@@ -50,9 +50,9 @@ interface IANNEngine is IEngine {
      */
     function computePayoffForEvent(
         ANNTerms calldata terms,
-        State calldata state,
+        ANNState calldata state,
         bytes32 _event,
-        bytes32 externalData
+        bytes calldata externalData
     )
         external
         pure
@@ -133,16 +133,14 @@ interface IANNEngine is IEngine {
      * @param _event event for which to check if its still scheduled
      * @param terms terms of the contract
      * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
     function isEventScheduled(
         bytes32 _event,
         ANNTerms calldata terms,
-        State calldata state,
-        bool hasUnderlying,
-        State calldata underlyingState
+        ANNState calldata state,
+        UnderlyingState calldata underlyingState
     )
         external
         pure

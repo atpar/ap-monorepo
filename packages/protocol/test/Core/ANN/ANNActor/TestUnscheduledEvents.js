@@ -4,7 +4,7 @@ const buidlerRuntime = require('hardhat');
 const { expectRevert } = require('@openzeppelin/test-helpers');
 
 const { getSnapshotTaker, getDefaultTerms, deployPaymentToken } = require('../../../helper/setupTestEnvironment');
-const { generateSchedule, ZERO_BYTES32 } = require('../../../helper/utils/utils');
+const { generateSchedule, ZERO_BYTES32, ZERO_ADDRESS } = require('../../../helper/utils/utils');
 const { encodeEvent } = require('../../../helper/utils/schedule');
 const { mineBlock } = require('../../../helper/utils/blockchain');
 const { getEnumIndexForEventType: eventIndex } = require('../../../helper/utils/dictionary');
@@ -60,7 +60,8 @@ describe('ANNActor', () => {
       this.schedule,
       this.ownership,
       this.ANNEngineInstance.options.address,
-      admin
+      admin,
+      ZERO_ADDRESS
     ).send(this.txOpts);
 
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;
@@ -98,7 +99,8 @@ describe('ANNActor', () => {
       this.schedule,
       this.ownership,
       this.ANNEngineInstance.options.address,
-      admin
+      admin,
+      ZERO_ADDRESS
     ).send(this.txOpts);
 
     this.assetId = tx.events.InitializedAsset.returnValues.assetId;

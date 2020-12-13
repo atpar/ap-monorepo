@@ -53,6 +53,7 @@ describe('CERTFActor', () => {
       self.schedule,
       self.ownership,
       self.CERTFEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: nobody });
     expectEvent(events, 'InitializedAsset');
@@ -76,7 +77,7 @@ describe('CERTFActor', () => {
         this.terms,
         this.state,
         _event,
-        web3.utils.toHex(eventTime)
+        web3.eth.abi.encodeParameter('uint256', eventTime)
       ).call()
     );
 

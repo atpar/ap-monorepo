@@ -86,13 +86,13 @@ describe('ANNEngine', () => {
         terms,
         state,
         _event,
-        web3.utils.toHex(scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', scheduleTime)
       ).call();
       const nextState = await this.ANNEngineInstance.methods.computeStateForEvent(
         terms,
         state,
         _event,
-        web3.utils.toHex(scheduleTime)
+        web3.eth.abi.encodeParameter('uint256', scheduleTime)
       ).call();
 
       state = nextState;

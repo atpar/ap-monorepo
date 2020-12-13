@@ -57,7 +57,8 @@ describe('STKActor', () => {
       self.schedule,
       self.ownership,
       self.STKEngineInstance.options.address,
-      admin
+      admin,
+      ZERO_ADDRESS
     ).send(self.txOpts);
     self.assetId = tx.events.InitializedAsset.returnValues.assetId;
 
@@ -90,7 +91,8 @@ describe('STKActor', () => {
       this.schedule,
       this.ownership,
       this.STKEngineInstance.options.address,
-      admin
+      admin,
+      ZERO_ADDRESS
     ).send(this.txOpts);
 
     const initialState = await this.STKRegistryInstance.methods.getState(web3.utils.toHex(this.assetId)).call();

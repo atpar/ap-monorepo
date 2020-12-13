@@ -24,9 +24,9 @@ contract STKPOF is Core {
      */
     function POF_STK_DIP (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure
@@ -43,9 +43,9 @@ contract STKPOF is Core {
      */
     function POF_STK_REP (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
-        bytes32 externalData
+        bytes calldata externalData
     )
         internal
         pure
@@ -54,7 +54,7 @@ contract STKPOF is Core {
         if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
             return (
                 roleSign(terms.contractRole) * state.exerciseQuantity
-                .floatMult(terms.redemptionPrice != 0 ? terms.redemptionPrice : int256(externalData))
+                .floatMult(terms.redemptionPrice != 0 ? terms.redemptionPrice : abi.decode(externalData, (int256)))
             );
         }
         
@@ -67,9 +67,9 @@ contract STKPOF is Core {
      */
     function POF_STK_TD (
         STKTerms memory terms,
-        State memory state,
+        STKState memory state,
         uint256 /* scheduleTime */,
-        bytes32 /* externalData */
+        bytes calldata /* externalData */
     )
         internal
         pure

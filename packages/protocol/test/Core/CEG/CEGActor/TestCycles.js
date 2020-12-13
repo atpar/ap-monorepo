@@ -53,6 +53,7 @@ describe('CEGActor', () => {
       self.schedule,
       self.ownership,
       self.CEGEngineInstance.options.address,
+      ZERO_ADDRESS,
       ZERO_ADDRESS
     ).send({ from: creatorObligor });
     await expectEvent(events, 'InitializedAsset');
@@ -98,7 +99,7 @@ describe('CEGActor', () => {
       this.terms,
       this.state,
       _event,
-      web3.utils.toHex(eventTime)
+      web3.eth.abi.encodeParameter('uint256', eventTime)
     ).call());
     const storedNextEvent = await this.CEGRegistryInstance.methods.getNextScheduledEvent(web3.utils.toHex(this.assetId)).call();
 
