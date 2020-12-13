@@ -43,7 +43,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         } else if (cycle.p == P.Y) {
             newTimestamp = cycleStart.addYears(cycle.i.mul(cycleIndex));
         } else {
-            revert("Schedule.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
+            revert("CycleUtils.getNextCycleDate: ATTRIBUTE_NOT_FOUND");
         }
 
         return newTimestamp;
@@ -101,7 +101,7 @@ contract CycleUtils is ACTUSConstants, EndOfMonthConventions, PeriodUtils {
         while (date < cycleEnd) {
             // if date is in segment and MAX_CYCLE_SIZE is not reached add it to the output array
             if (isInSegment(date, segmentStart, segmentEnd)) {
-                require(index < (MAX_CYCLE_SIZE - 2), "Schedule.computeDatesFromCycle: MAX_CYCLE_SIZE");
+                require(index < (MAX_CYCLE_SIZE - 2), "CycleUtils.computeDatesFromCycle: MAX_CYCLE_SIZE");
                 dates[index] = date;
                 index++;
             }
