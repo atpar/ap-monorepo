@@ -596,7 +596,6 @@ export function isCERTFState(obj: any): obj is CERTFState {
   if (obj.exerciseDate == undefined || typeof obj.exerciseDate !== 'number' && typeof obj.exerciseDate !== 'string') { return false; }
   if (obj.terminationDate == undefined || typeof obj.terminationDate !== 'number' && typeof obj.terminationDate !== 'string') { return false; }
   if (obj.lastCouponFixingDate == undefined || typeof obj.lastCouponFixingDate !== 'number' && typeof obj.lastCouponFixingDate !== 'string') { return false; }
-  if (obj.notionalPrincipal == undefined || typeof obj.notionalPrincipal !== 'number' && typeof obj.notionalPrincipal !== 'string') { return false; }
   if (obj.exerciseAmount == undefined || typeof obj.exerciseAmount !== 'number' && typeof obj.exerciseAmount !== 'string') { return false; }
   if (obj.exerciseQuantity == undefined || typeof obj.exerciseQuantity !== 'number' && typeof obj.exerciseQuantity !== 'string') { return false; }
   if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }

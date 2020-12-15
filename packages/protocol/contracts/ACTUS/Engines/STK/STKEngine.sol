@@ -291,7 +291,6 @@ contract STKEngine is Core, STKSTF, STKPOF, ISTKEngine {
         bytes32 /* _event */,
         STKTerms calldata /* terms */,
         STKState calldata state,
-        bool /* hasUnderlying */,
         UnderlyingState calldata /* underlyingState */
     )
         external

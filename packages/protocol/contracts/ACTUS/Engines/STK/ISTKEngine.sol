@@ -133,7 +133,6 @@ interface ISTKEngine is IEngine {
      * @param _event event for which to check if its still scheduled
      * @param terms terms of the contract
      * @param state current state of the contract
-     * @param hasUnderlying boolean indicating whether the contract has an underlying contract
      * @param underlyingState state of the underlying (empty state object if non-existing)
      * @return boolean indicating whether event is still scheduled
      */
@@ -141,7 +140,6 @@ interface ISTKEngine is IEngine {
         bytes32 _event,
         STKTerms calldata terms,
         STKState calldata state,
-        bool hasUnderlying,
         UnderlyingState calldata underlyingState
     )
         external
