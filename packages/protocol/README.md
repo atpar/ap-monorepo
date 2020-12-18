@@ -109,17 +109,18 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 
 ## Data types
 All ACTUS related types depended on [atpar/actus-dictionary](https://github.com/atpar/actus-dictionary). 
-With the exception of ContractReferences, ACTUS types are one to one mapped in Solidity.
+With the exception of Array types, ACTUS types are one to one mapped in Solidity.
 
-| ACTUS Dictionary data type            | Corresponding Solidity data type                                |
-|---------------------------------------|-----------------------------------------------------------------|
-| Timestamp (ISO8601 Datetime)          | uint256 (Unix Timestamp in sec.)                                |
-| Real                                  | int256 (10 ** 18, fixed point)                                  |
-| Integer                               | int256 (10 ** 18, fixed point)                                  |
-| Varchar                               | bytes32 or bytes (depending on length)                          |
-| Enum                                  | enum                                                            |
-| Period (ISO8601 Duration)             | struct (IP where I: uint256, P: enum, isSet: boolean)           |
-| Cycle ([ISO8601 Duration] L[s={0,1}]) | struct (IPS where I: uint256, P: enum, S: enum, isSet: boolean) |
+| ACTUS Dictionary data type            | Corresponding Solidity data type                                    |
+|---------------------------------------|---------------------------------------------------------------------|
+| Timestamp (ISO8601 Datetime)          | uint256 (Unix Timestamp in sec.)                                    |
+| Real                                  | int256 (10 ** 18, fixed point)                                      |
+| Integer                               | int256 (10 ** 18, fixed point)                                      |
+| Varchar                               | bytes32 or bytes (depending on length)                              |
+| Enum                                  | enum                                                                |
+| Period (ISO8601 Duration)             | struct (IP where I: uint256, P: enum, isSet: boolean)               |
+| Cycle ([ISO8601 Duration] L[s={0,1}]) | struct (IPS where I: uint256, P: enum, S: enum, isSet: boolean)     |
+| ContractReference                     | struct (object: bytes32, object2: bytes32, _type: enum, role: enum) |
 
 
 ## Contributing
