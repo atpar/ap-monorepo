@@ -26,6 +26,9 @@ import STKRegistryArtifact from '../../build/contracts/contracts/Core/STK/STKReg
 import CustodianArtifact from '../../build/contracts/contracts/Core/Base/Custodian/Custodian.sol/Custodian.json';
 import DataRegistryProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/DataRegistryProxy/DataRegistryProxy.sol/DataRegistryProxy.json';
 import DvPSettlementArtifact from '../../build/contracts/contracts/misc/DVP/DvPSettlement.sol/DvPSettlement.json';
+import IExtensionArtifact from '../../build/contracts/contracts/Extensions/IExtension.sol/IExtension.json';
+import IObserverOracleProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/IObserverOracleProxy.sol/IObserverOracleProxy.json';
+import IPriceOracleProxyArtifact from '../../build/contracts/contracts/Core/Base/OracleProxy/IPriceOracleProxy.sol/IPriceOracleProxy.json';
 import ERC20Artifact from '../../build/contracts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json';
 import ERC1404Artifact from '../../build/contracts/contracts/tokens/FDT/SimpleRestrictedFDT/SimpleRestrictedFDT.sol/ERC1404.json';
 import VanillaFDTArtifact from '../../build/contracts/contracts/tokens/FDT/VanillaFDT/VanillaFDT.sol/VanillaFDT.json';
@@ -56,6 +59,9 @@ import { STKRegistry } from '../types/contracts/STKRegistry';
 import { Custodian } from '../types/contracts/Custodian';
 import { DataRegistryProxy } from '../types/contracts/DataRegistryProxy';
 import { DvPSettlement } from '../types/contracts/DvPSettlement';
+import { IExtension } from '../types/contracts/IExtension';
+import { IObserverOracleProxy } from '../types/contracts/IObserverOracleProxy';
+import { IPriceOracleProxy } from '../types/contracts/IPriceOracleProxy';
 import { ERC20 } from '../types/contracts/ERC20';
 import { ERC1404 } from '../types/contracts/ERC1404';
 import { VanillaFDT } from '../types/contracts/VanillaFDT';
@@ -67,6 +73,10 @@ export class Contracts {
 
   private _assetActor: BaseActor;
   private _assetRegistry: BaseRegistry;
+
+  private _extension: IExtension;
+  private _observerOracleProxy: IObserverOracleProxy;
+  private _priceOracleProxy: IPriceOracleProxy;
 
   private _erc20: ERC20;
   private _erc1404: ERC1404;
@@ -161,6 +171,12 @@ export class Contracts {
     this.dataRegistryProxy = new web3.eth.Contract(DataRegistryProxyArtifact.abi, addressBook.DataRegistryProxy, { data: DataRegistryProxyArtifact.bytecode }) as DataRegistryProxy,
     // @ts-ignore
     this.dvpSettlement = new web3.eth.Contract(DvPSettlementArtifact.abi, addressBook.DvPSettlement, { data: DvPSettlementArtifact.bytecode }) as DvPSettlement;
+    // @ts-ignore
+    this._extension = new web3.eth.Contract(IExtensionArtifact.abi, undefined, { data: IExtensionArtifact.bytecode }) as IExtension;
+    // @ts-ignore
+    this._observerOracleProxy = new web3.eth.Contract(IObserverOracleProxyArtifact.abi, undefined, { data: IObserverOracleProxyArtifact.bytecode }) as IObserverOracleProxy;
+    // @ts-ignore
+    this._priceOracleProxy = new web3.eth.Contract(IPriceOracleProxyArtifact.abi, undefined, { data: IPriceOracleProxyArtifact.bytecode }) as IPriceOracleProxy;
     // @ts-ignore
     this._erc20 = new web3.eth.Contract(ERC20Artifact.abi, undefined, { data: ERC20Artifact.bytecode }) as ERC20;
     // @ts-ignore
@@ -313,6 +329,45 @@ export class Contracts {
     } else {
       throw new Error('Could not instance of AssetActor. Unsupported contract type provided.');
     }
+  }
+
+  /**
+   * Instantiates an Extension contract with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address  address of the deployed extension contract
+   * @returns {IExtension} Instance of IExtension
+   */
+  public extension(address: string): IExtension {
+    const extension = this._extension.clone();
+    extension.options.address = address;
+
+    return extension;
+  }
+
+  /**
+   * Instantiates an ObserverOracleProxy contract with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address  address of the deployed ObserverOracleProxy
+   * @returns {IObserverOracleProxy} Instance of IObserverOracleProxy
+   */
+  public observerOracleProxy(address: string): IObserverOracleProxy {
+    const observerOracleProxy = this._observerOracleProxy.clone();
+    observerOracleProxy.options.address = address;
+
+    return observerOracleProxy;
+  }
+
+  /**
+   * Instantiates an PriceOracleProxy contract with the provided address
+   * and returns it as a web3 contract instance.
+   * @param {string} address  address of the deployed PriceOracleProxy contract
+   * @returns {IPriceOracleProxy} Instance of IPriceOracleProxy
+   */
+  public priceOracleProxy(address: string): IPriceOracleProxy {
+    const priceOracleProxy = this._priceOracleProxy.clone();
+    priceOracleProxy.options.address = address;
+
+    return priceOracleProxy;
   }
 
   /**

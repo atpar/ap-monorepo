@@ -1,5 +1,5 @@
 {
-  "_comments_": "actus-dictionary version: https://github.com/atpar/actus-dictionary/commit/b85b9b378967de6bfc4d8b6687b520c48bce9890",
+  "_comments_": "actus-dictionary version: https://github.com/atpar/actus-dictionary/commit/dc1bb5283406ada415527e4a324569fc431968ab",
 
   "ContractType": {
     "_comments_": "Enum indexes for ContractType acronyms",
@@ -22,7 +22,8 @@
       "OPTNS": 15,
       "CEG": 16,
       "CEC": 17,
-      "CERTF": 18
+      "CERTF": 18,
+      "COLLA": 19
     }
   },
 

@@ -105,3 +105,35 @@ For an example, please review the [Issue and service a loan](https://docs.actus-
 - [x] HRSAA (Hours Actual Actual Intraday)
 - [x] MINAA (Minutes Actual Actual Intraday)
 - [x] SECAA (Seconds Actual Actual Intraday)
+
+
+## Data types
+All ACTUS related types depended on [atpar/actus-dictionary](https://github.com/atpar/actus-dictionary). 
+With the exception of Array types, ACTUS types are one to one mapped in Solidity.
+
+| ACTUS Dictionary data type            | Corresponding Solidity data type                                    |
+|---------------------------------------|---------------------------------------------------------------------|
+| Timestamp (ISO8601 Datetime)          | uint256 (Unix Timestamp in sec.)                                    |
+| Real                                  | int256 (10 ** 18, fixed point)                                      |
+| Integer                               | int256 (10 ** 18, fixed point)                                      |
+| Varchar                               | bytes32 or bytes (depending on length)                              |
+| Enum                                  | enum                                                                |
+| Period (ISO8601 Duration)             | struct (IP where I: uint256, P: enum, isSet: boolean)               |
+| Cycle ([ISO8601 Duration] L[s={0,1}]) | struct (IPS where I: uint256, P: enum, S: enum, isSet: boolean)     |
+| ContractReference                     | struct (object: bytes32, object2: bytes32, _type: enum, role: enum) |
+
+
+## Contributing
+
+### Updating ACTUS types througout the project
+If the underlying ACTUS types change in [atpar/actus-dictionary](https://github.com/atpar/actus-dictionary)
+the following files and directories may be affected and have to be updated manually:
+- [ACTUSTypes.sol](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/ACTUS/Core/ACTUSTypes.sol)
+- [Encoder libaries e.g. ANNEncoder](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/Core/ANN/ANNEncoder.sol)
+- [ACTUS.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/ACTUS.ts)
+- [AP.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/AP.ts)
+- [Dictionary.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/dictionary/dictionary.json)
+- [Constants.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Constants.ts)
+- [Conversions.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Conversion.ts)
+- [Schedule.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Schedule.ts)
+- [Test helpers](https://github.com/atpar/ap-monorepo/tree/dev/packages/protocol/test/helper)
