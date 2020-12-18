@@ -127,13 +127,13 @@ With the exception of Array types, ACTUS types are one to one mapped in Solidity
 
 ### Updating ACTUS types througout the project
 If the underlying ACTUS types change in [atpar/actus-dictionary](https://github.com/atpar/actus-dictionary)
-the following files and directories may be affected and have to be updated manually:
+, the following files and directories may be affected and have to be updated manually:
 - [ACTUSTypes.sol](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/ACTUS/Core/ACTUSTypes.sol)
-- [Encoder libaries e.g. ANNEncoder](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/Core/ANN/ANNEncoder.sol)
-- [ACTUS.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/ACTUS.ts)
-- [AP.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/AP.ts)
-- [Dictionary.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/dictionary/dictionary.json)
-- [Constants.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Constants.ts)
-- [Conversions.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Conversion.ts)
-- [Schedule.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Schedule.ts)
-- [Test helpers](https://github.com/atpar/ap-monorepo/tree/dev/packages/protocol/test/helper)
+| [Encoder libaries e.g. ANNEncoder](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/Core/ANN/ANNEncoder.sol)
+| [ACTUS.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/ACTUS.ts)
+| [AP.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/AP.ts)
+| [Dictionary.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/dictionary/dictionary.json)
+| [Constants.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Constants.ts)
+| [Conversions.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Conversion.ts)
+| [Schedule.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Schedule.ts)
+| [Test helpers](https://github.com/atpar/ap-monorepo/tree/dev/packages/protocol/test/helper)
