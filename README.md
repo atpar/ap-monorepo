@@ -21,7 +21,7 @@ This is a monorepo containing all packages related to the ACTUS Protocol.
 
 | Package                                                                          | Description                                                                    |
 |----------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`protocol`](https://github.com/atpar/ap-monorepo/tree/master/packages/protocol) | Contains the Solidity implementation the ACTUS Protocol and the typescript sdk |
+| [`protocol`](packages/protocol/README.md) | Contains the Solidity implementation the ACTUS Protocol and the typescript sdk |
 
 ## Development
 ### Requirements

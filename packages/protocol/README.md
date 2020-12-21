@@ -28,7 +28,7 @@ const ap = await AP.init(web3, ADDRESS_BOOK);
 ## Development
 
 ### Requirements and Setup
-See [README](https://github.com/atpar/ap-monorepo) in root directory.
+See [README](../../README.md) in root directory.
 
 ### Testing
 ```sh
@@ -128,12 +128,12 @@ With the exception of Array types, ACTUS types are one to one mapped in Solidity
 ### Updating ACTUS types througout the project
 If the underlying ACTUS types change in [atpar/actus-dictionary](https://github.com/atpar/actus-dictionary)
 , the following files and directories may be affected and have to be updated manually:
-- [ACTUSTypes.sol](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/ACTUS/Core/ACTUSTypes.sol)
-| [Encoder libaries e.g. ANNEncoder](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/contracts/Core/ANN/ANNEncoder.sol)
-| [ACTUS.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/ACTUS.ts)
-| [AP.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/AP.ts)
-| [Dictionary.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/types/dictionary/dictionary.json)
-| [Constants.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Constants.ts)
-| [Conversions.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Conversion.ts)
-| [Schedule.ts](https://github.com/atpar/ap-monorepo/blob/dev/packages/protocol/src/utils/Schedule.ts)
-| [Test helpers](https://github.com/atpar/ap-monorepo/tree/dev/packages/protocol/test/helper)
+- [ACTUSTypes.sol](contracts/ACTUS/Core/ACTUSTypes.sol)
+| [Encoder libaries e.g. ANNEncoder](contracts/Core/ANN/ANNEncoder.sol)
+| [ACTUS.ts](src/types/ACTUS.ts)
+| [AP.ts](src/types/AP.ts)
+| [Dictionary.ts](src/types/dictionary/dictionary.json)
+| [Constants.ts](src/utils/Constants.ts)
+| [Conversions.ts](src/utils/Conversion.ts)
+| [Schedule.ts](src/utils/Schedule.ts)
+| [Test helpers](test/helper)
