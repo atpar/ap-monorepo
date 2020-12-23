@@ -1014,7 +1014,7 @@ export function isSTKTerms (obj: any): obj is STKTerms {
   if (obj.settlementCurrency == undefined || typeof obj.settlementCurrency !== 'string') { return false; }
 
   if (obj.statusDate == undefined || typeof obj.statusDate !== 'number' && typeof obj.statusDate !== 'string') { return false; }
-  if (obj.initialExchangeDate == undefined || typeof obj.initialExchangeDate !== 'number' && typeof obj.initialExchangeDate !== 'string') { return false; }
+  if (obj.issueDate == undefined || typeof obj.issueDate !== 'number' && typeof obj.issueDate !== 'string') { return false; }
   if (obj.purchaseDate == undefined || typeof obj.purchaseDate !== 'number' && typeof obj.purchaseDate !== 'string') { return false; }
   if (obj.cycleAnchorDateOfDividend == undefined || typeof obj.cycleAnchorDateOfDividend !== 'number' && typeof obj.cycleAnchorDateOfDividend !== 'string') { return false; }
 
@@ -1023,8 +1023,8 @@ export function isSTKTerms (obj: any): obj is STKTerms {
   if (obj.issuePrice == undefined || typeof obj.issuePrice !== 'number' && typeof obj.issuePrice !== 'string') { return false; }
   if (obj.quantity == undefined || typeof obj.quantity !== 'number' && typeof obj.quantity !== 'string') { return false; }
   if (obj.priceAtPurchaseDate == undefined || typeof obj.priceAtPurchaseDate !== 'number' && typeof obj.priceAtPurchaseDate !== 'string') { return false; }
-  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
   if (obj.redemptionPrice == undefined || typeof obj.redemptionPrice !== 'number' && typeof obj.redemptionPrice !== 'string') { return false; }
+  if (obj.priceAtTerminationDate == undefined || typeof obj.priceAtTerminationDate !== 'number' && typeof obj.priceAtTerminationDate !== 'string') { return false; }
 
   if (!isIP(obj.redemptionRecordPeriod)) { return false; }
   if (!isIP(obj.redemptionPaymentPeriod)) { return false; }
