@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract CERTFPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -33,7 +33,7 @@ contract CERTFPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(terms.issuePrice)
+            roleSign(terms.contractRole) * state.quantity.fixedMul(terms.issuePrice)
         );
     }
 
@@ -52,7 +52,7 @@ contract CERTFPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(state.couponAmountFixed)
+            roleSign(terms.contractRole) * state.quantity.fixedMul(state.couponAmountFixed)
         );
     }
 
@@ -71,7 +71,7 @@ contract CERTFPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.exerciseQuantity.floatMult(state.exerciseAmount)
+            roleSign(terms.contractRole) * state.exerciseQuantity.fixedMul(state.exerciseAmount)
         );
     }
 
@@ -90,7 +90,7 @@ contract CERTFPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(state.exerciseAmount)
+            roleSign(terms.contractRole) * state.quantity.fixedMul(state.exerciseAmount)
         );
     }
 }

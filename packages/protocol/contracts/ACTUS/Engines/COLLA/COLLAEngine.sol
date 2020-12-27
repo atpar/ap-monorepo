@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 import "./ICOLLAEngine.sol";
 import "./COLLASTF.sol";
 import "./COLLAPOF.sol";
@@ -19,7 +19,7 @@ import "./COLLAPOF.sol";
 contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     function contractType() external pure override returns (ContractType) {
@@ -79,7 +79,7 @@ contract COLLAEngine is Core, COLLASTF, COLLAPOF, ICOLLAEngine {
                 state,
                 _event,
                 externalData
-            ).floatMult(abi.decode(externalData, (int256)));
+            ).fixedMul(abi.decode(externalData, (int256)));
         }
 
         return payoffFunction(

@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract PAMPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -54,8 +54,8 @@ contract PAMPOF is Core {
             state.feeAccrued
             .add(
                 timeFromLastEvent
-                .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(terms.feeRate)
+                .fixedMul(state.notionalPrincipal)
             )
         );
     }
@@ -108,12 +108,12 @@ contract PAMPOF is Core {
 
         return (
             state.interestScalingMultiplier
-            .floatMult(
+            .fixedMul(
                 state.accruedInterest
                 .add(
                     timeFromLastEvent
-                    .floatMult(state.nominalInterestRate)
-                    .floatMult(state.notionalPrincipal)
+                    .fixedMul(state.nominalInterestRate)
+                    .fixedMul(state.notionalPrincipal)
                 )
             )
         );
@@ -155,7 +155,7 @@ contract PAMPOF is Core {
     {
         return (
             state.notionalScalingMultiplier
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(state.notionalPrincipal)
         );
     }
 
@@ -189,8 +189,8 @@ contract PAMPOF is Core {
             .add(state.accruedInterest)
             .add(
                 timeFromLastEvent
-                .floatMult(state.nominalInterestRate)
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(state.nominalInterestRate)
+                .fixedMul(state.notionalPrincipal)
             )
         );
     }

@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract STKPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -54,7 +54,7 @@ contract STKPOF is Core {
         if (terms.redeemableByIssuer == RedeemableByIssuer.Y) {
             return (
                 roleSign(terms.contractRole) * state.exerciseQuantity
-                .floatMult(terms.redemptionPrice != 0 ? terms.redemptionPrice : abi.decode(externalData, (int256)))
+                .fixedMul(terms.redemptionPrice != 0 ? terms.redemptionPrice : abi.decode(externalData, (int256)))
             );
         }
         
@@ -76,7 +76,7 @@ contract STKPOF is Core {
         returns(int256)
     {
         return (
-            roleSign(terms.contractRole) * state.quantity.floatMult(terms.priceAtTerminationDate)
+            roleSign(terms.contractRole) * state.quantity.fixedMul(terms.priceAtTerminationDate)
         );
     }
 }

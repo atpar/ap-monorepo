@@ -14,7 +14,7 @@ import "./ISTKRegistry.sol";
  */
 contract STKActor is BaseActor {
 
-    using SignedMath for int;
+    using FixedPointMath for int;
 
     enum STKExternalDataType {NA, DIP, SRA, REXA}
 

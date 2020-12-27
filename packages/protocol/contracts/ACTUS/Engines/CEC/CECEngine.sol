@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 import "./ICECEngine.sol";
 import "./CECSTF.sol";
 import "./CECPOF.sol";
@@ -20,7 +20,7 @@ import "./CECPOF.sol";
 contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     function contractType() external pure override returns (ContractType) {
@@ -80,7 +80,7 @@ contract CECEngine is Core, CECSTF, CECPOF, ICECEngine {
         //         state,
         //         _event,
         //         externalData
-        //     ).floatMult(int256(externalData));
+        //     ).fixedMul(int256(externalData));
         // }
 
         return payoffFunction(

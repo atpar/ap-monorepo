@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
-import "../../../ACTUS/Core/SignedMath.sol";
+import "../../../ACTUS/Core/FixedPointMath.sol";
 import "../../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
 import "../../../ACTUS/Core/Utils/EventUtils.sol";
 
@@ -31,7 +31,7 @@ import "./IAssetActor.sol";
  */
 abstract contract BaseActor is Conversions, EventUtils, BusinessDayConventions, IAssetActor, Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
     event InitializedAsset(bytes32 indexed assetId, ContractType contractType, address creator, address counterparty);
     event ProgressedAsset(bytes32 indexed assetId, EventType eventType, uint256 scheduleTime, int256 payoff);

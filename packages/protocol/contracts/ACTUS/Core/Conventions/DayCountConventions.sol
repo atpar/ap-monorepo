@@ -8,7 +8,7 @@ import "../../../external/BokkyPooBah/BokkyPooBahsDateTimeLibrary.sol";
 import "../ACTUSTypes.sol";
 import "../ACTUSConstants.sol";
 
-import "../SignedMath.sol";
+import "../FixedPointMath.sol";
 
 
 /**
@@ -19,7 +19,7 @@ contract DayCountConventions is ACTUSConstants {
 
     using SafeMath for uint;
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
     /**
      * Returns the fraction of the year between two timestamps.
@@ -76,7 +76,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365;
 
         if (d1Year == d2Year) {
-            return int256(BokkyPooBahsDateTimeLibrary.diffDays(startTime, endTime)).floatDiv(firstBasis);
+            return int256(BokkyPooBahsDateTimeLibrary.diffDays(startTime, endTime)).fixedDiv(firstBasis);
         }
 
         int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365;
@@ -84,11 +84,11 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffDays(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
-        )).floatDiv(firstBasis);
+        )).fixedDiv(firstBasis);
         int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffDays(
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
             endTime
-        )).floatDiv(secondBasis);
+        )).fixedDiv(secondBasis);
 
         return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
     }
@@ -101,7 +101,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
-        return (int256((endTime.sub(startTime)).div(86400)).floatDiv(360));
+        return (int256((endTime.sub(startTime)).div(86400)).fixedDiv(360));
     }
 
     /**
@@ -112,7 +112,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
-        return (int256((endTime.sub(startTime)).div(86400)).floatDiv(365));
+        return (int256((endTime.sub(startTime)).div(86400)).fixedDiv(365));
     }
 
     /**
@@ -146,7 +146,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
-        return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+        return ((delY.mul(360).add(delM.mul(30)).add(delD)).fixedDiv(360));
     }
 
     /**
@@ -180,7 +180,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
-        return ((delY.mul(360).add(delM.mul(30)).add(delD)).floatDiv(360));
+        return ((delY.mul(360).add(delM.mul(30)).add(delD)).fixedDiv(360));
     }
 
     /**
@@ -207,7 +207,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
-        return ((delY.mul(336).add(delM.mul(28)).add(delD)).floatDiv(336));
+        return ((delY.mul(336).add(delM.mul(28)).add(delD)).fixedDiv(336));
     }
 
     /**
@@ -229,7 +229,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
-        return int256(ONE_POINT_ZERO).floatDiv(12 * ONE_POINT_ZERO);
+        return int256(ONE_POINT_ZERO).fixedDiv(12 * ONE_POINT_ZERO);
     }
 
     /**
@@ -248,7 +248,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 8784 : 8760;
 
         if (d1Year == d2Year) {
-            return int256(BokkyPooBahsDateTimeLibrary.diffHours(startTime, endTime)).floatDiv(firstBasis);
+            return int256(BokkyPooBahsDateTimeLibrary.diffHours(startTime, endTime)).fixedDiv(firstBasis);
         }
 
         // no risk of overflow
@@ -258,11 +258,11 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
-        )).floatDiv(firstBasis);
+        )).fixedDiv(firstBasis);
         int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
             endTime
-        )).floatDiv(secondBasis);
+        )).fixedDiv(secondBasis);
 
         return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
     }
@@ -283,7 +283,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 527040 : 525600;
 
         if (d1Year == d2Year) {
-            return int256(BokkyPooBahsDateTimeLibrary.diffMinutes(startTime, endTime)).floatDiv(firstBasis);
+            return int256(BokkyPooBahsDateTimeLibrary.diffMinutes(startTime, endTime)).fixedDiv(firstBasis);
         }
 
         // no risk of overflow
@@ -293,11 +293,11 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
-        )).floatDiv(firstBasis);
+        )).fixedDiv(firstBasis);
         int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
             endTime
-        )).floatDiv(secondBasis);
+        )).fixedDiv(secondBasis);
 
         return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
     }
@@ -318,7 +318,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 31622400 : 31536000;
 
         if (d1Year == d2Year) {
-            return int256(BokkyPooBahsDateTimeLibrary.diffSeconds(startTime, endTime)).floatDiv(firstBasis);
+            return int256(BokkyPooBahsDateTimeLibrary.diffSeconds(startTime, endTime)).fixedDiv(firstBasis);
         }
 
         // no risk of overflow
@@ -328,11 +328,11 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
-        )).floatDiv(firstBasis);
+        )).fixedDiv(firstBasis);
         int256 secondFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d2Year, 1, 1),
             endTime
-        )).floatDiv(secondBasis);
+        )).fixedDiv(secondBasis);
 
         return firstFraction.add(secondFraction).add(int256(d2Year.sub(d1Year).sub(1)));
     }

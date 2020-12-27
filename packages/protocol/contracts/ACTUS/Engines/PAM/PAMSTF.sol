@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract PAMSTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -63,14 +63,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -123,8 +123,8 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;
@@ -184,16 +184,16 @@ contract PAMSTF is Core {
             state.accruedInterest
             .add(
                 state.nominalInterestRate
-                .floatMult(state.notionalPrincipal)
-                .floatMult(timeFromLastEvent)
+                .fixedMul(state.notionalPrincipal)
+                .fixedMul(timeFromLastEvent)
             )
         );
         state.accruedInterest = 0;
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -228,8 +228,8 @@ contract PAMSTF is Core {
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -263,14 +263,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         // state.notionalPrincipal -= 0; // riskFactor not supported
         state.statusDate = scheduleTime;
@@ -305,14 +305,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = 0;
         state.statusDate = scheduleTime;
@@ -347,14 +347,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.nominalInterestRate = terms.nextResetRate;
         state.statusDate = scheduleTime;
@@ -379,7 +379,7 @@ contract PAMSTF is Core {
     {
         // apply external rate, multiply with rateMultiplier and add the spread
         // riskFactor not supported
-        int256 rate = abi.decode(externalData, (int256)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
+        int256 rate = abi.decode(externalData, (int256)).fixedMul(terms.rateMultiplier).add(terms.rateSpread);
 
         // deltaRate is the difference between the rate that includes external data, spread and multiplier and the currently active rate from the state
         int256 deltaRate = rate.sub(state.nominalInterestRate);
@@ -409,8 +409,8 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.nominalInterestRate = rate;
         state.statusDate = scheduleTime;
@@ -445,14 +445,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
 
         if ((terms.scalingEffect == ScalingEffect.I00) || (terms.scalingEffect == ScalingEffect.IN0)) {
@@ -494,14 +494,14 @@ contract PAMSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;
