@@ -22,7 +22,7 @@ contract DayCountConventions is ACTUSConstants {
     using FixedPointMath for int;
 
     /**
-     * Returns the fraction of the year between two timestamps.
+     * Returns the fraction of the year between two timestamps (as a fixed point number multiplied by 10 ** 18).
      */
     function yearFraction(
         uint256 startTimestamp,
@@ -76,11 +76,13 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 366 : 365;
 
         if (d1Year == d2Year) {
+            // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
             return int256(BokkyPooBahsDateTimeLibrary.diffDays(startTime, endTime)).fixedDiv(firstBasis);
         }
 
         int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 366 : 365;
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffDays(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
@@ -101,6 +103,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return (int256((endTime.sub(startTime)).div(86400)).fixedDiv(360));
     }
 
@@ -112,6 +115,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return (int256((endTime.sub(startTime)).div(86400)).fixedDiv(365));
     }
 
@@ -146,6 +150,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return ((delY.mul(360).add(delM.mul(30)).add(delD)).fixedDiv(360));
     }
 
@@ -180,6 +185,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return ((delY.mul(360).add(delM.mul(30)).add(delD)).fixedDiv(360));
     }
 
@@ -207,6 +213,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 delM = int256(d2Month).sub(int256(d1Month));
         int256 delY = int256(d2Year).sub(int256(d1Year));
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return ((delY.mul(336).add(delM.mul(28)).add(delD)).fixedDiv(336));
     }
 
@@ -218,6 +225,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
+        // as fixed point number (10 ** 18)
         return ONE_POINT_ZERO;
     }
 
@@ -229,6 +237,7 @@ contract DayCountConventions is ACTUSConstants {
         pure
         returns (int256)
     {
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         return int256(ONE_POINT_ZERO).fixedDiv(12 * ONE_POINT_ZERO);
     }
 
@@ -248,6 +257,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 8784 : 8760;
 
         if (d1Year == d2Year) {
+            // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
             return int256(BokkyPooBahsDateTimeLibrary.diffHours(startTime, endTime)).fixedDiv(firstBasis);
         }
 
@@ -255,6 +265,7 @@ contract DayCountConventions is ACTUSConstants {
         // 366 * 24, 365 * 24
         int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 8784 : 8760;
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffHours(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
@@ -283,6 +294,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 527040 : 525600;
 
         if (d1Year == d2Year) {
+            // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
             return int256(BokkyPooBahsDateTimeLibrary.diffMinutes(startTime, endTime)).fixedDiv(firstBasis);
         }
 
@@ -290,6 +302,7 @@ contract DayCountConventions is ACTUSConstants {
         // 366 * 1440, 365 * 1440
         int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 527040 : 525600;
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffMinutes(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
@@ -318,6 +331,7 @@ contract DayCountConventions is ACTUSConstants {
         int256 firstBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(startTime)) ? 31622400 : 31536000;
 
         if (d1Year == d2Year) {
+            // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
             return int256(BokkyPooBahsDateTimeLibrary.diffSeconds(startTime, endTime)).fixedDiv(firstBasis);
         }
 
@@ -325,6 +339,7 @@ contract DayCountConventions is ACTUSConstants {
         // 366 * 86400, 365 * 86400
         int256 secondBasis = (BokkyPooBahsDateTimeLibrary.isLeapYear(endTime)) ? 31622400 : 31536000;
 
+        // fixedDiv on two non fixed point integers returns the quotient in fixed point representation (10 ** 18)
         int256 firstFraction = int256(BokkyPooBahsDateTimeLibrary.diffSeconds(
             startTime,
             BokkyPooBahsDateTimeLibrary.timestampFromDate(d1Year.add(1), 1, 1)
