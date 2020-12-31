@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract CEGSTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -116,7 +116,7 @@ contract CEGSTF is Core {
         state.notionalPrincipal = (terms.notionalPrincipal > 0)
             ? terms.notionalPrincipal
             // decode state.notionalPrincipal of underlying from externalData
-            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+            : terms.coverageOfCreditEnhancement.fixedMul(abi.decode(externalData, (int256)));
         state.exerciseAmount = state.notionalPrincipal;
         state.exerciseDate = scheduleTime;
 
@@ -126,8 +126,8 @@ contract CEGSTF is Core {
             state.feeAccrued = state.feeAccrued
             .add(
                 timeFromLastEvent
-                .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(terms.feeRate)
+                .fixedMul(state.notionalPrincipal)
             );
         }
 
@@ -165,7 +165,7 @@ contract CEGSTF is Core {
         state.notionalPrincipal = (terms.notionalPrincipal > 0)
             ? terms.notionalPrincipal
             // decode state.notionalPrincipal of underlying from externalData
-            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+            : terms.coverageOfCreditEnhancement.fixedMul(abi.decode(externalData, (int256)));
         state.statusDate = scheduleTime;
 
         return state;
@@ -184,7 +184,7 @@ contract CEGSTF is Core {
         state.notionalPrincipal = (terms.notionalPrincipal > 0)
             ? terms.notionalPrincipal
             // decode state.notionalPrincipal of underlying from externalData
-            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+            : terms.coverageOfCreditEnhancement.fixedMul(abi.decode(externalData, (int256)));
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;
 

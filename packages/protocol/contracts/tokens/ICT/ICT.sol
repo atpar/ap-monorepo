@@ -11,7 +11,7 @@ import "../../ACTUS/Core/ACTUSTypes.sol";
 import "../../ACTUS/Core/Utils/EventUtils.sol";
 import "../../ACTUS/Core/Utils/PeriodUtils.sol";
 import "../../ACTUS/Core/Conventions/BusinessDayConventions.sol";
-import "../../ACTUS/Core/SignedMath.sol";
+import "../../ACTUS/Core/FixedPointMath.sol";
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
 import "../../Core/Base/OracleProxy/DataRegistryProxy/IDataRegistryProxy.sol";
 import "./DepositAllocater.sol";
@@ -27,7 +27,7 @@ contract ICT is
 {
     using Address for address;
     using SafeMath for uint256;
-    using SignedMath for int256;
+    using FixedPointMath for int256;
 
     IAssetRegistry public assetRegistry;
     IDataRegistryProxy public dataRegistryProxy;
@@ -155,8 +155,8 @@ contract ICT is
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
         int256 quantity = assetRegistry.getIntValueForStateAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
-        int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
-        int256 exerciseQuantity = ratioSignaled.floatMult(quantity);
+        int256 ratioSignaled = int256(deposit.totalAmountSignaled).fixedDiv(totalSupply);
+        int256 exerciseQuantity = ratioSignaled.fixedMul(quantity);
 
         (EventType eventType, ) = decodeEvent(_event);
 
@@ -188,8 +188,8 @@ contract ICT is
         // assuming number of decimals used for numbers in actus-solidity == number of decimals of ICT
         int256 quantity = assetRegistry.getIntValueForStateAttribute(assetId, "quantity");
         int256 totalSupply = int256(totalSupplyAt(deposit.scheduledFor));
-        int256 ratioSignaled = int256(deposit.totalAmountSignaled).floatDiv(totalSupply);
-        int256 exerciseQuantity = ratioSignaled.floatMult(quantity);
+        int256 ratioSignaled = int256(deposit.totalAmountSignaled).fixedDiv(totalSupply);
+        int256 exerciseQuantity = ratioSignaled.fixedMul(quantity);
 
         (EventType eventType, ) = decodeEvent(_event);
 

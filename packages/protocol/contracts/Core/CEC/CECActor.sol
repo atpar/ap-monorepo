@@ -15,7 +15,7 @@ import "./ICECRegistry.sol";
  */
 contract CECActor is BaseActor {
 
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     constructor(

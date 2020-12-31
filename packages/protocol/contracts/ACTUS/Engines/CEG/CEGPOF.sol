@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract CEGPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -69,14 +69,14 @@ contract CEGPOF is Core {
         int256 notionalPrincipal = (terms.notionalPrincipal > 0)
             ? terms.notionalPrincipal
             // decode state.notionalPrincipal of underlying from externalData
-            : terms.coverageOfCreditEnhancement.floatMult(abi.decode(externalData, (int256)));
+            : terms.coverageOfCreditEnhancement.fixedMul(abi.decode(externalData, (int256)));
 
         return (
             state.feeAccrued
             .add(
                 timeFromLastEvent
-                .floatMult(terms.feeRate)
-                .floatMult(notionalPrincipal)
+                .fixedMul(terms.feeRate)
+                .fixedMul(notionalPrincipal)
             )
         );
     }

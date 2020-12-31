@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract CERTFSTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -79,7 +79,7 @@ contract CERTFSTF is Core {
                 shiftCalcTime(scheduleTime, terms.businessDayConvention, terms.calendar, terms.maturityDate),
                 terms.dayCountConvention,
                 terms.maturityDate
-            ).floatMult(terms.nominalPrice).floatMult(terms.couponRate);
+            ).fixedMul(terms.nominalPrice).fixedMul(terms.couponRate);
         }
 
         state.lastCouponFixingDate = scheduleTime;
@@ -126,9 +126,9 @@ contract CERTFSTF is Core {
         returns (CERTFState memory)
     {
         state.exerciseAmount = abi.decode(externalData, (int256))
-        .floatMult(terms.nominalPrice)
-        .floatMult(state.marginFactor)
-        .floatMult(state.adjustmentFactor);
+        .fixedMul(terms.nominalPrice)
+        .fixedMul(state.marginFactor)
+        .fixedMul(state.adjustmentFactor);
 
         state.statusDate = scheduleTime;
 

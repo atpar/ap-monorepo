@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 import "../../ACTUS/Core/Utils/EventUtils.sol";
-import "../../ACTUS/Core/SignedMath.sol";
+import "../../ACTUS/Core/FixedPointMath.sol";
 
 import "../../Core/Base/AssetRegistry/IAssetRegistry.sol";
 import "../../Core/Base/OracleProxy/IPriceOracleProxy.sol";
@@ -23,7 +23,7 @@ import "../IExtension.sol";
 contract COLLACustodian is EventUtils, Conversions, IExtension {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
-    using SignedMath for int256;
+    using FixedPointMath for int256;
 
     event AddedCollateral(bytes32 indexed assetId, address collateralizer, uint256 collateralAmount);
     event WithdrewCollateral(bytes32 indexed assetId, address collateralizer, uint256 withdrawnAmount);
@@ -217,7 +217,7 @@ contract COLLACustodian is EventUtils, Conversions, IExtension {
         int256 coverage = assetRegistry.getIntValueForTermsAttribute(assetId, "coverageOfCollateral");
         int256 principal = assetRegistry.getIntValueForTermsAttribute(assetId, "notionalPrincipal");
        
-        int256 minCollateralAmount = principal.floatMult(coverage);
+        int256 minCollateralAmount = principal.fixedMul(coverage);
         
         // if collateral token != asset currency --> determine value
         if (currency != collateralCurrency) {
@@ -228,7 +228,7 @@ contract COLLACustodian is EventUtils, Conversions, IExtension {
                 isSet == true,
                 "Collateral.computeMinCollateralAmount: NO_RATE_FOUND"
             );
-            minCollateralAmount = minCollateralAmount.floatMult(rate);
+            minCollateralAmount = minCollateralAmount.fixedMul(rate);
         }
         
         return uint256(minCollateralAmount);

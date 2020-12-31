@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract COLLAPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -66,12 +66,12 @@ contract COLLAPOF is Core {
 
         return (
             state.interestScalingMultiplier
-            .floatMult(
+            .fixedMul(
                 state.accruedInterest
                 .add(
                     timeFromLastEvent
-                    .floatMult(state.nominalInterestRate)
-                    .floatMult(state.notionalPrincipal)
+                    .fixedMul(state.nominalInterestRate)
+                    .fixedMul(state.notionalPrincipal)
                 )
             )
         );
@@ -93,7 +93,7 @@ contract COLLAPOF is Core {
     {
         return (
             state.notionalScalingMultiplier
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(state.notionalPrincipal)
         );
     }
 }

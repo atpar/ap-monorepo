@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract COLLASTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -63,8 +63,8 @@ contract COLLASTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -123,8 +123,8 @@ contract COLLASTF is Core {
             state.accruedInterest
             .add(
                 state.nominalInterestRate
-                .floatMult(state.notionalPrincipal)
-                .floatMult(timeFromLastEvent)
+                .fixedMul(state.notionalPrincipal)
+                .fixedMul(timeFromLastEvent)
             )
         );
         state.accruedInterest = 0;
@@ -190,8 +190,8 @@ contract COLLASTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = 0;
         state.statusDate = scheduleTime;
@@ -226,8 +226,8 @@ contract COLLASTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = 0;
         state.contractPerformance = ContractPerformance.MD;

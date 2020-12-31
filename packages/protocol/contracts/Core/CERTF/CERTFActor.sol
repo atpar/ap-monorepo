@@ -14,7 +14,7 @@ import "./ICERTFRegistry.sol";
  */
 contract CERTFActor is BaseActor {
 
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     constructor(
@@ -248,7 +248,7 @@ contract CERTFActor is BaseActor {
                     assetRegistry.getUIntValueForTermsAttribute(assetId, "issueDate")
                 );
                 if (isSetScheduleTime && isSetAnchorDate) {
-                    return abi.encode(marketValueScheduleTime.floatDiv(marketValueAnchorDate));
+                    return abi.encode(marketValueScheduleTime.fixedDiv(marketValueAnchorDate));
                 }
             }
         }

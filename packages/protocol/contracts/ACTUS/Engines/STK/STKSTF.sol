@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract STKSTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -155,7 +155,7 @@ contract STKSTF is Core {
     pure
     returns (STKState memory)
     {
-        state.quantity = state.splitRatio.floatMult(state.quantity);
+        state.quantity = state.splitRatio.fixedMul(state.quantity);
         state.splitRatio = 0;
         state.statusDate = scheduleTime;
         return state;

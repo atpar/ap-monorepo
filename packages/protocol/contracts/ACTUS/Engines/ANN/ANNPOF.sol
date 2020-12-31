@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract ANNPOF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -54,8 +54,8 @@ contract ANNPOF is Core {
             state.feeAccrued
             .add(
                 timeFromLastEvent
-                .floatMult(terms.feeRate)
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(terms.feeRate)
+                .fixedMul(state.notionalPrincipal)
             )
         );
     }
@@ -108,12 +108,12 @@ contract ANNPOF is Core {
 
         return (
             state.interestScalingMultiplier
-            .floatMult(
+            .fixedMul(
                 state.accruedInterest
                 .add(
                     timeFromLastEvent
-                    .floatMult(state.nominalInterestRate)
-                    .floatMult(state.notionalPrincipal)
+                    .fixedMul(state.nominalInterestRate)
+                    .fixedMul(state.notionalPrincipal)
                 )
             )
         );
@@ -155,7 +155,7 @@ contract ANNPOF is Core {
     {
         return (
             state.notionalScalingMultiplier
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(state.notionalPrincipal)
         );
     }
 
@@ -189,8 +189,8 @@ contract ANNPOF is Core {
             .add(state.accruedInterest)
             .add(
                 timeFromLastEvent
-                .floatMult(state.nominalInterestRate)
-                .floatMult(state.notionalPrincipal)
+                .fixedMul(state.nominalInterestRate)
+                .fixedMul(state.notionalPrincipal)
             )
         );
     }
@@ -222,7 +222,7 @@ contract ANNPOF is Core {
 
         return (
             (state.notionalScalingMultiplier * roleSign(terms.contractRole))
-            .floatMult(
+            .fixedMul(
                 (roleSign(terms.contractRole) * state.notionalPrincipal)
                 .min(
                     roleSign(terms.contractRole)
@@ -230,8 +230,8 @@ contract ANNPOF is Core {
                         state.nextPrincipalRedemptionPayment
                         .sub(state.accruedInterest)
                         .sub(timeFromLastEvent
-                            .floatMult(state.nominalInterestRate)
-                            .floatMult(state.notionalPrincipal))
+                            .fixedMul(state.nominalInterestRate)
+                            .fixedMul(state.notionalPrincipal))
                     )
                 )
             )

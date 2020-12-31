@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SignedSafeMath.sol";
 
 import "../../Core/Core.sol";
-import "../../Core/SignedMath.sol";
+import "../../Core/FixedPointMath.sol";
 
 
 /**
@@ -15,7 +15,7 @@ import "../../Core/SignedMath.sol";
 contract ANNSTF is Core {
 
     using SignedSafeMath for int;
-    using SignedMath for int;
+    using FixedPointMath for int;
 
 
     /**
@@ -63,14 +63,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -123,8 +123,8 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = 0;
         state.statusDate = scheduleTime;
@@ -159,14 +159,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         // state.notionalPrincipal -= 0; // riskFactor not supported
         state.statusDate = scheduleTime;
@@ -201,14 +201,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.nominalInterestRate = terms.nextResetRate;
         state.statusDate = scheduleTime;
@@ -339,16 +339,16 @@ contract ANNSTF is Core {
             state.accruedInterest
             .add(
                 state.nominalInterestRate
-                .floatMult(state.notionalPrincipal)
-                .floatMult(timeFromLastEvent)
+                .fixedMul(state.notionalPrincipal)
+                .fixedMul(timeFromLastEvent)
             )
         );
         state.accruedInterest = 0;
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -378,8 +378,8 @@ contract ANNSTF is Core {
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.statusDate = scheduleTime;
 
@@ -408,14 +408,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = state.notionalPrincipal
         .sub(
@@ -460,14 +460,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.notionalPrincipal = 0.0;
         state.contractPerformance = ContractPerformance.MD;
@@ -487,8 +487,8 @@ contract ANNSTF is Core {
         returns (ANNState memory)
     {
         // riskFactor not supported
-        // int256 rate = int256(uint256(externalData)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
-        int256 rate = abi.decode(externalData, (int256)).floatMult(terms.rateMultiplier).add(terms.rateSpread);
+        // int256 rate = int256(uint256(externalData)).fixedMul(terms.rateMultiplier).add(terms.rateSpread);
+        int256 rate = abi.decode(externalData, (int256)).fixedMul(terms.rateMultiplier).add(terms.rateSpread);
         int256 deltaRate = rate.sub(state.nominalInterestRate);
 
         // apply period cap/floor
@@ -518,8 +518,8 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.nominalInterestRate = rate;
         state.nextPrincipalRedemptionPayment = 0; // annuity calculator not supported
@@ -550,14 +550,14 @@ contract ANNSTF is Core {
         state.accruedInterest = state.accruedInterest
         .add(
             state.nominalInterestRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
         state.feeAccrued = state.feeAccrued
         .add(
             terms.feeRate
-            .floatMult(state.notionalPrincipal)
-            .floatMult(timeFromLastEvent)
+            .fixedMul(state.notionalPrincipal)
+            .fixedMul(timeFromLastEvent)
         );
 
         if ((terms.scalingEffect == ScalingEffect.I00) || (terms.scalingEffect == ScalingEffect.IN0)) {

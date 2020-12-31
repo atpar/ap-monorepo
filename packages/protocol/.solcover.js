@@ -14,7 +14,7 @@ module.exports = {
     'ACTUS/test/STK/TestSTKPOF.sol',
     'ACTUS/test/STK/TestSTKSTF.sol',
     'ACTUS/test/TestCore.sol',
-    'ACTUS/test/TestSignedMath.sol',
+    'ACTUS/test/TestFixedPointMath.sol',
     'SettlementToken.sol',
     'NoSettlementToken.sol',
     'ERC20Token.sol',
