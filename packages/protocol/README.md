@@ -4,7 +4,7 @@ This package contains the ACTUS Protocol smart contracts as well as a Typescript
 The foundation of the protocol is the Solidity implementation of **ACTUS** Contract Types (https://www.actusfrf.org/algorithmic-standard) which is part of the package.
 
 ## Documentation
-https://docs.actus-protocol.io/
+https://docs.atpar.io/
 
 ## Usage
 
@@ -62,7 +62,7 @@ Contains the protocol which is build on top of ACTUS Core and the ACTUS Engines.
 2. Use the appropriate Asset Actor contract (e.g. the PAMActor) to initialize and register the new asset on chain
 3. Make sure that the Asset Actor has the required token allowances and progress the asset vie the `progress()` function.
 
-For an example, please review the [Issue and service a loan](https://docs.actus-protocol.io/guides/issue-and-service) guide.
+For an example, please review the [Issue and service a loan](https://docs.atpar.io/guides/issue-and-service) guide.
 
 ## Contract Types
 - [x] ANN (Annuity)
